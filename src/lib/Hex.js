@@ -22,16 +22,16 @@ const _M = Object.freeze({
  * "Hex" values are strings for easy use as keys and comparison.
  * @author Darrell
  */
- class HexLib {
+ class Hex {
     static HALF_SIZE = 3.5
 
     static _z = 0
 
     /**
-     * HexLib is a static-only class, do not instantiate it.
+     * Hex is a static-only class, do not instantiate it.
      */
     constructor() {
-        throw new Error('HexLib is static only')
+        throw new Error('Hex is static only')
     }
 
     static _hexFromString(hex) {
@@ -70,8 +70,8 @@ const _M = Object.freeze({
         assert(typeof pos.z === 'number')
 
         // Fractional hex position.
-        let x = pos.x / HexLib.HALF_SIZE
-        let y = pos.y / HexLib.HALF_SIZE
+        let x = pos.x / Hex.HALF_SIZE
+        let y = pos.y / Hex.HALF_SIZE
         let q = _M.b0 * x + _M.b1 * y
         let r = _M.b2 * x + _M.b3 * y
         let s = -q - r
@@ -93,7 +93,7 @@ const _M = Object.freeze({
             }
         }
 
-        return HexLib._hexToString(qi, ri, si)
+        return Hex._hexToString(qi, ri, si)
     }
 
     /**
@@ -105,11 +105,11 @@ const _M = Object.freeze({
     static toPosition(hex) {
         assert(typeof hex === 'string')
 
-        let [q, r, s] = HexLib._hexFromString(hex)
+        let [q, r, s] = Hex._hexFromString(hex)
 
-        let x = (_M.f0 * q + _M.f1 * r) * HexLib.HALF_SIZE
-        let y = (_M.f2 * q + _M.f3 * r) * HexLib.HALF_SIZE
-        let z = HexLib._z
+        let x = (_M.f0 * q + _M.f1 * r) * Hex.HALF_SIZE
+        let y = (_M.f2 * q + _M.f3 * r) * Hex.HALF_SIZE
+        let z = Hex._z
         return new Vector(x, y, z)    
     }
 
@@ -123,13 +123,13 @@ const _M = Object.freeze({
     static corners(hex) {
         assert(typeof hex === 'string')
 
-        let center = HexLib.toPosition(hex)
+        let center = Hex.toPosition(hex)
         let result = []
-        let z = HexLib._z
+        let z = Hex._z
         for (let angle = 0; angle < 360; angle += 60) {
             let phi = _M.startAngle + angle * Math.PI / 180
-            let x = center.x + HexLib.HALF_SIZE * Math.cos(phi)
-            let y = center.y + HexLib.HALF_SIZE * Math.sin(phi)
+            let x = center.x + Hex.HALF_SIZE * Math.cos(phi)
+            let y = center.y + Hex.HALF_SIZE * Math.sin(phi)
             result.push(new Vector(x, y, z))
         }
 
@@ -145,17 +145,17 @@ const _M = Object.freeze({
      static neighbors(hex) {
         assert(typeof hex === 'string')
 
-        let [q, r, s] = HexLib._hexFromString(hex)
+        let [q, r, s] = Hex._hexFromString(hex)
         return [
-            HexLib._hexToString(q + 1, r + 0, s - 1),
-            HexLib._hexToString(q + 1, r - 1, s + 0),
-            HexLib._hexToString(q + 0, r - 1, s + 1),
-            HexLib._hexToString(q - 1, r + 0, s + 1),
-            HexLib._hexToString(q - 1, r + 1, s + 0),
-            HexLib._hexToString(q + 0, r + 1, s - 1)
+            Hex._hexToString(q + 1, r + 0, s - 1),
+            Hex._hexToString(q + 1, r - 1, s + 0),
+            Hex._hexToString(q + 0, r - 1, s + 1),
+            Hex._hexToString(q - 1, r + 0, s + 1),
+            Hex._hexToString(q - 1, r + 1, s + 0),
+            Hex._hexToString(q + 0, r + 1, s - 1)
         ]
     }
 }
 
-module.exports.HexLib = HexLib
+module.exports.Hex = Hex
 
