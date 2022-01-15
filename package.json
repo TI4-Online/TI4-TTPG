@@ -9,7 +9,8 @@
     "watch": "node tooling/watch.js",
     "bundle": "node tooling/bundle.js",
     "clean": "node tooling/clean.js",
-    "guid": "node tooling/guid.js"
+    "guid": "node tooling/guid.js",
+    "test": "jest"
   },
   "main": "index.js",
   "repository": "https://github.com/RobMayer/ti4-on-ttpg.git",
@@ -27,6 +28,7 @@
     "cross-spawn": "^7.0.3",
     "eslint": "^8.6.0",
     "fs-extra": "^10.0.0",
+    "jest": "^27.4.7",
     "uuid": "^8.3.2"
   }
 }
