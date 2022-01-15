@@ -90,10 +90,16 @@ Promise.all(directoriesToMake.map(fs.ensureDir)).then(() => {
                     if (ttpg_folder === "") {
                         return reject("we couldn't determine where your TTPG installation folder is, sorry!")
                     }
-                    const config = {
-                        ttpg_folder
-                    }
-                    return resolve(config);
+                    return fs.pathExists(ttpg_folder).then((doesTtpgFolderExist) => {
+                        if (doesTtpgFolderExist) {
+                            const config = {
+                                ttpg_folder
+                            }
+                            return resolve(config);
+                        } else {
+                            return reject("couldn't find that path!");
+                        }
+                    });
                 })
             }).then((config) => {
                 input.close();
