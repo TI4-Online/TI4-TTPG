@@ -1,0 +1,10 @@
+{
+    "name": "Twilight Imperium 4",
+    "slug": "ti4",
+    "version" : "0.0.1a",
+    "transpile": false,
+    "guid": {
+        "dev": "DEE44C689452447E8ED6FDDBEB19BB23",
+        "prd": "2D526E10FD0641B3B7BF8D1A7E13E27E"
+    }
+}
