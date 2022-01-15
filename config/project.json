@@ -1,13 +1,13 @@
 {
     "defaultVariant": "primary-en",
     "assets": [
-        { "from": "Fonts/", "to": "Fonts/" },
-        { "from": "Models/", "to": "Models/" },
-        { "from": "Sounds/", "to": "Sounds/" },
-        { "from": "States/", "to": "States/" },
-        { "from": "Templates/", "to": "Templates/" },
-        { "from": "Thumbnails/", "to": "Thumbnails/" },
-        { "from": "Textures/global/", "to": "Textures/global/" }
+        { "from": "Fonts", "to": "Fonts" },
+        { "from": "Models", "to": "Models" },
+        { "from": "Sounds", "to": "Sounds" },
+        { "from": "States", "to": "States" },
+        { "from": "Templates", "to": "Templates" },
+        { "from": "Thumbnails", "to": "Thumbnails" },
+        { "from": "Textures/global", "to": "Textures/global" }
     ],
     "variants": {
         "primary-en": {
