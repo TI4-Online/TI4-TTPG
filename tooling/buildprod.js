@@ -4,85 +4,102 @@ const spawn = require('cross-spawn');
 
 console.log(chalk.yellow("Good Morning, Captain"));
 
-const setupWorkspace = (config) => {
+if (!(fs.existsSync('./config/local.json'))) {
+    console.error("this workspace has not yet been set up");
+    console.error("run 'yarn setup' to begin");
+    process.exit(1);
+}
+
+const projectConfig = fs.readJsonSync("./config/project.json");
+const localConfig = fs.readJsonSync("./config/local.json");
+
+const variant = process.argv.length > 2 ? process.argv[2] : projectConfig.defaultVariant;
+
+if (!(variant in projectConfig.variants)) {
+    console.error("I'm not familiar with that variant");
+    process.exit(1);
+}
+
+const variantConfig = projectConfig.variants[variant];
+
+const setupWorkspace = () => {
     console.log("setting up production build...");
+    const manifest = {
+        Name: variantConfig.name,
+        Version: variantConfig.version,
+        GUID: variantConfig.guid.prd
+    }
 
-    return fs.readJson("./config/local.json").then((localConfig) => {
-
-        const manifest = {
-            Name: `${config.name}`,
-            Version: config.version,
-            GUID: config.guid.prd
-        }
-
-        console.log("building 'prd' folder");
-        return Promise.all([
-            fs.remove(`${localConfig.ttpg_folder}/${config.slug}`),
-            fs.remove(`./prd/${config.slug}`)
-        ]).then(() => {
-            return fs.ensureDir(`./prd/${config.slug}`).then(() => {
-                return fs.ensureFile(`./prd/${config.slug}/Manifest.json`).then(() => {
-                    fs.writeJson(`./prd/${config.slug}/Manifest.json`, manifest).then(() => {
+    console.log("building 'prd' folder");
+    return Promise.all([
+        fs.remove(`${localConfig.ttpg_folder}/${variantConfig.slug}`),
+        fs.remove(`./prd/${variantConfig.slug}`)
+    ]).then(() => {
+        // make sure all the directories we need exist.
+        return fs.ensureDir(`./prd/${variantConfig.slug}`).then(() => {
+            return fs.ensureFile(`./prd/${variantConfig.slug}/Manifest.json`).then(() => {
+                fs.writeJson(`./prd/${variantConfig.slug}/Manifest.json`, manifest).then(() => {
+                    fs.ensureDir(`./prd/${variantConfig.slug}/Scripts/node_modules`).then(() => {
                         console.log("'prd' folder built");
                     })
                 })
-            }).then(() => {
-                console.log("symlinking assets to prd folder");
-                return Promise.all([
-                    fs.createSymlink("./assets/Fonts", `./prd/${config.slug}/Fonts`, "junction"),
-                    fs.createSymlink("./assets/Models", `./prd/${config.slug}/Models`, "junction"),
-                    fs.createSymlink("./assets/Sounds", `./prd/${config.slug}/Sounds`, "junction"),
-                    fs.createSymlink("./assets/States", `./prd/${config.slug}/States`, "junction"),
-                    fs.createSymlink("./assets/Templates", `./prd/${config.slug}/Templates`, "junction"),
-                    fs.createSymlink("./assets/Textures", `./prd/${config.slug}/Textures`, "junction"),
-                    fs.createSymlink("./assets/Thumbnails", `./prd/${config.slug}/Thumbnails`, "junction"),
-                    fs.ensureDir(`./prd/${config.slug}/Scripts/node_modules`)
-                ])
-            }).then(() => {
-                console.log("symlinking to Tabletop Playground");
-                return fs.createSymlink(`./prd/${config.slug}`, `${localConfig.ttpg_folder}/${config.slug}`, "junction").then(() => {
-                    console.log("Tabletop Playground is now aware of this production bundle. Huzzah.");
-                })
+            })
+        }).then(() => {
+            console.log("copying contents...");
+
+            const assetListing = [
+                ...projectConfig.assets,
+                ...('assets' in variantConfig ? variantConfig.assets : [])
+            ];
+
+            return Promise.all(assetListing.map(({ from, to }) => {
+                console.log(`./assets/${from}`, '->', `./prd/${variantConfig.slug}/${to}`)
+                return fs.copy(`./assets/${from}`, `./prd/${variantConfig.slug}/${to}`);
+            }));
+        }).then(() => {
+            console.log("symlinking to Tabletop Playground");
+            console.log(localConfig.ttpg_folder);
+            return fs.createSymlink(`./prd/${variantConfig.slug}`, `${localConfig.ttpg_folder}/${variantConfig.slug}`, "junction").then(() => {
+                console.log("Tabletop Playground is now aware of this production bundle. Huzzah.");
             })
         })
     })
 };
 
-const spawnDependencyDeploy = (config) => {
+const spawnDependencyDeploy = () => {
     return new Promise((resolve, reject) => {
         const child = spawn.spawn("yarn", [
             "install",
             "--modules-folder",
-            `prd/${config.slug}/Scripts/node_modules`,
+            `./prd/${variantConfig.slug}/Scripts/node_modules`,
             "--prod"
         ], { stdio: "pipe" });
         child.on('close', code => code > 0 ? reject(code) : resolve())
     })
 }
 
-const spawnBuilder = (config) => {
-    if (config.transpile) {
+const spawnBuilder = () => {
+    if (variantConfig.transpile) {
         return new Promise((resolve, reject) => {
             const child = spawn.spawn("babel", [
                 "src",
                 "-d",
-                `prd/${config.slug}/Scripts`
+                `./prd/${variantConfig.slug}/Scripts`
             ], { stdio: "pipe" });
             child.on('close', code => code > 0 ? reject(code) : resolve())
         });
     } else {
-        return fs.copy("./src", `prd/${config.slug}/Scripts`);
+        return fs.copy("./src", `./prd/${variantConfig.slug}/Scripts`);
     }
 }
 
-fs.readJson("./config/project.json").then((config) => {
-    return setupWorkspace(config).then(() => {
-        return spawnBuilder(config).then(() => {
-            return spawnDependencyDeploy(config).then(() => {
-                console.log(chalk.white(`Done building: ${config.name}`))
-            })
-        });
-    })
+
+setupWorkspace().then(() => {
+    return spawnBuilder().then(() => {
+        return spawnDependencyDeploy().then(() => {
+            console.log(chalk.white(`Done building: ${variantConfig.name}`))
+        })
+    });
 }).then(() => {
     console.log(chalk.green("Good Hunting"));
 }).catch((e) => {

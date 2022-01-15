@@ -4,12 +4,18 @@ const spawn = require('cross-spawn');
 
 console.log(chalk.yellow("Good Morning, Captain"));
 
+if (!(fs.existsSync('./config/local.json'))) {
+    console.error("this workspace has not yet been set up");
+    console.error("run 'yarn setup' to begin");
+    process.exit(1);
+}
+
 const spawnDependencyDeploy = (config) => {
     return new Promise((resolve, reject) => {
         const child = spawn.spawn("yarn", [
             "install",
             "--modules-folder",
-            `dev/${config.slug}_dev/Scripts/node_modules`,
+            `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts/node_modules`,
             "--prod"
         ], { stdio: "pipe" });
         child.on('close', code => code > 0 ? reject(code) : resolve())
@@ -22,19 +28,19 @@ const spawnBuilder = (config) => {
             const child = spawn.spawn("babel", [
                 "src",
                 "-d",
-                `dev/${config.slug}_dev/Scripts`
+                `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`
             ], { stdio: "pipe" });
             child.on('close', code => code > 0 ? reject(code) : resolve())
         });
     } else {
-        return fs.copy("./src", `dev/${config.slug}_dev/Scripts`);
+        return fs.copy("./src", `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`);
     }
 }
 
 fs.readJson("./config/project.json").then((config) => {
     return spawnBuilder(config).then(() => {
         return spawnDependencyDeploy(config).then(() => {
-            console.log(chalk.white(`Done building: ${config.name} (Dev)`))
+            console.log(chalk.white(`Done building: ${config.variants[config.defaultVariant].name} (Dev)`))
         })
     });
 }).then(() => {

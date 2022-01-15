@@ -5,6 +5,12 @@ const chokidar = require('chokidar');
 
 console.log(chalk.yellow("Good Morning, Captain"));
 
+if (!(fs.existsSync('./config/local.json'))) {
+    console.error("this workspace has not yet been set up");
+    console.error("run 'yarn setup' to begin");
+    process.exit(1);
+}
+
 const spawnWatcher = (config) => {
     if (config.transpile) {
         return new Promise((resolve, reject) => {

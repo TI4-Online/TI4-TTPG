@@ -1,10 +1,27 @@
 {
-    "name": "Twilight Imperium 4",
-    "slug": "ti4",
-    "version" : "0.0.1a",
-    "transpile": false,
-    "guid": {
-        "dev": "DEE44C689452447E8ED6FDDBEB19BB23",
-        "prd": "2D526E10FD0641B3B7BF8D1A7E13E27E"
+    "defaultVariant": "primary-en",
+    "assets": [
+        { "from": "Fonts/", "to": "Fonts/" },
+        { "from": "Models/", "to": "Models/" },
+        { "from": "Sounds/", "to": "Sounds/" },
+        { "from": "States/", "to": "States/" },
+        { "from": "Templates/", "to": "Templates/" },
+        { "from": "Thumbnails/", "to": "Thumbnails/" },
+        { "from": "Textures/global/", "to": "Textures/global/" }
+    ],
+    "variants": {
+        "primary-en": {
+            "version" : "0.0.1a",
+            "transpile": false,
+            "name": "Twilight Imperium 4",
+            "slug": "ti4",
+            "guid": {
+                "dev": "DEE44C689452447E8ED6FDDBEB19BB23",
+                "prd": "2D526E10FD0641B3B7BF8D1A7E13E27E"
+            },
+            "assets": [
+                { "from": "Textures/en/", "to": "Textures/locale/" }
+            ]
+        }
     }
 }
