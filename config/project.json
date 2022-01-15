@@ -20,7 +20,7 @@
                 "prd": "2D526E10FD0641B3B7BF8D1A7E13E27E"
             },
             "assets": [
-                { "from": "Textures/en/", "to": "Textures/locale/" }
+                { "from": "Textures/en", "to": "Textures/locale" }
             ]
         }
     }
