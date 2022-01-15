@@ -62,15 +62,15 @@ const setupWorkspace = (localConfig) => {
     })
 };
 
-Promise.all([
-    fs.ensureDir("./assets/Fonts"),
-    fs.ensureDir("./assets/Models"),
-    fs.ensureDir("./assets/Sounds"),
-    fs.ensureDir("./assets/States"),
-    fs.ensureDir("./assets/Templates"),
-    fs.ensureDir("./assets/Textures"),
-    fs.ensureDir("./assets/Thumbnails"),
-]).then(() => {
+const directoriesToMake = [
+    ...projectConfig.assets,
+    ...Object.values(projectConfig.variants).reduce((acc, { assets }) => assets ? [...acc, ...assets] : acc, [])
+].reduce((acc, { from }) => {
+    acc.push(`./assets/${from}`);
+    return acc;
+}, [])
+
+Promise.all(directoriesToMake.map(fs.ensureDir)).then(() => {
     return fs.pathExists("./config/local.json").then((doesExist) => {
         if (doesExist) {
             console.log("Local config found, using that");
