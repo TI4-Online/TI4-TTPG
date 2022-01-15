@@ -18,6 +18,12 @@ if you run ``yarn clean`` it will remove the ``dev/`` folder, as well as the pro
 
 ``yarn guid [n]`` will generate n GUIDs for you (default 1). use ``yarn (--silent|-s) guid [n]`` to surpress yarn's wrapping output and just get the GUIDS you requested.
 
+# Adding Modules
+
+Any dependency you add with ``yarn add {module}`` will be added to the bundle and can be ``require``d by a script in game.
+
+Dependencies added with ``yarn add -D {module}`` (devDependenices) will ***not*** get bundled or built for the end project.
+
 # Transpiling
 
 as of right now, transpiling is off. Ecma6 syntax is good to go, but Ecma2020 (null coalesce, optional chaining, etc) is a no go for now. This may change.
