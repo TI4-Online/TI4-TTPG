@@ -69,7 +69,7 @@ const buildZip = () => {
         ];
 
         assetListing.forEach(({ from, to }) => {
-            console.log(`./assets/${from}**`, "->", to);
+            console.log(`./assets/${from}`, "->", to);
             archive.directory(`./assets/${from}`, to);
         })
         archive.glob('**', {cwd: './build/'});
