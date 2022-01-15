@@ -1,17 +1,4 @@
-/**
- * Heavily distilled hex math based on RedBlobGames excellent hex docs.
- * "Hex" values are strings for easy use as keys and comparison.
- * @author Darrell
- */
-
-let VectorExports
-try {
-    VectorExports = require("@tabletop-playground/api")
-} catch {
-    VectorExports = require("../mock/MockVector")
-}
-const Vector = VectorExports.Vector
-
+const { Vector } = require('../mock/MockApi')
 const assert = require('assert')
 
 // Transforms for flat-top hex grid.
@@ -30,11 +17,19 @@ const _M = Object.freeze({
     startAngle : 0.0
 })
 
-class HexLib {
+/**
+ * Heavily distilled hex math based on RedBlobGames excellent hex docs.
+ * "Hex" values are strings for easy use as keys and comparison.
+ * @author Darrell
+ */
+ class HexLib {
     static HALF_SIZE = 3.5
 
     static _z = 0
 
+    /**
+     * HexLib is a static-only class, do not instantiate it.
+     */
     constructor() {
         throw new Error('HexLib is static only')
     }
@@ -60,13 +55,13 @@ class HexLib {
     }
 
     /**
-     * Get hex for position.
+     * Get hex at position.
      * 
      * @param {Vector} pos - Cartesian position on XY surface
      * @param {number} pos.x
      * @param {number} pos.y
      * @param {number} pos.z
-     * @returns {string} hex
+     * @returns {string} hex as "<q,r,s>" string
      */
     static fromPosition(pos) {
         assert(typeof pos === 'object')
@@ -104,7 +99,7 @@ class HexLib {
     /**
      * Get position from hex.
      * 
-     * @param {string} hex 
+     * @param {string} hex - Hex as "<q,r,s>" string
      * @returns {Vector} position
      */
     static toPosition(hex) {
@@ -122,7 +117,7 @@ class HexLib {
      * Get positions of hex corners.
      * First at +X, winding clockwise.
      * 
-     * @param {string} hex 
+     * @param {string} hex - Hex as "<q,r,s>" string
      * @return {Array} list of position Vectors
      */
     static corners(hex) {
@@ -144,7 +139,7 @@ class HexLib {
     /**
      * Get adjacent hexes.
      * 
-     * @param {string} hex 
+     * @param {string} hex - Hex as "<q,r,s>" string
      * @return {Array} list of hex strings
      */
      static neighbors(hex) {
