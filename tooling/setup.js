@@ -30,10 +30,10 @@ const setupWorkspace = (localConfig) => {
         if (alreadyInPlace) {
             return Promise.reject(`path './dev/${variantConfig.slug}_dev' already exists. It looks like you've already been set up`);
         } else {
-            return fs.ensureDir(`./dev/${variantConfig.slug}_dev`).then(() => {
+            return fs.ensureDir(`./dev/${variantConfig.slug}_dev`, 0o2775).then(() => {
                 return fs.ensureFile(`./dev/${variantConfig.slug}_dev/Manifest.json`).then(() => {
                     fs.writeJson(`./dev/${variantConfig.slug}_dev/Manifest.json`, manifest).then(() => {
-                        return fs.ensureDir(`./dev/${variantConfig.slug}_dev/Scripts/node_modules`).then(() => {
+                        return fs.ensureDir(`./dev/${variantConfig.slug}_dev/Scripts/node_modules`, 0o2775).then(() => {
                             console.log("'dev' folder built");
                         })
                     })
@@ -70,7 +70,7 @@ const directoriesToMake = [
     return acc;
 }, [])
 
-Promise.all(directoriesToMake.map(fs.ensureDir)).then(() => {
+Promise.all(directoriesToMake.map((path) => { return fs.ensureDir(path, 0o2775) })).then(() => {
     return fs.pathExists("./config/local.json").then((doesExist) => {
         if (doesExist) {
             console.log("Local config found, using that");
