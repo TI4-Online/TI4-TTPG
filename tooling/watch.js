@@ -19,7 +19,7 @@ const spawnWatcher = (config) => {
                 "src",
                 "--watch",
                 "--out-dir",
-                `dev/${config.slug}_dev/Scripts`
+                `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`
             ], { stdio: "pipe" });
             child.on('close', code => code > 0 ? reject(code) : resolve())
         })
@@ -29,7 +29,7 @@ const spawnWatcher = (config) => {
 
             const doCopy = (path) => {
                 if (path) {
-                    fs.copy(`./src/${path}`, `./dev/${config.slug}_dev/Scripts/${path}`).catch((e) => {
+                    fs.copy(`./src/${path}`, `./dev/${config.variants[config.defaultVariant].slug}_dev/Scripts/${path}`).catch((e) => {
                         console.error(e);
                     })
                 }
