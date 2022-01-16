@@ -10,6 +10,8 @@
     "bundle": "node tooling/bundle.js",
     "clean": "node tooling/clean.js",
     "guid": "node tooling/guid.js",
+    "generate:playertokens": "node tooling/generators/playertokens.js",
+    "generate:maptiles": "node tooling/generators/maptiles.js",
     "test": "jest"
   },
   "main": "index.js",
