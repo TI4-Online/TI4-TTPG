@@ -10,7 +10,7 @@ const variantConfig = projectConfig.variants[projectConfig.defaultVariant];
 
 const getSuggestedFolder = () => {
     if (process.platform === 'darwin') {
-        return process.env.HOME + "/Library/Application Support/Epic/TabletopPlayground/Package"
+        return process.env.HOME + "/Library/Application Support/Epic/TabletopPlayground/Packages"
     } else if (process.platform === 'win32') {
         return "C:\\Program Files (x86)\\Steam\\steamapps\\common\\TabletopPlayground\\TabletopPlayground\\PersistentDownloadDir";
     }
