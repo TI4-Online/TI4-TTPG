@@ -36,10 +36,10 @@ const setupWorkspace = () => {
         fs.remove(`./prd/${variantConfig.slug}`)
     ]).then(() => {
         // make sure all the directories we need exist.
-        return fs.ensureDir(`./prd/${variantConfig.slug}`).then(() => {
+        return fs.ensureDir(`./prd/${variantConfig.slug}`, 0o2775).then(() => {
             return fs.ensureFile(`./prd/${variantConfig.slug}/Manifest.json`).then(() => {
                 fs.writeJson(`./prd/${variantConfig.slug}/Manifest.json`, manifest).then(() => {
-                    fs.ensureDir(`./prd/${variantConfig.slug}/Scripts/node_modules`).then(() => {
+                    fs.ensureDir(`./prd/${variantConfig.slug}/Scripts/node_modules`, 0o2775).then(() => {
                         console.log("'prd' folder built");
                     })
                 })

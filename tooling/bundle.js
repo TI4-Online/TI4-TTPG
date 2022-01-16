@@ -94,7 +94,7 @@ const spawnBuilder = () => {
 }
 
 Promise.all([
-    fs.ensureDir("./bundles"),
+    fs.ensureDir("./bundles", 0o2775),
     fs.remove("./build")
 ]).then(() => {
     return spawnBuilder().then(() => {
