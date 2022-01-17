@@ -3,8 +3,7 @@ const uuid = require('uuid');
 
 const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase()
 
-//; const theMod = process.argv.length > 2 ? process.argv[3] : "ti4";
-const theMod = "discordant-stars";
+const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["ti4", "pok"];
 
 const COLORS = {
     hazard: {
@@ -30,11 +29,12 @@ const COLORS = {
 }
 
 const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
+    const scriptedId = `tile.system${(mod !== "ti4" && mod !== "pok") ? ".homebrew" : ""}.${mod}/${parseInt(mapId)}`;
     return {
         "Type": "Generic",
         "GUID": guid,
         "Name": details.name ? details.name : `Tile ${mapId}`,
-        "Metadata": "",
+        "Metadata": scriptedId,
         "CollisionType": "Regular",
         "Friction": 0.7,
         "Restitution": 0.3,
@@ -184,14 +184,6 @@ const TILES = {
             "036": { guid: "D53C4DF0CE454D96A0DEC85191D1E1F3" },
             "037": { guid: "0C345E10BB53423086D6E6276988AEE6" },
             "038": { guid: "2664FC3FFAA24F42AB78C27A0234BB57" },
-            "069": { guid: "F5DB58B078F6432FB8A422CCB047FE81" },
-            "070": { guid: "7A66C6A0B13A446CBA01812647A8CEA5" },
-            "071": { guid: "C27551461C1A41B6B840E7787C713F20" },
-            "072": { guid: "093A03CB3D3E432EA6374B81E2001E27" },
-            "073": { guid: "9561D7A9EB8848FEB558E5B3BABBB05E" },
-            "074": { guid: "67FF193ED1644412AAB632401F1E44ED" },
-            "075": { guid: "87C1DBAA6B3E4E98B13DC69FBB320277" },
-            "076": { guid: "59921407A24F4B1BA42494370EBAE879" },
         },
         "hazard": {
             "039": { guid: "8195FF33918C4C55942EE4F00DACEC90", noLang: true },
@@ -206,12 +198,6 @@ const TILES = {
             "048": { guid: "C7D0856CB35645DCBF471A9D38614FC8", noLang: true },
             "049": { guid: "196BF158D6E94203BC0AEFCC38EDE9CA", noLang: true },
             "050": { guid: "B0FB9877565A49C2BCED69B976A9E154", noLang: true },
-            "067": { guid: "6746AC4ABDC04862BB0C02635EF76506" },
-            "068": { guid: "03D42542B4F4423D85659850A732297E" },
-            "077": { guid: "D5E44F2314924C35B232A74194352C1D", noLang: true },
-            "078": { guid: "984CE119D2254822BCE96125B932DC0E", noLang: true },
-            "079": { guid: "48155B11EC204F95BC6C8E8A62563C14", noLang: true },
-            "080": { guid: "A14791A9164F493C81F70F92FF1353B6", noLang: true },
         },
         "homeworld": {
             "001": { guid: "DE3527F84B594186B4FE56418BC021F7" },
@@ -231,13 +217,6 @@ const TILES = {
             "015": { guid: "CB6D57A4F05E4B7398B6A2F528D0D97D" },
             "016": { guid: "38894D21559A4E5BB45BD76FF22AFB2F" },
             "017": { guid: "1A54BFBA7E184176AEC45C8BF4B9238C" },
-            "052": { guid: "FA561A091AA94C2881E4EF8EFF5D8009" },
-            "053": { guid: "EAE70D5AA35D4EFBBECA54FA7D990D50" },
-            "054": { guid: "A3B8E4425F774D5FA813C38A673BDBBD" },
-            "055": { guid: "C5D0E15769B447F88696594AC48ADC40" },
-            "056": { guid: "C911275C44B74B0C92252864B4C7FB8A" },
-            "057": { guid: "45D888DDD1BB47839F10D6D215CF5FD6" },
-            "058": { guid: "A59AEE566273429AAC9A32500F674896" },
         },
         "special": {
             "018": {
@@ -252,25 +231,56 @@ const TILES = {
                 reverseTexture: `global/tiles/reverse_homeworld_c.png`,
                 reverseExtra: `global/tiles/reverse_homeworld_x.png`,
                 reverseColor: COLORS.homeworld
-            },
+            }
+        },
+    },
+    "pok": {
+        "regular": {
+            "069": { guid: "F5DB58B078F6432FB8A422CCB047FE81" },
+            "070": { guid: "7A66C6A0B13A446CBA01812647A8CEA5" },
+            "071": { guid: "C27551461C1A41B6B840E7787C713F20" },
+            "072": { guid: "093A03CB3D3E432EA6374B81E2001E27" },
+            "073": { guid: "9561D7A9EB8848FEB558E5B3BABBB05E" },
+            "074": { guid: "67FF193ED1644412AAB632401F1E44ED" },
+            "075": { guid: "87C1DBAA6B3E4E98B13DC69FBB320277" },
+            "076": { guid: "59921407A24F4B1BA42494370EBAE879" },
+        },
+        "hazard": {
+            "067": { guid: "6746AC4ABDC04862BB0C02635EF76506" },
+            "068": { guid: "03D42542B4F4423D85659850A732297E" },
+            "077": { guid: "D5E44F2314924C35B232A74194352C1D", noLang: true },
+            "078": { guid: "984CE119D2254822BCE96125B932DC0E", noLang: true },
+            "079": { guid: "48155B11EC204F95BC6C8E8A62563C14", noLang: true },
+            "080": { guid: "A14791A9164F493C81F70F92FF1353B6", noLang: true },
+        },
+        "hyperlane": {
+            "083": { guid: "EA945EFF89FE4D48A3722E70FE91EFB4", obverseTexture: `global/tiles/pok/hyperlane/tile_083_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_083_r.jpg` },
+            "084": { guid: "04F562C521794710B41D190E6B277D55", obverseTexture: `global/tiles/pok/hyperlane/tile_084_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_084_r.jpg` },
+            "085": { guid: "4F0ACAD64F3C455BAE62225FF6C3850F", obverseTexture: `global/tiles/pok/hyperlane/tile_085_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_085_r.jpg` },
+            "086": { guid: "F4D5B1B9DB264405A492E277F60C8662", obverseTexture: `global/tiles/pok/hyperlane/tile_086_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_086_r.jpg` },
+            "087": { guid: "3F41E11B0C4C49468661D5A8C0C3B659", obverseTexture: `global/tiles/pok/hyperlane/tile_087_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_087_r.jpg` },
+            "088": { guid: "35BE0CAA2E4B4893B05B0642BD68E88F", obverseTexture: `global/tiles/pok/hyperlane/tile_088_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_088_r.jpg` },
+            "089": { guid: "8E938A20B4B442AE9655137CF3660E30", obverseTexture: `global/tiles/pok/hyperlane/tile_089_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_089_r.jpg` },
+            "090": { guid: "C928C3FB88C04D84A3C6E0E871145B05", obverseTexture: `global/tiles/pok/hyperlane/tile_090_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_090_r.jpg` },
+            "091": { guid: "0F4F7816363044D1B21EF2AA647D260D", obverseTexture: `global/tiles/pok/hyperlane/tile_091_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_091_r.jpg` },
+        },
+        "homeworld": {
+            "052": { guid: "FA561A091AA94C2881E4EF8EFF5D8009" },
+            "053": { guid: "EAE70D5AA35D4EFBBECA54FA7D990D50" },
+            "054": { guid: "A3B8E4425F774D5FA813C38A673BDBBD" },
+            "055": { guid: "C5D0E15769B447F88696594AC48ADC40" },
+            "056": { guid: "C911275C44B74B0C92252864B4C7FB8A" },
+            "057": { guid: "45D888DDD1BB47839F10D6D215CF5FD6" },
+            "058": { guid: "A59AEE566273429AAC9A32500F674896" },
+        },
+        "special": {
             "082": {
                 guid: "541FFEC05B05424BAE1B225D9765598D",
                 obverseModel: "tiles/standalone-obverse.obj",
-                obverseTexture: "locale/tiles/ti4/special/tile_082_o.jpg",
+                obverseTexture: "locale/tiles/pok/special/tile_082_o.jpg",
                 reverseModel: "tiles/standalone-reverse.obj",
-                reverseTexture: "locale/tiles/ti4/special/tile_082_r.jpg"
+                reverseTexture: "locale/tiles/pok/special/tile_082_r.jpg"
             },
-        },
-        "hyperlanes": {
-            "083": { guid: "EA945EFF89FE4D48A3722E70FE91EFB4", obverseTexture: `global/tiles/ti4/hyperlanes/tile_083_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_083_r.jpg` },
-            "084": { guid: "04F562C521794710B41D190E6B277D55", obverseTexture: `global/tiles/ti4/hyperlanes/tile_084_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_084_r.jpg` },
-            "085": { guid: "4F0ACAD64F3C455BAE62225FF6C3850F", obverseTexture: `global/tiles/ti4/hyperlanes/tile_085_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_085_r.jpg` },
-            "086": { guid: "F4D5B1B9DB264405A492E277F60C8662", obverseTexture: `global/tiles/ti4/hyperlanes/tile_086_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_086_r.jpg` },
-            "087": { guid: "3F41E11B0C4C49468661D5A8C0C3B659", obverseTexture: `global/tiles/ti4/hyperlanes/tile_087_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_087_r.jpg` },
-            "088": { guid: "35BE0CAA2E4B4893B05B0642BD68E88F", obverseTexture: `global/tiles/ti4/hyperlanes/tile_088_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_088_r.jpg` },
-            "089": { guid: "8E938A20B4B442AE9655137CF3660E30", obverseTexture: `global/tiles/ti4/hyperlanes/tile_089_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_089_r.jpg` },
-            "090": { guid: "C928C3FB88C04D84A3C6E0E871145B05", obverseTexture: `global/tiles/ti4/hyperlanes/tile_090_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_090_r.jpg` },
-            "091": { guid: "0F4F7816363044D1B21EF2AA647D260D", obverseTexture: `global/tiles/ti4/hyperlanes/tile_091_o.jpg`, reverseTexture: `global/tiles/ti4/hyperlanes/tile_091_r.jpg` },
         }
     },
     "discordant-stars": {
@@ -304,20 +314,24 @@ const TILES = {
 }
 
 
-fs.ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775).then(() => {
-    return Promise.all(
-        Object.keys(TILES[theMod]).map(e => fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`))
-    ).then(() => {
-        return Promise.all(
-            Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
-                return [...acc, ...Object.entries(def).map(([mapId, details]) => {
-                    const guid = details.guid ? details.guid : generateUuid();
-                    return fs.writeJson(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, generateTile(guid, theMod, mapId, type, details))
-                })]
-            }, [])
-        )
+Promise.all(
+    modSet.map((theMod) => {
+        return fs.ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775).then(() => {
+            return Promise.all(
+                Object.keys(TILES[theMod]).map(e => fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`))
+            ).then(() => {
+                return Promise.all(
+                    Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
+                        return [...acc, ...Object.entries(def).map(([mapId, details]) => {
+                            const guid = details.guid ? details.guid : generateUuid();
+                            return fs.writeJson(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, generateTile(guid, theMod, mapId, type, details))
+                        })]
+                    }, [])
+                )
+            })
+        })
     })
-}).then(() => {
+).then(() => {
     console.log("done");
 }).catch((e) => {
     console.error(e);
