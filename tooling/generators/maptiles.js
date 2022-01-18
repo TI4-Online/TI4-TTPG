@@ -3,8 +3,6 @@ const uuid = require('uuid');
 
 const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase()
 
-const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["base", "pok"];
-
 const COLORS = {
     hazard: {
         "R": 230,
@@ -25,140 +23,6 @@ const COLORS = {
         "R": 255,
         "G": 255,
         "B": 255
-    }
-}
-
-const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
-
-    const scripteId = `tile.system:${(mod !== "base" && mod !== "pok") ? "homebrew." : ""}${mod}/${parseInt(mapId)}`;
-    return {
-        "Type": "Generic",
-        "GUID": guid,
-        "Name": details.name ? details.name : `Tile ${mapId}`,
-        "Metadata": scripteId,
-        "CollisionType": "Regular",
-        "Friction": 0.7,
-        "Restitution": 0.3,
-        "Density": 1,
-        "SurfaceType": "Plastic",
-        "Roughness": 1,
-        "Metallic": 0,
-        "PrimaryColor":
-        {
-            "R": 255,
-            "G": 255,
-            "B": 255
-        },
-        "SecondaryColor":
-        {
-            "R": 0,
-            "G": 0,
-            "B": 0
-        },
-        "Flippable": true,
-        "AutoStraighten": false,
-        "ShouldSnap": true,
-        "ScriptName": "",
-        "Blueprint": "",
-        "Models": [
-            {
-                "Model": details.obverseModel ? details.obverseModel : "tiles/basic.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
-                },
-                "Rotation":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Texture": details.obverseTexture ? details.obverseTexture : `${details.noLang ? "global" : "locale" }/tiles/${mod}/${type}/tile_${mapId}.jpg`,
-                "NormalMap": "",
-                "ExtraMap": `global/tiles/obverse_x.png`,
-                "IsTransparent": false,
-                "CastShadow": true,
-                "UseOverrides": true,
-                "SurfaceType": "Plastic"
-            },
-            {
-                "Model": details.reverseModel ? details.reverseModel : "tiles/basic.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
-                },
-                "Rotation":
-                {
-                    "X": 180,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Texture": details.reverseTexture ? details.reverseTexture : `global/tiles/reverse_${type}_c.png`,
-                "NormalMap": "",
-                "ExtraMap": details.reverseExtra ? details.reverseExtra : details.reverseTexture ? `global/tiles/obverse_x.png` : `global/tiles/reverse_${type}_x.png`,
-                "IsTransparent": false,
-                "CastShadow": true,
-                "UseOverrides": false,
-                "Roughness": 1,
-                "Metallic": 0,
-                "PrimaryColor": details.reverseColor ? details.reverseColor : details.reverseTexture ? { "R": 255, "G": 255, "B": 255} : COLORS[type],
-                "SecondaryColor":
-                {
-                    "R": 0,
-                    "G": 0,
-                    "B": 0
-                },
-                "SurfaceType": "Plastic"
-            }
-        ],
-        "Collision": [
-            {
-                "Model": "tiles/collider.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
-                },
-                "Rotation":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
-                },
-                "Type": "Convex"
-            }
-        ],
-        "SnapPointsGlobal": false,
-        "SnapPoints": [],
-        "ZoomViewDirection":
-        {
-            "X": 0,
-            "Y": 0,
-            "Z": 1.0
-        }
     }
 }
 
@@ -315,13 +179,148 @@ const TILES = {
             "3219": { guid: "FFA2046A9E2C4400935E2C3404D2B68C" },
             "3220": { guid: "FB1B4ACEA6C840DDBB341E553419F7C7" },
             "3221": { guid: "7BB5522CA5F64BFAB43A08CD06949AA3" },
-//            "3222": { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" }, /* appears to be missing */
+            "3222": { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" },
             "3223": { guid: "F61083209FB643A395790E821767AE4D" },
             "3224": { guid: "819715212DA746268C281C3B2259FCBE" },
         }
     }
 }
 
+const modSet = (process.argv.length > 2 ? process.argv.includes("*") ? Object.keys(TILES) : process.argv.slice(2).filter(a => Object.keys(TILES).includes(a)) : ["base", "pok"]);
+
+const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
+
+    const scripteId = `tile.system:${(mod !== "base" && mod !== "pok") ? "homebrew." : ""}${mod}/${parseInt(mapId)}`;
+    return {
+        "Type": "Generic",
+        "GUID": guid,
+        "Name": details.name ? details.name : `Tile ${mapId}`,
+        "Metadata": scripteId,
+        "CollisionType": "Regular",
+        "Friction": 0.7,
+        "Restitution": 0.3,
+        "Density": 1,
+        "SurfaceType": "Plastic",
+        "Roughness": 1,
+        "Metallic": 0,
+        "PrimaryColor":
+        {
+            "R": 255,
+            "G": 255,
+            "B": 255
+        },
+        "SecondaryColor":
+        {
+            "R": 0,
+            "G": 0,
+            "B": 0
+        },
+        "Flippable": true,
+        "AutoStraighten": false,
+        "ShouldSnap": true,
+        "ScriptName": "",
+        "Blueprint": "",
+        "Models": [
+            {
+                "Model": details.obverseModel ? details.obverseModel : "tiles/basic.obj",
+                "Offset":
+                {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Scale":
+                {
+                    "X": 1,
+                    "Y": 1,
+                    "Z": 1
+                },
+                "Rotation":
+                {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Texture": details.obverseTexture ? details.obverseTexture : `${details.noLang ? "global" : "locale" }/tiles/${mod}/${type}/tile_${mapId}.jpg`,
+                "NormalMap": "",
+                "ExtraMap": `global/tiles/obverse_x.png`,
+                "IsTransparent": false,
+                "CastShadow": true,
+                "UseOverrides": true,
+                "SurfaceType": "Plastic"
+            },
+            {
+                "Model": details.reverseModel ? details.reverseModel : "tiles/basic.obj",
+                "Offset":
+                {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Scale":
+                {
+                    "X": 1,
+                    "Y": 1,
+                    "Z": 1
+                },
+                "Rotation":
+                {
+                    "X": 180,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Texture": details.reverseTexture ? details.reverseTexture : `global/tiles/reverse_${type}_c.png`,
+                "NormalMap": "",
+                "ExtraMap": details.reverseExtra ? details.reverseExtra : details.reverseTexture ? `global/tiles/obverse_x.png` : `global/tiles/reverse_${type}_x.png`,
+                "IsTransparent": false,
+                "CastShadow": true,
+                "UseOverrides": false,
+                "Roughness": 1,
+                "Metallic": 0,
+                "PrimaryColor": details.reverseColor ? details.reverseColor : details.reverseTexture ? { "R": 255, "G": 255, "B": 255} : COLORS[type],
+                "SecondaryColor":
+                {
+                    "R": 0,
+                    "G": 0,
+                    "B": 0
+                },
+                "SurfaceType": "Plastic"
+            }
+        ],
+        "Collision": [
+            {
+                "Model": "tiles/collider.obj",
+                "Offset":
+                {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Scale":
+                {
+                    "X": 1,
+                    "Y": 1,
+                    "Z": 1
+                },
+                "Rotation":
+                {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                },
+                "Type": "Convex"
+            }
+        ],
+        "SnapPointsGlobal": false,
+        "SnapPoints": [],
+        "ZoomViewDirection":
+        {
+            "X": 0,
+            "Y": 0,
+            "Z": 1.0
+        }
+    }
+}
 
 Promise.all(
     modSet.map((theMod) => {
