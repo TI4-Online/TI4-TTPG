@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
-	"GUID": "F45F2B6C497F8AB5324E8C80CBB5B80E",
-	"Name": "Fighter (1)",
+	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
+	"Name": "Wormhole (Gamma)",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/round-msh.obj",
+			"Model": "tokens/wormhole.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 1.25,
+				"Y": 1.25,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,37 +48,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/fighter_1_c.png",
+			"Texture": "global/tokens/pok/wormhole.png",
 			"NormalMap": "",
-			"ExtraMap": "global/tokens/base/fighter_1_x.png",
-			"IsTransparent": false,
-			"CastShadow": true,
-			"UseOverrides": true,
-			"SurfaceType": "Plastic"
-		},
-		{
-			"Model": "tokens/round-msh.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 180,
-				"Y": 0,
-				"Z": 0
-			},
-			"Texture": "global/tokens/base/fighter_1_c.png",
-			"NormalMap": "",
-			"ExtraMap": "global/tokens/base/fighter_1_x.png",
+			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -96,8 +68,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 1.5,
+				"Y": 1.5,
 				"Z": 1
 			},
 			"Rotation":
