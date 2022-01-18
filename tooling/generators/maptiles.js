@@ -182,6 +182,13 @@ const TILES = {
             "3222": { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" },
             "3223": { guid: "F61083209FB643A395790E821767AE4D" },
             "3224": { guid: "819715212DA746268C281C3B2259FCBE" },
+        },
+        "special": {
+            "3225": {
+                guid: "CFB133FD79F5450AAEED1281FCB25D26",
+                obverseTexture: `locale/tiles/discordant_stars/special/tile_3225_o.jpg`,
+                reverseTexture: `locale/tiles/discordant_stars/special/tile_3225_r.jpg`
+            }
         }
     }
 }
