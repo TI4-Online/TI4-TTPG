@@ -10,6 +10,12 @@ if you run ``yarn bundle`` it will package build your scripts from the ``src/`` 
 
 you can also run ``yarn build`` to get a Production build of your mod into TTPG for adding to mod.io
 
+# Getting your scripts into TTPG
+
+``yarn dev`` will copy (or transpile) the code within the /src directory and throw it into TTPG. It will be a one time operation. If you make a change to scripts within /src  you will need to run it again.
+
+``yarn watch`` however, will run in your terminal and watch for changes. If you edit a file in /src it will live update the scripts in TTPG's folder.
+
 # Cleaning
 
 if you run ``yarn clean`` it will remove the ``dev/`` folder, as well as the project folder within your ttpg system and remove and temporary files. You can then run ``yarn setup`` again to get everything re-allocated.
