@@ -1,3 +1,9 @@
+# What you'll need
+
+* NodeJS v16+
+* Yarn (I have v1.22.5)
+* Some kind of IDE, VSCode is what I recommend.
+
 # Getting Started
 
 * run ``yarn install``
