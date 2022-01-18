@@ -3,7 +3,7 @@ const uuid = require('uuid');
 
 const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase()
 
-const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["ti4", "pok"];
+const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["base", "pok"];
 
 const COLORS = {
     hazard: {
@@ -29,12 +29,13 @@ const COLORS = {
 }
 
 const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
-    const scriptedId = `tile.system${(mod !== "ti4" && mod !== "pok") ? ".homebrew" : ""}.${mod}/${parseInt(mapId)}`;
+
+    const scripteId = `tile.system:${(mod !== "base" && mod !== "pok") ? "homebrew." : ""}${mod}/${parseInt(mapId)}`;
     return {
         "Type": "Generic",
         "GUID": guid,
         "Name": details.name ? details.name : `Tile ${mapId}`,
-        "Metadata": scriptedId,
+        "Metadata": scripteId,
         "CollisionType": "Regular",
         "Friction": 0.7,
         "Restitution": 0.3,
@@ -162,7 +163,7 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
 }
 
 const TILES = {
-    "ti4": {
+    "base": {
         "regular": {
             "019": { guid: "486525D88A2F4722ACCA265D6CD4AD05" },
             "020": { guid: "F384D89AFD3F4534B9567B6578DE576F" },
@@ -222,7 +223,7 @@ const TILES = {
             "018": {
                 guid: "0E8A6E46AFF24A61914C83EAF6399857",
                 name: "Mecatol Rex",
-                reverseTexture: `locale/tiles/ti4/special/tile_018.jpg`
+                reverseTexture: `locale/tiles/base/special/tile_018.jpg`
             },
             "051": {
                 guid: "AE00A0B5DA25455E8DC2C6C1B1F8F297",
@@ -236,6 +237,14 @@ const TILES = {
     },
     "pok": {
         "regular": {
+            "059": { guid: "95A537D9978C46E2ACEAB20AE3054529" },
+            "060": { guid: "7600AA2CA52A4CA084BEAC4AB84D9474" },
+            "061": { guid: "A3D7AEB7ACC440CAB8090EFAE794B1E6" },
+            "062": { guid: "9F927FD9E9DB49DC92D2D37573056C59" },
+            "063": { guid: "D4CEBD199BAA48F4854F9200D7E4A3F1" },
+            "064": { guid: "E4E48E114C9E4868BAF85D6D6242A5D2" },
+            "065": { guid: "413038A26C53432093C2389028CF0EC3" },
+            "066": { guid: "74D8845508D142F9ADB8367A92F4B66F" },
             "069": { guid: "F5DB58B078F6432FB8A422CCB047FE81" },
             "070": { guid: "7A66C6A0B13A446CBA01812647A8CEA5" },
             "071": { guid: "C27551461C1A41B6B840E7787C713F20" },
@@ -283,7 +292,7 @@ const TILES = {
             },
         }
     },
-    "discordant-stars": {
+    "discordant_stars": {
         "homeworld": {
             "3201": { guid: "F1E6206B09454402B9A5E52B1934BAD6" },
             "3202": { guid: "71C6CF8E8326420B9B72B5BD0329A173" },
@@ -324,7 +333,7 @@ Promise.all(
                     Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
                         return [...acc, ...Object.entries(def).map(([mapId, details]) => {
                             const guid = details.guid ? details.guid : generateUuid();
-                            return fs.writeJson(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, generateTile(guid, theMod, mapId, type, details))
+                            return fs.writeFile(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, JSON.stringify(generateTile(guid, theMod, mapId, type, details), null, "\t"))
                         })]
                     }, [])
                 )

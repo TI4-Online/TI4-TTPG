@@ -3,7 +3,7 @@ const uuid = require('uuid');
 
 const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase()
 
-const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["ti4", "pok"];
+const modSet = process.argv.length > 2 ? process.argv.slice(2) : ["base", "pok"];
 
 const generateCommand = (guid, mod, name, slug) => {
     return {
@@ -196,7 +196,7 @@ const generateOwner = (guid, mod, name, slug) => {
 }
 
 const FACTIONS = {
-    "ti4": {
+    "base": {
         arborec: { name: "Arborec", ownGuid: "D0E7337CA6914EF2BBE7BD9DBC6FAFEB", cmdGuid: "B4F7F52733F34A3CBA08BC908540B9F6" },
         creuss: { name: "Creuss", ownGuid: "27AC26A9CE08479B980CB0C7D9A295B7", cmdGuid: "D661BC7FF7504B4FBE0684908CC838C9" },
         hacan: { name: "Hacan", ownGuid: "CB14F397225640FDB483FD67D1A1BDE1", cmdGuid: "A69B801AB2B64C93B75B16C454D3CEAF" },
@@ -232,11 +232,11 @@ Promise.all(
             return Promise.all([
                 ...Object.entries(FACTIONS[theMod]).map(([slug, { name, cmdGuid }]) => {
                     const guid = cmdGuid ? cmdGuid : generateUuid();
-                    fs.writeJson(`./assets/Templates/tokens/${theMod}/faction/${guid}.json`, generateCommand(guid, theMod, name, slug))
+                    return fs.writeFile(`./assets/Templates/tokens/${theMod}/faction/${guid}.json`, JSON.stringify(generateCommand(guid, theMod, name, slug), null, "\t"))
                 }),
                 Object.entries(FACTIONS[theMod]).map(([slug, { name, ownGuid }]) => {
                     const guid = ownGuid ? ownGuid : generateUuid();
-                    fs.writeJson(`./assets/Templates/tokens/${theMod}/faction/${guid}.json`, generateOwner(guid, theMod, name, slug))
+                    return fs.writeFile(`./assets/Templates/tokens/${theMod}/faction/${guid}.json`, JSON.stringify(generateOwner(guid, theMod, name, slug), null, "\t"))
                 })
             ])
         })
