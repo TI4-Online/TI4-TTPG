@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
-	"GUID": "6E299A6A4BA5469F1C12C4AE467D7167",
-	"Name": "ReferenceSheet",
+	"GUID": "243A2F7E49E3F2FDB6E4F387A47AA359",
+	"Name": "LeaderSheet",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -13,8 +13,8 @@
 	"PrimaryColor":
 	{
 		"R": 255,
-		"G": 60,
-		"B": 51
+		"G": 52,
+		"B": 42
 	},
 	"SecondaryColor":
 	{
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/refsheet.obj",
+			"Model": "utility/leadersheet.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -48,9 +48,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "locale/utility/refsheet_c.png",
+			"Texture": "locale/utility/leadersheet_c.png",
 			"NormalMap": "",
-			"ExtraMap": "locale/utility/refsheet_x.png",
+			"ExtraMap": "locale/utility/leadersheet_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,

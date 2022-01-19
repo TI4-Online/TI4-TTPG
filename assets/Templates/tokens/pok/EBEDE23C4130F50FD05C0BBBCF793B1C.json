@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
-	"GUID": "6E299A6A4BA5469F1C12C4AE467D7167",
-	"Name": "ReferenceSheet",
+	"GUID": "0B5BB3D24144BC83CC0AC8A7D95A1278",
+	"Name": "Mirage",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -13,8 +13,8 @@
 	"PrimaryColor":
 	{
 		"R": 255,
-		"G": 60,
-		"B": 51
+		"G": 255,
+		"B": 255
 	},
 	"SecondaryColor":
 	{
@@ -22,14 +22,14 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": true,
+	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/refsheet.obj",
+			"Model": "tokens/mirage.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 2,
+				"Y": 2,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,22 +48,45 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "locale/utility/refsheet_c.png",
+			"Texture": "locale/tokens/pok/mirage.jpg",
 			"NormalMap": "",
-			"ExtraMap": "locale/utility/refsheet_x.png",
+			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "tokens/round-col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 2,
+				"Y": 2,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
 	{
 		"X": 0,
 		"Y": 0,
-		"Z": 1
+		"Z": 0
 	}
 }
