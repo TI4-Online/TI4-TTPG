@@ -412,7 +412,12 @@ async function generateDeck(deckId, locale) {
     const maxRowsPerSheet = Math.floor(MAX_SHEET_DIMENSION / firstCardSize.height)
     const maxCardsPerSheet = maxColsPerSheet * maxRowsPerSheet
     for (const source in sourceToIds) {
-        const ids = sourceToIds[source].sort()
+        const ids = sourceToIds[source]
+        ids.sort((a, b) => {
+            let [_1, dir1, source1, name1] = a.match(/^(.*):(.*)\/(.*)$/)
+            let [_2, dir2, source2, name2] = b.match(/^(.*):(.*)\/(.*)$/)
+            return name1 < name2 ? -1 : 1
+        })
         for (let start = 0; start < ids.length; start += maxCardsPerSheet) {
             let end = Math.min(start + maxCardsPerSheet, ids.length)
             const sheetIds = ids.slice(start, end)
@@ -469,6 +474,9 @@ async function buildAllDecks(deckNames) {
 // Build decks.
 let deckNames = process.argv.slice(2)
 if (deckNames.length == 0) {
+    console.log('Name the deck or decks to build, or ALL for all')
+    return
+} else if (deckNames[0] == 'ALL') {
     deckNames = Object.keys(DECKS)
 }
 buildAllDecks(deckNames.sort())
