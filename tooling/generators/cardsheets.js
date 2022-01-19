@@ -83,9 +83,29 @@ const DECKS = {
         name: 'Secret Objectives',
         sharedBack : true,
     },
-    'card.technology' : {
-        name: 'Technology',
-        sharedBack : false,
+    'card.technology.blue' : {
+        name: 'Technology (Blue)',
+        sharedBack : true,
+    },
+    'card.technology.green' : {
+        name: 'Technology (Green)',
+        sharedBack : true,
+    },
+    'card.technology.yellow' : {
+        name: 'Technology (Yellow)',
+        sharedBack : true,
+    },
+    'card.technology.red' : {
+        name: 'Technology (Red)',
+        sharedBack : true,
+    },
+    'card.technology.unit_upgrade' : {
+        name: 'Technology (Unit Upgrade)',
+        sharedBack : true,
+    },
+    'card.technology.unknown' : {
+        name: 'Technology (Unknown)',
+        sharedBack : true,
     },
 }
 
@@ -258,7 +278,7 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
         let layout = {
             numCols : Math.min(Math.floor(maxW / w), numCards),
         }
-        layout.numRows = Math.floor(numCards / layout.numCols)
+        layout.numRows = Math.ceil(numCards / layout.numCols)
         layout.sheetW = w * layout.numCols
         layout.sheetH = h * layout.numRows
         layout.pow2W = Math.pow(2, Math.ceil(Math.log(layout.sheetW) / Math.log(2)))
