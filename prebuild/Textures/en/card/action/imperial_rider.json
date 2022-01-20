@@ -1,0 +1,5 @@
+{
+  "desc": "-If successful, make a copy of this card in the scoring area, and return this card to the discard pile", 
+  "id": "card.action:base/imperial_rider", 
+  "name": "Imperial Rider"
+}

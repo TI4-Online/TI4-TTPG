@@ -1,0 +1,5 @@
+{
+  "desc": "-This is part of Space Cannon Offense, and should be rolled with any other PDS units in range\n-Place this card on your faction sheet, add a space dock to the combat roller, and hit SPC\n-Maneuvering Jets can be used to cancel a hit produced by this card", 
+  "id": "card.action:base/experimental_battlestation", 
+  "name": "Experimental Battlestation"
+}

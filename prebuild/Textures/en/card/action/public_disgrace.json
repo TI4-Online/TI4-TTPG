@@ -1,0 +1,5 @@
+{
+  "desc": "-If this is played after a player selects a Strategy card with one or more TGs on it, the disgraced player does not get to keep the TGs\n-May not be used on Hacan's Quantum Datahub Node ability", 
+  "id": "card.action:base/public_disgrace", 
+  "name": "Public Disgrace"
+}
