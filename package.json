@@ -28,6 +28,7 @@
     "chokidar": "^3.5.2",
     "colorette": "^2.0.16",
     "cross-spawn": "^7.0.3",
+    "crypto": "^1.0.1",
     "eslint": "^8.6.0",
     "fs-extra": "^10.0.0",
     "jest": "^27.4.7",
