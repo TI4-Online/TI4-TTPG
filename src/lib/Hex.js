@@ -1,8 +1,8 @@
-const { Vector } = require('../mock/MockApi')
-const assert = require('assert')
+const { Vector } = require('../wrapper/api')
+const assert = require('../wrapper/assert')
 
 // Transforms for flat-top hex grid.
-const _M = Object.freeze({
+const LAYOUT_FLAT = {
     // F(orward) translates hex to position.
     f0 : 3.0 / 2.0,
     f1 : 0.0,
@@ -13,9 +13,28 @@ const _M = Object.freeze({
     b1 : 0.0,
     b2 : -1.0 / 3.0,
     b3 : Math.sqrt(3.0) / 3.0,
-    // Angle to first corner (0 for flat-top hex).
+    // Angle to first corner.
     startAngle : 0.0
-})
+}
+
+// Transforms for pointy-top hex grid.
+const LAYOUT_POINTY = {
+    // F(orward) translates hex to position.
+    f0 : LAYOUT_FLAT.f3,
+    f1 : LAYOUT_FLAT.f2,
+    f2 : LAYOUT_FLAT.f1,
+    f3 : LAYOUT_FLAT.f0,
+
+    // B(ackward) translates position to hex.
+    b0 : LAYOUT_FLAT.b3,
+    b1 : LAYOUT_FLAT.b2,
+    b2 : LAYOUT_FLAT.b1,
+    b3 : LAYOUT_FLAT.b0,
+    // Angle to first corner.
+    startAngle : 0.5
+}
+
+const M = LAYOUT_POINTY
 
 /**
  * Heavily distilled hex math based on RedBlobGames excellent hex docs.
@@ -23,7 +42,7 @@ const _M = Object.freeze({
  * @author Darrell
  */
  class Hex {
-    static HALF_SIZE = 3.5
+    static HALF_SIZE = 5.77735  // Half of hex width, 11.547cm
 
     static _z = 0
 
@@ -41,7 +60,7 @@ const _M = Object.freeze({
         q = parseFloat(q)
         r = parseFloat(r)
         s = parseFloat(s)
-        assert.equal(Math.round(q + r + s), 0, 'q + r + s must be 0')
+        assert(Math.round(q + r + s) == 0, 'q + r + s must be 0')
 
         return [q, r, s]
     }
@@ -72,8 +91,8 @@ const _M = Object.freeze({
         // Fractional hex position.
         let x = pos.x / Hex.HALF_SIZE
         let y = pos.y / Hex.HALF_SIZE
-        let q = _M.b0 * x + _M.b1 * y
-        let r = _M.b2 * x + _M.b3 * y
+        let q = M.b0 * x + M.b1 * y
+        let r = M.b2 * x + M.b3 * y
         let s = -q - r
 
         // Round to grid aligned hex.
@@ -107,15 +126,15 @@ const _M = Object.freeze({
 
         let [q, r, s] = Hex._hexFromString(hex)
 
-        let x = (_M.f0 * q + _M.f1 * r) * Hex.HALF_SIZE
-        let y = (_M.f2 * q + _M.f3 * r) * Hex.HALF_SIZE
+        let x = (M.f0 * q + M.f1 * r) * Hex.HALF_SIZE
+        let y = (M.f2 * q + M.f3 * r) * Hex.HALF_SIZE
         let z = Hex._z
         return new Vector(x, y, z)    
     }
 
     /**
      * Get positions of hex corners.
-     * First at +X, winding clockwise.
+     * First at "top right", winding counterclockwise.
      * 
      * @param {string} hex - Hex as "<q,r,s>" string
      * @return {Array} list of position Vectors
@@ -126,8 +145,8 @@ const _M = Object.freeze({
         let center = Hex.toPosition(hex)
         let result = []
         let z = Hex._z
-        for (let angle = 0; angle < 360; angle += 60) {
-            let phi = _M.startAngle + angle * Math.PI / 180
+        for (let i = 0; i < 6; i++) {
+            const phi = 2 * Math.PI * (M.startAngle - i) / 6
             let x = center.x + Hex.HALF_SIZE * Math.cos(phi)
             let y = center.y + Hex.HALF_SIZE * Math.sin(phi)
             result.push(new Vector(x, y, z))
@@ -138,6 +157,7 @@ const _M = Object.freeze({
 
     /**
      * Get adjacent hexes.
+     * First is "above", winding counterclockwise.
      * 
      * @param {string} hex - Hex as "<q,r,s>" string
      * @return {Array} list of hex strings

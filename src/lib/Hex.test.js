@@ -1,6 +1,6 @@
 // the "it(string, function)" style works with mocha and jest frameworks
-const assert = require("assert")
 const { Hex } = require('./Hex')
+const assert = require('assert')
 
 it('cannot construct', () => {
     assert.throws(() => { new Hex() })
@@ -16,17 +16,11 @@ it('fromPosition', () => {
     hex = Hex.fromPosition(pos)
     assert.equal(hex, '<0,0,0>')
 
-    // +X, two rings east.
-    pos.x = Hex.HALF_SIZE * 3
-    pos.y = 0
-    hex = Hex.fromPosition(pos)
-    assert.equal(hex, '<2,-1,-1>')
-
-    // +Y, one ring north.
+    // +Y, two rings east.
     pos.x = 0
-    pos.y = Hex.HALF_SIZE * Math.sqrt(3)
+    pos.y = Hex.HALF_SIZE * 3
     hex = Hex.fromPosition(pos)
-    assert.equal(hex, '<0,1,-1>')
+    assert.equal(hex, '<-1,2,-1>')
 })
 
 it('toPosition', () => {
@@ -36,18 +30,11 @@ it('toPosition', () => {
     assert.equal(pos.y, 0)
     assert.equal(pos.z, 0)
 
-    // +X, two rings east.
-    hex = '<2,-1,-1>'
+    // +Y, two rings east.
+    hex = '<-1,2,-1>'
     pos = Hex.toPosition(hex)
-    assert(Math.abs(pos.x - Hex.HALF_SIZE * 3) < 0.01)
-    assert(Math.abs(pos.y) < 0.01)
-    assert.equal(pos.z, 0)
-
-    // +Y, one ring north.
-    hex = '<0,1,-1>'
-    pos = Hex.toPosition(hex)
-    assert.equal(pos.x, 0)
-    assert(Math.abs(pos.y - Hex.HALF_SIZE * Math.sqrt(3)) < 0.01)
+    assert(Math.abs(pos.x) < 0.01)
+    assert(Math.abs(pos.y - Hex.HALF_SIZE * 3) < 0.01)
     assert.equal(pos.z, 0)
 })
 
@@ -56,16 +43,36 @@ it('corners', () => {
     let corners = Hex.corners(hex)
     assert.equal(corners.length, 6)
 
-    assert(Math.abs(corners[0].x - Hex.HALF_SIZE) < 0.01)
-    assert(Math.abs(corners[0].y - 0) < 0.01)
+    const top = Hex.HALF_SIZE * Math.sqrt(3) / 2
+    const halfRight = Hex.HALF_SIZE / 2
+    const right = Hex.HALF_SIZE
+    const halfLeft = -halfRight
+    const left = -right
+    const bottom = -top
 
-    assert(Math.abs(corners[1].x - Hex.HALF_SIZE / 2) < 0.01)
-    assert(Math.abs(corners[1].y - Hex.HALF_SIZE * Math.sqrt(3) / 2) < 0.01)
+    // top-right
+    assert(Math.abs(corners[0].x - top) < 0.01)
+    assert(Math.abs(corners[0].y - halfRight) < 0.01)
 
-    assert(Math.abs(corners[2].x + Hex.HALF_SIZE / 2) < 0.01)
+    // top-left
+    assert(Math.abs(corners[1].x - top) < 0.01)
+    assert(Math.abs(corners[1].y - halfLeft) < 0.01)
 
-    assert(Math.abs(corners[3].x + Hex.HALF_SIZE) < 0.01)
-    assert(Math.abs(corners[3].y - 0) < 0.01)
+    // left
+    assert(Math.abs(corners[2].x - 0) < 0.01)
+    assert(Math.abs(corners[2].y - left) < 0.01)
+
+    // bottom-left
+    assert(Math.abs(corners[3].x - bottom) < 0.01)
+    assert(Math.abs(corners[3].y - halfLeft) < 0.01)
+
+    // bottom-right
+    assert(Math.abs(corners[4].x - bottom) < 0.01)
+    assert(Math.abs(corners[4].y - halfRight) < 0.01)
+    
+    // bottom-left
+    assert(Math.abs(corners[5].x - 0) < 0.01)
+    assert(Math.abs(corners[5].y - right) < 0.01)
 })
 
 it('neighbors', () => {
@@ -78,6 +85,6 @@ it('neighbors', () => {
         '<0,-1,1>',
         '<-1,0,1>',
         '<-1,1,0>',
-        '<0,1,-1>' // north
+        '<0,1,-1>'
       ])
 })
