@@ -1,0 +1,5 @@
+{
+  "desc": "-If you use this card and have no PDS or Space Docks in your reinforcements, you may choose to scuttle one from an unactivated system. You are not required to perform this action, so you may take only a PDS or only a Dock", 
+  "id": "card.action:base/infiltrate", 
+  "name": "Infiltrate"
+}

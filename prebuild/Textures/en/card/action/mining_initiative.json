@@ -1,0 +1,5 @@
+{
+  "desc": "-May be used on a planet you own which is exhausted", 
+  "id": "card.action:base/mining_initiative", 
+  "name": "Mining Initiative"
+}

@@ -1,0 +1,5 @@
+{
+  "desc": "- Action cards removed from the discard pile are public knowledge; please place them face up on the table next to The Codex.  Once other players have had an opportunity to view the cards draw them to your hand.", 
+  "id": "card.relic:pok/the_codex", 
+  "name": "The Codex"
+}

@@ -1,0 +1,5 @@
+{
+  "desc": "-Place this card on your faction sheet before combat and the combat roller will detect it", 
+  "id": "card.action:base/fighter_prototype", 
+  "name": "Fighter Prototype"
+}

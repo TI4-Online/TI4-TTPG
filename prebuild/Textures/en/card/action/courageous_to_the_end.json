@@ -1,0 +1,5 @@
+{
+  "desc": "-These rolls are unaffected by Unrelenting, Fragile, Morale Boost, or similar effects\n-If successful, this cannot be blocked by Shields Holding or Sustain Damage", 
+  "id": "card.action:base/courageous_to_the_end", 
+  "name": "Courageous to the End"
+}
