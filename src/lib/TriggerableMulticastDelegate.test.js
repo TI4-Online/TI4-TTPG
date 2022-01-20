@@ -46,7 +46,7 @@ it('invoke trigger', () => {
 
 it('exception handler', () => {
     let exceptions = []
-    const expetionHandler=false// = e => { exceptions.push(e) }
+    const expetionHandler = e => { exceptions.push(e) }
     const tmd = new TriggerableMulticastDelegate(expetionHandler)
 
     // Register multiple functions, all should be called even if an execption.
