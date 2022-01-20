@@ -1,14 +1,18 @@
 "use strict"
+// Create decks from prebuild card assets.  Run with "ALL" to build all decks, 
+// or name one or more of the deck ids below (e.g. "card.action").
+
 const fs = require('fs-extra')
 const klaw = require('klaw') // walk file system
 const path = require('path')
 const sharp = require('sharp')
 const assert = require('assert')
 const { dir } = require('console')
+const crypto = require('crypto')
 
-const SRC_DIR = './prebuild/Textures/'
-const DST_DIR = '/Users/darrell/t.cardsheets' //'./assets/Textures/'
-const DST_TEMPLATE_DIR = '/Users/darrell/t.templates' //'./assets/Templates/'
+const SRC_DIR = 'prebuild/Textures/'
+const DST_DIR = 'assets/Textures/'
+const DST_TEMPLATE_DIR = 'assets/Templates/'
 
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
 const MAX_SHEET_DIMENSION = 4096
@@ -18,8 +22,8 @@ const TRIAL_RUN = false
 
 // "American Mini" is 41x63mm, but 500x750 aspect ratio is 42x63mm.
 const CARD_SIZE = {
-    LANDSCAPE : { w : 4.2, h : 6.3 },
-    PORTRAIT : { w : 6.3, h : 4.2 },
+    LANDSCAPE : { w : 6.3, h : 4.2 },
+    PORTRAIT : { w : 4.2, h : 6.3 },
     FACTION_REFERENCE : { w : 8.8, h : 6.3 },
 }
 
@@ -388,7 +392,7 @@ async function writeDeckTemplateJson(guid, deckData, cardDataArray, layout, face
 
     const fixTexturePath = function(texturePath) {
         // Strip path to be relative to the assetes/Textures folder.
-        assert(texturePath.startsWith(DST_DIR))
+        assert(texturePath.startsWith(DST_DIR), texturePath)
         texturePath = texturePath.substring(DST_DIR.length)
 
         // Remove any leading slashes (safety).
@@ -424,11 +428,13 @@ async function writeDeckTemplateJson(guid, deckData, cardDataArray, layout, face
     // Indices into the card sheet, all spots in order.
     let indices = Array.from(Array(cardDataArray.length).keys())
 
-    let cardNames = []
-    let cardIds = []
-    for (const cardData of cardDataArray) {
-        cardNames.push(cardData.name)
-        cardIds.push(cardData.id)
+    // Indexed from string index to string value.
+    let cardNames = {}
+    let cardIds = {}
+    for (let i = 0; i < cardDataArray.length; i++) {
+        const cardData = cardDataArray[i]
+        cardNames[i] = cardData.name
+        cardIds[i] = cardData.id
     }
 
     const json = {
@@ -615,7 +621,8 @@ async function generateDeck(deckId, locale) {
             for (const id of sheetIds) {
                 cardDataArray.push(idToCardData[id])
             }
-            const guid = `${deckId}:${source}.${sheetIndex}`
+            let guid = `${deckId}:${source}.${sheetIndex}`
+            guid = crypto.createHash('sha256').update(guid).digest('hex').substring(0,32)
             const templateFile = getDstJsonFile(deckId, source, guid, sheetIndex)
             writeDeckTemplateJson(guid, deckData, cardDataArray, faceLayout, faceImgFile, backImgFile, templateFile)
         }
