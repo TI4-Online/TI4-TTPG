@@ -1,4 +1,4 @@
-const { TriggerableMulticastDelegate } = require('./TriggerableMulticastDelegate')
+const { TriggerableMulticastDelegate } = require('./triggerable-multicast-delegate')
 const assert = require('assert')
 const { italic } = require('colorette')
 const { tmpdir } = require('os')
