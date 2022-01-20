@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "1DF457AF44A928CC350E2FABE558B63D",
 	"Name": "Carrier",
-	"Metadata": "",
+	"Metadata": "unit:base/carrier",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

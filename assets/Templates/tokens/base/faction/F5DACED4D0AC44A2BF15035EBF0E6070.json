@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "F5DACED4D0AC44A2BF15035EBF0E6070",
-	"Name": "Owner (Letnev)",
-	"Metadata": "",
+	"Name": "Control (Letnev)",
+	"Metadata": "token.control:base/letnev",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

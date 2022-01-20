@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "0B5BB3D24144BC83CC0AC8A7D95A1278",
 	"Name": "Mirage",
-	"Metadata": "",
+	"Metadata": "token.exploration:pok/mirage",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

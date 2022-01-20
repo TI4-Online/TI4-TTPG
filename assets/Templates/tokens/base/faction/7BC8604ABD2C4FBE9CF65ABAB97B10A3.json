@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "7BC8604ABD2C4FBE9CF65ABAB97B10A3",
-	"Name": "Owner (Sardakk'Nor)",
-	"Metadata": "",
+	"Name": "Control (N'orr)",
+	"Metadata": "token.control:base/norr",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

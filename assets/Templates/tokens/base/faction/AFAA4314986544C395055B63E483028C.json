@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "AFAA4314986544C395055B63E483028C",
-	"Name": "Command (Jolnar)",
-	"Metadata": "",
+	"Name": "Command (Jol-Nar)",
+	"Metadata": "token.command:base/jolnar",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

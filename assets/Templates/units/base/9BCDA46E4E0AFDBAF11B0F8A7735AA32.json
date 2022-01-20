@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "D0BA93804175B8602BBF8F868C64CD32",
 	"Name": "Dreadnought",
-	"Metadata": "",
+	"Metadata": "unit:base/dreadnought",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

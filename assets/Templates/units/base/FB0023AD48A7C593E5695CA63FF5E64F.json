@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "AE8348F54EDF6043F88EB4A4F59EAA3B",
 	"Name": "Flagship",
-	"Metadata": "",
+	"Metadata": "unit:base/flagship",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

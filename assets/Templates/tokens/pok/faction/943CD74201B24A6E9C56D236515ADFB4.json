@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "943CD74201B24A6E9C56D236515ADFB4",
-	"Name": "Command (Argent Flight)",
-	"Metadata": "",
+	"Name": "Command (Argent)",
+	"Metadata": "token.command:pok/argent",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

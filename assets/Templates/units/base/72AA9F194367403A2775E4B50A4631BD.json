@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "45B8CB414256C8AE18B7B78EC6DABB92",
 	"Name": "Destroyer",
-	"Metadata": "",
+	"Metadata": "unit:base/destroyer",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

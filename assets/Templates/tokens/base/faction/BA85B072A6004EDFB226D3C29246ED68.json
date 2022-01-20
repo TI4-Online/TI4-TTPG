@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "BA85B072A6004EDFB226D3C29246ED68",
 	"Name": "Command (L1Z1X)",
-	"Metadata": "",
+	"Metadata": "token.command:base/l1z1x",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "51F262AC33AA49CF9044A7F31B30BDC2",
-	"Name": "Command (Empyrian)",
-	"Metadata": "",
+	"Name": "Command (Empyrean)",
+	"Metadata": "token.command:pok/empyrean",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

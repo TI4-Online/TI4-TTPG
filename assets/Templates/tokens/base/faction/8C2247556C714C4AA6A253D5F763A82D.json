@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "8C2247556C714C4AA6A253D5F763A82D",
-	"Name": "Owner (Jolnar)",
-	"Metadata": "",
+	"Name": "Control (Jol-Nar)",
+	"Metadata": "token.control:base/jolnar",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

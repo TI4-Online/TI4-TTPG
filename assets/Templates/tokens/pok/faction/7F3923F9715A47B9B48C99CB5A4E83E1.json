@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "7F3923F9715A47B9B48C99CB5A4E83E1",
-	"Name": "Command (Naz-Rokha)",
-	"Metadata": "",
+	"Name": "Command (Naaz-Rokha)",
+	"Metadata": "token.command:pok/naazrokha",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

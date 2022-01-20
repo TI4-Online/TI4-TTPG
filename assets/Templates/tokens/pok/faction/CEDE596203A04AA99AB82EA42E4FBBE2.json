@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "CEDE596203A04AA99AB82EA42E4FBBE2",
-	"Name": "Owner (Argent Flight)",
-	"Metadata": "",
+	"Name": "Control (Argent)",
+	"Metadata": "token.control:pok/argent",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

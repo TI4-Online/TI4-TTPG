@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "BAFAAA7B47B61276E1F4D2B38C20191A",
 	"Name": "Stellar Converter",
-	"Metadata": "",
+	"Metadata": "token.exploration:pok/stellar_converter",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

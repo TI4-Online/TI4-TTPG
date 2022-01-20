@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "F7EC680D442F4FEA9FC7156A81991741",
-	"Name": "Owner (Empyrian)",
-	"Metadata": "",
+	"Name": "Control (Empyrean)",
+	"Metadata": "token.control:pok/empyrean",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

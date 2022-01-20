@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "277CF847C53940628149FA6C8A0FD402",
-	"Name": "Owner (Sol)",
-	"Metadata": "",
+	"Name": "Control (Sol)",
+	"Metadata": "token.control:base/sol",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

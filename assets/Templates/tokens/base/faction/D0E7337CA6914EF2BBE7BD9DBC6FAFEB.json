@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "D0E7337CA6914EF2BBE7BD9DBC6FAFEB",
-	"Name": "Owner (Arborec)",
-	"Metadata": "",
+	"Name": "Control (Arborec)",
+	"Metadata": "token.control:base/arborec",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

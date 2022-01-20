@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "0F3EEAB9F87942858376A39F724CDB02",
 	"Name": "Command (Winnu)",
-	"Metadata": "",
+	"Metadata": "token.command:base/winnu",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

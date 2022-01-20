@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "918E48C8A6404CD9BE1AE7AACDCE9B44",
-	"Name": "Owner (Muaat)",
-	"Metadata": "",
+	"Name": "Control (Muaat)",
+	"Metadata": "token.control:base/muaat",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

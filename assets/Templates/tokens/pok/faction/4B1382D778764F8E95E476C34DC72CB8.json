@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "4B1382D778764F8E95E476C34DC72CB8",
-	"Name": "Owner (Nomad)",
-	"Metadata": "",
+	"Name": "Control (Nomad)",
+	"Metadata": "token.control:pok/nomad",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

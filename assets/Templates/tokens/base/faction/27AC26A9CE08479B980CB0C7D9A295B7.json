@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "27AC26A9CE08479B980CB0C7D9A295B7",
-	"Name": "Owner (Creuss)",
-	"Metadata": "",
+	"Name": "Control (Creuss)",
+	"Metadata": "token.control:base/creuss",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

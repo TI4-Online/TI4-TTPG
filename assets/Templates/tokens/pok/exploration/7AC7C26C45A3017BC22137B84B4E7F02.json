@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "7633B0D946641BFC8E7DE28512F2ADB5",
 	"Name": "Tomb of Emphidia",
-	"Metadata": "",
+	"Metadata": "token.exploration.attachment:pok/tomb_of_emphidia",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

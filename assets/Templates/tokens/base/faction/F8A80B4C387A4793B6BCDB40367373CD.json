@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "F8A80B4C387A4793B6BCDB40367373CD",
 	"Name": "Command (Yssaril)",
-	"Metadata": "",
+	"Metadata": "token.command:base/yssaril",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

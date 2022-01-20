@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "19EC4C2D863243E9AC1BAC1BC17AC9C3",
-	"Name": "Command (Nekrovirus)",
-	"Metadata": "",
+	"Name": "Command (Nekro)",
+	"Metadata": "token.command:base/nekro",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
