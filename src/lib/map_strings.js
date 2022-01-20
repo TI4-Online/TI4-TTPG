@@ -1,4 +1,4 @@
-const mecatolRexSystemTile = 18;
+const MECATOL_REX_SYSTEM_TILE = 18;
 
 /**
  * Validates a map string and can be parsed.
@@ -44,8 +44,8 @@ const parse = function (mapString) {
         return tile;
     })
 
-    if (!mapString.startsWith('{') && tiles[0].tile !== mecatolRexSystemTile) {
-        tiles.unshift({ tile: mecatolRexSystemTile });
+    if (!mapString.startsWith('{') && tiles[0].tile !== MECATOL_REX_SYSTEM_TILE) {
+        tiles.unshift({ tile: MECATOL_REX_SYSTEM_TILE });
     }
     return tiles;
 }
@@ -66,7 +66,7 @@ const format = function (mapTiles) {
     mapTiles = mapTiles.slice()
     const centerTile = mapTiles.shift();
     let centerTileString = '';
-    if (centerTile.tile != mecatolRexSystemTile) {
+    if (centerTile.tile != MECATOL_REX_SYSTEM_TILE) {
         centerTileString = '{' + centerTile.tile + '} '
     }
     return centerTileString + mapTiles.map(tile => [tile.tile, tile.side, tile.rotation].join('')).join(' ')
