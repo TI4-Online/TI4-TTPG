@@ -1,3 +1,4 @@
+"use strict"
 const fs = require('fs-extra')
 const klaw = require('klaw') // walk file system
 const path = require('path')
@@ -12,100 +13,131 @@ const DST_TEMPLATE_DIR = '/Users/darrell/t.templates' //'./assets/Templates/'
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
 const MAX_SHEET_DIMENSION = 4096
 
+// Do the work, but do not write any files.
 const TRIAL_RUN = false
+
+// "American Mini" is 41x63mm, but 500x750 aspect ratio is 42x63mm.
+const CARD_SIZE = {
+    LANDSCAPE : { w : 4.2, h : 6.3 },
+    PORTRAIT : { w : 6.3, h : 4.2 },
+    FACTION_REFERENCE : { w : 8.8, h : 6.3 },
+}
 
 const DECKS = {
     'card.action' : {
         name : 'Actions',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.agenda' : {
         name: 'Agenda',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.alliance' : {
         name: 'Alliance',
         sharedBack : false,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.exploration.cultural' : {
         name: 'Cultural Exploration',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.exploration.hazardous' : {
         name: 'Hazardous Exploration',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.exploration.industrial' : {
         name: 'Industrial Exploration',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.exploration.frontier' : {
         name: 'Frontier Exploration',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.faction_reference' : {
         name: 'Faction References',
         sharedBack : true,
+        size : CARD_SIZE.FACTION_REFERENCE,
     },
     'card.faction_token' : {
         name: 'Faction Tokens',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.leader' : {
         name: 'Leaders',
         sharedBack : false,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.legendary_planet' : {
         name: 'Legendary Planets',
         sharedBack : false,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.planet' : {
         name: 'Planets',
         sharedBack : false,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.promissory' : {
         name: 'Promissory',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.public_objectives_i' : {
         name: 'Public Objectives I',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.public_objectives_ii' : {
         name: 'Public Objectives II',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.relic' : {
         name: 'Relics',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.secret' : {
         name: 'Secret Objectives',
         sharedBack : true,
+        size : CARD_SIZE.PORTRAIT,
     },
     'card.technology.blue' : {
         name: 'Technology (Blue)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.technology.green' : {
         name: 'Technology (Green)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.technology.yellow' : {
         name: 'Technology (Yellow)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.technology.red' : {
         name: 'Technology (Red)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.technology.unit_upgrade' : {
         name: 'Technology (Unit Upgrade)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
     'card.technology.unknown' : {
         name: 'Technology (Unknown)',
         sharedBack : true,
+        size : CARD_SIZE.LANDSCAPE,
     },
 }
 
@@ -155,7 +187,7 @@ function getMatchingCardIds(pattern, locale) {
  * @param {string} id - "path:source/name" encoding
  * @param {string} side - either "face" or "back"
  * @param {string} locale - localization
- * @returns {string} image filename
+ * @returns {string} image filename, locale
  */
 function getSrcImageFile(id, side, locale) {
     assert(typeof id === 'string')
@@ -168,7 +200,7 @@ function getSrcImageFile(id, side, locale) {
     assert(dir[0] == 'card')
     dir = path.join(SRC_DIR, locale, ...dir)
 
-    candidates = []
+    let candidates = []
     if (side === 'face') {
         candidates.push(path.join(dir, `${name}.face.jpg`))
         candidates.push(path.join(dir, `${name}.jpg`))
@@ -205,31 +237,29 @@ function getSrcImageFile(id, side, locale) {
 /**
  * Name the destination deck cardsheet image file.
  * 
- * @param {string} idPrefix - id path prefix naming just the deck, no source/name portion
+ * @param {string} deckId - id path prefix naming just the deck, no source/name portion
  * @param {string} source - source portion of the id string
  * @param {string} side - either "face" or "back"
  * @param {string} locale - localization
  * @returns {string} image filename
  */
-function getDstImageFile(idPrefix, source, side, sheetIndex, locale) {
-    assert(typeof idPrefix === 'string')
+function getDstImageFile(deckId, source, side, sheetIndex, locale) {
+    assert(typeof deckId === 'string')
     assert(typeof source === 'string')
     assert(side === 'face' || side == 'back')
     assert(typeof sheetIndex === 'number')
     assert(typeof locale === 'string')
 
-    assert(!idPrefix.includes(':'))
-    assert(!idPrefix.includes('/'))
+    assert(!deckId.includes(':'))
+    assert(!deckId.includes('/'))
 
-    let dir = idPrefix.split('.')
-    assert(dir[0] == 'card')
-    dir = path.join(DST_DIR, locale, ...dir) // deck named for dir position in id path
-
-    let result = dir
+    assert(deckId.startsWith('card'))
+    let dir = path.join(DST_DIR, locale, ...deckId.split('.'))
     if (source.length > 0) {
-        result += '.' + source
+        dir = path.join(dir, ...source.split('.'))
     }
-    result += '.' + side
+
+    let result = path.join(dir, side)
     if (sheetIndex >= 0) {
         result += `.${sheetIndex}`
     }
@@ -239,23 +269,24 @@ function getDstImageFile(idPrefix, source, side, sheetIndex, locale) {
 /**
  * Name the destination deck template json file.
  * 
- * @param {string} idPrefix - id path prefix naming just the deck, no source/name portion
+ * @param {string} deckId - id path prefix naming just the deck, no source/name portion
  * @param {string} source - source portion of the id string
  * @returns {string} template filename
  */
- function getDstJsonFile(idPrefix, source, sheetIndex) {
-    assert(typeof idPrefix === 'string')
+ function getDstJsonFile(deckId, source, guid, sheetIndex) {
+    assert(typeof deckId === 'string')
     assert(typeof source === 'string')
+    assert(typeof guid === 'string')
     assert(typeof sheetIndex === 'number')
 
-    assert(!idPrefix.includes(':'))
-    assert(!idPrefix.includes('/'))
+    assert(!deckId.includes(':'))
+    assert(!deckId.includes('/'))
 
-    let dir = idPrefix.split('.')
-    assert(dir[0] == 'card')
-    dir = path.join(DST_TEMPLATE_DIR, locale, ...dir)
+    assert(deckId.startsWith('card'))
+    let dir = path.join(DST_TEMPLATE_DIR, ...deckId.split('.'))
+    dir = path.join(dir, ...source.split('.'))
 
-    return `${dir}.${source}.${sheetIndex}.json`
+    return path.join(dir, guid) + '.json'
 }
 
 /**
@@ -267,6 +298,7 @@ function getDstImageFile(idPrefix, source, side, sheetIndex, locale) {
  */
 async function writeCardsheetImage(cardFilenames, outputFilename) {
     assert(cardFilenames.length > 0)
+    assert(outputFilename.endsWith('.jpg'))
 
     const stats = await sharp(cardFilenames[0]).metadata()
     const w = stats.width
@@ -320,7 +352,7 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
         })
     }
 
-    console.log(`buildSheet: deck ${outputFilename} ${layout.sheetW}x${layout.sheetH} px, ${layout.numCols}x${layout.numRows} cards`)
+    console.log(`writeCardsheetImage: deck ${outputFilename} ${layout.sheetW}x${layout.sheetH} px, ${layout.numCols}x${layout.numRows} cards`)
     if (TRIAL_RUN) {
         console.log('TRIAL_RUN, aborting before writing file(s)')
         return layout
@@ -343,8 +375,127 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
     return layout
 }
 
-async function writeDeckTemplateJson(cardJsonArray, outputFilename) {
-    // XXX TODO
+async function writeDeckTemplateJson(guid, deckData, cardDataArray, layout, faceFilename, backFilename, outputFilename) {
+    assert(typeof guid === 'string')
+    assert(deckData.name)
+    assert(deckData.size)
+    assert(cardDataArray.length > 0)
+    assert(layout.numCols)
+    assert(layout.numRows)
+    assert(faceFilename.endsWith('.jpg'))
+    assert(backFilename.endsWith('.jpg'))
+    assert(outputFilename.endsWith('.json'))
+
+    const fixTexturePath = function(texturePath) {
+        // Strip path to be relative to the assetes/Textures folder.
+        assert(texturePath.startsWith(DST_DIR))
+        texturePath = texturePath.substring(DST_DIR.length)
+
+        // Remove any leading slashes (safety).
+        while (texturePath.startsWith('/')) {
+            texturePath = texturePath.substring(1)
+        }
+
+        // First entry is locale, if not 'global' make it 'locale'.
+        let [_, locale, remainder] = texturePath.match(/^([^/]*)\/(.*)$/)
+        if (locale !== 'global') {
+            locale = 'locale'
+        }
+        return path.join(locale, remainder)
+    }
+    backFilename = fixTexturePath(backFilename)
+    faceFilename = fixTexturePath(faceFilename)
+
+    console.log(`writeDeckTemplateJson: ${outputFilename} ${cardDataArray.length} cards`)
+    if (TRIAL_RUN) {
+        console.log('TRIAL_RUN, aborting before writing file(s)')
+        return layout
+    }
+
+    const dir = path.dirname(outputFilename)
+    fs.mkdirsSync(dir)
+
+    // 0 : same file (last card?).
+    // -1 : same as front.
+    // -2 : shared single card, stored in BackTexture.
+    // -3 : indexed back sheet, stored in BackTexture.
+    let backIndex = deckData.sharedBack ? -2 : -3
+
+    // Indices into the card sheet, all spots in order.
+    let indices = Array.from(Array(cardDataArray.length).keys())
+
+    let cardNames = []
+    let cardIds = []
+    for (const cardData of cardDataArray) {
+        cardNames.push(cardData.name)
+        cardIds.push(cardData.id)
+    }
+
+    const json = {
+        "Type": "Card",
+        "GUID": guid,
+        "Name": deckData.name,
+        "Metadata": "",
+        "CollisionType": "Regular",
+        "Friction": 0.7,
+        "Restitution": 0,
+        "Density": 0.5,
+        "SurfaceType": "Cardboard",
+        "Roughness": 1,
+        "Metallic": 0,
+        "PrimaryColor":
+        {
+            "R": 255,
+            "G": 255,
+            "B": 255
+        },
+        "SecondaryColor":
+        {
+            "R": 0,
+            "G": 0,
+            "B": 0
+        },
+        "Flippable": true,
+        "AutoStraighten": false,
+        "ShouldSnap": true,
+        "ScriptName": "",
+        "Blueprint": "",
+        "Models": [],
+        "Collision": [],
+        "SnapPointsGlobal": false,
+        "SnapPoints": [],
+        "ZoomViewDirection":
+        {
+            "X": 0,
+            "Y": 0,
+            "Z": 0
+        },
+        "FrontTexture": faceFilename,
+        "BackTexture": backFilename,
+        "HiddenTexture": "",
+        "BackIndex": backIndex,
+        "HiddenIndex": 0, // 0 = use back, -1 = blur, -2 = separate file
+        "NumHorizontal": layout.numCols,
+        "NumVertical": layout.numRows,
+        "Width": deckData.size.w,
+        "Height": deckData.size.h,
+        "Thickness": 0.05,
+        "HiddenInHand": true,
+        "UsedWithCardHolders": true,
+        "CanStack": true,
+        "UsePrimaryColorForSide": false,
+        "FrontTextureOverrideExposed": false,
+        "AllowFlippedInStack": false,
+        "MirrorBack": true,
+        "Model": "Rounded",
+        "Indices": indices, // card sheet index values
+        "CardNames": cardNames,
+        "CardMetadata": cardIds
+    }
+    
+    fs.writeFile(outputFilename, JSON.stringify(json, null, '\t'), (err) => {
+        if (err) throw err
+    })
 }
 
 async function generateDeck(deckId, locale) {
@@ -354,11 +505,14 @@ async function generateDeck(deckId, locale) {
     const deckData = DECKS[deckId]
     assert(deckData, `unknown deckId "${deckId}"`)
 
+    // Fill in more deck data.
+    deckData.deckId = deckId
+
     // Get cards by namespace id to card data.
     const cardIdPattern = '^' + deckId + '[\.:/]'
     const idToCardData = await getMatchingCardIds(cardIdPattern, locale)
 
-    // Fill in more data.
+    // Fill in more card data.
     let firstCardSize = false
     let sourceToIds = {}
     for (const id in idToCardData) {
@@ -396,12 +550,15 @@ async function generateDeck(deckId, locale) {
         }
     }
     
-    // If all back images come from global, store the package image in global.
+    // If all images come from global, store the package image in global.
+    let faceLocale = 'global'
     let backLocale = 'global'
     for (const cardData of Object.values(idToCardData)) {
-        if (!cardData.back.includes('/Textures/global/')) {
+        if (!cardData.face.includes('/global/')) {
+            faceLocale = locale
+        }
+        if (!cardData.back.includes('/global/')) {
             backLocale = locale
-            break
         }
     }
     
@@ -427,7 +584,7 @@ async function generateDeck(deckId, locale) {
             //console.log(sheetIds)
 
             // Face.
-            const faceImgFile = getDstImageFile(deckId, source, 'face', sheetIndex, locale)
+            const faceImgFile = getDstImageFile(deckId, source, 'face', sheetIndex, faceLocale)
             let cardFilenames = []
             for (const id of sheetIds) {
                 cardFilenames.push(idToCardData[id].face)
@@ -448,10 +605,19 @@ async function generateDeck(deckId, locale) {
                 backSheetIndex = -1
                 cardFilenames = cardFilenames.slice(0, 1)
             }
-            const backImgFile = getDstImageFile(deckId, backSource, 'back', backSheetIndex, locale)
+            const backImgFile = getDstImageFile(deckId, backSource, 'back', backSheetIndex, backLocale)
             const backLayout = await writeCardsheetImage(cardFilenames, backImgFile)
             footprint += backLayout.footprint
             waste += backLayout.waste
+
+            // TTPG template.
+            let cardDataArray = []
+            for (const id of sheetIds) {
+                cardDataArray.push(idToCardData[id])
+            }
+            const guid = `${deckId}:${source}.${sheetIndex}`
+            const templateFile = getDstJsonFile(deckId, source, guid, sheetIndex)
+            writeDeckTemplateJson(guid, deckData, cardDataArray, faceLayout, faceImgFile, backImgFile, templateFile)
         }
     }
     return { footprint, waste }
