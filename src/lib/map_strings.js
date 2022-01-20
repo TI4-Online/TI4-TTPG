@@ -1,7 +1,36 @@
+const mecatolRexSystemTile = 18;
+
+/**
+ * Validates a map string and can be parsed.
+ * 
+ * The input format can be one of the following:
+ * - 7 16 23 (normal)
+ * - {4} 7 16 23 (use 4 instead of Mecatol as center)
+ * - 7 83b2
+ * 
+ * Delimiters can be either one comma with/or any amount of spaces
+ * Leading and trailing spacesare ignored
+ * @param {string} mapString A map string from tts or another compatible format
+ * @returns {boolean} true if the map string is valid and can be parsed, otherwise false
+ */
 const validate = function (mapString) {
     return /^\s*(?:\{\d+\})?(?:\s*,?\s*\d+(?:[abAB]\d)?)+\s*$/.test(mapString)
 }
 
+/**
+ * Parses a map string to an array of objects.
+ * If there is no center tile replacement Mecatol is inserted as the first element.
+ * 
+ * The input format can be one of the following:
+ * - 7 16 23 (normal)
+ * - {4} 7 16 23 (use 4 instead of Mecatol as center)
+ * - 7 83b2
+ * 
+ * Delimiters can be either one comma with/or any amount of spaces
+ * Leading and trailing spacesare ignored
+ * @param {string} mapString A map string from tts or another compatible format
+ * @returns {({ tile: number} | { tile: number, side: 'a'|'b', rotation: number }[])} A list of objects representing the parsed tiles
+ */
 const parse = function (mapString) {
     if (!validate(mapString)) {
         throw new Error('Invalid map string')
@@ -15,22 +44,44 @@ const parse = function (mapString) {
         return tile;
     })
 
-    if (!mapString.startsWith('{') && tiles[0].tile !== 18) {
-        tiles.unshift({ tile: 18 });
+    if (!mapString.startsWith('{') && tiles[0].tile !== mecatolRexSystemTile) {
+        tiles.unshift({ tile: mecatolRexSystemTile });
     }
     return tiles;
 }
 
+
+/**
+ * Formats an array of objects to a tts map string.
+ * If the first element is Mecatol it will be ignored else a replacement expression will be created.
+ * 
+ * The output format will be one of the following:
+ * - 7 16 23 (normal)
+ * - {4} 7 16 23 (use 4 instead of Mecatol as center)
+ * - 7 83b2
+ * @param {({ tile: number} | { tile: number, side: 'a'|'b', rotation: number }[])} mapTiles 
+ * @returns {string} A map string compatible with tts
+ */
 const format = function (mapTiles) {
     mapTiles = mapTiles.slice()
     const centerTile = mapTiles.shift();
     let centerTileString = '';
-    if (centerTile.tile != 18) {
+    if (centerTile.tile != mecatolRexSystemTile) {
         centerTileString = '{' + centerTile.tile + '} '
     }
     return centerTileString + mapTiles.map(tile => [tile.tile, tile.side, tile.rotation].join('')).join(' ')
 }
 
+/**
+ * Normalizes a tts map string or another compatible format to the default tts format.
+ * 
+ * The output format will be one of the following:
+ * - 7 16 23 (normal)
+ * - {4} 7 16 23 (use 4 instead of Mecatol as center)
+ * - 7 83b2
+ * @param {string} mapString A map string from tts or another compatible format
+ * @returns {string} A map string compatible with tts
+ */
 const normalize = function (mapString) {
     return format(parse(mapString))
 }
