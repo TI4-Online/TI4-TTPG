@@ -1,0 +1,1 @@
+Files in this directory should be imported by `global.js`, separated here to encapsulate logic.
