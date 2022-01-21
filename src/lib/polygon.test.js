@@ -1,4 +1,4 @@
-const { Polygon } = require('./Polygon')
+const { Polygon } = require('./polygon')
 const { Vector } = require('../wrapper/api')
 const assert = require('assert')
 
