@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "851C062745CD8B4CEEB4BEB3F1057152",
 	"Name": "Leadership",
-	"Metadata": "",
+	"Metadata": "card.strategy/leadership",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -25,7 +25,7 @@
 	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "gameobjects/strategy-card.js",
+	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{

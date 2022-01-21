@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "F445F5F54ADFDDDE0E4C0190717A93BA",
 	"Name": "Imperial",
-	"Metadata": "",
+	"Metadata": "card.strategy/imperial",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -25,7 +25,7 @@
 	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "gameobjects/strategy-card.js",
+	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
