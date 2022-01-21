@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "851C062745CD8B4CEEB4BEB3F1057152",
 	"Name": "Leadership",
-	"Metadata": "card.strategy:base/leadership",
+	"Metadata": "tile.strategy:base/leadership",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

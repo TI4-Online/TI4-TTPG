@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "F445F5F54ADFDDDE0E4C0190717A93BA",
 	"Name": "Imperial",
-	"Metadata": "card.strategy:base/imperial",
+	"Metadata": "tile.strategy:base/imperial",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
