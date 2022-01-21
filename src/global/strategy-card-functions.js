@@ -5,7 +5,7 @@
 
 
 const tp = require('@tabletop-playground/api');
-const { isStrategyCard } = require('../lib/helpers');
+const { ObjectNamespace } = require('../lib/object-namespace');
 
 globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     const message = `${player.getName()} played card "${card.getTemplateName()}"`
@@ -33,13 +33,12 @@ function setupStrategyCard(card) {
                 break;
         }
     });
-
 }
 
 
 // Add our listener to future objects.
 globalEvents.onObjectCreated.add((obj) => {
-    if (isStrategyCard(obj)) {
+    if (ObjectNamespace.isStrategyCard(obj)) {
         setupStrategyCard(obj);
     }
 })
@@ -47,7 +46,7 @@ globalEvents.onObjectCreated.add((obj) => {
 // Script reload doesn't onObjectCreated existing objects, load manually.
 if (world.getExecutionReason() === 'ScriptReload') {
     for (const obj of world.getAllObjects()) {
-        if (isStrategyCard(obj)) {
+        if (ObjectNamespace.isStrategyCard(obj)) {
             setupStrategyCard(obj);
         }
     }
