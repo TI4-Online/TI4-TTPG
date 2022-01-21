@@ -3,5 +3,7 @@
 try {
     module.exports = require('@tabletop-playground/api')
 } catch {
-    Object.assign(module.exports, require('../mock/MockVector'))
+    Object.assign(module.exports, require('../mock/mock-vector'))
+    Object.assign(module.exports, require('../mock/mock-global-scripting-events'))
+    Object.assign(module.exports, require('../mock/mock-game-world'))
 }
