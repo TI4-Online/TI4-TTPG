@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "0CF3E7D54F1223EFDFF0D98185010D06",
 	"Name": "Politics",
-	"Metadata": "card.strategy/politics",
+	"Metadata": "card.strategy:base/politics",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

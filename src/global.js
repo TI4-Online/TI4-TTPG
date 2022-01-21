@@ -17,3 +17,8 @@ require('./global/strategy-card-functions')
 
 
 
+if (world.getExecutionReason() === 'ScriptReload') {
+    for (const obj of world.getAllObjects()) {
+        globalEvents.onObjectCreated.trigger(obj);
+    }
+}
