@@ -12,11 +12,11 @@ const FACING_DOWN = new MockGameObject({
 })
 
 it('up', () => {
-    assert(Facing.up(FACING_UP))
-    assert(!Facing.up(FACING_DOWN))
+    assert(Facing.isFaceUp(FACING_UP))
+    assert(!Facing.isFaceUp(FACING_DOWN))
 })
 
 it('down', () => {
-    assert(Facing.down(FACING_DOWN))
-    assert(!Facing.down(FACING_UP))
+    assert(Facing.isFaceDown(FACING_DOWN))
+    assert(!Facing.isFaceDown(FACING_UP))
 })

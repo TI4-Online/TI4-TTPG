@@ -9,15 +9,15 @@ class Facing {
         throw new Error('Static only')
     }
     
-    static up(obj) {
+    static isFaceUp(obj) {
         // RotX is 0 for faceup, -180 when flipped.
         const rotX = obj.getRotation().x % 360
         console.log(rotX)
         return -90 < rotX && rotX < 90
     }
 
-    static down(obj) {
-        return !Facing.up(obj)
+    static isFaceDown(obj) {
+        return !Facing.isFaceUp(obj)
     }
 }
 
