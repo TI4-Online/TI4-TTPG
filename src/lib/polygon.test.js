@@ -1,4 +1,4 @@
-const { Polygon } = require('./Polygon')
+const { Polygon } = require('./polygon')
 const { Vector } = require('../wrapper/api')
 const assert = require('assert')
 
@@ -53,5 +53,3 @@ it('inset', () => {
     assert(Math.abs(points[2].x - 1.76) < 0.01, points[2].x)
     assert(Math.abs(points[2].y - 0.1) < 0.01, points[2].y)
 })
-
-it('path', () => { console.log(process.env.PATH) })

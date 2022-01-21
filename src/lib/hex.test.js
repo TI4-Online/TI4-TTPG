@@ -1,5 +1,5 @@
 // the "it(string, function)" style works with mocha and jest frameworks
-const { Hex } = require('./Hex')
+const { Hex } = require('./hex')
 const assert = require('assert')
 
 it('cannot construct', () => {
