@@ -12,7 +12,6 @@ class Facing {
     static isFaceUp(obj) {
         // RotX is 0 for faceup, -180 when flipped.
         const rotX = obj.getRotation().x % 360
-        console.log(rotX)
         return -90 < rotX && rotX < 90
     }
 
