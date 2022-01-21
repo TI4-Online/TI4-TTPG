@@ -7,6 +7,7 @@
  */
 
 const { globalEvents, world, Vector } = require("@tabletop-playground/api");
+const { isActivePlayer, isSystemTile, isCommandToken } = require("../lib/helpers");
 
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
@@ -15,21 +16,6 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
         player.showMessage(message)
     }
 })
-
-function isCommandToken(obj) {
-    const id = obj.getTemplateMetadata()
-    return id.startsWith('token.command')
-}
-
-function isSystemTile(obj) {
-    const id = obj.getTemplateMetadata()
-    return id.startsWith('tile.system')
-}
-
-function isActivePlayer(player) {
-    // TODO XXX NEED A TURN MANAGER!
-    return true
-}
 
 // Called when a player drops a command token.
 function onCommandTokenReleased(obj, player, thrown, grabPosition, grabRotation) {

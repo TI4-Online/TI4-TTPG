@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "2A40632D4704B3D7EE37C2AF646EE5BB",
 	"Name": "Diplomacy",
-	"Metadata": "",
+	"Metadata": "card.strategy:base/diplomacy",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -22,7 +22,7 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "",

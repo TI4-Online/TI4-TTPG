@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "AE7D6A5C4EEDAAE2B2FEB5AFBA3AC6A1",
 	"Name": "Construction",
-	"Metadata": "",
+	"Metadata": "card.strategy:base/construction",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -22,7 +22,7 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "",
