@@ -93,12 +93,12 @@ const DECKS = {
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
     },
-    'card.public_objectives_i' : {
+    'card.objective.public_1' : {
         name: 'Public Objectives I',
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
     },
-    'card.public_objectives_ii' : {
+    'card.objective.secret_1' : {
         name: 'Public Objectives II',
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
@@ -108,7 +108,7 @@ const DECKS = {
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
     },
-    'card.secret' : {
+    'card.objective.secret' : {
         name: 'Secret Objectives',
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
