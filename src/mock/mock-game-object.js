@@ -5,6 +5,7 @@ class MockGameObject {
     constructor(data) {
         this._position = data && data.position || new Vector(0, 0, 0)
         this._rotation = data && data.rotation || new Vector(0, 0, 0)
+        this._savedData = data && data.savedData || ''
         this._templateMetadata = data && data.templateMetadata || ''
     }
 
@@ -28,6 +29,14 @@ class MockGameObject {
 
     getRotation() {
         return this._rotation
+    }
+
+    getSavedData() {
+        return this._savedData
+    }
+
+    setSavedData(s) {
+        this._savedData = s
     }
 
     getTemplateMetadata() {
