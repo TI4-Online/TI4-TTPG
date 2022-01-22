@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "0CF3E7D54F1223EFDFF0D98185010D06",
 	"Name": "Politics",
-	"Metadata": "",
+	"Metadata": "tile.strategy:base/politics",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -22,7 +22,7 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "",
