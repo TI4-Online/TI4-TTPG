@@ -12,14 +12,24 @@ class PlayerColor {
     }
 
     /**
-     * Translate a TTPG Color to a string value.
+     * Translate a TTPG tint Color to a player color string.
      * 
      * @param {Color} color 
-     * @returns {string}
+     * @returns {string} player color string
      */
-    static fromColor(color) {
+    static fromTint(color) {
         // TODO XXX
         return 'white'
+    }
+
+    /**
+     * Translate player color string value to TTPG tint Color.
+     * 
+     * @param {string} playerColor - player color string
+     * @returns {Color} TTPG tint color
+     */
+    static toTint(playerColor) {
+        // TODO XXX
     }
 
     /**
