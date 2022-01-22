@@ -72,12 +72,29 @@ function isConsumable(obj, rule) {
 
 function applyRule(objs, rule) {
     // Gather consumable items, fail if not enough.
-    let consumable = objs.filter(x => isConsumable(obj, rule))
-    if (consume.length < rule.consume.count) {
+    const consumable = objs.filter(obj => isConsumable(obj, rule))
+    if (consumable.length < rule.consume.count) {
         return false
     }
-    consume = consume.splice(0, rule.consume.length)
-    // TODO
+
+    // Find the metadata value for the produce name.
+    const nameToId = name => {
+        for (const [id, entry] of Object.entries(METADATA_TO_INFO)) {
+            if (entry.name === name) {
+                return id
+            }
+        }
+        throw new Error(`unknown name ${name}`)
+    }
+
+    const applyCount = rule.repeat ? Math.floor(consumable.length / rule.consume.count) : 1
+    return {
+        consume : consumable.splice(0, applyCount),
+        produce : {
+            id : nameToId(rule.produce.name),
+            count : rule.produce.count * applyCount
+        }
+    }
 }
 
 function onR(obj, player) {
@@ -153,5 +170,6 @@ if (world.getExecutionReason() === 'ScriptReload') {
 
 // Export for the unittest.
 module.exports = {
-    isConsumable
+    isConsumable,
+    applyRule,
 }

@@ -2,7 +2,8 @@ const assert = require('assert')
 const { MockGameObject } = require('../mock/mock-game-object')
 const { Vector } = require('../mock/mock-vector')
 const {
-    isConsumable 
+    isConsumable,
+    applyRule,
 } = require('./r-swap-split-combine')
 
 const OBJ = {
@@ -59,4 +60,16 @@ it('isConsumable only face down', () => {
     }
     assert(isConsumable(OBJ.fighter_x1_faceDown, rule))
     assert(!isConsumable(OBJ.fighter_x1, rule))
+})
+
+it('applyRule basic', () => {
+    const rule = {
+        consume : { count : 1, name : 'fighter_x1' },
+        produce : { count : 1, name : 'fighter $COLOR' }
+    }
+    const objs = [ OBJ.fighter_x1 ]
+    const result = applyRule(objs, rule)
+    assert.equal(result.consume.length, 1)
+    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.count, 1)
 })
