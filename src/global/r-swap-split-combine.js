@@ -4,6 +4,8 @@
  */
 const { globalEvents, world } = require('../wrapper/api')
 const { Facing } = require('../lib/facing')
+const { PlayerColor } = require('../lib/player-color')
+const assert = require('../wrapper/assert')
 
 console.log('---RELOAD---')
 
@@ -33,7 +35,7 @@ const REPLACE_RULES = [
     },
     {
         consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter' }
+        produce : { count : 1, name : 'fighter $COLOR' }
     },
     {
         consume : { count : 1, name :  'fighter $COLOR' },
@@ -54,6 +56,70 @@ const REPLACE_RULES = [
     },    
 ]
 
+function getBag(id, playerColor) {
+    assert(typeof id === 'string')
+    assert((!playerColor) || (typeof playerColor === 'string'))
+
+    for (const obj of world.getAllObjects()) {
+        if (!obj.getItems) {
+            continue  // not a bag
+        }
+        // TODO XXX THIS SHOULD FIND AN EMPTY UNIT BAG
+        const firstItem = obj.getItems()[0]
+        if (!firstItem) {
+            continue  // empty bag
+        }
+        const bagItemId = firstItem.getTemplateMetadata()
+        if (playerColor) {
+            const bagItemColor = PlayerColor.fromObject(firstItem)
+            if (bagItemColor !== playerColor) {
+                continue  // color mismatch
+            }
+        }
+        if (id === bagItemId) {
+            return obj
+        }
+    }
+    throw new Error(`getBag(${id}, ${playerColor}) failed`)
+}
+
+function consume(obj, playerColor) {
+    assert(typeof playerColor === 'string')
+    console.log('consume ' + obj.getTemplateMetadata())
+
+    const id = obj.getTemplateMetadata()
+    const objInfo = METADATA_TO_INFO[id]
+    if (!objInfo.name.includes('$COLOR')) {
+        playerColor = false  // not needed
+    }
+    const bag = getBag(id, playerColor)
+    assert(bag)
+    bag.addObjects([ obj ], 0, true)
+}
+
+function produce(id, playerColor, position, faceDown) {
+    assert(typeof id === 'string')
+    assert(typeof playerColor === 'string')
+    console.log('produce ' + id)
+
+    const objInfo = METADATA_TO_INFO[id]
+    if (!objInfo.name.includes('$COLOR')) {
+        playerColor = false  // not needed
+    }
+    const bag = getBag(id, playerColor)
+    const obj = bag.takeAt(0, position, true)
+    if (faceDown) {
+        // XXX TODO
+    }
+}
+
+/**
+ * Does this object match rule.consume?
+ * 
+ * @param {GameObject} obj 
+ * @param {object} rule 
+ * @returns {boolean}
+ */
 function isConsumable(obj, rule) {
     const objInfo = METADATA_TO_INFO[obj.getTemplateMetadata()]
     if (!objInfo) {
@@ -68,6 +134,25 @@ function isConsumable(obj, rule) {
         return false
     }
     return true
+}
+
+/**
+ * Does this object match rules with "$COLOR" restrictions?
+ * 
+ * @param {GameObject} obj
+ * @param {string} playerColor
+ * @returns {boolean}
+ */
+function isColor(obj, playerColor) {
+    const objInfo = METADATA_TO_INFO[obj.getTemplateMetadata()]
+    if (!objInfo) {
+        return false  // only consider registered objects
+    }
+    if (!objInfo.name.includes('$COLOR')) {
+        return true // no color restrictions
+    }
+    const objectColor = PlayerColor.fromObject(obj)
+    return objectColor === playerColor
 }
 
 function applyRule(objs, rule) {
@@ -89,7 +174,7 @@ function applyRule(objs, rule) {
 
     const applyCount = rule.repeat ? Math.floor(consumable.length / rule.consume.count) : 1
     return {
-        consume : consumable.splice(0, applyCount),
+        consume : consumable.slice(0, rule.consume.count * applyCount),
         produce : {
             id : nameToId(rule.produce.name),
             count : rule.produce.count * applyCount
@@ -97,23 +182,47 @@ function applyRule(objs, rule) {
     }
 }
 
+const _ignoreSet = new Set()
+
 function onR(obj, player) {
+    if (obj.getTemplateMetadata() == 'unit:base/fighter') {
+        console.log('XXX SETTING COLOR')
+        PlayerColor.setObjectColor(obj, 'white')
+    }
+
+    // Careful, if multiple objects selected ALL get a separate call!
+    const guid = obj.getId()
+    if (_ignoreSet.has(guid)) {
+        _ignoreSet.delete(guid)
+        return
+    }
+    for (const selectedObj of player.getSelectedObjects()) {
+        const selectedObjGuid = selectedObj.getId()
+        if (selectedObjGuid != guid) {
+            _ignoreSet.add(selectedObjGuid)
+        }
+    }
+
     console.log('R ' + obj.getTemplateMetadata())
+    const playerColor = PlayerColor.fromColor(player.getPlayerColor())
 
     // If the object receiving the "R" is in the selected set process the set,
     // otherwise just the object.
-    let processObjects = [ obj ]
-    const selectedObects = player.getSelectedObjects()
-    for (const selectedObject of selectedObects) {
-        if (selected == obj) {
-            processObjects = selectedObects
+    let objs = [ obj ]
+    const selectedObjs = player.getSelectedObjects()
+    for (const selectedObj of selectedObjs) {
+        if (selectedObj == obj) {
+            objs = selectedObjs
             break
         }
     }
 
+    // Discard any objects not matching player color (tokens always match).
+    objs = objs.filter(obj => isColor(obj, playerColor))
+
     // Always prefer swapping tokens to units (need one plastic!).  Move them
     // to the front of the list.
-    processObjects = processObjects.sort((a, b) => {
+    objs = objs.sort((a, b) => {
         const aId = a.getTemplateMetadata()
         const bId = b.getTemplateMetadata()
         if (aId.startsWith('token')) {
@@ -126,30 +235,25 @@ function onR(obj, player) {
     })
 
     // Find the first matching rule.
-    let rule = false
-    for (const candidateRule of REPLACE_RULES) {
-        let consume = []
-        for (const candidateObject of processObjects) {
-            const name = METADATA_TO_INFO[candidateObject.getTemplateMetadata()].name
-            if (name == candidateRule.consume.item || name in candidateRule.consume.items) {
-                consume.push(candidateObject)
-            }
-        }
-        if (consume.length > CandidateRule.consume.count) {
-            rule = candidateRule
+    let match
+    for (const rule of REPLACE_RULES) {
+        match = applyRule(objs, rule)
+        if (match) {
             break
         }
     }
-    if (!rule) {
-        return  // no matching rule
+    if (!match) {
+        return
     }
 
-    do {
-        // Fail if produce bag does not have inventory.
-        // TODO
-    } while (rule.repeatable)
-
-
+    console.log(match.consume)
+    for (const obj of match.consume) {
+        consume(obj, playerColor)
+    }
+    for (let i = 0; i < match.produce.count; i++) {
+        const pos = player.getCursorPosition().add(new Vector(0, i * 2, 5 + i * 3))
+        produce(match.produce.id, playerColor, pos)
+    }
 }
 
 // Add our listener to future objects.
@@ -171,5 +275,7 @@ if (world.getExecutionReason() === 'ScriptReload') {
 // Export for the unittest.
 module.exports = {
     isConsumable,
+    isColor,
     applyRule,
+    onR,
 }
