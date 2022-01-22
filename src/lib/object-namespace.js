@@ -9,7 +9,7 @@ class ObjectNamespace {
      * Static-only class, do not instantiate it.
      */
     constructor() {
-        throw new Error('Hex is static only')
+        throw new Error('Static only')
     }
 
     /**
