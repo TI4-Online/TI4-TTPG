@@ -12,6 +12,7 @@ globalEvents.TI4 = {
     onStrategyCardPlayed : new TriggerableMulticastDelegate(),
 }
 
+require('./global/patch-infinite-container')
 require('./global/r-swap-split-combine')
 require('./global/strategy-card-functions')
 require('./global/trigger-on-system-activated')
