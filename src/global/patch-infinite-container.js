@@ -19,8 +19,7 @@
  */
 
 const assert = require('../wrapper/assert')
-const { globalEvents, world } = require('../wrapper/api')
-const { Vector } = require('../mock/mock-vector')
+const { globalEvents, world } = require('@tabletop-playground/api')
 
 function isInfiniteContainer(obj) {
     const infiniteTypes = [ 1, 3 ]
