@@ -80,7 +80,7 @@ it('applyRule basic', () => {
     const objs = [ OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 1)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 1)
 })
 
@@ -93,7 +93,7 @@ it('applyRule repeat', () => {
     const objs = [ OBJ.fighter_x1 , OBJ.fighter_x1 , OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 3)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 3)
 })
 

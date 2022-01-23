@@ -2,13 +2,14 @@
  * Press the R key on a relevant object (potentially with other selected 
  * objects) to swap, split, or combine.
  */
-const { globalEvents, world } = require('../wrapper/api')
+const {
+    globalEvents, 
+    world, 
+    Vector, 
+} = require('../wrapper/api')
 const { Facing } = require('../lib/facing')
 const assert = require('../wrapper/assert')
-const { GameObject } = require('../mock/mock-game-object')
-const { Vector } = require('../mock/mock-vector')
-
-console.log('---RELOAD---')
+const { Player } = require('../mock/mock-player')
 
 const METADATA_TO_INFO = {
     'unit:base/fighter' : { 
@@ -91,7 +92,9 @@ function getBag(nsid, playerSlot) {
             // Normal container.  Unit containers follow "bag.unit:base/fighter",
             // but *all* unit containers for that unit type do.  Also check the 
             // owning player slot id.
-            if (obj.getTemplateMetadata() === 'bag.' + nsid) {
+            const wantNsid = 'bag.' + nsid
+            const bagNsid = obj.getTemplateMetadata()
+            if (wantNsid === bagNsid) {
                 if (obj.getOwningPlayerSlot() == playerSlot) {
                     return obj
                 }
@@ -101,44 +104,11 @@ function getBag(nsid, playerSlot) {
     throw new Error(`getBag(${nsid}, ${playerSlot}) failed`)
 }
 
-function consume(obj, playerSlot) {
-    assert(typeof playerSlot === 'number')
-    console.log('consume ' + obj.getTemplateMetadata())
-
-    const nsid = obj.getTemplateMetadata()
-    const bag = getBag(nsid, playerSlot)
-    if (isInfiniteContainer(bag)) {
-        // See global/patch-infinite-container.js
-        bag.addObjectsEnforceSingleton([ obj ], 0, true)
-    } else {
-        bag.addObjects([ obj ], 0, true)
-    }
-}
-
-function produce(nsid, playerSlot, position, faceDown) {
-    assert(typeof nsid === 'string')
-    assert(typeof playerSlot === 'number')
-    console.log('produce ' + nsid)
-
-    const bag = getBag(nsid, playerSlot)
-    let obj
-    if (isInfiniteContainer(bag)) {
-        // See global/patch-infinite-container.js
-        obj = bag.takeAtEnforceSingleton(0, position, true)
-    } else {
-        obj = bag.takeAt(0, position, true)
-    }
-
-    if (faceDown) {
-        obj.setRotation(new Vector(-180, 0, 0), -1)
-    }
-}
-
 /**
  * Does this object match rule.consume?
  * 
  * @param {GameObject} obj 
- * @param {object} rule 
+ * @param {object} rule - REPLACE_RULES entry
  * @returns {boolean}
  */
 function isConsumable(obj, rule) {
@@ -157,6 +127,15 @@ function isConsumable(obj, rule) {
     return true
 }
 
+/**
+ * Given a list of GameObject and a rule, compute:
+ * - Which items to consume.
+ * - What nsid to produce and how how many.
+ * 
+ * @param {GameObject[]} objs 
+ * @param {object} rule - REPLACE_RULES entry
+ * @returns {{consume: GameObject[], produce: {nsid: string, count: number}}}
+ */
 function applyRule(objs, rule) {
     // Gather consumable items, fail if not enough.
     const consumable = objs.filter(obj => isConsumable(obj, rule))
@@ -165,10 +144,10 @@ function applyRule(objs, rule) {
     }
 
     // Find the metadata value for the produce name.
-    const nameToId = name => {
-        for (const [id, entry] of Object.entries(METADATA_TO_INFO)) {
+    const nameToNsid = name => {
+        for (const [nsid, entry] of Object.entries(METADATA_TO_INFO)) {
             if (entry.name === name) {
-                return id
+                return nsid
             }
         }
         throw new Error(`unknown name ${name}`)
@@ -178,7 +157,7 @@ function applyRule(objs, rule) {
     return {
         consume : consumable.slice(0, rule.consume.count * applyCount),
         produce : {
-            id : nameToId(rule.produce.name),
+            nsid : nameToNsid(rule.produce.name),
             count : rule.produce.count * applyCount
         }
     }
@@ -190,6 +169,8 @@ function onR(obj, player) {
     const playerSlot = player.getSlot()
 
     // Careful, if multiple objects selected ALL get a separate call!
+    // Pressing "R" outside any selected object still calls for each.
+    // Process the group only for the first call, ignore others.
     const guid = obj.getId()
     if (_ignoreSet.has(guid)) {
         _ignoreSet.delete(guid)
@@ -202,27 +183,18 @@ function onR(obj, player) {
         }
     }
 
-    console.log('R ' + obj.getTemplateMetadata())
-
-    // If the object receiving the "R" is in the selected set process the set,
-    // otherwise just the object.
-    let objs = [ obj ]
-    const selectedObjs = player.getSelectedObjects()
-    for (const selectedObj of selectedObjs) {
-        if (selectedObj == obj) {
-            objs = selectedObjs
-            break
-        }
-    }
+    // Collect the objects to process.
+    let objs = player.getSelectedObjects()
+    objs = objs.length > 0 ? objs : [ obj ]
 
     // Discard any objects owned by another player (tokens always match).
+    // All objects owned by a player should have owning player slot set.
     objs = objs.filter(obj => {
         const objSlot = obj.getOwningPlayerSlot()
         return (objSlot == -1) || (objSlot == playerSlot)
     })
 
-    // Always prefer swapping tokens to units (need one plastic!).  Move them
-    // to the front of the list.
+    // Prefer swapping tokens to units (need one plastic!).  Move to front.
     objs = objs.sort((a, b) => {
         const aId = a.getTemplateMetadata()
         const bId = b.getTemplateMetadata()
@@ -244,16 +216,42 @@ function onR(obj, player) {
         }
     }
     if (!match) {
-        return
+        return // no matching rule
     }
 
-    console.log(match.consume)
+    // Make sure the produce can happen (empty unit bag?).
+    const produceBag = getBag(match.produce.nsid, playerSlot)
+    if (!isInfiniteContainer(produceBag) && produceBag.getItems().length < match.produce.count) {
+        // TODO XXX LOCALE ERROR MESSAGE
+        const message = 'placeholder not enough supply'
+        player.showMessage(message)
+        player.sendChatMessage(message)
+        return // not enough supply to produce
+    }
+
+    // Fullfill rule.
     for (const obj of match.consume) {
-        consume(obj, playerSlot)
+        const consumeNsid = obj.getTemplateMetadata()
+        const consumeBag = getBag(consumeNsid, playerSlot)
+        if (isInfiniteContainer(consumeBag)) {
+            // See global/patch-infinite-container.js
+            consumeBag.addObjectsEnforceSingleton([ obj ], 0, true)
+        } else {
+            consumeBag.addObjects([ obj ], 0, true)
+        }
     }
     for (let i = 0; i < match.produce.count; i++) {
         const pos = player.getCursorPosition().add(new Vector(0, i * 2, 5 + i * 3))
-        produce(match.produce.id, playerSlot, pos)
+        let obj
+        if (isInfiniteContainer(produceBag)) {
+            // See global/patch-infinite-container.js
+            obj = produceBag.takeAtEnforceSingleton(0, pos, true)
+        } else {
+            obj = produceBag.takeAt(0, pos, true)
+        }
+        if (match.faceDown) {
+            obj.setRotation(new Vector(-180, 0, 0), -1)
+        }
     }
 }
 
