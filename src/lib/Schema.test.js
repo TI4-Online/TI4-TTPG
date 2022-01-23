@@ -1,6 +1,6 @@
 // the "it(string, function)" style works with mocha and jest frameworks
 const assert = require('assert')
-const { unitSchemaValidator, systemSchemaValidator } = require('./Schema')
+const { unitSchemaValidator, systemSchemaValidator } = require('./schema')
 
 it('validate good planet', () => {
     let jord = {

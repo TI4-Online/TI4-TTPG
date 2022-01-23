@@ -104,8 +104,8 @@ const unitSchema = {
     required: ["name"]
 }
 
-const schemaValidator = ajv.compile(systemSchema)
+const systemValidator = ajv.compile(systemSchema)
 const unitValidator = ajv.compile(unitSchema)
 
-module.exports.systemSchemaValidator = schemaValidator
+module.exports.systemSchemaValidator = systemValidator
 module.exports.unitSchemaValidator = unitValidator
