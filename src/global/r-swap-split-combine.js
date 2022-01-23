@@ -3,59 +3,90 @@
  * objects) to swap, split, or combine.
  */
 const {
+    Container,
     globalEvents, 
     world, 
-    Vector, 
 } = require('../wrapper/api')
 const { Facing } = require('../lib/facing')
+const locale = require('../lib/locale')
 const assert = require('../wrapper/assert')
-const { Player } = require('../mock/mock-player')
 
+// NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {
-    'unit:base/fighter' : { 
-        name : 'fighter $COLOR',
-        bag : 'bag.unit:base/fighter'
-    },
+    'unit:base/fighter' : { name : 'fighter' },
     'token:base/fighter_1' : { name : 'fighter_x1' },
     'token:base/fighter_3' : { name : 'fighter_x3' },
-    'unit:base/infantry' : { name : 'infantry $COLOR' },
+    'unit:base/infantry' : { name : 'infantry' },
     'token:base/infantry_1' : { name : 'infantry_x1' },
     'token:base/infantry_3' : { name : 'infantry_x3' },
-    'token:base/tradegood_commodity_1' : { name : 'tg_x1' },
-    'token:base/tradegood_commodity_3' : { name : 'tg_x3' },
+    'token:base/tradegood_commodity_1' : { name : 'tradegood_x1' },
+    'token:base/tradegood_commodity_3' : { name : 'tradegood_x3' },
 }
 
 const REPLACE_RULES = [
+    // COMBINE (x1,x1,x1) -> (x3), REPEAT
     {
-        repeatable : true,
-        consume : { count : 3, names : [ 'fighter_x1', 'fighter $COLOR' ] },
+        repeat : true,
+        consume : { count : 3, names : [ 'fighter_x1', 'fighter' ] },
         produce : { count : 1, name : 'fighter_x3' }
     },
+    {
+        repeat : true,
+        consume : { count : 3, names : [ 'infantry_x1', 'infantry' ] },
+        produce : { count : 1, name : 'infantry_x3' }
+    },
+    {
+        repeat : true,
+        faceUp : true,
+        consume : { count : 3, name : 'tradegood_x1' },
+        produce : { count : 1, name : 'tradegood_x3' }
+    },
+    {
+        repeat : true,
+        faceDown : true,
+        consume : { count : 3, name : 'tradegood_x1' },
+        produce : { count : 1, name : 'tradegood_x3' }
+    },
+
+    // SPLIT (x3) -> (x1,x1,x1), DOES NOT REPEAT
     {
         consume : { count : 1, name : 'fighter_x3' },
         produce : { count : 3, name : 'fighter_x1' }
     },
     {
-        consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        consume : { count : 1, name : 'infantry_x3' },
+        produce : { count : 3, name : 'infantry_x1' }
     },
     {
-        consume : { count : 1, name :  'fighter $COLOR' },
-        produce : { count : 1, name : 'fighter_x1' }
-    },
-
-    // Preserve face up/down
-    {
-        repeatable : true,
         faceUp : true,
-        consume : { count : 3, name : 'tg_x1' },
-        produce : { count : 1, name : 'tg_x3' }
+        consume : { count : 1, name : 'tradegood_x3' },
+        produce : { count : 3, name : 'tradegood_x1' }
     },
     {
         faceDown : true,
-        consume : { count : 1, name : 'tg_x3' },
-        produce : { count : 3, name : 'tg_x1' }
-    },    
+        consume : { count : 1, name : 'tradegood_x3' },
+        produce : { count : 3, name : 'tradegood_x1' }
+    },
+
+    // SWAP (token) -> (plastic)
+    {
+        consume : { count : 1, name : 'fighter_x1' },
+        produce : { count : 1, name : 'fighter' }
+    },
+    {
+        consume : { count : 1, name : 'infantry_x1' },
+        produce : { count : 1, name : 'infantry' }
+    },
+
+    // SWAP (plastic) -> (token)
+    {
+        consume : { count : 1, name : 'fighter' },
+        produce : { count : 1, name : 'fighter_x1' }
+    },
+    {
+        consume : { count : 1, name : 'infantry' },
+        produce : { count : 1, name : 'infantry_x1' }
+    },
 ]
 
 function isInfiniteContainer(obj) {
@@ -94,11 +125,14 @@ function getBag(nsid, playerSlot) {
             // owning player slot id.
             const wantNsid = 'bag.' + nsid
             const bagNsid = obj.getTemplateMetadata()
-            if (wantNsid === bagNsid) {
-                if (obj.getOwningPlayerSlot() == playerSlot) {
-                    return obj
-                }
+            if (wantNsid !== bagNsid) {
+                continue  // container is for different type
             }
+            const bagSlot = obj.getOwningPlayerSlot()
+            if (bagSlot >= 0 && bagSlot !== playerSlot) {
+                continue  // container is right type, but wrong player
+            }
+            return obj
         }
     }
     throw new Error(`getBag(${nsid}, ${playerSlot}) failed`)
@@ -155,6 +189,7 @@ function applyRule(objs, rule) {
 
     const applyCount = rule.repeat ? Math.floor(consumable.length / rule.consume.count) : 1
     return {
+        rule : rule,
         consume : consumable.slice(0, rule.consume.count * applyCount),
         produce : {
             nsid : nameToNsid(rule.produce.name),
@@ -222,8 +257,7 @@ function onR(obj, player) {
     // Make sure the produce can happen (empty unit bag?).
     const produceBag = getBag(match.produce.nsid, playerSlot)
     if (!isInfiniteContainer(produceBag) && produceBag.getItems().length < match.produce.count) {
-        // TODO XXX LOCALE ERROR MESSAGE
-        const message = 'placeholder not enough supply'
+        const message = locale('ui.error.empty_supply', { 'unit_name' : match.rule.produce.name })
         player.showMessage(message)
         player.sendChatMessage(message)
         return // not enough supply to produce
@@ -240,8 +274,8 @@ function onR(obj, player) {
             consumeBag.addObjects([ obj ], 0, true)
         }
     }
+    let pos = player.getCursorPosition().add([0, 0, 10])
     for (let i = 0; i < match.produce.count; i++) {
-        const pos = player.getCursorPosition().add(new Vector(0, i * 2, 5 + i * 3))
         let obj
         if (isInfiniteContainer(produceBag)) {
             // See global/patch-infinite-container.js
@@ -249,9 +283,8 @@ function onR(obj, player) {
         } else {
             obj = produceBag.takeAt(0, pos, true)
         }
-        if (match.faceDown) {
-            obj.setRotation(new Vector(-180, 0, 0), -1)
-        }
+        obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0])
+        pos = pos.add(obj.getExtent().multiply(2))
     }
 }
 
