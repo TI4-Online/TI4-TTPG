@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "FB85ADAD46B5AECB8DA3A99FEDC0AB0E",
 	"Name": "Cruiser",
-	"Metadata": "",
+	"Metadata": "unit:base/cruiser",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

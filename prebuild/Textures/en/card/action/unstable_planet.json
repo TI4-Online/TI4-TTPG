@@ -1,0 +1,5 @@
+{
+  "desc": "-This card destroys UP TO 3 infantry, with zero being a valid amount\n-You may choose an already-exhausted planet\n-You may also choose a planet with zero infantry on it", 
+  "id": "card.action:base/unstable_planet", 
+  "name": "Unstable Planet"
+}

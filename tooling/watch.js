@@ -11,6 +11,18 @@ if (!(fs.existsSync('./config/local.json'))) {
     process.exit(1);
 }
 
+const buildLangFile = (config) => {
+    return Promise.all(
+        config.variants[config.defaultVariant].lang.map((lang) => fs.readJson(`lang/${lang}.json`))
+    ).then((langs) => {
+        return langs.reduce((acc, thisLang) => {
+            return {...acc, ...thisLang}
+        }, {})
+    }).then((langDef) => {
+        return fs.writeFile(`src/lib/langdef.js`, `module.exports = ${JSON.stringify(langDef, null, "\t")}`)
+    })
+}
+
 const spawnWatcher = (config) => {
     if (config.transpile) {
         return new Promise((resolve, reject) => {
@@ -45,7 +57,9 @@ const spawnWatcher = (config) => {
 
 fs.readJson("./config/project.json").then((config) => {
     console.log(chalk.green("Who watches the watchman"));
-    return spawnWatcher(config)
+    return buildLangFile(config).then(() => {
+        return spawnWatcher(config)
+    })
 }).then((e) => {
     console.log(chalk.green("Signing off"));
 }).catch((e) => {

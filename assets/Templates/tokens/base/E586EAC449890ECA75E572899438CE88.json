@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "2EBCA9924B511E6083C89FA16A0F6B5F",
 	"Name": "Ion Storm",
-	"Metadata": "",
+	"Metadata": "token.exploration:pok/ion_storm",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

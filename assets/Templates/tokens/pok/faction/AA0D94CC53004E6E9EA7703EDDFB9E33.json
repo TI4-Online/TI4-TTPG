@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "AA0D94CC53004E6E9EA7703EDDFB9E33",
-	"Name": "Command (Titans)",
-	"Metadata": "",
+	"Name": "Command (Ul)",
+	"Metadata": "token.command:pok/ul",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

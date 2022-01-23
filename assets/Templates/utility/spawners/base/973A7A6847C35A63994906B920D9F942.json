@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "9A91BC1A46946274914631A07A722C64",
 	"Name": "PDS",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/pds",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

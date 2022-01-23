@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "DB9BBE13219748B5BB6E21637F294436",
-	"Name": "Owner (Naalu)",
-	"Metadata": "",
+	"Name": "Control (Naalu)",
+	"Metadata": "token.control:base/naalu",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

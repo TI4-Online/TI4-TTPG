@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "E5796A31266F41E3B22158A7A7941DC8",
-	"Name": "Owner (Winnu)",
-	"Metadata": "",
+	"Name": "Control (Winnu)",
+	"Metadata": "token.control:base/winnu",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

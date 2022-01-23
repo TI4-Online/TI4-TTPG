@@ -1,0 +1,5 @@
+{
+  "desc": "-May be used any time a hit is produced by you, including by PDS or abilities like Ambush, Splicer and Devotion\n-Multiple Direct Hit cards may be played in a single activation on separate ships", 
+  "id": "card.action:base/direct_hit.1", 
+  "name": "Direct Hit (1)"
+}

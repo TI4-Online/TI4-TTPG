@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "36325EA7599F469A9C3C5397D6BB7262",
-	"Name": "Owner (Naz-Rokha)",
-	"Metadata": "",
+	"Name": "Control (Naaz-Rokha)",
+	"Metadata": "token.control:pok/naazrokha",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

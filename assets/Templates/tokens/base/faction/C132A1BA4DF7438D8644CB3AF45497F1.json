@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "C132A1BA4DF7438D8644CB3AF45497F1",
-	"Name": "Owner (Yin)",
-	"Metadata": "",
+	"Name": "Control (Yin)",
+	"Metadata": "token.control:base/yin",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

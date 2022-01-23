@@ -1,0 +1,5 @@
+{
+  "desc": "-May be used on a system where you control all planets, as long as you have a unit with BOMBARDMENT", 
+  "id": "card.action:base/tactical_bombardment", 
+  "name": "Tactical Bombardment"
+}

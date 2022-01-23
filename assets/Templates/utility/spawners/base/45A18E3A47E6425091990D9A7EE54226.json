@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "06652352439820E274E5D1AF020FF757",
 	"Name": "Destroyer",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/destroyer",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

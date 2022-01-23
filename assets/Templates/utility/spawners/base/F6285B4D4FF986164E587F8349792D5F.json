@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "DB0D773042BE4670388DB1BD5409A78C",
 	"Name": "Infantry",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/infantry",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

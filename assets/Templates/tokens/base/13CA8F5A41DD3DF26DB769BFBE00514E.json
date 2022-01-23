@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "F45F2B6C497F8AB5324E8C80CBB5B80E",
 	"Name": "Fighter (1)",
-	"Metadata": "",
+	"Metadata": "token:base/fighter_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

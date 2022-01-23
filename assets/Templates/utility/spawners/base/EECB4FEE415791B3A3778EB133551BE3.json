@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "4FA133C449223AE485999B8B9E19BE78",
 	"Name": "Dreadnought",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/dreadnought",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

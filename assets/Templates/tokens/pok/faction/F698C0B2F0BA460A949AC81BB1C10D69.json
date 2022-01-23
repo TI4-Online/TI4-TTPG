@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "F698C0B2F0BA460A949AC81BB1C10D69",
 	"Name": "Command (Vuil-Raith)",
-	"Metadata": "",
+	"Metadata": "token.command:pok/vuilraith",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

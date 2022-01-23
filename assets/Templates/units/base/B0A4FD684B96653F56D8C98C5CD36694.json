@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "1E2FD83447A7A22D4B459E9DC9B67C8E",
 	"Name": "Warsun",
-	"Metadata": "",
+	"Metadata": "unit:base/war_sun",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

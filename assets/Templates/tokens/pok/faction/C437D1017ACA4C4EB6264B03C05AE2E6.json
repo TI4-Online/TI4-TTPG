@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "C437D1017ACA4C4EB6264B03C05AE2E6",
-	"Name": "Owner (Titans)",
-	"Metadata": "",
+	"Name": "Control (Ul)",
+	"Metadata": "token.control:pok/ul",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

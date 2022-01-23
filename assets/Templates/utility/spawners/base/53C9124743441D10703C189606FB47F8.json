@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "71215478450DCB2013E14C87C226ED25",
 	"Name": "Cruiser",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/cruiser",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

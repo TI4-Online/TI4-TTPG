@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "A11ADE74A782409B82D7F5A9452ED43B",
-	"Name": "Owner (Saar)",
-	"Metadata": "",
+	"Name": "Control (Saar)",
+	"Metadata": "token.control:base/saar",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

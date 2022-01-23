@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "3901FA582A2C4EA78642B75B219B45DD",
-	"Name": "Owner (Yssaril)",
-	"Metadata": "",
+	"Name": "Control (Yssaril)",
+	"Metadata": "token.control:base/yssaril",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "884F628DB92F433DBCA2EC895D9454BA",
-	"Name": "Owner (Mahact)",
-	"Metadata": "",
+	"Name": "Control (Mahact)",
+	"Metadata": "token.control:pok/mahact",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

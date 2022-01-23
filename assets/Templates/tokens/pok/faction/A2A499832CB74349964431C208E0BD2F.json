@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "A2A499832CB74349964431C208E0BD2F",
 	"Name": "Command (Nomad)",
-	"Metadata": "",
+	"Metadata": "token.command:pok/nomad",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

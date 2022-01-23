@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "9804CA0F49ECF1F2FFA4C18390C88584",
 	"Name": "Rich World",
-	"Metadata": "",
+	"Metadata": "token.exploration.attachment:pok/rich_world",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

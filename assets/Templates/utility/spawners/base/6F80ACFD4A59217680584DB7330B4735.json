@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "E1338AEE4DEE403234A186BEF35E568A",
 	"Name": "Flagship",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/flagship",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

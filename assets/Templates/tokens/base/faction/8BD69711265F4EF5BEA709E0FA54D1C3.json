@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "8BD69711265F4EF5BEA709E0FA54D1C3",
 	"Name": "Command (Letnev)",
-	"Metadata": "",
+	"Metadata": "token.command:base/letnev",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

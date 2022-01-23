@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "2DB5DA894C75645C65F9CD86BFAEA211",
 	"Name": "Tradegood/Commodity (1)",
-	"Metadata": "",
+	"Metadata": "token:base/tradegood_commodity_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

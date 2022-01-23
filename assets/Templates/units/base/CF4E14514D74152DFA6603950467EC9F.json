@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "178FF24248F30E3B4D90CB85EFE914C1",
 	"Name": "Spacedock",
-	"Metadata": "",
+	"Metadata": "unit:base/space_dock",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

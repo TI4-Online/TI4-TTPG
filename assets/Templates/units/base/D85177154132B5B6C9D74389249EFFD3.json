@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "D85177154132B5B6C9D74389249EFFD3",
 	"Name": "Infantry",
-	"Metadata": "",
+	"Metadata": "unit:base/infantry",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

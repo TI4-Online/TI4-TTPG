@@ -1,0 +1,5 @@
+{
+  "desc": "You do not need to flip this card to use with the combat roller.  Instead, set the number of mechs participating then click the combat type.  The roller will use the correct ground/space values.\n\nThe autofill tool looks to see if a mech is on the planet or in the space area to assign it to ground or space.  (This is the only unit that needs this treatment.)", 
+  "id": "card.leader.mech.naazrokha:pok/eidolon", 
+  "name": "Eidolon"
+}

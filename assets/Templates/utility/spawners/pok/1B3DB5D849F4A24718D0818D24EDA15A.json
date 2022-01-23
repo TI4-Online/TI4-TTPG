@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "49BF380140B6A91FF3F2C7BEBA970703",
 	"Name": "Mech",
-	"Metadata": "",
+	"Metadata": "bag.unit:pok/mech",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

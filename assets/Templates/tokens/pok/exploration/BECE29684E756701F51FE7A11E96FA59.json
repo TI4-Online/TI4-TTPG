@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "13E8CD8F42825BFAC65D7D8B63E1E880",
 	"Name": "Dyson Sphere",
-	"Metadata": "",
+	"Metadata": "token.exploration.attachment:pok/dyson_sphere",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

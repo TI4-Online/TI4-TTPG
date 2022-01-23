@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "CB14F397225640FDB483FD67D1A1BDE1",
-	"Name": "Owner (Hacan)",
-	"Metadata": "",
+	"Name": "Control (Hacan)",
+	"Metadata": "token.control:base/hacan",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

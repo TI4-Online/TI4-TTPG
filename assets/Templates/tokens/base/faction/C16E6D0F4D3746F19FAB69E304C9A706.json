@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "C16E6D0F4D3746F19FAB69E304C9A706",
-	"Name": "Owner (Mentak)",
-	"Metadata": "",
+	"Name": "Control (Mentak)",
+	"Metadata": "token.control:base/mentak",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

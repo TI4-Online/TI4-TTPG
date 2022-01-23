@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "931435667E0B44C88B09039627C95E7F",
-	"Name": "Owner (Xxcha)",
-	"Metadata": "",
+	"Name": "Control (Xxcha)",
+	"Metadata": "token.control:base/xxcha",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "85B540BC0C25475984ABE2C8D97A6420",
 	"Name": "Command (Saar)",
-	"Metadata": "",
+	"Metadata": "token.command:base/saar",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
