@@ -3,6 +3,8 @@ const { Vector } = require('./mock-vector')
 
 class MockGameObject {
     constructor(data) {
+        this._id = data && data.id || 'abcd'
+        this._owningPlayerSlot = data && data.owningPlayerSlot || -1
         this._position = data && data.position || new Vector(0, 0, 0)
         this._rotation = data && data.rotation || new Vector(0, 0, 0)
         this._savedData = data && data.savedData || ''
@@ -23,6 +25,10 @@ class MockGameObject {
     onSnapped = new TriggerableMulticastDelegate()
     onTick = new TriggerableMulticastDelegate()
 
+    getId() {
+        return this._id
+    }
+
     getPosition() {
         return this._position
     }
@@ -37,6 +43,10 @@ class MockGameObject {
 
     setSavedData(s) {
         this._savedData = s
+    }
+
+    getOwningPlayerSlot() {
+        this._owningPlayerSlot
     }
 
     getTemplateMetadata() {
