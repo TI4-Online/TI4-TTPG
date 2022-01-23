@@ -37,6 +37,7 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
+    "ajv": "^8.9.0",
     "assert": "^2.0.0"
   }
 }
