@@ -3,6 +3,9 @@
  * Objects use a 'type:source/name' namespace, e.g.:
  * 
  * 'card.objective.secret:base/cut_supply_lines'
+ * 
+ * As convention call these "nsid" to distinguish from "guid",
+ * "template id", etc to know this is the kind of string in hand.
  */
 class ObjectNamespace {
     /**
