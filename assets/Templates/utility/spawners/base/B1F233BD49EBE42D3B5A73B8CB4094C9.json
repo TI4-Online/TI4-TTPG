@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "7BA8B96B446215F5834F149BC5FF22AE",
 	"Name": "Fighter",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/fighter",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
