@@ -126,7 +126,7 @@ function onInsertedEnforceSingleton(container, insertedObjs, player) {
     for (const containedObj of containedObjs) {
         if (containedObj.getTemplateId() !== masterTemplateId) {
             // Mismatch.
-            const pos = container.getPosition().add(new Vector(10, 0, 10))
+            const pos = container.getPosition().add([10, 0, 10])
             container.take(containedObj, pos, true)
         } else if (containedObj != masterObject) {
             // Redundant extra.
