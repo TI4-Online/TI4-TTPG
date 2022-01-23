@@ -27,6 +27,18 @@ const variantConfig = projectConfig.variants[variant];
 
 // const variants = process.argv.length > 2 ? process.argv.splice(2) : ["primary"];
 
+const buildLangFile = () => {
+    return Promise.all(
+        variantConfig.lang.map((lang) => fs.readJson(`lang/${lang}.json`))
+    ).then((langs) => {
+        return langs.reduce((acc, thisLang) => {
+            return {...acc, ...thisLang}
+        }, {})
+    }).then((langDef) => {
+        return fs.writeFile(`src/lib/langdef.js`, `module.exports = ${JSON.stringify(langDef, null, "\t")}`)
+    })
+}
+
 const spawnDependencyDeploy = () => {
     return new Promise((resolve, reject) => {
         const child = spawn.spawn("yarn", [
@@ -97,13 +109,15 @@ Promise.all([
     fs.ensureDir("./bundles", 0o2775),
     fs.remove("./build")
 ]).then(() => {
-    return spawnBuilder().then(() => {
-        return spawnDependencyDeploy().then(() => {
-            return buildZip().then(() => {
-                console.log(chalk.white(`Done bundling: ${variantConfig.name} (Production)`))
+    return buildLangFile().then(() => {
+        return spawnBuilder().then(() => {
+            return spawnDependencyDeploy().then(() => {
+                return buildZip().then(() => {
+                    console.log(chalk.white(`Done bundling: ${variantConfig.name} (Production)`))
+                })
             })
-        })
-    });
+        });
+    })
 }).catch((e) => {
     console.log(chalk.red("Something went wrong"));
     console.error(chalk.red(e));
