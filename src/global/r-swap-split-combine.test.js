@@ -9,8 +9,8 @@ const {
     onR,
 } = require('./r-swap-split-combine')
 
-const PLAYER_COLOR = 'White'
-const NOT_PLAYER_COLOR = 'Blue'
+const PLAYER_SLOT = 7
+const NOT_PLAYER_SLOT = 8
 
 const OBJ = {
     fighter_x1 : new MockGameObject({ 
@@ -22,7 +22,7 @@ const OBJ = {
     }),
     fighter : new MockGameObject({ 
         templateMetadata : 'unit:base/fighter',
-        savedData : JSON.stringify({ _color : PLAYER_COLOR })
+        owningPlayerSlot : PLAYER_SLOT
     }),
     not : new MockGameObject({ 
         templateMetadata : 'not:not/not',
@@ -70,16 +70,6 @@ it('isConsumable only face down', () => {
     }
     assert(isConsumable(OBJ.fighter_x1_faceDown, rule))
     assert(!isConsumable(OBJ.fighter_x1, rule))
-})
-
-it('isColor anonymous token', () => {
-    assert(isColor(OBJ.fighter_x1, PLAYER_COLOR))
-    assert(isColor(OBJ.fighter_x1, NOT_PLAYER_COLOR))
-})
-
-it('isColor unit', () => {
-    assert(isColor(OBJ.fighter, PLAYER_COLOR))
-    assert(!isColor(OBJ.fighter, NOT_PLAYER_COLOR))
 })
 
 it('applyRule basic', () => {

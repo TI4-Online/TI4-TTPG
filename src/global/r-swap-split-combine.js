@@ -4,8 +4,9 @@
  */
 const { globalEvents, world } = require('../wrapper/api')
 const { Facing } = require('../lib/facing')
-const { PlayerColor } = require('../lib/player-color')
 const assert = require('../wrapper/assert')
+const { GameObject } = require('../mock/mock-game-object')
+const { Vector } = require('../mock/mock-vector')
 
 console.log('---RELOAD---')
 
@@ -56,60 +57,80 @@ const REPLACE_RULES = [
     },    
 ]
 
-function getBag(id, playerColor) {
-    assert(typeof id === 'string')
-    assert((!playerColor) || (typeof playerColor === 'string'))
+function isInfiniteContainer(obj) {
+    const infiniteTypes = [ 1, 3 ]
+    return (obj instanceof Container) && infiniteTypes.includes(obj.getType())
+}
+
+/**
+ * Get the bag to produce or consume this item type.
+ * 
+ * @param {string} nsid - namespace <type:source/name> id.
+ * @param {number} playerSlot 
+ * @returns 
+ */
+function getBag(nsid, playerSlot) {
+    assert(typeof nsid === 'string')
+    assert(typeof playerSlot === 'number')
 
     for (const obj of world.getAllObjects()) {
-        if (!obj.getItems) {
-            continue  // not a bag
+        if (!(obj instanceof Container)) {
+            continue
         }
-        // TODO XXX THIS SHOULD FIND AN EMPTY UNIT BAG
-        const firstItem = obj.getItems()[0]
-        if (!firstItem) {
-            continue  // empty bag
-        }
-        const bagItemId = firstItem.getTemplateMetadata()
-        if (playerColor) {
-            const bagItemColor = PlayerColor.fromObject(firstItem)
-            if (bagItemColor !== playerColor) {
-                continue  // color mismatch
+
+        if (isInfiniteContainer(obj)) {
+            // Infinite bag.  Do not assume the bag follows nsid conventions
+            // as infinite bags may share a template for different uses.
+            // Instead, compare with the nsid of the first entry in the bag.
+            const firstItem = obj.getItems()[0]
+            const contentsNsid = firstItem && firstItem.getTemplateMetadata()
+            if (nsid === contentsNsid) {
+                return obj
+            }
+        } else {
+            // Normal container.  Unit containers follow "bag.unit:base/fighter",
+            // but *all* unit containers for that unit type do.  Also check the 
+            // owning player slot id.
+            if (obj.getTemplateMetadata() === 'bag.' + nsid) {
+                if (obj.getOwningPlayerSlot() == playerSlot) {
+                    return obj
+                }
             }
         }
-        if (id === bagItemId) {
-            return obj
-        }
     }
-    throw new Error(`getBag(${id}, ${playerColor}) failed`)
+    throw new Error(`getBag(${nsid}, ${playerSlot}) failed`)
 }
 
-function consume(obj, playerColor) {
-    assert(typeof playerColor === 'string')
+function consume(obj, playerSlot) {
+    assert(typeof playerSlot === 'number')
     console.log('consume ' + obj.getTemplateMetadata())
 
-    const id = obj.getTemplateMetadata()
-    const objInfo = METADATA_TO_INFO[id]
-    if (!objInfo.name.includes('$COLOR')) {
-        playerColor = false  // not needed
+    const nsid = obj.getTemplateMetadata()
+    const bag = getBag(nsid, playerSlot)
+    if (isInfiniteContainer(bag)) {
+        // See global/patch-infinite-container.js
+        bag.addObjectsEnforceSingleton([ obj ], 0, true)
+    } else {
+        bag.addObjects([ obj ], 0, true)
     }
-    const bag = getBag(id, playerColor)
-    assert(bag)
-    bag.addObjects([ obj ], 0, true)
 }
 
-function produce(id, playerColor, position, faceDown) {
-    assert(typeof id === 'string')
-    assert(typeof playerColor === 'string')
-    console.log('produce ' + id)
+function produce(nsid, playerSlot, position, faceDown) {
+    assert(typeof nsid === 'string')
+    assert(typeof playerSlot === 'number')
+    console.log('produce ' + nsid)
 
-    const objInfo = METADATA_TO_INFO[id]
-    if (!objInfo.name.includes('$COLOR')) {
-        playerColor = false  // not needed
+    const bag = getBag(nsid, playerSlot)
+    let obj
+    if (isInfiniteContainer(bag)) {
+        // See global/patch-infinite-container.js
+        obj = bag.takeAtEnforceSingleton(0, position, true)
+    } else {
+        obj = bag.takeAt(0, position, true)
     }
-    const bag = getBag(id, playerColor)
-    const obj = bag.takeAt(0, position, true)
+
     if (faceDown) {
-        // XXX TODO
+        obj.setRotation(new Vector(-180, 0, 0), -1)
     }
 }
 
@@ -134,25 +155,6 @@ function isConsumable(obj, rule) {
         return false
     }
     return true
-}
-
-/**
- * Does this object match rules with "$COLOR" restrictions?
- * 
- * @param {GameObject} obj
- * @param {string} playerColor
- * @returns {boolean}
- */
-function isColor(obj, playerColor) {
-    const objInfo = METADATA_TO_INFO[obj.getTemplateMetadata()]
-    if (!objInfo) {
-        return false  // only consider registered objects
-    }
-    if (!objInfo.name.includes('$COLOR')) {
-        return true // no color restrictions
-    }
-    const objectColor = PlayerColor.fromObject(obj)
-    return objectColor === playerColor
 }
 
 function applyRule(objs, rule) {
@@ -185,10 +187,7 @@ function applyRule(objs, rule) {
 const _ignoreSet = new Set()
 
 function onR(obj, player) {
-    if (obj.getTemplateMetadata() == 'unit:base/fighter') {
-        console.log('XXX SETTING COLOR')
-        PlayerColor.setObjectColor(obj, 'white')
-    }
+    const playerSlot = player.getSlot()
 
     // Careful, if multiple objects selected ALL get a separate call!
     const guid = obj.getId()
@@ -204,7 +203,6 @@ function onR(obj, player) {
     }
 
     console.log('R ' + obj.getTemplateMetadata())
-    const playerColor = PlayerColor.fromColor(player.getPlayerColor())
 
     // If the object receiving the "R" is in the selected set process the set,
     // otherwise just the object.
@@ -217,8 +215,11 @@ function onR(obj, player) {
         }
     }
 
-    // Discard any objects not matching player color (tokens always match).
-    objs = objs.filter(obj => isColor(obj, playerColor))
+    // Discard any objects owned by another player (tokens always match).
+    objs = objs.filter(obj => {
+        const objSlot = obj.getOwningPlayerSlot()
+        return (objSlot == -1) || (objSlot == playerSlot)
+    })
 
     // Always prefer swapping tokens to units (need one plastic!).  Move them
     // to the front of the list.
@@ -248,11 +249,11 @@ function onR(obj, player) {
 
     console.log(match.consume)
     for (const obj of match.consume) {
-        consume(obj, playerColor)
+        consume(obj, playerSlot)
     }
     for (let i = 0; i < match.produce.count; i++) {
         const pos = player.getCursorPosition().add(new Vector(0, i * 2, 5 + i * 3))
-        produce(match.produce.id, playerColor, pos)
+        produce(match.produce.id, playerSlot, pos)
     }
 }
 
@@ -275,7 +276,6 @@ if (world.getExecutionReason() === 'ScriptReload') {
 // Export for the unittest.
 module.exports = {
     isConsumable,
-    isColor,
     applyRule,
     onR,
 }
