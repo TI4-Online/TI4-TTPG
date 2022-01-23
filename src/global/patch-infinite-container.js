@@ -19,7 +19,11 @@
  */
 
 const assert = require('../wrapper/assert')
-const { globalEvents, world } = require('@tabletop-playground/api')
+const {
+    Container,
+    globalEvents,
+    world
+ } = require('@tabletop-playground/api')
 
 function isInfiniteContainer(obj) {
     const infiniteTypes = [ 1, 3 ]
@@ -41,22 +45,26 @@ function addObjectsEnforceSingleton(insertObjs, index, showAnimation) {
     assert(isInfiniteContainer(this))
     assert(insertObjs.length > 0)
 
-    // If the container is empty add the first object.
-    if (this.getItems().length == 0) {
-        this.addObjects([ insertObjs[0] ], 0, showAnimation)
-        insertObjs = insertObjs.slice(1)
-    }
-
-    // At this point container has at least one object.
-    const masterObject = this.getItems()[0]
+    // Get master object, either first in container or first added if empty.
+    const thisObjs = this.getItems()
+    const masterObject = thisObjs.length > 0 ? thisObjs[0] : insertObjs[0]
     const masterTemplateId = masterObject.getTemplateId()
 
-    // Verify and destroy redundant extras.
+    // Verify not trying to add a mismatch.
     for (const insertObj of insertObjs) {
         if (insertObj.getTemplateId() !== masterTemplateId) {
             throw new Error('Container.addObjectsEnforceSingleton mismatch')
         }
-        insertObj.destroy()
+    }
+
+    // Put the objects for the animation.
+    this.addObjects(insertObjs, index, showAnimation)
+
+    // Prune down to one.
+    for (const thisObj of this.getItems()) {
+        if (thisObj != masterObject) {
+            this.remove(thisObj)
+        }
     }
 }
 
