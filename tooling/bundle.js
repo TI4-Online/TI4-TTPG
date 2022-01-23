@@ -12,7 +12,6 @@ if (!(fs.existsSync('./config/local.json'))) {
 }
 
 const projectConfig = fs.readJsonSync("./config/project.json");
-const localConfig = fs.readJsonSync("./config/local.json");
 
 const variant = process.argv.length > 2 ? process.argv[2] : projectConfig.defaultVariant;
 
