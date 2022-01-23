@@ -108,7 +108,7 @@ function takeEnforceSingleton(objectToRemove, position, showAnimation) {
  * @param {number} index - The index of the object to take
  * @param {Vector} position - The position where the item should appear
  * @param {boolean} showAnimation - If false, don't show insert animation and don't play sound. Default: false
- * @returns {boolean}
+ * @returns {GameObject}
  */
 function takeAtEnforceSingleton(index, position, showAnimation) {
     assert(isInfiniteContainer(this))
@@ -116,7 +116,10 @@ function takeAtEnforceSingleton(index, position, showAnimation) {
     if (containedObjs.length == 0) {
         return false
     }
-    return this.takeEnforceSingleton(containedObjs[0], position, showAnimation)
+    const takeObj = containedObjs[0]
+    if (this.takeEnforceSingleton(takeObj, position, showAnimation)) {
+        return takeObj
+    }
 }
 
 // Container.onInserted event handler.
