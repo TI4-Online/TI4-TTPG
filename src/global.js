@@ -13,6 +13,7 @@ globalEvents.TI4 = {
 }
 
 require('./global/patch-infinite-container')
+require('./global/patch-unit-bag')
 require('./global/r-swap-split-combine')
 require('./global/strategy-card-functions')
 require('./global/trigger-on-system-activated')
