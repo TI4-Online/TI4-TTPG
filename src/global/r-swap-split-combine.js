@@ -2,122 +2,147 @@
  * Press the R key on a relevant object (potentially with other selected 
  * objects) to swap, split, or combine.
  */
-const { globalEvents, world } = require('../wrapper/api')
+const {
+    Container,
+    globalEvents, 
+    world, 
+} = require('../wrapper/api')
 const { Facing } = require('../lib/facing')
-const { PlayerColor } = require('../lib/player-color')
+const locale = require('../lib/locale')
 const assert = require('../wrapper/assert')
 
-console.log('---RELOAD---')
-
+// NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {
-    'unit:base/fighter' : { 
-        name : 'fighter $COLOR',
-        bag : 'bag.unit:base/fighter'
-    },
+    'unit:base/fighter' : { name : 'fighter' },
     'token:base/fighter_1' : { name : 'fighter_x1' },
     'token:base/fighter_3' : { name : 'fighter_x3' },
-    'unit:base/infantry' : { name : 'infantry $COLOR' },
+    'unit:base/infantry' : { name : 'infantry' },
     'token:base/infantry_1' : { name : 'infantry_x1' },
     'token:base/infantry_3' : { name : 'infantry_x3' },
-    'token:base/tradegood_commodity_1' : { name : 'tg_x1' },
-    'token:base/tradegood_commodity_3' : { name : 'tg_x3' },
+    'token:base/tradegood_commodity_1' : { name : 'tradegood_x1' },
+    'token:base/tradegood_commodity_3' : { name : 'tradegood_x3' },
 }
 
 const REPLACE_RULES = [
+    // COMBINE (x1,x1,x1) -> (x3), REPEAT
     {
-        repeatable : true,
-        consume : { count : 3, names : [ 'fighter_x1', 'fighter $COLOR' ] },
+        repeat : true,
+        consume : { count : 3, names : [ 'fighter_x1', 'fighter' ] },
         produce : { count : 1, name : 'fighter_x3' }
     },
+    {
+        repeat : true,
+        consume : { count : 3, names : [ 'infantry_x1', 'infantry' ] },
+        produce : { count : 1, name : 'infantry_x3' }
+    },
+    {
+        repeat : true,
+        faceUp : true,
+        consume : { count : 3, name : 'tradegood_x1' },
+        produce : { count : 1, name : 'tradegood_x3' }
+    },
+    {
+        repeat : true,
+        faceDown : true,
+        consume : { count : 3, name : 'tradegood_x1' },
+        produce : { count : 1, name : 'tradegood_x3' }
+    },
+
+    // SPLIT (x3) -> (x1,x1,x1), DOES NOT REPEAT
     {
         consume : { count : 1, name : 'fighter_x3' },
         produce : { count : 3, name : 'fighter_x1' }
     },
     {
-        consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        consume : { count : 1, name : 'infantry_x3' },
+        produce : { count : 3, name : 'infantry_x1' }
     },
     {
-        consume : { count : 1, name :  'fighter $COLOR' },
-        produce : { count : 1, name : 'fighter_x1' }
-    },
-
-    // Preserve face up/down
-    {
-        repeatable : true,
         faceUp : true,
-        consume : { count : 3, name : 'tg_x1' },
-        produce : { count : 1, name : 'tg_x3' }
+        consume : { count : 1, name : 'tradegood_x3' },
+        produce : { count : 3, name : 'tradegood_x1' }
     },
     {
         faceDown : true,
-        consume : { count : 1, name : 'tg_x3' },
-        produce : { count : 3, name : 'tg_x1' }
-    },    
+        consume : { count : 1, name : 'tradegood_x3' },
+        produce : { count : 3, name : 'tradegood_x1' }
+    },
+
+    // SWAP (token) -> (plastic)
+    {
+        consume : { count : 1, name : 'fighter_x1' },
+        produce : { count : 1, name : 'fighter' }
+    },
+    {
+        consume : { count : 1, name : 'infantry_x1' },
+        produce : { count : 1, name : 'infantry' }
+    },
+
+    // SWAP (plastic) -> (token)
+    {
+        consume : { count : 1, name : 'fighter' },
+        produce : { count : 1, name : 'fighter_x1' }
+    },
+    {
+        consume : { count : 1, name : 'infantry' },
+        produce : { count : 1, name : 'infantry_x1' }
+    },
 ]
 
-function getBag(id, playerColor) {
-    assert(typeof id === 'string')
-    assert((!playerColor) || (typeof playerColor === 'string'))
+function isInfiniteContainer(obj) {
+    const infiniteTypes = [ 1, 3 ]
+    return (obj instanceof Container) && infiniteTypes.includes(obj.getType())
+}
+
+/**
+ * Get the bag to produce or consume this item type.
+ * 
+ * @param {string} nsid - namespace <type:source/name> id.
+ * @param {number} playerSlot 
+ * @returns 
+ */
+function getBag(nsid, playerSlot) {
+    assert(typeof nsid === 'string')
+    assert(typeof playerSlot === 'number')
 
     for (const obj of world.getAllObjects()) {
-        if (!obj.getItems) {
-            continue  // not a bag
+        if (!(obj instanceof Container)) {
+            continue
         }
-        // TODO XXX THIS SHOULD FIND AN EMPTY UNIT BAG
-        const firstItem = obj.getItems()[0]
-        if (!firstItem) {
-            continue  // empty bag
-        }
-        const bagItemId = firstItem.getTemplateMetadata()
-        if (playerColor) {
-            const bagItemColor = PlayerColor.fromObject(firstItem)
-            if (bagItemColor !== playerColor) {
-                continue  // color mismatch
+
+        if (isInfiniteContainer(obj)) {
+            // Infinite bag.  Do not assume the bag follows nsid conventions
+            // as infinite bags may share a template for different uses.
+            // Instead, compare with the nsid of the first entry in the bag.
+            const firstItem = obj.getItems()[0]
+            const contentsNsid = firstItem && firstItem.getTemplateMetadata()
+            if (nsid === contentsNsid) {
+                return obj
             }
-        }
-        if (id === bagItemId) {
+        } else {
+            // Normal container.  Unit containers follow "bag.unit:base/fighter",
+            // but *all* unit containers for that unit type do.  Also check the 
+            // owning player slot id.
+            const wantNsid = 'bag.' + nsid
+            const bagNsid = obj.getTemplateMetadata()
+            if (wantNsid !== bagNsid) {
+                continue  // container is for different type
+            }
+            const bagSlot = obj.getOwningPlayerSlot()
+            if (bagSlot >= 0 && bagSlot !== playerSlot) {
+                continue  // container is right type, but wrong player
+            }
             return obj
         }
     }
-    throw new Error(`getBag(${id}, ${playerColor}) failed`)
-}
-
-function consume(obj, playerColor) {
-    assert(typeof playerColor === 'string')
-    console.log('consume ' + obj.getTemplateMetadata())
-
-    const id = obj.getTemplateMetadata()
-    const objInfo = METADATA_TO_INFO[id]
-    if (!objInfo.name.includes('$COLOR')) {
-        playerColor = false  // not needed
-    }
-    const bag = getBag(id, playerColor)
-    assert(bag)
-    bag.addObjects([ obj ], 0, true)
-}
-
-function produce(id, playerColor, position, faceDown) {
-    assert(typeof id === 'string')
-    assert(typeof playerColor === 'string')
-    console.log('produce ' + id)
-
-    const objInfo = METADATA_TO_INFO[id]
-    if (!objInfo.name.includes('$COLOR')) {
-        playerColor = false  // not needed
-    }
-    const bag = getBag(id, playerColor)
-    const obj = bag.takeAt(0, position, true)
-    if (faceDown) {
-        // XXX TODO
-    }
+    throw new Error(`getBag(${nsid}, ${playerSlot}) failed`)
 }
 
 /**
  * Does this object match rule.consume?
  * 
  * @param {GameObject} obj 
- * @param {object} rule 
+ * @param {object} rule - REPLACE_RULES entry
  * @returns {boolean}
  */
 function isConsumable(obj, rule) {
@@ -137,24 +162,14 @@ function isConsumable(obj, rule) {
 }
 
 /**
- * Does this object match rules with "$COLOR" restrictions?
+ * Given a list of GameObject and a rule, compute:
+ * - Which items to consume.
+ * - What nsid to produce and how how many.
  * 
- * @param {GameObject} obj
- * @param {string} playerColor
- * @returns {boolean}
+ * @param {GameObject[]} objs 
+ * @param {object} rule - REPLACE_RULES entry
+ * @returns {{consume: GameObject[], produce: {nsid: string, count: number}}}
  */
-function isColor(obj, playerColor) {
-    const objInfo = METADATA_TO_INFO[obj.getTemplateMetadata()]
-    if (!objInfo) {
-        return false  // only consider registered objects
-    }
-    if (!objInfo.name.includes('$COLOR')) {
-        return true // no color restrictions
-    }
-    const objectColor = PlayerColor.fromObject(obj)
-    return objectColor === playerColor
-}
-
 function applyRule(objs, rule) {
     // Gather consumable items, fail if not enough.
     const consumable = objs.filter(obj => isConsumable(obj, rule))
@@ -163,10 +178,10 @@ function applyRule(objs, rule) {
     }
 
     // Find the metadata value for the produce name.
-    const nameToId = name => {
-        for (const [id, entry] of Object.entries(METADATA_TO_INFO)) {
+    const nameToNsid = name => {
+        for (const [nsid, entry] of Object.entries(METADATA_TO_INFO)) {
             if (entry.name === name) {
-                return id
+                return nsid
             }
         }
         throw new Error(`unknown name ${name}`)
@@ -174,9 +189,10 @@ function applyRule(objs, rule) {
 
     const applyCount = rule.repeat ? Math.floor(consumable.length / rule.consume.count) : 1
     return {
+        rule : rule,
         consume : consumable.slice(0, rule.consume.count * applyCount),
         produce : {
-            id : nameToId(rule.produce.name),
+            nsid : nameToNsid(rule.produce.name),
             count : rule.produce.count * applyCount
         }
     }
@@ -185,12 +201,11 @@ function applyRule(objs, rule) {
 const _ignoreSet = new Set()
 
 function onR(obj, player) {
-    if (obj.getTemplateMetadata() == 'unit:base/fighter') {
-        console.log('XXX SETTING COLOR')
-        PlayerColor.setObjectColor(obj, 'white')
-    }
+    const playerSlot = player.getSlot()
 
     // Careful, if multiple objects selected ALL get a separate call!
+    // Pressing "R" outside any selected object still calls for each.
+    // Process the group only for the first call, ignore others.
     const guid = obj.getId()
     if (_ignoreSet.has(guid)) {
         _ignoreSet.delete(guid)
@@ -203,25 +218,18 @@ function onR(obj, player) {
         }
     }
 
-    console.log('R ' + obj.getTemplateMetadata())
-    const playerColor = PlayerColor.fromColor(player.getPlayerColor())
+    // Collect the objects to process.
+    let objs = player.getSelectedObjects()
+    objs = objs.length > 0 ? objs : [ obj ]
 
-    // If the object receiving the "R" is in the selected set process the set,
-    // otherwise just the object.
-    let objs = [ obj ]
-    const selectedObjs = player.getSelectedObjects()
-    for (const selectedObj of selectedObjs) {
-        if (selectedObj == obj) {
-            objs = selectedObjs
-            break
-        }
-    }
+    // Discard any objects owned by another player (tokens always match).
+    // All objects owned by a player should have owning player slot set.
+    objs = objs.filter(obj => {
+        const objSlot = obj.getOwningPlayerSlot()
+        return (objSlot == -1) || (objSlot == playerSlot)
+    })
 
-    // Discard any objects not matching player color (tokens always match).
-    objs = objs.filter(obj => isColor(obj, playerColor))
-
-    // Always prefer swapping tokens to units (need one plastic!).  Move them
-    // to the front of the list.
+    // Prefer swapping tokens to units (need one plastic!).  Move to front.
     objs = objs.sort((a, b) => {
         const aId = a.getTemplateMetadata()
         const bId = b.getTemplateMetadata()
@@ -243,16 +251,40 @@ function onR(obj, player) {
         }
     }
     if (!match) {
-        return
+        return // no matching rule
     }
 
-    console.log(match.consume)
-    for (const obj of match.consume) {
-        consume(obj, playerColor)
+    // Make sure the produce can happen (empty unit bag?).
+    const produceBag = getBag(match.produce.nsid, playerSlot)
+    if (!isInfiniteContainer(produceBag) && produceBag.getItems().length < match.produce.count) {
+        const message = locale('ui.error.empty_supply', { 'unit_name' : match.rule.produce.name })
+        player.showMessage(message)
+        player.sendChatMessage(message)
+        return // not enough supply to produce
     }
+
+    // Fullfill rule.
+    for (const obj of match.consume) {
+        const consumeNsid = obj.getTemplateMetadata()
+        const consumeBag = getBag(consumeNsid, playerSlot)
+        if (isInfiniteContainer(consumeBag)) {
+            // See global/patch-infinite-container.js
+            consumeBag.addObjectsEnforceSingleton([ obj ], 0, true)
+        } else {
+            consumeBag.addObjects([ obj ], 0, true)
+        }
+    }
+    let pos = player.getCursorPosition().add([0, 0, 10])
     for (let i = 0; i < match.produce.count; i++) {
-        const pos = player.getCursorPosition().add(new Vector(0, i * 2, 5 + i * 3))
-        produce(match.produce.id, playerColor, pos)
+        let obj
+        if (isInfiniteContainer(produceBag)) {
+            // See global/patch-infinite-container.js
+            obj = produceBag.takeAtEnforceSingleton(0, pos, true)
+        } else {
+            obj = produceBag.takeAt(0, pos, true)
+        }
+        obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0])
+        pos = pos.add(obj.getExtent().multiply(2))
     }
 }
 
@@ -275,7 +307,6 @@ if (world.getExecutionReason() === 'ScriptReload') {
 // Export for the unittest.
 module.exports = {
     isConsumable,
-    isColor,
     applyRule,
     onR,
 }

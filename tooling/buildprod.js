@@ -66,6 +66,18 @@ const setupWorkspace = () => {
     })
 };
 
+const buildLangFile = () => {
+    return Promise.all(
+        variantConfig.lang.map((lang) => fs.readJson(`lang/${lang}.json`))
+    ).then((langs) => {
+        return langs.reduce((acc, thisLang) => {
+            return {...acc, ...thisLang}
+        }, {})
+    }).then((langDef) => {
+        return fs.writeFile(`src/lib/langdef.js`, `module.exports = ${JSON.stringify(langDef, null, "\t")}`)
+    })
+}
+
 const spawnDependencyDeploy = () => {
     return new Promise((resolve, reject) => {
         const child = spawn.spawn("yarn", [
@@ -95,11 +107,13 @@ const spawnBuilder = () => {
 
 
 setupWorkspace().then(() => {
-    return spawnBuilder().then(() => {
-        return spawnDependencyDeploy().then(() => {
-            console.log(chalk.white(`Done building: ${variantConfig.name}`))
-        })
-    });
+    return buildLangFile().then(() => {
+        return spawnBuilder().then(() => {
+            return spawnDependencyDeploy().then(() => {
+                console.log(chalk.white(`Done building: ${variantConfig.name}`))
+            })
+        });
+    })
 }).then(() => {
     console.log(chalk.green("Good Hunting"));
 }).catch((e) => {

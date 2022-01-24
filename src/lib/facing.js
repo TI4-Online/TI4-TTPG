@@ -10,9 +10,9 @@ class Facing {
     }
     
     static isFaceUp(obj) {
-        // RotX is 0 for faceup, -180 when flipped.
-        const rotX = obj.getRotation().x % 360
-        return -90 < rotX && rotX < 90
+        // roll is 0 for faceup, -180 when flipped.
+        const roll = obj.getRotation().roll % 360
+        return -90 < roll && roll < 90
     }
 
     static isFaceDown(obj) {

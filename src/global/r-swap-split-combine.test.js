@@ -9,8 +9,7 @@ const {
     onR,
 } = require('./r-swap-split-combine')
 
-const PLAYER_COLOR = 'White'
-const NOT_PLAYER_COLOR = 'Blue'
+const PLAYER_SLOT = 7
 
 const OBJ = {
     fighter_x1 : new MockGameObject({ 
@@ -22,7 +21,7 @@ const OBJ = {
     }),
     fighter : new MockGameObject({ 
         templateMetadata : 'unit:base/fighter',
-        savedData : JSON.stringify({ _color : PLAYER_COLOR })
+        owningPlayerSlot : PLAYER_SLOT
     }),
     not : new MockGameObject({ 
         templateMetadata : 'not:not/not',
@@ -72,25 +71,15 @@ it('isConsumable only face down', () => {
     assert(!isConsumable(OBJ.fighter_x1, rule))
 })
 
-it('isColor anonymous token', () => {
-    assert(isColor(OBJ.fighter_x1, PLAYER_COLOR))
-    assert(isColor(OBJ.fighter_x1, NOT_PLAYER_COLOR))
-})
-
-it('isColor unit', () => {
-    assert(isColor(OBJ.fighter, PLAYER_COLOR))
-    assert(!isColor(OBJ.fighter, NOT_PLAYER_COLOR))
-})
-
 it('applyRule basic', () => {
     const rule = {
         consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        produce : { count : 1, name : 'fighter' }
     }
     const objs = [ OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 1)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 1)
 })
 
@@ -98,12 +87,12 @@ it('applyRule repeat', () => {
     const rule = {
         repeat : true,
         consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        produce : { count : 1, name : 'fighter' }
     }
     const objs = [ OBJ.fighter_x1 , OBJ.fighter_x1 , OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 3)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 3)
 })
 

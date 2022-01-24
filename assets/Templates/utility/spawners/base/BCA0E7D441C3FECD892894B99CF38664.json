@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "6097E68D492C4D1D2BBF37A7FBF05CD9",
 	"Name": "Carrier",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/carrier",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -16,5 +16,8 @@
     "rules": {
         "no-unused-vars": [ "warn", { "vars": "all", "args": "none" } ],
         "no-extra-semi": 0
+    },
+    "globals": {
+        "it": "readonly"
     }
 }

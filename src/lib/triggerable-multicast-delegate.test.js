@@ -1,7 +1,5 @@
 const { TriggerableMulticastDelegate } = require('./triggerable-multicast-delegate')
 const assert = require('assert')
-const { italic } = require('colorette')
-const { tmpdir } = require('os')
 
 it('require', () => {
     assert(TriggerableMulticastDelegate)
@@ -30,7 +28,7 @@ it('invoke trigger', () => {
     // Verify multiple arguments work, sum in result.
     let result = false
     const f = (a, b) => { result = a + b }
-   
+
     const tmd = new TriggerableMulticastDelegate()
     tmd.add(f)
 

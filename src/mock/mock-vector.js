@@ -6,6 +6,10 @@ class Vector {
         this.x = x
         this.y = y
         this.z = z
+
+        this.pitch = y
+        this.yar = z
+        this.roll = x
     }
 }
 

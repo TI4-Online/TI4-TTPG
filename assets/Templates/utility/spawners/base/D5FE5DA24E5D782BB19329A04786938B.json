@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "8D235CEA4AF87BD37A30B7BD1D5CC6F6",
 	"Name": "Warsun",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/war_sun",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

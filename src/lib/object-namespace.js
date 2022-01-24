@@ -3,6 +3,9 @@
  * Objects use a 'type:source/name' namespace, e.g.:
  * 
  * 'card.objective.secret:base/cut_supply_lines'
+ * 
+ * As convention call these "nsid" to distinguish from "guid",
+ * "template id", etc to know this is the kind of string in hand.
  */
 class ObjectNamespace {
     /**
@@ -10,18 +13,6 @@ class ObjectNamespace {
      */
     constructor() {
         throw new Error('Static only')
-    }
-
-    /**
-     * Parse a 'type:source/name' string into components.
-     * 
-     * @param {GameObject} obj 
-     * @returns {{ type : string, source : string, name : string}}
-     */
-    static parseGeneric(obj) {
-        const id = obj.getTemplateMetadata()
-        const m = id.match(/^([^:]+):([^/]+)\/(.+)$/)
-        return m && { type : m[1], source : m[2], name : m[3] }
     }
 
     /**
@@ -35,19 +26,35 @@ class ObjectNamespace {
         const id = obj.getTemplateMetadata()
         return id.startsWith(type)
     }
+    
+    /**
+     * Parse a 'type:source/name' string into components.
+     * 
+     * @param {GameObject} obj 
+     * @returns {{ type : string, source : string, name : string}}
+     */
+    static parseGeneric(obj) {
+        const id = obj.getTemplateMetadata()
+        const m = id.match(/^([^:]+):([^/]+)\/(.+)$/)
+        return m && { type : m[1], source : m[2], name : m[3] }
+    }
 
     /**
      * Get the generic object namespace "type" string.
      * 
-     * Filtering cards is probably examining a lot of objects.  Instead of
-     * `isCard(obj, deck)` caller should get the card type once, then 
-     * `isGenericType` for faster checking.
+     * Filtering cards is probably examining a lot of objects.  Caller should
+     * get the card type once, then `isGenericType` for faster checking.
      * 
      * @param {string} deck - deck name
      * @returns {string} ObjectNamespace type
      */
-    static getCardType(deck) {
+     static getCardType(deck) {
         return 'card.' + deck
+    }
+
+    static isCard(obj) {
+        const id = obj.getTemplateMetadata()
+        return id.startsWith('card')    
     }
 
     static parseCard(obj) {
@@ -97,6 +104,39 @@ class ObjectNamespace {
     static parseSystemTile(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
         result.tile = result && Number.parseInt(result.name)
+        return result
+    }
+
+    static isToken(obj) {
+        const id = obj.getTemplateMetadata()
+        return id.startsWith('token')
+    }
+
+    static parseToken(obj) {
+        const result = ObjectNamespace.parseGeneric(obj)
+        result.token = result.name.split('.')[0] // tear tokens
+        return result
+    }
+
+    static isUnit(obj) {
+        const id = obj.getTemplateMetadata()
+        return id.startsWith('unit')
+    }
+
+    static parseUnit(obj) {
+        const result = ObjectNamespace.parseGeneric(obj)
+        result.unit = result && result.name // reserve should something change
+        return result
+    }
+
+    static isUnitBag(obj) {
+        const id = obj.getTemplateMetadata()
+        return id.startsWith('bag.unit')
+    }
+
+    static parseUnitBag(obj) {
+        const result = ObjectNamespace.parseGeneric(obj)
+        result.unit = result && result.name // reserve should something change
         return result
     }
 }

@@ -29,6 +29,9 @@ it('card', () => {
     assert(ObjectNamespace.isGenericType(obj, type))
     assert(!ObjectNamespace.isGenericType(not, type))
     
+    assert(ObjectNamespace.isCard(obj))
+    assert(!ObjectNamespace.isCard(not))
+
     const result = ObjectNamespace.parseCard(obj)
     assert.equal(result.type, 'card.action')
     assert.equal(result.source, 'base')
@@ -95,3 +98,49 @@ it('system tile', () => {
     assert.equal(result.name, '18')
     assert.equal(result.tile, 18)
 })
+
+it('token', () => {
+    const id = 'token.vuilraith:pok/tear.nekro'
+    const obj = new MockGameObject({ templateMetadata : id })
+    const not = new MockGameObject({ templateMetadata : 'not:not/not' })
+
+    assert(ObjectNamespace.isToken(obj))
+    assert(!ObjectNamespace.isToken(not))
+    
+    const result = ObjectNamespace.parseToken(obj)
+    assert.equal(result.type, 'token.vuilraith')
+    assert.equal(result.source, 'pok')
+    assert.equal(result.name, 'tear.nekro')
+    assert.equal(result.token, 'tear')
+})
+
+it('unit', () => {
+    const id = 'unit:base/dreadnought'
+    const obj = new MockGameObject({ templateMetadata : id })
+    const not = new MockGameObject({ templateMetadata : 'not:not/not' })
+
+    assert(ObjectNamespace.isUnit(obj))
+    assert(!ObjectNamespace.isUnit(not))
+    
+    const result = ObjectNamespace.parseUnit(obj)
+    assert.equal(result.type, 'unit')
+    assert.equal(result.source, 'base')
+    assert.equal(result.name, 'dreadnought')
+    assert.equal(result.unit, 'dreadnought')
+})
+
+it('unit bag', () => {
+    const id = 'bag.unit:base/dreadnought'
+    const obj = new MockGameObject({ templateMetadata : id })
+    const not = new MockGameObject({ templateMetadata : 'not:not/not' })
+
+    assert(ObjectNamespace.isUnitBag(obj))
+    assert(!ObjectNamespace.isUnitBag(not))
+    
+    const result = ObjectNamespace.parseUnitBag(obj)
+    assert.equal(result.type, 'bag.unit')
+    assert.equal(result.source, 'base')
+    assert.equal(result.name, 'dreadnought')
+    assert.equal(result.unit, 'dreadnought')
+})
+

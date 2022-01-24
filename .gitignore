@@ -25,3 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 assets/States/*.vts
+
+src/lib/langdef.js

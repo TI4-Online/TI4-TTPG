@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "B364EA034E4639B7ADC7E1882B51C21D",
 	"Name": "Spacedock",
-	"Metadata": "",
+	"Metadata": "bag.unit:base/space_dock",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
