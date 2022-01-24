@@ -2,7 +2,13 @@
     "example.helloworld": "Hello World!",
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
+    "ui.message.system_activated" : "{playerName} activated {systemName}",
+
     "ui.error.empty_supply" : "{unit_name} supply is empty",
+
+    "ui.button.strategy_card_play" : "Play",
+    "ui.tooltip.strategy_card_play" : "Play this strategy card for your turn",
+    "ui.message.strategy_card_play" : "{playerName} played {cardName} strategy card",
 
     "bogus.last.entry" : "reserved last entry so others can always end with a comma"
 }
