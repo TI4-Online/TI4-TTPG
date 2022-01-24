@@ -12,3 +12,7 @@ it('handles pluralization', () => {
     assert.equal(locale('example.replaced', { player: "ThatRobHuman", x: 1 }), 'ThatRobHuman has run this script 1 time');
     assert.equal(locale('example.replaced', { player: "ThatRobHuman", x: 2 }), 'ThatRobHuman has run this script 2 times');
 })
+
+it('empty replace string', () => {
+    assert.equal(locale('example.replaced', { player: "", x: 2 }), ' has run this script 2 times');
+})

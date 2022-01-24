@@ -10,7 +10,6 @@ const {
 } = require('./r-swap-split-combine')
 
 const PLAYER_SLOT = 7
-const NOT_PLAYER_SLOT = 8
 
 const OBJ = {
     fighter_x1 : new MockGameObject({ 
@@ -75,12 +74,12 @@ it('isConsumable only face down', () => {
 it('applyRule basic', () => {
     const rule = {
         consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        produce : { count : 1, name : 'fighter' }
     }
     const objs = [ OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 1)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 1)
 })
 
@@ -88,12 +87,12 @@ it('applyRule repeat', () => {
     const rule = {
         repeat : true,
         consume : { count : 1, name : 'fighter_x1' },
-        produce : { count : 1, name : 'fighter $COLOR' }
+        produce : { count : 1, name : 'fighter' }
     }
     const objs = [ OBJ.fighter_x1 , OBJ.fighter_x1 , OBJ.fighter_x1 ]
     const result = applyRule(objs, rule)
     assert.equal(result.consume.length, 3)
-    assert.equal(result.produce.id, 'unit:base/fighter')
+    assert.equal(result.produce.nsid, 'unit:base/fighter')
     assert.equal(result.produce.count, 3)
 })
 

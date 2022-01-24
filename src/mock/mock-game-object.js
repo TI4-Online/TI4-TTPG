@@ -6,6 +6,7 @@ class MockGameObject {
         this._id = data && data.id || 'abcd'
         this._owningPlayerSlot = data && data.owningPlayerSlot || -1
         this._position = data && data.position || new Vector(0, 0, 0)
+        this._primaryColor = data && data.primaryColor
         this._rotation = data && data.rotation || new Vector(0, 0, 0)
         this._savedData = data && data.savedData || ''
         this._templateMetadata = data && data.templateMetadata || ''
@@ -29,9 +30,26 @@ class MockGameObject {
         return this._id
     }
 
+    getOwningPlayerSlot() {
+        return this._owningPlayerSlot
+    }
+
+    setOwningPlayerSlot(value) {
+        this._owningPlayerSlot = value
+    }
+
     getPosition() {
         return this._position
     }
+
+    getPrimaryColor() {
+        return this._primaryColor
+    }
+
+    setPrimaryColor(value) {
+        this._primaryColor = value
+    }
+
 
     getRotation() {
         return this._rotation
@@ -41,12 +59,8 @@ class MockGameObject {
         return this._savedData
     }
 
-    setSavedData(s) {
-        this._savedData = s
-    }
-
-    getOwningPlayerSlot() {
-        this._owningPlayerSlot
+    setSavedData(value) {
+        this._savedData = value
     }
 
     getTemplateMetadata() {

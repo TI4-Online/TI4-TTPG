@@ -19,7 +19,11 @@
  */
 
 const assert = require('../wrapper/assert')
-const { globalEvents, world } = require('@tabletop-playground/api')
+const {
+    Container,
+    globalEvents,
+    world
+ } = require('@tabletop-playground/api')
 
 function isInfiniteContainer(obj) {
     const infiniteTypes = [ 1, 3 ]
@@ -41,22 +45,26 @@ function addObjectsEnforceSingleton(insertObjs, index, showAnimation) {
     assert(isInfiniteContainer(this))
     assert(insertObjs.length > 0)
 
-    // If the container is empty add the first object.
-    if (this.getItems().length == 0) {
-        this.addObjects([ insertObjs[0] ], 0, showAnimation)
-        insertObjs = insertObjs.slice(1)
-    }
-
-    // At this point container has at least one object.
-    const masterObject = this.getItems()[0]
+    // Get master object, either first in container or first added if empty.
+    const thisObjs = this.getItems()
+    const masterObject = thisObjs.length > 0 ? thisObjs[0] : insertObjs[0]
     const masterTemplateId = masterObject.getTemplateId()
 
-    // Verify and destroy redundant extras.
+    // Verify not trying to add a mismatch.
     for (const insertObj of insertObjs) {
         if (insertObj.getTemplateId() !== masterTemplateId) {
             throw new Error('Container.addObjectsEnforceSingleton mismatch')
         }
-        insertObj.destroy()
+    }
+
+    // Put the objects for the animation.
+    this.addObjects(insertObjs, index, showAnimation)
+
+    // Prune down to one.
+    for (const thisObj of this.getItems()) {
+        if (thisObj != masterObject) {
+            this.remove(thisObj)
+        }
     }
 }
 
@@ -100,7 +108,7 @@ function takeEnforceSingleton(objectToRemove, position, showAnimation) {
  * @param {number} index - The index of the object to take
  * @param {Vector} position - The position where the item should appear
  * @param {boolean} showAnimation - If false, don't show insert animation and don't play sound. Default: false
- * @returns {boolean}
+ * @returns {GameObject}
  */
 function takeAtEnforceSingleton(index, position, showAnimation) {
     assert(isInfiniteContainer(this))
@@ -108,7 +116,10 @@ function takeAtEnforceSingleton(index, position, showAnimation) {
     if (containedObjs.length == 0) {
         return false
     }
-    return this.takeEnforceSingleton(containedObjs[0], position, showAnimation)
+    const takeObj = containedObjs[0]
+    if (this.takeEnforceSingleton(takeObj, position, showAnimation)) {
+        return takeObj
+    }
 }
 
 // Container.onInserted event handler.
@@ -126,7 +137,7 @@ function onInsertedEnforceSingleton(container, insertedObjs, player) {
     for (const containedObj of containedObjs) {
         if (containedObj.getTemplateId() !== masterTemplateId) {
             // Mismatch.
-            const pos = container.getPosition().add(new Vector(10, 0, 10))
+            const pos = container.getPosition().add([10, 0, 10])
             container.take(containedObj, pos, true)
         } else if (containedObj != masterObject) {
             // Redundant extra.

@@ -9,10 +9,14 @@
 const { globalEvents, world, Vector } = require("@tabletop-playground/api")
 const { ObjectNamespace } = require('../lib/object-namespace')
 const { Turns } = require('../lib/turns')
+const locale = require('../lib/locale')
 
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
-    const message = `${player.getName()} activated system "${obj.getTemplateMetadata()}"`
+    const message = locale('ui.message.system_activated', {
+        playerName : player.getName(),
+        systemName : obj.getTemplateMetadata() // XXX TODO
+    })
     for (const player of world.getAllPlayers()) {
         player.showMessage(message)
     }
