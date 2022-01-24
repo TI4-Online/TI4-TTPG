@@ -59,7 +59,9 @@ class ObjectNamespace {
 
     static parseCard(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.deck = result && result.type.substring('card.'.length)
+        if (result) {
+            result.deck = result.type.substring('card.'.length)
+        }
         return result
     }
 
@@ -70,7 +72,9 @@ class ObjectNamespace {
 
     static parseCommandToken(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.faction = result && result.name
+        if (result) {
+            result.faction = result.name
+        }
         return result
     }
 
@@ -81,7 +85,9 @@ class ObjectNamespace {
 
     static parseControlToken(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.faction = result && result.name
+        if (result) {
+            result.faction = result.name
+        }
         return result
     }
 
@@ -92,7 +98,9 @@ class ObjectNamespace {
 
     static parseStrategyCard(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.card = result && result.name.split('.')[0] // .omega
+        if (result) {
+            result.card = result.name.split('.')[0] // .omega
+        }
         return result
     }
 
@@ -103,7 +111,9 @@ class ObjectNamespace {
 
     static parseSystemTile(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.tile = result && Number.parseInt(result.name)
+        if (result) {
+            result.tile = Number.parseInt(result.name)
+        }
         return result
     }
 
@@ -114,7 +124,9 @@ class ObjectNamespace {
 
     static parseToken(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.token = result.name.split('.')[0] // tear tokens
+        if (result) {
+            result.token = result.name.split('.')[0] // tear tokens
+        }
         return result
     }
 
@@ -125,7 +137,9 @@ class ObjectNamespace {
 
     static parseUnit(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.unit = result && result.name // reserve should something change
+        if (result) {
+            result.unit = result.name // reserve should something change
+        }
         return result
     }
 
@@ -136,7 +150,9 @@ class ObjectNamespace {
 
     static parseUnitBag(obj) {
         const result = ObjectNamespace.parseGeneric(obj)
-        result.unit = result && result.name // reserve should something change
+        if (result) {
+            result.unit = result.name // reserve should something change
+        }
         return result
     }
 }
