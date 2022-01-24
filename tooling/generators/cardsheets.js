@@ -7,7 +7,6 @@ const klaw = require('klaw') // walk file system
 const path = require('path')
 const sharp = require('sharp')
 const assert = require('assert')
-const { dir } = require('console')
 const crypto = require('crypto')
 
 const SRC_DIR = 'prebuild/Textures/'
@@ -277,10 +276,9 @@ function getDstImageFile(deckId, source, side, sheetIndex, locale) {
  * @param {string} source - source portion of the id string
  * @returns {string} template filename
  */
- function getDstJsonFile(deckId, source, guid, sheetIndex) {
+ function getDstJsonFile(deckId, source, sheetIndex) {
     assert(typeof deckId === 'string')
     assert(typeof source === 'string')
-    assert(typeof guid === 'string')
     assert(typeof sheetIndex === 'number')
 
     assert(!deckId.includes(':'))
@@ -288,9 +286,9 @@ function getDstImageFile(deckId, source, side, sheetIndex, locale) {
 
     assert(deckId.startsWith('card'))
     let dir = path.join(DST_TEMPLATE_DIR, ...deckId.split('.'))
-    dir = path.join(dir, ...source.split('.'))
+    let result = path.join(dir, ...source.split('.'))
 
-    return path.join(dir, guid) + '.json'
+    return `${result}.${sheetIndex}.json`
 }
 
 /**
@@ -440,7 +438,7 @@ async function writeDeckTemplateJson(guid, deckData, cardDataArray, layout, face
     const json = {
         "Type": "Card",
         "GUID": guid,
-        "Name": deckData.name,
+        "Name": `${deckData.name} (${deckData.source}, ${(deckData.sheetIndex + 1)}/${deckData.numSheets})`,
         "Metadata": "",
         "CollisionType": "Regular",
         "Friction": 0.7,
@@ -515,7 +513,7 @@ async function generateDeck(deckId, locale) {
     deckData.deckId = deckId
 
     // Get cards by namespace id to card data.
-    const cardIdPattern = '^' + deckId + '[\.:/]'
+    const cardIdPattern = '^' + deckId + '[.:/]'
     const idToCardData = await getMatchingCardIds(cardIdPattern, locale)
 
     // Fill in more card data.
@@ -623,7 +621,10 @@ async function generateDeck(deckId, locale) {
             }
             let guid = `${deckId}:${source}.${sheetIndex}`
             guid = crypto.createHash('sha256').update(guid).digest('hex').substring(0,32)
-            const templateFile = getDstJsonFile(deckId, source, guid, sheetIndex)
+            const templateFile = getDstJsonFile(deckId, source, sheetIndex)
+            deckData.source = source // only valid for this deck
+            deckData.sheetIndex = sheetIndex
+            deckData.numSheets = Math.ceil(ids.length / maxCardsPerSheet)
             writeDeckTemplateJson(guid, deckData, cardDataArray, faceLayout, faceImgFile, backImgFile, templateFile)
         }
     }
