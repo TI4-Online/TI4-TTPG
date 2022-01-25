@@ -87,7 +87,7 @@ it('AssetFilenames.cardImage redirect duplicate', () => {
 it('AssetFilenames.cardsheetImage en face', () => {
     const nsid = 'card.action:base/*'
     const face = AssetFilenames.cardsheetImage(nsid, 'face', 0, 'en')
-    assert.equal(face,path.normalize( 'assets/Textures/en/card/action/base/0.face.jpg'))
+    assert.equal(face, path.normalize('assets/Textures/en/card/action/base/0.face.jpg'))
 })
 
 it('AssetFilenames.cardsheetImage shared back', () => {
