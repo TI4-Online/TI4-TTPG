@@ -10,5 +10,26 @@
     "ui.tooltip.strategy_card_play" : "Play this strategy card for your turn",
     "ui.message.strategy_card_play" : "{playerName} played {cardName} strategy card",
 
+    "unit.carrier" : "Carrier",
+    "unit.carrier_2" : "Carrier II",
+    "unit.cruiser" : "Cruiser",
+    "unit.cruiser_2" : "Cruiser II",
+    "unit.destroyer" : "Destroyer",
+    "unit.destroyer_2" : "Destroyer II",
+    "unit.dreadnought" : "Dreadnought",
+    "unit.dreadnought_2" : "Dreadnought II",
+    "unit.fighter" : "Fighter",
+    "unit.fighter_2" : "Fighter II",
+    "unit.flagship" : "Flagship",
+    "unit.flagship_2" : "Flagship II",
+    "unit.infantry" : "Infantry",
+    "unit.infantry_2" : "Infantry II",
+    "unit.mech" : "Mech",
+    "unit.pds" : "PDS",
+    "unit.pds_2" : "PDS II",
+    "unit.space_dock" : "Space Dock",
+    "unit.space_dock_2" : "Space Dock II",
+    "unit.war_sun" : "War Sun",
+
     "bogus.last.entry" : "reserved last entry so others can always end with a comma"
 }
