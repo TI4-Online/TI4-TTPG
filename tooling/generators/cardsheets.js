@@ -1,6 +1,9 @@
 "use strict"
 // Create decks from prebuild card assets.  Run with "ALL" to build all decks, 
 // or name one or more of the deck ids below (e.g. "card.action").
+//
+// Example usage: 
+// % node tooling/generators/cardsheets.js ALL
 
 const fs = require('fs-extra')
 const klaw = require('klaw') // walk file system
@@ -97,7 +100,7 @@ const DECKS = {
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
     },
-    'card.objective.secret_1' : {
+    'card.objective.public_2' : {
         name: 'Public Objectives II',
         sharedBack : true,
         size : CARD_SIZE.PORTRAIT,
