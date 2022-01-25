@@ -1,14 +1,14 @@
 const assert = require('assert')
 const { MockGameObject } = require('../mock/mock-game-object')
-const { Vector } = require('../mock/mock-vector')
+const { Rotator } = require('../mock/mock-rotator')
 const { Facing } = require('./facing')
 
 const FACING_UP = new MockGameObject({
-    rotation : new Vector(0, 0, 0)
+    rotation : new Rotator(0, 0, 0)
 })
 
 const FACING_DOWN = new MockGameObject({
-    rotation : new Vector(-180, 0, 0)
+    rotation : new Rotator(0, 0, -180)
 })
 
 it('up', () => {

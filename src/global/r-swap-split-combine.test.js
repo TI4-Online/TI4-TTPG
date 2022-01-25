@@ -1,10 +1,9 @@
 const assert = require('assert')
 const { MockGameObject } = require('../mock/mock-game-object')
 const { MockPlayer } = require('../mock/mock-player')
-const { Vector } = require('../mock/mock-vector')
+const { Rotator } = require('../mock/mock-rotator')
 const {
     isConsumable,
-    isColor,
     applyRule,
     onR,
 } = require('./r-swap-split-combine')
@@ -17,7 +16,7 @@ const OBJ = {
     }),
     fighter_x1_faceDown : new MockGameObject({ 
         templateMetadata : 'token:base/fighter_1',
-        rotation : new Vector(-180, 0, 0)
+        rotation : new Rotator(0, 0, -180)
     }),
     fighter : new MockGameObject({ 
         templateMetadata : 'unit:base/fighter',

@@ -1,5 +1,6 @@
 const { TriggerableMulticastDelegate } = require('../lib/triggerable-multicast-delegate')
 const { Vector } = require('./mock-vector')
+const { Rotator } = require('./mock-rotator')
 
 class MockGameObject {
     constructor(data) {
@@ -7,7 +8,7 @@ class MockGameObject {
         this._owningPlayerSlot = data && data.owningPlayerSlot || -1
         this._position = data && data.position || new Vector(0, 0, 0)
         this._primaryColor = data && data.primaryColor
-        this._rotation = data && data.rotation || new Vector(0, 0, 0)
+        this._rotation = data && data.rotation || new Rotator(0, 0, 0)
         this._savedData = data && data.savedData || ''
         this._templateMetadata = data && data.templateMetadata || ''
     }
