@@ -9,9 +9,9 @@ const sharp = require('sharp')
 const assert = require('assert')
 const crypto = require('crypto')
 
-const SRC_TEXTURES_DIR = 'prebuild/Textures/'
-const DST_TEXTURES_DIR = 'assets/Textures/'
-const DST_TEMPLATES_DIR = 'assets/Templates/'
+const SRC_TEXTURES_DIR = path.normalize('prebuild/Textures/')
+const DST_TEXTURES_DIR = path.normalize('assets/Textures/')
+const DST_TEMPLATES_DIR = path.normalize('assets/Templates/')
 
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
 const MAX_SHEET_DIMENSION = 4096
@@ -667,7 +667,7 @@ async function writeDeckTemplate(deckData, cardSize, cardDataArray, layout, face
         texturePath = texturePath.substring(DST_TEXTURES_DIR.length)
 
         // Remove any leading slashes (safety).
-        while (texturePath.startsWith('/')) {
+        while (texturePath.startsWith(path.sep)) {
             texturePath = texturePath.substring(1)
         }
 
