@@ -1,4 +1,5 @@
 const assert = require('assert')
+const path = require('path')
 require('regenerator-runtime') // for async tests
 
 const {
@@ -37,9 +38,9 @@ it('CardData en face with shared back', async () => {
     assert.equal(cardData.locale(), 'en')
     assert.equal(cardData.cardNameLocale(), 'Ghost Ship')
 
-    assert.equal(cardData.face(), 'prebuild/Textures/en/card/action/ghost_ship.jpg')
+    assert.equal(cardData.face(), path.normalize('prebuild/Textures/en/card/action/ghost_ship.jpg'))
     assert(!cardData.isFaceGlobal())
-    assert.equal(cardData.back(), 'prebuild/Textures/global/card/action.back.jpg')
+    assert.equal(cardData.back(), path.normalize('prebuild/Textures/global/card/action.back.jpg'))
     assert(cardData.isBackGlobal())
     assert(cardData.isSharedBack())
 
@@ -54,51 +55,51 @@ it('CardData en face with shared back', async () => {
 it('AssetFilenames.cardImage en face with shared back', () => {
     const nsid = 'card.action:base/ghost_ship'
     const face = AssetFilenames.cardImage(nsid, 'face', 'en')
-    assert.equal(face, 'prebuild/Textures/en/card/action/ghost_ship.jpg')
+    assert.equal(face, path.normalize('prebuild/Textures/en/card/action/ghost_ship.jpg'))
 })
 
 it('AssetFilenames.cardImage en face with custom back', () => {
     const nsid = 'card.planet:base/lodor'
     const face = AssetFilenames.cardImage(nsid, 'face', 'en')
     const back = AssetFilenames.cardImage(nsid, 'back', 'en')
-    assert.equal(face, 'prebuild/Textures/en/card/planet/lodor.face.jpg')
-    assert.equal(back, 'prebuild/Textures/en/card/planet/lodor.back.jpg')
+    assert.equal(face, path.normalize('prebuild/Textures/en/card/planet/lodor.face.jpg'))
+    assert.equal(back, path.normalize('prebuild/Textures/en/card/planet/lodor.back.jpg'))
 })
 
 it('AssetFilenames.cardImage global back', () => {
     const nsid = 'card.action:base/ghost_ship'
     const back = AssetFilenames.cardImage(nsid, 'back', 'en')
-    assert.equal(back, 'prebuild/Textures/global/card/action.back.jpg')
+    assert.equal(back, path.normalize('prebuild/Textures/global/card/action.back.jpg'))
 })
 
 it('AssetFilenames.cardImage global back (2)', () => {
     const nsid = 'card.action:codex.ordinian/blitz'
     const back = AssetFilenames.cardImage(nsid, 'back', 'en')
-    assert.equal(back, 'prebuild/Textures/global/card/action.back.jpg')
+    assert.equal(back, path.normalize('prebuild/Textures/global/card/action.back.jpg'))
 })
 
 it('AssetFilenames.cardImage redirect duplicate', () => {
     const nsid = 'card.exploration.cultural:pok/cultural_relic_fragment.2'
     const face = AssetFilenames.cardImage(nsid, 'face', 'en')
-    assert.equal(face, 'prebuild/Textures/en/card/exploration/cultural/cultural_relic_fragment.1.jpg')
+    assert.equal(face, path.normalize('prebuild/Textures/en/card/exploration/cultural/cultural_relic_fragment.1.jpg'))
 })
 
 it('AssetFilenames.cardsheetImage en face', () => {
     const nsid = 'card.action:base/*'
     const face = AssetFilenames.cardsheetImage(nsid, 'face', 0, 'en')
-    assert.equal(face, 'assets/Textures/en/card/action/base/0.face.jpg')
+    assert.equal(face, path.normalize('assets/Textures/en/card/action/base/0.face.jpg'))
 })
 
 it('AssetFilenames.cardsheetImage shared back', () => {
     const nsid = 'card.action:base/*'
     const face = AssetFilenames.sharedBackImage(nsid, 'en')
-    assert.equal(face, 'assets/Textures/en/card/action.back.jpg')
+    assert.equal(face, path.normalize('assets/Textures/en/card/action.back.jpg'))
 })
 
 it('AssetFilenames.templateJson', () => {
     const nsid = 'card.action:base/*'
     const json = AssetFilenames.templateJson(nsid, 0)
-    assert.equal(json, 'assets/Templates/card/action/base/0.json')
+    assert.equal(json, path.normalize('assets/Templates/card/action/base/0.json'))
 })
 
 // ----------------------------------------------------------------------------
