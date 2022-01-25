@@ -675,12 +675,11 @@ async function writeDeckTemplate(deckData, cardSize, cardDataArray, layout, face
         }
 
         // First entry is locale, if not 'global' make it 'locale'.
-        let [_, locale, remainder] = texturePath.match(/^([^/]*)\/(.*)$/)
-        assert(_)
-        if (locale !== 'global') {
-            locale = 'locale'
+        texturePath = texturePath.split(path.sep)
+        if (texturePath[0] !== 'global') {
+            texturePath[0] = 'locale'
         }
-        return path.join(locale, remainder)
+        return path.join(...texturePath)
     }
     backFilename = fixTexturePath(backFilename)
     faceFilename = fixTexturePath(faceFilename)
