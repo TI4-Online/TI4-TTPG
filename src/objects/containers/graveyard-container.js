@@ -1,4 +1,4 @@
-const moveGameObjectHome = require('../../lib/move-game-object-home');
+const ReturnGameObjectHome = require('../../lib/return-game-object-home');
 
 class GraveyardContainer {
 
@@ -7,9 +7,7 @@ class GraveyardContainer {
   }
 
   onInserted(container, insertedObjects) {
-    for (let i = 0; i < insertedObjects.length; i++) {
-      moveGameObjectHome(insertedObjects[i])
-    }
+    ReturnGameObjectHome.returnAll(insertedObjects)
   }
 }
 
