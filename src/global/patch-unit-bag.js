@@ -54,6 +54,11 @@ function getRejectReason(bagObj, unitObj) {
     }
     let unitPlayerSlot = unitObj.getOwningPlayerSlot()
 
+    // Reject if have owner and wrong owner.
+    if (unitPlayerSlot >= 0 && bagPlayerSlot != unitPlayerSlot) {
+        return REJECT_REASON.MISMATCH_OWNER
+    }
+
     // Reject if unit type mismatch.
     if (bagUnit !== unitUnit) {
         return REJECT_REASON.MISMATCH_UNIT
@@ -65,11 +70,6 @@ function getRejectReason(bagObj, unitObj) {
         unitObj.setOwningPlayerSlot(bagPlayerSlot)
         unitObj.setPrimaryColor(bagObj.getPrimaryColor())    
         unitPlayerSlot = bagPlayerSlot
-    }
-
-    // Reject if unit has an owning player other than the bag owning player.
-    if (bagPlayerSlot !== unitPlayerSlot) {
-        return REJECT_REASON.MISMATCH_OWNER
     }
 
     // All clear!
@@ -101,7 +101,24 @@ function addObjectsUnitBag(insertObjs, index, showAnimation) {
 // Container.onInserted event handler.
 function onInsertedUnitBag(container, insertObjs, player) {
     for (const insertObj of insertObjs) {
-        const rejectReason = getRejectReason(container, insertObj)
+        let rejectReason = getRejectReason(container, insertObj)
+
+        if (rejectReason == REJECT_REASON.MISMATCH_UNIT) {
+            // MISMATCH_UNIT is the last check, meaning this is a unit 
+            // belonging to this player.  Instead of rejecting, try to
+            // move it to the correct unit bag.
+            const requiredNsid = 'bag.' + insertObj.getTemplateMetadata()
+            for (const obj of world.getAllObjects()) {
+                if (obj.getTemplateMetadata() == requiredNsid) {
+                    if (!getRejectReason(obj, insertObj)) {
+                        rejectReason = false // cancel outer rejection
+                        obj.__addObjectsRaw([ insertObj ], 0, true)
+                    }
+                    break
+                }
+            }
+        }
+
         if (rejectReason) {
             // Player dropped a non-matching item into a unit bag.
             const pos = container.getPosition().add([10, 0, 10])
