@@ -15,7 +15,8 @@
     "generate:maptiles": "node tooling/generators/maptiles.js",
     "generate:langfile": "node tooling/lang.js",
     "check:prettier": "prettier --check .",
-    "test": "jest"
+    "test": "jest",
+    "tdd": "jest --watch"
   },
   "main": "index.js",
   "repository": "https://github.com/RobMayer/ti4-on-ttpg.git",
