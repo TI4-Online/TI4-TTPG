@@ -18,7 +18,7 @@ const buildLangFile = (config) => {
             return {...acc, ...thisLang}
         }, {})
     }).then((langDef) => {
-        return fs.writeFile(`src/lib/langdef.js`, `module.exports = ${JSON.stringify(langDef, null, "\t")}`)
+        return fs.writeFile(`src/lib/langdef.js`, `// System-generated file - do not edit. see lang/x.json\n\nmodule.exports = ${JSON.stringify(langDef, null, "\t")}`)
     })
 }
 
