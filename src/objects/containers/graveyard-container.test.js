@@ -5,11 +5,10 @@ const ReturnGameObjectHome = require('../../lib/return-game-object-home');
 
 describe('GraveyardContainer', () => {
   let refContainer
-  let graveyard
   
   beforeEach(() => {
     refContainer = new MockGameObjectContainer()
-    graveyard = new GraveyardContainer(refContainer)
+    new GraveyardContainer(refContainer)
   });
 
   describe('inserting objects', () => {
@@ -28,6 +27,4 @@ describe('GraveyardContainer', () => {
       expect(ReturnGameObjectHome.returnAll).toHaveBeenCalledWith(insertedObjects)
     });
   });
-
 });
-
