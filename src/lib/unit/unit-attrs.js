@@ -241,9 +241,9 @@ class UnitAttrs {
      * @param {Array.<object>} upgradeAttrsArray - unit schema compliant attrs
      */
     static upgradeMultiple(unitAttrs, upgradeAttrsArray) {
-        upgradeAttrsArray.sort((a, b) => { return (b.level || 1) - (a.level || 1) })
+        upgradeAttrsArray.sort((a, b) => { return (a.level || 1) - (b.level || 1) })
         for (const upgradeAttrs of upgradeAttrsArray) {
-            this.upgrade(unitAttrs, upgradeAttrs)
+            UnitAttrs.upgrade(unitAttrs, upgradeAttrs)
         }
     }
 }

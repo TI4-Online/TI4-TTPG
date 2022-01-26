@@ -5,6 +5,7 @@ const {
     BASE_UNITS,
     UNIT_UPGRADES,
 } = require('./unit-attrs')
+const { UnitModifiers } = require('./unit-modifiers')
 
 it('static only', () => {
     assert.throws(() => { new UnitAttrs() })
@@ -47,4 +48,21 @@ it('reject upgrade mismatch', () => {
     assert.throws(() => {
         UnitAttrs.upgrade(carrier, cruiser2)
     })
+})
+
+it('upgradeMultiple', () => {
+    const carrier2 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
+
+    const carrier3 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
+    carrier3.level = 3
+
+    let carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
+    let unitUpgrades = [ carrier2, carrier3 ]
+    UnitAttrs.upgradeMultiple(carrier, unitUpgrades)
+    assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
+
+    carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier // reset
+    unitUpgrades = [ carrier3, carrier2 ]
+    UnitAttrs.upgradeMultiple(carrier, unitUpgrades)
+    assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
 })

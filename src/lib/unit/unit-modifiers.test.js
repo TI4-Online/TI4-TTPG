@@ -35,3 +35,43 @@ it('apply', () => {
     assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 8)
     assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 7)
 })
+
+it('applyMultiple order', () => {
+    const mutate = {
+        localeName: 'x',
+        localeDescription: 'x',
+        owner: 'self',
+        type: 'mutate',
+        apply: (unitToUnitAttrs, auxData) => {}
+    }
+    const adjust = {
+        localeName: 'x',
+        localeDescription: 'x',
+        owner: 'self',
+        type: 'adjust',
+        apply: (unitToUnitAttrs, auxData) => {}
+    }
+    const choose = {
+        localeName: 'x',
+        localeDescription: 'x',
+        owner: 'self',
+        type: 'choose',
+        apply: (unitToUnitAttrs, auxData) => {}
+    }
+    const unitToUnitAttrs = UnitAttrs.defaultUnitToUnitAttrs()
+
+    let modifiers = [ mutate, adjust, choose ]
+    let order = UnitModifiers.applyMultiple(unitToUnitAttrs, modifiers)
+    order = order.map(modifier => modifier.type)
+    assert.deepEqual(order, [ 'mutate', 'adjust', 'choose'] )
+
+    modifiers = [ choose, adjust, mutate ]
+    order = UnitModifiers.applyMultiple(unitToUnitAttrs, modifiers)
+    order = order.map(modifier => modifier.type)
+    assert.deepEqual(order, [ 'mutate', 'adjust', 'choose'] )
+
+    modifiers = [ adjust, choose, mutate ]
+    order = UnitModifiers.applyMultiple(unitToUnitAttrs, modifiers)
+    order = order.map(modifier => modifier.type)
+    assert.deepEqual(order, [ 'mutate', 'adjust', 'choose'] )
+})
