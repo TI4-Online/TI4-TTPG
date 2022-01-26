@@ -12,7 +12,7 @@ const UNIT_MODIFIERS_SCHEMA = {
         toggleActive: {type: "boolean"},
         isCombat: {type: "boolean"},  
     },
-    required: ["localeName", "localeDescription"]
+    required: ["localeName", "localeDescription", "owner", "type"]
 }
 
 // Lazy instantiate on first use.

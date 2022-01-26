@@ -3,7 +3,7 @@ const { UnitModifier } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
 
 it('apply', () => {
-    const unitModifier = new UnitModifier({
+    const unitModifier = {
         localeName: 'unit_modifier.name.morale_boost',
         localeDescription: 'unit_modifier.desc.morale_boost',
         triggerNsids: [
@@ -25,13 +25,13 @@ it('apply', () => {
                 }
             }
         }
-    })
+    }
 
     const unitToUnitAttrs = UnitAttrs.defaultUnitToUnitAttrs()
     assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 9)
     assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 8)
 
-    unitModifier.apply(unitToUnitAttrs)
+    UnitModifier.apply(unitToUnitAttrs, unitModifier)
     assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 8)
     assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 7)
 })

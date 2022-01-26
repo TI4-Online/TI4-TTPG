@@ -1,6 +1,7 @@
 const assert = require('assert')
 const _ = require('lodash')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
+const { world } = require('../../wrapper/api')
 
 const BASE_UNITS = [
     {
@@ -115,12 +116,15 @@ const UNIT_UPGRADES = [
         unit : 'cruiser',
         level : 2,
         localeName : 'unit.cruiser_2',
+        triggerNsid : 'card.technology.unit_upgrade:base/cruiser_2',
         spaceCombat : { hit : 6 }, 
         move : 3, 
         capacity : 1 
     },
     // TODO MORE XXX
 ]
+
+let _triggerNsidToUnitUpgrade = false
 
 /**
  * Manage unit attributes.  
@@ -160,17 +164,60 @@ class UnitAttrs {
      */
     static defaultUnitToUnitUpgrade() {
         const result = {}
-        for (const upgrade of UNIT_UPGRADES) {
-            assert(UnitAttrsSchema.validate(upgrade))
-            result[upgrade.unit] = _.cloneDeep(upgrade)
+        for (const unitUpgrade of UNIT_UPGRADES) {
+            assert(UnitAttrsSchema.validate(unitUpgrade))
+            result[unitUpgrade.unit] = _.cloneDeep(unitUpgrade)
         }
         return result
     }
 
     /**
+     * Apply player's unit upgrades.
+     * 
+     * @param {object} unitToUnitAttrs - mutated in place
+     * @param {Player} player 
+     */
+    static applyPlayerUnitUpgrades(unitToUnitAttrs, player) {
+        if (!_triggerNsidToUnitUpgrade) {
+            _triggerNsidToUnitUpgrade = {}
+            for (const unitUpgrade of UNIT_UPGRADES) {
+                if (unitUpgrade.triggerNsid) {
+                    _triggerNsidToUnitUpgrade[unitUpgrade.triggerNsid] = unitUpgrade
+                }
+            }
+        }
+
+        const unitToUnitUpgrades = {}
+        for (const obj of world.getAllObjects()) {
+            const nsid = obj.getTemplateMetadata()
+            const unitUpgrade = _triggerNsidToUnitUpgrade[nsid]
+            if (!unitUpgrade) {
+                continue
+            }
+
+            // TODO XXX CHECK IF IN PLAYER AREA
+            // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
+            const insidePlayerArea = true // TODO XXX
+            if (!insidePlayerArea) {
+                continue
+            }
+
+            // Found a unit upgrade!  Add it to the list.
+            if (!unitToUnitUpgrades[unitUpgrade.unit]) {
+                unitToUnitUpgrades[unitUpgrade.unit] = []
+            }
+            unitToUnitUpgrades[unitUpgrade.unit].push(unitUpgrade)
+        }
+
+        for (const [unit, unitUpgrades] of Object.entries(unitToUnitUpgrades)) {
+            UnitAttrs.upgradeMultiple(unitToUnitAttrs[unit], unitUpgrades)
+        }
+    }
+
+    /**
      * Apply unit upgrade, overwrites original in place.
      * 
-     * @param {object} unitAttrs - unit schema compliant attrs
+     * @param {object} unitAttrs - unit schema compliant attrs, mutated in place
      * @param {object} upgradeAttrs - unit schema compliant attrs
      */
     static upgrade(unitAttrs, upgradeAttrs) {
@@ -184,6 +231,20 @@ class UnitAttrs {
         assert(UnitAttrsSchema.validate(upgradeAttrs))
 
         _.merge(unitAttrs, upgradeAttrs)
+    }
+
+    /**
+     * Apply unit upgrade, overwrites original in place.
+     * Upgrades are applied in level order (e.g Franken level 1 + 2).
+     * 
+     * @param {object} unitAttrs - unit schema compliant attrs, mutated in place
+     * @param {Array.<object>} upgradeAttrsArray - unit schema compliant attrs
+     */
+    static upgradeMultiple(unitAttrs, upgradeAttrsArray) {
+        upgradeAttrsArray.sort((a, b) => { return (b.level || 1) - (a.level || 1) })
+        for (const upgradeAttrs of upgradeAttrsArray) {
+            this.upgrade(unitAttrs, upgradeAttrs)
+        }
     }
 }
 
