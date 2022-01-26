@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UnitModifier } = require('./unit-modifier')
+const { UnitModifiers } = require('./unit-modifiers')
 const { UnitAttrs } = require('./unit-attrs')
 
 it('apply', () => {
@@ -31,7 +31,7 @@ it('apply', () => {
     assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 9)
     assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 8)
 
-    UnitModifier.apply(unitToUnitAttrs, unitModifier)
+    UnitModifiers.apply(unitToUnitAttrs, unitModifier)
     assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 8)
     assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 7)
 })

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UnitModifiersSchema } = require('./unit-modifier-schema')
+const { UnitModifiersSchema } = require('./unit-modifiers-schema')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { world } = require('../../wrapper/api')
 
@@ -39,7 +39,7 @@ let _triggerNsidToUnitModifier = false
  * Like UnitAttrs, take a static approach for gathering and applying relevant 
  * unit modifiers in the correct order.
  */
-class UnitModifier {
+class UnitModifiers {
     /**
      * Static-only class, do not instantiate it.
      */
@@ -94,7 +94,7 @@ class UnitModifier {
             unitModifiers.push(unitModifier)
         }
 
-        return UnitModifier.applyMultiple(unitToUnitAttrs, unitModifiers, auxData)
+        return UnitModifiers.applyMultiple(unitToUnitAttrs, unitModifiers, auxData)
     }
 
     /**
@@ -107,6 +107,11 @@ class UnitModifier {
     static apply(unitToUnitAttrs, unitModifier, auxData) {
         assert(UnitModifiersSchema.validate(unitModifier))
         unitModifier.apply(unitToUnitAttrs, auxData)
+
+        // Paranoid verify modifier did not break it.
+        for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+            assert(UnitAttrsSchema.validate(unitAttrs))
+        }
     }
 
     /**
@@ -125,7 +130,7 @@ class UnitModifier {
         }
         unitModifiers.sort((a, b) => { return priority[a.type] - priority[b.type] })
         for (const unitModifier of unitModifiers) {
-            unitModifier.apply(unitToUnitAttrs, unitModifier, auxData)
+            UnitModifiers.apply(unitToUnitAttrs, unitModifier, auxData)
         }
         return unitModifiers
     }
@@ -133,5 +138,5 @@ class UnitModifier {
 
 module.exports = {
     UNIT_MODIFIERS,
-    UnitModifier,
+    UnitModifiers,
 }
