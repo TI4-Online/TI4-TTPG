@@ -12,6 +12,7 @@
     "guid": "node tooling/guid.js",
     "generate:playertokens": "node tooling/generators/playertokens.js",
     "generate:maptiles": "node tooling/generators/maptiles.js",
+    "generate:langfile": "node tooling/lang.js",
     "test": "jest"
   },
   "main": "index.js",

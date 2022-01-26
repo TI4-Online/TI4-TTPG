@@ -210,4 +210,3 @@ it ('CardsheetLayout.splitIntoSheets', async () => {
     assert.equal(cardDataSheets[1][0].extra.cardSheetIndex, 1)
     assert.equal(cardDataSheets[1][0].extra.cardSheetPosition, 0)
 })
-
