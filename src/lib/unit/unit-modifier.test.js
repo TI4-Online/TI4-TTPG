@@ -1,0 +1,38 @@
+const assert = require('assert')
+const { UnitModifier } = require('./unit-modifier')
+const { UnitAttrs } = require('./unit-attrs')
+
+it('apply', () => {
+    const unitModifier = new UnitModifier({
+        localeName: 'unit_modifier.name.morale_boost',
+        localeDescription: 'unit_modifier.desc.morale_boost',
+        triggerNsids: [
+            'card.action:base/morale_boost.1',
+            'card.action:base/morale_boost.2',
+            'card.action:base/morale_boost.3',
+            'card.action:base/morale_boost.4'
+        ],
+        owner: 'self',
+        type: 'adjust',
+        isCombat: true,
+        apply: unitToUnitAttrs => {
+            for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+                const attrs = unitAttrs.get()
+                if (attrs.spaceCombat) {
+                    attrs.spaceCombat.hit -= 1
+                }
+                if (attrs.groundCombat) {
+                    attrs.groundCombat.hit -= 1
+                }
+            }
+        }
+    })
+
+    const unitToUnitAttrs = UnitAttrs.default()
+    assert.equal(unitToUnitAttrs.fighter.get().spaceCombat.hit, 9)
+    assert.equal(unitToUnitAttrs.infantry.get().groundCombat.hit, 8)
+
+    unitModifier.apply(unitToUnitAttrs)
+    assert.equal(unitToUnitAttrs.fighter.get().spaceCombat.hit, 8)
+    assert.equal(unitToUnitAttrs.infantry.get().groundCombat.hit, 7)
+})

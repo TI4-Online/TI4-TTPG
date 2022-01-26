@@ -3,6 +3,7 @@ const { UnitAttrsSchema } = require('./unit-attrs-schema')
 
 it('validate good unit', () => {
     let carrier = {
+        unit: "carrier",
         localeName: "unit.carrier",
         cost: 3,
         spaceCombat: {dice: 1, hit: 9},
@@ -15,7 +16,8 @@ it('validate good unit', () => {
 
 it('validate complex unit', () => {
     let helTitan = {
-        localeName: "unit.hel_titan_1",
+        unit: "hel_titan",
+        localeName: "unit.hel_titan_2",
         planetaryShield: true,
         spaceCannon: {dice: 1, hit: 6},
         sustainDamage: true,
@@ -28,6 +30,7 @@ it('validate complex unit', () => {
 
 it('reject unit missing required localeName', () => {
     let badCarrier = {
+        unit: "carrier",
         cost: 3,
         spaceCombat: {dice: 1, hit: 9},
         move: 1,
@@ -39,6 +42,7 @@ it('reject unit missing required localeName', () => {
 
 it('reject unit with bad cost type', () => {
     let badCarrier = {
+        unit: "carrier",
         localeName: "unit.carrier",
         cost: '3',
         spaceCombat: {dice: 1, hit: 9},
@@ -51,6 +55,7 @@ it('reject unit with bad cost type', () => {
 
 it('apply default value to spaceCombat.dice', () => {
     let carrier = {
+        unit: "carrier",
         localeName: "unit.carrier",
         spaceCombat: {hit: 9},
         move: 1,

@@ -1,23 +1,53 @@
 const Ajv = require("ajv")
 
-const UNIT_SCHEMA = {
+const UNIT_ATTRS_SCHEMA = {
     type: "object",
     properties: {
-        localeName: {type: "string"}, // REQUIRED, unit and upgrades always have a name
-        unitNsid: {type: "string"},
-        triggerNsids: {
-            type: "array", items: {type: "string"}
-        },
-        upgrade: {
+        unit: {type: "string"}, // is or upgrades this base unit; simple name [a-z0-9_] (e.g. "war_sun")
+        level: {type: "number", default: 1},
+        localeName: {type: "string"}, // human-readable name (after locale)
+        unitNsid: {type: "string"}, // plastic unit nsid, for finding units on table
+        triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
+
+        ship: {type: "boolean"},
+        structure: {type: "boolean"},
+
+        // Unit abilities.
+        sustainDamage: {type: "boolean"},
+        antiFighterBarrage:{
             type: "object",
             properties: {
-                unit: {type: "string"},
-                level: {type: "integer"}
+                dice: {type: "integer", default: 1},
+                hit: {type: "integer", maximum: 10}
             },
-            required: ["unit", "level"]
+            required: ["hit"]
         },
+        bombardment: {
+            type: "object",
+            properties: {
+                dice: {type: "integer", default: 1},
+                hit: {type: "integer", maximum: 10},
+                extraDice: {type: "integer"}
+            },
+            required: ["hit"]
+        },
+        planetaryShield: {type: "boolean"},
+        disablePlanetaryShield: {type: "boolean"},
+        production: {type: "integer"}, // if negative use as R+ value (e.g. space dock 1 = -2)
+        spaceConnon: {
+            type: "object",
+            properties: {
+                dice: {type: "integer", default: 1},
+                hit: {type: "integer", maximum: 10},
+                range: {type: "integer"},
+                extraDice: {type: "integer"}
+            },
+            required: ["hit"]
+        },
+
+        // Unit attributes.
         cost: {type: "integer"},
-        produce: {type: "integer"},
+        produce: {type: "integer"}, // infantry cost=1 produce=2
         spaceCombat: {
             type: "object",
             properties: {
@@ -36,19 +66,6 @@ const UNIT_SCHEMA = {
             },
             required: ["hit"]
         },
-        move: {type: "integer"},
-        capacity: {type: "integer"},
-        ship: {type: "boolean"},
-        sustainDamage: {type: "boolean"},
-        bombardment: {
-            type: "object",
-            properties: {
-                dice: {type: "integer", default: 1},
-                hit: {type: "integer", maximum: 10},
-                extraDice: {type: "integer"}
-            },
-            required: ["hit"]
-        },
         groundCombat: {
             type: "object",
             properties: {
@@ -59,34 +76,14 @@ const UNIT_SCHEMA = {
             },
             required: ["hit"]
         },
-        planetaryShield: {type: "boolean"},
-        spaceConnon: {
-            type: "object",
-            properties: {
-                dice: {type: "integer", default: 1},
-                hit: {type: "integer", maximum: 10},
-                range: {type: "integer"},
-                extraDice: {type: "integer"}
-            },
-            required: ["hit"]
-        },
-        structure: {type: "boolean"},
-        production: {type: "integer"},
-        antiFighterBarrage:{
-            type: "object",
-            properties: {
-                dice: {type: "integer", default: 1},
-                hit: {type: "integer", maximum: 10}
-            },
-            required: ["hit"]
-        },
-        disablePlanetaryShield: {type: "boolean"},
+        move: {type: "integer"},
+        capacity: {type: "integer"},
     },
-    required: ["localeName"]
+    required: ["unit", "localeName"]
 }
 
 // Lazy instantiate on first use.
-let _unitValidator = false
+let _unitAttrsValidator = false
 
 class UnitAttrsSchema {
     constructor() {
@@ -94,12 +91,12 @@ class UnitAttrsSchema {
     }
 
     static validate(unit, onError) {
-        if (!_unitValidator) {
+        if (!_unitAttrsValidator) {
             const ajv = new Ajv({useDefaults: true})
-            _unitValidator = ajv.compile(UNIT_SCHEMA)
+            _unitAttrsValidator = ajv.compile(UNIT_ATTRS_SCHEMA)
         }
-        if (!_unitValidator(unit)) {
-            (onError ? onError : console.error)(_unitValidator.errors)
+        if (!_unitAttrsValidator(unit)) {
+            (onError ? onError : console.error)(_unitAttrsValidator.errors)
             return false
         }
         return true
