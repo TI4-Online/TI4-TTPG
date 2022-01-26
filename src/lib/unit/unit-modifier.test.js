@@ -15,24 +15,23 @@ it('apply', () => {
         owner: 'self',
         type: 'adjust',
         isCombat: true,
-        apply: unitToUnitAttrs => {
+        apply: (unitToUnitAttrs, selfUnits, opponentUnits) => {
             for (const unitAttrs of Object.values(unitToUnitAttrs)) {
-                const attrs = unitAttrs.get()
-                if (attrs.spaceCombat) {
-                    attrs.spaceCombat.hit -= 1
+                if (unitAttrs.spaceCombat) {
+                    unitAttrs.spaceCombat.hit -= 1
                 }
-                if (attrs.groundCombat) {
-                    attrs.groundCombat.hit -= 1
+                if (unitAttrs.groundCombat) {
+                    unitAttrs.groundCombat.hit -= 1
                 }
             }
         }
     })
 
-    const unitToUnitAttrs = UnitAttrs.default()
-    assert.equal(unitToUnitAttrs.fighter.get().spaceCombat.hit, 9)
-    assert.equal(unitToUnitAttrs.infantry.get().groundCombat.hit, 8)
+    const unitToUnitAttrs = UnitAttrs.defaultUnitToUnitAttrs()
+    assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 9)
+    assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 8)
 
     unitModifier.apply(unitToUnitAttrs)
-    assert.equal(unitToUnitAttrs.fighter.get().spaceCombat.hit, 8)
-    assert.equal(unitToUnitAttrs.infantry.get().groundCombat.hit, 7)
+    assert.equal(unitToUnitAttrs.fighter.spaceCombat.hit, 8)
+    assert.equal(unitToUnitAttrs.infantry.groundCombat.hit, 7)
 })

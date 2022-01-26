@@ -123,63 +123,67 @@ const UNIT_UPGRADES = [
 ]
 
 /**
- * Unit attributes for a given unit type.
+ * Manage unit attributes.  
+ * 
+ * Do not make this a proper class so consumers can use simple traversal like 
+ * `attrs.spaceCombat.hit`.  Moreover who knows what homebrewers might want 
+ * to do with unit modifiers, keeping things as simple tables is flexible.
  */
 class UnitAttrs {
     /**
-     * Get a map from base unit string to UnitAttrs Objects.
+     * Static-only class, do not instantiate it.
+     */
+     constructor() {
+        throw new Error('Static only')
+    }
+
+    /**
+     * Get a map from base unit string to unitAttr objects.
+     * Copy unitAttr tables so owner is free to mutate them.
+     * 
      * @returns {object}
      */
-    static default() {
+    static defaultUnitToUnitAttrs() {
         const result = {}
         for (const attrs of BASE_UNITS) {
-            result[attrs.unit] = new UnitAttrs(attrs)
+            assert(UnitAttrsSchema.validate(attrs))
+            result[attrs.unit] = _.cloneDeep(attrs)
         }
         return result
     }
 
     /**
-     * Constructor.
+     * Get a map from base unit string to unitAttr upgrades.
+     * This is primarily for unittest support.
      * 
-     * @param {object} baseAttrs - unit schema compliant attrs
+     * @returns {object}
      */
-    constructor(baseAttrs) {
-        assert(typeof baseAttrs === 'object')
-        assert(UnitAttrsSchema.validate(baseAttrs))
-
-        // Copy base attrs for safe mutation later.
-        this._attrs = _.cloneDeep(baseAttrs)
+    static defaultUnitToUnitUpgrade() {
+        const result = {}
+        for (const upgrade of UNIT_UPGRADES) {
+            assert(UnitAttrsSchema.validate(upgrade))
+            result[upgrade.unit] = _.cloneDeep(upgrade)
+        }
+        return result
     }
 
     /**
-     * Apply unit upgrade.
+     * Apply unit upgrade, overwrites original in place.
      * 
+     * @param {object} unitAttrs - unit schema compliant attrs
      * @param {object} upgradeAttrs - unit schema compliant attrs
      */
-    upgrade(upgradeAttrs) {
+    static upgrade(unitAttrs, upgradeAttrs) {
+        assert(typeof unitAttrs === 'object')
         assert(typeof upgradeAttrs === 'object')
+        assert(unitAttrs.unit === upgradeAttrs.unit)
+        assert(typeof upgradeAttrs.level === 'number')
+        assert((!unitAttrs.level) || unitAttrs.level <= upgradeAttrs.level)
+        
+        assert(UnitAttrsSchema.validate(unitAttrs))
         assert(UnitAttrsSchema.validate(upgradeAttrs))
-        assert(upgradeAttrs.unit === this._attrs.unit)
 
-        _.merge(this._attrs, upgradeAttrs)
-    }
-
-    /**
-     * Get mutable unit attributes.
-     * 
-     * @returns {object} unit schema compliant attrs
-     */
-    get() {
-        return this._attrs
-    }
-
-    /**
-     * Verify unit still follows schema.
-     * 
-     * @returns {boolean} true if valid
-     */
-    validate() {
-        return UnitAttrsSchema.validate(this._attrs)
+        _.merge(unitAttrs, upgradeAttrs)
     }
 }
 

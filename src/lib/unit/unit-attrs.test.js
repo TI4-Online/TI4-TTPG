@@ -6,6 +6,10 @@ const {
     UNIT_UPGRADES,
 } = require('./unit-attrs')
 
+it('static only', () => {
+    assert.throws(() => { new UnitAttrs() })
+})
+
 it('validate BASE_UNITS schema', () => {
     for (const unitAttrs of BASE_UNITS) {
         const isValid = UnitAttrsSchema.validate(unitAttrs)
@@ -20,61 +24,27 @@ it('validate UNIT_UPGRADE schema', () => {
     }
 })
 
-it ('static default', () => {
-    const unitToAttrs = UnitAttrs.default()
-    assert(unitToAttrs['fighter'])
-    assert.equal(unitToAttrs['fighter'].get().unit, 'fighter')
+it ('defaultUnitToUnitAttrs', () => {
+    const unitToAttrs = UnitAttrs.defaultUnitToUnitAttrs()
+    assert(unitToAttrs.fighter)
+    assert.equal(unitToAttrs.fighter.unit, 'fighter')
 })
 
 it ('upgrade', () => {
-    const unitAttrs = new UnitAttrs({
-        unit : 'carrier',
-        localeName : 'unit.carrier',
-        unitNsid : 'unit:base/carrier',
-        cost : 3,
-        spaceCombat : { dice : 1, hit : 9 },
-        move : 1,
-        capacity : 4,
-        ship : true,
-    })
-    assert.equal(unitAttrs.get().unit, 'carrier')
-    assert.equal(unitAttrs.get().level, 1) // schema validation fills in defaults
-    assert.equal(unitAttrs.get().move, 1)
-    unitAttrs.upgrade({
-        unit : 'carrier',
-        level : 2,
-        localeName : 'unit.carrier_2',
-        triggerNsid : 'card.technology.unit_upgrade:base/carrier_2',
-        move : 2, 
-        capacity : 6
-    })
-    assert.equal(unitAttrs.get().unit, 'carrier')
-    assert.equal(unitAttrs.get().level, 2)
-    assert.equal(unitAttrs.get().move, 2)
+    const carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
+    const carrier2 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
+    assert.equal(carrier.unit, 'carrier')
+    assert.equal(carrier.move, 1)
+    UnitAttrs.upgrade(carrier, carrier2) // mutates carrier in place
+    assert.equal(carrier.unit, 'carrier')
+    assert.equal(carrier.level, 2)
+    assert.equal(carrier.move, 2)
 })
 
 it('reject upgrade mismatch', () => {
-    const unitAttrs = new UnitAttrs({
-        unit : 'carrier',
-        localeName : 'unit.carrier',
-        unitNsid : 'unit:base/carrier',
-        cost : 3,
-        spaceCombat : { dice : 1, hit : 9 },
-        move : 1,
-        capacity : 4,
-        ship : true,
-    })
-    assert.equal(unitAttrs.get().unit, 'carrier')
-    assert.equal(unitAttrs.get().level, 1) // schema validation fills in defaults
-    assert.equal(unitAttrs.get().move, 1)
+    const carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
+    const cruiser2 = UnitAttrs.defaultUnitToUnitUpgrade().cruiser
     assert.throws(() => {
-        unitAttrs.upgrade({
-            unit : 'cruiser',
-            level : 2,
-            localeName : 'unit.cruiser_2',
-            spaceCombat : { hit : 6 }, 
-            move : 3, 
-            capacity : 1 
-        })
+        UnitAttrs.upgrade(carrier, cruiser2)
     })
 })

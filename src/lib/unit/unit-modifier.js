@@ -39,11 +39,6 @@ class UnitModifier {
     
     apply(unitToUnitAttrs) {
         this._modifier.apply(unitToUnitAttrs)
-
-        // Paranoid verify modifier did not break unitAttrs.
-        for (const unitAttrs of Object.values(unitToUnitAttrs)) {
-            unitAttrs.validate()
-        }
     }
 }
 
