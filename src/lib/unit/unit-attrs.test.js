@@ -41,7 +41,14 @@ it('validate', () => {
     carrier.validate()
 
     carrier.raw.unit = false
+
+    // Fail by returning a bool.
     assert(!carrier.validate())
+
+    // Fail using custom error handler.
+    assert.throws(() => {
+        carrier.validate(err => { throw new Error(err) })
+    })
 })
 
 it('upgrade', () => {

@@ -48,9 +48,11 @@ class UnitAttrs {
 
     /**
      * Assert this UnitAttrs complies with the schema.
+     * 
+     * @param {function} onError - optional, called with the error
      */
-    validate() {
-        return UnitAttrsSchema.validate(this._attrs)
+    validate(onError) {
+        return UnitAttrsSchema.validate(this._attrs, onError)
     }
 
     /**
