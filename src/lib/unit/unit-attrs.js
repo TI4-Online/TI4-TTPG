@@ -2,14 +2,16 @@ const assert = require('assert')
 const _ = require('lodash')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
-const { world, Card, Player } = require('../../wrapper/api')
+const { world, Card, GameObject, Player } = require('../../wrapper/api')
 
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const UNIT_ATTRS = require('./unit-attrs.data')
 
+let _defaultUnitAttrs = false
 let _triggerNsidToUnitUpgrade = false
 
-function _nsidToUnitUpgrade(nsid) {
+function _getUnitUpgrade(gameObject) {
+    assert(gameObject instanceof GameObject)
     if (!_triggerNsidToUnitUpgrade) {
         _triggerNsidToUnitUpgrade = {}
         for (const rawAttrs of UNIT_ATTRS) {
@@ -29,6 +31,7 @@ function _nsidToUnitUpgrade(nsid) {
             }
         }
     }
+    const nsid = ObjectNamespace.getNsid(gameObject)
     return _triggerNsidToUnitUpgrade[nsid]
 }
 
@@ -42,11 +45,18 @@ class UnitAttrs {
      * @returns {Object.<string, UnitAttrs>}
      */
     static defaultUnitTypeToUnitAttrs() {
-        const result = {}
-        for (const attrs of UNIT_ATTRS) {
-            if (!attrs.upgradeLevel) {
-                result[attrs.unit] = new UnitAttrs(attrs)
+        // Cache the full scan result.
+        if (!_defaultUnitAttrs) {
+            _defaultUnitAttrs = {}
+            for (const attrs of UNIT_ATTRS) {
+                if (!attrs.upgradeLevel) {
+                    _defaultUnitAttrs[attrs.unit] = new UnitAttrs(attrs)
+                }
             }
+        }
+        const result = {}
+        for (const [unit, unitAttrs] of Object.entries(_defaultUnitAttrs)) {
+            result[unit] = new UnitAttrs(unitAttrs.raw)
         }
         return result
     }
@@ -73,8 +83,7 @@ class UnitAttrs {
 
         const unitUpgrades = []
         for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj)
-            const unitUpgrade = _nsidToUnitUpgrade(nsid)
+            const unitUpgrade = _getUnitUpgrade(obj)
             if (!unitUpgrade) {
                 continue  // not a candidate
             }

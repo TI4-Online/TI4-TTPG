@@ -1,7 +1,7 @@
 const assert = require('assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
-const { world, Card, Player } = require('../../wrapper/api')
+const { world, Card, GameObject, Player } = require('../../wrapper/api')
 
 const { UnitModifierSchema } = require('./unit-modifier-schema')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
@@ -14,7 +14,8 @@ const PRIORITY = {
 
 let _triggerNsidToUnitModifier = false
 
-function _nsidToUnitModifier(nsid) {
+function _getUnitModifier(gameObject) {
+    assert(gameObject instanceof GameObject)
     if (!_triggerNsidToUnitModifier) {
         _triggerNsidToUnitModifier = {}
         for (const rawModifier of UNIT_MODIFIERS) {
@@ -30,6 +31,7 @@ function _nsidToUnitModifier(nsid) {
             }
         }
     }
+    const nsid = ObjectNamespace.getNsid(gameObject)
     return _triggerNsidToUnitModifier[nsid]
 }
 
@@ -66,8 +68,7 @@ class UnitModifier {
 
         const unitModifiers = []
         for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj)
-            const unitModifier = _nsidToUnitModifier(nsid)
+            const unitModifier = _getUnitModifier(obj)
             if (!unitModifier) {
                 continue
             }
