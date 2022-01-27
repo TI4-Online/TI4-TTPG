@@ -56,8 +56,8 @@ it('validate', () => {
 
     carrier.raw.unit = false
 
-    // Fail by returning a bool.
-    assert(!carrier.validate())
+    // Fail by returning a bool, empty error handler to suppress console log.
+    assert(!carrier.validate(err => {}))
 
     // Fail using custom error handler.
     assert.throws(() => {

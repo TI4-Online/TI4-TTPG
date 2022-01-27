@@ -1,81 +1,64 @@
 const assert = require('assert')
-const { UnitModifiersSchema } = require('./unit-modifiers-schema')
-const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { world } = require('../../wrapper/api')
 
-const UNIT_MODIFIERS = [
-    {
-        localeName: 'unit_modifier.name.morale_boost',
-        localeDescription: 'unit_modifier.desc.morale_boost',
-        triggerNsids: [
-            'card.action:base/morale_boost.1',
-            'card.action:base/morale_boost.2',
-            'card.action:base/morale_boost.3',
-            'card.action:base/morale_boost.4'
-        ],
-        owner: 'self',
-        type: 'adjust',
-        isCombat: true,
-        apply: unitToUnitAttrs => {
-            for (const unitAttrs of Object.values(unitToUnitAttrs)) {
-                const attrs = unitAttrs.get()
-                if (attrs.spaceCombat) {
-                    attrs.spaceCombat.hit -= 1
-                }
-                if (attrs.groundCombat) {
-                    attrs.groundCombat.hit -= 1
-                }
-            }
-        }
-    },
-    // TODO MORE XXX
-]
+const { UnitModifiersSchema } = require('./unit-modifiers-schema')
+const UNIT_MODIFIERS = require('./unit-modifiers.data')
 
 let _triggerNsidToUnitModifier = false
 
-/**
- * Manage unit modifiers.
- * 
- * Like UnitAttrs, take a static approach for gathering and applying relevant 
- * unit modifiers in the correct order.
- */
-class UnitModifiers {
-    /**
-     * Static-only class, do not instantiate it.
-     */
-     constructor() {
-        throw new Error('Static only')
-    }
-
-    /**
-     * Apply player's unit modifiers.
-     * 
-     * Some modifiers need to know information about the player or opponent,
-     * or what / how many units are involved on one side or the other.
-     * 
-     * @param {object} unitToUnitAttrs - mutated in place
-     * @param {object} auxData - table of misc things modifiers might use 
-     * @returns {<Array.<object>} unit modifiers, in order applied
-     */
-    static applyPlayerUnitModifiers(unitToUnitAttrs, auxData) {
-        if (!_triggerNsidToUnitModifier) {
-            _triggerNsidToUnitModifier = {}
-            for (const unitModifier of UNIT_MODIFIERS) {
-                if (unitModifier.triggerNsid) {
-                    _triggerNsidToUnitModifier[unitModifier.triggerNsid] = unitModifier
-                }
-                if (unitModifier.triggerNsids) {
-                    for (const triggerNsid of unitModifier.triggerNsids) {
-                        _triggerNsidToUnitModifier[triggerNsid] = unitModifier
-                    }
+function _nsidToUnitModifier(nsid) {
+    if (!_triggerNsidToUnitModifier) {
+        _triggerNsidToUnitModifier = {}
+        for (const unitModifier of UNIT_MODIFIERS) {
+            if (unitModifier.triggerNsid) {
+                _triggerNsidToUnitModifier[unitModifier.triggerNsid] = unitModifier
+            }
+            if (unitModifier.triggerNsids) {
+                for (const triggerNsid of unitModifier.triggerNsids) {
+                    _triggerNsidToUnitModifier[triggerNsid] = unitModifier
                 }
             }
         }
+    }
+    return _triggerNsidToUnitModifier[nsid]
+}
 
-        const unitModifiers = {}
+/**
+ * A unit modifier mutates one or more unit attributes.  
+ * 
+ * Modifiers may have `applyEach(UnitData)` and `applyAll(UnitTypeToUnitData)`.
+ * `applyEach` is for simple modifiers, called separately for each unit type.
+ * `applyAll` is for modifiers that need to see all units at once, for instance
+ * to choose the "best" to receive a bonus.
+ */
+class UnitModifiers {
+    /**
+     * Sort in apply order.
+     * 
+     * @param {Array.<unitModifier>} unitModifierArray 
+     * @returns {Array.<unitModifier>} ordered (original list also mutated in place)
+     */
+    static sortPriorityOrder(unitModifierArray) {
+        const priority = {
+            mutate : 1,
+            adjust : 2,
+            choose : 3
+        }
+        unitModifierArray.sort((a, b) => { return priority[a._modifier.priority] - priority[b._modifier.priority] })
+        return unitModifierArray
+    }
+
+    /**
+     * Find player's unit modifiers.
+     * 
+     * @param {Player} player 
+     * @returns {Array.<unitModifier>} modifiers in priority order
+     */
+    static findPlayerUnitModifiers(player) {
+        const unitModifiers = []
         for (const obj of world.getAllObjects()) {
             const nsid = obj.getTemplateMetadata()
-            const unitModifier = _triggerNsidToUnitModifier[nsid]
+            const unitModifier = _nsidToUnitModifier(nsid)
             if (!unitModifier) {
                 continue
             }
@@ -93,50 +76,45 @@ class UnitModifiers {
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier)
         }
+        return UnitModifiers.sortPriorityOrder(unitModifiers)
+    }
 
-        return UnitModifiers.applyMultiple(unitToUnitAttrs, unitModifiers, auxData)
+    // ------------------------------------------------------------------------
+
+    /**
+     * Constructor.
+     * 
+     * @param {object} modifier - UnitModifiersSchema compliant object
+     */
+    constructor(modifier) {
+        assert(typeof modifier === 'object')
+        assert(UnitModifiersSchema.validate(modifier))
+        this._modifier = modifier
     }
 
     /**
-     * Apply a single unit modifier.
+     * Apply unit modifier.
      * 
      * @param {object} unitToUnitAttrs - mutated in place
-     * @param {object} unitModifier
      * @param {object} auxData - table of misc things modifiers might use
      */
-    static apply(unitToUnitAttrs, unitModifier, auxData) {
-        assert(UnitModifiersSchema.validate(unitModifier))
-        unitModifier.apply(unitToUnitAttrs, auxData)
+    apply(unitToUnitAttrs, auxData) {
+        if (this._modifier.applyEach) {
+            for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+                this._modifier.applyEach(unitAttrs, auxData)
+            }
+        }
+        if (this._modifier.applyAll) {
+            this._modifier.applyAll(unitToUnitAttrs, auxData)
+        }
 
         // Paranoid verify modifier did not break it.
         for (const unitAttrs of Object.values(unitToUnitAttrs)) {
-            assert(UnitAttrsSchema.validate(unitAttrs))
+            assert(unitAttrs.validate())
         }
-    }
-
-    /**
-     * Apply multiple unit modifiers, in mutate -> adjust -> choose order.
-     * 
-     * @param {object} unitToUnitAttrs - mutated in place
-     * @param {Array.<object>} unitModifiers
-     * @param {object} auxData - table of misc things modifiers might use
-     * @returns {<Array.<object>} unit modifiers, in order applied
-     */
-    static applyMultiple(unitToUnitAttrs, unitModifiers, auxData) {
-        const priority = {
-            mutate : 1,
-            adjust : 2,
-            choose : 3
-        }
-        unitModifiers.sort((a, b) => { return priority[a.type] - priority[b.type] })
-        for (const unitModifier of unitModifiers) {
-            UnitModifiers.apply(unitToUnitAttrs, unitModifier, auxData)
-        }
-        return unitModifiers
     }
 }
 
 module.exports = {
-    UNIT_MODIFIERS,
     UnitModifiers,
 }

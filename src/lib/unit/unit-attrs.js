@@ -7,6 +7,28 @@ const UNIT_ATTRS = require('./unit-attrs.data')
 
 let _triggerNsidToUnitUpgrade = false
 
+function _nsidToUnitUpgrade(nsid) {
+    if (!_triggerNsidToUnitUpgrade) {
+        _triggerNsidToUnitUpgrade = {}
+        for (const unitUpgrade of UNIT_ATTRS) {
+            if (!unitUpgrade.upgradeLevel) {
+                continue // basic unit, not an upgrade
+            }
+
+            // Unit upgrade card.
+            if (unitUpgrade.triggerNsid) {
+                _triggerNsidToUnitUpgrade[unitUpgrade.triggerNsid] = unitUpgrade
+            }
+
+            // Faction override (list of faction units provided by each faction).
+            if (unitUpgrade.triggerFactionUnit) {
+                // TODO XXX
+            }
+        }
+    }
+    return _triggerNsidToUnitUpgrade[nsid]
+}
+
 /**
  * Mutable unit attributes.  
  */
@@ -16,7 +38,7 @@ class UnitAttrs {
      * 
      * @returns {Object.<string, UnitAttrs>}
      */
-     static defaultUnitTypeToUnitAttrs() {
+    static defaultUnitTypeToUnitAttrs() {
         const result = {}
         for (const attrs of UNIT_ATTRS) {
             if (!attrs.upgradeLevel) {
@@ -32,10 +54,43 @@ class UnitAttrs {
      * @param {Array.<UnitAttrs>} upgradeAttrsArray - unit schema compliant attrs
      * @returns {Array.<UnitAttrs>} ordered (original list also mutated in place)
      */
-     static sortUpgradeLevelOrder(upgradeAttrsArray) {
-        upgradeAttrsArray.sort((a, b) => { return (a.raw.upgradeLevel || 1) - (b.raw.upgradeLevel || 1) })
+    static sortUpgradeLevelOrder(upgradeAttrsArray) {
+        upgradeAttrsArray.sort((a, b) => { return (a._attrs.upgradeLevel || 1) - (b._attrs.upgradeLevel || 1) })
         return upgradeAttrsArray
     }
+
+    /**
+     * Find player's unit upgrades.
+     * 
+     * @param {Player} player
+     * @returns {Array.<UnitAttrs>} upgrades in level order
+     */
+    static findPlayerUnitUpgrades(player) {
+        const unitUpgrades = []
+        for (const obj of world.getAllObjects()) {
+            const nsid = obj.getTemplateMetadata()
+            const unitUpgrade = _nsidToUnitUpgrade(nsid)
+            if (!unitUpgrade) {
+                continue  // not a candidate
+            }
+
+            if (unitUpgrade.unit !== this._attrs.unit) {
+                continue  // unit upgrade, but for different unit type
+            }
+
+            // TODO XXX CHECK IF IN PLAYER AREA
+            // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
+            const insidePlayerArea = true // TODO XXX
+            if (!insidePlayerArea) {
+                continue
+            }
+
+            unitUpgrades.push(unitUpgrade)
+        }
+        return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades)
+    }
+
+    // ------------------------------------------------------------------------
 
     /**
      * Constructor.  Makes a copy of the attrs for later mutation.
@@ -73,62 +128,12 @@ class UnitAttrs {
      */
     upgrade(upgradeAttrs) {
         assert(upgradeAttrs instanceof UnitAttrs)
-        assert(this._attrs.unit === upgradeAttrs.raw.unit)
-        assert(upgradeAttrs.raw.upgradeLevel)
-        assert((this._attrs.upgradeLevel || 0) <= upgradeAttrs.raw.upgradeLevel)
+        assert(this._attrs.unit === upgradeAttrs._attrs.unit)
+        assert(upgradeAttrs._attrs.upgradeLevel)
+        assert((this._attrs.upgradeLevel || 0) <= upgradeAttrs._attrs.upgradeLevel)
 
-        _.merge(this._attrs, upgradeAttrs.raw)
+        _.merge(this._attrs, upgradeAttrs._attrs)
     }
-
-    /**
-     * Apply player's unit upgrades.
-     * 
-     * @param {Player} player 
-     */
-    applyPlayerUnitUpgrades(player) {
-        if (!_triggerNsidToUnitUpgrade) {
-            _triggerNsidToUnitUpgrade = {}
-            for (const unitUpgrade of UNIT_ATTRS) {
-                if (!unitUpgrade.upgradeLevel) {
-                    continue // basic unit, not an upgrade
-                }
-
-                // Unit upgrade card.
-                if (unitUpgrade.triggerNsid) {
-                    _triggerNsidToUnitUpgrade[unitUpgrade.triggerNsid] = unitUpgrade
-                }
-
-                // Faction override (list of faction units provided by each faction).
-                if (unitUpgrade.triggerFactionUnit) {
-                    // TODO XXX
-                }
-            }
-        }
-
-        const unitUpgrades = {}
-        for (const obj of world.getAllObjects()) {
-            const nsid = obj.getTemplateMetadata()
-            const unitUpgrade = _triggerNsidToUnitUpgrade[nsid]
-            if (!unitUpgrade) {
-                continue  // not a candidate
-            }
-
-            if (unitUpgrade.unit !== this._attrs.unit) {
-                continue  // unit upgrade, but for different unit type
-            }
-
-            // TODO XXX CHECK IF IN PLAYER AREA
-            // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
-            const insidePlayerArea = true // TODO XXX
-            if (!insidePlayerArea) {
-                continue
-            }
-
-            unitUpgrades.push(unitUpgrade)
-        }
-        this.upgradeMultiple(unitUpgrades)
-    }
-    
 }
 
 // Export for unittest

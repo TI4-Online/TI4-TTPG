@@ -8,11 +8,11 @@ const UNIT_MODIFIERS_SCHEMA = {
         triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
         triggerNsids: {type: "array", items: {type: "string"}},
         owner: {type: "string"}, // self, opponent, or any
-        type: {type: "string"}, // mutate, adjust, or choose
+        priority: {type: "string"}, // mutate, adjust, or choose
         toggleActive: {type: "boolean"},
         isCombat: {type: "boolean"},  
     },
-    required: ["localeName", "localeDescription", "owner", "type"]
+    required: ["localeName", "localeDescription", "owner", "priority"]
 }
 
 // Lazy instantiate on first use.

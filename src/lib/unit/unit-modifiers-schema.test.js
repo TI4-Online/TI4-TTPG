@@ -7,7 +7,7 @@ it('pass', () => {
         localeDescription: 'unit_modifier.desc.demo',
         triggerNsid: 'card.action:base/demo',
         owner: 'self',
-        type: 'mutate',
+        priority: 'mutate',
         isCombat: true,
         apply: unitToUnitAttrs => {}
     }
