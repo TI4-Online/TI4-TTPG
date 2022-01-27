@@ -37,7 +37,7 @@ module.exports = [
         localeName : 'unit.dreadnought',
         unitNsid : 'unit:base/dreadnought',
         sustainDamage : true,
-        bombardment : { dice : 1, hit : 5, extraDice : 0 },
+        bombardment : { dice : 1, hit : 5 },
         cost : 4,
         spaceCombat : { dice : 1, hit : 5 },
         move : 1,
@@ -84,7 +84,7 @@ module.exports = [
         localeName : 'unit.pds',
         unitNsid : 'unit:base/pds',
         planetaryShield : true,
-        spaceCannon : { dice : 1, hit : 6, range : 0, extraDice : 0 },
+        spaceCannon : { dice : 1, hit : 6 },
         structure : true,
     },
     {
@@ -170,7 +170,7 @@ module.exports = [
         triggerNsid : 'card.technology.unit_upgrade:base/war_sun',
         disablePlanetaryShield : true,
         sustainDamage : true,
-        bombardment : { dice : 3, hit : 3, extraDice : 0 },
+        bombardment : { dice : 3, hit : 3 },
         cost : 12,
         spaceCombat : { dice : 3, hit : 3 },
         move : 2,
@@ -324,7 +324,7 @@ module.exports = [
         upgradeLevel : 2,
         localeName : 'unit.destroyer.strike_wing_alpha_2',
         triggerNsid : 'card.technology.unit_upgrade.argent:pok/strike_wing_alpha_2',
-        antiFighterBarrage : { dice : 3, hit : 6, extraHitsOn : { value : 9, message : '${PlayerName} destroys ${ExtraHits} of the opponent\'s Infantry in the space area.' } },
+        antiFighterBarrage : { dice : 3, hit : 6, destroyInfantryInSpaceOn : { value : 9 } }, // TODO XXX
         spaceCombat : { hit : 7 },
         capacity : 1
     },
@@ -367,7 +367,7 @@ module.exports = [
         triggerNsid : 'card.technology.unit_upgrade.ul:franken.pok/heltitan_1',
         groundCombat : { hit : 7, dice : 1 },
         planetaryShield : true,
-        spaceCannon : { dice : 1, hit : 6, range : 0, extraDice : 0 },
+        spaceCannon : { dice : 1, hit : 6 },
         production : 1,
         sustainDamage : true
     },
@@ -378,7 +378,7 @@ module.exports = [
         triggerNsid : 'card.technology.unit_upgrade.ul:pok/heltitan_2',
         groundCombat : { hit : 6, dice : 1 },
         planetaryShield : true,
-        spaceCannon : { dice : 1, hit : 5, range : 1, extraDice : 0 },
+        spaceCannon : { dice : 1, hit : 5, range : 1 },
         production : 1,
         sustainDamage : true
     },
@@ -547,9 +547,197 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.mech.zs_thunderbolt_m2',
         triggerNsid : ''
-    }
+    },
     
-
     // Flagships.
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.001',
+        triggerNsid : 'card.technology.unit_upgrade.l1z1x:franken.base/001',
+        spaceCombat : { dice : 2, hit : 5 },
+        capacity : 5 
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.arc_secundus',
+        triggerNsid : 'card.technology.unit_upgrade.letnev:franken.base/arc_secundus',
+        disablePlanetaryShield : true,
+        bombardment : { dice : 3, hit : 5 },
+        spaceCombat : { dice : 2, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.arvicon_rex',
+        triggerNsid : 'card.technology.unit_upgrade.mahact:franken.pok/arvicon_rex',
+        spaceCombat : {dice : 2, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.cmorran_norr',
+        triggerNsid : 'card.technology.unit_upgrade.norr:franken.base/cmorran_norr',
+        spaceCombat : { dice : 2, hit : 6 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.duha_menaimon',
+        triggerNsid : 'card.technology.unit_upgrade.arborec:franken.base/duha_menaimon',
+        spaceCombat : { dice : 2, hit : 7 },
+        capacity : 5
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.dynamo',
+        triggerNsid : 'card.technology.unit_upgrade.empyrean:franken.pok/dynamo',
+        spaceCombat : { dice : 2, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.fourth_moon',
+        triggerNsid : 'card.technology.unit_upgrade.mentak:franken.base/fourth_moon',
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.genesis',
+        triggerNsid : 'card.technology.unit_upgrade.sol:franken.base/genesis',
+        spaceCombat : { dice : 2, hit : 5 },
+        capacity : 12
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.hil_colish',
+        triggerNsid : 'card.technology.unit_upgrade.creuss:franken.base/hil_colish',
+        spaceCombat : { dice : 1, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.jns_hylarim',
+        triggerNsid : 'card.technology.unit_upgrade.jolnar:franken.base/jns_hylarim',
+        spaceCombat : { dice : 2, hit : 6, extraHitsOn : { count : 2, value : 9 } }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.loncara_ssodu',
+        triggerNsid : 'card.technology.unit_upgrade.xxcha:franken.base/loncara_ssodu',
+        spaceCannon : { dice : 3, hit : 5, range : 1 },
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.matriarch',
+        triggerNsid : 'card.technology.unit_upgrade.naalu:franken.base/matriarch',
+        spaceCombat : { dice : 2, hit : 9 },
+        capacity : 6
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.memoria_i',
+        triggerNsid : 'card.technology.unit_upgrade.nomad:franken.pok/memoria_1',
+        antiFighterBarrage : { dice : 3, hit : 8 },
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.memoria_ii',
+        triggerNsid : 'card.technology.unit_upgrade.nomad:pok/memoria_2',
+        antiFighterBarrage : { dice : 3, hit : 5 },
+        spaceCombat : { dice : 2, hit : 5 },
+        capacity : 6
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.ouranos',
+        triggerNsid : 'card.technology.unit_upgrade.ul:franken.pok/ouranos',
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.quetzecoatl',
+        triggerNsid : 'card.technology.unit_upgrade.argent:franken.pok/quetzecoatl',
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.salai_sai_corian',
+        triggerNsid : 'card.technology.unit_upgrade.winnu:franken.base/salai_sai_corian',
+        spaceCombat : { dice : 1, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.son_of_ragh',
+        triggerNsid : 'card.technology.unit_upgrade.saar:franken.base/son_of_ragh',
+        antiFighterBarrage : { dice : 4, hit : 6 },
+        spaceCombat : { dice : 2, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.the_alastor',
+        triggerNsid : 'card.technology.unit_upgrade.nekro:franken.base/the_alastor',
+        spaceCombat : { dice : 2, hit : 9 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.the_inferno',
+        triggerNsid : 'card.technology.unit_upgrade.muaat:franken.base/the_inferno',
+        spaceCombat : { dice : 2, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.the_terror_between',
+        triggerNsid : 'card.technology.unit_upgrade.vuilraith:franken.pok/the_terror_between',
+        spaceCombat : { dice : 2, hit : 5 },
+        bombardment : { dice : 1, hit : 5 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.van_hauge',
+        triggerNsid : 'card.technology.unit_upgrade.yin:franken.base/van_hauge',
+        spaceCombat : { dice : 2, hit : 9 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.visz_el_vir',
+        triggerNsid : 'card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir',
+        spaceCombat : {  dice : 2, hit : 9 },
+        capacity : 4
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.wrath_of_kenara',
+        triggerNsid : 'card.technology.unit_upgrade.hacan:franken.base/wrath_of_kenara',
+        spaceCombat : { dice : 2, hit : 7 }
+    },
+    {
+        unit : 'flagship',
+        upgradeLevel : 1,
+        localeName : 'unit.flagship.ysia_yssrila',
+        triggerNsid : 'card.technology.unit_upgrade.yssaril:franken.base/ysia_yssrila',
+        spaceCombat : { dice : 2, hit : 5 },
+        move : 2
+    },
     
 ]
