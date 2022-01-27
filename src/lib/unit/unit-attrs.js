@@ -1,5 +1,6 @@
 const assert = require('assert')
 const _ = require('lodash')
+const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { world, Card, Player } = require('../../wrapper/api')
 
@@ -109,6 +110,10 @@ class UnitAttrs {
         assert(typeof attrs == 'object')
         assert(UnitAttrsSchema.validate(attrs))
         this._attrs = _.cloneDeep(attrs)
+    }
+
+    get name() {
+        return locale(this._attrs.localeName)
     }
 
     /**

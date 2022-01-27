@@ -1,4 +1,5 @@
 const assert = require('assert')
+const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { world, Card, Player } = require('../../wrapper/api')
 
@@ -107,6 +108,14 @@ class UnitModifier {
         assert(typeof modifier === 'object')
         assert(UnitModifierSchema.validate(modifier))
         this._modifier = modifier
+    }
+
+    get name() {
+        return locale(this._modifier.localeName)
+    }
+
+    get desc() {
+        return locale(this._modifier.localeDescription)
     }
 
     get raw() {

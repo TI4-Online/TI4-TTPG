@@ -12,23 +12,23 @@ const {
 } = require('../../mock/mock-api')
 
 it('UNIT_MODIFIERS schema', () => {
-    for (const unitModifier of UNIT_MODIFIERS) {
-        assert(UnitModifierSchema.validate(unitModifier))
-        assert(PRIORITY[unitModifier.priority])
+    for (const rawModifier of UNIT_MODIFIERS) {
+        assert(UnitModifierSchema.validate(rawModifier))
+        assert(PRIORITY[rawModifier.priority])
     }
 })
 
 it('UNIT_MODIFIERS locale', () => {
-    for (const unitModifier of UNIT_MODIFIERS) {
+    for (const rawModifier of UNIT_MODIFIERS) {
         const assertLocaleKey = (localKey) => {
             const s = locale(localKey)
             if (s === localKey) {
-                console.error(unitModifier)
+                console.error(rawModifier)
             }
             assert(s !== localKey) // yarn dev to (re)build lang
         }
-        assertLocaleKey(unitModifier.localeName)
-        assertLocaleKey(unitModifier.localeDescription)
+        assertLocaleKey(rawModifier.localeName)
+        assertLocaleKey(rawModifier.localeDescription)
     }
 })
 
@@ -84,6 +84,18 @@ it('static findPlayerUnitModifiers', () => {
     }
     assert.equal(result.length, 1)
     assert.equal(result[0].raw.localeName, 'unit_modifier.name.morale_boost')
+})
+
+it('name/desc', () => {
+    const moraleBoost = new UnitModifier({
+        localeName: 'unit_modifier.name.morale_boost',
+        localeDescription: 'unit_modifier.desc.morale_boost',
+        owner: 'self',
+        priority: 'adjust',
+    })
+    assert(moraleBoost instanceof UnitModifier)
+    assert.equal(typeof moraleBoost.name, 'string')
+    assert.equal(typeof moraleBoost.desc, 'string')
 })
 
 it('applyEach', () => {

@@ -11,43 +11,43 @@ const {
 } = require('../../mock/mock-api')
 
 function getDefaultUnit(unitName) {
-    for (const attrs of UNIT_ATTRS) {
-        if (!attrs.upgradeLevel) {
-            return new UnitAttrs(attrs)
+    for (const rawAttrs of UNIT_ATTRS) {
+        if (!rawAttrs.upgradeLevel) {
+            return new UnitAttrs(rawAttrs)
         }
     }
     throw new Error('unknown ' + unitName)
 }
 
 function getUnitUpgrade(unitName) {
-    for (const attrs of UNIT_ATTRS) {
-        if ((attrs.upgradeLevel || 1) > 1) {
-            return new UnitAttrs(attrs)
+    for (const rawAttrs of UNIT_ATTRS) {
+        if ((rawAttrs.upgradeLevel || 1) > 1) {
+            return new UnitAttrs(rawAttrs)
         }
     }
     throw new Error('unknown ' + unitName)
 }
 
 it('UNIT_ATTRS schema', () => {
-    for (const attrs of UNIT_ATTRS) {
-        if (!UnitAttrsSchema.validate(attrs)) {
-            console.log(attrs)
+    for (const rawAttrs of UNIT_ATTRS) {
+        if (!UnitAttrsSchema.validate(rawAttrs)) {
+            console.log(rawAttrs)
             assert (false)
         }
     }
 })
 
 it('UNIT_ATTRS locale', () => {
-    for (const attrs of UNIT_ATTRS) {
+    for (const rawAttrs of UNIT_ATTRS) {
         const assertLocaleKey = (localKey) => {
             const s = locale(localKey)
             if (s === localKey) {
-                console.error(attrs)
+                console.error(rawAttrs)
             }
             assert(s !== localKey) // yarn dev to (re)build lang
         }
-        assertLocaleKey(attrs.localeName)
-        const unitModifier = attrs.unitModifier
+        assertLocaleKey(rawAttrs.localeName)
+        const unitModifier = rawAttrs.unitModifier
         if (unitModifier) {
             assertLocaleKey(unitModifier.localeName)
             assertLocaleKey(unitModifier.localeDescription)
@@ -106,6 +106,12 @@ it('static findPlayerUnitUpgrades', () => {
     assert.equal(result.length, 1)
     assert.equal(result[0].raw.unit, 'carrier')
     assert.equal(result[0].raw.upgradeLevel, 2)
+})
+
+it('name', () => {
+    const carrier = getDefaultUnit('carrier')
+    assert(carrier instanceof UnitAttrs)
+    assert.equal(typeof carrier.name, 'string')
 })
 
 it('validate', () => {
