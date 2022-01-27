@@ -324,7 +324,7 @@ module.exports = [
         upgradeLevel : 2,
         localeName : 'unit.destroyer.strike_wing_alpha_2',
         triggerNsid : 'card.technology.unit_upgrade.argent:pok/strike_wing_alpha_2',
-        antiFighterBarrage : { dice : 3, hit : 6, destroyInfantryInSpaceOn : { value : 9 } }, // TODO XXX
+        antiFighterBarrage : { dice : 3, hit : 6, destroyInfantryInSpace : { value : 9 } }, // TODO XXX
         spaceCombat : { hit : 7 },
         capacity : 1
     },
@@ -555,7 +555,7 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.destroyer.redacted',
         triggerNsid : 'card.technology.unit_upgrade.nekro:codex.ordinian/redacted',
-        antiFighterBarrage : { dice : 3, hit : 6 },
+        antiFighterBarrage : { dice : 3, hit : 6, destroyInfantryInSpace : { value : 9 } },
         spaceCombat : { hit : 7 },
         capacity : 1
     },
