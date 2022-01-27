@@ -1,6 +1,6 @@
-const { TriggerableMulticastDelegate } = require('../lib/triggerable-multicast-delegate')
+const TriggerableMulticastDelegate = require('../lib/triggerable-multicast-delegate')
 
-class MockGlobalEvents {
+class GlobalScriptingEvents {
     onChatMessage = new TriggerableMulticastDelegate()
     onDiceRolled = new TriggerableMulticastDelegate()
     onObjectCreated = new TriggerableMulticastDelegate()
@@ -14,6 +14,4 @@ class MockGlobalEvents {
     onTick = new TriggerableMulticastDelegate()
 }
 
-module.exports = {
-    globalEvents : new MockGlobalEvents()
-}
+module.exports = GlobalScriptingEvents

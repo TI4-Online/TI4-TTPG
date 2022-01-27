@@ -174,4 +174,4 @@ class Polygon {
     }
 }
 
-module.exports.Polygon = Polygon
+module.exports = { Polygon }

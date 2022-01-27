@@ -68,6 +68,4 @@ class TriggerableMulticastDelegate {
     }
 }
 
-module.exports = {
-    TriggerableMulticastDelegate
-}
+module.exports = TriggerableMulticastDelegate
