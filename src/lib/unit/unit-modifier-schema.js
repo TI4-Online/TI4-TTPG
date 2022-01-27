@@ -1,6 +1,6 @@
 const Ajv = require("ajv")
 
-const UNIT_MODIFIERS_SCHEMA = {
+const UNIT_MODIFIER_SCHEMA = {
     type: "object",
     properties: {
         localeName: {type: "string"}, // human-readable name (after locale)
@@ -16,24 +16,24 @@ const UNIT_MODIFIERS_SCHEMA = {
 }
 
 // Lazy instantiate on first use.
-let _unitModifiersSchemaValidator = false
+let _unitModifierSchemaValidator = false
 
-class UnitModifiersSchema {
+class UnitModifierSchema {
     constructor() {
         throw new Error('Static only')
     }
 
     static validate(unit, onError) {
-        if (!_unitModifiersSchemaValidator) {
+        if (!_unitModifierSchemaValidator) {
             const ajv = new Ajv({useDefaults: true})
-            _unitModifiersSchemaValidator = ajv.compile(UNIT_MODIFIERS_SCHEMA)
+            _unitModifierSchemaValidator = ajv.compile(UNIT_MODIFIER_SCHEMA)
         }
-        if (!_unitModifiersSchemaValidator(unit)) {
-            (onError ? onError : console.error)(_unitModifiersSchemaValidator.errors)
+        if (!_unitModifierSchemaValidator(unit)) {
+            (onError ? onError : console.error)(_unitModifierSchemaValidator.errors)
             return false
         }
         return true
     }
 }
 
-module.exports.UnitModifiersSchema = UnitModifiersSchema
+module.exports.UnitModifierSchema = UnitModifierSchema

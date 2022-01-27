@@ -1,8 +1,8 @@
 const assert = require('assert')
 const { world } = require('../../wrapper/api')
 
-const { UnitModifiersSchema } = require('./unit-modifiers-schema')
-const UNIT_MODIFIERS = require('./unit-modifiers.data')
+const { UnitModifierSchema } = require('./unit-modifier-schema')
+const UNIT_MODIFIERS = require('./unit-modifier.data')
 
 let _triggerNsidToUnitModifier = false
 
@@ -31,7 +31,7 @@ function _nsidToUnitModifier(nsid) {
  * `applyAll` is for modifiers that need to see all units at once, for instance
  * to choose the "best" to receive a bonus.
  */
-class UnitModifiers {
+class UnitModifier {
     /**
      * Sort in apply order.
      * 
@@ -76,7 +76,7 @@ class UnitModifiers {
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier)
         }
-        return UnitModifiers.sortPriorityOrder(unitModifiers)
+        return UnitModifier.sortPriorityOrder(unitModifiers)
     }
 
     // ------------------------------------------------------------------------
@@ -88,7 +88,7 @@ class UnitModifiers {
      */
     constructor(modifier) {
         assert(typeof modifier === 'object')
-        assert(UnitModifiersSchema.validate(modifier))
+        assert(UnitModifierSchema.validate(modifier))
         this._modifier = modifier
     }
 
@@ -116,5 +116,5 @@ class UnitModifiers {
 }
 
 module.exports = {
-    UnitModifiers,
+    UnitModifier,
 }

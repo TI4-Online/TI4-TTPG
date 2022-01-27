@@ -1,49 +1,49 @@
 const assert = require('assert')
-const { UnitModifiersSchema } = require('./unit-modifiers-schema')
-const { UnitModifiers } = require('./unit-modifiers')
+const { UnitModifierSchema } = require('./unit-modifier-schema')
+const { UnitModifier } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
-const UNIT_MODIFIERS = require('./unit-modifiers.data')
+const UNIT_MODIFIERS = require('./unit-modifier.data')
 
 it('UNIT_MODIFIERS schema', () => {
     for (const unitModifier of UNIT_MODIFIERS) {
-        assert(UnitModifiersSchema.validate(unitModifier))
+        assert(UnitModifierSchema.validate(unitModifier))
     }
 })
 
 it('static sortPriorityOrder', () => {
-    const mutate = new UnitModifiers({
+    const mutate = new UnitModifier({
         localeName: '-',
         localeDescription: '-',
         owner: 'self',
         priority: 'mutate',
     })
-    const adjust = new UnitModifiers({
+    const adjust = new UnitModifier({
         localeName: '-',
         localeDescription: '-',
         owner: 'self',
         priority: 'adjust',
     })
-    const choose = new UnitModifiers({
+    const choose = new UnitModifier({
         localeName: '-',
         localeDescription: '-',
         owner: 'self',
         priority: 'choose',
     })
     let modifiers = [ mutate, adjust, choose ]
-    UnitModifiers.sortPriorityOrder(modifiers)
+    UnitModifier.sortPriorityOrder(modifiers)
     assert.deepEqual(modifiers, [ mutate, adjust, choose ])
 
     modifiers = [ adjust, choose, mutate ]
-    UnitModifiers.sortPriorityOrder(modifiers)
+    UnitModifier.sortPriorityOrder(modifiers)
     assert.deepEqual(modifiers, [ mutate, adjust, choose ])
 
     modifiers = [ adjust, mutate, choose ]
-    UnitModifiers.sortPriorityOrder(modifiers)
+    UnitModifier.sortPriorityOrder(modifiers)
     assert.deepEqual(modifiers, [ mutate, adjust, choose ])
 })
 
 it('applyEach', () => {
-    const unitModifier = new UnitModifiers({
+    const unitModifier = new UnitModifier({
         localeName: 'unit_modifier.name.morale_boost',
         localeDescription: 'unit_modifier.desc.morale_boost',
         triggerNsids: [
@@ -75,7 +75,7 @@ it('applyEach', () => {
 })
 
 it('applyAll', () => {
-    const unitModifier = new UnitModifiers({
+    const unitModifier = new UnitModifier({
         localeName: 'unit_modifier.name.morale_boost',
         localeDescription: 'unit_modifier.desc.morale_boost',
         triggerNsids: [

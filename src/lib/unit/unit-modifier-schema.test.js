@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UnitModifiersSchema } = require('./unit-modifiers-schema')
+const { UnitModifierSchema } = require('./unit-modifier-schema')
 
 it('pass', () => {
     const unitModifier = {
@@ -11,7 +11,7 @@ it('pass', () => {
         isCombat: true,
         apply: unitToUnitAttrs => {}
     }
-    assert(UnitModifiersSchema.validate(unitModifier))
+    assert(UnitModifierSchema.validate(unitModifier))
 })
 
 it('fail missing localeName, desc', () => {
@@ -22,5 +22,5 @@ it('fail missing localeName, desc', () => {
         isCombat: true,
         apply: unitToUnitAttrs => {}
     }
-    assert(!UnitModifiersSchema.validate(unitModifier, err => {}))
+    assert(!UnitModifierSchema.validate(unitModifier, err => {}))
 })
