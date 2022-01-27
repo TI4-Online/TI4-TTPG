@@ -8,7 +8,7 @@ const UNIT_ATTRS = require('./unit-attrs.data')
 let _triggerNsidToUnitUpgrade = false
 
 /**
- * Manage mutable unit attributes.  
+ * Mutable unit attributes.  
  */
 class UnitAttrs {
     /**
@@ -29,7 +29,7 @@ class UnitAttrs {
     /**
      * Constructor.  Makes a copy of the attrs for later mutation.
      * 
-     * @param {object} attrs - UnitAttrsSchema complient object
+     * @param {object} attrs - UnitAttrsSchema compliant object
      */
     constructor(attrs) {
         assert(typeof attrs == 'object')
@@ -50,7 +50,7 @@ class UnitAttrs {
      * Assert this UnitAttrs complies with the schema.
      */
     validate() {
-        UnitAttrsSchema.validate(this._attrs, err => { throw new Error(err) })
+        return UnitAttrsSchema.validate(this._attrs)
     }
 
     /**

@@ -35,7 +35,16 @@ it ('defaultUnitTypeToUnitAttrs', () => {
     assert.equal(unitToAttrs.fighter.raw.unit, 'fighter')
 })
 
-it ('upgrade', () => {
+it('validate', () => {
+    const carrier = getDefaultUnit('carrier')
+    assert(carrier instanceof UnitAttrs)
+    carrier.validate()
+
+    carrier.raw.unit = false
+    assert(!carrier.validate())
+})
+
+it('upgrade', () => {
     const carrier = getDefaultUnit('carrier')
     const carrier2 = getUnitUpgrade('carrier')
     assert.equal(carrier.raw.unit, 'carrier')
