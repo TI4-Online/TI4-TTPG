@@ -1,7 +1,9 @@
 const assert = require('assert')
-const { MockGameObject } = require('../mock/mock-game-object')
-const { MockPlayer } = require('../mock/mock-player')
-const { Rotator } = require('../mock/mock-rotator')
+const {
+    MockGameObject,
+    MockPlayer,
+    MockRotator
+} = require('../mock/mock-api')
 const {
     isConsumable,
     applyRule,
@@ -16,7 +18,7 @@ const OBJ = {
     }),
     fighter_x1_faceDown : new MockGameObject({ 
         templateMetadata : 'token:base/fighter_1',
-        rotation : new Rotator(0, 0, -180)
+        rotation : new MockRotator(0, 0, -180)
     }),
     fighter : new MockGameObject({ 
         templateMetadata : 'unit:base/fighter',

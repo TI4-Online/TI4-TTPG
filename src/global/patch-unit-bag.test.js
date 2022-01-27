@@ -2,7 +2,7 @@ const {
     REJECT_REASON,
     getRejectReason
 } = require('./patch-unit-bag')
-const { MockGameObject } = require('../mock/mock-game-object')
+const { MockGameObject } = require('../mock/mock-api')
 const assert = require('assert')
 
 it('can accept unit', () => {

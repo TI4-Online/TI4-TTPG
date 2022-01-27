@@ -9,4 +9,4 @@
     }
 }
 
-module.exports.Rotator = Rotator
+module.exports = Rotator

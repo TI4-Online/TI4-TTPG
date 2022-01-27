@@ -9,4 +9,4 @@ class Vector {
     }
 }
 
-module.exports.Vector = Vector
+module.exports = Vector
