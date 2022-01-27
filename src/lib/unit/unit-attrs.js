@@ -27,6 +27,17 @@ class UnitAttrs {
     }
 
     /**
+     * Sort in increasing upgrade level order.
+     * 
+     * @param {Array.<UnitAttrs>} upgradeAttrsArray - unit schema compliant attrs
+     * @returns {Array.<UnitAttrs>} ordered (original list also mutated in place)
+     */
+     static sortUpgradeLevelOrder(upgradeAttrsArray) {
+        upgradeAttrsArray.sort((a, b) => { return (a.raw.upgradeLevel || 1) - (b.raw.upgradeLevel || 1) })
+        return upgradeAttrsArray
+    }
+
+    /**
      * Constructor.  Makes a copy of the attrs for later mutation.
      * 
      * @param {object} attrs - UnitAttrsSchema compliant object
@@ -67,20 +78,6 @@ class UnitAttrs {
         assert((this._attrs.upgradeLevel || 0) <= upgradeAttrs.raw.upgradeLevel)
 
         _.merge(this._attrs, upgradeAttrs.raw)
-    }
-
-    /**
-     * Apply unit upgrades, in level order.
-     * 
-     * @param {Array.<UnitAttrs>} upgradeAttrsArray - unit schema compliant attrs
-     * @returns {Array.<UnitAttrs>} apply order
-     */
-    upgradeMultiple(upgradeAttrsArray) {
-        upgradeAttrsArray.sort((a, b) => { return (a.raw.upgradeLevel || 1) - (b.raw.upgradeLevel || 1) })
-        for (const upgradeAttrs of upgradeAttrsArray) {
-            this.upgrade(upgradeAttrs)
-        }
-        return upgradeAttrsArray
     }
 
     /**

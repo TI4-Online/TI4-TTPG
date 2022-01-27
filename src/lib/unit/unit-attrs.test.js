@@ -28,11 +28,25 @@ it('UNIT_ATTRS schema', () => {
     }
 })
 
-it ('defaultUnitTypeToUnitAttrs', () => {
+it ('static defaultUnitTypeToUnitAttrs', () => {
     const unitToAttrs = UnitAttrs.defaultUnitTypeToUnitAttrs()
     assert(unitToAttrs.fighter)
     assert(unitToAttrs.fighter instanceof UnitAttrs)
     assert.equal(unitToAttrs.fighter.raw.unit, 'fighter')
+})
+
+it('static sortUpgradeLevelOrder', () => {
+    const carrier2 = getUnitUpgrade('carrier')
+    const carrier3 = getUnitUpgrade('carrier')
+    carrier3.raw.upgradeLevel = 3
+
+    let upgrades = [ carrier2, carrier3 ]
+    UnitAttrs.sortUpgradeLevelOrder(upgrades)
+    assert.deepEqual(upgrades, [ carrier2, carrier3 ])
+
+    upgrades = [ carrier3, carrier2 ]
+    UnitAttrs.sortUpgradeLevelOrder(upgrades)
+    assert.deepEqual(upgrades, [ carrier2, carrier3 ])
 })
 
 it('validate', () => {
@@ -72,20 +86,4 @@ it('reject upgrade mismatch', () => {
     assert.throws(() => {
         UnitAttrs.upgrade(carrier, cruiser2)
     })
-})
-
-it('upgradeMultiple', () => {
-    let carrier = getDefaultUnit('carrier')
-    const carrier2 = getUnitUpgrade('carrier')
-    const carrier3 = getUnitUpgrade('carrier')
-    carrier3.raw.upgradeLevel = 3
-
-    let unitUpgrades = [ carrier2, carrier3 ]
-    carrier.upgradeMultiple(unitUpgrades)
-    assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
-
-    carrier = getDefaultUnit('carrier') // reset
-    unitUpgrades = [ carrier3, carrier2 ]
-    carrier.upgradeMultiple(unitUpgrades)
-    assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
 })
