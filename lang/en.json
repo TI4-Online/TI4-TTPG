@@ -111,6 +111,18 @@
     "unit.flagship.visz_el_vir" : "Visz El Vir",
     "unit.flagship.wrath_of_kenara" : "Wrath of Kenara",
     "unit.flagship.ysia_yssrila" : "Y'sia Y'ssrila",
+
+    "unit_modifier.desc.arvicon_rex" : "+2 flagship COMBAT against opponent with no token in your fleet pool",
+    "unit_modifier.desc.cmorran_norr" : "+1 to all COMBAT rolls for other ships with the C'morran N'orr",
+    "unit_modifier.desc.fourth_moon" : "Opponent's ships cannot use SUSTAIN DAMAGE",
+    "unit_modifier.desc.matriarch" : "Fighters may participate in ground combat",
+    "unit_modifier.desc.quetzecoatl" : "Other players cannot use SPACE CANNON against your ships in this system",
+    "unit_modifier.desc.salai_sai_corian" : "Rolls number of dice equal to number of opponent's non-fighter ships",
+    "unit_modifier.desc.the_alastor" : "Ground forces may participate in space combat",
+    "unit_modifier.desc.visz_el_vir" : "Your mechs in this system roll 1 additional die during combat",
     
+    "unit_modifier.name.morale_boost" : "Morale Boost",
+    "unit_modifier.desc.morale_boost" : "+1 to all COMBAT rolls",
+
     "bogus.last.entry" : "reserved last entry so others can always end with a comma"
 }

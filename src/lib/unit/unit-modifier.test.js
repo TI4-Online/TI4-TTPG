@@ -1,4 +1,5 @@
 const assert = require('assert')
+const locale = require('../locale')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
 const { UnitModifier, PRIORITY } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
@@ -14,6 +15,20 @@ it('UNIT_MODIFIERS schema', () => {
     for (const unitModifier of UNIT_MODIFIERS) {
         assert(UnitModifierSchema.validate(unitModifier))
         assert(PRIORITY[unitModifier.priority])
+    }
+})
+
+it('UNIT_MODIFIERS locale', () => {
+    for (const unitModifier of UNIT_MODIFIERS) {
+        const assertLocaleKey = (localKey) => {
+            const s = locale(localKey)
+            if (s === localKey) {
+                console.error(unitModifier)
+            }
+            assert(s !== localKey) // yarn dev to (re)build lang
+        }
+        assertLocaleKey(unitModifier.localeName)
+        assertLocaleKey(unitModifier.localeDescription)
     }
 })
 

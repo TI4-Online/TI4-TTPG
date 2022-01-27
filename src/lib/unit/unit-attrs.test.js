@@ -37,13 +37,21 @@ it('UNIT_ATTRS schema', () => {
     }
 })
 
-it('UNIT_ATTRS localeName', () => {
+it('UNIT_ATTRS locale', () => {
     for (const attrs of UNIT_ATTRS) {
-        const s = locale(attrs.localeName)
-        if (s === attrs.localeName) {
-            console.error(attrs)
+        const assertLocaleKey = (localKey) => {
+            const s = locale(localKey)
+            if (s === localKey) {
+                console.error(attrs)
+            }
+            assert(s !== localKey) // yarn dev to (re)build lang
         }
-        assert(s !== attrs.localeName) // yarn dev to (re)build lang
+        assertLocaleKey(attrs.localeName)
+        const unitModifier = attrs.unitModifier
+        if (unitModifier) {
+            assertLocaleKey(unitModifier.localeName)
+            assertLocaleKey(unitModifier.localeDescription)
+        }
     }
 })
 

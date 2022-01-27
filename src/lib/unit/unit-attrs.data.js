@@ -591,8 +591,8 @@ module.exports = [
         spaceCombat : {dice : 2, hit : 5 },
         unitModifier : {
             // +2 flagship COMBAT against opponent with no token in your fleet pool
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.arvicon_rex',
+            localeDescription : 'unit_modifier.desc.arvicon_rex',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -610,8 +610,8 @@ module.exports = [
         spaceCombat : { dice : 2, hit : 6 },
         unitModifier : {
             // +1 to all COMBAT rolls for other ships with the C'morran N'orr
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.cmorran_norr',
+            localeDescription : 'unit_modifier.desc.cmorran_norr',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -646,8 +646,8 @@ module.exports = [
         spaceCombat : { dice : 2, hit : 7 },
         unitModifier : {
             // Opponent's ships cannot use SUSTAIN DAMAGE
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.fourth_moon',
+            localeDescription : 'unit_modifier.desc.fourth_moon',
             owner : 'opponent',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -697,8 +697,8 @@ module.exports = [
         capacity : 6,
         unitModifier : {
             // Fighters may participate in ground combat
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.matriarch',
+            localeDescription : 'unit_modifier.desc.matriarch',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -744,8 +744,8 @@ module.exports = [
         spaceCombat : { dice : 2, hit : 7 },
         unitModifier : {
             // Other players cannot use SPACE CANNON against your ships in this system
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.quetzecoatl',
+            localeDescription : 'unit_modifier.desc.quetzecoatl',
             owner : 'opponent',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -763,8 +763,8 @@ module.exports = [
         spaceCombat : { dice : 1, hit : 7 },
         unitModifier : {
             // Rolls number of dice equal to number of opponent's non-fighter ships
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.salai_sai_corian',
+            localeDescription : 'unit_modifier.desc.salai_sai_corian',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -790,8 +790,8 @@ module.exports = [
         spaceCombat : { dice : 2, hit : 9 },
         unitModifier : {
             // Ground forces may participate in space combat
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.the_alastor',
+            localeDescription : 'unit_modifier.desc.the_alastor',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
@@ -837,8 +837,8 @@ module.exports = [
         capacity : 4,
         unitModifier : {
             // Your mechs in this system roll 1 additional die during combat
-            localeName : 'TODO XXX',
-            localeDescription : 'TODO XXX',
+            localeName : 'unit.flagship.visz_el_vir',
+            localeDescription : 'unit_modifier.desc.visz_el_vir',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
