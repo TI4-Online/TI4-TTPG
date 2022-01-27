@@ -705,7 +705,7 @@ async function writeDeckTemplate(deckData, cardSize, cardDataArray, layout, face
     }
 
     // Generate a deterministic guid.
-    const guid = crypto.createHash('sha256').update(outputFilename).digest('hex').substring(0,32)
+    const guid = crypto.createHash('sha256').update(outputFilename).digest('hex').substring(0,32).toUpperCase()
 
     const json = {
         "Type": "Card",
