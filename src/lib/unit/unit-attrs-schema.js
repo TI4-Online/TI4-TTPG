@@ -1,6 +1,8 @@
 const Ajv = require("ajv")
+const { UNIT_MODIFIER_SCHEMA_JSON } = require('./unit-modifier-schema')
 
-const UNIT_ATTRS_SCHEMA = {
+const UNIT_ATTRS_SCHEMA_JSON = {
+    $id: "http://example.com/lib/unit/unit_attrs.json",
     type: "object",
     properties: {
         unit: {type: "string"}, // is or upgrades this base unit; simple name [a-z0-9_] (e.g. "war_sun")
@@ -13,15 +15,7 @@ const UNIT_ATTRS_SCHEMA = {
         structure: {type: "boolean"},
 
         // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
-        unitModifier: {
-            type: "object",
-            properties: {
-                localDescription: {type: "string"},
-                owner: {type: "string"}, // self, opponent, or any
-                priority: {type: "string"}, // mutate, adjust, or choose
-                isCombat: {type: "boolean"},
-            }
-        },
+        unitModifier: {$ref: "http://example.com/lib/unit/unit_modifier.json"},
 
         // Unit abilities.
         sustainDamage: {type: "boolean"},
@@ -103,8 +97,9 @@ class UnitAttrsSchema {
 
     static validate(unit, onError) {
         if (!_unitAttrsValidator) {
-            const ajv = new Ajv({useDefaults: true})
-            _unitAttrsValidator = ajv.compile(UNIT_ATTRS_SCHEMA)
+            _unitAttrsValidator = new Ajv({useDefaults: true})
+                .addSchema(UNIT_MODIFIER_SCHEMA_JSON)
+                .compile(UNIT_ATTRS_SCHEMA_JSON)
         }
         if (!_unitAttrsValidator(unit)) {
             (onError ? onError : console.error)(_unitAttrsValidator.errors)
@@ -114,4 +109,7 @@ class UnitAttrsSchema {
     }
 }
 
-module.exports.UnitAttrsSchema = UnitAttrsSchema
+module.exports = {
+    UNIT_ATTRS_SCHEMA_JSON,
+    UnitAttrsSchema
+}

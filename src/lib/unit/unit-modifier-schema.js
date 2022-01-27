@@ -1,6 +1,7 @@
 const Ajv = require("ajv")
 
-const UNIT_MODIFIER_SCHEMA = {
+const UNIT_MODIFIER_SCHEMA_JSON = {
+    $id: "http://example.com/lib/unit/unit_modifier.json",
     type: "object",
     properties: {
         localeName: {type: "string"}, // human-readable name (after locale)
@@ -25,8 +26,8 @@ class UnitModifierSchema {
 
     static validate(unit, onError) {
         if (!_unitModifierSchemaValidator) {
-            const ajv = new Ajv({useDefaults: true})
-            _unitModifierSchemaValidator = ajv.compile(UNIT_MODIFIER_SCHEMA)
+            _unitModifierSchemaValidator = new Ajv({useDefaults: true})
+                .compile(UNIT_MODIFIER_SCHEMA_JSON)
         }
         if (!_unitModifierSchemaValidator(unit)) {
             (onError ? onError : console.error)(_unitModifierSchemaValidator.errors)
@@ -36,4 +37,7 @@ class UnitModifierSchema {
     }
 }
 
-module.exports.UnitModifierSchema = UnitModifierSchema
+module.exports = {
+    UNIT_MODIFIER_SCHEMA_JSON,
+    UnitModifierSchema
+}

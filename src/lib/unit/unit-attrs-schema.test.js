@@ -2,7 +2,7 @@ const assert = require('assert')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 
 it('validate good unit', () => {
-    let carrier = {
+    const carrier = {
         unit: "carrier",
         localeName: "unit.carrier",
         cost: 3,
@@ -15,7 +15,7 @@ it('validate good unit', () => {
 })
 
 it('validate complex unit', () => {
-    let helTitan = {
+    const helTitan = {
         unit: "hel_titan",
         localeName: "unit.hel_titan_2",
         planetaryShield: true,
@@ -29,7 +29,7 @@ it('validate complex unit', () => {
 })
 
 it('reject unit missing required localeName', () => {
-    let badCarrier = {
+    const badCarrier = {
         unit: "carrier",
         cost: 3,
         spaceCombat: {dice: 1, hit: 9},
@@ -41,7 +41,7 @@ it('reject unit missing required localeName', () => {
 })
 
 it('reject unit with bad cost type', () => {
-    let badCarrier = {
+    const badCarrier = {
         unit: "carrier",
         localeName: "unit.carrier",
         cost: '3',
@@ -54,7 +54,7 @@ it('reject unit with bad cost type', () => {
 })
 
 it('apply default value to spaceCombat.dice', () => {
-    let carrier = {
+    const carrier = {
         unit: "carrier",
         localeName: "unit.carrier",
         spaceCombat: {hit: 9},
@@ -62,7 +62,29 @@ it('apply default value to spaceCombat.dice', () => {
         capacity: 4,
         ship: true
     }
-    let valid = UnitAttrsSchema.validate(carrier)
-    assert(valid)
+    assert(UnitAttrsSchema.validate(carrier))
     assert.equal(carrier.spaceCombat.dice, 1)
+})
+
+it('verify modifier included schema', () => {
+    const bad = {
+        unit : '-',
+        localeName : '-',
+        unitModifier : {
+            a : 1
+        }
+    }
+    assert(!UnitAttrsSchema.validate(bad, err => {}))
+
+    const good = {
+        unit : '-',
+        localeName : '-',
+        unitModifier : {
+            localeName : '-',
+            localeDescription : '-',
+            owner : 'self',
+            priority : 'mutate'
+            }
+    }
+    assert(UnitAttrsSchema.validate(good))
 })
