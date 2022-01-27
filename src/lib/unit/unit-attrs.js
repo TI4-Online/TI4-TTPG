@@ -112,8 +112,22 @@ class UnitAttrs {
         this._attrs = _.cloneDeep(attrs)
     }
 
+    /**
+     * Localized unit name, accounts for unit upgrades.
+     * 
+     * @returns {string}
+     */
     get name() {
         return locale(this._attrs.localeName)
+    }
+
+    /**
+     * Unit summary (for debugging).
+     * 
+     * @returns {string}
+     */
+    get summary() {
+        return JSON.stringify(this._attrs)
     }
 
     /**

@@ -110,15 +110,30 @@ class UnitModifier {
         this._modifier = modifier
     }
 
-    get name() {
+    /**
+     * Localized modifier name.
+     * 
+     * @returns {string}
+     */
+     get name() {
         return locale(this._modifier.localeName)
     }
 
-    get desc() {
+    /**
+     * Localized modifier description.
+     * 
+     * @returns {string}
+     */
+     get desc() {
         return locale(this._modifier.localeDescription)
     }
 
-    get raw() {
+    /**
+     * Get the underlying object.
+     * 
+     * @returns {object}
+     */
+     get raw() {
         return this._modifier
     }
 

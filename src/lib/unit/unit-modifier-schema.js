@@ -19,12 +19,22 @@ const UNIT_MODIFIER_SCHEMA_JSON = {
 // Lazy instantiate on first use.
 let _unitModifierSchemaValidator = false
 
+/**
+ * Static class for validating raw unit attributes against schema.
+ */
 class UnitModifierSchema {
     constructor() {
         throw new Error('Static only')
     }
 
-    static validate(unit, onError) {
+    /**
+     * Validate schema, returns error does not throw.
+     * 
+     * @param {object} unit modifier
+     * @param {function} onError - takes the error as single argument
+     * @returns {boolean} true if valid
+     */
+     static validate(unit, onError) {
         if (!_unitModifierSchemaValidator) {
             _unitModifierSchemaValidator = new Ajv({useDefaults: true})
                 .compile(UNIT_MODIFIER_SCHEMA_JSON)

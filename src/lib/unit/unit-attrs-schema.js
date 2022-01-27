@@ -91,11 +91,21 @@ const UNIT_ATTRS_SCHEMA_JSON = {
 // Lazy instantiate on first use.
 let _unitAttrsValidator = false
 
+/**
+ * Static class for validating raw unit attributes against schema.
+ */
 class UnitAttrsSchema {
     constructor() {
         throw new Error('Static only')
     }
 
+    /**
+     * Validate schema, returns error does not throw.
+     * 
+     * @param {object} unit attributes
+     * @param {function} onError - takes the error as single argument
+     * @returns {boolean} true if valid
+     */
     static validate(unit, onError) {
         if (!_unitAttrsValidator) {
             _unitAttrsValidator = new Ajv({useDefaults: true})
