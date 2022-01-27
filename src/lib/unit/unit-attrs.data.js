@@ -402,32 +402,32 @@ module.exports = [
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.aerie_sentinel',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.argent:pok/aerie_sentinel'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.annihilator',
-        triggerNsid : '',
+        triggerNsid : 'card.leader.mech.l1z1x:base/annihilator',
         bombardment : { dice : 1, hit : 8 }
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.blackshade_infiltrator',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.yssaril:base/blackshade_infiltrator'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.dunlain_reaper',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.letnev:base/dunlain_reaper'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.eidolon',
-        triggerNsid : '',
+        triggerNsid : 'card.leader.mech.naazrokha:pok/eidolon',
         spaceCombat : {dice : 2, hit : 8, requireSpace : true },
         groundCombat : { dice : 2, hit : 6, requireGround : true }
     },
@@ -435,38 +435,38 @@ module.exports = [
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.ember_colossus',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.muaat:base/ember_colossus'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.hecatoncheires',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.ul:pok/hecatoncheires'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.icarus_drive',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.creuss:base/icarus_drive'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.iconoclast',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.naalu:base/iconoclast'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.indomitus',
-        triggerNsid : '',
+        triggerNsid : 'card.leader.mech.xxcha:base/indomitus',
         spaceCannon : { dice : 1, hit : 8, range : 1 }
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.letani_behemoth',
-        triggerNsid : '',
+        triggerNsid : 'card.leader.mech.arborec:base/letani_behemoth',
         production : 2,
         planetaryShield : true
     },
@@ -474,81 +474,92 @@ module.exports = [
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.moll_terminus',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.mentak:base/moll_terminus'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.mordred',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.nekro:base/mordred'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.moyins_ashes',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.yin:base/moyins_ashes'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.pride_of_kenara',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.hacan:base/pride_of_kenara'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.quantum_manipulator',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.nomad:pok/quantum_manipulator'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.reanimator',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.vuilraith:pok/reanimator'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.reclaimer',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.winnu:base/reclaimer'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.scavenger_zeta',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.saar:base/scavenger_zeta'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.shield_paling',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.jolnar:base/shield_paling'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.starlancer',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.mahact:pok/starlancer'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.valkyrie_exoskeleton',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.norr:base/valkyrie_exoskeleton'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.watcher',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.empyrean:pok/watcher'
     },
     {
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.zs_thunderbolt_m2',
-        triggerNsid : ''
+        triggerNsid : 'card.leader.mech.sol:base/zs_thunderbolt_m2'
     },
     
+    // Codex 1 (Ordinian).
+    {
+        unit : 'destroyer',
+        upgradeLevel : 1,
+        localeName : 'unit.destroyer.redacted',
+        triggerNsid : 'card.technology.unit_upgrade.nekro:codex.ordinian/redacted',
+        antiFighterBarrage : { dice : 3, hit : 6 },
+        spaceCombat : { hit : 7 },
+        capacity : 1
+    },
+
     // Flagships.
     {
         unit : 'flagship',

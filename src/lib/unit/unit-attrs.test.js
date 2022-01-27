@@ -25,7 +25,10 @@ function getUnitUpgrade(unitName) {
 
 it('UNIT_ATTRS schema', () => {
     for (const attrs of UNIT_ATTRS) {
-        assert(UnitAttrsSchema.validate(attrs))
+        if (!UnitAttrsSchema.validate(attrs)) {
+            console.log(attrs)
+            assert (false)
+        }
     }
 })
 

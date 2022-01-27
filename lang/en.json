@@ -84,6 +84,8 @@
     "unit.mech.watcher" : "Watcher",
     "unit.mech.zs_thunderbolt_m2" : "ZS Thunderbolt M2",
 
+    "unit.destroyer.redacted" : "????_REDACTED_????",
+
     "unit.flagship.001" : "[0.0.1]",
     "unit.flagship.arc_secundus" : "Arc Secundus",
     "unit.flagship.arvicon_rex" : "Arvicon Rex",
