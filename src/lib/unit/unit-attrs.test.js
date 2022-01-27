@@ -32,6 +32,9 @@ it('UNIT_ATTRS schema', () => {
 it('UNIT_ATTRS localeName', () => {
     for (const attrs of UNIT_ATTRS) {
         const s = locale(attrs.localeName)
+        if (s === attrs.localeName) {
+            console.error(attrs)
+        }
         assert(s !== attrs.localeName) // yarn dev to (re)build lang
     }
 })

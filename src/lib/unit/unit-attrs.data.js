@@ -397,6 +397,159 @@ module.exports = [
         production : 7
     },
     
+    // Mech.
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.aerie_sentinel',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.annihilator',
+        triggerNsid : '',
+        bombardment : { dice : 1, hit : 8 }
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.blackshade_infiltrator',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.dunlain_reaper',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.eidolon',
+        triggerNsid : '',
+        spaceCombat : {dice : 2, hit : 8, requireSpace : true },
+        groundCombat : { dice : 2, hit : 6, requireGround : true }
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.ember_colossus',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.hecatoncheires',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.icarus_drive',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.iconoclast',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.indomitus',
+        triggerNsid : '',
+        spaceCannon : { dice : 1, hit : 8, range : 1 }
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.letani_behemoth',
+        triggerNsid : '',
+        production : 2,
+        planetaryShield : true
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.moll_terminus',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.mordred',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.moyins_ashes',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.pride_of_kenara',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.quantum_manipulator',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.reanimator',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.reclaimer',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.scavenger_zeta',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.shield_paling',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.starlancer',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.valkyrie_exoskeleton',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.watcher',
+        triggerNsid : ''
+    },
+    {
+        unit : 'mech',
+        upgradeLevel : 1,
+        localeName : 'unit.mech.zs_thunderbolt_m2',
+        triggerNsid : ''
+    }
+    
+
     // Flagships.
     
 ]
