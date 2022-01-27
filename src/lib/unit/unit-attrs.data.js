@@ -1,4 +1,7 @@
 // This is not JSON because unit attributes can also be unit modifiers, with
+
+const { resetErrorsCount } = require("ajv/dist/compile/errors")
+
 // `modify = function(unitAttrs, auxData)` entries.
 module.exports = [
 
@@ -70,6 +73,7 @@ module.exports = [
         cost : 1,
         produce : 2,
         groundCombat : { dice : 1, hit : 8 },
+        ground : true,
     },
     {
         unit : 'mech',
@@ -78,6 +82,7 @@ module.exports = [
         cost : 2,
         groundCombat : {dice : 1, hit : 6 },
         sustainDamage : true,
+        ground : true,
     },
     {
         unit : 'pds',
@@ -583,7 +588,19 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.flagship.arvicon_rex',
         triggerNsid : 'card.technology.unit_upgrade.mahact:franken.pok/arvicon_rex',
-        spaceCombat : {dice : 2, hit : 5 }
+        spaceCombat : {dice : 2, hit : 5 },
+        unitModifier : {
+            // +2 flagship COMBAT against opponent with no token in your fleet pool
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.unit === 'flagship') {
+                    // TODO XXX
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -592,13 +609,15 @@ module.exports = [
         triggerNsid : 'card.technology.unit_upgrade.norr:franken.base/cmorran_norr',
         spaceCombat : { dice : 2, hit : 6 },
         unitModifier : {
+            // +1 to all COMBAT rolls for other ships with the C'morran N'orr
             localeName : 'TODO XXX',
             localeDescription : 'TODO XXX',
             owner : 'self',
             priority : 'adjust',
             applyEach : (unitAttrs, auxData) => {
-                // +1 to all COMBAT rolls for other ships with the C'morran N'orr
-                if (unitAttrs.raw.ship && unitAttrs.raw.unit !== 'flagship' && unitAttrs.raw.spaceCombat) {
+                if (unitAttrs.raw.ship &&
+                    unitAttrs.raw.unit !== 'flagship' &&
+                    unitAttrs.raw.spaceCombat) {
                     unitAttrs.raw.spaceCombat.hit -= 1
                 }
             }
@@ -624,7 +643,20 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.flagship.fourth_moon',
         triggerNsid : 'card.technology.unit_upgrade.mentak:franken.base/fourth_moon',
-        spaceCombat : { dice : 2, hit : 7 }
+        spaceCombat : { dice : 2, hit : 7 },
+        unitModifier : {
+            // Opponent's ships cannot use SUSTAIN DAMAGE
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'opponent',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.ship && 
+                    unitAttrs.raw.sustainDamage) {
+                    unitAttrs.raw.sustainDamage = false
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -662,7 +694,23 @@ module.exports = [
         localeName : 'unit.flagship.matriarch',
         triggerNsid : 'card.technology.unit_upgrade.naalu:franken.base/matriarch',
         spaceCombat : { dice : 2, hit : 9 },
-        capacity : 6
+        capacity : 6,
+        unitModifier : {
+            // Fighters may participate in ground combat
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.unit === 'fighter' &&
+                    !unitAttrs.raw.groundCombat) {
+                    unitAttrs.raw.groundCombat = {
+                        dice: unitAttrs.raw.spaceCombat.dice,
+                        hit: unitAttrs.raw.spaceCombat.hit,
+                    }
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -693,14 +741,38 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.flagship.quetzecoatl',
         triggerNsid : 'card.technology.unit_upgrade.argent:franken.pok/quetzecoatl',
-        spaceCombat : { dice : 2, hit : 7 }
+        spaceCombat : { dice : 2, hit : 7 },
+        unitModifier : {
+            // Other players cannot use SPACE CANNON against your ships in this system
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'opponent',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.spaceCannon) {
+                    delete unitAttrs.raw.spaceCannon
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
         upgradeLevel : 1,
         localeName : 'unit.flagship.salai_sai_corian',
         triggerNsid : 'card.technology.unit_upgrade.winnu:franken.base/salai_sai_corian',
-        spaceCombat : { dice : 1, hit : 7 }
+        spaceCombat : { dice : 1, hit : 7 },
+        unitModifier : {
+            // Rolls number of dice equal to number of opponent's non-fighter ships
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.unit === 'flagship') {
+                    // XXX TODO
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -715,7 +787,24 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.flagship.the_alastor',
         triggerNsid : 'card.technology.unit_upgrade.nekro:franken.base/the_alastor',
-        spaceCombat : { dice : 2, hit : 9 }
+        spaceCombat : { dice : 2, hit : 9 },
+        unitModifier : {
+            // Ground forces may participate in space combat
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.ground &&
+                    unitAttrs.raw.groundCombat &&
+                    !unitAttrs.raw.spaceCombat) {
+                    unitAttrs.raw.spaceCombat = {
+                        dice : unitAttrs.groundCombat.dice,
+                        hit : unitAttrs.groundCombat.hit,
+                    }
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -745,7 +834,20 @@ module.exports = [
         localeName : 'unit.flagship.visz_el_vir',
         triggerNsid : 'card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir',
         spaceCombat : {  dice : 2, hit : 9 },
-        capacity : 4
+        capacity : 4,
+        unitModifier : {
+            // Your mechs in this system roll 1 additional die during combat
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                if (unitAttrs.raw.unit === 'mech' &&
+                    unitAttrs.raw.groundCombat) {
+                    unitAttrs.raw.groundCombat.dice += 1
+                }
+            }
+        }
     },
     {
         unit : 'flagship',
@@ -762,5 +864,4 @@ module.exports = [
         spaceCombat : { dice : 2, hit : 5 },
         move : 2
     },
-    
 ]

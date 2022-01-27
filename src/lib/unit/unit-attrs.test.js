@@ -95,7 +95,6 @@ it('static findPlayerUnitUpgrades', () => {
         world.__removeObject(cardObjCarrier2)
         world.__removeObject(cardObjCruiser2FaceDown)
     }
-    console.log(result)
     assert.equal(result.length, 1)
     assert.equal(result[0].raw.unit, 'carrier')
     assert.equal(result[0].raw.upgradeLevel, 2)

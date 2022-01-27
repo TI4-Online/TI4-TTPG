@@ -67,7 +67,6 @@ it('static findPlayerUnitModifiers', () => {
     } finally {
         world.__removeObject(moraleBoost)
     }
-    console.log(result)
     assert.equal(result.length, 1)
     assert.equal(result[0].raw.localeName, 'unit_modifier.name.morale_boost')
 })

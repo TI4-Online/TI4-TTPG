@@ -12,6 +12,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
 
         ship: {type: "boolean"},
+        ground: {type: "boolean"},
         structure: {type: "boolean"},
 
         // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
