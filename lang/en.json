@@ -31,5 +31,33 @@
     "unit.space_dock_2" : "Space Dock II",
     "unit.war_sun" : "War Sun",
 
+    "unit.carrier.advanced_carrier" : "Advanced Carrier",
+    "unit.carrier.advanced_carrier_2" : "Advanced Carrier II",
+    "unit.dreadnought.exotrireme" : "Exotrireme",
+    "unit.dreadnought.exotrireme_2" : "Exotrireme II",
+    "unit.space_dock.floating_factory" : "Floating Factory",
+    "unit.space_dock.floating_factory_2" : "Floating Factory II",
+    "unit.fighter.hybrid_crystal_fighter" : "Hybrid Crystal Fighter",
+    "unit.fighter.hybrid_crystal_fighter_2" : "Hybrid Crystal Fighter II",
+    "unit.infantry.letani_warrior" : "Letani Warrior",
+    "unit.infantry.letani_warrior_2" : "Letani Warrior II",
+    "unit.war_sun.prototype_war_sun" : "Prototype War Sun",
+    "unit.war_sun.prototype_war_sun_2" : "Prototype War Sun II",
+    "unit.infantry.spec_ops" : "Spec Ops",
+    "unit.infantry.spec_ops_2" : "Spec Ops II",
+    "unit.dreadnought.super_dreadnought" : "Super-Dreadnought",
+    "unit.dreadnought.super_dreadnought_2" : "Super-Dreadnought II",
+
+    "unit.destroyer.strike_wing_alpha" : "Strike Wing Alpha",
+    "unit.destroyer.strike_wing_alpha_2" : "Strike Wing Alpha II",
+    "unit.infantry.crimson_legionnaire" : "Crimson Legionnaire",
+    "unit.infantry.crimson_legionnaire_2" : "Crimson Legionnaire II",
+    "unit.cruiser.saturn_engine" : "Saturn Engine",
+    "unit.cruiser.saturn_engine_2" : "Saturn Engine II",
+    "unit.pds.hel_titan" : "Hel-Titan",
+    "unit.pds.hel_titan_2" : "Hel-Titan II",
+    "unit.space_dock.dimensional_tear" : "Dimensional Tear",
+    "unit.space_dock.dimensional_tear_2" : "Dimensional Tear II",
+
     "bogus.last.entry" : "reserved last entry so others can always end with a comma"
 }

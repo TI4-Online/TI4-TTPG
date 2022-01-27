@@ -1,4 +1,5 @@
 const assert = require('assert')
+const locale = require('../locale')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { UnitAttrs } = require('./unit-attrs')
 const UNIT_ATTRS = require('./unit-attrs.data')
@@ -25,6 +26,13 @@ function getUnitUpgrade(unitName) {
 it('UNIT_ATTRS schema', () => {
     for (const attrs of UNIT_ATTRS) {
         assert(UnitAttrsSchema.validate(attrs))
+    }
+})
+
+it('UNIT_ATTRS localeName', () => {
+    for (const attrs of UNIT_ATTRS) {
+        const s = locale(attrs.localeName)
+        assert(s !== attrs.localeName) // yarn dev to (re)build lang
     }
 })
 
