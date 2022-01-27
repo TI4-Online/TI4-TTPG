@@ -3,6 +3,12 @@ const locale = require('../locale')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { UnitAttrs } = require('./unit-attrs')
 const UNIT_ATTRS = require('./unit-attrs.data')
+const {
+    world,
+    MockCard,
+    MockCardDetails,
+    MockPlayer,
+} = require('../../mock/mock-api')
 
 function getDefaultUnit(unitName) {
     for (const attrs of UNIT_ATTRS) {
@@ -21,7 +27,6 @@ function getUnitUpgrade(unitName) {
     }
     throw new Error('unknown ' + unitName)
 }
-
 
 it('UNIT_ATTRS schema', () => {
     for (const attrs of UNIT_ATTRS) {
@@ -61,6 +66,39 @@ it('static sortUpgradeLevelOrder', () => {
     upgrades = [ carrier3, carrier2 ]
     UnitAttrs.sortUpgradeLevelOrder(upgrades)
     assert.deepEqual(upgrades, [ carrier2, carrier3 ])
+})
+
+it('static findPlayerUnitUpgrades', () => {
+    const myPlayerSlot = 7
+    const player = new MockPlayer({
+        slot : myPlayerSlot
+    })
+    const cardObjCarrier2 = new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.technology.unit_upgrade:base/carrier_2'
+        }),
+        owningPlayerSlot : myPlayerSlot
+    })
+    const cardObjCruiser2FaceDown = new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.technology.unit_upgrade:base/carrier_2',
+            faceUp : false
+        }),
+        owningPlayerSlot : myPlayerSlot
+    })
+    let result
+    try {
+        world.__addObject(cardObjCarrier2)
+        world.__addObject(cardObjCruiser2FaceDown)
+        result = UnitAttrs.findPlayerUnitUpgrades(player)
+    } finally {
+        world.__removeObject(cardObjCarrier2)
+        world.__removeObject(cardObjCruiser2FaceDown)
+    }
+    console.log(result)
+    assert.equal(result.length, 1)
+    assert.equal(result[0].raw.unit, 'carrier')
+    assert.equal(result[0].raw.upgradeLevel, 2)
 })
 
 it('validate', () => {

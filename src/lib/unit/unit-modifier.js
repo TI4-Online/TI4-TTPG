@@ -1,20 +1,29 @@
 const assert = require('assert')
-const { world } = require('../../wrapper/api')
+const { ObjectNamespace } = require('../object-namespace')
+const { world, Card, Player } = require('../../wrapper/api')
 
 const { UnitModifierSchema } = require('./unit-modifier-schema')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
+
+const PRIORITY = {
+    'mutate.early' :  9, 'mutate' : 10, 'mutate.late' : 11,
+    'adjust.early' : 19, 'adjust' : 20, 'adjust.late' : 21,
+    'choose.early' : 29, 'choose' : 30, 'choose.late' : 30
+}
 
 let _triggerNsidToUnitModifier = false
 
 function _nsidToUnitModifier(nsid) {
     if (!_triggerNsidToUnitModifier) {
         _triggerNsidToUnitModifier = {}
-        for (const unitModifier of UNIT_MODIFIERS) {
-            if (unitModifier.triggerNsid) {
-                _triggerNsidToUnitModifier[unitModifier.triggerNsid] = unitModifier
+        for (const rawModifier of UNIT_MODIFIERS) {
+            const unitModifier = new UnitModifier(rawModifier)
+
+            if (rawModifier.triggerNsid) {
+                _triggerNsidToUnitModifier[rawModifier.triggerNsid] = unitModifier
             }
-            if (unitModifier.triggerNsids) {
-                for (const triggerNsid of unitModifier.triggerNsids) {
+            if (rawModifier.triggerNsids) {
+                for (const triggerNsid of rawModifier.triggerNsids) {
                     _triggerNsidToUnitModifier[triggerNsid] = unitModifier
                 }
             }
@@ -39,12 +48,7 @@ class UnitModifier {
      * @returns {Array.<unitModifier>} ordered (original list also mutated in place)
      */
     static sortPriorityOrder(unitModifierArray) {
-        const priority = {
-            mutate : 1,
-            adjust : 2,
-            choose : 3
-        }
-        unitModifierArray.sort((a, b) => { return priority[a._modifier.priority] - priority[b._modifier.priority] })
+        unitModifierArray.sort((a, b) => { return PRIORITY[a._modifier.priority] - PRIORITY[b._modifier.priority] })
         return unitModifierArray
     }
 
@@ -52,19 +56,30 @@ class UnitModifier {
      * Find player's unit modifiers.
      * 
      * @param {Player} player 
+     * @param {string} withOwner - self, opponent, any 
      * @returns {Array.<unitModifier>} modifiers in priority order
      */
-    static findPlayerUnitModifiers(player) {
+    static findPlayerUnitModifiers(player, withOwner) {
+        assert(player instanceof Player)
+        assert(typeof withOwner === 'string')
+
         const unitModifiers = []
         for (const obj of world.getAllObjects()) {
-            const nsid = obj.getTemplateMetadata()
+            const nsid = ObjectNamespace.getNsid(obj)
             const unitModifier = _nsidToUnitModifier(nsid)
             if (!unitModifier) {
                 continue
             }
 
+            // Cards must be face up.
+            if ((obj instanceof Card) && !obj.isFaceUp()) {
+                continue  // face down card
+            }
+            
             // Enfoce modifier type (self, opponent, any).
-            // TODO XXX
+            if (unitModifier.raw !== 'any' && unitModifier.raw.owner !== withOwner) {
+                continue  // wrong owner
+            }
 
             // TODO XXX CHECK IF IN PLAYER AREA
             // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
@@ -74,7 +89,9 @@ class UnitModifier {
             }
 
             // Found a unit modifier!  Add it to the list.
-            unitModifiers.push(unitModifier)
+            if (!unitModifiers.includes(unitModifier)) {
+                unitModifiers.push(unitModifier)
+            }
         }
         return UnitModifier.sortPriorityOrder(unitModifiers)
     }
@@ -90,6 +107,10 @@ class UnitModifier {
         assert(typeof modifier === 'object')
         assert(UnitModifierSchema.validate(modifier))
         this._modifier = modifier
+    }
+
+    get raw() {
+        return this._modifier
     }
 
     /**
@@ -117,4 +138,5 @@ class UnitModifier {
 
 module.exports = {
     UnitModifier,
+    PRIORITY
 }

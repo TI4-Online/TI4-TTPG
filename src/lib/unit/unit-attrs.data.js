@@ -590,7 +590,19 @@ module.exports = [
         upgradeLevel : 1,
         localeName : 'unit.flagship.cmorran_norr',
         triggerNsid : 'card.technology.unit_upgrade.norr:franken.base/cmorran_norr',
-        spaceCombat : { dice : 2, hit : 6 }
+        spaceCombat : { dice : 2, hit : 6 },
+        unitModifier : {
+            localeName : 'TODO XXX',
+            localeDescription : 'TODO XXX',
+            owner : 'self',
+            priority : 'adjust',
+            applyEach : (unitAttrs, auxData) => {
+                // +1 to all COMBAT rolls for other ships with the C'morran N'orr
+                if (unitAttrs.raw.ship && unitAttrs.raw.unit !== 'flagship' && unitAttrs.raw.spaceCombat) {
+                    unitAttrs.raw.spaceCombat.hit -= 1
+                }
+            }
+        }
     },
     {
         unit : 'flagship',

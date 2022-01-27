@@ -1,12 +1,19 @@
 const assert = require('assert')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
-const { UnitModifier } = require('./unit-modifier')
+const { UnitModifier, PRIORITY } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
+const {
+    world,
+    MockCard,
+    MockCardDetails,
+    MockPlayer,
+} = require('../../mock/mock-api')
 
 it('UNIT_MODIFIERS schema', () => {
     for (const unitModifier of UNIT_MODIFIERS) {
         assert(UnitModifierSchema.validate(unitModifier))
+        assert(PRIORITY[unitModifier.priority])
     }
 })
 
@@ -40,6 +47,29 @@ it('static sortPriorityOrder', () => {
     modifiers = [ adjust, mutate, choose ]
     UnitModifier.sortPriorityOrder(modifiers)
     assert.deepEqual(modifiers, [ mutate, adjust, choose ])
+})
+
+it('static findPlayerUnitModifiers', () => {
+    const myPlayerSlot = 7
+    const player = new MockPlayer({
+        slot : myPlayerSlot
+    })
+    const moraleBoost = new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.action:base/morale_boost.3'
+        }),
+        owningPlayerSlot : myPlayerSlot
+    })
+    let result
+    try {
+        world.__addObject(moraleBoost)
+        result = UnitModifier.findPlayerUnitModifiers(player, 'self')
+    } finally {
+        world.__removeObject(moraleBoost)
+    }
+    console.log(result)
+    assert.equal(result.length, 1)
+    assert.equal(result[0].raw.localeName, 'unit_modifier.name.morale_boost')
 })
 
 it('applyEach', () => {

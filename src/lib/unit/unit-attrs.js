@@ -1,6 +1,7 @@
 const assert = require('assert')
 const _ = require('lodash')
-const { world } = require('../../wrapper/api')
+const { ObjectNamespace } = require('../object-namespace')
+const { world, Card, Player } = require('../../wrapper/api')
 
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const UNIT_ATTRS = require('./unit-attrs.data')
@@ -10,18 +11,19 @@ let _triggerNsidToUnitUpgrade = false
 function _nsidToUnitUpgrade(nsid) {
     if (!_triggerNsidToUnitUpgrade) {
         _triggerNsidToUnitUpgrade = {}
-        for (const unitUpgrade of UNIT_ATTRS) {
-            if (!unitUpgrade.upgradeLevel) {
+        for (const rawAttrs of UNIT_ATTRS) {
+            if (!rawAttrs.upgradeLevel) {
                 continue // basic unit, not an upgrade
             }
+            const unitUpgrade = new UnitAttrs(rawAttrs)
 
             // Unit upgrade card.
-            if (unitUpgrade.triggerNsid) {
-                _triggerNsidToUnitUpgrade[unitUpgrade.triggerNsid] = unitUpgrade
+            if (rawAttrs.triggerNsid) {
+                _triggerNsidToUnitUpgrade[rawAttrs.triggerNsid] = unitUpgrade
             }
 
             // Faction override (list of faction units provided by each faction).
-            if (unitUpgrade.triggerFactionUnit) {
+            if (rawAttrs.triggerFactionUnit) {
                 // TODO XXX
             }
         }
@@ -66,16 +68,19 @@ class UnitAttrs {
      * @returns {Array.<UnitAttrs>} upgrades in level order
      */
     static findPlayerUnitUpgrades(player) {
+        assert(player instanceof Player)
+
         const unitUpgrades = []
         for (const obj of world.getAllObjects()) {
-            const nsid = obj.getTemplateMetadata()
+            const nsid = ObjectNamespace.getNsid(obj)
             const unitUpgrade = _nsidToUnitUpgrade(nsid)
             if (!unitUpgrade) {
                 continue  // not a candidate
             }
 
-            if (unitUpgrade.unit !== this._attrs.unit) {
-                continue  // unit upgrade, but for different unit type
+            // Cards must be face up.
+            if ((obj instanceof Card) && !obj.isFaceUp()) {
+                continue  // face down card
             }
 
             // TODO XXX CHECK IF IN PLAYER AREA
@@ -85,7 +90,10 @@ class UnitAttrs {
                 continue
             }
 
-            unitUpgrades.push(unitUpgrade)
+            // Found a unit upgrade!  Add it to the list.
+            if (!unitUpgrades.includes(unitUpgrade)) {
+                unitUpgrades.push(unitUpgrade)
+            }            
         }
         return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades)
     }
