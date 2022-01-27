@@ -1,68 +1,75 @@
 const assert = require('assert')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { UnitAttrs } = require('./unit-attrs')
-const {
-    BASE_UNITS,
-    UNIT_UPGRADES,
-} = require('./unit-attrs')
-const { UnitModifiers } = require('./unit-modifiers')
+const UNIT_ATTRS = require('./unit-attrs.data')
 
-it('static only', () => {
-    assert.throws(() => { new UnitAttrs() })
-})
+function getDefaultUnit(unitName) {
+    for (const attrs of UNIT_ATTRS) {
+        if (!attrs.upgradeLevel) {
+            return new UnitAttrs(attrs)
+        }
+    }
+    throw new Error('unknown ' + unitName)
+}
 
-it('validate BASE_UNITS schema', () => {
-    for (const unitAttrs of BASE_UNITS) {
-        const isValid = UnitAttrsSchema.validate(unitAttrs)
-        assert(isValid, `rejected BASE_UNIT schema`)
+function getUnitUpgrade(unitName) {
+    for (const attrs of UNIT_ATTRS) {
+        if ((attrs.upgradeLevel || 1) > 1) {
+            return new UnitAttrs(attrs)
+        }
+    }
+    throw new Error('unknown ' + unitName)
+}
+
+
+it('UNIT_ATTRS schema', () => {
+    for (const attrs of UNIT_ATTRS) {
+        assert(UnitAttrsSchema.validate(attrs))
     }
 })
 
-it('validate UNIT_UPGRADE schema', () => {
-    for (const unitAttrs of UNIT_UPGRADES) {
-        const isValid = UnitAttrsSchema.validate(unitAttrs)
-        assert(isValid, `rejected UNIT_UPGRADE schema`)
-    }
-})
-
-it ('defaultUnitToUnitAttrs', () => {
-    const unitToAttrs = UnitAttrs.defaultUnitToUnitAttrs()
+it ('defaultUnitTypeToUnitAttrs', () => {
+    const unitToAttrs = UnitAttrs.defaultUnitTypeToUnitAttrs()
     assert(unitToAttrs.fighter)
-    assert.equal(unitToAttrs.fighter.unit, 'fighter')
+    assert(unitToAttrs.fighter instanceof UnitAttrs)
+    assert.equal(unitToAttrs.fighter.raw.unit, 'fighter')
 })
 
 it ('upgrade', () => {
-    const carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
-    const carrier2 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
-    assert.equal(carrier.unit, 'carrier')
-    assert.equal(carrier.move, 1)
-    UnitAttrs.upgrade(carrier, carrier2) // mutates carrier in place
-    assert.equal(carrier.unit, 'carrier')
-    assert.equal(carrier.level, 2)
-    assert.equal(carrier.move, 2)
+    const carrier = getDefaultUnit('carrier')
+    const carrier2 = getUnitUpgrade('carrier')
+    assert.equal(carrier.raw.unit, 'carrier')
+    assert.equal(carrier.raw.upgradeLevel, undefined)
+    assert.equal(carrier.raw.move, 1)
+    assert.equal(carrier2.raw.unit, 'carrier')
+    assert.equal(carrier2.raw.upgradeLevel, 2)
+    assert.equal(carrier2.raw.move, 2)
+    carrier.upgrade(carrier2)
+    assert.equal(carrier.raw.unit, 'carrier')
+    assert.equal(carrier.raw.upgradeLevel, 2)
+    assert.equal(carrier.raw.move, 2)
 })
 
 it('reject upgrade mismatch', () => {
-    const carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
-    const cruiser2 = UnitAttrs.defaultUnitToUnitUpgrade().cruiser
+    const carrier = getDefaultUnit('carrier')
+    const cruiser2 = getUnitUpgrade('cruiser')
     assert.throws(() => {
         UnitAttrs.upgrade(carrier, cruiser2)
     })
 })
 
 it('upgradeMultiple', () => {
-    const carrier2 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
+    let carrier = getDefaultUnit('carrier')
+    const carrier2 = getUnitUpgrade('carrier')
+    const carrier3 = getUnitUpgrade('carrier')
+    carrier3.raw.upgradeLevel = 3
 
-    const carrier3 = UnitAttrs.defaultUnitToUnitUpgrade().carrier
-    carrier3.level = 3
-
-    let carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier
     let unitUpgrades = [ carrier2, carrier3 ]
-    UnitAttrs.upgradeMultiple(carrier, unitUpgrades)
+    carrier.upgradeMultiple(unitUpgrades)
     assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
 
-    carrier = UnitAttrs.defaultUnitToUnitAttrs().carrier // reset
+    carrier = getDefaultUnit('carrier') // reset
     unitUpgrades = [ carrier3, carrier2 ]
-    UnitAttrs.upgradeMultiple(carrier, unitUpgrades)
+    carrier.upgradeMultiple(unitUpgrades)
     assert.deepEqual(unitUpgrades, [ carrier2, carrier3 ])
 })

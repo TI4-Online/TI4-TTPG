@@ -4,13 +4,24 @@ const UNIT_ATTRS_SCHEMA = {
     type: "object",
     properties: {
         unit: {type: "string"}, // is or upgrades this base unit; simple name [a-z0-9_] (e.g. "war_sun")
-        level: {type: "number", default: 1},
+        upgradeLevel: {type: "number"}, // omit for base units, 1 for faction override, 2+ for unit upgrade
         localeName: {type: "string"}, // human-readable name (after locale)
         unitNsid: {type: "string"}, // plastic unit nsid, for finding units on table
         triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
 
         ship: {type: "boolean"},
         structure: {type: "boolean"},
+
+        // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
+        unitModifier: {
+            type: "object",
+            properties: {
+                localDescription: {type: "string"},
+                owner: {type: "string"}, // self, opponent, or any
+                priority: {type: "string"}, // mutate, adjust, or choose
+                isCombat: {type: "boolean"},
+            }
+        },
 
         // Unit abilities.
         sustainDamage: {type: "boolean"},
