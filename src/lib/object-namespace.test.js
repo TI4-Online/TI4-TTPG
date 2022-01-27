@@ -1,7 +1,8 @@
 // the "it(string, function)" style works with mocha and jest frameworks
 const { ObjectNamespace } = require('./object-namespace')
 const assert = require('assert')
-const { MockGameObject } = require('../mock/mock-game-object')
+const MockCard = require('../mock/mock-card')
+const MockGameObject = require('../mock/mock-game-object')
 
 it('cannot construct', () => {
     assert.throws(() => { new ObjectNamespace() })
@@ -22,8 +23,8 @@ it('generic', () => {
 
 it('card', () => {
     const id = 'card.action:base/direct_hit.2'
-    const obj = new MockGameObject({ templateMetadata : id })
-    const not = new MockGameObject({ templateMetadata : 'not:not/not' })
+    const obj = new MockCard({ cardDetails : { metadata : id }})
+    const not = new MockCard({ templateMetadata : 'not:not/not' })
 
     const type = ObjectNamespace.getCardType('action')
     assert(ObjectNamespace.isGenericType(obj, type))

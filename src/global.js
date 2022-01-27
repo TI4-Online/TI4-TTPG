@@ -1,5 +1,5 @@
 const { globalEvents } = require("@tabletop-playground/api");
-const { TriggerableMulticastDelegate } = require('./lib/triggerable-multicast-delegate')
+const TriggerableMulticastDelegate = require('./lib/triggerable-multicast-delegate')
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {

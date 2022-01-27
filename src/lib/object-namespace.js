@@ -1,3 +1,5 @@
+const { Card } = require('../wrapper/api')
+
 /**
  * Test and parse GameObject.getTemplateMetadata() namespace.
  * Objects use a 'type:source/name' namespace, e.g.:
@@ -6,6 +8,8 @@
  * 
  * As convention call these "nsid" to distinguish from "guid",
  * "template id", etc to know this is the kind of string in hand.
+ * 
+ * See https://github.com/TI4-Online/TI4-TTPG/wiki/NSID-Namespace
  */
 class ObjectNamespace {
     /**
@@ -13,6 +17,13 @@ class ObjectNamespace {
      */
     constructor() {
         throw new Error('Static only')
+    }
+
+    static getNsid(obj) {
+        if (obj instanceof Card) {
+            return obj.getCardDetails().metadata
+        }
+        return obj.getTemplateMetadata()
     }
 
     /**
@@ -23,8 +34,8 @@ class ObjectNamespace {
      * @returns {boolean}
      */
     static isGenericType(obj, type) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith(type)
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith(type)
     }
     
     /**
@@ -34,8 +45,8 @@ class ObjectNamespace {
      * @returns {{ type : string, source : string, name : string}}
      */
     static parseGeneric(obj) {
-        const id = obj.getTemplateMetadata()
-        const m = id.match(/^([^:]+):([^/]+)\/(.+)$/)
+        const nsid = ObjectNamespace.getNsid(obj)
+        const m = nsid.match(/^([^:]+):([^/]+)\/(.+)$/)
         return m && { type : m[1], source : m[2], name : m[3] }
     }
 
@@ -53,8 +64,8 @@ class ObjectNamespace {
     }
 
     static isCard(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('card')    
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('card')
     }
 
     static parseCard(obj) {
@@ -66,8 +77,8 @@ class ObjectNamespace {
     }
 
     static isCommandToken(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('token.command')    
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('token.command')
     }
 
     static parseCommandToken(obj) {
@@ -79,8 +90,8 @@ class ObjectNamespace {
     }
 
     static isControlToken(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('token.control')    
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('token.control')
     }
 
     static parseControlToken(obj) {
@@ -92,8 +103,8 @@ class ObjectNamespace {
     }
 
     static isStrategyCard(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('tile.strategy')
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('tile.strategy')
     }
 
     static parseStrategyCard(obj) {
@@ -105,8 +116,8 @@ class ObjectNamespace {
     }
 
     static isSystemTile(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('tile.system')
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('tile.system')
     }
 
     static parseSystemTile(obj) {
@@ -118,8 +129,8 @@ class ObjectNamespace {
     }
 
     static isToken(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('token')
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('token')
     }
 
     static parseToken(obj) {
@@ -131,8 +142,8 @@ class ObjectNamespace {
     }
 
     static isUnit(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('unit')
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('unit')
     }
 
     static parseUnit(obj) {
@@ -144,8 +155,8 @@ class ObjectNamespace {
     }
 
     static isUnitBag(obj) {
-        const id = obj.getTemplateMetadata()
-        return id.startsWith('bag.unit')
+        const nsid = ObjectNamespace.getNsid(obj)
+        return nsid.startsWith('bag.unit')
     }
 
     static parseUnitBag(obj) {
@@ -157,6 +168,4 @@ class ObjectNamespace {
     }
 }
 
-module.exports = {
-    ObjectNamespace,
-}
+module.exports = { ObjectNamespace }

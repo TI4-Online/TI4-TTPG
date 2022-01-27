@@ -1,4 +1,4 @@
-class MockPlayer {
+class Player {
     constructor(data) {
         this._playerColor = data && data.playerColor || '?'
         this._selectedObjects = data && data.selectedObjects || []
@@ -18,7 +18,4 @@ class MockPlayer {
     }
 }
 
-module.exports = {
-    Player : MockPlayer,
-    MockPlayer
-}
+module.exports = Player
