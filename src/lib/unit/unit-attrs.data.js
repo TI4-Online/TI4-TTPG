@@ -455,7 +455,17 @@ module.exports = [
         unit : 'mech',
         upgradeLevel : 1,
         localeName : 'unit.mech.iconoclast',
-        triggerNsid : 'card.leader.mech.naalu:base/iconoclast'
+        triggerNsid : 'card.leader.mech.naalu:base/iconoclast',
+        unitModifier : {
+            // "+2 mech COMBAT rolls if opponent has fragment",
+            isCombat: true,
+            localeDescription: "unit_modifier.desc.iconoclast",
+            localeName: "unit_modifier.name.iconoclast",
+            owner: "self",
+            priority: "mutate",
+            triggerNsid: "card.leader.mech.naalu:pok/iconoclast",
+            // TODO XXX
+        }
     },
     {
         unit : 'mech',
@@ -702,8 +712,9 @@ module.exports = [
                 if (unitAttrs.raw.unit === 'fighter' &&
                     !unitAttrs.raw.groundCombat) {
                     unitAttrs.raw.groundCombat = {
-                        dice: unitAttrs.raw.spaceCombat.dice,
-                        hit: unitAttrs.raw.spaceCombat.hit,
+                        dice : unitAttrs.raw.spaceCombat.dice,
+                        hit : unitAttrs.raw.spaceCombat.hit,
+                        anyPlanet : true
                     }
                 }
             }
