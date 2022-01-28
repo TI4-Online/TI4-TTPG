@@ -1,4 +1,4 @@
-const { MockGameObject } = require('../mock/mock-game-object');
+const MockGameObject = require('../mock/mock-game-object');
 const ReturnGameObjectHome = require('./return-game-object-home');
 
 describe('ReturnGameObjectHome', () => {
@@ -14,8 +14,8 @@ describe('ReturnGameObjectHome', () => {
 
         beforeEach(() => {
             objectsToReturn = [
-                new MockGameObject({ id: 'some/object' }),
-                new MockGameObject({ id: 'another/object' }),
+                new MockGameObject({ templateMetadata: 'card.action:base/direct_hit.2' }),
+                new MockGameObject({ templateMetadata: 'token.command:base/arborec' }),
             ]
             jest.spyOn(ReturnGameObjectHome, 'return')
             ReturnGameObjectHome.returnAll(objectsToReturn)
