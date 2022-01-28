@@ -2,6 +2,7 @@
 Object.assign(module.exports, {
     MockCard : require('./mock-card'),
     MockCardDetails : require('./mock-card-details'),
+    MockContainer : require('./mock-container'),
     MockGameObject : require('./mock-game-object'),
     MockGameWorld : require('./mock-game-world'),
     MockGlobalScriptingEvents : require('./mock-global-scripting-events'),
@@ -14,6 +15,7 @@ Object.assign(module.exports, {
 Object.assign(module.exports, {
     Card : module.exports.MockCard,
     CardDetails : module.exports.MockCardDetails,
+    Container : module.exports.MockContainer,
     GameObject : module.exports.MockGameObject,
     GameWorld : module.exports.MockGameWorld,
     GlobalScriptingEvents : module.exports.MockGlobalScriptingEvents,
