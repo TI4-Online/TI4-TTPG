@@ -2,6 +2,8 @@
     "example.helloworld": "Hello World!",
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
+    "ui.message.welcome" : "Welcome to Twilight Imperium IV",
+
     "ui.message.system_activated" : "{playerName} activated {systemName}",
 
     "ui.error.empty_supply" : "{unit_name} supply is empty",
