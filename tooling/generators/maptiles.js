@@ -147,6 +147,7 @@ const TILES = {
             "058": { guid: "A59AEE566273429AAC9A32500F674896" },
         },
         "special": {
+            "081": { guid: "1EFD655740B44AF1A6F75C9B6E99A018", noLang: true, reverseTexture: "global/reverse_homeworld_c.jpg", reverseExtra: "global/reverse_homeworld_x.jpg", reverseColor: COLORS.homeworld },
             "082": {
                 guid: "541FFEC05B05424BAE1B225D9765598D",
                 obverseModel: "tiles/standalone-obverse.obj",
