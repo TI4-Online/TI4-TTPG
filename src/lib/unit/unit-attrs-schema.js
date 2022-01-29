@@ -15,6 +15,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         ground: {type: "boolean"},
         structure: {type: "boolean"},
         disablePlanetaryShield: {type: "boolean"},
+        requireCapacity: {type: "boolean"},
 
         // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
         unitModifier: {$ref: "http://example.com/lib/unit/unit_modifier.json"},
@@ -25,7 +26,8 @@ const UNIT_ATTRS_SCHEMA_JSON = {
             type: "object",
             properties: {
                 dice: {type: "integer", default: 1},
-                hit: {type: "integer", maximum: 10}
+                hit: {type: "integer", maximum: 10},
+                destroyInfantryInSpace: {type: "integer"}
             },
             required: ["hit"]
         },

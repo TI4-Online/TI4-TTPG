@@ -58,7 +58,7 @@ module.exports = [
             if (unitAttrs.raw.ship &&
                 unitAttrs.raw.unit !== 'fighter' &&
                 !unitAttrs.raw.bombardment) {
-                unitAttrs.raw.bombardment = { dice : 1, hit : 6 }
+                unitAttrs.raw.bombardment = { dice: 1, hit: 6 }
             }
         }
     },
@@ -117,7 +117,7 @@ module.exports = [
                 unitAttrsSet.addSpecialUnit(new UnitAttrs({
                     unit: 'experimental_battlestation',
                     localeName: "unit_modifier.name.experimental_battlestation",
-                    spaceCannon : { hit : 5, dice : 3, range : 1 }
+                    spaceCannon: { hit: 5, dice: 3, range: 1 }
                 }))
                 auxData.setSelfCount('experimental_battlestation', 1)
             }
@@ -195,7 +195,7 @@ module.exports = [
                 unitAttrsSet.addSpecialUnit(new UnitAttrs({
                     unit: 'ul_the_progenitor',
                     localeName: "unit_modifier.name.ul_the_progenitor",
-                    spaceCannon : { hit : 5, dice : 3 }
+                    spaceCannon: { hit: 5, dice: 3 }
                 }))
                 auxData.setSelfCount('ul_the_progenitor', 1)
             }
