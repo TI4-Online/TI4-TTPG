@@ -1,7 +1,4 @@
 // This is not JSON because unit attributes can also be unit modifiers, with
-
-const { UnitAttrs } = require("./unit-attrs")
-
 // `modify = function(unitAttrs, auxData)` entries.
 module.exports = [
 
