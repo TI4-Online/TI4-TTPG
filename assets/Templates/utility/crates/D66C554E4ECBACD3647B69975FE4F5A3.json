@@ -1,7 +1,7 @@
 {
 	"Type": "Container",
-	"GUID": "4623C3604695E1D5303021954FDC12C1",
-	"Name": "Crate C",
+	"GUID": "D66C554E4ECBACD3647B69975FE4F5A3",
+	"Name": "Garbage",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -18,9 +18,9 @@
 	},
 	"SecondaryColor":
 	{
-		"R": 204,
-		"G": 204,
-		"B": 204
+		"R": 180,
+		"G": 189,
+		"B": 206
 	},
 	"Flippable": false,
 	"AutoStraighten": false,
@@ -50,14 +50,28 @@
 			},
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/utility/crate_x2.png",
+			"ExtraMap": "global/utility/crate_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 51,
+				"G": 51,
+				"B": 51
+			},
+			"SecondaryColor":
+			{
+				"R": 102,
+				"G": 102,
+				"B": 102
+			},
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/crates/lid2-open.obj",
+			"Model": "utility/crates/lid-closed.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -81,7 +95,21 @@
 			"ExtraMap": "global/utility/crate_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 51,
+				"G": 51,
+				"B": 51
+			},
+			"SecondaryColor":
+			{
+				"R": 102,
+				"G": 102,
+				"B": 102
+			},
 			"SurfaceType": "Plastic"
 		}
 	],

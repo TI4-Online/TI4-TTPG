@@ -1,7 +1,7 @@
 {
 	"Type": "Container",
-	"GUID": "4623C3604695E1D5303021954FDC12C1",
-	"Name": "Crate C",
+	"GUID": "2D8CEDFA410679881E5DE1ABB7FDE97F",
+	"Name": "Infantry Tokens (1x)",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -50,14 +50,14 @@
 			},
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/utility/crate_x2.png",
+			"ExtraMap": "global/utility/crate_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/crates/lid2-open.obj",
+			"Model": "utility/crates/fill-round.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -76,12 +76,26 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/utility/crate_c.png",
+			"Texture": "global/tokens/base/infantry_1_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap": "global/tokens/base/infantry_1_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 255,
+				"G": 141,
+				"B": 58
+			},
+			"SecondaryColor":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
 			"SurfaceType": "Plastic"
 		}
 	],
