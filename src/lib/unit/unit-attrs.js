@@ -1,5 +1,5 @@
-const assert = require('assert')
-const _ = require('lodash')
+const assert = require('../../wrapper/assert')
+const _ = require('../../wrapper/lodash')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { world, Card, GameObject, Player } = require('../../wrapper/api')

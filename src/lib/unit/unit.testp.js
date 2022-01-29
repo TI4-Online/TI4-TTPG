@@ -71,11 +71,15 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     }
 
     else if (actionName === ACTION.UNIT_ATTRS) {
-        const 
+        const unitUpgrades = UnitAttrs.getPlayerUnitUpgrades(player)
+        const names = unitUpgrades.map(x => x.name)
+        console.log(`found unit upgrades: ${names}`)
     }
 
     else if (actionName === ACTION.UNIT_MODIFIERS) {
-        
+        const unitModifiers = UnitModifier.getPlayerUnitModifiers(player, 'self')
+        const names = unitModifiers.map(x => x.name)
+        console.log(`found unit modifiers: ${names}`)
     }
 
 })

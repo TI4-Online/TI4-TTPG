@@ -1,4 +1,4 @@
-const assert = require('assert')
+const assert = require('../../wrapper/assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { world, Card, GameObject, Player } = require('../../wrapper/api')
@@ -10,6 +10,12 @@ const PRIORITY = {
     'mutate.early' :  9, 'mutate' : 10, 'mutate.late' : 11,
     'adjust.early' : 19, 'adjust' : 20, 'adjust.late' : 21,
     'choose.early' : 29, 'choose' : 30, 'choose.late' : 30
+}
+
+const OWNER = {
+    'self' : true,
+    'opponent' : true,
+    'any' : true
 }
 
 let _triggerNsidToUnitModifier = false
@@ -62,9 +68,10 @@ class UnitModifier {
      * @param {string} withOwner - self, opponent, any 
      * @returns {Array.<unitModifier>} modifiers in priority order
      */
-    static findPlayerUnitModifiers(player, withOwner) {
+    static getPlayerUnitModifiers(player, withOwner) {
         assert(player instanceof Player)
         assert(typeof withOwner === 'string')
+        assert(OWNER[withOwner])
 
         const unitModifiers = []
         for (const obj of world.getAllObjects()) {
@@ -164,5 +171,6 @@ class UnitModifier {
 
 module.exports = {
     UnitModifier,
-    PRIORITY
+    PRIORITY,
+    OWNER
 }

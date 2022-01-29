@@ -1,7 +1,7 @@
 const assert = require('assert')
 const locale = require('../locale')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
-const { UnitModifier, PRIORITY } = require('./unit-modifier')
+const { UnitModifier, PRIORITY, OWNER } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
 const { UnitAttrsSet } = require('./unit-attrs-set')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
@@ -16,6 +16,7 @@ it('UNIT_MODIFIERS schema', () => {
     for (const rawModifier of UNIT_MODIFIERS) {
         assert(UnitModifierSchema.validate(rawModifier))
         assert(PRIORITY[rawModifier.priority])
+        assert(OWNER[rawModifier.owner])
     }
 })
 
@@ -65,7 +66,7 @@ it('static sortPriorityOrder', () => {
     assert.deepEqual(modifiers, [ mutate, adjust, choose ])
 })
 
-it('static findPlayerUnitModifiers', () => {
+it('static getPlayerUnitModifiers', () => {
     const myPlayerSlot = 7
     const player = new MockPlayer({
         slot : myPlayerSlot
@@ -79,7 +80,7 @@ it('static findPlayerUnitModifiers', () => {
     let result
     try {
         world.__addObject(moraleBoost)
-        result = UnitModifier.findPlayerUnitModifiers(player, 'self')
+        result = UnitModifier.getPlayerUnitModifiers(player, 'self')
     } finally {
         world.__removeObject(moraleBoost)
     }
