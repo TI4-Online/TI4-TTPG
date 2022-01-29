@@ -1,8 +1,5 @@
 /**
  * Only the correct unit may enter a unit bag.
- * 
- * If an anonymous unit enters and bag has a player slot, add it to the unit.
- * Patch bags to apply setting unit slots when adding units by script.
  */
 
 const {
@@ -64,14 +61,6 @@ function getRejectReason(bagObj, unitObj) {
         return REJECT_REASON.MISMATCH_UNIT
     }
 
-    // At this point unit and bag are valid, and type match.
-    // If unit has no owning player, set it to bag owner.
-    if (unitPlayerSlot < 0) {
-        unitObj.setOwningPlayerSlot(bagPlayerSlot)
-        unitObj.setPrimaryColor(bagObj.getPrimaryColor())    
-        unitPlayerSlot = bagPlayerSlot
-    }
-
     // All clear!
     return false
 }
@@ -91,7 +80,7 @@ function addObjectsUnitBag(insertObjs, index, showAnimation) {
     for (const insertObj of insertObjs) {
         const rejectReason = getRejectReason(this, insertObj)
         if (rejectReason) {
-            // This was called by a script, the script should be fixed to only add legal units.
+            // This was called by a script, the script should be fixed to add only legal units.
             throw new Error(`addObjects rejected: ${rejectReason}`)
         }
     }
