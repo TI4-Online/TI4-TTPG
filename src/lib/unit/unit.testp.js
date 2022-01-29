@@ -1,5 +1,7 @@
 // Add to a TTPG object to run tests in the game world.
 const { UnitBags } = require('../../setup/unit-bags')
+const { UnitAttrs } = require('./unit-attrs')
+const { UnitModifier } = require('./unit-modifier')
 const {
     Vector,
     Rotator,
@@ -11,7 +13,10 @@ const ACTION = {
     SETUP_LINEAR : '*Setup linear',
     SETUP_ARC : '*Setup arc',
     CLEAN : '*Clean',
+    COUNT : '*Count Objects',
     SPAWN_UNTIL_FAIL : '*Spawn until fail',
+    UNIT_ATTRS : '*Unit Attributes',
+    UNIT_MODIFIERS : '*Unit Modifiers',
 }
 
 for (const action of Object.values(ACTION)) {
@@ -48,6 +53,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         }
     }
 
+    else if (actionName === ACTION.COUNT) {
+        console.log(`found ${world.getAllObjects().length} game objects`)
+    }
+
     else if (actionName === ACTION.SPAWN_UNTIL_FAIL) {
         const warSunGuid = '1E2FD83447A7A22D4B459E9DC9B67C8E'
         const pos = new Vector(0, 0, world.getTableHeight())
@@ -60,4 +69,13 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             pos.z += 4
         }
     }
+
+    else if (actionName === ACTION.UNIT_ATTRS) {
+        const 
+    }
+
+    else if (actionName === ACTION.UNIT_MODIFIERS) {
+        
+    }
+
 })

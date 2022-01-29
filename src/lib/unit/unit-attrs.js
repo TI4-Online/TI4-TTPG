@@ -7,7 +7,8 @@ const { world, Card, GameObject, Player } = require('../../wrapper/api')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const UNIT_ATTRS = require('./unit-attrs.data')
 
-let _defaultUnitAttrs = false
+let _allUnitTypes = false
+let _unitToDefaultRawAttrs = false
 let _triggerNsidToUnitUpgrade = false
 
 function _getUnitUpgrade(gameObject) {
@@ -40,25 +41,42 @@ function _getUnitUpgrade(gameObject) {
  */
 class UnitAttrs {
     /**
-     * Get a map from base unit string to UnitAttr Objects.
+     * Get default UnitAttrs for unit type.  Creates a new object for mutation.
      * 
-     * @returns {Object.<string, UnitAttrs>}
+     * @param {string} unit 
+     * @returns {UnitAttrs} new UnitAttrs object
      */
-    static defaultUnitTypeToUnitAttrs() {
-        // Cache the full scan result.
-        if (!_defaultUnitAttrs) {
-            _defaultUnitAttrs = {}
-            for (const attrs of UNIT_ATTRS) {
-                if (!attrs.upgradeLevel) {
-                    _defaultUnitAttrs[attrs.unit] = new UnitAttrs(attrs)
+    static getDefaultUnitAttrs(unit) {
+        if (!_unitToDefaultRawAttrs) {
+            _unitToDefaultRawAttrs = {}
+            for (const rawAttrs of UNIT_ATTRS) {
+                if (!rawAttrs.upgradeLevel) {
+                    assert(!_unitToDefaultRawAttrs[rawAttrs.unit])
+                    _unitToDefaultRawAttrs[rawAttrs.unit] = rawAttrs
                 }
             }
         }
-        const result = {}
-        for (const [unit, unitAttrs] of Object.entries(_defaultUnitAttrs)) {
-            result[unit] = new UnitAttrs(unitAttrs.raw)
+        const rawAttrs = _unitToDefaultRawAttrs[unit]        
+        assert(rawAttrs)
+        return new UnitAttrs(rawAttrs)
+    }
+
+    /**
+     * Get all normal unit types.
+     * 
+     * @returns {Array.<string>}
+     */
+    static getAllUnitTypes() {
+        if (!_allUnitTypes) {
+            _allUnitTypes = []
+            for (const rawAttrs of UNIT_ATTRS) {
+                if (!rawAttrs.upgradeLevel) {
+                    assert(!_allUnitTypes.includes(rawAttrs.unit))
+                    _allUnitTypes.push(rawAttrs.unit)
+                }
+            }
         }
-        return result
+        return _allUnitTypes
     }
 
     /**
@@ -78,7 +96,7 @@ class UnitAttrs {
      * @param {Player} player
      * @returns {Array.<UnitAttrs>} upgrades in level order
      */
-    static findPlayerUnitUpgrades(player) {
+    static getPlayerUnitUpgrades(player) {
         assert(player instanceof Player)
 
         const unitUpgrades = []

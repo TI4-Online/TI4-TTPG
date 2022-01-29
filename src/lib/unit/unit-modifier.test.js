@@ -3,6 +3,7 @@ const locale = require('../locale')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
 const { UnitModifier, PRIORITY } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
+const { UnitAttrsSet } = require('./unit-attrs-set')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 const {
     world,
@@ -112,6 +113,7 @@ it('applyEach', () => {
         priority: 'adjust',
         isCombat: true,
         applyEach: (unitAttrs, auxData) => {
+            assert(unitAttrs instanceof UnitAttrs)
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1
             }
@@ -121,13 +123,13 @@ it('applyEach', () => {
         }
     })
 
-    const unitToUnitAttrs = UnitAttrs.defaultUnitTypeToUnitAttrs()
-    assert.equal(unitToUnitAttrs.fighter.raw.spaceCombat.hit, 9)
-    assert.equal(unitToUnitAttrs.infantry.raw.groundCombat.hit, 8)
+    const unitAttrsSet = new UnitAttrsSet()
+    assert.equal(unitAttrsSet.get('fighter').raw.spaceCombat.hit, 9)
+    assert.equal(unitAttrsSet.get('infantry').raw.groundCombat.hit, 8)
 
-    unitModifier.apply(unitToUnitAttrs, unitModifier)
-    assert.equal(unitToUnitAttrs.fighter.raw.spaceCombat.hit, 8)
-    assert.equal(unitToUnitAttrs.infantry.raw.groundCombat.hit, 7)
+    unitModifier.apply(unitAttrsSet, unitModifier)
+    assert.equal(unitAttrsSet.get('fighter').raw.spaceCombat.hit, 8)
+    assert.equal(unitAttrsSet.get('infantry').raw.groundCombat.hit, 7)
 })
 
 it('applyAll', () => {
@@ -143,8 +145,9 @@ it('applyAll', () => {
         owner: 'self',
         priority: 'adjust',
         isCombat: true,
-        applyAll: (unitToUnitAttrs, auxData) => {
-            for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+        applyAll: (unitAttrsSet, auxData) => {
+            assert(unitAttrsSet instanceof UnitAttrsSet)
+            for (const unitAttrs of unitAttrsSet.values()) {
                 if (unitAttrs.raw.spaceCombat) {
                     unitAttrs.raw.spaceCombat.hit -= 1
                 }
@@ -155,11 +158,11 @@ it('applyAll', () => {
         }
     })
 
-    const unitToUnitAttrs = UnitAttrs.defaultUnitTypeToUnitAttrs()
-    assert.equal(unitToUnitAttrs.fighter.raw.spaceCombat.hit, 9)
-    assert.equal(unitToUnitAttrs.infantry.raw.groundCombat.hit, 8)
+    const unitAttrsSet = new UnitAttrsSet()
+    assert.equal(unitAttrsSet.get('fighter').raw.spaceCombat.hit, 9)
+    assert.equal(unitAttrsSet.get('infantry').raw.groundCombat.hit, 8)
 
-    unitModifier.apply(unitToUnitAttrs, unitModifier)
-    assert.equal(unitToUnitAttrs.fighter.raw.spaceCombat.hit, 8)
-    assert.equal(unitToUnitAttrs.infantry.raw.groundCombat.hit, 7)
+    unitModifier.apply(unitAttrsSet, unitModifier)
+    assert.equal(unitAttrsSet.get('fighter').raw.spaceCombat.hit, 8)
+    assert.equal(unitAttrsSet.get('infantry').raw.groundCombat.hit, 7)
 })

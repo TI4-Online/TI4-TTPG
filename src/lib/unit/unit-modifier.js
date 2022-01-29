@@ -2,7 +2,7 @@ const assert = require('assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { world, Card, GameObject, Player } = require('../../wrapper/api')
-
+const { UnitAttrsSet } = require('./unit-attrs-set')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 
@@ -144,18 +144,19 @@ class UnitModifier {
      * @param {object} unitToUnitAttrs - mutated in place
      * @param {object} auxData - table of misc things modifiers might use
      */
-    apply(unitToUnitAttrs, auxData) {
+    apply(unitAttrsSet, auxData) {
+        assert(unitAttrsSet instanceof UnitAttrsSet)
         if (this._modifier.applyEach) {
-            for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+            for (const unitAttrs of unitAttrsSet.values()) {
                 this._modifier.applyEach(unitAttrs, auxData)
             }
         }
         if (this._modifier.applyAll) {
-            this._modifier.applyAll(unitToUnitAttrs, auxData)
+            this._modifier.applyAll(unitAttrsSet, auxData)
         }
 
         // Paranoid verify modifier did not break it.
-        for (const unitAttrs of Object.values(unitToUnitAttrs)) {
+        for (const unitAttrs of unitAttrsSet.values()) {
             assert(unitAttrs.validate())
         }
     }

@@ -10,16 +10,7 @@ const {
     MockPlayer,
 } = require('../../mock/mock-api')
 
-function getDefaultUnit(unitName) {
-    for (const rawAttrs of UNIT_ATTRS) {
-        if (!rawAttrs.upgradeLevel) {
-            return new UnitAttrs(rawAttrs)
-        }
-    }
-    throw new Error('unknown ' + unitName)
-}
-
-function getUnitUpgrade(unitName) {
+function _getUnitUpgrade(unitName) {
     for (const rawAttrs of UNIT_ATTRS) {
         if ((rawAttrs.upgradeLevel || 1) > 1) {
             return new UnitAttrs(rawAttrs)
@@ -55,16 +46,20 @@ it('UNIT_ATTRS locale', () => {
     }
 })
 
-it ('static defaultUnitTypeToUnitAttrs', () => {
-    const unitToAttrs = UnitAttrs.defaultUnitTypeToUnitAttrs()
-    assert(unitToAttrs.fighter)
-    assert(unitToAttrs.fighter instanceof UnitAttrs)
-    assert.equal(unitToAttrs.fighter.raw.unit, 'fighter')
+it('static getDefaultUnitAttrs', () => {
+    const fighter = UnitAttrs.getDefaultUnitAttrs('fighter')
+    assert(fighter instanceof UnitAttrs)
+    assert.equal(fighter.raw.unit, 'fighter')
+})
+
+it('static getAllUnitTypes', () => {
+    const all = UnitAttrs.getAllUnitTypes()
+    assert(all.includes('fighter'))
 })
 
 it('static sortUpgradeLevelOrder', () => {
-    const carrier2 = getUnitUpgrade('carrier')
-    const carrier3 = getUnitUpgrade('carrier')
+    const carrier2 = _getUnitUpgrade('carrier')
+    const carrier3 = _getUnitUpgrade('carrier')
     carrier3.raw.upgradeLevel = 3
 
     let upgrades = [ carrier2, carrier3 ]
@@ -76,7 +71,7 @@ it('static sortUpgradeLevelOrder', () => {
     assert.deepEqual(upgrades, [ carrier2, carrier3 ])
 })
 
-it('static findPlayerUnitUpgrades', () => {
+it('static getPlayerUnitUpgrades', () => {
     const myPlayerSlot = 7
     const player = new MockPlayer({
         slot : myPlayerSlot
@@ -98,7 +93,7 @@ it('static findPlayerUnitUpgrades', () => {
     try {
         world.__addObject(cardObjCarrier2)
         world.__addObject(cardObjCruiser2FaceDown)
-        result = UnitAttrs.findPlayerUnitUpgrades(player)
+        result = UnitAttrs.getPlayerUnitUpgrades(player)
     } finally {
         world.__removeObject(cardObjCarrier2)
         world.__removeObject(cardObjCruiser2FaceDown)
@@ -109,13 +104,13 @@ it('static findPlayerUnitUpgrades', () => {
 })
 
 it('name', () => {
-    const carrier = getDefaultUnit('carrier')
+    const carrier = UnitAttrs.getDefaultUnitAttrs('carrier')
     assert(carrier instanceof UnitAttrs)
     assert.equal(typeof carrier.name, 'string')
 })
 
 it('validate', () => {
-    const carrier = getDefaultUnit('carrier')
+    const carrier = UnitAttrs.getDefaultUnitAttrs('carrier')
     assert(carrier instanceof UnitAttrs)
     carrier.validate()
 
@@ -131,8 +126,8 @@ it('validate', () => {
 })
 
 it('upgrade', () => {
-    const carrier = getDefaultUnit('carrier')
-    const carrier2 = getUnitUpgrade('carrier')
+    const carrier = UnitAttrs.getDefaultUnitAttrs('carrier')
+    const carrier2 = _getUnitUpgrade('carrier')
     assert.equal(carrier.raw.unit, 'carrier')
     assert.equal(carrier.raw.upgradeLevel, undefined)
     assert.equal(carrier.raw.move, 1)
@@ -146,8 +141,8 @@ it('upgrade', () => {
 })
 
 it('reject upgrade mismatch', () => {
-    const carrier = getDefaultUnit('carrier')
-    const cruiser2 = getUnitUpgrade('cruiser')
+    const carrier = UnitAttrs.getDefaultUnitAttrs('carrier')
+    const cruiser2 = _getUnitUpgrade('cruiser')
     assert.throws(() => {
         UnitAttrs.upgrade(carrier, cruiser2)
     })
