@@ -9,6 +9,8 @@ const {
     MockCardDetails,
     MockPlayer,
 } = require('../../mock/mock-api')
+const { UnitModifier, AuxData } = require('./unit-modifier')
+const { UnitAttrsSet } = require('./unit-attrs-set')
 
 function _getUnitUpgrade(unitName) {
     for (const rawAttrs of UNIT_ATTRS) {
@@ -43,6 +45,20 @@ it('UNIT_ATTRS locale', () => {
             assertLocaleKey(unitModifier.localeName)
             assertLocaleKey(unitModifier.localeDescription)
         }
+    }
+})
+
+it('UNIT_ATTRS unitModifiers', () => {
+    for (const rawAttrs of UNIT_ATTRS) {
+        if (rawAttrs.unitModifier) {
+            const unitModifier = new UnitModifier(rawAttrs.unitModifier)
+            const unitAttrsSet = new UnitAttrsSet()
+            const auxData = new AuxData()
+            for (const unit of UnitAttrs.getAllUnitTypes()) {
+                auxData.setSelfCount(unit, 1)
+            }
+            unitModifier.apply(unitAttrsSet, auxData)
+            }
     }
 })
 

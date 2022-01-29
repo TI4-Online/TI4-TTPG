@@ -621,7 +621,7 @@ module.exports = [
             applyAll: (unitAttrsSet, auxData) => {
                 // Normally mech is paired with Jol-Nar + FRAGILE, but watch out for Franken!
                 let hasFragile = false
-                for (const unitModifier of auxData.getUnitModifiers()) {
+                for (const unitModifier of auxData.selfUnitModifiers()) {
                     if (unitModifier.raw.localeName == 'unit_modifier.name.fragile') {
                         hasFragile = true
                         break
@@ -892,7 +892,7 @@ module.exports = [
             applyAll: (unitAttrsSet, auxData) => {
                 let nonFighterShipCount = 0
                 // TODO XXX NazRhoka mech on planet vs space (count as ship)
-                for (const unitAttrs of auxData.getOpponentUnitAttrsSet().values()) {
+                for (const unitAttrs of auxData.opponentUnitAttrsSet().values()) {
                     if (unitAttrs.raw.ship &&
                         unitAttrs.raw.unit !== 'fighter' &&
                         auxData.opponentHas(unitAttrs.raw.unit)) {
@@ -932,8 +932,8 @@ module.exports = [
                     unitAttrs.raw.groundCombat &&
                     !unitAttrs.raw.spaceCombat) {
                     unitAttrs.raw.spaceCombat = {
-                        dice: unitAttrs.groundCombat.dice,
-                        hit: unitAttrs.groundCombat.hit,
+                        dice: unitAttrs.raw.groundCombat.dice,
+                        hit: unitAttrs.raw.groundCombat.hit,
                     }
                 }
             }

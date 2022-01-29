@@ -170,30 +170,47 @@ class UnitModifier {
 }
 
 class AuxData {
-    constructor() {}
+    constructor() {
+        this._selfUnitToCount = {}
+        this._selfUnitModifiers = []
+        this._opponentUnitToCount = {}
+        this._opponentUnitAttrsSet = new UnitAttrsSet()
+    }
 
     selfHas(unit) {
-        return false
+        return this.selfCount(unit) > 0
     }
 
     selfCount(unit) {
-        return false
-    }
-
-    opponentCount(unit) {
-        return false
-    }
-
-    getUnitModifiers() {
-        return []
-    }
-
-    getOpponentUnitAttrsSet() {
-        return new UnitAttrsSet()
+        return this._selfUnitToCount[unit] || 0
     }
 
     setSelfCount(unit, value) {
+        assert(typeof unit === 'string')
+        assert(typeof value === 'number')
+        this._selfUnitToCount[unit] = value
+    }
 
+    selfUnitModifiers() {
+        return this._selfUnitModifiers
+    }
+
+    opponentHas(unit) {
+        return this.selfCount(unit) > 0
+    }
+
+    opponentCount(unit) {
+        return this._selfUnitToCount[unit] || 0
+    }
+
+    setOpponentCount(unit, value) {
+        assert(typeof unit === 'string')
+        assert(typeof value === 'number')
+        this._opponentUnitToCount[unit] = value
+    }
+
+    opponentUnitAttrsSet() {
+        return this._opponentUnitAttrsSet
     }
 }
 

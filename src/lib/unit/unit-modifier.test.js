@@ -36,13 +36,13 @@ it('UNIT_MODIFIERS locale', () => {
 
 it('UNIT_MODIFIERS apply', () => {
     for (const rawModifier of UNIT_MODIFIERS) {
-        const unitModifer = new UnitModifier(rawModifier)
+        const unitModifier = new UnitModifier(rawModifier)
         const unitAttrsSet = new UnitAttrsSet()
         const auxData = new AuxData()
         for (const unit of UnitAttrs.getAllUnitTypes()) {
             auxData.setSelfCount(unit, 1)
         }
-        unitModifer.apply(unitAttrsSet, auxData)
+        unitModifier.apply(unitAttrsSet, auxData)
     }
 })
 
