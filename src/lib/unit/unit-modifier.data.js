@@ -182,26 +182,6 @@ module.exports = [
         }
     },
     {
-        // "SPACE CANNON 5(x3)",
-        isCombat: true,
-        localeDescription: "unit_modifier.desc.ul_the_progenitor",
-        localeName: "unit_modifier.name.ul_the_progenitor",
-        owner: "self",
-        priority: "mutate",
-        toggleActive: true,
-        triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
-        applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has('space_dock')) {
-                unitAttrsSet.addSpecialUnit(new UnitAttrs({
-                    unit: 'ul_the_progenitor',
-                    localeName: "unit_modifier.name.ul_the_progenitor",
-                    spaceCannon: { hit: 5, dice: 3 }
-                }))
-                auxData.self.count('ul_the_progenitor', 1)
-            }
-        }
-    },
-    {
         // "Produce an additional Fighter for their cost; it doesn't count towards production limits.",
         isCombat: false,
         localeDescription: "unit_modifier.desc.maban",
@@ -404,6 +384,26 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
         // TODO XXX
+    },
+    {
+        // "SPACE CANNON 5(x3)",
+        isCombat: true,
+        localeDescription: "unit_modifier.desc.ul_the_progenitor",
+        localeName: "unit_modifier.name.ul_the_progenitor",
+        owner: "self",
+        priority: "mutate",
+        toggleActive: true,
+        triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
+        applyAll: (unitAttrsSet, auxData) => {
+            if (auxData.self.has('space_dock')) {
+                unitAttrsSet.addSpecialUnit(new UnitAttrs({
+                    unit: 'ul_the_progenitor',
+                    localeName: "unit_modifier.name.ul_the_progenitor",
+                    spaceCannon: { hit: 5, dice: 3 }
+                }))
+                auxData.self.count('ul_the_progenitor', 1)
+            }
+        }
     },
     {
         // "+1 to all COMBAT rolls",

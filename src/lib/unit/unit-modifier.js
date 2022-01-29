@@ -1,9 +1,8 @@
 const assert = require('../../wrapper/assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
-const { world, Card, GameObject, Player } = require('../../wrapper/api')
-const { UnitAttrsSet } = require('./unit-attrs-set')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
+const { world, Card, GameObject, Player } = require('../../wrapper/api')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 
 const PRIORITY = {
@@ -152,7 +151,6 @@ class UnitModifier {
      * @param {object} auxData - table of misc things modifiers might use
      */
     apply(unitAttrsSet, auxData) {
-        assert(unitAttrsSet instanceof UnitAttrsSet)
         if (this._modifier.applyEach) {
             for (const unitAttrs of unitAttrsSet.values()) {
                 this._modifier.applyEach(unitAttrs, auxData)

@@ -60,7 +60,7 @@ it('UNIT_ATTRS unitModifiers', () => {
                 auxData.opponent.overrideCount(unit, 1)
             }
             unitModifier.apply(unitAttrsSet, auxData)
-            }
+        }
     }
 })
 

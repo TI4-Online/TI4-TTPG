@@ -2,10 +2,9 @@ const assert = require('../../wrapper/assert')
 const _ = require('../../wrapper/lodash')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
-const { world, Card, GameObject, Player } = require('../../wrapper/api')
-
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const UNIT_ATTRS = require('./unit-attrs.data')
+const { world, Card, GameObject, Player } = require('../../wrapper/api')
 
 let _allUnitTypes = false
 let _unitToDefaultRawAttrs = false
