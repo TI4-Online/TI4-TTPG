@@ -1,5 +1,4 @@
-const { MockGameObject } = require('../../mock/mock-game-object');
-const { MockGameObjectContainer } = require('../../mock/mock-game-object-container');
+const { MockGameObject, MockContainer } = require('../../mock/mock-api');
 const GraveyardContainer = require('./graveyard-container');
 const ReturnGameObjectHome = require('../../lib/return-game-object-home');
 
@@ -7,7 +6,7 @@ describe('GraveyardContainer', () => {
     let refContainer
     
     beforeEach(() => {
-        refContainer = new MockGameObjectContainer()
+        refContainer = new MockContainer()
         new GraveyardContainer(refContainer)
     });
 

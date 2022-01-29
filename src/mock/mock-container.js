@@ -1,9 +1,8 @@
-const GameObject = require("./mock-game-object");
+const TriggerableMulticastDelegate = require('../lib/triggerable-multicast-delegate')
+const MockGameObject = require('./mock-game-object')
 
-class Container extends GameObject {
-    constructor(data) {
-        super(data);
-    }
+class MockContainer extends MockGameObject {
+    onInserted = new TriggerableMulticastDelegate()
 }
 
-module.exports = Container;
+module.exports = MockContainer
