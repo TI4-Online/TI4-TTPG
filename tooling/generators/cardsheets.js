@@ -704,6 +704,11 @@ async function writeDeckTemplate(deckData, cardSize, cardDataArray, layout, face
         indices.push(pos)
     }
 
+    // Set metadata to match "*" names in card NSID.
+    const deckNsidType = deckData.cardNsidTypePrefix
+    const deckNsidSource = cardDataArray[0].nsidSource()
+    const deckNsid = deckNsidType + ':' + deckNsidSource + '/*'
+
     // Generate a deterministic guid.
     const guid = crypto.createHash('sha256').update(outputFilename).digest('hex').substring(0,32).toUpperCase()
 
@@ -711,7 +716,7 @@ async function writeDeckTemplate(deckData, cardSize, cardDataArray, layout, face
         "Type": "Card",
         "GUID": guid,
         "Name": deckData.overrideName,
-        "Metadata": "",
+        "Metadata": deckNsid,
         "CollisionType": "Regular",
         "Friction": 0.7,
         "Restitution": 0,
@@ -856,6 +861,7 @@ async function generateDecks(cardNsidTypePrefix, locale) {
 
     const deckData = DECKS[cardNsidTypePrefix]
     assert(deckData)
+    deckData.cardNsidTypePrefix = cardNsidTypePrefix
 
     // Get cards by namespace id to card data.
     const cardIdPattern = '^' + cardNsidTypePrefix + '[.:/]'
