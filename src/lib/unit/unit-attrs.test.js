@@ -2,6 +2,9 @@ const assert = require('assert')
 const locale = require('../locale')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const { UnitAttrs } = require('./unit-attrs')
+const { UnitAttrsSet } = require('./unit-attrs-set')
+const { UnitModifier } = require('./unit-modifier')
+const { AuxData } = require('./auxdata')
 const UNIT_ATTRS = require('./unit-attrs.data')
 const {
     world,
@@ -9,8 +12,6 @@ const {
     MockCardDetails,
     MockPlayer,
 } = require('../../mock/mock-api')
-const { UnitModifier, AuxData } = require('./unit-modifier')
-const { UnitAttrsSet } = require('./unit-attrs-set')
 
 function _getUnitUpgrade(unitName) {
     for (const rawAttrs of UNIT_ATTRS) {
@@ -53,9 +54,10 @@ it('UNIT_ATTRS unitModifiers', () => {
         if (rawAttrs.unitModifier) {
             const unitModifier = new UnitModifier(rawAttrs.unitModifier)
             const unitAttrsSet = new UnitAttrsSet()
-            const auxData = new AuxData()
+            const auxData = { self: new AuxData(), opponent: new AuxData() }
             for (const unit of UnitAttrs.getAllUnitTypes()) {
-                auxData.setSelfCount(unit, 1)
+                auxData.self.overrideCount(unit, 1)
+                auxData.opponent.overrideCount(unit, 1)
             }
             unitModifier.apply(unitAttrsSet, auxData)
             }

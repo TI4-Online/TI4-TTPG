@@ -113,13 +113,13 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.action:base/experimental_battlestation",
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.selfHas('space_dock')) {
+            if (auxData.self.has('space_dock')) {
                 unitAttrsSet.addSpecialUnit(new UnitAttrs({
                     unit: 'experimental_battlestation',
                     localeName: "unit_modifier.name.experimental_battlestation",
                     spaceCannon: { hit: 5, dice: 3, range: 1 }
                 }))
-                auxData.setSelfCount('experimental_battlestation', 1)
+                auxData.self.overrideCount('experimental_battlestation', 1)
             }
         }
     },
@@ -136,7 +136,7 @@ module.exports = [
             let best = false
             for (const unitAttrs of unitAttrsSet.values()) {
                 if (unitAttrs.raw.groundCombat &&
-                    auxData.selfHas(unitAttrs.raw.unit)) {
+                    auxData.self.has(unitAttrs.raw.unit)) {
                     if (!best || unitAttrs.raw.groundCombat.hid < best.raw.groundCombat.hit) {
                         best = unitAttrs
                     }
@@ -191,13 +191,13 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.selfHas('space_dock')) {
+            if (auxData.self.has('space_dock')) {
                 unitAttrsSet.addSpecialUnit(new UnitAttrs({
                     unit: 'ul_the_progenitor',
                     localeName: "unit_modifier.name.ul_the_progenitor",
                     spaceCannon: { hit: 5, dice: 3 }
                 }))
-                auxData.setSelfCount('ul_the_progenitor', 1)
+                auxData.self.count('ul_the_progenitor', 1)
             }
         }
     },

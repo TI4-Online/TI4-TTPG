@@ -538,7 +538,7 @@ module.exports = [
             applyEach: (unitAttrs, auxData) => {
                 if (unitAttrs.raw.ground &&
                     unitAttrs.raw.sustainDamage &&
-                    auxData.opponentHas('mech')) {
+                    auxData.opponent.has('mech')) {
                     unitAttrs.raw.sustainDamage = false
                 }                
             }
@@ -621,7 +621,7 @@ module.exports = [
             applyAll: (unitAttrsSet, auxData) => {
                 // Normally mech is paired with Jol-Nar + FRAGILE, but watch out for Franken!
                 let hasFragile = false
-                for (const unitModifier of auxData.selfUnitModifiers()) {
+                for (const unitModifier of auxData.self.unitModifiers()) {
                     if (unitModifier.raw.localeName == 'unit_modifier.name.fragile') {
                         hasFragile = true
                         break
@@ -630,7 +630,7 @@ module.exports = [
                 // Do not attempt to suppress "fragile" application, just undo it.
                 const infantryAttrs = unitAttrsSet.get('infantry')
                 if (hasFragile && 
-                    auxData.selfHas('mech') &&
+                    auxData.self.has('mech') &&
                     infantryAttrs.raw.groundCombat) {
                     infantryAttrs.raw.groundCombat -= 1
                 }
@@ -892,11 +892,11 @@ module.exports = [
             applyAll: (unitAttrsSet, auxData) => {
                 let nonFighterShipCount = 0
                 // TODO XXX NazRhoka mech on planet vs space (count as ship)
-                for (const unitAttrs of auxData.opponentUnitAttrsSet().values()) {
+                for (const unitAttrs of auxData.opponent.unitAttrsSet().values()) {
                     if (unitAttrs.raw.ship &&
                         unitAttrs.raw.unit !== 'fighter' &&
-                        auxData.opponentHas(unitAttrs.raw.unit)) {
-                        nonFighterShipCount += auxData.opponentCount(unitAttrs.raw.unit)
+                        auxData.opponent.has(unitAttrs.raw.unit)) {
+                        nonFighterShipCount += auxData.opponent.count(unitAttrs.raw.unit)
                     }
                 }
                 const flagshipAttrs = unitAttrsSet.get('flagship')

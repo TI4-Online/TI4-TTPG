@@ -1,9 +1,10 @@
 const assert = require('assert')
 const locale = require('../locale')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
-const { UnitModifier, PRIORITY, OWNER, AuxData } = require('./unit-modifier')
+const { UnitModifier, PRIORITY, OWNER } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
 const { UnitAttrsSet } = require('./unit-attrs-set')
+const { AuxData } = require('./auxdata')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 const {
     world,
@@ -38,9 +39,10 @@ it('UNIT_MODIFIERS apply', () => {
     for (const rawModifier of UNIT_MODIFIERS) {
         const unitModifier = new UnitModifier(rawModifier)
         const unitAttrsSet = new UnitAttrsSet()
-        const auxData = new AuxData()
+        const auxData = { self: new AuxData(), opponent: new AuxData() }
         for (const unit of UnitAttrs.getAllUnitTypes()) {
-            auxData.setSelfCount(unit, 1)
+            auxData.self.overrideCount(unit, 1)
+            auxData.opponent.overrideCount(unit, 1)
         }
         unitModifier.apply(unitAttrsSet, auxData)
     }
