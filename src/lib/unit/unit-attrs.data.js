@@ -1,4 +1,7 @@
 // This is not JSON because unit attributes can also be unit modifiers, with
+
+const { UnitAttrs } = require("./unit-attrs")
+
 // `modify = function(unitAttrs, auxData)` entries.
 module.exports = [
 
@@ -412,6 +415,26 @@ module.exports = [
         upgradeLevel: 1,
         localeName: 'unit.mech.aerie_sentinel',
         triggerNsid: 'card.leader.mech.argent:pok/aerie_sentinel',
+        unitModifier: {
+            // Does not count against capacity when with a ship with capacity
+            localeName: 'unit.mech.aerie_sentinel',
+            localeDescription: 'unit_modifier.desc.aerie_sentinel',
+            owner: 'self',
+            priority: 'mutate',
+            applyAll: (unitAttrsSet, auxData) => {
+                let hasCapacity = false
+                for (const unitAttrs of unitAttrsSet.values()) {
+                    if (unitAttrs.raw.capacity) {
+                        hasCapacity = true
+                        break
+                    }
+                }
+                if (hasCapacity) {
+                    const mechAttrs = unitAttrsSet.get('mech')
+                    mechAttrs.raw.requireCapacity = false
+                }
+            }
+        }
     },
     {
         unit: 'mech',
@@ -466,12 +489,23 @@ module.exports = [
         unitModifier: {
             // "+2 mech COMBAT rolls if opponent has fragment",
             isCombat: true,
+            localeName: "unit.mech.iconoclast",
             localeDescription: "unit_modifier.desc.iconoclast",
-            localeName: "unit_modifier.name.iconoclast",
             owner: "self",
-            priority: "mutate",
+            priority: "adjust",
             triggerNsid: "card.leader.mech.naalu:pok/iconoclast",
-            // TODO XXX
+            applyAll: (unitAttrsSet, auxData) => {
+                let opponentHasFragment = false // TODO XXX
+                if (opponentHasFragment) {
+                    const mechAttrs = unitAttrsSet.get('mech')
+                    if (mechAttrs.raw.spaceCombat) {
+                        mechAttrs.raw.spaceCombat.hit -= 2
+                    }
+                    if (mechAttrs.raw.groundCombat) {
+                        mechAttrs.raw.groundCombat.hit -= 2
+                    }
+                }
+            }
         },
     },
     {
@@ -494,12 +528,47 @@ module.exports = [
         upgradeLevel: 1,
         localeName: 'unit.mech.moll_terminus',
         triggerNsid: 'card.leader.mech.mentak:base/moll_terminus',
+        unitModifier: {
+            // Other's ground forces on planet cannot SUSTAIN DAMAGE
+            isCombat: true,
+            localeName: 'unit.mech.moll_terminus',
+            localeDescription: 'unit_modifier.desc.moll_terminus',
+            owner: 'opponent',
+            priority: 'mutate',
+            applyEach: (unitAttrs, auxData) => {
+                if (unitAttrs.raw.ground &&
+                    unitAttrs.raw.sustainDamage &&
+                    auxData.opponentHas('mech')) {
+                    unitAttrs.raw.sustainDamage = false
+                }                
+            }
+        }
     },
     {
         unit: 'mech',
         upgradeLevel: 1,
         localeName: 'unit.mech.mordred',
-        triggerNsid: 'card.leader.mech.nekro:base/mordred'
+        triggerNsid: 'card.leader.mech.nekro:base/mordred',
+        unitModifier: {
+            // +2 mech COMBAT rolls if opponent has X/Y token
+            isCombat: true,
+            localeName: 'unit.mech.mordred',
+            localeDescription: 'unit_modifier.desc.mordred',
+            owner: 'self',
+            priority: 'adjust',
+            applyAll: (unitAttrsSet, auxData) => {
+                let opponentHasXYToken = false // TODO XXX
+                if (opponentHasXYToken) {
+                    const mechAttrs = unitAttrsSet.get('mech')
+                    if (mechAttrs.raw.spaceCombat) {
+                        mechAttrs.raw.spaceCombat.hit -= 2
+                    }
+                    if (mechAttrs.raw.groundCombat) {
+                        mechAttrs.raw.groundCombat.hit -= 2
+                    }
+                }
+            }
+        }
     },
     {
         unit: 'mech',
@@ -542,6 +611,31 @@ module.exports = [
         upgradeLevel: 1,
         localeName: 'unit.mech.shield_paling',
         triggerNsid: 'card.leader.mech.jolnar:base/shield_paling',
+        unitModifier: {
+            // Infantry on planet with mech are not FRAGILE
+            isCombat: true,
+            localeName: 'unit.mech.shield_paling',
+            localeDescription: 'unit_modifier.desc.shield_paling',
+            owner: 'self',
+            priority: 'adjust',
+            applyAll: (unitAttrsSet, auxData) => {
+                // Normally mech is paired with Jol-Nar + FRAGILE, but watch out for Franken!
+                let hasFragile = false
+                for (const unitModifier of auxData.getUnitModifiers()) {
+                    if (unitModifier.raw.localeName == 'unit_modifier.name.fragile') {
+                        hasFragile = true
+                        break
+                    }
+                }
+                // Do not attempt to suppress "fragile" application, just undo it.
+                const infantryAttrs = unitAttrsSet.get('infantry')
+                if (hasFragile && 
+                    auxData.selfHas('mech') &&
+                    infantryAttrs.raw.groundCombat) {
+                    infantryAttrs.raw.groundCombat -= 1
+                }
+            }
+        }
     },
     {
         unit: 'mech',
@@ -605,13 +699,21 @@ module.exports = [
         spaceCombat: {dice: 2, hit: 5 },
         unitModifier: {
             // +2 flagship COMBAT against opponent with no token in your fleet pool
+            isCombat: true,
             localeName: 'unit.flagship.arvicon_rex',
             localeDescription: 'unit_modifier.desc.arvicon_rex',
             owner: 'self',
             priority: 'adjust',
-            applyEach: (unitAttrs, auxData) => {
-                if (unitAttrs.raw.unit === 'flagship') {
-                    // TODO XXX
+            applyAll: (unitAttrsSet, auxData) => {
+                let opponentTokenInFleetPool = false // TODO XXX
+                if (opponentTokenInFleetPool) {
+                    const flagshipAttrs = unitAttrsSet.get('flagship')
+                    if (flagshipAttrs.raw.spaceCombat) {
+                        flagshipAttrs.raw.spaceCombat.hit -= 2
+                    }
+                    if (flagshipAttrs.raw.groundCombat) {
+                        flagshipAttrs.raw.groundCombat.hit -= 2
+                    }
                 }
             }
         },
@@ -624,6 +726,7 @@ module.exports = [
         spaceCombat: { dice: 2, hit: 6 },
         unitModifier: {
             // +1 to all COMBAT rolls for other ships with the C'morran N'orr
+            isCombat: true,
             localeName: 'unit.flagship.cmorran_norr',
             localeDescription: 'unit_modifier.desc.cmorran_norr',
             owner: 'self',
@@ -660,6 +763,7 @@ module.exports = [
         spaceCombat: { dice: 2, hit: 7 },
         unitModifier: {
             // Opponent's ships cannot use SUSTAIN DAMAGE
+            isCombat: true,
             localeName: 'unit.flagship.fourth_moon',
             localeDescription: 'unit_modifier.desc.fourth_moon',
             owner: 'opponent',
@@ -711,6 +815,7 @@ module.exports = [
         capacity: 6,
         unitModifier: {
             // Fighters may participate in ground combat
+            isCombat: true,
             localeName: 'unit.flagship.matriarch',
             localeDescription: 'unit_modifier.desc.matriarch',
             owner: 'self',
@@ -759,6 +864,7 @@ module.exports = [
         spaceCombat: { dice: 2, hit: 7 },
         unitModifier: {
             // Other players cannot use SPACE CANNON against your ships in this system
+            isCombat: true,
             localeName: 'unit.flagship.quetzecoatl',
             localeDescription: 'unit_modifier.desc.quetzecoatl',
             owner: 'opponent',
@@ -778,13 +884,24 @@ module.exports = [
         spaceCombat: { dice: 1, hit: 7 },
         unitModifier: {
             // Rolls number of dice equal to number of opponent's non-fighter ships
+            isCombat: true,
             localeName: 'unit.flagship.salai_sai_corian',
             localeDescription: 'unit_modifier.desc.salai_sai_corian',
             owner: 'self',
             priority: 'adjust',
-            applyEach: (unitAttrs, auxData) => {
-                if (unitAttrs.raw.unit === 'flagship') {
-                    // XXX TODO
+            applyAll: (unitAttrsSet, auxData) => {
+                let nonFighterShipCount = 0
+                // TODO XXX NazRhoka mech on planet vs space (count as ship)
+                for (const unitAttrs of auxData.getOpponentUnitAttrsSet().values()) {
+                    if (unitAttrs.raw.ship &&
+                        unitAttrs.raw.unit !== 'fighter' &&
+                        auxData.opponentHas(unitAttrs.raw.unit)) {
+                        nonFighterShipCount += auxData.opponentCount(unitAttrs.raw.unit)
+                    }
+                }
+                const flagshipAttrs = unitAttrsSet.get('flagship')
+                if (flagshipAttrs.raw.spaceCombat) {
+                    flagshipAttrs.raw.spaceCombat.dice = nonFighterShipCount
                 }
             }
         },
@@ -805,6 +922,7 @@ module.exports = [
         spaceCombat: { dice: 2, hit: 9 },
         unitModifier: {
             // Ground forces may participate in space combat
+            isCombat: true,
             localeName: 'unit.flagship.the_alastor',
             localeDescription: 'unit_modifier.desc.the_alastor',
             owner: 'self',
@@ -852,6 +970,7 @@ module.exports = [
         capacity: 4,
         unitModifier: {
             // Your mechs in this system roll 1 additional die during combat
+            isCombat: true,
             localeName: 'unit.flagship.visz_el_vir',
             localeDescription: 'unit_modifier.desc.visz_el_vir',
             owner: 'self',
@@ -859,7 +978,7 @@ module.exports = [
             applyEach: (unitAttrs, auxData) => {
                 if (unitAttrs.raw.unit === 'mech' &&
                     unitAttrs.raw.groundCombat) {
-                    unitAttrs.raw.groundCombat.dice += 1
+                    unitAttrs.raw.groundCombat.extraDice = (unitAttrs.raw.groundCombat.extraDice || 0) + 1
                 }
             }
         },

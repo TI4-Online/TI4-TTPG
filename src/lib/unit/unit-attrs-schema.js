@@ -81,7 +81,8 @@ const UNIT_ATTRS_SCHEMA_JSON = {
                 dice: {type: "integer", default: 1},
                 hit: {type: "integer", maximum: 10},
                 anyPlanet: {type: "boolean"},
-                requireGround: {type: "boolean", default: true}
+                requireGround: {type: "boolean", default: true},
+                extraDice: {type: "integer"}
             },
             required: ["hit"]
         },

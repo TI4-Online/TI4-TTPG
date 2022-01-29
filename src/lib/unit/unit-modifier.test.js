@@ -22,12 +22,12 @@ it('UNIT_MODIFIERS schema', () => {
 
 it('UNIT_MODIFIERS locale', () => {
     for (const rawModifier of UNIT_MODIFIERS) {
-        const assertLocaleKey = (localKey) => {
-            const s = locale(localKey)
-            if (s === localKey) {
+        const assertLocaleKey = (localeKey) => {
+            const s = locale(localeKey)
+            if (s === localeKey) {
                 console.error(rawModifier)
             }
-            assert(s !== localKey) // yarn dev to (re)build lang
+            assert(s !== localeKey) // yarn dev to (re)build lang
         }
         assertLocaleKey(rawModifier.localeName)
         assertLocaleKey(rawModifier.localeDescription)

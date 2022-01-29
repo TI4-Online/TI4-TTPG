@@ -30,12 +30,12 @@ it('UNIT_ATTRS schema', () => {
 
 it('UNIT_ATTRS locale', () => {
     for (const rawAttrs of UNIT_ATTRS) {
-        const assertLocaleKey = (localKey) => {
-            const s = locale(localKey)
-            if (s === localKey) {
+        const assertLocaleKey = (localeKey) => {
+            const s = locale(localeKey)
+            if (s === localeKey) {
                 console.error(rawAttrs)
             }
-            assert(s !== localKey) // yarn dev to (re)build lang
+            assert(s !== localeKey) // yarn dev to (re)build lang
         }
         assertLocaleKey(rawAttrs.localeName)
         const unitModifier = rawAttrs.unitModifier

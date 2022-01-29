@@ -184,8 +184,16 @@ class AuxData {
         return false
     }
 
+    getUnitModifiers() {
+        return []
+    }
+
+    getOpponentUnitAttrsSet() {
+        return new UnitAttrsSet()
+    }
+
     setSelfCount(unit, value) {
-        
+
     }
 }
 

@@ -238,16 +238,6 @@ module.exports = [
         }
     },
     {
-        // "+2 mech COMBAT rolls if opponent has X/Y token",
-        isCombat: true,
-        localeDescription: "unit_modifier.desc.mordred",
-        localeName: "unit_modifier.name.mordred",
-        owner: "self",
-        priority: "mutate",
-        triggerNsid: "card.leader.mech.nekro:pok/mordred",
-        // TODO XXX
-    },
-    {
         // "You can produce your flagship without spending resources.",
         isCombat: false,
         localeDescription: "unit_modifier.desc.navarch_feng",
@@ -319,16 +309,6 @@ module.exports = [
         priority: "adjust",
         toggleActive: true,
         triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
-        // TODO XXX
-    },
-    {
-        // "Infantry on planet with mech are not FRAGILE",
-        isCombat: true,
-        localeDescription: "unit_modifier.desc.shield_paling",
-        localeName: "unit_modifier.name.shield_paling",
-        owner: "self",
-        priority: "adjust",
-        triggerNsid: "card.leader.mech.jolnar:pok/shield_paling",
         // TODO XXX
     },
     {
