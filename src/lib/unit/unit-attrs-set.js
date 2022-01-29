@@ -46,6 +46,17 @@ class UnitAttrsSet {
         assert(unitAttrs)
         unitAttrs.upgrade(upgradeAttrs)
     }
+
+    /**
+     * Add a new non-standard unit (e.g. Experimental Battlestation)
+     * 
+     * @param {UnitAttrs} unitAttrs 
+     */
+    addSpecialUnit(unitAttrs) {
+        assert(unitAttrs instanceof UnitAttrs)
+        assert(!this._unitTypeToUnitAttrs[unitAttrs.raw.unit])
+        this._unitTypeToUnitAttrs[unitAttrs.raw.unit] = unitAttrs
+    }
 }
 
 module.exports = { UnitAttrsSet }

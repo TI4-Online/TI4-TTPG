@@ -1,7 +1,7 @@
 const assert = require('assert')
 const locale = require('../locale')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
-const { UnitModifier, PRIORITY, OWNER } = require('./unit-modifier')
+const { UnitModifier, PRIORITY, OWNER, AuxData } = require('./unit-modifier')
 const { UnitAttrs } = require('./unit-attrs')
 const { UnitAttrsSet } = require('./unit-attrs-set')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
@@ -31,6 +31,18 @@ it('UNIT_MODIFIERS locale', () => {
         }
         assertLocaleKey(rawModifier.localeName)
         assertLocaleKey(rawModifier.localeDescription)
+    }
+})
+
+it('UNIT_MODIFIERS apply', () => {
+    for (const rawModifier of UNIT_MODIFIERS) {
+        const unitModifer = new UnitModifier(rawModifier)
+        const unitAttrsSet = new UnitAttrsSet()
+        const auxData = new AuxData()
+        for (const unit of UnitAttrs.getAllUnitTypes()) {
+            auxData.setSelfCount(unit, 1)
+        }
+        unitModifer.apply(unitAttrsSet, auxData)
     }
 })
 

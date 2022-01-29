@@ -6,7 +6,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
     type: "object",
     properties: {
         unit: {type: "string"}, // is or upgrades this base unit; simple name [a-z0-9_] (e.g. "war_sun")
-        upgradeLevel: {type: "number"}, // omit for base units, 1 for faction override, 2+ for unit upgrade
+        upgradeLevel: {type: "integer"}, // omit for base units, 1 for faction override, 2+ for unit upgrade
         localeName: {type: "string"}, // human-readable name (after locale)
         unitNsid: {type: "string"}, // plastic unit nsid, for finding units on table
         triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
@@ -14,6 +14,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         ship: {type: "boolean"},
         ground: {type: "boolean"},
         structure: {type: "boolean"},
+        disablePlanetaryShield: {type: "boolean"},
 
         // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
         unitModifier: {$ref: "http://example.com/lib/unit/unit_modifier.json"},
@@ -38,7 +39,6 @@ const UNIT_ATTRS_SCHEMA_JSON = {
             required: ["hit"]
         },
         planetaryShield: {type: "boolean"},
-        disablePlanetaryShield: {type: "boolean"},
         production: {type: "integer"}, // if negative use as R+ value (e.g. space dock 1 = -2)
         spaceConnon: {
             type: "object",
@@ -54,6 +54,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         // Unit attributes.
         cost: {type: "integer"},
         produce: {type: "integer"}, // infantry cost=1 produce=2
+        freeProduce: {type: "integer"}, // N do not count toward production limit
         spaceCombat: {
             type: "object",
             properties: {

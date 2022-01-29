@@ -1,3 +1,5 @@
+const { UnitAttrs } = require("./unit-attrs")
+
 // This is not JSON because `modify = function(unitAttrs, auxData)` functions.
 module.exports = [
     {
@@ -8,8 +10,12 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.leader.commander.l1z1x:base/2ram",
-        // TODO XXX
-    }, 
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.bombardment) {
+                unitAttrs.raw.disablePlanetaryShield = true
+            }
+        }
+    },
     {
         // "-1 to all SPACE CANNON rolls",
         isCombat: true,
@@ -18,7 +24,11 @@ module.exports = [
         owner: "opponent",
         priority: "adjust",
         triggerNsid: "card.technology.blue:base/antimass_deflectors",
-        // TODO XXX
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCannon) {
+                unitAttrs.raw.spaceCannon.hit += 1
+            }
+        }
     },
     {
         // "Mechs lose non-SUSTAIN DAMAGE abilities",
@@ -28,7 +38,13 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.agenda:pok/articles_of_war",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const mechAttrs = unitAttrsSet.get('mech')
+            delete mechAttrs.raw.antiFighterBarrage
+            delete mechAttrs.raw.bombardment
+            delete mechAttrs.raw.roduction
+            delete mechAttrs.raw.spaceCannon
+        }
     },
     {
         // "BOMBARDMENT 6 to non-fighter, non-bomdbardment ships",
@@ -38,7 +54,13 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.action:codex.ordinian/blitz",
-        // TODO XXX
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.ship &&
+                unitAttrs.raw.unit !== 'fighter' &&
+                !unitAttrs.raw.bombardment) {
+                unitAttrs.raw.bombardment = { dice : 1, hit : 6 }
+            }
+        }
     },
     {
         // "Produce an additional Infantry for their cost; it doesn't count towards production limits.",
@@ -48,7 +70,11 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.leader.commander.yin:pok/brother_omar",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const infantryAttrs = unitAttrsSet.get('infantry')
+            infantryAttrs.raw.produce += 1
+            infantryAttrs.raw.freeProduce = (infantryAttrs.raw.freeProduce || 0) + 1
+        }
     },
     {
         // "-4 to all BOMBARDMENT rolls",
@@ -57,8 +83,12 @@ module.exports = [
         localeName: "unit_modifier.name.bunker",
         owner: "any",
         priority: "adjust",
-        triggerNsid: "card.action:base/bunkerr",
-        // TODO XXX
+        triggerNsid: "card.action:base/bunker",
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.bombardment) {
+                unitAttrs.raw.bombardment.hit += 4
+            }
+        }
     },
     {
         // "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
@@ -68,18 +98,11 @@ module.exports = [
         owner: "opponent",
         priority: "mutate",
         triggerNsid: "card.action:base/disable",
-        // TODO XXX
-    },
-    {
-        // "Active with-wormhole system is adjacent to other wormholes",
-        isCombat: false,
-        localeDescription: "unit_modifier.desc.emissary_taivra",
-        localeName: "unit_modifier.name.emissary_taivra",
-        owner: "any",
-        priority: "choose",
-        toggleActive: true,
-        triggerNsid: "card.leader.agent.creuss:pok/emissary_taivra",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const pdsAttrs = unitAttrsSet.get('pds')
+            delete pdsAttrs.raw.planetaryShield
+            delete pdsAttrs.raw.spaceCannon
+        }
     },
     {
         // "One in or adjacent Space Dock gets SPACE CANNON 5x3",
@@ -89,7 +112,16 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.action:base/experimental_battlestation",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            if (auxData.selfHas('space_dock')) {
+                unitAttrsSet.addSpecialUnit(new UnitAttrs({
+                    unit: 'experimental_battlestation',
+                    localeName: "unit_modifier.name.experimental_battlestation",
+                    spaceCannon : { hit : 5, dice : 3, range : 1 }
+                }))
+                auxData.setSelfCount('experimental_battlestation', 1)
+            }
+        }
     },
     {
         // "+1 die to a single GROUND COMBAT roll",
@@ -100,7 +132,20 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.agent.sol:pok/evelyn_delouis",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            let best = false
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.groundCombat &&
+                    auxData.selfHas(unitAttrs.raw.unit)) {
+                    if (!best || unitAttrs.raw.groundCombat.hid < best.raw.groundCombat.hit) {
+                        best = unitAttrs
+                    }
+                }
+            }
+            if (best) {
+                best.raw.groundCombat.extraDice = (best.raw.groundCombat.extraDice || 0) + 1
+            }
+        }
     },
     {
         // "+2 to fighters' COMBAT rolls",
@@ -110,7 +155,15 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.action:base/fighter_prototype",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const fighterAttrs = unitAttrsSet.get('fighter')
+            if (fighterAttrs.raw.spaceCombat) {
+                fighterAttrs.raw.spaceCombat.hit -= 2
+            }
+            if (fighterAttrs.raw.groundCombat) {
+                fighterAttrs.raw.groundCombat.hit -= 2
+            }
+        }
     },
     {
         // "-1 to all COMBAT rolls",
@@ -119,8 +172,14 @@ module.exports = [
         localeName: "unit_modifier.name.fragile",
         owner: "self",
         priority: "adjust",
-        // TODO FACTION ABILITY XXX
-        // TODO XXX
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCombat) {
+                unitAttrs.raw.spaceCombat.hit += 1
+            }
+            if (unitAttrs.raw.groundCombat) {
+                unitAttrs.raw.groundCombat.hit += 1
+            }
+        }
     },
     {
         // "SPACE CANNON 5(x3)",
@@ -131,7 +190,16 @@ module.exports = [
         priority: "mutate",
         toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            if (auxData.selfHas('space_dock')) {
+                unitAttrsSet.addSpecialUnit(new UnitAttrs({
+                    unit: 'ul_the_progenitor',
+                    localeName: "unit_modifier.name.ul_the_progenitor",
+                    spaceCannon : { hit : 5, dice : 3 }
+                }))
+                auxData.setSelfCount('ul_the_progenitor', 1)
+            }
+        }
     },
     {
         // "Produce an additional Fighter for their cost; it doesn't count towards production limits.",
@@ -141,7 +209,11 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.leader.commander.naalu:pok/maban",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const fighterAttrs = unitAttrsSet.get('fighter')
+            fighterAttrs.raw.produce += 1
+            fighterAttrs.raw.freeProduce = (fighterAttrs.raw.freeProduce || 0) + 1
+        }
     },
     {
         // "+1 to all COMBAT rolls",
@@ -183,7 +255,10 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.leader.commander.nomad:pok/navarch_feng",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            const flagshipAttrs = unitAttrsSet.get('flagship')
+            flagshipAttrs.raw.cost = 0
+        }
     },
     {
         // "+1 to SPACE COMBAT rolls (defender)",

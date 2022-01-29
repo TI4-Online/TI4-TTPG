@@ -169,8 +169,29 @@ class UnitModifier {
     }
 }
 
+class AuxData {
+    constructor() {}
+
+    selfHas(unit) {
+        return false
+    }
+
+    selfCount(unit) {
+        return false
+    }
+
+    opponentCount(unit) {
+        return false
+    }
+
+    setSelfCount(unit, value) {
+        
+    }
+}
+
 module.exports = {
     UnitModifier,
+    AuxData,
     PRIORITY,
     OWNER
 }
