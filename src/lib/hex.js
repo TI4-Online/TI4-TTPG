@@ -56,10 +56,10 @@ const M = LAYOUT_POINTY
     static _hexFromString(hex) {
         assert(typeof hex === 'string')
 
-        let [full, q, r, s] = hex.match(/^<(-?\d+),(-?\d+),(-?\d+)>$/)
-        q = parseFloat(q)
-        r = parseFloat(r)
-        s = parseFloat(s)
+        const m = hex.match(/^<(-?\d+),(-?\d+),(-?\d+)>$/)
+        const q = parseFloat(m[1])
+        const r = parseFloat(m[2])
+        const s = parseFloat(m[3])
         assert(Math.round(q + r + s) == 0, 'q + r + s must be 0')
 
         return [q, r, s]
@@ -89,19 +89,19 @@ const M = LAYOUT_POINTY
         assert(typeof pos.z === 'number')
 
         // Fractional hex position.
-        let x = pos.x / Hex.HALF_SIZE
-        let y = pos.y / Hex.HALF_SIZE
-        let q = M.b0 * x + M.b1 * y
-        let r = M.b2 * x + M.b3 * y
-        let s = -q - r
+        const x = pos.x / Hex.HALF_SIZE
+        const y = pos.y / Hex.HALF_SIZE
+        const q = M.b0 * x + M.b1 * y
+        const r = M.b2 * x + M.b3 * y
+        const s = -q - r
 
         // Round to grid aligned hex.
         let qi = Math.round(q)
         let ri = Math.round(r)
         let si = Math.round(s)
-        let q_diff = Math.abs(qi - q)
-        let r_diff = Math.abs(ri - r)
-        let s_diff = Math.abs(si - s)
+        const q_diff = Math.abs(qi - q)
+        const r_diff = Math.abs(ri - r)
+        const s_diff = Math.abs(si - s)
         if (q_diff > r_diff && q_diff > s_diff) {
             qi = -ri - si
         } else {
@@ -124,11 +124,11 @@ const M = LAYOUT_POINTY
     static toPosition(hex) {
         assert(typeof hex === 'string')
 
-        let [q, r, s] = Hex._hexFromString(hex)
+        const [q, r] = Hex._hexFromString(hex)
 
-        let x = (M.f0 * q + M.f1 * r) * Hex.HALF_SIZE
-        let y = (M.f2 * q + M.f3 * r) * Hex.HALF_SIZE
-        let z = Hex._z
+        const x = (M.f0 * q + M.f1 * r) * Hex.HALF_SIZE
+        const y = (M.f2 * q + M.f3 * r) * Hex.HALF_SIZE
+        const z = Hex._z
         return new Vector(x, y, z)    
     }
 
@@ -142,13 +142,13 @@ const M = LAYOUT_POINTY
     static corners(hex) {
         assert(typeof hex === 'string')
 
-        let center = Hex.toPosition(hex)
-        let result = []
-        let z = Hex._z
+        const center = Hex.toPosition(hex)
+        const result = []
+        const z = Hex._z
         for (let i = 0; i < 6; i++) {
             const phi = 2 * Math.PI * (M.startAngle - i) / 6
-            let x = center.x + Hex.HALF_SIZE * Math.cos(phi)
-            let y = center.y + Hex.HALF_SIZE * Math.sin(phi)
+            const x = center.x + Hex.HALF_SIZE * Math.cos(phi)
+            const y = center.y + Hex.HALF_SIZE * Math.sin(phi)
             result.push(new Vector(x, y, z))
         }
 
@@ -165,7 +165,7 @@ const M = LAYOUT_POINTY
      static neighbors(hex) {
         assert(typeof hex === 'string')
 
-        let [q, r, s] = Hex._hexFromString(hex)
+        const [q, r, s] = Hex._hexFromString(hex)
         return [
             Hex._hexToString(q + 1, r + 0, s - 1),
             Hex._hexToString(q + 1, r - 1, s + 0),
