@@ -515,7 +515,14 @@ module.exports = [
         priority: "adjust",
         toggleActive: true,
         triggerNsid: "card.agenda:base.only/the_crown_of_thalnos",
-        // TODO XXX
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCombat) {
+                unitAttrs.raw.spaceCombat.hit -= 1
+            }
+            if (unitAttrs.raw.groundCombat) {
+                unitAttrs.raw.groundCombat.hit -= 1
+            }
+        }
     },
     {
         // "+1 die to a unit ability (anti-fighter barrage, bombardment, space cannon)",
@@ -526,7 +533,47 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            // antiFighterBarrage.
+            let best = false
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.antiFighterBarrage &&
+                    auxData.self.has(unitAttrs.raw.unit)) {
+                    if (!best || unitAttrs.raw.antiFighterBarrage.hit < best.raw.antiFighterBarrage.hit) {
+                        best = unitAttrs
+                    }
+                }
+            }
+            if (best) {
+                best.raw.antiFighterBarrage.extraDice = (best.raw.antiFighterBarrage.extraDice || 0) + 1
+            }
+            // Bombardment.
+            best = false
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.bombardment &&
+                    auxData.self.has(unitAttrs.raw.unit)) {
+                    if (!best || unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit) {
+                        best = unitAttrs
+                    }
+                }
+            }
+            if (best) {
+                best.raw.bombardment.extraDice = (best.raw.bombardment.extraDice || 0) + 1
+            }
+            // Space cannon.
+            best = false
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.spaceCannon &&
+                    auxData.self.has(unitAttrs.raw.unit)) {
+                    if (!best || unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit) {
+                        best = unitAttrs
+                    }
+                }
+            }
+            if (best) {
+                best.raw.spaceCannon.extraDice = (best.raw.spaceCannon.extraDice || 0) + 1
+            }
+        }
     },
     {
         // "SPACE CANNON 5(x3)",
@@ -555,8 +602,15 @@ module.exports = [
         localeDescription: "unit_modifier.desc.unrelenting",
         owner: "self",
         priority: "adjust",
-        // TODO XXX FACTION ABILITY
-        // TODO XXX
+        triggerFactionAbility: 'unrelenting',
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCombat) {
+                unitAttrs.raw.spaceCombat.hit -= 1
+            }
+            if (unitAttrs.raw.groundCombat) {
+                unitAttrs.raw.groundCombat.hit -= 1
+            }
+        }
     },
     {
         // "+1 die to a single SPACE COMBAT roll",
@@ -567,6 +621,19 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.agent.letnev:pok/viscount_unlenn",
-        // TODO XXX
+        applyAll: (unitAttrsSet, auxData) => {
+            let best = false
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.spaceCombat &&
+                    auxData.self.has(unitAttrs.raw.unit)) {
+                    if (!best || unitAttrs.raw.spaceCombat.hit < best.raw.spaceCombat.hit) {
+                        best = unitAttrs
+                    }
+                }
+            }
+            if (best) {
+                best.raw.spaceCombat.extraDice = (best.raw.spaceCombat.extraDice || 0) + 1
+            }
+        }
     },
 ]
