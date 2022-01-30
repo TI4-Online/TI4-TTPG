@@ -98,10 +98,10 @@ it('static getPlayerUnitUpgrades', () => {
     })
     const cardObjCruiser2FaceDown = new MockCard({
         cardDetails : new MockCardDetails({
-            metadata : 'card.technology.unit_upgrade:base/carrier_2',
-            faceUp : false
+            metadata : 'card.technology.unit_upgrade:base/cruiser_2'
         }),
-        owningPlayerSlot : myPlayerSlot
+        owningPlayerSlot : myPlayerSlot,
+        faceUp : false
     })
     let result
     try {

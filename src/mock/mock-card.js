@@ -5,7 +5,7 @@ class Card extends GameObject {
     constructor(data) {
         super(data)
         this._cardDetails = data && data.cardDetails || new MockCardDetails()
-        this._faceUp = data && data.faceUp || true
+        this._faceUp = (data && data.faceUp !== undefined) ? data.faceUp : true
     }
 
     getCardDetails() {
