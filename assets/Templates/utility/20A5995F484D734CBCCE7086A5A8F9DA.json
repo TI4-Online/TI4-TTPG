@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
 	"GUID": "243A2F7E49E3F2FDB6E4F387A47AA359",
-	"Name": "LeaderSheet",
+	"Name": "CommandSheet",
 	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,

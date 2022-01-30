@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "59DDE2014971C52F1AC9E19CAF00AE73",
 	"Name": "Frontier Tokens",
-	"Metadata": "",
+	"Metadata": "bag.token.exploration:pok/frontier",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

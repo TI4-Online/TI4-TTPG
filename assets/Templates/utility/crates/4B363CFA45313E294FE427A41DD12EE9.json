@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "4B363CFA45313E294FE427A41DD12EE9",
 	"Name": "Fighter Tokens (1x)",
-	"Metadata": "",
+	"Metadata": "bag.token:base/fighter_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

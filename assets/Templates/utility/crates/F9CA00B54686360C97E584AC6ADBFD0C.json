@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "F9CA00B54686360C97E584AC6ADBFD0C",
 	"Name": "Infantry Tokens (3x)",
-	"Metadata": "",
+	"Metadata": "bag.token:base/infantry_3",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

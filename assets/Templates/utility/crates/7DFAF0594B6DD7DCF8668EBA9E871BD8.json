@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "7DFAF0594B6DD7DCF8668EBA9E871BD8",
 	"Name": "Commodities/Trade Goods (1x)",
-	"Metadata": "",
+	"Metadata": "bag.token:base/tradegood_commodity_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
