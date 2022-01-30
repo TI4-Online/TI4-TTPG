@@ -29,8 +29,12 @@ it('static createForPair', () => {
         templateMetadata : 'token:base/infantry_1'
     }))
     world.__addObject(new MockGameObject({
-        templateMetadata : 'unit:base/dreadnought',
+        templateMetadata : 'unit:base/pds',
         owningPlayerSlot : selfPlayerSlot
+    }))
+    world.__addObject(new MockGameObject({
+        templateMetadata : 'unit:base/pds',
+        owningPlayerSlot : opponentPlayerSlot
     }))
 
     // Carrier 2
@@ -49,6 +53,14 @@ it('static createForPair', () => {
         owningPlayerSlot : selfPlayerSlot
     }))
 
+    // Opponent cancels our PDS planetary shield.
+    world.__addObject(new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.action:base/disable'
+        }),
+        owningPlayerSlot : opponentPlayerSlot
+    }))
+
     let aux1, aux2
     try {
         [ aux1, aux2 ] = AuxData.createForPair(selfPlayerSlot, opponentPlayerSlot, '<0,0,0>', new Set())
@@ -61,8 +73,11 @@ it('static createForPair', () => {
     // Basic finding.
     assert.equal(aux1.count('fighter'), 4)
     assert.equal(aux1.unitAttrsSet.get('carrier').raw.localeName, 'unit.carrier_2')
-    assert.equal(aux1.unitModifiers.length, 1)
-    assert.equal(aux1.unitModifiers[0].raw.localeName, 'unit_modifier.name.morale_boost')
+    
+    const modifierNames = aux1.unitModifiers.map(x => x.raw.localeName)
+    assert.equal(modifierNames.length, 2)
+    assert(modifierNames.includes('unit_modifier.name.morale_boost'))
+    assert(modifierNames.includes('unit_modifier.name.disable'))
 
     assert.equal(aux2.count('fighter'), 1)
 
@@ -70,6 +85,8 @@ it('static createForPair', () => {
     assert.equal(aux1.count('fighter'), 4)
 
     // Verify opponent's opponent modifier.
+    assert(!aux1.unitAttrsSet.get('pds').raw.planetaryShield) // disabled
+    assert(aux2.unitAttrsSet.get('pds').raw.planetaryShield) // opponent still has it
 })
 
 it('constructor', () => {

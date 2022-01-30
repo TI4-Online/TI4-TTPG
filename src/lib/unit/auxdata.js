@@ -13,6 +13,18 @@ const { UnitPlastic } = require('./unit-plastic')
  */
 class AuxData {
 
+    /**
+     * Given a combat between two players, create and fill in the AuxData 
+     * records for each.
+     * 
+     * This is a VERY expensive method, may want to make it asynchronous.
+     * 
+     * @param {number} playerSlot1 
+     * @param {number} playerSlot2 
+     * @param {string} hex 
+     * @param {Set.<string>} adjacentHexes 
+     * @returns {[AuxData, AuxData]} list with two AuxData entries
+     */
     static createForPair(playerSlot1, playerSlot2, hex, adjacentHexes) {
         assert(typeof playerSlot1 === 'number')
         assert(typeof playerSlot2 === 'number')
@@ -25,20 +37,9 @@ class AuxData {
         const adjPlastic = allPlastic.filter(plastic => adjacentHexes.has(plastic.hex))
         UnitPlastic.assignTokens(hexPlastic)
         UnitPlastic.assignTokens(adjPlastic)
-        const unitToHexPlastic = {}
-        const unitToAdjPlastic = {}
-        for (const plastic of hexPlastic) {
-            if (!unitToHexPlastic[plastic.unit]) {
-                unitToHexPlastic[plastic.unit] = []
-            }
-            unitToHexPlastic[plastic.unit].push(plastic)
-        }
-        for (const plastic of adjPlastic) {
-            if (!unitToAdjPlastic[plastic.unit]) {
-                unitToAdjPlastic[plastic.unit] = []
-            }
-            unitToAdjPlastic[plastic.unit].push(plastic)
-        }
+
+        // Only assign units in hex to planets.
+        // TODO XXX UnitPlastic.assignPlanets(hexPlastic)
 
         // Create and fill in for a single player.
         const createSolo = (selfSlot, opponentSlot) => {
@@ -49,17 +50,17 @@ class AuxData {
 
             // Get hex and adjacent plastic for this player.
             // Also get counts, beware of x3 tokens!
-            for (const [unit, hexPlastic] of Object.entries(unitToHexPlastic)) {
-                const playerPlastic = hexPlastic.filter(plastic => plastic.owningPlayerSlot == selfSlot)
-                aux.plastic(unit).push(...playerPlastic)
-                let count = playerPlastic.reduce((value, plastic) => value + plastic.count, 0)
-                aux.overrideCount(unit, count)
+            const playerHexPlastic = hexPlastic.filter(plastic => plastic.owningPlayerSlot == selfSlot)
+            aux.plastic.push(...playerHexPlastic)
+            for (const plastic of playerHexPlastic) {
+                const count = aux.count(plastic.unit)
+                aux.overrideCount(plastic.unit, count + plastic.count)
             }
-            for (const [unit, adjPlastic] of Object.entries(unitToAdjPlastic)) {
-                const playerPlastic = adjPlastic.filter(plastic => plastic.owningPlayerSlot == selfSlot)
-                aux.adjacentPlastic(unit).push(...playerPlastic)
-                let count = playerPlastic.reduce((value, plastic) => value + plastic.count, 0)
-                aux.overrideAdjacentCount(unit, count)
+            const playerAdjPlastic = adjPlastic.filter(plastic => plastic.owningPlayerSlot == selfSlot)
+            aux.adjacentPlastic.push(...playerAdjPlastic)
+            for (const plastic of playerAdjPlastic) {
+                const count = aux.adjacentCount(plastic.unit)
+                aux.overrideAdjacentCount(plastic.unit, count + plastic.count)
             }
 
             // Apply unit upgrades.
@@ -70,9 +71,8 @@ class AuxData {
 
             // Register any per-unit modifiers in the overall modifiers list.
             for (const unitAttrs of aux.unitAttrsSet.values()) {
-                if (unitAttrs.raw.unitModifier) {
-                    const unitModifier = new UnitModifier(unitAttrs.raw.unitModifier)
-                    aux.unitModifiers.push(unitModifier)
+                if (unitAttrs.unitModifier) {
+                    aux.unitModifiers.push(unitAttrs.unitModifier)
                 }
             }
 
@@ -106,17 +106,28 @@ class AuxData {
         return [ aux1, aux2 ]
     }
 
+    /**
+     * Constructor.  Creates an empty but usable AuxData.
+     */
     constructor() {
         this._unitAttrsSet = new UnitAttrsSet()
-        this._unitModifiers = []
+        this._unitModifiers = [] // Array.{UnitModifier}
         
-        this._unitToCount = {}
-        this._unitToAdjacentCount = {}
+        this._unitToCount = {} // Object.{string:number}
+        this._unitToAdjacentCount = {} // Object.{string:number}
 
-        this._unitToPlastic = []
-        this._unitToAdjacentPlastic = []
+        this._plastic = [] // Array.{UnitPlastic}
+        this._adjacentPlastic = [] // Array.{UnitPlastic}
+
+        this._faction = false // string faction NSID name style "letnev"
     }
 
+    /**
+     * Is there at least one unit of the given type?
+     * 
+     * @param {string} unit 
+     * @returns {boolean}
+     */
     has(unit) {
         assert(typeof unit === 'string')
         return this.count(unit) > 0
@@ -157,24 +168,12 @@ class AuxData {
         return this._unitModifiers
     }
 
-    plastic(unit) {
-        assert(typeof unit === 'string')
-        let result = this._unitToPlastic[unit]
-        if (!result) {
-            result = []
-            this._unitToPlastic[unit] = result
-        }
-        return result
+    get plastic() {
+        return this._plastic
     }
 
-    adjacentPlastic(unit) {
-        assert(typeof unit === 'string')
-        let result = this._unitToAdjacentPlastic[unit]
-        if (!result) {
-            result = []
-            this._unitToAdjacentPlastic[unit] = result
-        }
-        return result
+    get adjacentPlastic() {
+        return this._adjacentPlastic
     }
 }
 
