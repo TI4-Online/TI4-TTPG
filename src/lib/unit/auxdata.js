@@ -82,6 +82,11 @@ class AuxData {
             const modifiersOpponent = UnitModifier.getPlayerUnitModifiers(opponentSlot, 'opponent')
             aux.unitModifiers.push(...modifiersSelf)
             aux.unitModifiers.push(...modifiersOpponent)
+
+            // Add any faction modifiers.
+            const abilityModifiers = UnitModifier.getFactionAbilityUnitModifiers(aux.factionAbilities)
+            aux.unitModifiers.push(...abilityModifiers)
+
             UnitModifier.sortPriorityOrder(aux.unitModifiers)
 
             return aux
@@ -119,7 +124,7 @@ class AuxData {
         this._plastic = [] // Array.{UnitPlastic}
         this._adjacentPlastic = [] // Array.{UnitPlastic}
 
-        this._faction = false // string faction NSID name style "letnev"
+        this._factionAbilities = [] // Array.{string} faction abilties
     }
 
     /**
@@ -174,6 +179,10 @@ class AuxData {
 
     get adjacentPlastic() {
         return this._adjacentPlastic
+    }
+
+    get factionAbilities() {
+        return this._factionAbilities
     }
 }
 

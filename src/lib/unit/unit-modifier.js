@@ -18,6 +18,7 @@ const OWNER = {
 }
 
 let _triggerNsidToUnitModifier = false
+let _factionAbilityToUnitModifier = false
 
 function _getUnitModifier(gameObject) {
     assert(gameObject instanceof GameObject)
@@ -25,7 +26,6 @@ function _getUnitModifier(gameObject) {
         _triggerNsidToUnitModifier = {}
         for (const rawModifier of UNIT_MODIFIERS) {
             const unitModifier = new UnitModifier(rawModifier)
-
             if (rawModifier.triggerNsid) {
                 _triggerNsidToUnitModifier[rawModifier.triggerNsid] = unitModifier
             }
@@ -39,6 +39,21 @@ function _getUnitModifier(gameObject) {
     const nsid = ObjectNamespace.getNsid(gameObject)
     return _triggerNsidToUnitModifier[nsid]
 }
+
+function _getFactionAbilityUnitModifier(factionAbility) {
+    assert(typeof factionAbility === 'string')
+    if (!_factionAbilityToUnitModifier) {
+        _factionAbilityToUnitModifier = {}
+        for (const rawModifier of UNIT_MODIFIERS) {
+            if (rawModifier.triggerFactionAbility) {
+                const unitModifier = new UnitModifier(rawModifier)
+                _factionAbilityToUnitModifier[rawModifier.triggerFactionAbility] = unitModifier
+            }
+        }
+    }
+    return _factionAbilityToUnitModifier[factionAbility]
+}
+
 
 /**
  * A unit modifier mutates one or more unit attributes.  
@@ -65,7 +80,7 @@ class UnitModifier {
      * 
      * @param {number} playerSlot
      * @param {string} withOwner - self, opponent, any 
-     * @returns {Array.<unitModifier>} modifiers in priority order
+     * @returns {Array.<unitModifier>} modifiers
      */
     static getPlayerUnitModifiers(playerSlot, withOwner) {
         assert(typeof playerSlot === 'number')
@@ -107,7 +122,25 @@ class UnitModifier {
                 unitModifiers.push(unitModifier)
             }
         }
-        return UnitModifier.sortPriorityOrder(unitModifiers)
+        return unitModifiers
+    }
+
+    /**
+     * Get faction abililities.
+     * 
+     * @param {Array.{string}} factionAbilities - faction abilities
+     * @returns {Array.<unitModifier>} modifiers
+     */
+    static getFactionAbilityUnitModifiers(factionAbilities) {
+        assert(Array.isArray(factionAbilities))
+        const unitModifiers = []
+        for (const factionAbility of factionAbilities) {
+            const unitModifier = _getFactionAbilityUnitModifier(factionAbility)
+            if (unitModifier) {
+                unitModifiers.push(unitModifier)
+            }
+        }
+        return unitModifiers
     }
 
     // ------------------------------------------------------------------------
