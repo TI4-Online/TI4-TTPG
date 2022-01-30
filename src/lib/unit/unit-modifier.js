@@ -1,7 +1,7 @@
 const assert = require('../../wrapper/assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
-const { UnitModifierSchema } = require('./unit-modifier-schema')
+const { UnitModifierSchema } = require('./unit-modifier.schema')
 const { world, Card, GameObject } = require('../../wrapper/api')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 

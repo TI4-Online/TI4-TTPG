@@ -1,4 +1,4 @@
-const { hexToIdx, idxToHex } = require('./map_string_loader')
+const { hexToIdx, idxToHex } = require('./map-string-hex')
 const assert = require('assert')
 
 const first_ring = [{q:1,r:0,s:-1},

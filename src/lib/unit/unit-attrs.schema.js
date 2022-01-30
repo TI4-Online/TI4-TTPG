@@ -1,5 +1,5 @@
 const Ajv = require("ajv")
-const { UNIT_MODIFIER_SCHEMA_JSON } = require('./unit-modifier-schema')
+const { UNIT_MODIFIER_SCHEMA_JSON } = require('./unit-modifier.schema')
 
 const UNIT_ATTRS_SCHEMA_JSON = {
     $id: "http://example.com/lib/unit/unit_attrs.json",

@@ -1,5 +1,5 @@
 // the "it(string, function)" style works with mocha and jest frameworks
-const { validate, parse, format } = require('./map_strings')
+const { validate, parse, format } = require('./map-string-parser')
 const assert = require('assert')
 
 // test validation

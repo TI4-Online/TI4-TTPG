@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UnitAttrsSchema } = require('./unit-attrs-schema')
+const { UnitAttrsSchema } = require('./unit-attrs.schema')
 
 it('validate good unit', () => {
     const carrier = {
