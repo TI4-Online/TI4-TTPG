@@ -27,7 +27,9 @@ const UNIT_ATTRS_SCHEMA_JSON = {
             properties: {
                 dice: {type: "integer", default: 1},
                 hit: {type: "integer", maximum: 10},
-                destroyInfantryInSpace: {type: "integer"}
+                extraDice: {type: "integer"},
+                destroyInfantryInSpace: {type: "integer"},
+                rerollMisses: {type: "boolean"}
             },
             required: ["hit"]
         },
@@ -36,7 +38,8 @@ const UNIT_ATTRS_SCHEMA_JSON = {
             properties: {
                 dice: {type: "integer", default: 1},
                 hit: {type: "integer", maximum: 10},
-                extraDice: {type: "integer"}
+                extraDice: {type: "integer"},
+                rerollMisses: {type: "boolean"}
             },
             required: ["hit"]
         },
@@ -48,7 +51,8 @@ const UNIT_ATTRS_SCHEMA_JSON = {
                 dice: {type: "integer", default: 1},
                 hit: {type: "integer", maximum: 10},
                 range: {type: "integer"},
-                extraDice: {type: "integer"}
+                extraDice: {type: "integer"},
+                rerollMisses: {type: "boolean"}
             },
             required: ["hit"]
         },
@@ -57,6 +61,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         cost: {type: "integer"},
         produce: {type: "integer"}, // infantry cost=1 produce=2
         freeProduce: {type: "integer"}, // N do not count toward production limit
+        sharedFreeProduce: {type: "integer"}, // N do not count toward production limit
         spaceCombat: {
             type: "object",
             properties: {

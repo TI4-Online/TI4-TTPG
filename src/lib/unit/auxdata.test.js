@@ -28,6 +28,10 @@ it('static createForPair', () => {
     world.__addObject(new MockGameObject({
         templateMetadata : 'token:base/infantry_1'
     }))
+    world.__addObject(new MockGameObject({
+        templateMetadata : 'unit:base/dreadnought',
+        owningPlayerSlot : selfPlayerSlot
+    }))
 
     // Carrier 2
     world.__addObject(new MockCard({
@@ -54,12 +58,18 @@ it('static createForPair', () => {
         }
     }
 
+    // Basic finding.
     assert.equal(aux1.count('fighter'), 4)
     assert.equal(aux1.unitAttrsSet.get('carrier').raw.localeName, 'unit.carrier_2')
     assert.equal(aux1.unitModifiers.length, 1)
     assert.equal(aux1.unitModifiers[0].raw.localeName, 'unit_modifier.name.morale_boost')
 
     assert.equal(aux2.count('fighter'), 1)
+
+    // Verify self modifier.
+    assert.equal(aux1.count('fighter'), 4)
+
+    // Verify opponent's opponent modifier.
 })
 
 it('constructor', () => {

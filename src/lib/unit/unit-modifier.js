@@ -89,6 +89,12 @@ class UnitModifier {
                 continue  // wrong owner
             }
 
+            // If an object has an owner, use it before trying to guess owner.
+            const ownerSlot = obj.getOwningPlayerSlot()
+            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
+                continue  // explit different owner
+            }
+            
             // TODO XXX CHECK IF IN PLAYER AREA
             // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
             const insidePlayerArea = true // TODO XXX

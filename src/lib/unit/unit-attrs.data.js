@@ -428,7 +428,7 @@ module.exports = [
                 }
                 if (hasCapacity) {
                     const mechAttrs = unitAttrsSet.get('mech')
-                    mechAttrs.raw.requireCapacity = false
+                    delete mechAttrs.raw.requireCapacity
                 }
             }
         }
@@ -536,7 +536,7 @@ module.exports = [
                 if (unitAttrs.raw.ground &&
                     unitAttrs.raw.sustainDamage &&
                     auxData.opponent.has('mech')) {
-                    unitAttrs.raw.sustainDamage = false
+                    delete unitAttrs.raw.sustainDamage
                 }                
             }
         }

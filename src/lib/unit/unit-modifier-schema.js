@@ -8,6 +8,7 @@ const UNIT_MODIFIER_SCHEMA_JSON = {
         localeDescription: {type: "string"}, // human-readable name (after locale)
         triggerNsid: {type: "string"}, // find in player area to apply this unit upgrade
         triggerNsids: {type: "array", items: {type: "string"}},
+        triggerFactionAbility: {type: "string"},
         owner: {type: "string"}, // self, opponent, or any
         priority: {type: "string"}, // mutate, adjust, or choose
         toggleActive: {type: "boolean"},
