@@ -4,7 +4,7 @@ const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { UnitAttrsSchema } = require('./unit-attrs-schema')
 const UNIT_ATTRS = require('./unit-attrs.data')
-const { world, Card, GameObject, Player } = require('../../wrapper/api')
+const { world, Card, GameObject } = require('../../wrapper/api')
 
 let _allUnitTypes = false
 let _unitToDefaultRawAttrs = false
@@ -92,11 +92,11 @@ class UnitAttrs {
     /**
      * Find player's unit upgrades.
      * 
-     * @param {Player} player
+     * @param {number} playerSlot
      * @returns {Array.<UnitAttrs>} upgrades in level order
      */
-    static getPlayerUnitUpgrades(player) {
-        assert(player instanceof Player)
+    static getPlayerUnitUpgrades(playerSlot) {
+        assert(typeof playerSlot === 'number')
 
         const unitUpgrades = []
         for (const obj of world.getAllObjects()) {

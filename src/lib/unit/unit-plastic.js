@@ -15,8 +15,8 @@ function _getUnitPlastic(gameObject) {
         _nsidToUnitData = {
             'token:base/fighter_1' : { unit : 'fighter', count : 1 },
             'token:base/fighter_3' : { unit : 'fighter', count : 3 },
-            'token:base/infantry_1' : { unit : 'fighter', count : 1 },
-            'token:base/infantry_3' : { unit : 'fighter', count : 3 },
+            'token:base/infantry_1' : { unit : 'infantry', count : 1 },
+            'token:base/infantry_3' : { unit : 'infantry', count : 3 },
         }
         for (const rawAttrs of UNIT_ATTRS) {
             const nsid = rawAttrs.unitNsid

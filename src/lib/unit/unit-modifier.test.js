@@ -10,7 +10,6 @@ const {
     world,
     MockCard,
     MockCardDetails,
-    MockPlayer,
 } = require('../../mock/mock-api')
 
 it('UNIT_MODIFIERS schema', () => {
@@ -82,9 +81,6 @@ it('static sortPriorityOrder', () => {
 
 it('static getPlayerUnitModifiers', () => {
     const myPlayerSlot = 7
-    const player = new MockPlayer({
-        slot : myPlayerSlot
-    })
     const moraleBoost = new MockCard({
         cardDetails : new MockCardDetails({
             metadata : 'card.action:base/morale_boost.3'
@@ -94,7 +90,7 @@ it('static getPlayerUnitModifiers', () => {
     let result
     try {
         world.__addObject(moraleBoost)
-        result = UnitModifier.getPlayerUnitModifiers(player, 'self')
+        result = UnitModifier.getPlayerUnitModifiers(myPlayerSlot, 'self')
     } finally {
         world.__removeObject(moraleBoost)
     }

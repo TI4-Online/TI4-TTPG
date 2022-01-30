@@ -10,7 +10,6 @@ const {
     world,
     MockCard,
     MockCardDetails,
-    MockPlayer,
 } = require('../../mock/mock-api')
 
 function _getUnitUpgrade(unitName) {
@@ -91,9 +90,6 @@ it('static sortUpgradeLevelOrder', () => {
 
 it('static getPlayerUnitUpgrades', () => {
     const myPlayerSlot = 7
-    const player = new MockPlayer({
-        slot : myPlayerSlot
-    })
     const cardObjCarrier2 = new MockCard({
         cardDetails : new MockCardDetails({
             metadata : 'card.technology.unit_upgrade:base/carrier_2'
@@ -111,7 +107,7 @@ it('static getPlayerUnitUpgrades', () => {
     try {
         world.__addObject(cardObjCarrier2)
         world.__addObject(cardObjCruiser2FaceDown)
-        result = UnitAttrs.getPlayerUnitUpgrades(player)
+        result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot)
     } finally {
         world.__removeObject(cardObjCarrier2)
         world.__removeObject(cardObjCruiser2FaceDown)

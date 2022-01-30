@@ -2,7 +2,7 @@ const assert = require('../../wrapper/assert')
 const locale = require('../locale')
 const { ObjectNamespace } = require('../object-namespace')
 const { UnitModifierSchema } = require('./unit-modifier-schema')
-const { world, Card, GameObject, Player } = require('../../wrapper/api')
+const { world, Card, GameObject } = require('../../wrapper/api')
 const UNIT_MODIFIERS = require('./unit-modifier.data')
 
 const PRIORITY = {
@@ -63,12 +63,12 @@ class UnitModifier {
     /**
      * Find player's unit modifiers.
      * 
-     * @param {Player} player 
+     * @param {number} playerSlot
      * @param {string} withOwner - self, opponent, any 
      * @returns {Array.<unitModifier>} modifiers in priority order
      */
-    static getPlayerUnitModifiers(player, withOwner) {
-        assert(player instanceof Player)
+    static getPlayerUnitModifiers(playerSlot, withOwner) {
+        assert(typeof playerSlot === 'number')
         assert(typeof withOwner === 'string')
         assert(OWNER[withOwner])
 
