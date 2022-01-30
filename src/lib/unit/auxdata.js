@@ -17,22 +17,34 @@ class AuxData {
      * Given a combat between two players, create and fill in the AuxData 
      * records for each.
      * 
+     * Accounts for:
+     * - player unit upgrades ("Carrier II")
+     * - self-modifiers ("Morale Boost")
+     * - from-opponent-modifiers ("Disable")
+     * - faction abilities ("Fragile")
+     *
+     * It will find all units in the primary hex as well as adjacent hexes, 
+     * assigning cardboard tokens to the closest in-hex plastic.
+     * 
      * This is a VERY expensive method, may want to make it asynchronous.
      * 
      * @param {number} playerSlot1 
-     * @param {number} playerSlot2 
-     * @param {string} hex 
-     * @param {Set.<string>} adjacentHexes 
+     * @param {number} playerSlot2 - optional, omit or pass -1 to ignore
+     * @param {string} hex - optional
+     * @param {Set.<string>} adjacentHexes - optional
      * @returns {[AuxData, AuxData]} list with two AuxData entries
      */
     static createForPair(playerSlot1, playerSlot2, hex, adjacentHexes) {
         assert(typeof playerSlot1 === 'number')
         assert(typeof playerSlot2 === 'number')
-        assert(typeof hex === 'string')
-        assert(adjacentHexes instanceof Set)
+        assert((!hex) || typeof hex === 'string')
+        assert((!adjacentHexes) || adjacentHexes instanceof Set)
+
+        playerSlot2 = playerSlot2 >= 0 ? playerSlot2 : -1
+        adjacentHexes = adjacentHexes ? adjacentHexes : new Set()
 
         // Get plastic, group into per-unit hex and adjacent sets.
-        const allPlastic = UnitPlastic.getAll()
+        const allPlastic = hex ? UnitPlastic.getAll() : []
         const hexPlastic = allPlastic.filter(plastic => plastic.hex === hex)
         const adjPlastic = allPlastic.filter(plastic => adjacentHexes.has(plastic.hex))
         UnitPlastic.assignTokens(hexPlastic)
