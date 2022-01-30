@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UnitModifierSchema } = require('./unit-modifier-schema')
+const { UnitModifierSchema } = require('./unit-modifier.schema')
 
 it('pass', () => {
     const unitModifier = {

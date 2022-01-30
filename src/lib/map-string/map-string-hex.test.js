@@ -1,4 +1,4 @@
-const { hexToIdx, idxToHex } = require('./map_string_loader')
+const { hexToIdx, idxToHex, hexStringToIdx, idxToHexString } = require('./map-string-hex')
 const assert = require('assert')
 
 const first_ring = [{q:1,r:0,s:-1},
@@ -51,4 +51,12 @@ it('idxToHex : test fourth ring', () => {
         var hex = fourth_ring[i];
         assert.deepEqual(idxToHex(i+37), hex)
     }
+})
+
+it('hexStringToIdx', () => {
+    assert.equal(hexStringToIdx('<0,0,0>'), 0)
+})
+
+it('idxToHexString', () => {
+    assert.equal(idxToHexString(0), '<0,0,0>')
 })

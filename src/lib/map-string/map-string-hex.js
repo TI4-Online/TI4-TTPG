@@ -1,3 +1,5 @@
+const { Hex } = require('../hex')
+
 /**
  * Hex maths to go from index in a one-dimensional array to an hex coordinates, and reverse.
  * All hex maths are based on the awesome work of redblobgames : https://www.redblobgames.com/grids/hexagons/
@@ -111,8 +113,31 @@ const idxToHex = function(idx) {
     return {q: q, r: r, s: s}
 }
 
+/**
+ * hexToIdx but using the string version from lib/Hex.
+ * 
+ * @param {string} hexString 
+ * @returns {number}
+ */
+const hexStringToIdx = function(hexString) {
+    const [ q, r, s ] = Hex._hexFromString(hexString)
+    return hexToIdx(q, r, s)
+}
+
+/**
+ * idxToHex but using the string version from lib/Hex.
+ * 
+ * @param {number} idx 
+ * @returns {string}
+ */
+const idxToHexString = function(idx) {
+    const hexObject = idxToHex(idx)
+    return Hex._hexToString(hexObject.q, hexObject.r, hexObject.s)
+}
 
 module.exports = {
     hexToIdx,
-    idxToHex
+    idxToHex,
+    hexStringToIdx,
+    idxToHexString
 }

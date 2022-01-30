@@ -10,7 +10,7 @@ const MECATOL_REX_SYSTEM_TILE = 18;
  * 
  * Delimiters can be either one comma with/or any amount of spaces
  * Leading and trailing spacesare ignored
- * @param {string} mapString A map string from tts or another compatible format
+ * @param {string} mapString A map string
  * @returns {boolean} true if the map string is valid and can be parsed, otherwise false
  */
 const validate = function (mapString) {
@@ -28,7 +28,7 @@ const validate = function (mapString) {
  * 
  * Delimiters can be either one comma with/or any amount of spaces
  * Leading and trailing spacesare ignored
- * @param {string} mapString A map string from tts or another compatible format
+ * @param {string} mapString A map string
  * @returns {({ tile: number} | { tile: number, side: 'a'|'b', rotation: number }[])} A list of objects representing the parsed tiles
  */
 const parse = function (mapString) {
@@ -52,7 +52,7 @@ const parse = function (mapString) {
 
 
 /**
- * Formats an array of objects to a tts map string.
+ * Formats an array of objects to a map string.
  * If the first element is Mecatol it will be ignored else a replacement expression will be created.
  * 
  * The output format will be one of the following:
@@ -60,7 +60,7 @@ const parse = function (mapString) {
  * - {4} 7 16 23 (use 4 instead of Mecatol as center)
  * - 7 83b2
  * @param {({ tile: number} | { tile: number, side: 'a'|'b', rotation: number }[])} mapTiles 
- * @returns {string} A map string compatible with tts
+ * @returns {string} A map string
  */
 const format = function (mapTiles) {
     mapTiles = mapTiles.slice()
@@ -73,14 +73,14 @@ const format = function (mapTiles) {
 }
 
 /**
- * Normalizes a tts map string or another compatible format to the default tts format.
+ * Normalizes a map string or another compatible format to the default format.
  * 
  * The output format will be one of the following:
  * - 7 16 23 (normal)
  * - {4} 7 16 23 (use 4 instead of Mecatol as center)
  * - 7 83b2
- * @param {string} mapString A map string from tts or another compatible format
- * @returns {string} A map string compatible with tts
+ * @param {string} mapString A map string from or another compatible format
+ * @returns {string} A map string
  */
 const normalize = function (mapString) {
     return format(parse(mapString))

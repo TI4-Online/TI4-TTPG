@@ -1,6 +1,6 @@
 const assert = require('assert')
 const locale = require('../locale')
-const { UnitAttrsSchema } = require('./unit-attrs-schema')
+const { UnitAttrsSchema } = require('./unit-attrs.schema')
 const { UnitAttrs } = require('./unit-attrs')
 const { UnitAttrsSet } = require('./unit-attrs-set')
 const { UnitModifier } = require('./unit-modifier')
