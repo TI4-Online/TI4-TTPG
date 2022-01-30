@@ -68,9 +68,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/reverse_homeworld_c.jpg",
+			"Texture": "global/tiles/reverse_homeworld_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/reverse_homeworld_x.jpg",
+			"ExtraMap": "global/tiles/reverse_homeworld_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,

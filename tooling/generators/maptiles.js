@@ -147,7 +147,7 @@ const TILES = {
             "058": { guid: "A59AEE566273429AAC9A32500F674896" },
         },
         "special": {
-            "081": { guid: "1EFD655740B44AF1A6F75C9B6E99A018", noLang: true, reverseTexture: "global/reverse_homeworld_c.jpg", reverseExtra: "global/reverse_homeworld_x.jpg", reverseColor: COLORS.homeworld },
+            "081": { guid: "1EFD655740B44AF1A6F75C9B6E99A018", noLang: true, reverseTexture: "global/tiles/reverse_homeworld_c.png", reverseExtra: "global/tiles/reverse_homeworld_x.png", reverseColor: COLORS.homeworld },
             "082": {
                 guid: "541FFEC05B05424BAE1B225D9765598D",
                 obverseModel: "tiles/standalone-obverse.obj",
@@ -330,14 +330,18 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
     }
 }
 
+console.log("starting");
+
 Promise.all(
     modSet.map((theMod) => {
         return fs.ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775).then(() => {
             return Promise.all(
                 Object.keys(TILES[theMod]).map(e => fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`))
             ).then(() => {
+                console.log("running");
                 return Promise.all(
                     Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
+                        console.log(theMod);
                         return [...acc, ...Object.entries(def).map(([mapId, details]) => {
                             const guid = details.guid ? details.guid : generateUuid();
                             return fs.writeFile(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, JSON.stringify(generateTile(guid, theMod, mapId, type, details), null, "\t"))
