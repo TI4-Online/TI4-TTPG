@@ -100,17 +100,3 @@ it('mismatch owner', () => {
     })
     assert.equal(getRejectReason(bag, unit), REJECT_REASON.MISMATCH_OWNER)
 })
-
-it('set anonymous unit owner', () => {
-    const bag = new MockGameObject({
-        templateMetadata : 'bag.unit:base/fighter',
-        owningPlayerSlot : 7
-    })
-    const unit = new MockGameObject({
-        templateMetadata : 'unit:base/fighter',
-        owningPlayerSlot : -1
-    })
-    assert.equal(unit.getOwningPlayerSlot(), -1)
-    assert.equal(getRejectReason(bag, unit), false)
-    assert.equal(unit.getOwningPlayerSlot(), 7)
-})
