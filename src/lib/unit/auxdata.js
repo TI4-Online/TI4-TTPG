@@ -7,9 +7,9 @@ const { UnitPlastic } = require('./unit-plastic')
 /**
  * Repository for per-player unit state.
  * 
- * UnitModifiers get mutable auxData.self and auxData.opponent, including
- * adding new unit types (e.g. "Experimental Battlestation") but note they 
- * should also override the count for such injected units.
+ * THIS IS THE INTERFACE TO UNIT DATA!
+ * 
+ * Use `createForPair()` to get modified units involved in a combat.
  */
 class AuxData {
 
@@ -47,6 +47,9 @@ class AuxData {
             assert(typeof opponentSlot === 'number')
 
             const aux = new AuxData()
+            if (selfSlot < 0) {
+                return aux
+            }
 
             // Get hex and adjacent plastic for this player.
             // Also get counts, beware of x3 tokens!
@@ -84,6 +87,7 @@ class AuxData {
             aux.unitModifiers.push(...modifiersOpponent)
 
             // Add any faction modifiers.
+            // TODO XXX LOOK UP FACTION BY PLAYER SLOT, ADD MODIFIERS TO AUX.FACTIONABILITIES!
             const abilityModifiers = UnitModifier.getFactionAbilityUnitModifiers(aux.factionAbilities)
             aux.unitModifiers.push(...abilityModifiers)
 
@@ -128,7 +132,7 @@ class AuxData {
     }
 
     /**
-     * Is there at least one unit of the given type?
+     * Is there at least one unit of the given type in the main hex?
      * 
      * @param {string} unit 
      * @returns {boolean}
@@ -138,49 +142,104 @@ class AuxData {
         return this.count(unit) > 0
     }
 
-    hasAdjacent(unit) {
+    /**
+     * Is there at least one unit of the given type in any adjacent hex?
+     * 
+     * @param {string} unit 
+     * @returns {boolean}
+     */
+     hasAdjacent(unit) {
         assert(typeof unit === 'string')
         return this.adjacentCount(unit) > 0
     }
 
-    count(unit) {
+    /**
+     * How many units of the given type in the main hex?
+     * 
+     * @param {string} unit 
+     * @returns {number}
+     */
+     count(unit) {
         assert(typeof unit === 'string')
         return this._unitToCount[unit] || 0
     }
 
+    /**
+     * How many units of the given type in all adjacent hexes?
+     * 
+     * @param {string} unit 
+     * @returns {number}
+     */
     adjacentCount(unit) {
         assert(typeof unit === 'string')
         return this._unitToAdjacentCount[unit] || 0
     }
 
+    /**
+     * Replace the unit count for main hex units.
+     * 
+     * @param {string} unit 
+     * @param {number} value 
+     */
     overrideCount(unit, value) {
         assert(typeof unit === 'string')
         assert(typeof value === 'number')
         this._unitToCount[unit] = value
     }
 
-    overrideAdjacentCount(unit, value) {
+    /**
+     * Replace the unit count for adjacent units.
+     * 
+     * @param {string} unit 
+     * @param {number} value 
+     */
+     overrideAdjacentCount(unit, value) {
         assert(typeof unit === 'string')
         assert(typeof value === 'number')
         this._unitToAdjacentCount[unit] = value
     }
 
+    /**
+     * Unit attributes.
+     * 
+     * @returns {UnitAttrsSet}
+     */
     get unitAttrsSet() {
         return this._unitAttrsSet
     }
 
+    /**
+     * Unit modifiers.
+     * 
+     * @returns {Array.{UnitModifier}}
+     */
     get unitModifiers() {
         return this._unitModifiers
     }
 
+    /**
+     * Units in main hex.
+     * 
+     * @returns {Array.{UnitPlastic}}
+     */
     get plastic() {
         return this._plastic
     }
 
-    get adjacentPlastic() {
+    /**
+     * Units in adjacent hexes.
+     * 
+     * @returns {Array.{UnitPlastic}}
+     */
+     get adjacentPlastic() {
         return this._adjacentPlastic
     }
 
+    /**
+     * Faction abilities.
+     * 
+     * @returns {Array.{string}}
+     */
     get factionAbilities() {
         return this._factionAbilities
     }
