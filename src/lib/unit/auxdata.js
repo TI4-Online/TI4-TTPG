@@ -140,6 +140,7 @@ class AuxData {
         this._plastic = [] // Array.{UnitPlastic}
         this._adjacentPlastic = [] // Array.{UnitPlastic}
 
+        this._faction = undefined  // string NSID name ("letnev")
         this._factionAbilities = [] // Array.{string} faction abilties
     }
 
@@ -248,11 +249,20 @@ class AuxData {
     }
 
     /**
+     * Faction NSID name.
+     * 
+     * @returns {string}
+     */
+     get faction() {
+        return this._faction
+    }
+
+    /**
      * Faction abilities.
      * 
      * @returns {Array.{string}}
      */
-    get factionAbilities() {
+     get factionAbilities() {
         return this._factionAbilities
     }
 }
