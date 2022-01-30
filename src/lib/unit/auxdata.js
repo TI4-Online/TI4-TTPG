@@ -68,6 +68,14 @@ class AuxData {
                 aux.unitAttrsSet.upgrade(upgrade)
             }
 
+            // Register any per-unit modifiers in the overall modifiers list.
+            for (const unitAttrs of aux.unitAttrsSet.values()) {
+                if (unitAttrs.raw.unitModifier) {
+                    const unitModifier = new UnitModifier(unitAttrs.raw.unitModifier)
+                    aux.unitModifiers.push(unitModifier)
+                }
+            }
+
             // Get modifiers.  For each perspective get "self modifiers" and 
             // "opponent modifiers applied to opponent".
             const modifiersSelf = UnitModifier.getPlayerUnitModifiers(selfSlot, 'self')
@@ -88,13 +96,6 @@ class AuxData {
         const applyModifiers = (selfAux, opponentAux) => {
             assert(selfAux instanceof AuxData)
             assert(opponentAux instanceof AuxData)
-
-            for (const unitAttrs of selfAux.unitAttrsSet.values()) {
-                if (unitAttrs.raw.unitModifier) {
-                    const unitModifier = new UnitModifier(unitAttrs.raw.unitModifier)
-                    unitModifier.apply(selfAux.unitAttrsSet, { self : selfAux, opponent : opponentAux })
-                }
-            }
             for (const unitModifier of selfAux.unitModifiers) {
                 unitModifier.apply(selfAux.unitAttrsSet, { self : selfAux, opponent : opponentAux })
             }

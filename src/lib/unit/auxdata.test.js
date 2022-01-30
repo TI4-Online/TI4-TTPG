@@ -1,6 +1,12 @@
 const assert = require('../../wrapper/assert')
 const { AuxData } = require('./auxdata')
-const { world, MockGameObject, MockVector } = require('../../wrapper/api')
+const {
+    MockCard,
+    MockCardDetails,
+    MockGameObject,
+    MockVector,
+    world
+} = require('../../wrapper/api')
 
 it('static createForPair', () => {
     const selfPlayerSlot = 7
@@ -23,6 +29,22 @@ it('static createForPair', () => {
         templateMetadata : 'token:base/infantry_1'
     }))
 
+    // Carrier 2
+    world.__addObject(new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.technology.unit_upgrade:base/carrier_2'
+        }),
+        owningPlayerSlot : selfPlayerSlot
+    }))
+    
+    // Morale boost!
+    world.__addObject(new MockCard({
+        cardDetails : new MockCardDetails({
+            metadata : 'card.action:base/morale_boost.3'
+        }),
+        owningPlayerSlot : selfPlayerSlot
+    }))
+
     let aux1, aux2
     try {
         [ aux1, aux2 ] = AuxData.createForPair(selfPlayerSlot, opponentPlayerSlot, '<0,0,0>', new Set())
@@ -33,6 +55,10 @@ it('static createForPair', () => {
     }
 
     assert.equal(aux1.count('fighter'), 4)
+    assert.equal(aux1.unitAttrsSet.get('carrier').raw.localeName, 'unit.carrier_2')
+    assert.equal(aux1.unitModifiers.length, 1)
+    assert.equal(aux1.unitModifiers[0].raw.localeName, 'unit_modifier.name.morale_boost')
+
     assert.equal(aux2.count('fighter'), 1)
 })
 
