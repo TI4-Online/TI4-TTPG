@@ -330,18 +330,15 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
     }
 }
 
-console.log("starting");
-
 Promise.all(
     modSet.map((theMod) => {
         return fs.ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775).then(() => {
             return Promise.all(
                 Object.keys(TILES[theMod]).map(e => fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`))
             ).then(() => {
-                console.log("running");
                 return Promise.all(
                     Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
-                        console.log(theMod);
+                        console.log("creating map tiles for", theMod);
                         return [...acc, ...Object.entries(def).map(([mapId, details]) => {
                             const guid = details.guid ? details.guid : generateUuid();
                             return fs.writeFile(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, JSON.stringify(generateTile(guid, theMod, mapId, type, details), null, "\t"))
