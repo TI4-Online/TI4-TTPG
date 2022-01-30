@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "D66C554E4ECBACD3647B69975FE4F5A3",
 	"Name": "Garbage",
-	"Metadata": "",
+	"Metadata": "bag:base/garbage",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
