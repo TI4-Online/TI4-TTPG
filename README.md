@@ -26,6 +26,10 @@ you can also run ``yarn build`` to get a Production build of your mod into TTPG 
 
 if you run ``yarn clean`` it will remove the ``dev/`` folder, as well as the project folder within your ttpg system and remove and temporary files. You can then run ``yarn setup`` again to get everything re-allocated.
 
+# Prettier
+
+This project uses `prettier` as a formatter for code, as well as json, yaml, and markdown content. Most editors can be set up to apply formatting when you save; for instance, with VSCode, you can enable the "Editor: Format On Save" setting and install the [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extension.
+
 # Utilities
 
 ``yarn guid [n]`` will generate n GUIDs for you (default 1). use ``yarn (--silent|-s) guid [n]`` to surpress yarn's wrapping output and just get the GUIDS you requested.
