@@ -7,13 +7,13 @@ const UNIT_MODIFIERS = require("./unit-modifier.data");
 
 const PRIORITY = {
     "mutate.early": 9,
-    mutate: 10,
+    "mutate": 10,
     "mutate.late": 11,
     "adjust.early": 19,
-    adjust: 20,
+    "adjust": 20,
     "adjust.late": 21,
     "choose.early": 29,
-    choose: 30,
+    "choose": 30,
     "choose.late": 30,
 };
 
@@ -106,7 +106,10 @@ class UnitModifier {
                 continue;
             }
 
-            // Cards must be face up.
+            if (obj.getContainer()) {
+                continue; // inside a container
+            }
+
             if (obj instanceof Card && !obj.isFaceUp()) {
                 continue; // face down card
             }

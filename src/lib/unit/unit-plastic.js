@@ -48,6 +48,9 @@ class UnitPlastic {
     static getAll() {
         const result = [];
         for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // inside a container
+            }
             const unitPlastic = _getUnitPlastic(obj);
             if (unitPlastic) {
                 result.push(unitPlastic);

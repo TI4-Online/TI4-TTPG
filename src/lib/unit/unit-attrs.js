@@ -107,6 +107,10 @@ class UnitAttrs {
                 continue; // not a candidate
             }
 
+            if (obj.getContainer()) {
+                continue; // inside a container
+            }
+
             // Cards must be face up.
             if (obj instanceof Card && !obj.isFaceUp()) {
                 continue; // face down card
