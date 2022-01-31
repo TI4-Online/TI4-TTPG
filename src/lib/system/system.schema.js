@@ -3,7 +3,6 @@ const Ajv = require("ajv");
 const PLANET_SCHEMA = {
     type: "object",
     properties: {
-<<<<<<< HEAD
         localeName: { type: "string" },
         resources: { type: "integer" },
         influence: { type: "integer" },
@@ -11,15 +10,6 @@ const PLANET_SCHEMA = {
         tech: { enum: ["yellow", "red", "blue", "green"] },
         legendary: { type: "boolean" },
         legendaryCard: { type: "string" },
-=======
-        localeName: {type: "string"},
-        resources: {type: "integer"},
-        influence: {type: "integer"},
-        trait: {type: "array", items: {enum: ["cultural", "hazardous", "industrial"]}},
-        tech: {type: "array", items: {enum: ["yellow", "red", "blue", "green"]}},
-        legendary: {type: "boolean"},
-        legendaryCard: {type: "string"}, // should be the card nsid
->>>>>>> make tech and trait arrays
 
         // Override default position/size.
         position: {
