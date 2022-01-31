@@ -1,5 +1,5 @@
 {
-  "desc": "-In base game only, if you repeal a law that grants a VP, that VP is not lost by that player", 
-  "id": "card.action:base/repeal_law", 
-  "name": "Repeal Law"
+    "desc": "-In base game only, if you repeal a law that grants a VP, that VP is not lost by that player",
+    "id": "card.action:base/repeal_law",
+    "name": "Repeal Law"
 }

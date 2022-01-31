@@ -1,20 +1,18 @@
 {
-    "extends": [
-        "eslint:recommended"
-    ],
+    "extends": ["eslint:recommended"],
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "babelOptions": {
             "configFile": "./.babelrc"
         }
     },
-    "plugins":["@babel"],
+    "plugins": ["@babel"],
     "env": {
         "node": true,
         "es6": true
     },
     "rules": {
-        "no-unused-vars": [ "warn", { "vars": "all", "args": "none" } ],
+        "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
         "no-extra-semi": 0
     },
     "globals": {

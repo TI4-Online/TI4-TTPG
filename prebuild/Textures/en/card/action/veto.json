@@ -1,5 +1,5 @@
 {
-  "desc": "-This happens in the same timing window as Political Secrets. If it is played after one or more Political Secrets are played, those PS were only for the Vetoed agenda, and are returned to the owning players if the Veto is successful", 
-  "id": "card.action:base/veto", 
-  "name": "Veto"
+    "desc": "-This happens in the same timing window as Political Secrets. If it is played after one or more Political Secrets are played, those PS were only for the Vetoed agenda, and are returned to the owning players if the Veto is successful",
+    "id": "card.action:base/veto",
+    "name": "Veto"
 }

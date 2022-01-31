@@ -1,5 +1,5 @@
 {
-  "desc": "-The technology being researched must be chosen before the Sabotage window opens", 
-  "id": "card.action:base/focused_research", 
-  "name": "Focused Research"
+    "desc": "-The technology being researched must be chosen before the Sabotage window opens",
+    "id": "card.action:base/focused_research",
+    "name": "Focused Research"
 }
