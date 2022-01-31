@@ -19,6 +19,23 @@ class ObjectNamespace {
         throw new Error('Static only')
     }
 
+    /**
+     * Parse a 'type:source/name' string into components.
+     * 
+     * @param {GameObject} obj 
+     * @returns {{ type : string, source : string, name : string}}
+     */
+     static parseNsid(nsid) {
+        const m = nsid.match(/^([^:]+):([^/]+)\/(.+)$/)
+        return m && { type : m[1], source : m[2], name : m[3] }
+    }
+
+    /**
+     * Get the NSID from an object.
+     * 
+     * @param {GameObject} obj 
+     * @returns {string}
+     */
     static getNsid(obj) {
         if (obj instanceof Card) {
             return obj.getCardDetails().metadata
@@ -39,15 +56,14 @@ class ObjectNamespace {
     }
     
     /**
-     * Parse a 'type:source/name' string into components.
+     * Parse object NSID into components.
      * 
      * @param {GameObject} obj 
      * @returns {{ type : string, source : string, name : string}}
      */
     static parseGeneric(obj) {
         const nsid = ObjectNamespace.getNsid(obj)
-        const m = nsid.match(/^([^:]+):([^/]+)\/(.+)$/)
-        return m && { type : m[1], source : m[2], name : m[3] }
+        return ObjectNamespace.parseNsid(nsid)
     }
 
     /**

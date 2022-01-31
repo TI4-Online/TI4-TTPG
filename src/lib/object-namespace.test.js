@@ -7,7 +7,15 @@ const MockGameObject = require('../mock/mock-game-object')
 it('cannot construct', () => {
     assert.throws(() => { new ObjectNamespace() })
 })
-  
+
+it('parseNsid', () => {
+    const id = 'my.type:my.source/my.name'
+    const result = ObjectNamespace.parseNsid(id)
+    assert.equal(result.type, 'my.type')
+    assert.equal(result.source, 'my.source')
+    assert.equal(result.name, 'my.name')
+})
+
 it('generic', () => {
     const id = 'my.type:my.source/my.name'
     const obj = new MockGameObject({ templateMetadata : id })
