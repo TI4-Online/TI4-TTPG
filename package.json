@@ -31,9 +31,11 @@
     "cross-spawn": "^7.0.3",
     "crypto": "^1.0.1",
     "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
     "fs-extra": "^10.0.0",
     "jest": "^27.4.7",
     "klaw": "^4.0.1",
+    "prettier": "^2.5.1",
     "regenerator-runtime": "^0.13.9",
     "sharp": "^0.29.3",
     "uuid": "^8.3.2"
