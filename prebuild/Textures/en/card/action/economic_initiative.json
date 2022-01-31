@@ -1,5 +1,5 @@
 {
-  "desc": "-May be used while you control zero cultural planets", 
-  "id": "card.action:base/economic_initiative", 
-  "name": "Economic Initiative"
+    "desc": "-May be used while you control zero cultural planets",
+    "id": "card.action:base/economic_initiative",
+    "name": "Economic Initiative"
 }

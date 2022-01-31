@@ -1,6 +1,6 @@
-const { ObjectNamespace } = require("../object-namespace")
-const { UnitAttrs } = require("./unit-attrs")
-const { world } = require("../../wrapper/api")
+const { ObjectNamespace } = require("../object-namespace");
+const { UnitAttrs } = require("./unit-attrs");
+const { world } = require("../../wrapper/api");
 
 // This is not JSON because `modify = function(unitAttrs, auxData)` functions.
 module.exports = [
@@ -14,9 +14,9 @@ module.exports = [
         triggerNsid: "card.leader.commander.l1z1x:base/2ram",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
-                unitAttrs.raw.disablePlanetaryShield = true
+                unitAttrs.raw.disablePlanetaryShield = true;
             }
-        }
+        },
     },
     {
         // "-1 to all SPACE CANNON rolls",
@@ -28,9 +28,9 @@ module.exports = [
         triggerNsid: "card.technology.blue:base/antimass_deflectors",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
-                unitAttrs.raw.spaceCannon.hit += 1
+                unitAttrs.raw.spaceCannon.hit += 1;
             }
-        }
+        },
     },
     {
         // "Mechs lose non-SUSTAIN DAMAGE abilities",
@@ -41,12 +41,12 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.agenda:pok/articles_of_war",
         applyAll: (unitAttrsSet, auxData) => {
-            const mechAttrs = unitAttrsSet.get('mech')
-            delete mechAttrs.raw.antiFighterBarrage
-            delete mechAttrs.raw.bombardment
-            delete mechAttrs.raw.roduction
-            delete mechAttrs.raw.spaceCannon
-        }
+            const mechAttrs = unitAttrsSet.get("mech");
+            delete mechAttrs.raw.antiFighterBarrage;
+            delete mechAttrs.raw.bombardment;
+            delete mechAttrs.raw.roduction;
+            delete mechAttrs.raw.spaceCannon;
+        },
     },
     {
         // "BOMBARDMENT 6 to non-fighter, non-bomdbardment ships",
@@ -57,12 +57,14 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.action:codex.ordinian/blitz",
         applyEach: (unitAttrs, auxData) => {
-            if (unitAttrs.raw.ship &&
-                unitAttrs.raw.unit !== 'fighter' &&
-                !unitAttrs.raw.bombardment) {
-                unitAttrs.raw.bombardment = { dice: 1, hit: 6 }
+            if (
+                unitAttrs.raw.ship &&
+                unitAttrs.raw.unit !== "fighter" &&
+                !unitAttrs.raw.bombardment
+            ) {
+                unitAttrs.raw.bombardment = { dice: 1, hit: 6 };
             }
-        }
+        },
     },
     {
         // "Produce an additional Infantry for their cost; it doesn't count towards production limits.",
@@ -73,10 +75,11 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.leader.commander.yin:pok/brother_omar",
         applyAll: (unitAttrsSet, auxData) => {
-            const infantryAttrs = unitAttrsSet.get('infantry')
-            infantryAttrs.raw.produce += 1
-            infantryAttrs.raw.freeProduce = (infantryAttrs.raw.freeProduce || 0) + 1
-        }
+            const infantryAttrs = unitAttrsSet.get("infantry");
+            infantryAttrs.raw.produce += 1;
+            infantryAttrs.raw.freeProduce =
+                (infantryAttrs.raw.freeProduce || 0) + 1;
+        },
     },
     {
         // "-4 to all BOMBARDMENT rolls",
@@ -88,9 +91,9 @@ module.exports = [
         triggerNsid: "card.action:base/bunker",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
-                unitAttrs.raw.bombardment.hit += 4
+                unitAttrs.raw.bombardment.hit += 4;
             }
-        }
+        },
     },
     {
         // "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
@@ -101,10 +104,10 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.action:base/disable",
         applyAll: (unitAttrsSet, auxData) => {
-            const pdsAttrs = unitAttrsSet.get('pds')
-            delete pdsAttrs.raw.planetaryShield
-            delete pdsAttrs.raw.spaceCannon
-        }
+            const pdsAttrs = unitAttrsSet.get("pds");
+            delete pdsAttrs.raw.planetaryShield;
+            delete pdsAttrs.raw.spaceCannon;
+        },
     },
     {
         // "One in or adjacent Space Dock gets SPACE CANNON 5x3",
@@ -115,15 +118,18 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.action:base/experimental_battlestation",
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has('space_dock')) {
-                unitAttrsSet.addSpecialUnit(new UnitAttrs({
-                    unit: 'experimental_battlestation',
-                    localeName: "unit_modifier.name.experimental_battlestation",
-                    spaceCannon: { hit: 5, dice: 3, range: 1 }
-                }))
-                auxData.self.overrideCount('experimental_battlestation', 1)
+            if (auxData.self.has("space_dock")) {
+                unitAttrsSet.addSpecialUnit(
+                    new UnitAttrs({
+                        unit: "experimental_battlestation",
+                        localeName:
+                            "unit_modifier.name.experimental_battlestation",
+                        spaceCannon: { hit: 5, dice: 3, range: 1 },
+                    })
+                );
+                auxData.self.overrideCount("experimental_battlestation", 1);
             }
-        }
+        },
     },
     {
         // "+1 die to a single GROUND COMBAT roll",
@@ -135,19 +141,26 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.agent.sol:pok/evelyn_delouis",
         applyAll: (unitAttrsSet, auxData) => {
-            let best = false
+            let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.groundCombat &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.groundCombat.hit < best.raw.groundCombat.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.groundCombat &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.groundCombat.hit <
+                            best.raw.groundCombat.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.groundCombat.extraDice = (best.raw.groundCombat.extraDice || 0) + 1
+                best.raw.groundCombat.extraDice =
+                    (best.raw.groundCombat.extraDice || 0) + 1;
             }
-        }
+        },
     },
     {
         // "+2 to fighters' COMBAT rolls",
@@ -158,14 +171,14 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.action:base/fighter_prototype",
         applyAll: (unitAttrsSet, auxData) => {
-            const fighterAttrs = unitAttrsSet.get('fighter')
+            const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
-                fighterAttrs.raw.spaceCombat.hit -= 2
+                fighterAttrs.raw.spaceCombat.hit -= 2;
             }
             if (fighterAttrs.raw.groundCombat) {
-                fighterAttrs.raw.groundCombat.hit -= 2
+                fighterAttrs.raw.groundCombat.hit -= 2;
             }
-        }
+        },
     },
     {
         // "-1 to all COMBAT rolls",
@@ -174,15 +187,15 @@ module.exports = [
         localeDescription: "unit_modifier.desc.fragile",
         owner: "self",
         priority: "adjust",
-        triggerFactionAbility: 'fragile',
+        triggerFactionAbility: "fragile",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit += 1
+                unitAttrs.raw.spaceCombat.hit += 1;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit += 1
+                unitAttrs.raw.groundCombat.hit += 1;
             }
-        }
+        },
     },
     {
         // "Produce an additional Fighter for their cost; it doesn't count towards production limits.",
@@ -193,10 +206,11 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.leader.commander.naalu:pok/maban",
         applyAll: (unitAttrsSet, auxData) => {
-            const fighterAttrs = unitAttrsSet.get('fighter')
-            fighterAttrs.raw.produce += 1
-            fighterAttrs.raw.freeProduce = (fighterAttrs.raw.freeProduce || 0) + 1
-        }
+            const fighterAttrs = unitAttrsSet.get("fighter");
+            fighterAttrs.raw.produce += 1;
+            fighterAttrs.raw.freeProduce =
+                (fighterAttrs.raw.freeProduce || 0) + 1;
+        },
     },
     {
         // "+1 to all COMBAT rolls",
@@ -206,19 +220,19 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsids: [
-            'card.action:base/morale_boost.1',
-            'card.action:base/morale_boost.2',
-            'card.action:base/morale_boost.3',
-            'card.action:base/morale_boost.4'
+            "card.action:base/morale_boost.1",
+            "card.action:base/morale_boost.2",
+            "card.action:base/morale_boost.3",
+            "card.action:base/morale_boost.4",
         ],
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 1
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit -= 1
+                unitAttrs.raw.groundCombat.hit -= 1;
             }
-        }
+        },
     },
     {
         // "You can produce your flagship without spending resources.",
@@ -229,9 +243,9 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.leader.commander.nomad:pok/navarch_feng",
         applyAll: (unitAttrsSet, auxData) => {
-            const flagshipAttrs = unitAttrsSet.get('flagship')
-            flagshipAttrs.raw.cost = 0
-        }
+            const flagshipAttrs = unitAttrsSet.get("flagship");
+            flagshipAttrs.raw.cost = 0;
+        },
     },
     {
         // "+1 to SPACE COMBAT rolls (defender)",
@@ -243,9 +257,9 @@ module.exports = [
         // TODO XXX TRIGGER??
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 1
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
-        }
+        },
     },
     {
         // "+1 die to a single SPACE CANNON or BOMBARDMENT roll",
@@ -257,32 +271,44 @@ module.exports = [
         triggerNsid: "card.technology.red:base/plasma_scoring",
         applyAll: (unitAttrsSet, auxData) => {
             // Space cannon.
-            let best = false
+            let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.spaceCannon &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.spaceCannon.extraDice = (best.raw.spaceCannon.extraDice || 0) + 1
+                best.raw.spaceCannon.extraDice =
+                    (best.raw.spaceCannon.extraDice || 0) + 1;
             }
             // Bombardment.
-            best = false
+            best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.bombardment &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.bombardment &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.bombardment.extraDice = (best.raw.bombardment.extraDice || 0) + 1
+                best.raw.bombardment.extraDice =
+                    (best.raw.bombardment.extraDice || 0) + 1;
             }
-        }
+        },
     },
     {
         // "+1 to fighter's COMBAT rolls",
@@ -293,14 +319,14 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.agenda:base/prophecy_of_ixth",
         applyAll: (unitAttrsSet, auxData) => {
-            const fighterAttrs = unitAttrsSet.get('fighter')
+            const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
-                fighterAttrs.raw.spaceCombat.hit += 1
+                fighterAttrs.raw.spaceCombat.hit += 1;
             }
             if (fighterAttrs.raw.groundCombat) {
-                fighterAttrs.raw.groundCombat.hit += 1
+                fighterAttrs.raw.groundCombat.hit += 1;
             }
-        }
+        },
     },
     {
         // "War Suns lose SUSTAIN DAMAGE",
@@ -311,9 +337,9 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.agenda:base/publicize_weapon_schematics",
         applyAll: (unitAttrsSet, auxData) => {
-            const warSunAttrs = unitAttrsSet.get('war_sun')
-            delete warSunAttrs.raw.sustainDamage
-        }
+            const warSunAttrs = unitAttrsSet.get("war_sun");
+            delete warSunAttrs.raw.sustainDamage;
+        },
     },
     {
         // "Fighters and infantry cost 1 each",
@@ -324,11 +350,11 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.agenda:base/regulated_conscription",
         applyAll: (unitAttrsSet, auxData) => {
-            const fighterAttrs = unitAttrsSet.get('fighter')
-            const infantryAttrs = unitAttrsSet.get('infantry')
-            fighterAttrs.raw.produce = 1
-            infantryAttrs.raw.produce = 1
-        }
+            const fighterAttrs = unitAttrsSet.get("fighter");
+            const infantryAttrs = unitAttrsSet.get("infantry");
+            fighterAttrs.raw.produce = 1;
+            infantryAttrs.raw.produce = 1;
+        },
     },
     {
         // "+2 to combat rolls",
@@ -341,12 +367,12 @@ module.exports = [
         triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 2
+                unitAttrs.raw.spaceCombat.hit -= 2;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit -= 2
+                unitAttrs.raw.groundCombat.hit -= 2;
             }
-        }
+        },
     },
     {
         // "Copy abilities from other agents",
@@ -369,45 +395,64 @@ module.exports = [
         triggerNsid: "card.promissory.argent:pok/strike_wing_ambuscade",
         applyAll: (unitAttrsSet, auxData) => {
             // antiFighterBarrage.
-            let best = false
+            let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.antiFighterBarrage &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.antiFighterBarrage.hit < best.raw.antiFighterBarrage.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.antiFighterBarrage &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.antiFighterBarrage.hit <
+                            best.raw.antiFighterBarrage.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.antiFighterBarrage.extraDice = (best.raw.antiFighterBarrage.extraDice || 0) + 1
+                best.raw.antiFighterBarrage.extraDice =
+                    (best.raw.antiFighterBarrage.extraDice || 0) + 1;
             }
             // Bombardment.
-            best = false
+            best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.bombardment &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.bombardment &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.bombardment.extraDice = (best.raw.bombardment.extraDice || 0) + 1
+                best.raw.bombardment.extraDice =
+                    (best.raw.bombardment.extraDice || 0) + 1;
             }
             // Space cannon.
-            best = false
+            best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.spaceCannon &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.spaceCannon.extraDice = (best.raw.spaceCannon.extraDice || 0) + 1
+                best.raw.spaceCannon.extraDice =
+                    (best.raw.spaceCannon.extraDice || 0) + 1;
             }
-        }
+        },
     },
     {
         // "+1 to all COMBAT rolls",
@@ -420,12 +465,12 @@ module.exports = [
         triggerNsid: "card.technology.red.naazrokha:pok/supercharge",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 1
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit -= 1
+                unitAttrs.raw.groundCombat.hit -= 1;
             }
-        }
+        },
     },
     {
         // "You may reroll any ability dice (when active will reroll all misses)",
@@ -438,15 +483,15 @@ module.exports = [
         triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.antiFighterBarrage) {
-                unitAttrs.raw.antiFighterBarrage.rerollMisses = true
+                unitAttrs.raw.antiFighterBarrage.rerollMisses = true;
             }
             if (unitAttrs.raw.bombardment) {
-                unitAttrs.raw.bombardment.rerollMisses = true
+                unitAttrs.raw.bombardment.rerollMisses = true;
             }
             if (unitAttrs.raw.spaceCannon) {
-                unitAttrs.raw.spaceCannon.rerollMisses = true
+                unitAttrs.raw.spaceCannon.rerollMisses = true;
             }
-        }
+        },
     },
     {
         // "+1 to GROUND COMBAT rolls for attacker, -1 to Sardakk if opponent owns",
@@ -458,10 +503,10 @@ module.exports = [
         triggerNsid: "card.promissory.norr:base/tekklar_legion",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.groundCombat) {
-                const bonus = auxData.self.faction == 'norr' ? -1 : 1
-                unitAttrs.raw.groundCombat.hit -= bonus
+                const bonus = auxData.self.faction == "norr" ? -1 : 1;
+                unitAttrs.raw.groundCombat.hit -= bonus;
             }
-        }
+        },
     },
     {
         // "When producing Infantry and/or Fighters, up to 2 do not count against the production limit.",
@@ -470,13 +515,16 @@ module.exports = [
         localeName: "unit_modifier.name.that_which_molds_flesh",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.vuilraith:pok/that_which_molds_flesh",
+        triggerNsid:
+            "card.leader.commander.vuilraith:pok/that_which_molds_flesh",
         applyAll: (unitAttrsSet, auxData) => {
-            const infantryAttrs = unitAttrsSet.get('infantry')
-            const fighterAttrs = unitAttrsSet.get('fighter')
-            infantryAttrs.raw.sharedFreeProduce = (infantryAttrs.raw.freeProduce || 0) + 2
-            fighterAttrs.raw.sharedFreeProduce = (infantryAttrs.raw.freeProduce || 0) + 2
-        }
+            const infantryAttrs = unitAttrsSet.get("infantry");
+            const fighterAttrs = unitAttrsSet.get("fighter");
+            infantryAttrs.raw.sharedFreeProduce =
+                (infantryAttrs.raw.freeProduce || 0) + 2;
+            fighterAttrs.raw.sharedFreeProduce =
+                (infantryAttrs.raw.freeProduce || 0) + 2;
+        },
     },
     {
         // "One non-fighter ship gains the SUSTAIN DAMAGE, combat value, and ANTI-FIGHTER BARRAGE of the Nomad flagship (this modifier adds a new unit for AFB/space combat, remove the affected unit from normal setup)",
@@ -488,23 +536,24 @@ module.exports = [
         triggerNsid: "card.promissory.nomad:pok/the_cavalry",
         applyAll: (unitAttrsSet, auxData) => {
             let rawCavalryAttrs = {
-                unit: 'the_cavalry',
-                localeName: 'unit_modifier.name.the_cavalry',
+                unit: "the_cavalry",
+                localeName: "unit_modifier.name.the_cavalry",
                 antiFighterBarrage: { hit: 8, dice: 3 },
                 spaceCombat: { hit: 7, dice: 2 },
-            }
-            const cavalry2nsid = 'card.technology.unit_upgrade.nomad:pok/memoria_2'
+            };
+            const cavalry2nsid =
+                "card.technology.unit_upgrade.nomad:pok/memoria_2";
             for (const obj of world.getAllObjects()) {
-                const nsid = ObjectNamespace.getNsid(obj)
+                const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid === cavalry2nsid && obj.isFaceUp && obj.isFaceUp()) {
-                    rawCavalryAttrs.antiFighterBarrage.hit = 5
-                    rawCavalryAttrs.spaceCombat.hit = 5
-                    break
+                    rawCavalryAttrs.antiFighterBarrage.hit = 5;
+                    rawCavalryAttrs.spaceCombat.hit = 5;
+                    break;
                 }
             }
-            unitAttrsSet.addSpecialUnit(new UnitAttrs(rawCavalryAttrs))
-            auxData.self.overrideCount('the_cavalry', 1)
-        }
+            unitAttrsSet.addSpecialUnit(new UnitAttrs(rawCavalryAttrs));
+            auxData.self.overrideCount("the_cavalry", 1);
+        },
     },
     {
         // "Apply +1 to COMBAT rolls, player must destroy any units that do not produce at least one hit",
@@ -517,12 +566,12 @@ module.exports = [
         triggerNsid: "card.agenda:base.only/the_crown_of_thalnos",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 1
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit -= 1
+                unitAttrs.raw.groundCombat.hit -= 1;
             }
-        }
+        },
     },
     {
         // "+1 die to a unit ability (anti-fighter barrage, bombardment, space cannon)",
@@ -535,45 +584,64 @@ module.exports = [
         triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
         applyAll: (unitAttrsSet, auxData) => {
             // antiFighterBarrage.
-            let best = false
+            let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.antiFighterBarrage &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.antiFighterBarrage.hit < best.raw.antiFighterBarrage.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.antiFighterBarrage &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.antiFighterBarrage.hit <
+                            best.raw.antiFighterBarrage.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.antiFighterBarrage.extraDice = (best.raw.antiFighterBarrage.extraDice || 0) + 1
+                best.raw.antiFighterBarrage.extraDice =
+                    (best.raw.antiFighterBarrage.extraDice || 0) + 1;
             }
             // Bombardment.
-            best = false
+            best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.bombardment &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.bombardment &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.bombardment.hit < best.raw.bombardment.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.bombardment.extraDice = (best.raw.bombardment.extraDice || 0) + 1
+                best.raw.bombardment.extraDice =
+                    (best.raw.bombardment.extraDice || 0) + 1;
             }
             // Space cannon.
-            best = false
+            best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.spaceCannon &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.spaceCannon.extraDice = (best.raw.spaceCannon.extraDice || 0) + 1
+                best.raw.spaceCannon.extraDice =
+                    (best.raw.spaceCannon.extraDice || 0) + 1;
             }
-        }
+        },
     },
     {
         // "SPACE CANNON 5(x3)",
@@ -585,15 +653,17 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has('space_dock')) {
-                unitAttrsSet.addSpecialUnit(new UnitAttrs({
-                    unit: 'ul_the_progenitor',
-                    localeName: "unit_modifier.name.ul_the_progenitor",
-                    spaceCannon: { hit: 5, dice: 3 }
-                }))
-                auxData.self.count('ul_the_progenitor', 1)
+            if (auxData.self.has("space_dock")) {
+                unitAttrsSet.addSpecialUnit(
+                    new UnitAttrs({
+                        unit: "ul_the_progenitor",
+                        localeName: "unit_modifier.name.ul_the_progenitor",
+                        spaceCannon: { hit: 5, dice: 3 },
+                    })
+                );
+                auxData.self.count("ul_the_progenitor", 1);
             }
-        }
+        },
     },
     {
         // "+1 to all COMBAT rolls",
@@ -602,15 +672,15 @@ module.exports = [
         localeDescription: "unit_modifier.desc.unrelenting",
         owner: "self",
         priority: "adjust",
-        triggerFactionAbility: 'unrelenting',
+        triggerFactionAbility: "unrelenting",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
-                unitAttrs.raw.spaceCombat.hit -= 1
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
             if (unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.hit -= 1
+                unitAttrs.raw.groundCombat.hit -= 1;
             }
-        }
+        },
     },
     {
         // "+1 die to a single SPACE COMBAT roll",
@@ -622,18 +692,24 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.agent.letnev:pok/viscount_unlenn",
         applyAll: (unitAttrsSet, auxData) => {
-            let best = false
+            let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (unitAttrs.raw.spaceCombat &&
-                    auxData.self.has(unitAttrs.raw.unit)) {
-                    if (!best || unitAttrs.raw.spaceCombat.hit < best.raw.spaceCombat.hit) {
-                        best = unitAttrs
+                if (
+                    unitAttrs.raw.spaceCombat &&
+                    auxData.self.has(unitAttrs.raw.unit)
+                ) {
+                    if (
+                        !best ||
+                        unitAttrs.raw.spaceCombat.hit < best.raw.spaceCombat.hit
+                    ) {
+                        best = unitAttrs;
                     }
                 }
             }
             if (best) {
-                best.raw.spaceCombat.extraDice = (best.raw.spaceCombat.extraDice || 0) + 1
+                best.raw.spaceCombat.extraDice =
+                    (best.raw.spaceCombat.extraDice || 0) + 1;
             }
-        }
+        },
     },
-]
+];

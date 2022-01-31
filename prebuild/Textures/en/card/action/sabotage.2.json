@@ -1,5 +1,5 @@
 {
-  "desc": "-If a component action is sabotaged, that player must still make another action on their turn, or pass\n-This card may be played after card targets (such as units, planets, systems, cards, outcomes, or players) have been decided on, but must be played before any effects have been resolved, votes have been cast, or any dice have been rolled.", 
-  "id": "card.action:base/sabotage.2", 
-  "name": "Sabotage (2)"
+    "desc": "-If a component action is sabotaged, that player must still make another action on their turn, or pass\n-This card may be played after card targets (such as units, planets, systems, cards, outcomes, or players) have been decided on, but must be played before any effects have been resolved, votes have been cast, or any dice have been rolled.",
+    "id": "card.action:base/sabotage.2",
+    "name": "Sabotage (2)"
 }

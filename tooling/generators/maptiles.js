@@ -1,34 +1,34 @@
-const fs = require('fs-extra');
-const uuid = require('uuid');
+const fs = require("fs-extra");
+const uuid = require("uuid");
 
-const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase()
+const generateUuid = () => uuid.v4().replace(/-/g, "").toUpperCase();
 
 const COLORS = {
     hazard: {
-        "R": 230,
-        "G": 90,
-        "B": 58
+        R: 230,
+        G: 90,
+        B: 58,
     },
     homeworld: {
-        "R": 145,
-        "G": 251,
-        "B": 133
+        R: 145,
+        G: 251,
+        B: 133,
     },
     regular: {
-        "R": 99,
-        "G": 185,
-        "B": 255
+        R: 99,
+        G: 185,
+        B: 255,
     },
     special: {
-        "R": 255,
-        "G": 255,
-        "B": 255
-    }
-}
+        R: 255,
+        G: 255,
+        B: 255,
+    },
+};
 
 const TILES = {
-    "base": {
-        "regular": {
+    base: {
+        regular: {
             "019": { guid: "486525D88A2F4722ACCA265D6CD4AD05" },
             "020": { guid: "F384D89AFD3F4534B9567B6578DE576F" },
             "021": { guid: "710503D28ED8486CBADC7883CBB3024D" },
@@ -50,7 +50,7 @@ const TILES = {
             "037": { guid: "0C345E10BB53423086D6E6276988AEE6" },
             "038": { guid: "2664FC3FFAA24F42AB78C27A0234BB57" },
         },
-        "hazard": {
+        hazard: {
             "039": { guid: "8195FF33918C4C55942EE4F00DACEC90", noLang: true },
             "040": { guid: "4255D793CC924DD9B5592AB7D9627F48", noLang: true },
             "041": { guid: "B1C3028BD9994093B0D897719D6F9D7C", noLang: true },
@@ -64,7 +64,7 @@ const TILES = {
             "049": { guid: "196BF158D6E94203BC0AEFCC38EDE9CA", noLang: true },
             "050": { guid: "B0FB9877565A49C2BCED69B976A9E154", noLang: true },
         },
-        "homeworld": {
+        homeworld: {
             "001": { guid: "DE3527F84B594186B4FE56418BC021F7" },
             "002": { guid: "7D7AFDD1441844BC952D0D96B06B24DA" },
             "003": { guid: "5876803615FC40F6BD3321BD4393F3A8" },
@@ -83,11 +83,11 @@ const TILES = {
             "016": { guid: "38894D21559A4E5BB45BD76FF22AFB2F" },
             "017": { guid: "1A54BFBA7E184176AEC45C8BF4B9238C" },
         },
-        "special": {
+        special: {
             "018": {
                 guid: "0E8A6E46AFF24A61914C83EAF6399857",
                 name: "Mecatol Rex",
-                reverseTexture: `locale/tiles/base/special/tile_018.jpg`
+                reverseTexture: `locale/tiles/base/special/tile_018.jpg`,
             },
             "051": {
                 guid: "AE00A0B5DA25455E8DC2C6C1B1F8F297",
@@ -95,12 +95,12 @@ const TILES = {
                 reverseModel: "tiles/standalone-reverse.obj",
                 reverseTexture: `global/tiles/reverse_homeworld_c.png`,
                 reverseExtra: `global/tiles/reverse_homeworld_x.png`,
-                reverseColor: COLORS.homeworld
-            }
+                reverseColor: COLORS.homeworld,
+            },
         },
     },
-    "pok": {
-        "regular": {
+    pok: {
+        regular: {
             "059": { guid: "95A537D9978C46E2ACEAB20AE3054529" },
             "060": { guid: "7600AA2CA52A4CA084BEAC4AB84D9474" },
             "061": { guid: "A3D7AEB7ACC440CAB8090EFAE794B1E6" },
@@ -118,7 +118,7 @@ const TILES = {
             "075": { guid: "87C1DBAA6B3E4E98B13DC69FBB320277" },
             "076": { guid: "59921407A24F4B1BA42494370EBAE879" },
         },
-        "hazard": {
+        hazard: {
             "067": { guid: "6746AC4ABDC04862BB0C02635EF76506" },
             "068": { guid: "03D42542B4F4423D85659850A732297E" },
             "077": { guid: "D5E44F2314924C35B232A74194352C1D", noLang: true },
@@ -126,18 +126,54 @@ const TILES = {
             "079": { guid: "48155B11EC204F95BC6C8E8A62563C14", noLang: true },
             "080": { guid: "A14791A9164F493C81F70F92FF1353B6", noLang: true },
         },
-        "hyperlane": {
-            "083": { guid: "EA945EFF89FE4D48A3722E70FE91EFB4", obverseTexture: `global/tiles/pok/hyperlane/tile_083_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_083_r.jpg` },
-            "084": { guid: "04F562C521794710B41D190E6B277D55", obverseTexture: `global/tiles/pok/hyperlane/tile_084_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_084_r.jpg` },
-            "085": { guid: "4F0ACAD64F3C455BAE62225FF6C3850F", obverseTexture: `global/tiles/pok/hyperlane/tile_085_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_085_r.jpg` },
-            "086": { guid: "F4D5B1B9DB264405A492E277F60C8662", obverseTexture: `global/tiles/pok/hyperlane/tile_086_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_086_r.jpg` },
-            "087": { guid: "3F41E11B0C4C49468661D5A8C0C3B659", obverseTexture: `global/tiles/pok/hyperlane/tile_087_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_087_r.jpg` },
-            "088": { guid: "35BE0CAA2E4B4893B05B0642BD68E88F", obverseTexture: `global/tiles/pok/hyperlane/tile_088_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_088_r.jpg` },
-            "089": { guid: "8E938A20B4B442AE9655137CF3660E30", obverseTexture: `global/tiles/pok/hyperlane/tile_089_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_089_r.jpg` },
-            "090": { guid: "C928C3FB88C04D84A3C6E0E871145B05", obverseTexture: `global/tiles/pok/hyperlane/tile_090_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_090_r.jpg` },
-            "091": { guid: "0F4F7816363044D1B21EF2AA647D260D", obverseTexture: `global/tiles/pok/hyperlane/tile_091_o.jpg`, reverseTexture: `global/tiles/pok/hyperlane/tile_091_r.jpg` },
+        hyperlane: {
+            "083": {
+                guid: "EA945EFF89FE4D48A3722E70FE91EFB4",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_083_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_083_r.jpg`,
+            },
+            "084": {
+                guid: "04F562C521794710B41D190E6B277D55",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_084_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_084_r.jpg`,
+            },
+            "085": {
+                guid: "4F0ACAD64F3C455BAE62225FF6C3850F",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_085_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_085_r.jpg`,
+            },
+            "086": {
+                guid: "F4D5B1B9DB264405A492E277F60C8662",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_086_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_086_r.jpg`,
+            },
+            "087": {
+                guid: "3F41E11B0C4C49468661D5A8C0C3B659",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_087_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_087_r.jpg`,
+            },
+            "088": {
+                guid: "35BE0CAA2E4B4893B05B0642BD68E88F",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_088_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_088_r.jpg`,
+            },
+            "089": {
+                guid: "8E938A20B4B442AE9655137CF3660E30",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_089_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_089_r.jpg`,
+            },
+            "090": {
+                guid: "C928C3FB88C04D84A3C6E0E871145B05",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_090_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_090_r.jpg`,
+            },
+            "091": {
+                guid: "0F4F7816363044D1B21EF2AA647D260D",
+                obverseTexture: `global/tiles/pok/hyperlane/tile_091_o.jpg`,
+                reverseTexture: `global/tiles/pok/hyperlane/tile_091_r.jpg`,
+            },
         },
-        "homeworld": {
+        homeworld: {
             "052": { guid: "FA561A091AA94C2881E4EF8EFF5D8009" },
             "053": { guid: "EAE70D5AA35D4EFBBECA54FA7D990D50" },
             "054": { guid: "A3B8E4425F774D5FA813C38A673BDBBD" },
@@ -146,210 +182,258 @@ const TILES = {
             "057": { guid: "45D888DDD1BB47839F10D6D215CF5FD6" },
             "058": { guid: "A59AEE566273429AAC9A32500F674896" },
         },
-        "special": {
-            "081": { guid: "1EFD655740B44AF1A6F75C9B6E99A018", noLang: true, reverseTexture: "global/tiles/reverse_homeworld_c.png", reverseExtra: "global/tiles/reverse_homeworld_x.png", reverseColor: COLORS.homeworld },
+        special: {
+            "081": {
+                guid: "1EFD655740B44AF1A6F75C9B6E99A018",
+                noLang: true,
+                reverseTexture: "global/tiles/reverse_homeworld_c.png",
+                reverseExtra: "global/tiles/reverse_homeworld_x.png",
+                reverseColor: COLORS.homeworld,
+            },
             "082": {
                 guid: "541FFEC05B05424BAE1B225D9765598D",
                 obverseModel: "tiles/standalone-obverse.obj",
                 obverseTexture: "locale/tiles/pok/special/tile_082_o.jpg",
                 reverseModel: "tiles/standalone-reverse.obj",
-                reverseTexture: "locale/tiles/pok/special/tile_082_r.jpg"
+                reverseTexture: "locale/tiles/pok/special/tile_082_r.jpg",
             },
-        }
-    },
-    "discordant_stars": {
-        "homeworld": {
-            "3201": { guid: "F1E6206B09454402B9A5E52B1934BAD6" },
-            "3202": { guid: "71C6CF8E8326420B9B72B5BD0329A173" },
-            "3203": { guid: "21373514204A409F8A834E1FDCC19A3C" },
-            "3204": { guid: "9AFB10D005A240F7B09FE5D30CA9FBA0" },
-            "3205": { guid: "47C8E5F3D2A0498E9DBC3FC7EF80E824" },
-            "3206": { guid: "9F83BC9B59F1461B96F525398E21C400" },
-            "3207": { guid: "615DC76F745F4D668B502F5DDB91D27D" },
-            "3208": { guid: "152C3545E9F246048D0215F7CBA63D6D" },
-            "3209": { guid: "8371CA8B6CFE426D89E58B6A96B48098" },
-            "3210": { guid: "B50C67991C214A08B5CDAB1E3C121044" },
-            "3211": { guid: "330FC1258CCF4E51A7D641FC4218049F" },
-            "3212": { guid: "2EC81B92A6974C8FA215E62235671284" },
-            "3213": { guid: "1CDA602307374660B9D29ABE74274553" },
-            "3214": { guid: "3B006A999C5D4340B8346BFB841BADA3" },
-            "3215": { guid: "0D10F9991C184DBA89140C252A343BD3" },
-            "3216": { guid: "072DCEE6DDAB44E3BA26706A31EE0E45" },
-            "3217": { guid: "C4C4D351119540A7AEC663965FE2837B" },
-            "3218": { guid: "B1BB3A41C2B845A5BE4CE5DE2F0E7F7D" },
-            "3219": { guid: "FFA2046A9E2C4400935E2C3404D2B68C" },
-            "3220": { guid: "FB1B4ACEA6C840DDBB341E553419F7C7" },
-            "3221": { guid: "7BB5522CA5F64BFAB43A08CD06949AA3" },
-            "3222": { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" },
-            "3223": { guid: "F61083209FB643A395790E821767AE4D" },
-            "3224": { guid: "819715212DA746268C281C3B2259FCBE" },
         },
-        "special": {
-            "3225": {
+    },
+    discordant_stars: {
+        homeworld: {
+            3201: { guid: "F1E6206B09454402B9A5E52B1934BAD6" },
+            3202: { guid: "71C6CF8E8326420B9B72B5BD0329A173" },
+            3203: { guid: "21373514204A409F8A834E1FDCC19A3C" },
+            3204: { guid: "9AFB10D005A240F7B09FE5D30CA9FBA0" },
+            3205: { guid: "47C8E5F3D2A0498E9DBC3FC7EF80E824" },
+            3206: { guid: "9F83BC9B59F1461B96F525398E21C400" },
+            3207: { guid: "615DC76F745F4D668B502F5DDB91D27D" },
+            3208: { guid: "152C3545E9F246048D0215F7CBA63D6D" },
+            3209: { guid: "8371CA8B6CFE426D89E58B6A96B48098" },
+            3210: { guid: "B50C67991C214A08B5CDAB1E3C121044" },
+            3211: { guid: "330FC1258CCF4E51A7D641FC4218049F" },
+            3212: { guid: "2EC81B92A6974C8FA215E62235671284" },
+            3213: { guid: "1CDA602307374660B9D29ABE74274553" },
+            3214: { guid: "3B006A999C5D4340B8346BFB841BADA3" },
+            3215: { guid: "0D10F9991C184DBA89140C252A343BD3" },
+            3216: { guid: "072DCEE6DDAB44E3BA26706A31EE0E45" },
+            3217: { guid: "C4C4D351119540A7AEC663965FE2837B" },
+            3218: { guid: "B1BB3A41C2B845A5BE4CE5DE2F0E7F7D" },
+            3219: { guid: "FFA2046A9E2C4400935E2C3404D2B68C" },
+            3220: { guid: "FB1B4ACEA6C840DDBB341E553419F7C7" },
+            3221: { guid: "7BB5522CA5F64BFAB43A08CD06949AA3" },
+            3222: { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" },
+            3223: { guid: "F61083209FB643A395790E821767AE4D" },
+            3224: { guid: "819715212DA746268C281C3B2259FCBE" },
+        },
+        special: {
+            3225: {
                 guid: "CFB133FD79F5450AAEED1281FCB25D26",
                 obverseTexture: `locale/tiles/discordant_stars/special/tile_3225_o.jpg`,
-                reverseTexture: `locale/tiles/discordant_stars/special/tile_3225_r.jpg`
-            }
-        }
-    }
-}
+                reverseTexture: `locale/tiles/discordant_stars/special/tile_3225_r.jpg`,
+            },
+        },
+    },
+};
 
-const modSet = (process.argv.length > 2 ? process.argv.includes("*") ? Object.keys(TILES) : process.argv.slice(2).filter(a => Object.keys(TILES).includes(a)) : ["base", "pok"]);
+const modSet =
+    process.argv.length > 2
+        ? process.argv.includes("*")
+            ? Object.keys(TILES)
+            : process.argv
+                  .slice(2)
+                  .filter((a) => Object.keys(TILES).includes(a))
+        : ["base", "pok"];
 
 const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
-
-    const scripteId = `tile.system:${(mod !== "base" && mod !== "pok") ? "homebrew." : ""}${mod}/${parseInt(mapId)}`;
+    const scripteId = `tile.system:${
+        mod !== "base" && mod !== "pok" ? "homebrew." : ""
+    }${mod}/${parseInt(mapId)}`;
     return {
-        "Type": "Generic",
-        "GUID": guid,
-        "Name": details.name ? details.name : `Tile ${mapId}`,
-        "Metadata": scripteId,
-        "CollisionType": "Regular",
-        "Friction": 0.7,
-        "Restitution": 0.3,
-        "Density": 1,
-        "SurfaceType": "Plastic",
-        "Roughness": 1,
-        "Metallic": 0,
-        "PrimaryColor":
-        {
-            "R": 255,
-            "G": 255,
-            "B": 255
+        Type: "Generic",
+        GUID: guid,
+        Name: details.name ? details.name : `Tile ${mapId}`,
+        Metadata: scripteId,
+        CollisionType: "Regular",
+        Friction: 0.7,
+        Restitution: 0.3,
+        Density: 1,
+        SurfaceType: "Plastic",
+        Roughness: 1,
+        Metallic: 0,
+        PrimaryColor: {
+            R: 255,
+            G: 255,
+            B: 255,
         },
-        "SecondaryColor":
-        {
-            "R": 0,
-            "G": 0,
-            "B": 0
+        SecondaryColor: {
+            R: 0,
+            G: 0,
+            B: 0,
         },
-        "Flippable": true,
-        "AutoStraighten": false,
-        "ShouldSnap": true,
-        "ScriptName": "",
-        "Blueprint": "",
-        "Models": [
+        Flippable: true,
+        AutoStraighten: false,
+        ShouldSnap: true,
+        ScriptName: "",
+        Blueprint: "",
+        Models: [
             {
-                "Model": details.obverseModel ? details.obverseModel : "tiles/basic.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
+                Model: details.obverseModel
+                    ? details.obverseModel
+                    : "tiles/basic.obj",
+                Offset: {
+                    X: 0,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
+                Scale: {
+                    X: 1,
+                    Y: 1,
+                    Z: 1,
                 },
-                "Rotation":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
+                Rotation: {
+                    X: 0,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Texture": details.obverseTexture ? details.obverseTexture : `${details.noLang ? "global" : "locale" }/tiles/${mod}/${type}/tile_${mapId}.jpg`,
-                "NormalMap": "",
-                "ExtraMap": `global/tiles/obverse_x.png`,
-                "IsTransparent": false,
-                "CastShadow": true,
-                "UseOverrides": true,
-                "SurfaceType": "Plastic"
+                Texture: details.obverseTexture
+                    ? details.obverseTexture
+                    : `${
+                          details.noLang ? "global" : "locale"
+                      }/tiles/${mod}/${type}/tile_${mapId}.jpg`,
+                NormalMap: "",
+                ExtraMap: `global/tiles/obverse_x.png`,
+                IsTransparent: false,
+                CastShadow: true,
+                UseOverrides: true,
+                SurfaceType: "Plastic",
             },
             {
-                "Model": details.reverseModel ? details.reverseModel : "tiles/basic.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
+                Model: details.reverseModel
+                    ? details.reverseModel
+                    : "tiles/basic.obj",
+                Offset: {
+                    X: 0,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
+                Scale: {
+                    X: 1,
+                    Y: 1,
+                    Z: 1,
                 },
-                "Rotation":
-                {
-                    "X": 180,
-                    "Y": 0,
-                    "Z": 0
+                Rotation: {
+                    X: 180,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Texture": details.reverseTexture ? details.reverseTexture : `global/tiles/reverse_${type}_c.png`,
-                "NormalMap": "",
-                "ExtraMap": details.reverseExtra ? details.reverseExtra : details.reverseTexture ? `global/tiles/obverse_x.png` : `global/tiles/reverse_${type}_x.png`,
-                "IsTransparent": false,
-                "CastShadow": true,
-                "UseOverrides": false,
-                "Roughness": 1,
-                "Metallic": 0,
-                "PrimaryColor": details.reverseColor ? details.reverseColor : details.reverseTexture ? { "R": 255, "G": 255, "B": 255} : COLORS[type],
-                "SecondaryColor":
-                {
-                    "R": 0,
-                    "G": 0,
-                    "B": 0
+                Texture: details.reverseTexture
+                    ? details.reverseTexture
+                    : `global/tiles/reverse_${type}_c.png`,
+                NormalMap: "",
+                ExtraMap: details.reverseExtra
+                    ? details.reverseExtra
+                    : details.reverseTexture
+                    ? `global/tiles/obverse_x.png`
+                    : `global/tiles/reverse_${type}_x.png`,
+                IsTransparent: false,
+                CastShadow: true,
+                UseOverrides: false,
+                Roughness: 1,
+                Metallic: 0,
+                PrimaryColor: details.reverseColor
+                    ? details.reverseColor
+                    : details.reverseTexture
+                    ? { R: 255, G: 255, B: 255 }
+                    : COLORS[type],
+                SecondaryColor: {
+                    R: 0,
+                    G: 0,
+                    B: 0,
                 },
-                "SurfaceType": "Plastic"
-            }
+                SurfaceType: "Plastic",
+            },
         ],
-        "Collision": [
+        Collision: [
             {
-                "Model": "tiles/collider.obj",
-                "Offset":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
+                Model: "tiles/collider.obj",
+                Offset: {
+                    X: 0,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Scale":
-                {
-                    "X": 1,
-                    "Y": 1,
-                    "Z": 1
+                Scale: {
+                    X: 1,
+                    Y: 1,
+                    Z: 1,
                 },
-                "Rotation":
-                {
-                    "X": 0,
-                    "Y": 0,
-                    "Z": 0
+                Rotation: {
+                    X: 0,
+                    Y: 0,
+                    Z: 0,
                 },
-                "Type": "Convex"
-            }
+                Type: "Convex",
+            },
         ],
-        "SnapPointsGlobal": false,
-        "SnapPoints": [],
-        "ZoomViewDirection":
-        {
-            "X": 0,
-            "Y": 0,
-            "Z": 1.0
-        }
-    }
-}
+        SnapPointsGlobal: false,
+        SnapPoints: [],
+        ZoomViewDirection: {
+            X: 0,
+            Y: 0,
+            Z: 1.0,
+        },
+    };
+};
 
 Promise.all(
     modSet.map((theMod) => {
-        return fs.ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775).then(() => {
-            return Promise.all(
-                Object.keys(TILES[theMod]).map(e => fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`))
-            ).then(() => {
+        return fs
+            .ensureDir(`./assets/Templates/tiles/${theMod}`, 0o2775)
+            .then(() => {
                 return Promise.all(
-                    Object.entries(TILES[theMod]).reduce((acc, [type, def]) => {
-                        console.log("creating map tiles for", theMod);
-                        return [...acc, ...Object.entries(def).map(([mapId, details]) => {
-                            const guid = details.guid ? details.guid : generateUuid();
-                            return fs.writeFile(`./assets/Templates/tiles/${theMod}/${type}/${guid}.json`, JSON.stringify(generateTile(guid, theMod, mapId, type, details), null, "\t"))
-                        })]
-                    }, [])
-                )
-            })
-        })
+                    Object.keys(TILES[theMod]).map((e) =>
+                        fs.ensureDir(`./assets/Templates/tiles/${theMod}/${e}`)
+                    )
+                ).then(() => {
+                    return Promise.all(
+                        Object.entries(TILES[theMod]).reduce(
+                            (acc, [type, def]) => {
+                                console.log("creating map tiles for", theMod);
+                                return [
+                                    ...acc,
+                                    ...Object.entries(def).map(
+                                        ([mapId, details]) => {
+                                            const guid = details.guid
+                                                ? details.guid
+                                                : generateUuid();
+                                            return fs.writeFile(
+                                                `./assets/Templates/tiles/${theMod}/${type}/${guid}.json`,
+                                                JSON.stringify(
+                                                    generateTile(
+                                                        guid,
+                                                        theMod,
+                                                        mapId,
+                                                        type,
+                                                        details
+                                                    ),
+                                                    null,
+                                                    "\t"
+                                                )
+                                            );
+                                        }
+                                    ),
+                                ];
+                            },
+                            []
+                        )
+                    );
+                });
+            });
     })
-).then(() => {
-    console.log("done");
-}).catch((e) => {
-    console.error(e);
-})
+)
+    .then(() => {
+        console.log("done");
+    })
+    .catch((e) => {
+        console.error(e);
+    });

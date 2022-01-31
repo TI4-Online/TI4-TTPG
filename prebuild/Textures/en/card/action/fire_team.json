@@ -1,5 +1,5 @@
 {
-  "desc": "-If this is played after a round where Morale Boost or Tekklar Legion were used, those modifiers count for the re-roll", 
-  "id": "card.action:base/fire_team", 
-  "name": "Fire Team"
+    "desc": "-If this is played after a round where Morale Boost or Tekklar Legion were used, those modifiers count for the re-roll",
+    "id": "card.action:base/fire_team",
+    "name": "Fire Team"
 }

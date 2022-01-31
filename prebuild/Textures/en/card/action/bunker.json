@@ -1,5 +1,5 @@
 {
-  "desc": "-This card counts for all planets in a system, and persists until the end of ground combat, including against Harrow\n-Place this card on the bombarding player's faction sheet and the combat roller will detect it", 
-  "id": "card.action:base/bunker", 
-  "name": "Bunker"
+    "desc": "-This card counts for all planets in a system, and persists until the end of ground combat, including against Harrow\n-Place this card on the bombarding player's faction sheet and the combat roller will detect it",
+    "id": "card.action:base/bunker",
+    "name": "Bunker"
 }

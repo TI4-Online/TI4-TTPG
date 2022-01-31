@@ -1,0 +1,10 @@
+# Templates are managed directly by the TTPG editor
+/assets/Templates
+
+# Prettier doesn't respect .gitignore, so reproduce rules here as needed
+
+# local build for development
+/dev
+
+# local build for production
+/prd

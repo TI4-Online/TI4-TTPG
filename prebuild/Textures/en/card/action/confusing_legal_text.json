@@ -1,5 +1,5 @@
 {
-  "desc": "-This takes effect before riders are determined. Only riders on the player chosen by this card will pass", 
-  "id": "card.action:base/confusing_legal_text", 
-  "name": "Confusing Legal Text"
+    "desc": "-This takes effect before riders are determined. Only riders on the player chosen by this card will pass",
+    "id": "card.action:base/confusing_legal_text",
+    "name": "Confusing Legal Text"
 }
