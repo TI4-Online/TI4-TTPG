@@ -13,6 +13,7 @@
     "generate:playertokens": "node tooling/generators/playertokens.js",
     "generate:maptiles": "node tooling/generators/maptiles.js",
     "generate:langfile": "node tooling/lang.js",
+    "check:prettier": "prettier --check .",
     "test": "jest"
   },
   "main": "index.js",
