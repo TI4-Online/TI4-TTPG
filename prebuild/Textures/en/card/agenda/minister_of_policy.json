@@ -1,5 +1,5 @@
 {
-  "desc": "The extra action card is dealt by the \"end of status phase\" button, NOT \"deal action cards.\"\n\nCannot use \"Political Stability\" if drawn.", 
-  "id": "card.agenda:base/minister_of_policy", 
-  "name": "Minister of Policy"
+    "desc": "The extra action card is dealt by the \"end of status phase\" button, NOT \"deal action cards.\"\n\nCannot use \"Political Stability\" if drawn.",
+    "id": "card.agenda:base/minister_of_policy",
+    "name": "Minister of Policy"
 }

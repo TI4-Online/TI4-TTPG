@@ -1,5 +1,5 @@
 {
-  "desc": "-May not be stacked with another Flank Speed\n-If this is Sabotaged or movement is otherwise cancelled (eg, a Ceasefire), the activated system is still activated", 
-  "id": "card.action:base/flank_speed.3", 
-  "name": "Flank Speed (3)"
+    "desc": "-May not be stacked with another Flank Speed\n-If this is Sabotaged or movement is otherwise cancelled (eg, a Ceasefire), the activated system is still activated",
+    "id": "card.action:base/flank_speed.3",
+    "name": "Flank Speed (3)"
 }

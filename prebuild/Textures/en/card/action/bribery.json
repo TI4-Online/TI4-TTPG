@@ -1,5 +1,5 @@
 {
-  "desc": "-You must have cast at least 1 vote in order to use this card. The additional votes must go towards the same outcome for which you voted\n-This card may be played even if the Speaker did not vote", 
-  "id": "card.action:base/bribery", 
-  "name": "Bribery"
+    "desc": "-You must have cast at least 1 vote in order to use this card. The additional votes must go towards the same outcome for which you voted\n-This card may be played even if the Speaker did not vote",
+    "id": "card.action:base/bribery",
+    "name": "Bribery"
 }

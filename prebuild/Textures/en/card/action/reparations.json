@@ -1,5 +1,5 @@
 {
-  "desc": "-You may use this card to ready a planet even if your opponent has no readied planets, but you must exhaust a planet if one is in a readied state", 
-  "id": "card.action:base/reparations", 
-  "name": "Reparations"
+    "desc": "-You may use this card to ready a planet even if your opponent has no readied planets, but you must exhaust a planet if one is in a readied state",
+    "id": "card.action:base/reparations",
+    "name": "Reparations"
 }

@@ -1,5 +1,5 @@
 {
-  "desc": "-May be used any time a hit is generated in combat, including from AFB or abilities like Ambush, Splicer or Devotion\n-May not be used on PDS hits", 
-  "id": "card.action:base/shields_holding.3", 
-  "name": "Shields Holding (3)"
+    "desc": "-May be used any time a hit is generated in combat, including from AFB or abilities like Ambush, Splicer or Devotion\n-May not be used on PDS hits",
+    "id": "card.action:base/shields_holding.3",
+    "name": "Shields Holding (3)"
 }

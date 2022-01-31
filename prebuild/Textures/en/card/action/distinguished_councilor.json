@@ -1,5 +1,5 @@
 {
-  "desc": "-You must have cast at least one vote to use this card", 
-  "id": "card.action:base/distinguished_councilor", 
-  "name": "Distinguished Councilor"
+    "desc": "-You must have cast at least one vote to use this card",
+    "id": "card.action:base/distinguished_councilor",
+    "name": "Distinguished Councilor"
 }

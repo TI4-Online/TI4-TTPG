@@ -1,5 +1,5 @@
 {
-  "desc": "-Does not affect Skilled Retreat\n-Only works on a single combat round", 
-  "id": "card.action:base/intercept", 
-  "name": "Intercept"
+    "desc": "-Does not affect Skilled Retreat\n-Only works on a single combat round",
+    "id": "card.action:base/intercept",
+    "name": "Intercept"
 }

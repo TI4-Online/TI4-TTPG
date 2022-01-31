@@ -1,5 +1,5 @@
 {
-  "desc": "-Is not affected by Intercept\n-You may use this card to move into the Nebula", 
-  "id": "card.action:base/skilled_retreat.1", 
-  "name": "Skilled Retreat (1)"
+    "desc": "-Is not affected by Intercept\n-You may use this card to move into the Nebula",
+    "id": "card.action:base/skilled_retreat.1",
+    "name": "Skilled Retreat (1)"
 }

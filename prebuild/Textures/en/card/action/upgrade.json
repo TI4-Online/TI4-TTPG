@@ -1,5 +1,5 @@
 {
-  "desc": "-The cruiser must already be in the system when the token is placed. It may not move into the system as part of the activation on which this card is played", 
-  "id": "card.action:base/upgrade", 
-  "name": "Upgrade"
+    "desc": "-The cruiser must already be in the system when the token is placed. It may not move into the system as part of the activation on which this card is played",
+    "id": "card.action:base/upgrade",
+    "name": "Upgrade"
 }

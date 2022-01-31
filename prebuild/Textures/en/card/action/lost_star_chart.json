@@ -1,5 +1,5 @@
 {
-  "desc": "-This card supersedes Enforced Travel Ban", 
-  "id": "card.action:base/lost_star_chart", 
-  "name": "Lost Star Chart"
+    "desc": "-This card supersedes Enforced Travel Ban",
+    "id": "card.action:base/lost_star_chart",
+    "name": "Lost Star Chart"
 }
