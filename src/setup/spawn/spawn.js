@@ -23,11 +23,22 @@ const OVERRIDE_GROUP_NSIDS = [
     "card.technology",
 ]
 
+/**
+ * Spawn game objects from the hard-coded template json files.
+ * This is intended to dump raw objects on an empty table as the first
+ * step of (manual) setup.
+ */
 class Spawn {
     static getAllNSIDs() {
         return Object.keys(NSID_TO_TEMPLATE)
     }
 
+    /**
+     * Get the "group" for an object, mostly for cards -> deck.
+     * 
+     * @param {*} nsid 
+     * @returns {string}
+     */
     static getGroupName(nsid) {
         // Use OVERRIDE_GROUP_NSIDS when matches.
         for (const groupName of OVERRIDE_GROUP_NSIDS) {
@@ -56,6 +67,14 @@ class Spawn {
         return groupName
     }
 
+    /**
+     * Group nsids by `getGroupName` value.
+     * This is useful for merging decks split across multiple templates due
+     * to card sheet size limitations.
+     * 
+     * @param {Array.{string}} nsids 
+     * @returns {Object.{string: Array.{string}}}
+     */
     static groupNSIDs(nsids) {
         assert(Array.isArray(nsids))        
 
@@ -70,6 +89,14 @@ class Spawn {
         return result
     }
 
+    /**
+     * Suggest a (localized) name for an object.
+     * Note that card names should not be set this way, they get reset to
+     * the template `cardNames` value.
+     * 
+     * @param {string} nsid 
+     * @returns {string} localized name
+     */
     static suggestName(nsid) {
         const parsedNsid = ObjectNamespace.parseNsid(nsid)
         const groupName = Spawn.getGroupName(nsid)
@@ -116,6 +143,14 @@ class Spawn {
         }
     }
 
+    /**
+     * Spawn a known-nsid object.  Does not assign name.
+     * 
+     * @param {string} nsid 
+     * @param {Vector} position 
+     * @param {Rotator} rotation 
+     * @returns {GameObject}
+     */
     static spawn(nsid, position, rotation) {
         assert(typeof nsid === 'string')
         assert(position instanceof Vector)
