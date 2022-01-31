@@ -22,6 +22,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      # Ensure that we don't do a CRLF conversion on Windows
+      - name: Disable CRLF conversions
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       # Clone the repository
       - uses: actions/checkout@v2
 
