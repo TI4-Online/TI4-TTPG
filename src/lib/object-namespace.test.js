@@ -1,8 +1,12 @@
 // the "it(string, function)" style works with mocha and jest frameworks
 const { ObjectNamespace } = require('./object-namespace')
 const assert = require('assert')
-const MockCard = require('../mock/mock-card')
-const MockGameObject = require('../mock/mock-game-object')
+const {
+    MockCard,
+    MockCardDetails,
+    MockGameObject
+} = require('../mock/mock-api')
+const CardDetails = require('../mock/mock-card-details')
 
 it('cannot construct', () => {
     assert.throws(() => { new ObjectNamespace() })
@@ -14,6 +18,25 @@ it('parseNsid', () => {
     assert.equal(result.type, 'my.type')
     assert.equal(result.source, 'my.source')
     assert.equal(result.name, 'my.name')
+})
+
+it('getNsid', () => {
+    const id = 'my.type:my.source/my.name'
+    const obj = new MockGameObject({ templateMetadata : id })
+    const result = ObjectNamespace.getNsid(obj)
+    assert.equal(result, id)
+})
+
+it('getDeckNsids', () => {
+    const ids = [
+        'my.type:my.source/my.name.1',
+        'my.type:my.source/my.name.2',
+        'my.type:my.source/my.name.3'
+    ]
+    const allCardDetails = ids.map(id => new MockCardDetails({ metadata : id }))
+    const deck = new MockCard({ allCardDetails })
+    const result = ObjectNamespace.getDeckNsids(deck)
+    assert.deepEqual(result, ids)
 })
 
 it('generic', () => {
@@ -31,7 +54,7 @@ it('generic', () => {
 
 it('card', () => {
     const id = 'card.action:base/direct_hit.2'
-    const obj = new MockCard({ cardDetails : { metadata : id }})
+    const obj = new MockCard({ cardDetails : new MockCardDetails({ metadata : id }) })
     const not = new MockCard({ templateMetadata : 'not:not/not' })
 
     const type = ObjectNamespace.getCardType('action')
