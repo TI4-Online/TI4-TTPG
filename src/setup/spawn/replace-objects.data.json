@@ -8,7 +8,7 @@
     "card.promissory.yin:base/greyfire_mutagen": "card.promissory.yin:base/greyfire_mutagen.omega",
     "card.promissory.arborec:base/stymie": "card.promissory.arborec:base/stymie.omega",
     "card.promissory.winnu:base/acquiescence": "card.promissory.winnu:base/acquiescence.omega",
-    
+
     "tile.strategy:base/construction": "tile.strategy:pok/construction",
     "tile.strategy:base/diplomacy": "tile.strategy:codex.ordinian/diplomacy"
 }
