@@ -16,6 +16,10 @@ class GameWorld {
         this._allObjects = this._allObjects.filter((obj) => obj != gameObject);
     }
 
+    __clear() {
+        this._allObjects = []
+    }
+
     static getExecutionReason() {
         return "ScriptReload";
     }
