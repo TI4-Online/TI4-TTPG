@@ -44,9 +44,6 @@ class ReplaceObjects {
                         } else {
                             cardObj = obj;
                         }
-                        console.log(
-                            `${cardNsid} => ${ObjectNamespace.getNsid(cardObj)}`
-                        );
                         nsidToObjects[cardNsid].push(cardObj);
                     }
                 }
