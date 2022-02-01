@@ -13,54 +13,56 @@ class ReplaceObjects {
      * @returns {Array.{GameObject}}
      */
     static getReplacedObjects() {
-        const seekNsids = new Set();
-        for (const [oldNsid, newNsid] of Object.entries(REPLACE_DATA)) {
-            seekNsids.add(oldNsid);
-            seekNsids.add(newNsid);
-        }
+        const newNsidSet = new Set(Object.values(REPLACE_DATA));
 
-        const nsidToObjects = {};
-        for (const nsid of seekNsids) {
-            nsidToObjects[nsid] = [];
-        }
-
-        // Group objects by NSID for replace rules to check.
+        // Get nsids for replacements (not the things getting replaced).
+        // Do not pull cards from decks.
+        const seenNewNsidSet = new Set();
         for (const obj of world.getAllObjects()) {
-            // ObjectNamespace won't give a nsid for a stack (deck), unless a single card.
-            const objNsid = ObjectNamespace.getNsid(obj);
-            if (objNsid && seekNsids.has(objNsid)) {
-                nsidToObjects[objNsid].push(obj);
-            }
-
-            // getAllObjects looks inside containers, but not stacks (decks).
             if (obj instanceof Card && obj.getStackSize() > 1) {
-                const cardNsids = ObjectNamespace.getDeckNsids(obj);
-                for (let i = cardNsids.length - 1; i >= 0; i--) {
-                    const cardNsid = cardNsids[i];
-                    if (seekNsids.has(cardNsid)) {
-                        let cardObj;
-                        if (obj.getStackSize() > 1) {
-                            cardObj = obj.takeCards(1, true, i);
-                        } else {
-                            cardObj = obj;
-                        }
-                        nsidToObjects[cardNsid].push(cardObj);
+                const nsids = ObjectNamespace.getDeckNsids(obj);
+                for (const nsid of nsids) {
+                    if (newNsidSet.has(nsid)) {
+                        seenNewNsidSet.add(nsid);
                     }
+                }
+            } else {
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (newNsidSet.has(nsid)) {
+                    seenNewNsidSet.add(nsid);
                 }
             }
         }
 
-        const replacedObjects = [];
-        for (const [oldNsid, newNsid] of Object.entries(REPLACE_DATA)) {
-            if (!nsidToObjects[newNsid]) {
-                continue; // replacement not found, leave old version in place
-            }
-            if (nsidToObjects[oldNsid]) {
-                replacedObjects.push(...nsidToObjects[oldNsid]);
+        // Now find to-be-replaced objects, but only if replacement exists.
+        const result = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj instanceof Card && obj.getStackSize() > 1) {
+                // Cards in a deck are not objects, pull them out.
+                const nsids = ObjectNamespace.getDeckNsids(obj);
+                for (let i = nsids.length - 1; i >= 0; i--) {
+                    const nsid = nsids[i];
+                    const replaceWithNsid = REPLACE_DATA[nsid];
+                    if (seenNewNsidSet.has(replaceWithNsid)) {
+                        let cardObj;
+                        if (obj.getStackSize() > 1) {
+                            cardObj = obj.takeCards(1, true, i);
+                        } else {
+                            cardObj = obj; // cannot take final card
+                        }
+                        result.push(cardObj);
+                    }
+                }
+            } else {
+                const nsid = ObjectNamespace.getNsid(obj);
+                const replaceWithNsid = REPLACE_DATA[nsid];
+                if (seenNewNsidSet.has(replaceWithNsid)) {
+                    result.push(obj);
+                }
             }
         }
 
-        return replacedObjects;
+        return result;
     }
 }
 
