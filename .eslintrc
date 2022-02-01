@@ -9,7 +9,8 @@
     "plugins": ["@babel"],
     "env": {
         "node": true,
-        "es6": true
+        "es6": true,
+        "jest": true
     },
     "rules": {
         "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
