@@ -151,6 +151,21 @@ it("token", () => {
     assert.equal(result.token, "tear");
 });
 
+it("token bag", () => {
+    const id = "bag.token:base/fighter_1";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const not = new MockGameObject({ templateMetadata: "not:not/not" });
+
+    assert(ObjectNamespace.isTokenBag(obj));
+    assert(!ObjectNamespace.isTokenBag(not));
+
+    const result = ObjectNamespace.parseTokenBag(obj);
+    assert.equal(result.type, "bag.token");
+    assert.equal(result.source, "base");
+    assert.equal(result.name, "fighter_1");
+    assert.equal(result.token, "fighter_1");
+});
+
 it("unit", () => {
     const id = "unit:base/dreadnought";
     const obj = new MockGameObject({ templateMetadata: id });
