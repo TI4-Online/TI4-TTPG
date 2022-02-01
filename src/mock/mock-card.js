@@ -35,9 +35,7 @@ class Card extends GameObject {
 
     takeCards(numCards, fromFront, offset) {
         const allCardDetails = [];
-        console.log(this._allCardDetails);
         for (let i = offset; i < offset + numCards; i++) {
-            console.log(i);
             allCardDetails.push(this.getCardDetails(i));
         }
         return new Card({
