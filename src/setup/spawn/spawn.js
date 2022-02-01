@@ -4,13 +4,14 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Rotator, Vector, world } = require("../../wrapper/api");
 
 const NSID_TO_TEMPLATE = {};
-Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-system.json"));
-Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-strategy.json"));
-Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-token.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-unit.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-card.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-sheet.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-strategy.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-system.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-token.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-unit.json"));
-Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
 
 // The "NSID" in NSID_TO_TEMPLATE is normally a reasonable group name, the
 // prefix for releated objects.  In some cases we want to group earlier,
