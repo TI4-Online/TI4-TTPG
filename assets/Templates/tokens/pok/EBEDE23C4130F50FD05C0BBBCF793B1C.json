@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 2,
-				"Y": 2,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -62,14 +62,14 @@
 			"Model": "tokens/round-col.obj",
 			"Offset":
 			{
-				"X": 0,
-				"Y": 0,
+				"X": -0.2,
+				"Y": 0.3,
 				"Z": 0
 			},
 			"Scale":
 			{
-				"X": 2,
-				"Y": 2,
+				"X": 1.5,
+				"Y": 1.5,
 				"Z": 1
 			},
 			"Rotation":

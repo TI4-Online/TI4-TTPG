@@ -12,6 +12,8 @@
     "guid": "node tooling/guid.js",
     "generate:playertokens": "node tooling/generators/playertokens.js",
     "generate:maptiles": "node tooling/generators/maptiles.js",
+    "generate:langfile": "node tooling/lang.js",
+    "check:prettier": "prettier --check .",
     "test": "jest"
   },
   "main": "index.js",
@@ -30,14 +32,18 @@
     "cross-spawn": "^7.0.3",
     "crypto": "^1.0.1",
     "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
     "fs-extra": "^10.0.0",
     "jest": "^27.4.7",
     "klaw": "^4.0.1",
+    "prettier": "^2.5.1",
+    "regenerator-runtime": "^0.13.9",
     "sharp": "^0.29.3",
     "uuid": "^8.3.2"
   },
   "dependencies": {
     "ajv": "^8.9.0",
-    "assert": "^2.0.0"
+    "assert": "^2.0.0",
+    "lodash": "^4.17.21"
   }
 }

@@ -1,0 +1,125 @@
+{
+	"Type": "Container",
+	"GUID": "D66C554E4ECBACD3647B69975FE4F5A3",
+	"Name": "Garbage",
+	"Metadata": "bag:base/garbage",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Plastic",
+	"Roughness": 1,
+	"Metallic": 1,
+	"PrimaryColor":
+	{
+		"R": 180,
+		"G": 189,
+		"B": 206
+	},
+	"SecondaryColor":
+	{
+		"R": 180,
+		"G": 189,
+		"B": 206
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "utility/crates/base.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/utility/crate_c.png",
+			"NormalMap": "",
+			"ExtraMap": "global/utility/crate_x.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 51,
+				"G": 51,
+				"B": 51
+			},
+			"SecondaryColor":
+			{
+				"R": 102,
+				"G": 102,
+				"B": 102
+			},
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/crates/lid-closed.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/utility/crate_c.png",
+			"NormalMap": "",
+			"ExtraMap": "global/utility/crate_x.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 51,
+				"G": 51,
+				"B": 51
+			},
+			"SecondaryColor":
+			{
+				"R": 102,
+				"G": 102,
+				"B": 102
+			},
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	}
+}

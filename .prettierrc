@@ -1,0 +1,16 @@
+{
+  "tabWidth": 4,
+  "overrides": [
+    {
+      "files": [
+        ".github/**/*.yml",
+        ".github/**/*.yaml",
+        ".prettierrc",
+        "package.json"
+      ],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}

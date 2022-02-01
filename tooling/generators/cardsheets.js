@@ -1,656 +1,1020 @@
-"use strict"
-// Create decks from prebuild card assets.  Run with "ALL" to build all decks, 
+"use strict";
+// Create decks from prebuild card assets.  Run with "ALL" to build all decks,
 // or name one or more of the deck ids below (e.g. "card.action").
+//
+// Example usage:
+// % node tooling/generators/cardsheets.js ALL
 
-const fs = require('fs-extra')
-const klaw = require('klaw') // walk file system
-const path = require('path')
-const sharp = require('sharp')
-const assert = require('assert')
-const crypto = require('crypto')
+const fs = require("fs-extra");
+const klaw = require("klaw"); // walk file system
+const path = require("path");
+const sharp = require("sharp");
+const assert = require("assert");
+const crypto = require("crypto");
 
-const SRC_DIR = 'prebuild/Textures/'
-const DST_DIR = 'assets/Textures/'
-const DST_TEMPLATE_DIR = 'assets/Templates/'
+const SRC_TEXTURES_DIR = path.normalize("prebuild/Textures/");
+const DST_TEXTURES_DIR = path.normalize("assets/Textures/");
+const DST_TEMPLATES_DIR = path.normalize("assets/Templates/");
 
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
-const MAX_SHEET_DIMENSION = 4096
+const MAX_SHEET_DIMENSION = 4096;
 
 // Do the work, but do not write any files.
-const TRIAL_RUN = false
+const TRIAL_RUN = false;
 
 // "American Mini" is 41x63mm, but 500x750 aspect ratio is 42x63mm.
 const CARD_SIZE = {
-    LANDSCAPE : { w : 6.3, h : 4.2 },
-    PORTRAIT : { w : 4.2, h : 6.3 },
-    FACTION_REFERENCE : { w : 8.8, h : 6.3 },
-}
+    LANDSCAPE: { w: 6.3, h: 4.2 },
+    PORTRAIT: { w: 4.2, h: 6.3 },
+    FACTION_REFERENCE: { w: 8.8, h: 6.3 },
+};
 
 const DECKS = {
-    'card.action' : {
-        name : 'Actions',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.action": {
+        name: "Actions",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.agenda' : {
-        name: 'Agenda',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.agenda": {
+        name: "Agenda",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.alliance' : {
-        name: 'Alliance',
-        sharedBack : false,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.alliance": {
+        name: "Alliance",
+        sharedBack: false,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.exploration.cultural' : {
-        name: 'Cultural Exploration',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.exploration.cultural": {
+        name: "Cultural Exploration",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.exploration.hazardous' : {
-        name: 'Hazardous Exploration',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.exploration.hazardous": {
+        name: "Hazardous Exploration",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.exploration.industrial' : {
-        name: 'Industrial Exploration',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.exploration.industrial": {
+        name: "Industrial Exploration",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.exploration.frontier' : {
-        name: 'Frontier Exploration',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.exploration.frontier": {
+        name: "Frontier Exploration",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.faction_reference' : {
-        name: 'Faction References',
-        sharedBack : true,
-        size : CARD_SIZE.FACTION_REFERENCE,
+    "card.faction_reference": {
+        name: "Faction References",
+        sharedBack: true,
+        size: CARD_SIZE.FACTION_REFERENCE,
     },
-    'card.faction_token' : {
-        name: 'Faction Tokens',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.faction_token": {
+        name: "Faction Tokens",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.leader' : {
-        name: 'Leaders',
-        sharedBack : false,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.leader": {
+        name: "Leaders",
+        sharedBack: false,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.legendary_planet' : {
-        name: 'Legendary Planets',
-        sharedBack : false,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.legendary_planet": {
+        name: "Legendary Planets",
+        sharedBack: false,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.planet' : {
-        name: 'Planets',
-        sharedBack : false,
-        size : CARD_SIZE.PORTRAIT,
+    "card.planet": {
+        name: "Planets",
+        sharedBack: false,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.promissory' : {
-        name: 'Promissory',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.promissory": {
+        name: "Promissory",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.objective.public_1' : {
-        name: 'Public Objectives I',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.objective.public_1": {
+        name: "Public Objectives I",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.objective.secret_1' : {
-        name: 'Public Objectives II',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.objective.public_2": {
+        name: "Public Objectives II",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.relic' : {
-        name: 'Relics',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.relic": {
+        name: "Relics",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.objective.secret' : {
-        name: 'Secret Objectives',
-        sharedBack : true,
-        size : CARD_SIZE.PORTRAIT,
+    "card.objective.secret": {
+        name: "Secret Objectives",
+        sharedBack: true,
+        size: CARD_SIZE.PORTRAIT,
     },
-    'card.technology.blue' : {
-        name: 'Technology (Blue)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.blue": {
+        name: "Technology (Blue)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.technology.green' : {
-        name: 'Technology (Green)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.green": {
+        name: "Technology (Green)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.technology.yellow' : {
-        name: 'Technology (Yellow)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.yellow": {
+        name: "Technology (Yellow)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.technology.red' : {
-        name: 'Technology (Red)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.red": {
+        name: "Technology (Red)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.technology.unit_upgrade' : {
-        name: 'Technology (Unit Upgrade)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.unit_upgrade": {
+        name: "Technology (Unit Upgrade)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
-    'card.technology.unknown' : {
-        name: 'Technology (Unknown)',
-        sharedBack : true,
-        size : CARD_SIZE.LANDSCAPE,
+    "card.technology.unknown": {
+        name: "Technology (Unknown)",
+        sharedBack: true,
+        size: CARD_SIZE.LANDSCAPE,
     },
+};
+
+class Nsid {
+    static parse(nsid) {
+        assert(typeof nsid == "string");
+        const m = nsid.match(/^([^:]*):([^/]*)\/(.*)$/);
+        assert(m);
+        return {
+            type: m[1],
+            source: m[2],
+            name: m[3],
+        };
+    }
+    static build(type, source, name) {
+        assert(typeof type == "string");
+        assert(typeof source == "string");
+        assert(typeof name == "string");
+        return `${type}:${source}/${name}`;
+    }
+}
+
+/**
+ * Collect all card metadata access in one place.
+ */
+class CardData {
+    constructor(nsid, locale) {
+        assert(typeof nsid == "string");
+        assert(typeof locale == "string");
+
+        this._nsid = nsid;
+        this._locale = locale;
+
+        this._nsidValues = Nsid.parse(nsid);
+        assert(this._nsidValues);
+
+        // Outsiders can stuff data here (careful!)
+        this.extra = {};
+    }
+
+    nsid() {
+        return this._nsid;
+    }
+
+    nsidType() {
+        return this._nsidValues.type;
+    }
+
+    nsidSource() {
+        return this._nsidValues.source;
+    }
+
+    nsidName() {
+        return this._nsidValues.name;
+    }
+
+    locale() {
+        return this._locale;
+    }
+
+    cardNameLocale() {
+        if (!this._cardNameLocale) {
+            // At the moment name is in the json file next to the card face image.
+            let face = this.face();
+            assert(face.endsWith(".jpg"));
+            face = face.slice(0, face.length - 4);
+            if (face.endsWith(".face")) {
+                face = face.slice(0, face.length - 5);
+            }
+            const jsonFilename = face + ".json";
+            const rawdata = fs.readFileSync(jsonFilename);
+            const json = JSON.parse(rawdata);
+            this._cardNameLocale = json.name;
+            assert(this._cardNameLocale);
+        }
+        return this._cardNameLocale;
+    }
+
+    face() {
+        if (!this._face) {
+            this._face = AssetFilenames.cardImage(
+                this._nsid,
+                "face",
+                this._locale
+            );
+            assert(this._face);
+        }
+        return this._face;
+    }
+
+    back() {
+        if (!this._back) {
+            this._back = AssetFilenames.cardImage(
+                this._nsid,
+                "back",
+                this._locale
+            );
+            assert(this._back);
+        }
+        return this._back;
+    }
+
+    isFaceGlobal() {
+        const face = this.face();
+        const globalPrefix = path.join(SRC_TEXTURES_DIR, "global");
+        return face.startsWith(globalPrefix);
+    }
+
+    isBackGlobal() {
+        const back = this.back();
+        const globalPrefix = path.join(SRC_TEXTURES_DIR, "global");
+        return back.startsWith(globalPrefix);
+    }
+
+    isSharedBack() {
+        const face = this.face();
+        const back = this.back();
+        return path.dirname(face) !== path.dirname(back);
+    }
+
+    async size() {
+        if (!this._size) {
+            const imgFile = this.face();
+            const stats = await sharp(imgFile).metadata();
+            assert(stats);
+            this._size = {
+                w: stats.width,
+                h: stats.height,
+                str: `${stats.width}x${stats.height}`,
+            };
+        }
+        return this._size;
+    }
 }
 
 /**
  * Find ids matching the pattern, searching the per-card json blobs.
  *
- * @param {string} pattern 
- * @return {Promise} object mapping id string to id json
+ * @param {string} pattern
+ * @return {Promise} object mapping nsid string to card metadata json
  */
-function getMatchingCardIds(pattern, locale) {
-    assert(typeof pattern === 'string')
-    assert(typeof locale === 'string')
+function getMatchingCards(pattern, locale) {
+    assert(typeof pattern === "string");
+    assert(typeof locale === "string");
 
     return new Promise((resolve, reject) => {
-        const re = new RegExp(pattern)    
-        let idToJson = {}
-        klaw(path.join(SRC_DIR, locale))
-            .on('data', item => {
-                if (item.path.endsWith('.json')) {
-                    const rawdata = fs.readFileSync(item.path)
-                    const json = JSON.parse(rawdata)
-                    const id = json.id
-                    assert(id)
-                    if (id.match(re)) {
-                        assert(!idToJson[id])
-                        idToJson[id] = json
+        const re = new RegExp(pattern);
+        let nsidToJson = {};
+        klaw(path.join(SRC_TEXTURES_DIR, locale))
+            .on("data", (item) => {
+                if (item.path.endsWith(".json")) {
+                    const rawdata = fs.readFileSync(item.path);
+                    const json = JSON.parse(rawdata);
+                    const nsid = json.id;
+                    assert(nsid);
+                    if (nsid.match(re)) {
+                        assert(!nsidToJson[nsid]);
+                        nsidToJson[nsid] = json;
                     }
                 }
             })
-            .on('error', (err, item) => {
-                reject(err)
+            .on("error", (err, item) => {
+                reject(err);
             })
-            .on('end', () => {
-                resolve(idToJson)
-            })
-    })
+            .on("end", () => {
+                resolve(nsidToJson);
+            });
+    });
 }
 
-/**
- * Find the card image file inside the prebuild dir.
- * 
- * Card faces are always at the id's path, as either x.face.jpg or x.jpg.
- * Card backs may be dir/x.back.jpg, or dir.back.jpg upward (shared back).
- * 
- * Scan locale first, then try global.
- * 
- * @param {string} id - "path:source/name" encoding
- * @param {string} side - either "face" or "back"
- * @param {string} locale - localization
- * @returns {string} image filename, locale
- */
-function getSrcImageFile(id, side, locale) {
-    assert(typeof id === 'string')
-    assert(side === 'face' || side == 'back')
-    assert(typeof locale === 'string')
+class AssetFilenames {
+    /**
+     * Find the card image file inside the prebuild dir.
+     *
+     * Card faces are always at the id's path, as either x.face.jpg or x.jpg.
+     * Card backs may be dir/x.back.jpg, or dir.back.jpg upward (shared back).
+     *
+     * Scan locale first, then try global.
+     *
+     * @param {string} nsid - "type:source/name" encoding
+     * @param {string} side - either "face" or "back"
+     * @param {string} locale - localization
+     * @returns {string} image filename, relative to package root.
+     */
+    static cardImage(nsid, side, locale) {
+        assert(typeof nsid === "string");
+        assert(nsid.startsWith("card"));
+        assert(side === "face" || side == "back");
+        assert(typeof locale === "string");
 
-    let [_, dir, source, name] = id.match(/^(.*):(.*)\/(.*)$/)
+        const nsidValues = Nsid.parse(nsid);
+        assert(nsidValues);
 
-    dir = dir.split('.')
-    assert(dir[0] == 'card')
-    dir = path.join(SRC_DIR, locale, ...dir)
+        // Branch locale before entering deck name space.  Also set dirs to be:
+        // (1) relative to asset dir, (2) attach the deck path.
+        const dirValues = [locale, "global"].map((dir) => {
+            // nsidValues.type is "card.action", "card.exploration.cultural", etc.
+            return path.join(
+                SRC_TEXTURES_DIR,
+                dir,
+                ...nsidValues.type.split(".")
+            );
+        });
 
-    let candidates = []
-    if (side === 'face') {
-        candidates.push(path.join(dir, `${name}.face.jpg`))
-        candidates.push(path.join(dir, `${name}.jpg`))
-    } else {
-        candidates.push(path.join(dir, `${name}.back.jpg`))
-        for (let up = dir; up != '.'; up = path.dirname(up)) {
-            candidates.push(`${up}.back.jpg`)
+        // Some cards appear multiple times with the same image (e.g.,
+        // "card.exploration.cultural.cultural_relic_fragment.1", ".2", etc).
+        // In those cases, if a non-1 numbered name is missing use 1 instead.
+        const nameValues = [nsidValues.name];
+        const m = nsidValues.name.match(/^(.*)\.([0-9]+)$/);
+        if (m) {
+            const base = m[1];
+            const number = Number.parseInt(m[2]);
+            if (number !== 1) {
+                nameValues.push(base + ".1");
+            }
         }
-    }
 
-    for (const candidate of candidates) {
-        if (fs.existsSync(candidate)) {
-            return candidate
+        // Look for image in that directory, up up the tree for backs.
+        let candidates = [];
+        for (const dir of dirValues) {
+            // Search for images in the directory.
+            for (const name of nameValues) {
+                if (side === "face") {
+                    candidates.push(path.join(dir, `${name}.face.jpg`));
+                    candidates.push(path.join(dir, `${name}.jpg`));
+                } else {
+                    candidates.push(path.join(dir, `${name}.back.jpg`));
+                }
+            }
+
+            // Back images may be <cardname>.back.jpg, or <dirname>.back.jpg backwards along the path.
+            if (side === "back") {
+                for (let up = dir; up != "."; up = path.dirname(up)) {
+                    candidates.push(`${up}.back.jpg`);
+                }
+            }
         }
-    }
 
-    // Numbered names may be copies of the .1 card.
-    let m = id.match(/^(.*)\.([0-9]+)$/)
-    if (m) {
-        let [_2, baseId, number] = m
-        if (number != '1') {
-            return getSrcImageFile(baseId + '.1', side, locale)
+        for (const candidate of candidates) {
+            if (fs.existsSync(candidate)) {
+                return candidate;
+            }
         }
+
+        throw `Missing ${side} for ${nsid}`;
     }
 
-    // If locale is not global, try that.
-    if (locale != 'global') {
-        return getSrcImageFile(id, side, 'global')
+    /**
+     * Name the destination deck cardsheet image file.
+     *
+     * Tabletop Playground decks are able to share cardsheets, naming different
+     * cards.  This can save space, but in practice not enough to require it.
+     *
+     * @param {string} nsid - "type:source/name" encoding
+     * @param {string} side - either "face" or "back"
+     * @param {string} locale - localization
+     * @returns {string} image filename
+     */
+    static cardsheetImage(nsid, side, sheetIndex, locale) {
+        assert(typeof nsid === "string");
+        assert(side === "face" || side == "back");
+        assert(typeof sheetIndex === "number");
+        assert(typeof locale === "string");
+
+        const nsidValues = Nsid.parse(nsid);
+        assert(nsidValues);
+
+        return path.join(
+            DST_TEXTURES_DIR,
+            locale,
+            ...nsidValues.type.split("."),
+            ...nsidValues.source.split("."),
+            `${sheetIndex}.${side}.jpg`
+        );
     }
 
-    throw `Missing ${side} for ${id}`
+    static sharedBackImage(nsid, locale) {
+        assert(typeof nsid === "string");
+        assert(typeof locale === "string");
+
+        const nsidValues = Nsid.parse(nsid);
+        assert(nsidValues);
+
+        return (
+            path.join(DST_TEXTURES_DIR, locale, ...nsidValues.type.split(".")) +
+            ".back.jpg"
+        );
+    }
+
+    /**
+     * Name the destination deck template json file.  Templates do not use
+     * locale, the packaging pipeline has 'Textures/locale/...' with the
+     * literal string "locale" in the path (alongside "global").
+     *
+     * @param {string} nsid - "type:source/name" encoding
+     * @returns {string} template filename
+     */
+    static templateJson(nsid, sheetIndex) {
+        assert(typeof nsid === "string");
+        assert(typeof sheetIndex === "number");
+
+        const nsidValues = Nsid.parse(nsid);
+        assert(nsidValues);
+
+        return path.join(
+            DST_TEMPLATES_DIR,
+            ...nsidValues.type.split("."),
+            ...nsidValues.source.split("."),
+            `${sheetIndex}.json`
+        );
+    }
 }
 
-/**
- * Name the destination deck cardsheet image file.
- * 
- * @param {string} deckId - id path prefix naming just the deck, no source/name portion
- * @param {string} source - source portion of the id string
- * @param {string} side - either "face" or "back"
- * @param {string} locale - localization
- * @returns {string} image filename
- */
-function getDstImageFile(deckId, source, side, sheetIndex, locale) {
-    assert(typeof deckId === 'string')
-    assert(typeof source === 'string')
-    assert(side === 'face' || side == 'back')
-    assert(typeof sheetIndex === 'number')
-    assert(typeof locale === 'string')
-
-    assert(!deckId.includes(':'))
-    assert(!deckId.includes('/'))
-
-    assert(deckId.startsWith('card'))
-    let dir = path.join(DST_DIR, locale, ...deckId.split('.'))
-    if (source.length > 0) {
-        dir = path.join(dir, ...source.split('.'))
+class CardsheetLayout {
+    static getLayout(numCards, cardW, cardH) {
+        let best = false;
+        for (let pow2W = MAX_SHEET_DIMENSION; pow2W >= cardW; pow2W /= 2) {
+            for (let pow2H = MAX_SHEET_DIMENSION; pow2H >= cardH; pow2H /= 2) {
+                // Layout for max size but trim if fewer cards.
+                let layout = {
+                    numCols: Math.min(Math.floor(pow2W / cardW), numCards),
+                };
+                layout.numRows = Math.ceil(numCards / layout.numCols);
+                layout.sheetW = cardW * layout.numCols;
+                layout.sheetH = cardH * layout.numRows;
+                layout.pow2W = pow2W;
+                layout.pow2H = pow2H;
+                layout.footprint = layout.pow2W * layout.pow2H;
+                layout.waste = layout.footprint - layout.sheetW * layout.sheetH;
+                if (layout.sheetH > pow2H) {
+                    continue;
+                }
+                if (!best || layout.waste < best.waste) {
+                    best = layout;
+                }
+            }
+        }
+        assert(best);
+        return best;
     }
 
-    let result = path.join(dir, side)
-    if (sheetIndex >= 0) {
-        result += `.${sheetIndex}`
+    static groupByType(cardDataArray) {
+        const result = {};
+        for (const cardData of cardDataArray) {
+            const type = cardData.nsidType();
+            if (!result[type]) {
+                result[type] = [];
+            }
+            result[type].push(cardData);
+        }
+        return result;
     }
-    return result += '.jpg'
-}
 
-/**
- * Name the destination deck template json file.
- * 
- * @param {string} deckId - id path prefix naming just the deck, no source/name portion
- * @param {string} source - source portion of the id string
- * @returns {string} template filename
- */
- function getDstJsonFile(deckId, source, sheetIndex) {
-    assert(typeof deckId === 'string')
-    assert(typeof source === 'string')
-    assert(typeof sheetIndex === 'number')
+    static groupBySource(cardDataArray) {
+        const result = {};
+        for (const cardData of cardDataArray) {
+            const source = cardData.nsidSource();
+            if (!result[source]) {
+                result[source] = [];
+            }
+            result[source].push(cardData);
+        }
+        return result;
+    }
 
-    assert(!deckId.includes(':'))
-    assert(!deckId.includes('/'))
+    static groupByHomebrew(cardDataArray) {
+        const result = {};
+        for (const cardData of cardDataArray) {
+            const homebrew = cardData.nsidSource().startsWith("homebrew")
+                ? "homebrew"
+                : "ti4";
+            if (!result[homebrew]) {
+                result[homebrew] = [];
+            }
+            result[homebrew].push(cardData);
+        }
+        return result;
+    }
 
-    assert(deckId.startsWith('card'))
-    let dir = path.join(DST_TEMPLATE_DIR, ...deckId.split('.'))
-    let result = path.join(dir, ...source.split('.'))
+    static groupByBackStyle(cardDataArray) {
+        const result = {};
+        for (const cardData of cardDataArray) {
+            const backStyle = cardData.isSharedBack() ? "shared" : "separate";
+            if (!result[backStyle]) {
+                result[backStyle] = [];
+            }
+            result[backStyle].push(cardData);
+        }
+        return result;
+    }
 
-    return `${result}.${sheetIndex}.json`
+    static async groupBySize(cardDataArray) {
+        const result = {};
+        for (const cardData of cardDataArray) {
+            const sizeStr = (await cardData.size()).str;
+            assert(typeof sizeStr === "string");
+            if (!result[sizeStr]) {
+                result[sizeStr] = [];
+            }
+            result[sizeStr].push(cardData);
+        }
+        return result;
+    }
+
+    static sort(cardDataArray) {
+        return cardDataArray.sort((a, b) => {
+            // Group by source first.
+            if (a.nsidSource() < b.nsidSource()) {
+                return -1;
+            } else if (a.nsidSource() > b.nsidSource()) {
+                return 1;
+            }
+            if (a.nsidType() < b.nsidType()) {
+                return -1;
+            } else if (a.nsidType() > b.nsidType()) {
+                return 1;
+            }
+            if (a.nsidName() < b.nsidName()) {
+                return -1;
+            } else if (a.nsidName() > b.nsidName()) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+    static async splitIntoSheets(cardDataArray) {
+        assert(cardDataArray.length > 0);
+
+        // Make sure all cards the same size.
+        const size = await cardDataArray[0].size();
+        for (const cardData of cardDataArray) {
+            assert((await cardData.size()).str == size.str);
+        }
+
+        const maxCols = Math.floor(MAX_SHEET_DIMENSION / size.w);
+        const maxRows = Math.floor(MAX_SHEET_DIMENSION / size.h);
+        const maxCardsPerSheet = maxCols * maxRows;
+        const numCardSheets = Math.ceil(
+            cardDataArray.length / maxCardsPerSheet
+        );
+
+        const result = [];
+        for (
+            let cardSheetIndex = 0;
+            cardSheetIndex < numCardSheets;
+            cardSheetIndex++
+        ) {
+            const start = cardSheetIndex * maxCardsPerSheet;
+            const end = Math.min(
+                start + maxCardsPerSheet,
+                cardDataArray.length
+            );
+            const cardDataSheet = cardDataArray.slice(start, end);
+            for (let i = 0; i < cardDataSheet.length; i++) {
+                cardDataSheet[i].extra.cardSheetIndex = cardSheetIndex; // which sheet?
+                cardDataSheet[i].extra.cardSheetPosition = i; // where in sheet?
+            }
+            result.push(cardDataSheet);
+        }
+        return result;
+    }
 }
 
 /**
  * Create a cardsheet image for the given cards.
- * 
+ *
  * @param {Array} cardFilenames - list of card image filename strings
  * @param {string} outputFilename - path/to/sheet.jpg
  * @return {object} sheet metadata {numCols, numRows, width, height, waste}
  */
 async function writeCardsheetImage(cardFilenames, outputFilename) {
-    assert(cardFilenames.length > 0)
-    assert(outputFilename.endsWith('.jpg'))
+    assert(cardFilenames.length > 0);
+    assert(outputFilename.endsWith(".jpg"));
 
-    const stats = await sharp(cardFilenames[0]).metadata()
-    const w = stats.width
-    const h = stats.height
+    const stats = await sharp(cardFilenames[0]).metadata();
+    const w = stats.width;
+    const h = stats.height;
 
-    const numCards = cardFilenames.length
-    const getLayout = function(maxW, maxH) {
-        // Layout for max size but trim if fewer cards.  
-        let layout = {
-            numCols : Math.min(Math.floor(maxW / w), numCards),
-        }
-        layout.numRows = Math.ceil(numCards / layout.numCols)
-        layout.sheetW = w * layout.numCols
-        layout.sheetH = h * layout.numRows
-        layout.pow2W = Math.pow(2, Math.ceil(Math.log(layout.sheetW) / Math.log(2)))
-        layout.pow2H = Math.pow(2, Math.ceil(Math.log(layout.sheetH) / Math.log(2)))
-        layout.footprint = layout.pow2W * layout.pow2H
-        layout.waste = layout.footprint - (layout.sheetW * layout.sheetH)
-        if (layout.sheetH <= maxH) {
-            return layout
-        }
-    }
+    const numCards = cardFilenames.length;
+    const layout = CardsheetLayout.getLayout(numCards, w, h);
+    assert(layout);
 
-    // Find a good layout option.
-    let layout = getLayout(MAX_SHEET_DIMENSION, MAX_SHEET_DIMENSION)
-    if (!layout) {
-        throw `sheet larger than MAX_SHEET_DIMENSION`
-    }
-    for (let maxW = MAX_SHEET_DIMENSION; maxW >= 1024; maxW /= 2) {
-        for (let maxH = MAX_SHEET_DIMENSION; maxH >= 1024; maxH /= 2) {
-            const candidate = getLayout(maxW, maxH)
-            if (candidate && candidate.waste < layout.waste) {
-                layout = candidate
-            }
-        }
-    }
-    
-    let composite = []
+    let composite = [];
     for (let i = 0; i < cardFilenames.length; i++) {
-        const cardFilename = cardFilenames[i]
-        const col = i % layout.numCols
-        const row = Math.floor(i / layout.numCols)
+        const cardFilename = cardFilenames[i];
+        const col = i % layout.numCols;
+        const row = Math.floor(i / layout.numCols);
 
-        const left = col * w
-        const top = row * h
+        const left = col * w;
+        const top = row * h;
 
         composite.push({
-            input : cardFilename,
-            top : top,
-            left : left,
-        })
+            input: cardFilename,
+            top: top,
+            left: left,
+        });
     }
 
-    console.log(`writeCardsheetImage: deck ${outputFilename} ${layout.sheetW}x${layout.sheetH} px, ${layout.numCols}x${layout.numRows} cards`)
+    console.log(
+        `writeCardsheetImage: deck ${outputFilename} ${layout.sheetW}x${layout.sheetH} px, ${layout.numCols}x${layout.numRows} cards`
+    );
     if (TRIAL_RUN) {
-        console.log('TRIAL_RUN, aborting before writing file(s)')
-        return layout
+        console.log("TRIAL_RUN, aborting before writing file(s)");
+        return layout;
     }
-
-    const dir = path.dirname(outputFilename)
-    fs.mkdirsSync(dir)
-
+    const dir = path.dirname(outputFilename);
+    fs.mkdirsSync(dir);
     await sharp({
         create: {
-            width : layout.sheetW,
-            height : layout.sheetH,
-            channels : 4,
-            background : { r:0, g:0, b:0, alpha:1 }
-        }
+            width: layout.sheetW,
+            height: layout.sheetH,
+            channels: 4,
+            background: { r: 0, g: 0, b: 0, alpha: 1 },
+        },
     })
-    .composite(composite)
-    .toFile(outputFilename, err => { console.log(err) })
-
-    return layout
+        .composite(composite)
+        .toFile(outputFilename, (err) => {
+            console.log(err);
+        });
+    return layout;
 }
 
-async function writeDeckTemplateJson(guid, deckData, cardDataArray, layout, faceFilename, backFilename, outputFilename) {
-    assert(typeof guid === 'string')
-    assert(deckData.name)
-    assert(deckData.size)
-    assert(cardDataArray.length > 0)
-    assert(layout.numCols)
-    assert(layout.numRows)
-    assert(faceFilename.endsWith('.jpg'))
-    assert(backFilename.endsWith('.jpg'))
-    assert(outputFilename.endsWith('.json'))
+async function writeDeckTemplate(
+    deckData,
+    cardSize,
+    cardDataArray,
+    layout,
+    faceFilename,
+    backFilename,
+    outputFilename
+) {
+    assert(typeof deckData.overrideName === "string");
+    assert(typeof cardSize.w === "number");
+    assert(typeof cardSize.h === "number");
+    assert(cardDataArray.length > 0);
+    assert(typeof layout.numCols === "number");
+    assert(typeof layout.numRows === "number");
+    assert(faceFilename.endsWith(".jpg"));
+    assert(backFilename.endsWith(".jpg"));
+    assert(outputFilename.endsWith(".json"));
 
-    const fixTexturePath = function(texturePath) {
+    // Verify required-to-match parameters.
+    const firstCardData = cardDataArray[0];
+    const sizeStr = (await firstCardData.size()).str;
+    const sharedBack = firstCardData.isSharedBack();
+    const cardSheetIndex = firstCardData.extra.cardSheetIndex;
+    for (const cardData of cardDataArray) {
+        assert((await cardDataArray[0].size()).str == sizeStr);
+        assert(cardData.isSharedBack() === sharedBack);
+        assert(cardData.extra.cardSheetIndex === cardSheetIndex);
+    }
+
+    const fixTexturePath = function (texturePath) {
         // Strip path to be relative to the assetes/Textures folder.
-        assert(texturePath.startsWith(DST_DIR), texturePath)
-        texturePath = texturePath.substring(DST_DIR.length)
+        assert(texturePath.startsWith(DST_TEXTURES_DIR), texturePath);
+        texturePath = texturePath.substring(DST_TEXTURES_DIR.length);
 
         // Remove any leading slashes (safety).
-        while (texturePath.startsWith('/')) {
-            texturePath = texturePath.substring(1)
+        while (texturePath.startsWith(path.sep)) {
+            texturePath = texturePath.substring(1);
         }
 
         // First entry is locale, if not 'global' make it 'locale'.
-        let [_, locale, remainder] = texturePath.match(/^([^/]*)\/(.*)$/)
-        if (locale !== 'global') {
-            locale = 'locale'
+        texturePath = texturePath.split(path.sep);
+        if (texturePath[0] !== "global") {
+            texturePath[0] = "locale";
         }
-        return path.join(locale, remainder)
-    }
-    backFilename = fixTexturePath(backFilename)
-    faceFilename = fixTexturePath(faceFilename)
-
-    console.log(`writeDeckTemplateJson: ${outputFilename} ${cardDataArray.length} cards`)
-    if (TRIAL_RUN) {
-        console.log('TRIAL_RUN, aborting before writing file(s)')
-        return layout
-    }
-
-    const dir = path.dirname(outputFilename)
-    fs.mkdirsSync(dir)
+        return path.join(...texturePath);
+    };
+    backFilename = fixTexturePath(backFilename);
+    faceFilename = fixTexturePath(faceFilename);
 
     // 0 : same file (last card?).
     // -1 : same as front.
     // -2 : shared single card, stored in BackTexture.
     // -3 : indexed back sheet, stored in BackTexture.
-    let backIndex = deckData.sharedBack ? -2 : -3
+    const backIndex = sharedBack ? -2 : -3;
 
-    // Indices into the card sheet, all spots in order.
-    let indices = Array.from(Array(cardDataArray.length).keys())
-
-    // Indexed from string index to string value.
-    let cardNames = {}
-    let cardIds = {}
+    // Per-card lists.
+    let cardNames = {}; // NOT A LIST, DICTIONARY!
+    let cardMetadata = {}; // NOT A LIST, DICTIONARY!
+    const indices = [];
     for (let i = 0; i < cardDataArray.length; i++) {
-        const cardData = cardDataArray[i]
-        cardNames[i] = cardData.name
-        cardIds[i] = cardData.id
+        const cardData = cardDataArray[i];
+        const indexString = `${i}`;
+        cardNames[indexString] = cardData.cardNameLocale();
+        cardMetadata[indexString] = cardData.nsid();
+        const pos = cardData.extra.cardSheetPosition;
+        assert(typeof pos === "number");
+        indices.push(pos);
     }
+
+    // Set metadata to match deck type + card sheet index.
+    const deckNsidType = deckData.cardNsidTypePrefix;
+    const deckNsidSource = cardDataArray[0].nsidSource();
+    const deckNsid = `${deckNsidType}:${deckNsidSource}/${cardSheetIndex}`;
+
+    // Generate a deterministic guid.
+    const guid = crypto
+        .createHash("sha256")
+        .update(outputFilename)
+        .digest("hex")
+        .substring(0, 32)
+        .toUpperCase();
 
     const json = {
-        "Type": "Card",
-        "GUID": guid,
-        "Name": `${deckData.name} (${deckData.source}, ${(deckData.sheetIndex + 1)}/${deckData.numSheets})`,
-        "Metadata": "",
-        "CollisionType": "Regular",
-        "Friction": 0.7,
-        "Restitution": 0,
-        "Density": 0.5,
-        "SurfaceType": "Cardboard",
-        "Roughness": 1,
-        "Metallic": 0,
-        "PrimaryColor":
-        {
-            "R": 255,
-            "G": 255,
-            "B": 255
+        Type: "Card",
+        GUID: guid,
+        Name: deckData.overrideName,
+        Metadata: deckNsid,
+        CollisionType: "Regular",
+        Friction: 0.7,
+        Restitution: 0,
+        Density: 0.5,
+        SurfaceType: "Cardboard",
+        Roughness: 1,
+        Metallic: 0,
+        PrimaryColor: {
+            R: 255,
+            G: 255,
+            B: 255,
         },
-        "SecondaryColor":
-        {
-            "R": 0,
-            "G": 0,
-            "B": 0
+        SecondaryColor: {
+            R: 0,
+            G: 0,
+            B: 0,
         },
-        "Flippable": true,
-        "AutoStraighten": false,
-        "ShouldSnap": true,
-        "ScriptName": "",
-        "Blueprint": "",
-        "Models": [],
-        "Collision": [],
-        "SnapPointsGlobal": false,
-        "SnapPoints": [],
-        "ZoomViewDirection":
-        {
-            "X": 0,
-            "Y": 0,
-            "Z": 0
+        Flippable: true,
+        AutoStraighten: false,
+        ShouldSnap: true,
+        ScriptName: "",
+        Blueprint: "",
+        Models: [],
+        Collision: [],
+        SnapPointsGlobal: false,
+        SnapPoints: [],
+        ZoomViewDirection: {
+            X: 0,
+            Y: 0,
+            Z: 0,
         },
-        "FrontTexture": faceFilename,
-        "BackTexture": backFilename,
-        "HiddenTexture": "",
-        "BackIndex": backIndex,
-        "HiddenIndex": 0, // 0 = use back, -1 = blur, -2 = separate file
-        "NumHorizontal": layout.numCols,
-        "NumVertical": layout.numRows,
-        "Width": deckData.size.w,
-        "Height": deckData.size.h,
-        "Thickness": 0.05,
-        "HiddenInHand": true,
-        "UsedWithCardHolders": true,
-        "CanStack": true,
-        "UsePrimaryColorForSide": false,
-        "FrontTextureOverrideExposed": false,
-        "AllowFlippedInStack": false,
-        "MirrorBack": true,
-        "Model": "Rounded",
-        "Indices": indices, // card sheet index values
-        "CardNames": cardNames,
-        "CardMetadata": cardIds
+        FrontTexture: faceFilename,
+        BackTexture: backFilename,
+        HiddenTexture: "",
+        BackIndex: backIndex,
+        HiddenIndex: 0, // 0 = use back, -1 = blur, -2 = separate file
+        NumHorizontal: layout.numCols,
+        NumVertical: layout.numRows,
+        Width: cardSize.w,
+        Height: cardSize.h,
+        Thickness: 0.05,
+        HiddenInHand: true,
+        UsedWithCardHolders: true,
+        CanStack: true,
+        UsePrimaryColorForSide: false,
+        FrontTextureOverrideExposed: false,
+        AllowFlippedInStack: false,
+        MirrorBack: true,
+        Model: "Rounded",
+        Indices: indices, // card sheet index values
+        CardNames: cardNames,
+        CardMetadata: cardMetadata,
+    };
+
+    console.log(
+        `writeDeckTemplateJson: ${outputFilename} ${cardDataArray.length} cards`
+    );
+    if (TRIAL_RUN) {
+        console.log("TRIAL_RUN, aborting before writing file(s)");
+        return layout;
     }
-    
-    fs.writeFile(outputFilename, JSON.stringify(json, null, '\t'), (err) => {
-        if (err) throw err
-    })
+    const dir = path.dirname(outputFilename);
+    fs.mkdirsSync(dir);
+    fs.writeFile(outputFilename, JSON.stringify(json, null, "\t"), (err) => {
+        if (err) throw err;
+    });
 }
 
-async function generateDeck(deckId, locale) {
-    assert(typeof deckId === 'string')
-    assert(typeof locale === 'string')
+async function getCardGroups(cardDataArray) {
+    const result = [];
+    const sourceToCardDataArray = CardsheetLayout.groupBySource(cardDataArray);
+    for (const [source, cardDataArray] of Object.entries(
+        sourceToCardDataArray
+    )) {
+        console.log(`processing "${source}", ${cardDataArray.length} cards`);
+        if (cardDataArray.length > 0) {
+            result.push({
+                source,
+                cardDataArray: CardsheetLayout.sort(cardDataArray),
+            });
+        }
+    }
+    return result;
+}
 
-    const deckData = DECKS[deckId]
-    assert(deckData, `unknown deckId "${deckId}"`)
+async function organizeDecks(cardNsidTypePrefix, cardGroups, locale) {
+    assert(typeof locale === "string");
 
-    // Fill in more deck data.
-    deckData.deckId = deckId
+    const result = [];
+    for (const cardGroup of cardGroups) {
+        const nsid = `${cardNsidTypePrefix}:${cardGroup.source}/*`;
+
+        // If any face or back isn't global, none are.
+        let faceLocale = "global";
+        let backLocale = "global";
+        let sharedBack = true;
+        for (const cardData of cardGroup.cardDataArray) {
+            if (!cardData.isFaceGlobal()) {
+                faceLocale = locale;
+            }
+            if (!cardData.isBackGlobal()) {
+                backLocale = locale;
+            }
+            if (!cardData.isSharedBack()) {
+                sharedBack = false;
+            }
+        }
+
+        // Split into cardsheets.
+        const cardsheets = await CardsheetLayout.splitIntoSheets(
+            cardGroup.cardDataArray
+        );
+        for (
+            let cardSheetIndex = 0;
+            cardSheetIndex < cardsheets.length;
+            cardSheetIndex++
+        ) {
+            const faceCardDataArray = cardsheets[cardSheetIndex];
+            let backCardDataArray = cardsheets[cardSheetIndex];
+
+            const sheetFace = AssetFilenames.cardsheetImage(
+                nsid,
+                "face",
+                cardSheetIndex,
+                faceLocale
+            );
+            let sheetBack = AssetFilenames.cardsheetImage(
+                nsid,
+                "back",
+                cardSheetIndex,
+                backLocale
+            );
+            const templateJson = AssetFilenames.templateJson(
+                nsid,
+                cardSheetIndex
+            );
+
+            if (sharedBack) {
+                backCardDataArray = backCardDataArray.slice(0, 1);
+                sheetBack = AssetFilenames.sharedBackImage(nsid, backLocale);
+            }
+
+            result.push({
+                nsid,
+                cardSheetIndex,
+                numCardSheets: cardsheets.length,
+                faceCardDataArray,
+                backCardDataArray,
+                sheetFace,
+                sheetBack,
+                templateJson,
+                source: cardGroup.source,
+            });
+        }
+    }
+    return result;
+}
+
+async function generateDecks(cardNsidTypePrefix, locale) {
+    assert(typeof cardNsidTypePrefix === "string");
+    assert(typeof locale === "string");
+
+    const deckData = DECKS[cardNsidTypePrefix];
+    assert(deckData);
+    deckData.cardNsidTypePrefix = cardNsidTypePrefix;
 
     // Get cards by namespace id to card data.
-    const cardIdPattern = '^' + deckId + '[.:/]'
-    const idToCardData = await getMatchingCardIds(cardIdPattern, locale)
+    const cardIdPattern = "^" + cardNsidTypePrefix + "[.:/]";
+    const nsidToCardData = await getMatchingCards(cardIdPattern, locale);
+    let cardDataArray = Object.keys(nsidToCardData).map(
+        (nsid) => new CardData(nsid, locale)
+    );
 
-    // Fill in more card data.
-    let firstCardSize = false
-    let sourceToIds = {}
-    for (const id in idToCardData) {
-        let cardData = idToCardData[id]
-       
-        cardData.face = getSrcImageFile(id, 'face', locale)
-        cardData.back = getSrcImageFile(id, 'back', locale)
+    const cardGroups = await getCardGroups(cardDataArray);
+    const decks = await organizeDecks(cardNsidTypePrefix, cardGroups, locale);
 
-        const faceStats = await sharp(cardData.face).metadata()
-        const backStats = await sharp(cardData.face).metadata()
-        if (!firstCardSize) {
-            firstCardSize = faceStats
+    let footprint = 0;
+    let waste = 0;
+
+    for (const deck of decks) {
+        const size = await deck.faceCardDataArray[0].size();
+        const faceLayout = CardsheetLayout.getLayout(
+            deck.faceCardDataArray.length,
+            size.w,
+            size.h
+        );
+        const backLayout = CardsheetLayout.getLayout(
+            deck.backCardDataArray.length,
+            size.w,
+            size.h
+        );
+
+        footprint += faceLayout.footprint + backLayout.footprint;
+        waste += faceLayout.waste + backLayout.waste;
+
+        // Write cardsheets.
+        const cardFaces = deck.faceCardDataArray.map((x) => x.face());
+        const cardBacks = deck.backCardDataArray.map((x) => x.back());
+        await writeCardsheetImage(cardFaces, deck.sheetFace);
+        await writeCardsheetImage(cardBacks, deck.sheetBack);
+
+        deckData.overrideName = deckData.name;
+        if (deck.numCardSheets == 1) {
+            deckData.overrideName += ` (${deck.source})`;
+        } else {
+            deckData.overrideName += ` (${deck.source} ${
+                deck.cardSheetIndex + 1
+            }/${deck.numCardSheets})`;
         }
-        assert(faceStats.width == firstCardSize.width)
-        assert(faceStats.height == firstCardSize.height)
-        assert(backStats.width == firstCardSize.width)
-        assert(backStats.height == firstCardSize.height)
-
-        // Also split into per-source lists.
-        let [_, dir, source, name] = id.match(/^(.*):(.*)\/(.*)$/)
-        if (!sourceToIds[source]) {
-            sourceToIds[source] = []
-        }
-        sourceToIds[source].push(id)
+        const cardSize = deckData.size;
+        cardDataArray = deck.faceCardDataArray;
+        const layout = faceLayout;
+        const faceFilename = deck.sheetFace;
+        const backFilename = deck.sheetBack;
+        const outputFilename = deck.templateJson;
+        await writeDeckTemplate(
+            deckData,
+            cardSize,
+            cardDataArray,
+            layout,
+            faceFilename,
+            backFilename,
+            outputFilename
+        );
     }
 
-    // Verify shared back when set.  If this fails there is an errant back.jpg.
-    if (deckData.sharedBack) {
-        let firstBack = false
-        for (const cardData of Object.values(idToCardData)) {
-            if (!firstBack) {
-                firstBack = cardData.back
-            }
-            assert(cardData.back == firstBack, cardData.back + ' vs ' + firstBack)
-        }
-    }
-    
-    // If all images come from global, store the package image in global.
-    let faceLocale = 'global'
-    let backLocale = 'global'
-    for (const cardData of Object.values(idToCardData)) {
-        if (!cardData.face.includes('/global/')) {
-            faceLocale = locale
-        }
-        if (!cardData.back.includes('/global/')) {
-            backLocale = locale
-        }
-    }
-    
-    // Break up into sheets.
-    let footprint = 0
-    let waste = 0
-    const maxColsPerSheet = Math.floor(MAX_SHEET_DIMENSION / firstCardSize.width)
-    const maxRowsPerSheet = Math.floor(MAX_SHEET_DIMENSION / firstCardSize.height)
-    const maxCardsPerSheet = maxColsPerSheet * maxRowsPerSheet
-    for (const source in sourceToIds) {
-        const ids = sourceToIds[source]
-        ids.sort((a, b) => {
-            let [_1, dir1, source1, name1] = a.match(/^(.*):(.*)\/(.*)$/)
-            let [_2, dir2, source2, name2] = b.match(/^(.*):(.*)\/(.*)$/)
-            return name1 < name2 ? -1 : 1
-        })
-        for (let start = 0; start < ids.length; start += maxCardsPerSheet) {
-            let end = Math.min(start + maxCardsPerSheet, ids.length)
-            const sheetIds = ids.slice(start, end)
-            const sheetIndex = Math.floor(start / maxCardsPerSheet)
-
-            console.log(`${deckId}, ${source}, ${start}:${end}/${ids.length}`)
-            //console.log(sheetIds)
-
-            // Face.
-            const faceImgFile = getDstImageFile(deckId, source, 'face', sheetIndex, faceLocale)
-            let cardFilenames = []
-            for (const id of sheetIds) {
-                cardFilenames.push(idToCardData[id].face)
-            }
-            const faceLayout = await writeCardsheetImage(cardFilenames, faceImgFile)
-            footprint += faceLayout.footprint
-            waste += faceLayout.waste
-
-            // Back.
-            let backSheetIndex = sheetIndex
-            let backSource = source
-            cardFilenames = []
-            for (const id of sheetIds) {
-                cardFilenames.push(idToCardData[id].back)
-            }
-            if (deckData.sharedBack) {
-                backSource = ''
-                backSheetIndex = -1
-                cardFilenames = cardFilenames.slice(0, 1)
-            }
-            const backImgFile = getDstImageFile(deckId, backSource, 'back', backSheetIndex, backLocale)
-            const backLayout = await writeCardsheetImage(cardFilenames, backImgFile)
-            footprint += backLayout.footprint
-            waste += backLayout.waste
-
-            // TTPG template.
-            let cardDataArray = []
-            for (const id of sheetIds) {
-                cardDataArray.push(idToCardData[id])
-            }
-            let guid = `${deckId}:${source}.${sheetIndex}`
-            guid = crypto.createHash('sha256').update(guid).digest('hex').substring(0,32)
-            const templateFile = getDstJsonFile(deckId, source, sheetIndex)
-            deckData.source = source // only valid for this deck
-            deckData.sheetIndex = sheetIndex
-            deckData.numSheets = Math.ceil(ids.length / maxCardsPerSheet)
-            writeDeckTemplateJson(guid, deckData, cardDataArray, faceLayout, faceImgFile, backImgFile, templateFile)
-        }
-    }
-    return { footprint, waste }
+    footprint = (footprint * 4) / (1024 * 1024);
+    waste = (waste * 4) / (1024 * 1024);
+    console.log(`footprint: ${footprint} MB, waste: ${waste} MB`);
 }
 
 async function buildAllDecks(deckNames) {
-    console.log(`Building ${deckNames}`)
-    let footprint = 0
-    let waste = 0
+    console.log(`Building ${deckNames}`);
     for (const deckName of deckNames) {
-        console.log(`---------- BUILDING ${deckName} ----------`)
-        const usage = await generateDeck(deckName, 'en')
-        footprint += usage.footprint
-        waste += usage.waste
+        console.log(`---------- BUILDING ${deckName} ----------`);
+        await generateDecks(deckName, "en");
     }
-    const scale = 4 / 1024 / 1024 / 1024
-    console.log({ footprint : footprint * scale, waste : waste * scale, done:'DONE' })
 }
 
-// Build decks.
-let deckNames = process.argv.slice(2)
-if (deckNames.length == 0) {
-    console.log('Name the deck or decks to build, or ALL for all')
-    return
-} else if (deckNames[0] == 'ALL') {
-    deckNames = Object.keys(DECKS)
+async function main() {
+    let deckNames = process.argv.slice(2);
+    if (deckNames.length == 0) {
+        console.log("Name the deck or decks to build, or ALL for all");
+        return;
+    } else if (deckNames[0] == "ALL") {
+        deckNames = Object.keys(DECKS);
+    }
+    buildAllDecks(deckNames.sort());
 }
-buildAllDecks(deckNames.sort())
+
+if (require.main === module) {
+    main();
+}
+
+// Export for unittest.
+module.exports = {
+    DECKS,
+    getMatchingCards,
+    CardData,
+    AssetFilenames,
+    CardsheetLayout,
+    organizeDecks,
+};

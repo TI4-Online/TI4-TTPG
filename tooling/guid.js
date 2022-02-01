@@ -1,6 +1,6 @@
-const uuid = require('uuid');
+const uuid = require("uuid");
 
-const [,,countParam] = process.argv;
+const [, , countParam] = process.argv;
 
 let count = parseInt(countParam || "1");
 if (isNaN(count)) {
@@ -8,5 +8,5 @@ if (isNaN(count)) {
 }
 
 for (let i = 0; i < count; i++) {
-    console.log(uuid.v4().replace(/-/g, "").toUpperCase())
+    console.log(uuid.v4().replace(/-/g, "").toUpperCase());
 }

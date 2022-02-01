@@ -12,15 +12,15 @@
 	"Metallic": 1,
 	"PrimaryColor":
 	{
-		"R": 255,
-		"G": 61,
-		"B": 0
-	},
-	"SecondaryColor":
-	{
 		"R": 180,
 		"G": 189,
 		"B": 206
+	},
+	"SecondaryColor":
+	{
+		"R": 204,
+		"G": 204,
+		"B": 204
 	},
 	"Flippable": false,
 	"AutoStraighten": false,
@@ -57,7 +57,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/crates/lid2-open-a.obj",
+			"Model": "utility/crates/lid2-open.obj",
 			"Offset":
 			{
 				"X": 0,

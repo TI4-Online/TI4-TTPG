@@ -1,5 +1,5 @@
 {
-  "desc": "-You may not use this card against your own units", 
-  "id": "card.action:base/lucky_shot", 
-  "name": "Lucky Shot"
+    "desc": "-You may not use this card against your own units",
+    "id": "card.action:base/lucky_shot",
+    "name": "Lucky Shot"
 }

@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "3F640A0D4475953527063598AAE236C3",
 	"Name": "Trophy",
-	"Metadata": "",
+	"Metadata": "misc:base/trophy",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

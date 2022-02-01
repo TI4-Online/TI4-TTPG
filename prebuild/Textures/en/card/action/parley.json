@@ -1,5 +1,5 @@
 {
-  "desc": "-Any units returned to space by this card may not be re-allocated to other planets in this system", 
-  "id": "card.action:base/parley", 
-  "name": "Parley"
+    "desc": "-Any units returned to space by this card may not be re-allocated to other planets in this system",
+    "id": "card.action:base/parley",
+    "name": "Parley"
 }

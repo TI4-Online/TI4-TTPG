@@ -2,22 +2,17 @@
 // Remove this when TTPG fixes it, fix requires to use real assert.
 // Usage: const assert = require('./wrapper/assert')
 
-/*
-let assert = false
+let assert;
 try {
-    assert = require('assert')
+    assert = require("assert");
 } catch {
-    // nop (assert is empty, above require returns undefined and does not throw)
+    assert = false;
 }
-module.exports = assert ? assert : (test, message) => {
-    if (!test) {
-        throw new Error(message ? message : 'assertion failed')
-    }
+if (!assert) {
+    assert = (test, message) => {
+        if (!test) {
+            throw new Error(message ? message : "assertion failed");
+        }
+    };
 }
-*/
-
-module.exports = (test, message) => {
-    if (!test) {
-        throw new Error(message ? message : 'assertion failed')
-    }
-}
+module.exports = assert;

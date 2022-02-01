@@ -1,5 +1,5 @@
 {
-  "desc": "-This may be played when you control zero Industrial planets", 
-  "id": "card.action:base/industrial_initiative", 
-  "name": "Industrial Initiative"
+    "desc": "-This may be played when you control zero Industrial planets",
+    "id": "card.action:base/industrial_initiative",
+    "name": "Industrial Initiative"
 }

@@ -1,5 +1,5 @@
 {
-  "desc": "-Place this card on your faction sheet before combat and the combat roller will detect it\n-Remains in effect for re-rolls, like Crown of Thanlos, War Funding and Fire Team", 
-  "id": "card.action:base/morale_boost.3", 
-  "name": "Morale Boost (3)"
+    "desc": "-Place this card on your faction sheet before combat and the combat roller will detect it\n-Remains in effect for re-rolls, like Crown of Thanlos, War Funding and Fire Team",
+    "id": "card.action:base/morale_boost.3",
+    "name": "Morale Boost (3)"
 }
