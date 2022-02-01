@@ -6,7 +6,6 @@ const {
     MockCardDetails,
     MockGameObject,
 } = require("../mock/mock-api");
-const CardDetails = require("../mock/mock-card-details");
 
 it("cannot construct", () => {
     assert.throws(() => {
