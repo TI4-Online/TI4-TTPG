@@ -1,127 +1,159 @@
+const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { UnitAttrs } = require("../../lib/unit/unit-attrs");
-const { Card, Container, world } = require("../../wrapper/api");
+const { Card, world } = require("../../wrapper/api");
 
 /**
  * After spawning objects, gather together those for a generic player setup.
  */
-class GatherGenericPlayer {
-    static isGenericTechCardNsid(nsid) {
-        const parsedNsid = ObjectNamespace.parseNsid(nsid);
-        if (!parsedNsid) {
-            return false; // does not have an NSID
-        }
-        if (!parsedNsid.type.startsWith("card.technology")) {
-            return false; // not a technology card
-        }
-        const parts = parsedNsid.type.split(".");
-        if (parts.length > 3) {
-            return false;
-        }
-        return true;
+class Gather {
+    static sortByNsid(objs) {
+        return objs.sort((a, b) => {
+            a = ObjectNamespace.parseGeneric(a);
+            b = ObjectNamespace.parseGeneric(b);
+            if (a.type != b.type) {
+                return a.type < b.type ? -1 : 1;
+            }
+            if (a.name != b.name) {
+                return a.name < b.name ? -1 : 1;
+            }
+            if (a.source != b.source) {
+                return a.source < b.source ? -1 : 1;
+            }
+            return 0;
+        });
     }
 
-    /**
-     * Get non-faction technology cards as a deck.
-     *
-     * @returns {Card} stack
-     */
-    static gatherTechnologyCards() {
+    static gather(filterNsid) {
+        assert(typeof filterNsid === "function");
+
         const result = [];
-
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-
-            // Look for singleton cards.
-            if (obj instanceof Card && obj.getStackSize() == 1) {
-                const nsid = ObjectNamespace.getNsid(obj);
-                if (this.isGenericTechCardNsid(nsid)) {
-                    result.push(obj);
-                }
-            }
-
-            // Look inside decks.
             if (obj instanceof Card && obj.getStackSize() > 1) {
+                // Cards in a deck are not objects, pull them out.
                 const nsids = ObjectNamespace.getDeckNsids(obj);
                 for (let i = nsids.length - 1; i >= 0; i--) {
                     const nsid = nsids[i];
-                    if (this.isGenericTechCardNsid(nsid)) {
+                    if (filterNsid(nsid)) {
                         let cardObj;
                         if (obj.getStackSize() > 1) {
                             cardObj = obj.takeCards(1, true, i);
                         } else {
-                            cardObj = obj;
+                            cardObj = obj; // cannot take final card
                         }
-                        assert(cardObj);
                         result.push(cardObj);
                     }
                 }
+            } else {
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (filterNsid(nsid)) {
+                    result.push(obj);
+                }
             }
         }
-        return result;
+        return Gather.sortByNsid(result);
     }
 
-    static gatherUnitsAndBags() {
-        const allUnits = UnitAttrs.getAllUnitTypes();
-        const unitToObj = {};
-        const unitToBag = {};
-
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            if (ObjectNamespace.isUnit(obj)) {
-                const unit = ObjectNamespace.parseUnit(obj).unit;
-                assert(!(obj instanceof Container));
-                assert(allUnits.includes(unit));
-                assert(!unitToObj[unit]);
-                unitToObj[unit] = obj;
-            }
-            if (ObjectNamespace.isUnitBag(obj)) {
-                const unit = ObjectNamespace.parseUnitBag(obj).unit;
-                assert(obj instanceof Container);
-                assert(allUnits.includes(unit));
-                assert(!unitToBag[unit]);
-                unitToBag[unit] = obj;
-            }
+    static makeDeck(cardObjects) {
+        assert(Array.isArray(cardObjects));
+        assert(cardObjects.length > 0);
+        const deckObject = cardObjects.pop();
+        assert(deckObject instanceof Card);
+        for (const cardObject of cardObjects) {
+            deckObject.addCards(cardObject);
         }
-
-        // Flat list of mixed types.
-        const result = [];
-        for (const unit of allUnits) {
-            const obj = unitToObj[unit];
-            const bag = unitToBag[unit];
-            assert(obj && bag);
-            result.push(obj, bag);
-        }
-
-        return result;
+        return deckObject; // stack, might be only one card, or even undefined if empty array
     }
 
-    static gatherTokenSupplyContainers() {
-        const lookFor = new Set([
-            "bag.token:base/fighter_1",
-            "bag.token:base/fighter_3",
-            "bag.token:base/infantry_1",
-            "bag.token:base/infantry_3",
-            "bag.token:base/tradegood_commodity_1",
-            "bag.token:base/tradegood_commodity_3",
+    static isGenericTechCardNsid(nsid) {
+        // "card.technology.red", "card.technology.red.muatt"
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        const typeParts = parsed.type.split(".");
+        if (typeParts[0] !== "card" || typeParts[1] !== "technology") {
+            return false; // not a technology card
+        }
+        return typeParts.length < 4;
+    }
+
+    static gatherGenericTechDeck() {
+        const cards = Gather.gather(Gather.isGenericTechCardNsid);
+        const deck = Gather.makeDeck(cards);
+        deck.setName(locale("deck.technology"));
+        return deck;
+    }
+
+    static isFactionTechCardNsid(nsid) {
+        // "card.technology.red", "card.technology.red.muatt"
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        const typeParts = parsed.type.split(".");
+        if (typeParts[0] !== "card" || typeParts[1] !== "technology") {
+            return false; // not a technology card
+        }
+        return typeParts.length > 3 ? typeParts[3] : false;
+    }
+
+    static gatherFactionTechDeck(faction) {
+        const cards = Gather.gather((nsid) => {
+            Gather.isFactionTechCardNsid(nsid) === faction;
+        });
+        const deck = Gather.makeDeck(cards);
+        deck.setName(locale("deck.technology"));
+        return deck;
+    }
+
+    static isUnitOrUnitBag(nsid) {
+        // "unit:base/fighter", "bag.unit:base/fighter"
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        return parsed.type === "unit" || parsed.type === "bag.unit";
+    }
+
+    static gatherUnitsAndUnitBags() {
+        return Gather.gather(Gather.isUnitOrUnitBag);
+    }
+
+    static isCoreTokenOrTokenBag(nsid) {
+        // "token:base/fighter_1", "bag.token:base/fighter_1"
+        const coreTokenNameSet = new Set([
+            "fighter_1",
+            "fighter_3",
+            "infantry_1",
+            "infantry_3",
+            "tradegood_commodity_1",
+            "tradegood_commodity_3",
         ]);
-
-        const result = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (lookFor.has(nsid)) {
-                result.push(obj);
-            }
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
         }
-        return result;
+        if (parsed.type !== "token" && parsed.type !== "bag.token") {
+            return false;
+        }
+        return coreTokenNameSet.has(parsed.name);
+    }
+
+    static gatherCoreTokenAndTokenBags() {
+        return Gather.gather(Gather.isCoreTokenOrTokenBag);
+    }
+
+    static isCoreSheet(nsid) {
+        const coreSheetNameSet = new Set(["command", "leader"]);
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        if (parsed.type !== "sheet") {
+            return false;
+        }
+        return coreSheetNameSet.has(parsed.name);
     }
 
     static gatherSheets() {
@@ -140,7 +172,51 @@ class GatherGenericPlayer {
         return result;
     }
 
-    static gatherFactionComponents() {}
+    static gatherFactionObjects() {
+        const factions = new Set([
+            "arborec",
+            "argent",
+            "creuss",
+            "empyrean",
+            "hacan",
+            "jolnar",
+            "l1z1x",
+            "letnev",
+            "mahact",
+            "mentak",
+            "muaat",
+            "norr",
+            "naalu",
+            "naazrokha",
+            "nekro",
+            "nomad",
+            "saar",
+            "sol",
+            "ul",
+            "vuilraith",
+            "winnu",
+            "xxcha",
+            "yin",
+            "yssaril",
+        ]);
+        const factionToObjects = {};
+
+        // Tech
+
+        // Promissory
+
+        // Leaders
+
+        // Alliance
+
+        // Planet cards
+
+        // Home system tile
+
+        // Command + Control tokens
+
+        // Faction sheet
+    }
 }
 
-module.exports = { GatherGenericPlayer };
+module.exports = { Gather };

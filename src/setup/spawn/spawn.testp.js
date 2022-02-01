@@ -1,3 +1,6 @@
+const { Gather } = require("./gather");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { ReplaceObjects } = require("./replace-objects");
 const { Spawn } = require("./spawn");
 const {
     Card,
@@ -6,49 +9,18 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const { ReplaceObjects } = require("./replace-objects");
 
 const ACTION = {
-    SPAWN_ALL: "*Spawn ALL",
+    CLEAN_ALL: "*Clean ALL",
     SPAWN_TYPES: "*Spawn TYPES",
     REMOVE_REPLACED: "*Remove replaced",
-    CLEAN_ALL: "*Clean ALL",
+    GATHER_ON_TABLE: "*Gather on-table",
+    GATHER_PER_PLAYER: "*Gather per-player",
+    GATHER_PER_FACTION: "*Gather per-faction",
 };
 
 for (const action of Object.values(ACTION)) {
     refObject.addCustomAction(action);
-}
-
-function asyncSpawnAll(player) {
-    let nsids = Spawn.getAllNSIDs();
-    nsids = nsids.filter((nsid) => !nsid.includes("homebrew"));
-
-    const randomPos = () => {
-        const x = 80 * (Math.random() - 0.5);
-        const y = 220 * (Math.random() - 0.5);
-        const z = world.getTableHeight() + 10 + 10 * Math.random();
-        return new Vector(x, y, z);
-    };
-
-    const randomRot = (isCard) => {
-        const pitch = 0;
-        const yaw = 360 * Math.random();
-        const roll = isCard ? 180 : 0;
-        return new Rotator(pitch, yaw, roll);
-    };
-
-    const processNext = () => {
-        if (nsids.length == 0) {
-            console.log(`#objects = ${world.getAllObjects().length}`);
-            return;
-        }
-        const nsid = nsids.pop();
-        Spawn.spawn(nsid, randomPos(), randomRot());
-
-        setTimeout(processNext, 100);
-    };
-    processNext();
 }
 
 function asyncSpawnTypes() {
@@ -110,23 +82,40 @@ function asyncSpawnTypes() {
 refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
-    if (actionName === ACTION.SPAWN_ALL) {
-        asyncSpawnAll(player);
+    if (actionName === ACTION.CLEAN_ALL) {
+        for (const obj of world.getAllObjects()) {
+            if (obj != refObject) {
+                obj.destroy();
+            }
+        }
     } else if (actionName === ACTION.SPAWN_TYPES) {
         asyncSpawnTypes(player);
     } else if (actionName === ACTION.REMOVE_REPLACED) {
         const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
         const pos = new Vector(-32, 0, world.getTableHeight() + 3);
         const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-        bag.setName("REPLACED OBJECTS");
+        bag.setName(actionName);
+        const objs = ReplaceObjects.getReplacedObjects();
+        bag.addObjects(objs);
+    } else if (actionName === ACTION.GATHER_ON_TABLE) {
+        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+        const pos = new Vector(-32, 20, world.getTableHeight() + 3);
+        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
+        bag.setName(actionName);
+    } else if (actionName === ACTION.GATHER_PER_PLAYER) {
+        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+        const pos = new Vector(-32, 20, world.getTableHeight() + 3);
+        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
+        bag.setName(actionName);
 
-        const replacedObjects = ReplaceObjects.getReplacedObjects();
-        bag.addObjects(replacedObjects);
-    } else if (actionName === ACTION.CLEAN_ALL) {
-        for (const obj of world.getAllObjects()) {
-            if (obj != refObject) {
-                obj.destroy();
-            }
-        }
+        bag.addObjects([Gather.gatherGenericTechDeck()]);
+        bag.addObjects(Gather.gatherUnitsAndUnitBags());
+        bag.addObjects(Gather.gatherCoreTokenAndTokenBags());
+        bag.addObjects(Gather.gatherSheets());
+    } else if (actionName === ACTION.GATHER_PER_FACTION) {
+        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+        const pos = new Vector(-32, 40, world.getTableHeight() + 3);
+        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
+        bag.setName(actionName);
     }
 });

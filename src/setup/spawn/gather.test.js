@@ -1,49 +1,54 @@
 const assert = require("assert");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const {
     MockCard,
     MockCardDetails,
-    MockContainer,
     MockGameObject,
     world,
 } = require("../../mock/mock-api");
-const { GatherGenericPlayer } = require("./gather");
+const { Gather } = require("./gather");
 
-it("isGenericTechCardNsid", () => {
-    assert(
-        GatherGenericPlayer.isGenericTechCardNsid(
-            "card.technology.yellow:base/graviton_laser_system"
-        )
+it("sortByNsid", () => {
+    const nsids = [
+        "unit:pok/mech",
+        "unit:base/fighter",
+        "unit:base/destroyer",
+        "unit:base/war_sun",
+    ];
+    const objs = nsids.map(
+        (nsid) => new MockGameObject({ templateMetadata: nsid })
     );
-    assert(
-        !GatherGenericPlayer.isGenericTechCardNsid(
-            "card.technology.yellow.yin:base/impulse_core"
-        )
-    );
+    const result = Gather.sortByNsid(objs);
+    const resultNsids = result.map((obj) => ObjectNamespace.getNsid(obj));
+    assert.deepEqual(resultNsids, [
+        "unit:base/destroyer",
+        "unit:base/fighter",
+        "unit:pok/mech",
+        "unit:base/war_sun",
+    ]);
 });
 
-it("gatherTechnologyCards", () => {
-    const singletondNsids = [
-        "card.technology.yellow.xxcha:base/nullification_field",
-        "card.technology.yellow.yin:base/impulse_core",
-        "card.technology.yellow:base/graviton_laser_system",
+it("gather", () => {
+    const looseNsids = [
+        "tile.strategy:base/construction", // replaced by :pok
+        "tile.strategy:pok/construction", // replaces :base
+        "tile.strategy:base/leadership", // inert
     ];
-    const deckNsids = [
-        "card.technology.unit_upgrade:base/carrier_2",
-        "card.technology.unit_upgrade.sol:base/advanced_carrier_2",
-    ];
-
-    // Add singleon cards.
-    for (const nsid of singletondNsids) {
+    for (const nsid of looseNsids) {
         world.__addObject(
-            new MockCard({
-                cardDetails: new MockCardDetails({ metadata: nsid }),
+            new MockGameObject({
+                templateMetadata: nsid,
             })
         );
     }
 
-    // Add a deck with multiple cards.
+    // Add a deck.
+    const deckNsids = [
+        "card.promissory.winnu:base/acquiescence", // REPLACE
+        "card.promissory.winnu:base/acquiescence.omega", // REPLACEMENT
+        "card.promissory.yin:base/greyfire_mutagen", // (original, but missing replacement)
+        "card.promissory.letnev:base/war_funding.omega", // (replacment, but no original)
+    ];
     world.__addObject(
         new MockCard({
             allCardDetails: deckNsids.map(
@@ -52,71 +57,59 @@ it("gatherTechnologyCards", () => {
             stackSize: deckNsids.length,
         })
     );
-    assert.equal(world.getAllObjects().length, 4);
 
     try {
-        const techCards = GatherGenericPlayer.gatherTechnologyCards();
-        const nsids = techCards.map((obj) => ObjectNamespace.getNsid(obj));
-        assert(
-            nsids.includes("card.technology.yellow:base/graviton_laser_system")
-        );
-        assert(nsids.includes("card.technology.unit_upgrade:base/carrier_2"));
-        assert.equal(techCards.length, 2);
+        const found = Gather.gather((nsid) => true);
+        assert.equal(found.length, 7);
     } finally {
         world.__clear();
     }
 });
 
-it("gatherUnitsAndBags", () => {
-    const objNsids = [];
-    const bagNsids = [];
-    for (const unit of UnitAttrs.getAllUnitTypes()) {
-        objNsids.push("unit:whatever/" + unit);
-        bagNsids.push("bag.unit:whatever/" + unit);
-    }
-    for (const nsid of objNsids) {
-        world.__addObject(new MockGameObject({ templateMetadata: nsid }));
-    }
-    for (const nsid of bagNsids) {
-        world.__addObject(new MockContainer({ templateMetadata: nsid }));
-    }
-    try {
-        const bagsWithUnits = GatherGenericPlayer.gatherUnitsAndBags();
-        assert.equal(bagsWithUnits.length, objNsids.length + bagNsids.length);
-    } finally {
-        world.__clear();
-    }
+it("isGenericTechCardNsid", () => {
+    assert(
+        Gather.isGenericTechCardNsid(
+            "card.technology.yellow:base/graviton_laser_system"
+        )
+    );
+    assert(
+        !Gather.isGenericTechCardNsid(
+            "card.technology.yellow.yin:base/impulse_core"
+        )
+    );
 });
 
-it("gatherTokenSupplyContainers", () => {
-    const bagNsids = ["bag.token:base/fighter_1", "bag.unit:base/fighter"];
-    for (const nsid of bagNsids) {
-        world.__addObject(new MockContainer({ templateMetadata: nsid }));
-    }
-    try {
-        const tokenContainers =
-            GatherGenericPlayer.gatherTokenSupplyContainers();
-        const nsids = tokenContainers.map((obj) =>
-            ObjectNamespace.getNsid(obj)
-        );
-        assert.equal(nsids.length, 1);
-        assert.equal(nsids[0], "bag.token:base/fighter_1");
-    } finally {
-        world.__clear();
-    }
+it("isFactionTechCardNsid", () => {
+    assert(
+        !Gather.isFactionTechCardNsid(
+            "card.technology.yellow:base/graviton_laser_system"
+        )
+    );
+    assert.equal(
+        Gather.isFactionTechCardNsid(
+            "card.technology.yellow.yin:base/impulse_core"
+        ),
+        "yin"
+    );
 });
 
-it("gatherSheets", () => {
-    const objNsids = ["sheet:base/command", "bag.unit:base/fighter"];
-    for (const nsid of objNsids) {
-        world.__addObject(new MockGameObject({ templateMetadata: nsid }));
-    }
-    try {
-        const sheets = GatherGenericPlayer.gatherSheets();
-        const nsids = sheets.map((obj) => ObjectNamespace.getNsid(obj));
-        assert.equal(nsids.length, 1);
-        assert.equal(nsids[0], "sheet:base/command");
-    } finally {
-        world.__clear();
-    }
+it("isUnitOrUnitBag", () => {
+    assert(!Gather.isUnitOrUnitBag("token:base/fighter_1"));
+    assert(Gather.isUnitOrUnitBag("unit:base/fighter"));
+    assert(!Gather.isUnitOrUnitBag("bag.token:base/fighter_1"));
+    assert(Gather.isUnitOrUnitBag("bag.unit:base/fighter"));
+});
+
+it("isCoreTokenOrTokenBag", () => {
+    assert(Gather.isCoreTokenOrTokenBag("token:base/fighter_1"));
+    assert(!Gather.isCoreTokenOrTokenBag("unit:base/fighter"));
+    assert(Gather.isCoreTokenOrTokenBag("bag.token:base/fighter_1"));
+    assert(!Gather.isCoreTokenOrTokenBag("bag.unit:base/fighter"));
+});
+
+it("isCoreSheet", () => {
+    assert(Gather.isCoreSheet("sheet:base/command"));
+    assert(Gather.isCoreSheet("sheet:pok/leader"));
+    assert(!Gather.isCoreSheet("bag.token:base/fighter_1"));
+    assert(!Gather.isCoreSheet("bag.unit:base/fighter"));
 });
