@@ -6,8 +6,14 @@ const PLANET_SCHEMA = {
         localeName: { type: "string" },
         resources: { type: "integer" },
         influence: { type: "integer" },
-        trait: { enum: ["cultural", "hazardous", "industrial"] },
-        tech: { enum: ["yellow", "red", "blue", "green"] },
+        trait: {
+            type: "array",
+            items: { enum: ["cultural", "hazardous", "industrial"] },
+        },
+        tech: {
+            type: "array",
+            items: { enum: ["yellow", "red", "blue", "green"] },
+        },
         legendary: { type: "boolean" },
         legendaryCard: { type: "string" },
 
