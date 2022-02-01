@@ -44,6 +44,7 @@ function setupStrategyCard(card) {
             player
         );
     });
+
     card.addUI(card.play_button);
 
     card.addCustomAction(playButtonName, playButtonTooltip);
