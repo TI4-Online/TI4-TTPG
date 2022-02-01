@@ -93,6 +93,15 @@ it("isFactionTechCardNsid", () => {
     );
 });
 
+it("isCard", () => {
+    assert(!Gather.isCardNsid("toke:base/fighter_1"));
+    assert.equal(Gather.isCardNsid("card.action:base/whatever"), "action");
+    assert.equal(
+        Gather.isCardNsid("card.objective.secret:base/whatever"),
+        "objective.secret"
+    );
+});
+
 it("isUnitOrUnitBag", () => {
     assert(!Gather.isUnitOrUnitBag("token:base/fighter_1"));
     assert(Gather.isUnitOrUnitBag("unit:base/fighter"));
@@ -105,6 +114,18 @@ it("isCoreTokenOrTokenBag", () => {
     assert(!Gather.isCoreTokenOrTokenBag("unit:base/fighter"));
     assert(Gather.isCoreTokenOrTokenBag("bag.token:base/fighter_1"));
     assert(!Gather.isCoreTokenOrTokenBag("bag.unit:base/fighter"));
+});
+
+it("isTableTokenOrTokenBag", () => {
+    assert(Gather.isTableTokenOrTokenBag("token:pok/frontier"));
+    assert(Gather.isTableTokenOrTokenBag("bag.token:pok/frontier"));
+    assert(
+        Gather.isTableTokenOrTokenBag(
+            "token.exploration.attachment:pok/tomb_of_emphidia"
+        )
+    );
+    assert(!Gather.isTableTokenOrTokenBag("bag.token:base/fighter_1"));
+    assert(!Gather.isTableTokenOrTokenBag("bag.unit:base/fighter"));
 });
 
 it("isCoreSheet", () => {

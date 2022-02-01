@@ -79,6 +79,15 @@ function asyncSpawnTypes() {
     processNext();
 }
 
+function spawnChest(name, slotIndex) {
+    const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+    const pos = new Vector(-32, slotIndex * 20, world.getTableHeight() + 3);
+    const bag = world.createObjectFromTemplate(chestTemplateId, pos);
+    bag.setMaxItems(500);
+    bag.setName(name);
+    return bag;
+}
+
 refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
@@ -91,31 +100,35 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     } else if (actionName === ACTION.SPAWN_TYPES) {
         asyncSpawnTypes(player);
     } else if (actionName === ACTION.REMOVE_REPLACED) {
-        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
-        const pos = new Vector(-32, 0, world.getTableHeight() + 3);
-        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-        bag.setName(actionName);
+        const bag = spawnChest(actionName, 0);
         const objs = ReplaceObjects.getReplacedObjects();
         bag.addObjects(objs);
     } else if (actionName === ACTION.GATHER_ON_TABLE) {
-        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
-        const pos = new Vector(-32, 20, world.getTableHeight() + 3);
-        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-        bag.setName(actionName);
+        const bag = spawnChest(actionName, 1);
+
+        bag.addObjects([Gather.gatherDeck("action")]);
+        bag.addObjects([Gather.gatherDeck("agenda")]);
+        bag.addObjects([Gather.gatherDeck("planet")]);
+        bag.addObjects([Gather.gatherDeck("legendary_planet")]);
+        bag.addObjects([Gather.gatherDeck("objective.public_1")]);
+        bag.addObjects([Gather.gatherDeck("objective.public_2")]);
+        bag.addObjects([Gather.gatherDeck("objective.secret")]);
+        bag.addObjects([Gather.gatherDeck("exploration.cultural")]);
+        bag.addObjects([Gather.gatherDeck("exploration.industrial")]);
+        bag.addObjects([Gather.gatherDeck("exploration.hazardous")]);
+        bag.addObjects([Gather.gatherDeck("exploration.frontier")]);
+        bag.addObjects([Gather.gatherDeck("relic")]);
+        bag.addObjects(Gather.gatherTableTokenAndTokenBags());
+        bag.addObjects(Gather.gatherStrategyCards());
+        bag.addObjects(Gather.gatherSystemTiles());
     } else if (actionName === ACTION.GATHER_PER_PLAYER) {
-        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
-        const pos = new Vector(-32, 20, world.getTableHeight() + 3);
-        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-        bag.setName(actionName);
+        const bag = spawnChest(actionName, 2);
 
         bag.addObjects([Gather.gatherGenericTechDeck()]);
         bag.addObjects(Gather.gatherUnitsAndUnitBags());
-        bag.addObjects(Gather.gatherCoreTokenAndTokenBags());
+        bag.addObjects(Gather.gatherCoreTokenAndTokenBags()); // if giving a set to each player
         bag.addObjects(Gather.gatherSheets());
     } else if (actionName === ACTION.GATHER_PER_FACTION) {
-        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
-        const pos = new Vector(-32, 40, world.getTableHeight() + 3);
-        const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-        bag.setName(actionName);
+        const bag = spawnChest(actionName, 3);
     }
 });

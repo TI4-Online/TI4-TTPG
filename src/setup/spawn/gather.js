@@ -24,11 +24,22 @@ class Gather {
         });
     }
 
+    /**
+     * Scan objects on the table, get matching objects.
+     * Will look inside decks and extract card objects.
+     *
+     * @param {function} filterNsid
+     * @returns {Array.{GameObject}}
+     */
     static gather(filterNsid) {
         assert(typeof filterNsid === "function");
 
         const result = [];
         for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // only scan on-table objects
+            }
+
             if (obj instanceof Card && obj.getStackSize() > 1) {
                 // Cards in a deck are not objects, pull them out.
                 const nsids = ObjectNamespace.getDeckNsids(obj);
@@ -107,6 +118,28 @@ class Gather {
         return deck;
     }
 
+    static isCardNsid(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        const typeParts = parsed.type.split(".");
+        if (typeParts[0] !== "card") {
+            return false; // not a technology card
+        }
+        return typeParts.slice(1).join(".");
+    }
+
+    static gatherDeck(deckName) {
+        assert(typeof deckName === "string");
+        const cards = Gather.gather(
+            (nsid) => Gather.isCardNsid(nsid) === deckName
+        );
+        const deck = Gather.makeDeck(cards);
+        deck.setName(locale("deck." + deckName));
+        return deck;
+    }
+
     static isUnitOrUnitBag(nsid) {
         // "unit:base/fighter", "bag.unit:base/fighter"
         const parsed = ObjectNamespace.parseNsid(nsid);
@@ -144,6 +177,36 @@ class Gather {
         return Gather.gather(Gather.isCoreTokenOrTokenBag);
     }
 
+    static isTableTokenOrTokenBag(nsid) {
+        // "token:base/fighter_1", "bag.token:base/fighter_1"
+        const typeSet = new Set([
+            "token.exploration",
+            "token.exploration.attachment",
+        ]);
+        const nameSet = new Set(["frontier"]);
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        if (parsed.type.startsWith("token")) {
+            if (typeSet.has(parsed.type)) {
+                return true;
+            }
+            if (nameSet.has(parsed.name)) {
+                return true;
+            }
+        } else if (parsed.type.startsWith("bag")) {
+            if (nameSet.has(parsed.name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static gatherTableTokenAndTokenBags() {
+        return Gather.gather(Gather.isTableTokenOrTokenBag);
+    }
+
     static isCoreSheet(nsid) {
         const coreSheetNameSet = new Set(["command", "leader"]);
         const parsed = ObjectNamespace.parseNsid(nsid);
@@ -170,6 +233,30 @@ class Gather {
             }
         }
         return result;
+    }
+
+    static isSystemTile(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        return parsed.type === "tile.system";
+    }
+
+    static gatherSystemTiles() {
+        return Gather.gather(Gather.isSystemTile);
+    }
+
+    static isStrategyCard(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false; // does not have an NSID
+        }
+        return parsed.type === "tile.strategy";
+    }
+
+    static gatherStrategyCards() {
+        return Gather.gather(Gather.isStrategyCard);
     }
 
     static gatherFactionObjects() {
