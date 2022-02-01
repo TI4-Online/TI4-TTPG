@@ -105,7 +105,7 @@ it("static getPlayerUnitUpgrades", () => {
         world.__addObject(cardObjCruiser2FaceDown);
         result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot);
     } finally {
-        world.__clear()
+        world.__clear();
     }
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.unit, "carrier");

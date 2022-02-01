@@ -3,7 +3,6 @@ const _ = require("../../wrapper/lodash");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
-const { UnitModifier } = require("./unit-modifier");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world, Card, GameObject } = require("../../wrapper/api");
 let _allUnitTypes = false;
@@ -148,10 +147,6 @@ class UnitAttrs {
         assert(typeof attrs == "object");
         assert(UnitAttrsSchema.validate(attrs));
         this._attrs = _.cloneDeep(attrs);
-
-        if (attrs.unitModifier) {
-            this._unitModifier = new UnitModifier(attrs.unitModifier);
-        }
     }
 
     /**
@@ -183,9 +178,10 @@ class UnitAttrs {
 
     /**
      * Get linked unit modifier, if any.
+     * Do not require unit-modifier.js to avoid a require loop.
      */
-    get unitModifier() {
-        return this._unitModifier;
+    get rawUnitModifier() {
+        return this._rawUnitModifier;
     }
 
     /**
