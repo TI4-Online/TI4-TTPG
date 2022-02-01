@@ -4,18 +4,25 @@ const MockCardDetails = require("./mock-card-details");
 class Card extends GameObject {
     constructor(data) {
         super(data);
-        this._allCardDetails = (data && data.allCardDetails) || [new MockCardDetails()];
-        this._cardDetails = (data && data.cardDetails) || new MockCardDetails();
-        this._stackSize = (data && data._stackSize) || 1;
+        this._allCardDetails = (data && data.allCardDetails) || [];
+        this._stackSize = (data && data.stackSize) || 1;
         this._faceUp = data && data.faceUp !== undefined ? data.faceUp : true;
+
+        if (this._allCardDetails.length == 0) {
+            if (data.cardDetails) {
+                this._allCardDetails.push(data.cardDetails);
+            } else {
+                this._allCardDetails.push(new MockCardDetails());
+            }
+        }
     }
 
-    getCardDetails() {
-        return this._cardDetails;
+    getCardDetails(index) {
+        return this._allCardDetails[index || 0];
     }
 
     getAllCardDetails() {
-        return this._allCardDetails
+        return this._allCardDetails;
     }
 
     getStackSize() {
@@ -24,6 +31,20 @@ class Card extends GameObject {
 
     isFaceUp() {
         return this._faceUp;
+    }
+
+    takeCards(numCards, fromFront, offset) {
+        const allCardDetails = [];
+        console.log(this._allCardDetails);
+        for (let i = offset; i < offset + numCards; i++) {
+            console.log(i);
+            allCardDetails.push(this.getCardDetails(i));
+        }
+        return new Card({
+            allCardDetails,
+            cardDetails: allCardDetails[0],
+            stackSize: allCardDetails.length,
+        });
     }
 }
 
