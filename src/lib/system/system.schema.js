@@ -30,16 +30,30 @@ const PLANET_SCHEMA = {
     required: ["localeName", "resources", "influence"],
 };
 
+const HYPERLANE_SCHEMA = {
+    type: "array",
+    items: {
+        type: "array",
+        items: { enum: [0, 1, 2, 3, 4, 5] },
+        uniqueItems: true,
+    },
+    maxItems: 6,
+    minItems: 6,
+};
+
+const WORMHOLE_SCHEMA = {
+    type: "array",
+    items: { enum: ["alpha", "beta", "gamma", "delta"] },
+};
+
 const SYSTEM_SCHEMA = {
     type: "object",
     properties: {
         tile: { type: "integer" },
         home: { type: "boolean" },
         planets: { type: "array", items: PLANET_SCHEMA },
-        wormholes: {
-            type: "array",
-            items: { enum: ["alpha", "beta", "gamma", "delta"] },
-        },
+        wormholes: WORMHOLE_SCHEMA,
+        wormholesFaceDown: WORMHOLE_SCHEMA,
         anomalies: {
             type: "array",
             items: {
@@ -48,6 +62,8 @@ const SYSTEM_SCHEMA = {
         },
         offMap: { type: "boolean" },
         hyperlane: { type: "boolean" },
+        hyperlaneFaceUp: HYPERLANE_SCHEMA,
+        hyperlaneFaceDown: HYPERLANE_SCHEMA,
     },
     required: ["tile"],
 };
