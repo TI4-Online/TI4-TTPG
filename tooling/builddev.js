@@ -1,8 +1,16 @@
 const fs = require("fs-extra");
 const chalk = require("colorette");
 const spawn = require("cross-spawn");
+const minimatch = require("minimatch");
 
 console.log(chalk.yellow("Good Morning, Captain"));
+
+const EXCLUDE_MOCK = (src, dest) => {
+    if (minimatch(src, "src/mock") || minimatch(src, "**/*.test.js")) {
+        return false;
+    }
+    return true;
+};
 
 if (!fs.existsSync("./config/local.json")) {
     console.error("this workspace has not yet been set up");
@@ -70,7 +78,10 @@ const spawnBuilder = (config) => {
     } else {
         return fs.copy(
             "./src",
-            `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`
+            `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`,
+            {
+                filter: EXCLUDE_MOCK,
+            }
         );
     }
 };
