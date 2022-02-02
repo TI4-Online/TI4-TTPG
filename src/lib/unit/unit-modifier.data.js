@@ -19,6 +19,27 @@ module.exports = [
         },
     },
     {
+        // Does not count against capacity when with a ship with capacity
+        localeName: "unit.mech.aerie_sentinel",
+        localeDescription: "unit_modifier.desc.aerie_sentinel",
+        owner: "self",
+        priority: "mutate",
+        triggerUnitAbility: "unit.mech.aerie_sentinel",
+        applyAll: (unitAttrsSet, auxData) => {
+            let hasCapacity = false;
+            for (const unitAttrs of unitAttrsSet.values()) {
+                if (unitAttrs.raw.capacity) {
+                    hasCapacity = true;
+                    break;
+                }
+            }
+            if (hasCapacity) {
+                const mechAttrs = unitAttrsSet.get("mech");
+                delete mechAttrs.raw.requireCapacity;
+            }
+        },
+    },
+    {
         // "-1 to all SPACE CANNON rolls",
         isCombat: true,
         localeName: "unit_modifier.name.antimass_deflectors",
@@ -29,6 +50,27 @@ module.exports = [
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
                 unitAttrs.raw.spaceCannon.hit += 1;
+            }
+        },
+    },
+    {
+        // +2 flagship COMBAT against opponent with no token in your fleet pool
+        isCombat: true,
+        localeName: "unit.flagship.arvicon_rex",
+        localeDescription: "unit_modifier.desc.arvicon_rex",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.arvicon_rex",
+        applyAll: (unitAttrsSet, auxData) => {
+            let opponentTokenInFleetPool = false; // TODO XXX
+            if (opponentTokenInFleetPool) {
+                const flagshipAttrs = unitAttrsSet.get("flagship");
+                if (flagshipAttrs.raw.spaceCombat) {
+                    flagshipAttrs.raw.spaceCombat.hit -= 2;
+                }
+                if (flagshipAttrs.raw.groundCombat) {
+                    flagshipAttrs.raw.groundCombat.hit -= 2;
+                }
             }
         },
     },
@@ -92,6 +134,24 @@ module.exports = [
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
                 unitAttrs.raw.bombardment.hit += 4;
+            }
+        },
+    },
+    {
+        // +1 to all COMBAT rolls for other ships with the C'morran N'orr
+        isCombat: true,
+        localeName: "unit.flagship.cmorran_norr",
+        localeDescription: "unit_modifier.desc.cmorran_norr",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.cmorran_norr",
+        applyEach: (unitAttrs, auxData) => {
+            if (
+                unitAttrs.raw.ship &&
+                unitAttrs.raw.unit !== "flagship" &&
+                unitAttrs.raw.spaceCombat
+            ) {
+                unitAttrs.raw.spaceCombat.hit -= 1;
             }
         },
     },
@@ -181,6 +241,20 @@ module.exports = [
         },
     },
     {
+        // Opponent's ships cannot use SUSTAIN DAMAGE
+        isCombat: true,
+        localeName: "unit.flagship.fourth_moon",
+        localeDescription: "unit_modifier.desc.fourth_moon",
+        owner: "opponent",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.fourth_moon",
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.ship && unitAttrs.raw.sustainDamage) {
+                unitAttrs.raw.sustainDamage = false;
+            }
+        },
+    },
+    {
         // "-1 to all COMBAT rolls",
         isCombat: true,
         localeName: "unit_modifier.name.fragile",
@@ -198,6 +272,27 @@ module.exports = [
         },
     },
     {
+        // "+2 mech COMBAT rolls if opponent has fragment",
+        isCombat: true,
+        localeName: "unit.mech.iconoclast",
+        localeDescription: "unit_modifier.desc.iconoclast",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.mech.iconoclast",
+        applyAll: (unitAttrsSet, auxData) => {
+            let opponentHasFragment = false; // TODO XXX
+            if (opponentHasFragment) {
+                const mechAttrs = unitAttrsSet.get("mech");
+                if (mechAttrs.raw.spaceCombat) {
+                    mechAttrs.raw.spaceCombat.hit -= 2;
+                }
+                if (mechAttrs.raw.groundCombat) {
+                    mechAttrs.raw.groundCombat.hit -= 2;
+                }
+            }
+        },
+    },
+    {
         // "Produce an additional Fighter for their cost; it doesn't count towards production limits.",
         isCombat: false,
         localeName: "unit_modifier.name.maban",
@@ -210,6 +305,45 @@ module.exports = [
             fighterAttrs.raw.produce += 1;
             fighterAttrs.raw.freeProduce =
                 (fighterAttrs.raw.freeProduce || 0) + 1;
+        },
+    },
+    {
+        // Fighters may participate in ground combat
+        isCombat: true,
+        localeName: "unit.flagship.matriarch",
+        localeDescription: "unit_modifier.desc.matriarch",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.matriarch",
+        applyEach: (unitAttrs, auxData) => {
+            if (
+                unitAttrs.raw.unit === "fighter" &&
+                !unitAttrs.raw.groundCombat
+            ) {
+                unitAttrs.raw.groundCombat = {
+                    dice: unitAttrs.raw.spaceCombat.dice,
+                    hit: unitAttrs.raw.spaceCombat.hit,
+                    anyPlanet: true,
+                };
+            }
+        },
+    },
+    {
+        // Other's ground forces on planet cannot SUSTAIN DAMAGE
+        isCombat: true,
+        localeName: "unit.mech.moll_terminus",
+        localeDescription: "unit_modifier.desc.moll_terminus",
+        owner: "opponent",
+        priority: "mutate",
+        triggerUnitAbility: "unit.mech.moll_terminus",
+        applyEach: (unitAttrs, auxData) => {
+            if (
+                unitAttrs.raw.ground &&
+                unitAttrs.raw.sustainDamage &&
+                auxData.opponent.has("mech")
+            ) {
+                delete unitAttrs.raw.sustainDamage;
+            }
         },
     },
     {
@@ -231,6 +365,27 @@ module.exports = [
             }
             if (unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.hit -= 1;
+            }
+        },
+    },
+    {
+        // +2 mech COMBAT rolls if opponent has X/Y token
+        isCombat: true,
+        localeName: "unit.mech.mordred",
+        localeDescription: "unit_modifier.desc.mordred",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.mech.mordred",
+        applyAll: (unitAttrsSet, auxData) => {
+            let opponentHasXYToken = false; // TODO XXX
+            if (opponentHasXYToken) {
+                const mechAttrs = unitAttrsSet.get("mech");
+                if (mechAttrs.raw.spaceCombat) {
+                    mechAttrs.raw.spaceCombat.hit -= 2;
+                }
+                if (mechAttrs.raw.groundCombat) {
+                    mechAttrs.raw.groundCombat.hit -= 2;
+                }
             }
         },
     },
@@ -342,6 +497,20 @@ module.exports = [
         },
     },
     {
+        // Other players cannot use SPACE CANNON against your ships in this system
+        isCombat: true,
+        localeName: "unit.flagship.quetzecoatl",
+        localeDescription: "unit_modifier.desc.quetzecoatl",
+        owner: "opponent",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.quetzecoatl",
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCannon) {
+                delete unitAttrs.raw.spaceCannon;
+            }
+        },
+    },
+    {
         // "Fighters and infantry cost 1 each",
         isCombat: false,
         localeName: "unit_modifier.name.regulated_conscription",
@@ -371,6 +540,64 @@ module.exports = [
             }
             if (unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.hit -= 2;
+            }
+        },
+    },
+    {
+        // Rolls number of dice equal to number of opponent's non-fighter ships
+        isCombat: true,
+        localeName: "unit.flagship.salai_sai_corian",
+        localeDescription: "unit_modifier.desc.salai_sai_corian",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.salai_sai_corian",
+        applyAll: (unitAttrsSet, auxData) => {
+            let nonFighterShipCount = 0;
+            // TODO XXX NazRhoka mech on planet vs space (count as ship)
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (
+                    unitAttrs.raw.ship &&
+                    unitAttrs.raw.unit !== "fighter" &&
+                    auxData.opponent.has(unitAttrs.raw.unit)
+                ) {
+                    nonFighterShipCount += auxData.opponent.count(
+                        unitAttrs.raw.unit
+                    );
+                }
+            }
+            const flagshipAttrs = unitAttrsSet.get("flagship");
+            if (flagshipAttrs.raw.spaceCombat) {
+                flagshipAttrs.raw.spaceCombat.dice = nonFighterShipCount;
+            }
+        },
+    },
+    {
+        // Infantry on planet with mech are not FRAGILE
+        isCombat: true,
+        localeName: "unit.mech.shield_paling",
+        localeDescription: "unit_modifier.desc.shield_paling",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.mech.shield_paling",
+        applyAll: (unitAttrsSet, auxData) => {
+            // Normally mech is paired with Jol-Nar + FRAGILE, but watch out for Franken!
+            let hasFragile = false;
+            for (const unitModifier of auxData.self.unitModifiers) {
+                if (
+                    unitModifier.raw.localeName == "unit_modifier.name.fragile"
+                ) {
+                    hasFragile = true;
+                    break;
+                }
+            }
+            // Do not attempt to suppress "fragile" application, just undo it.
+            const infantryAttrs = unitAttrsSet.get("infantry");
+            if (
+                hasFragile &&
+                auxData.self.has("mech") &&
+                infantryAttrs.raw.groundCombat
+            ) {
+                infantryAttrs.raw.groundCombat -= 1;
             }
         },
     },
@@ -524,6 +751,27 @@ module.exports = [
                 (infantryAttrs.raw.freeProduce || 0) + 2;
             fighterAttrs.raw.sharedFreeProduce =
                 (infantryAttrs.raw.freeProduce || 0) + 2;
+        },
+    },
+    {
+        // Ground forces may participate in space combat
+        isCombat: true,
+        localeName: "unit.flagship.the_alastor",
+        localeDescription: "unit_modifier.desc.the_alastor",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.the_alastor",
+        applyEach: (unitAttrs, auxData) => {
+            if (
+                unitAttrs.raw.ground &&
+                unitAttrs.raw.groundCombat &&
+                !unitAttrs.raw.spaceCombat
+            ) {
+                unitAttrs.raw.spaceCombat = {
+                    dice: unitAttrs.raw.groundCombat.dice,
+                    hit: unitAttrs.raw.groundCombat.hit,
+                };
+            }
         },
     },
     {
@@ -709,6 +957,21 @@ module.exports = [
             if (best) {
                 best.raw.spaceCombat.extraDice =
                     (best.raw.spaceCombat.extraDice || 0) + 1;
+            }
+        },
+    },
+    {
+        // Your mechs in this system roll 1 additional die during combat
+        isCombat: true,
+        localeName: "unit.flagship.visz_el_vir",
+        localeDescription: "unit_modifier.desc.visz_el_vir",
+        owner: "self",
+        priority: "adjust",
+        triggerUnitAbility: "unit.flagship.visz_el_vir",
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.unit === "mech" && unitAttrs.raw.groundCombat) {
+                unitAttrs.raw.groundCombat.extraDice =
+                    (unitAttrs.raw.groundCombat.extraDice || 0) + 1;
             }
         },
     },

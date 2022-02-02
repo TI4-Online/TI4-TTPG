@@ -94,10 +94,9 @@ it("static getPlayerUnitModifiers", () => {
     assert.equal(result[0].raw.localeName, "unit_modifier.name.morale_boost");
 });
 
-it("static getFactionAbilityUnitModifiers", () => {
-    const result = UnitModifier.getFactionAbilityUnitModifiers(["fragile"]);
-    assert.equal(result.length, 1);
-    assert.equal(result[0].raw.localeName, "unit_modifier.name.fragile");
+it("static getFactionAbilityUnitModifier", () => {
+    const result = UnitModifier.getFactionAbilityUnitModifier("fragile");
+    assert.equal(result.raw.localeName, "unit_modifier.name.fragile");
 });
 
 it("name/desc", () => {
