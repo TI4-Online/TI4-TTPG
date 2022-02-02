@@ -90,11 +90,16 @@ class AuxData {
             }
 
             // Register any per-unit modifiers in the overall modifiers list.
+            // TODO XXX any "opponent" modifiers need to know opponent plastic.
             for (const unitAttrs of aux.unitAttrsSet.values()) {
-                if (unitAttrs.rawUnitModifier) {
-                    aux.unitModifiers.push(
-                        new UnitModifier(unitAttrs.rawUnitModifier)
-                    );
+                if (unitAttrs.raw.unitAbility) {
+                    const unitModifier =
+                        UnitModifier.getUnitAbilityUnitModifier(
+                            unitAttrs.raw.unitAbility
+                        );
+                    if (unitModifier) {
+                        aux.unitModifiers.push(unitModifier);
+                    }
                 }
             }
 
@@ -113,11 +118,13 @@ class AuxData {
 
             // Add any faction modifiers.
             // TODO XXX LOOK UP FACTION BY PLAYER SLOT, ADD MODIFIERS TO AUX.FACTIONABILITIES!
-            const abilityModifiers =
-                UnitModifier.getFactionAbilityUnitModifiers(
-                    aux.factionAbilities
-                );
-            aux.unitModifiers.push(...abilityModifiers);
+            for (const factionAbility of []) {
+                const unitModifier =
+                    UnitModifier.getFactionAbilityUnitModifier(factionAbility);
+                if (unitModifier) {
+                    aux.unitModifiers.push(unitModifier);
+                }
+            }
 
             UnitModifier.sortPriorityOrder(aux.unitModifiers);
 

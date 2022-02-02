@@ -177,14 +177,6 @@ class UnitAttrs {
     }
 
     /**
-     * Get linked unit modifier, if any.
-     * Do not require unit-modifier.js to avoid a require loop.
-     */
-    get rawUnitModifier() {
-        return this._rawUnitModifier;
-    }
-
-    /**
      * Assert this UnitAttrs complies with the schema.
      *
      * @param {function} onError - optional, called with the error

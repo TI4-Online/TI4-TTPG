@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
-const { world, Card, GameObject } = require("../../wrapper/api");
+const { world, Card } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
 const PRIORITY = {
@@ -25,42 +25,38 @@ const OWNER = {
 
 let _triggerNsidToUnitModifier = false;
 let _factionAbilityToUnitModifier = false;
+let _unitAbilityToUnitModifier = false;
 
-function _getUnitModifier(gameObject) {
-    assert(gameObject instanceof GameObject);
-    if (!_triggerNsidToUnitModifier) {
-        _triggerNsidToUnitModifier = {};
-        for (const rawModifier of UNIT_MODIFIERS) {
-            const unitModifier = new UnitModifier(rawModifier);
-            if (rawModifier.triggerNsid) {
-                _triggerNsidToUnitModifier[rawModifier.triggerNsid] =
-                    unitModifier;
-            }
-            if (rawModifier.triggerNsids) {
-                for (const triggerNsid of rawModifier.triggerNsids) {
-                    _triggerNsidToUnitModifier[triggerNsid] = unitModifier;
-                }
+function _maybeInit() {
+    if (_triggerNsidToUnitModifier) {
+        return; // already initialized
+    }
+    _triggerNsidToUnitModifier = {};
+    _factionAbilityToUnitModifier = {};
+    _unitAbilityToUnitModifier = {};
+
+    for (const rawModifier of UNIT_MODIFIERS) {
+        const unitModifier = new UnitModifier(rawModifier);
+
+        if (rawModifier.triggerNsid) {
+            _triggerNsidToUnitModifier[rawModifier.triggerNsid] = unitModifier;
+        }
+        if (rawModifier.triggerNsids) {
+            for (const triggerNsid of rawModifier.triggerNsids) {
+                _triggerNsidToUnitModifier[triggerNsid] = unitModifier;
             }
         }
-    }
-    const nsid = ObjectNamespace.getNsid(gameObject);
-    return _triggerNsidToUnitModifier[nsid];
-}
 
-function _getFactionAbilityUnitModifier(factionAbility) {
-    assert(typeof factionAbility === "string");
-    if (!_factionAbilityToUnitModifier) {
-        _factionAbilityToUnitModifier = {};
-        for (const rawModifier of UNIT_MODIFIERS) {
-            if (rawModifier.triggerFactionAbility) {
-                const unitModifier = new UnitModifier(rawModifier);
-                _factionAbilityToUnitModifier[
-                    rawModifier.triggerFactionAbility
-                ] = unitModifier;
-            }
+        if (rawModifier.triggerFactionAbility) {
+            _factionAbilityToUnitModifier[rawModifier.triggerFactionAbility] =
+                unitModifier;
+        }
+
+        if (rawModifier.triggerUnitAbility) {
+            _unitAbilityToUnitModifier[rawModifier.triggerUnitAbility] =
+                unitModifier;
         }
     }
-    return _factionAbilityToUnitModifier[factionAbility];
 }
 
 /**
@@ -99,9 +95,11 @@ class UnitModifier {
         assert(typeof withOwner === "string");
         assert(OWNER[withOwner]);
 
+        _maybeInit();
         const unitModifiers = [];
         for (const obj of world.getAllObjects()) {
-            const unitModifier = _getUnitModifier(obj);
+            const objNsid = ObjectNamespace.getNsid(obj);
+            const unitModifier = _triggerNsidToUnitModifier[objNsid];
             if (!unitModifier) {
                 continue;
             }
@@ -144,21 +142,27 @@ class UnitModifier {
     }
 
     /**
+     * Get faction abilility.
+     *
+     * @param {string} factionAbility
+     * @returns {unitModifier}
+     */
+    static getFactionAbilityUnitModifier(factionAbility) {
+        assert(typeof factionAbility === "string");
+        _maybeInit();
+        return _factionAbilityToUnitModifier[factionAbility];
+    }
+
+    /**
      * Get faction abililities.
      *
-     * @param {Array.{string}} factionAbilities - faction abilities
-     * @returns {Array.<unitModifier>} modifiers
+     * @param {string} unitAbility
+     * @returns {unitModifier}
      */
-    static getFactionAbilityUnitModifiers(factionAbilities) {
-        assert(Array.isArray(factionAbilities));
-        const unitModifiers = [];
-        for (const factionAbility of factionAbilities) {
-            const unitModifier = _getFactionAbilityUnitModifier(factionAbility);
-            if (unitModifier) {
-                unitModifiers.push(unitModifier);
-            }
-        }
-        return unitModifiers;
+    static getUnitAbilityUnitModifier(unitAbility) {
+        assert(typeof factionAbility === "string");
+        _maybeInit();
+        return _unitAbilityToUnitModifier[unitAbility];
     }
 
     // ------------------------------------------------------------------------

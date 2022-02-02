@@ -65,26 +65,3 @@ it("apply default value to spaceCombat.dice", () => {
     assert(UnitAttrsSchema.validate(carrier));
     assert.equal(carrier.spaceCombat.dice, 1);
 });
-
-it("verify modifier included schema", () => {
-    const bad = {
-        unit: "-",
-        localeName: "-",
-        unitModifier: {
-            a: 1,
-        },
-    };
-    assert(!UnitAttrsSchema.validate(bad, (err) => {}));
-
-    const good = {
-        unit: "-",
-        localeName: "-",
-        unitModifier: {
-            localeName: "-",
-            localeDescription: "-",
-            owner: "self",
-            priority: "mutate",
-        },
-    };
-    assert(UnitAttrsSchema.validate(good));
-});
