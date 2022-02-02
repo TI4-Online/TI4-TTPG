@@ -298,6 +298,7 @@ class Gather {
             return Gather.isFactionAlliance(nsid) === faction;
         });
         assert(cards.length === 1);
+        cards[0].setName("");
         return cards[0];
     }
 

@@ -152,16 +152,9 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             "pink",
             "brown",
         ];
-        const colorPromissoryDecks = [];
         for (const color of colors) {
-            const deck = Gather.gatherFactionPromissoryDeck(color);
-            colorPromissoryDecks.push(deck);
+            bag.addObjects([Gather.gatherFactionPromissoryDeck(color)]);
         }
-        const colorPromissoryDeck = colorPromissoryDecks.pop();
-        for (const deck of colorPromissoryDecks) {
-            colorPromissoryDeck.addCards(deck);
-        }
-        bag.addObjects([colorPromissoryDeck]);
     } else if (actionName === ACTION.GATHER_PER_PLAYER) {
         const bag = spawnChest(actionName, 2);
         bag.addObjects([Gather.gatherGenericTechDeck()]);
@@ -200,26 +193,12 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             console.log(`Gathering "${faction}"`);
             const bag = spawnChest(`${actionName} (${faction})`, 3 + i);
 
-            const tallDecks = [];
-            tallDecks.push(Gather.gatherFactionPromissoryDeck(faction));
-            const tallDeck = tallDecks.pop();
-            for (const deck of tallDecks) {
-                tallDeck.addCards(deck);
-            }
-            tallDeck.setName("");
-            bag.addObjects([tallDeck]);
+            bag.addObjects([Gather.gatherFactionPromissoryDeck(faction)]);
 
-            const wideDecks = [];
-            wideDecks.push(Gather.gatherFactionAllainceCard(faction));
-            wideDecks.push(Gather.gatherFactionTechDeck(faction));
-            wideDecks.push(Gather.gatherFactionLeadersDeck(faction));
-            wideDecks.push(Gather.gatherFactionTokenCard(faction));
-            const wideDeck = wideDecks.pop();
-            for (const deck of wideDecks) {
-                wideDeck.addCards(deck);
-            }
-            wideDeck.setName("");
-            bag.addObjects([wideDeck]);
+            bag.addObjects([Gather.gatherFactionAllainceCard(faction)]);
+            bag.addObjects([Gather.gatherFactionTechDeck(faction)]);
+            bag.addObjects([Gather.gatherFactionLeadersDeck(faction)]);
+            bag.addObjects([Gather.gatherFactionTokenCard(faction)]);
 
             bag.addObjects([Gather.gatherFactionReferenceCard(faction)]);
             bag.addObjects(Gather.gatherFactionTokens(faction));
