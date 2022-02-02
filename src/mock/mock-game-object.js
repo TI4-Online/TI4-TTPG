@@ -4,7 +4,7 @@ const Rotator = require("./mock-rotator");
 
 class GameObject {
     constructor(data) {
-        this._container = (data && data.container) || undefined
+        this._container = (data && data.container) || undefined;
         this._id = (data && data.id) || "abcd";
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
         this._position = (data && data.position) || new Vector(0, 0, 0);
@@ -29,7 +29,7 @@ class GameObject {
     onTick = new TriggerableMulticastDelegate();
 
     getContainer() {
-        return this._container
+        return this._container;
     }
 
     getId() {

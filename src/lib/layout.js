@@ -1,28 +1,24 @@
-const assert = require('../wrapper/assert')
-const { Rotator, Vector } = require('../wrapper/api')
+const assert = require("../wrapper/assert");
+const { Rotator, Vector } = require("../wrapper/api");
 
 class Layout {
     constructor() {
-        this._distanceBetween = 1
+        this._distanceBetween = 1;
     }
 
     setDistanceBetween(value) {
-        assert(typeof(value) === 'number')
-        this._distanceBetween = value
-        return this
+        assert(typeof value === "number");
+        this._distanceBetween = value;
+        return this;
     }
 
     setLayoutCenter(center) {
-        assert(center instanceof Vector)
+        assert(center instanceof Vector);
     }
 
-    layoutArc() {
+    layoutArc() {}
 
-    }
-
-    drawDebug() {
-
-    }
+    drawDebug() {}
 }
 
-module.exports = Layout
+module.exports = Layout;

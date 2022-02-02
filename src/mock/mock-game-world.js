@@ -17,7 +17,7 @@ class GameWorld {
     }
 
     __clear() {
-        this._allObjects = []
+        this._allObjects = [];
     }
 
     static getExecutionReason() {
