@@ -4,11 +4,14 @@ const { ReplaceObjects } = require("./replace-objects");
 const { Spawn } = require("./spawn");
 const {
     Card,
+    Color,
     Rotator,
+    Text,
+    UIElement,
     Vector,
     refObject,
     world,
-} = require("../../wrapper/api");
+} = require("@tabletop-playground/api");
 
 const ACTION = {
     CLEAN_ALL: "*Clean ALL",
@@ -30,7 +33,7 @@ function asyncSpawnTypes() {
     );
     const typeToNsids = Spawn.groupNSIDs(nsids);
 
-    const x0 = 30;
+    const x0 = 40;
     const y0 = -100;
     const z0 = world.getTableHeight() + 2;
     const yMax = 100;
@@ -81,10 +84,26 @@ function asyncSpawnTypes() {
 
 function spawnChest(name, slotIndex) {
     const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
-    const pos = new Vector(-32, slotIndex * 20, world.getTableHeight() + 3);
+    const numCols = 14;
+    const col = slotIndex % numCols;
+    const row = Math.floor(slotIndex / numCols);
+    const distanceBetween = 15;
+    const pos = new Vector(
+        -5 - row * distanceBetween,
+        -100 + col * distanceBetween,
+        world.getTableHeight() + 3
+    );
     const bag = world.createObjectFromTemplate(chestTemplateId, pos);
     bag.setMaxItems(500);
     bag.setName(name);
+
+    const ui = new UIElement();
+    ui.position = new Vector(0, 0, bag.getExtent().z + 1);
+    ui.widget = new Text()
+        .setText(name.replace(" ", "\n"))
+        .setTextColor(new Color(0, 0, 0));
+    bag.addUI(ui);
+    bag.updateUI();
     return bag;
 }
 
@@ -105,7 +124,6 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         bag.addObjects(objs);
     } else if (actionName === ACTION.GATHER_ON_TABLE) {
         const bag = spawnChest(actionName, 1);
-
         bag.addObjects([Gather.gatherDeck("action")]);
         bag.addObjects([Gather.gatherDeck("agenda")]);
         bag.addObjects([Gather.gatherDeck("planet")]);
@@ -120,15 +138,64 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         bag.addObjects([Gather.gatherDeck("relic")]);
         bag.addObjects(Gather.gatherTableTokenAndTokenBags());
         bag.addObjects(Gather.gatherStrategyCards());
-        bag.addObjects(Gather.gatherSystemTiles());
+        bag.addObjects(Gather.gatherSystemTiles()); // TODO XXX FACTION TILES!
     } else if (actionName === ACTION.GATHER_PER_PLAYER) {
         const bag = spawnChest(actionName, 2);
-
         bag.addObjects([Gather.gatherGenericTechDeck()]);
         bag.addObjects(Gather.gatherUnitsAndUnitBags());
         bag.addObjects(Gather.gatherCoreTokenAndTokenBags()); // if giving a set to each player
         bag.addObjects(Gather.gatherSheets());
     } else if (actionName === ACTION.GATHER_PER_FACTION) {
-        const bag = spawnChest(actionName, 3);
+        const factions = [
+            "arborec",
+            "argent",
+            "creuss",
+            "empyrean",
+            "hacan",
+            "jolnar",
+            "l1z1x",
+            "letnev",
+            "mahact",
+            "mentak",
+            "muaat",
+            "norr",
+            "naalu",
+            "naazrokha",
+            "nekro",
+            "nomad",
+            "saar",
+            "sol",
+            "ul",
+            "vuilraith",
+            "winnu",
+            "xxcha",
+            "yin",
+            "yssaril",
+        ];
+        for (let i = 0; i < factions.length; i++) {
+            const faction = factions[i];
+            console.log(`Gathering "${faction}"`);
+            const bag = spawnChest(`${actionName} (${faction})`, 3 + i);
+            bag.addObjects([Gather.gatherFactionTechDeck(faction)]);
+            bag.addObjects([Gather.gatherFactionPromissoryDeck(faction)]);
+            bag.addObjects([Gather.gatherFactionLeadersDeck(faction)]);
+            bag.addObjects([Gather.gatherFactionAllainceCard(faction)]);
+            bag.addObjects([Gather.gatherFactionReferenceCard(faction)]);
+            bag.addObjects([Gather.gatherFactionTokenCard(faction)]);
+            bag.addObjects([Gather.gatherFactionTokens(faction)]);
+        }
     }
 });
+
+// TODO XXX
+const colors = [
+    "white",
+    "blue",
+    "purple",
+    "green",
+    "red",
+    "yellow",
+    "orange",
+    "pink",
+    "brown",
+];

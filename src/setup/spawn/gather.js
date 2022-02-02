@@ -2,6 +2,7 @@ const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
+const GameObject = require("../../mock/mock-game-object");
 
 /**
  * After spawning objects, gather together those for a generic player setup.
@@ -48,10 +49,12 @@ class Gather {
                     if (filterNsid(nsid)) {
                         let cardObj;
                         if (obj.getStackSize() > 1) {
+                            //console.log(`${nsid}: ${i}/${obj.getStackSize()}`);
                             cardObj = obj.takeCards(1, true, i);
                         } else {
                             cardObj = obj; // cannot take final card
                         }
+                        assert(cardObj instanceof Card);
                         result.push(cardObj);
                     }
                 }
@@ -76,17 +79,28 @@ class Gather {
         return deckObject; // stack, might be only one card, or even undefined if empty array
     }
 
-    static isGenericTechCardNsid(nsid) {
-        // "card.technology.red", "card.technology.red.muatt"
+    static parseNextTypePart(nsid, requiredTypeParts, returnTypePartIndex) {
+        assert(typeof nsid === "string");
+        assert(Array.isArray(requiredTypeParts));
+
         const parsed = ObjectNamespace.parseNsid(nsid);
         if (!parsed) {
-            return false; // does not have an NSID
+            return false; // not an NSID
         }
         const typeParts = parsed.type.split(".");
-        if (typeParts[0] !== "card" || typeParts[1] !== "technology") {
-            return false; // not a technology card
+        for (let i = 0; i < requiredTypeParts.length; i++) {
+            if (typeParts[i] !== requiredTypeParts[i]) {
+                return false; // type part mimatch
+            }
         }
-        return typeParts.length < 4;
+        return typeParts[returnTypePartIndex];
+    }
+
+    static isGenericTechCardNsid(nsid) {
+        return (
+            Gather.parseNextTypePart(nsid, ["card", "technology"], 2) &&
+            !Gather.isFactionTechCardNsid(nsid)
+        );
     }
 
     static gatherGenericTechDeck() {
@@ -97,22 +111,16 @@ class Gather {
     }
 
     static isFactionTechCardNsid(nsid) {
-        // "card.technology.red", "card.technology.red.muatt"
-        const parsed = ObjectNamespace.parseNsid(nsid);
-        if (!parsed) {
-            return false; // does not have an NSID
-        }
-        const typeParts = parsed.type.split(".");
-        if (typeParts[0] !== "card" || typeParts[1] !== "technology") {
-            return false; // not a technology card
-        }
-        return typeParts.length > 3 ? typeParts[3] : false;
+        // "card.technology.red", "card.technology.red.muaat"
+        return Gather.parseNextTypePart(nsid, ["card", "technology"], 3);
     }
 
     static gatherFactionTechDeck(faction) {
+        assert(typeof faction === "string");
         const cards = Gather.gather((nsid) => {
-            Gather.isFactionTechCardNsid(nsid) === faction;
+            return Gather.isFactionTechCardNsid(nsid) === faction;
         });
+        console.log(cards);
         const deck = Gather.makeDeck(cards);
         deck.setName(locale("deck.technology"));
         return deck;
@@ -125,7 +133,7 @@ class Gather {
         }
         const typeParts = parsed.type.split(".");
         if (typeParts[0] !== "card") {
-            return false; // not a technology card
+            return false; // not a card
         }
         return typeParts.slice(1).join(".");
     }
@@ -143,10 +151,9 @@ class Gather {
     static isUnitOrUnitBag(nsid) {
         // "unit:base/fighter", "bag.unit:base/fighter"
         const parsed = ObjectNamespace.parseNsid(nsid);
-        if (!parsed) {
-            return false; // does not have an NSID
+        if (parsed) {
+            return parsed.type === "unit" || parsed.type === "bag.unit";
         }
-        return parsed.type === "unit" || parsed.type === "bag.unit";
     }
 
     static gatherUnitsAndUnitBags() {
@@ -210,13 +217,9 @@ class Gather {
     static isCoreSheet(nsid) {
         const coreSheetNameSet = new Set(["command", "leader"]);
         const parsed = ObjectNamespace.parseNsid(nsid);
-        if (!parsed) {
-            return false; // does not have an NSID
+        if (parsed && parsed.type === "sheet") {
+            return coreSheetNameSet.has(parsed.name);
         }
-        if (parsed.type !== "sheet") {
-            return false;
-        }
-        return coreSheetNameSet.has(parsed.name);
     }
 
     static gatherSheets() {
@@ -237,10 +240,9 @@ class Gather {
 
     static isSystemTile(nsid) {
         const parsed = ObjectNamespace.parseNsid(nsid);
-        if (!parsed) {
-            return false; // does not have an NSID
+        if (parsed) {
+            return parsed.type === "tile.system";
         }
-        return parsed.type === "tile.system";
     }
 
     static gatherSystemTiles() {
@@ -249,61 +251,104 @@ class Gather {
 
     static isStrategyCard(nsid) {
         const parsed = ObjectNamespace.parseNsid(nsid);
-        if (!parsed) {
-            return false; // does not have an NSID
+        if (parsed) {
+            return parsed.type === "tile.strategy";
         }
-        return parsed.type === "tile.strategy";
     }
 
     static gatherStrategyCards() {
         return Gather.gather(Gather.isStrategyCard);
     }
 
-    static gatherFactionObjects() {
-        const factions = new Set([
-            "arborec",
-            "argent",
-            "creuss",
-            "empyrean",
-            "hacan",
-            "jolnar",
-            "l1z1x",
-            "letnev",
-            "mahact",
-            "mentak",
-            "muaat",
-            "norr",
-            "naalu",
-            "naazrokha",
-            "nekro",
-            "nomad",
-            "saar",
-            "sol",
-            "ul",
-            "vuilraith",
-            "winnu",
-            "xxcha",
-            "yin",
-            "yssaril",
-        ]);
-        const factionToObjects = {};
-
-        // Tech
-
-        // Promissory
-
-        // Leaders
-
-        // Alliance
-
-        // Planet cards
-
-        // Home system tile
-
-        // Command + Control tokens
-
-        // Faction sheet
+    static isFactionPromissoryNsid(nsid) {
+        // careful, this can also return a color instead of a faction name for those notes
+        return Gather.parseNextTypePart(nsid, ["card", "promissory"], 2);
     }
+
+    static gatherFactionPromissoryDeck(faction) {
+        assert(typeof faction === "string");
+        const cards = Gather.gather((nsid) => {
+            return Gather.isFactionPromissoryNsid(nsid) === faction;
+        });
+        console.log(cards);
+        const deck = Gather.makeDeck(cards);
+        deck.setName(locale("deck.promissory"));
+        return deck;
+    }
+
+    static isFactionLeaderNsid(nsid) {
+        return Gather.parseNextTypePart(nsid, ["card", "leader"], 3);
+    }
+
+    static gatherFactionLeadersDeck(faction) {
+        const cards = Gather.gather((nsid) => {
+            return Gather.isFactionLeaderNsid(nsid) === faction;
+        });
+        const deck = Gather.makeDeck(cards);
+        deck.setName(locale("deck.leader"));
+        return deck;
+    }
+
+    static isFactionAlliance(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (parsed && parsed.type === "card.alliance") {
+            return parsed.name;
+        }
+    }
+
+    static gatherFactionAllainceCard(faction) {
+        const cards = Gather.gather((nsid) => {
+            return Gather.isFactionAlliance(nsid) === faction;
+        });
+        assert(cards.length === 1);
+        return cards[0];
+    }
+
+    static isFactionReference(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (parsed && parsed.type === "card.faction_reference") {
+            return parsed.name;
+        }
+    }
+
+    static gatherFactionReferenceCard(faction) {
+        const cards = Gather.gather((nsid) => {
+            return Gather.isFactionReference(nsid) === faction;
+        });
+        assert(cards.length === 1);
+        return cards[0];
+    }
+
+    static isFactionTokenCard(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (parsed && parsed.type === "card.faction_token") {
+            return parsed.name;
+        }
+    }
+
+    static gatherFactionTokenCard(faction) {
+        const cards = Gather.gather((nsid) => {
+            return Gather.isFactionTokenCard(nsid) === faction;
+        });
+        assert(cards.length === 1);
+        return cards[0];
+    }
+
+    static isFactionToken(nsid) {
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (
+            parsed &&
+            (parsed.type === "token.command" || parsed.type === "token.control")
+        ) {
+            return parsed.name;
+        }
+    }
+
+    static gatherFactionTokens(faction) {
+        return Gather.gather((nsid) => Gather.isFactionToken(nsid) === faction);
+    }
+
+    // Faction sheet
 }
 
 module.exports = { Gather };

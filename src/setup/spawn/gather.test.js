@@ -91,6 +91,12 @@ it("isFactionTechCardNsid", () => {
         ),
         "yin"
     );
+    assert.equal(
+        Gather.isFactionTechCardNsid(
+            "card.technology.unit_upgrade.arborec:base/letani_warrior_2"
+        ),
+        "arborec"
+    );
 });
 
 it("isCard", () => {
@@ -133,4 +139,60 @@ it("isCoreSheet", () => {
     assert(Gather.isCoreSheet("sheet:pok/leader"));
     assert(!Gather.isCoreSheet("bag.token:base/fighter_1"));
     assert(!Gather.isCoreSheet("bag.unit:base/fighter"));
+});
+
+it("isFactionPromissoryNsid", () => {
+    assert.equal(
+        Gather.isFactionPromissoryNsid("card.promissory.saar:base/raghs_call"),
+        "saar"
+    );
+    assert.equal(
+        Gather.isFactionPromissoryNsid(
+            "card.promissory.orange:base/support_for_the_throne"
+        ),
+        "orange"
+    );
+    assert(
+        !Gather.isFactionPromissoryNsid(
+            "card.leader.commander.winnu:pok/rickar_rickani"
+        )
+    );
+});
+
+it("isFactionLeaderNsid", () => {
+    assert.equal(
+        Gather.isFactionLeaderNsid(
+            "card.leader.commander.winnu:pok/rickar_rickani"
+        ),
+        "winnu"
+    );
+});
+
+it("isFactionAlliance", () => {
+    assert.equal(Gather.isFactionAlliance("card.alliance:base/norr"), "norr");
+});
+
+it("isFactionReference", () => {
+    assert.equal(
+        Gather.isFactionReference("card.faction_reference:base/winnu"),
+        "winnu"
+    );
+});
+
+it("isFactionTokenCard", () => {
+    assert.equal(
+        Gather.isFactionTokenCard("card.faction_token:base/arborec"),
+        "arborec"
+    );
+});
+
+it("isFactionToken", () => {
+    assert.equal(
+        Gather.isFactionToken("token.command:base/arborec"),
+        "arborec"
+    );
+    assert.equal(
+        Gather.isFactionToken("token.control:base/arborec"),
+        "arborec"
+    );
 });
