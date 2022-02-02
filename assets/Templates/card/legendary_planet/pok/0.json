@@ -1,0 +1,73 @@
+{
+	"Type": "Card",
+	"GUID": "6238F8C95669FB27918E0BC8DCA49852",
+	"Name": "Legendary Planets (pok)",
+	"Metadata": "card.legendary_planet:pok/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/legendary_planet/pok/0.face.jpg",
+	"BackTexture": "locale/card/legendary_planet/pok/0.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": 0,
+	"NumHorizontal": 4,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3
+	],
+	"CardNames": {
+		"0": "Exterrix Headquarters",
+		"1": "Imperial Arms Vault",
+		"2": "Mirage Flight Academy",
+		"3": "The Atrament"
+	},
+	"CardMetadata": {
+		"0": "card.legendary_planet:pok/exterrix_headquarters",
+		"1": "card.legendary_planet:pok/imperial_arms_vault",
+		"2": "card.legendary_planet:pok/mirage_flight_academy",
+		"3": "card.legendary_planet:pok/the_atrament"
+	}
+}
