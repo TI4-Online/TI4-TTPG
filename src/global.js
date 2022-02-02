@@ -2,7 +2,7 @@ const { globalEvents } = require("@tabletop-playground/api");
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 const locale = require("./lib/locale");
 
-console.log(locale("ui.message.welcome"));
+console.log("Welcome to Twilight Imperium IV");
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
