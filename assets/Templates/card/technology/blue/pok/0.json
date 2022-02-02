@@ -1,0 +1,70 @@
+{
+	"Type": "Card",
+	"GUID": "CEF81897610DA4E4F6AEBFC9D92D9297",
+	"Name": "Technology (Blue) (pok)",
+	"Metadata": "card.technology.blue:pok/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/technology/blue/pok/0.face.jpg",
+	"BackTexture": "global/card/technology/blue.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": 0,
+	"NumHorizontal": 2,
+	"NumVertical": 2,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2
+	],
+	"CardNames": {
+		"0": "Dark Energy Tap",
+		"1": "Sling Relay",
+		"2": "Aetherstream"
+	},
+	"CardMetadata": {
+		"0": "card.technology.blue:pok/dark_energy_tap",
+		"1": "card.technology.blue:pok/sling_relay",
+		"2": "card.technology.blue.empyrean:pok/aetherstream"
+	}
+}
