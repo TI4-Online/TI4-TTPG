@@ -1,4 +1,5 @@
-const { Card } = require("../wrapper/api");
+const assert = require("../wrapper/assert");
+const { Card, GameObject } = require("../wrapper/api");
 
 /**
  * Test and parse GameObject.getTemplateMetadata() namespace.
@@ -19,11 +20,48 @@ class ObjectNamespace {
         throw new Error("Static only");
     }
 
+    /**
+     * Parse a 'type:source/name' string into components.
+     *
+     * @param {GameObject} obj
+     * @returns {{ type : string, source : string, name : string}}
+     */
+    static parseNsid(nsid) {
+        assert(typeof nsid === "string");
+        const m = nsid.match(/^([^:]+):([^/]+)\/(.+)$/);
+        return m && { type: m[1], source: m[2], name: m[3] };
+    }
+
+    /**
+     * Get the NSID from an object.
+     *
+     * @param {GameObject} obj
+     * @returns {string}
+     */
     static getNsid(obj) {
+        assert(obj instanceof GameObject);
         if (obj instanceof Card) {
-            return obj.getCardDetails().metadata;
+            if (obj.getStackSize() == 1) {
+                return obj.getCardDetails().metadata;
+            } else {
+                // This is a deck.  Treat as anonymous.
+                return "";
+            }
         }
         return obj.getTemplateMetadata();
+    }
+
+    /**
+     * Get card NSIDs from a deck, in deck order.
+     *
+     * @param {GameObject} obj
+     * @returns {Array.{string}}
+     */
+    static getDeckNsids(obj) {
+        assert(obj instanceof Card);
+        return obj
+            .getAllCardDetails()
+            .map((cardDetails) => cardDetails.metadata);
     }
 
     /**
@@ -34,20 +72,20 @@ class ObjectNamespace {
      * @returns {boolean}
      */
     static isGenericType(obj, type) {
+        assert(typeof type === "string");
         const nsid = ObjectNamespace.getNsid(obj);
         return nsid.startsWith(type);
     }
 
     /**
-     * Parse a 'type:source/name' string into components.
+     * Parse object NSID into components.
      *
      * @param {GameObject} obj
      * @returns {{ type : string, source : string, name : string}}
      */
     static parseGeneric(obj) {
         const nsid = ObjectNamespace.getNsid(obj);
-        const m = nsid.match(/^([^:]+):([^/]+)\/(.+)$/);
-        return m && { type: m[1], source: m[2], name: m[3] };
+        return ObjectNamespace.parseNsid(nsid);
     }
 
     /**
@@ -134,6 +172,19 @@ class ObjectNamespace {
     }
 
     static parseToken(obj) {
+        const result = ObjectNamespace.parseGeneric(obj);
+        if (result) {
+            result.token = result.name.split(".")[0]; // tear tokens
+        }
+        return result;
+    }
+
+    static isTokenBag(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid.startsWith("bag.token");
+    }
+
+    static parseTokenBag(obj) {
         const result = ObjectNamespace.parseGeneric(obj);
         if (result) {
             result.token = result.name.split(".")[0]; // tear tokens

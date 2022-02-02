@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "243A2F7E49E3F2FDB6E4F387A47AA359",
-	"Name": "CommandSheet",
-	"Metadata": "",
+	"Name": "LeaderSheet",
+	"Metadata": "sheet:pok/leader",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

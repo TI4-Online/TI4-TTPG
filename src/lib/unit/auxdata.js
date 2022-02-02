@@ -91,8 +91,10 @@ class AuxData {
 
             // Register any per-unit modifiers in the overall modifiers list.
             for (const unitAttrs of aux.unitAttrsSet.values()) {
-                if (unitAttrs.unitModifier) {
-                    aux.unitModifiers.push(unitAttrs.unitModifier);
+                if (unitAttrs.rawUnitModifier) {
+                    aux.unitModifiers.push(
+                        new UnitModifier(unitAttrs.rawUnitModifier)
+                    );
                 }
             }
 

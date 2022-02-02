@@ -106,7 +106,10 @@ class UnitModifier {
                 continue;
             }
 
-            // Cards must be face up.
+            if (obj.getContainer()) {
+                continue; // inside a container
+            }
+
             if (obj instanceof Card && !obj.isFaceUp()) {
                 continue; // face down card
             }
