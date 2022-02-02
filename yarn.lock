@@ -1194,6 +1194,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@tabletop-playground/api@^0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@tabletop-playground/api/-/api-0.24.0.tgz#569997c703188f98c217a9ea9df97a73414abfb3"
+  integrity sha512-l80HA7WhiULjDaE6/yQquaBn3iLSerVB7OrgIf2fTyVQrhFmPiaBID4JqPXj5nHvQTiszhnUH0x1YH1J/b+9rg==
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
