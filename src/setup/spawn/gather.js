@@ -2,7 +2,6 @@ const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
-const GameObject = require("../../mock/mock-game-object");
 
 /**
  * After spawning objects, gather together those for a generic player setup.
@@ -120,7 +119,6 @@ class Gather {
         const cards = Gather.gather((nsid) => {
             return Gather.isFactionTechCardNsid(nsid) === faction;
         });
-        console.log(cards);
         const deck = Gather.makeDeck(cards);
         deck.setName(locale("deck.technology"));
         return deck;
@@ -270,7 +268,6 @@ class Gather {
         const cards = Gather.gather((nsid) => {
             return Gather.isFactionPromissoryNsid(nsid) === faction;
         });
-        console.log(cards);
         const deck = Gather.makeDeck(cards);
         deck.setName(locale("deck.promissory"));
         return deck;
@@ -345,7 +342,11 @@ class Gather {
     }
 
     static gatherFactionTokens(faction) {
-        return Gather.gather((nsid) => Gather.isFactionToken(nsid) === faction);
+        const result = Gather.gather(
+            (nsid) => Gather.isFactionToken(nsid) === faction
+        );
+        assert(result.length === 2);
+        return result;
     }
 
     // Faction sheet

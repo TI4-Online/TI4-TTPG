@@ -100,7 +100,7 @@ function spawnChest(name, slotIndex) {
     const ui = new UIElement();
     ui.position = new Vector(0, 0, bag.getExtent().z + 1);
     ui.widget = new Text()
-        .setText(name.replace(" ", "\n"))
+        .setText(name.replace(/ /g, "\n"))
         .setTextColor(new Color(0, 0, 0));
     bag.addUI(ui);
     bag.updateUI();
@@ -139,6 +139,29 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         bag.addObjects(Gather.gatherTableTokenAndTokenBags());
         bag.addObjects(Gather.gatherStrategyCards());
         bag.addObjects(Gather.gatherSystemTiles()); // TODO XXX FACTION TILES!
+
+        // These are per-color, but group them for the table collection.
+        const colors = [
+            "white",
+            "blue",
+            "purple",
+            "green",
+            "red",
+            "yellow",
+            "orange",
+            "pink",
+            "brown",
+        ];
+        const colorPromissoryDecks = [];
+        for (const color of colors) {
+            const deck = Gather.gatherFactionPromissoryDeck(color);
+            colorPromissoryDecks.push(deck);
+        }
+        const colorPromissoryDeck = colorPromissoryDecks.pop();
+        for (const deck of colorPromissoryDecks) {
+            colorPromissoryDeck.addCards(deck);
+        }
+        bag.addObjects([colorPromissoryDeck]);
     } else if (actionName === ACTION.GATHER_PER_PLAYER) {
         const bag = spawnChest(actionName, 2);
         bag.addObjects([Gather.gatherGenericTechDeck()]);
@@ -176,26 +199,30 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             const faction = factions[i];
             console.log(`Gathering "${faction}"`);
             const bag = spawnChest(`${actionName} (${faction})`, 3 + i);
-            bag.addObjects([Gather.gatherFactionTechDeck(faction)]);
-            bag.addObjects([Gather.gatherFactionPromissoryDeck(faction)]);
-            bag.addObjects([Gather.gatherFactionLeadersDeck(faction)]);
-            bag.addObjects([Gather.gatherFactionAllainceCard(faction)]);
+
+            const tallDecks = [];
+            tallDecks.push(Gather.gatherFactionPromissoryDeck(faction));
+            const tallDeck = tallDecks.pop();
+            for (const deck of tallDecks) {
+                tallDeck.addCards(deck);
+            }
+            tallDeck.setName("");
+            bag.addObjects([tallDeck]);
+
+            const wideDecks = [];
+            wideDecks.push(Gather.gatherFactionAllainceCard(faction));
+            wideDecks.push(Gather.gatherFactionTechDeck(faction));
+            wideDecks.push(Gather.gatherFactionLeadersDeck(faction));
+            wideDecks.push(Gather.gatherFactionTokenCard(faction));
+            const wideDeck = wideDecks.pop();
+            for (const deck of wideDecks) {
+                wideDeck.addCards(deck);
+            }
+            wideDeck.setName("");
+            bag.addObjects([wideDeck]);
+
             bag.addObjects([Gather.gatherFactionReferenceCard(faction)]);
-            bag.addObjects([Gather.gatherFactionTokenCard(faction)]);
-            bag.addObjects([Gather.gatherFactionTokens(faction)]);
+            bag.addObjects(Gather.gatherFactionTokens(faction));
         }
     }
 });
-
-// TODO XXX
-const colors = [
-    "white",
-    "blue",
-    "purple",
-    "green",
-    "red",
-    "yellow",
-    "orange",
-    "pink",
-    "brown",
-];

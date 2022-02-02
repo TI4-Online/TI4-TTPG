@@ -166,10 +166,12 @@ it("isFactionLeaderNsid", () => {
         ),
         "winnu"
     );
+    assert(!Gather.isFactionLeaderNsid("unit:base/fighter"));
 });
 
 it("isFactionAlliance", () => {
     assert.equal(Gather.isFactionAlliance("card.alliance:base/norr"), "norr");
+    assert(!Gather.isFactionAlliance("unit:base/fighter"));
 });
 
 it("isFactionReference", () => {
@@ -177,6 +179,7 @@ it("isFactionReference", () => {
         Gather.isFactionReference("card.faction_reference:base/winnu"),
         "winnu"
     );
+    assert(!Gather.isFactionReference("unit:base/fighter"));
 });
 
 it("isFactionTokenCard", () => {
@@ -184,6 +187,7 @@ it("isFactionTokenCard", () => {
         Gather.isFactionTokenCard("card.faction_token:base/arborec"),
         "arborec"
     );
+    assert(!Gather.isFactionTokenCard("unit:base/fighter"));
 });
 
 it("isFactionToken", () => {
@@ -195,4 +199,5 @@ it("isFactionToken", () => {
         Gather.isFactionToken("token.control:base/arborec"),
         "arborec"
     );
+    assert(!Gather.isFactionToken("unit:base/fighter"));
 });
