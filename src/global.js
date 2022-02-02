@@ -1,6 +1,5 @@
 const { globalEvents } = require("@tabletop-playground/api");
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
-const locale = require("./lib/locale");
 
 console.log("Welcome to Twilight Imperium IV");
 
