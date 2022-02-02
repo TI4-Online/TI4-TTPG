@@ -52,7 +52,7 @@ const spawnWatcher = (config) => {
         return new Promise((resolve, reject) => {
             const watcher = chokidar.watch("./**", {
                 cwd: "./src",
-                ignored: /(^|[/\\])\../,
+                ignored: [/(^|[/\\])\../, "mock/**", "**/*.test.js"],
             });
 
             const doCopy = (path) => {

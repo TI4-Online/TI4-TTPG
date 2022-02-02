@@ -37,6 +37,7 @@
     "fs-extra": "^10.0.0",
     "jest": "^27.4.7",
     "klaw": "^4.0.1",
+    "minimatch": "^3.0.4",
     "prettier": "^2.5.1",
     "regenerator-runtime": "^0.13.9",
     "sharp": "^0.29.3",

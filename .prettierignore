@@ -8,3 +8,5 @@
 
 # local build for production
 /prd
+
+src/lib/langdef.js
