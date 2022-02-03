@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "8D97B9AC4831A002E60439BF289EED56",
 	"Name": "Nekrovirus (X)",
-	"Metadata": "token:base/fighter_1",
+	"Metadata": "token.nekro:base/valefar_assimilator_x",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

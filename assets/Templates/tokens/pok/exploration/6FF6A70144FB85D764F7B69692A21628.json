@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "6FF6A70144FB85D764F7B69692A21628",
 	"Name": "Terraform",
-	"Metadata": "token.exploration.attachment:pok/biotic_facility",
+	"Metadata": "token.attachment.ul:pok/terraform",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

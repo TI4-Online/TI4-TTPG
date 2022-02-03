@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "BCAB0D0B4E66E0188018458FD7A660B0",
 	"Name": "Mining World",
-	"Metadata": "token.exploration.attachment:pok/mining_world",
+	"Metadata": "token.attachment.exploration:pok/mining_world",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
