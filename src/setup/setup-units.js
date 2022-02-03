@@ -1,7 +1,8 @@
 const { Layout } = require("../lib/layout");
-const { ObjectNamespace } = require("../lib/object-namespace");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 const assert = require("../wrapper/assert");
+const UNIT_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-unit.json");
+const BAG_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-bag-unit.json");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
@@ -54,7 +55,7 @@ const UNIT_DATA = [
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
 class SetupUnits {
-    static setup(deskCenter, deskRot, playerSlot) {
+    static setup(deskData) {
         // Desk center [-119.224, 6.05442]
         // Arc origin [-128.069, -8.963]
         // const tCenter = new Vector(-119.224, 6.05442, 0);
@@ -63,12 +64,12 @@ class SetupUnits {
         // const d = tShelfCenter.subtract(tCenter);
         // console.log(`${d.x} ${d.y}`);
 
-        let shelfCenter = new Vector(5.783, -55.639, 8);
-        let arcOrigin = new Vector(-8.845, -15.017, 0);
-        shelfCenter = shelfCenter.rotateAngleAxis(deskRot.yaw, [0, 0, 1]);
-        shelfCenter = shelfCenter.add(deskCenter);
-        arcOrigin = arcOrigin.rotateAngleAxis(deskRot.yaw, [0, 0, 1]);
-        arcOrigin = arcOrigin.add(deskCenter);
+        const shelfCenter = new Vector(5.783, -55.639, 8)
+            .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
+            .add(deskData.pos);
+        const arcOrigin = new Vector(-8.845, -15.017, 0)
+            .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
+            .add(deskData.pos);
 
         // Use layout to find positions and rotations along an arc.
         const pointPosRots = new Layout()
@@ -78,72 +79,46 @@ class SetupUnits {
             .layoutArc(arcOrigin)
             .getPoints();
 
-        const setupPlans = [];
+        assert(UNIT_DATA.length == pointPosRots.length);
         for (let i = 0; i < UNIT_DATA.length; i++) {
-            const unitData = UNIT_DATA[i];
-            const pointPosRot = pointPosRots[i];
-            setupPlans.push({
-                unitData: unitData,
-                pos: pointPosRot.pos,
-                rot: pointPosRot.rot,
-            });
+            SetupUnits._setupUnit(deskData, UNIT_DATA[i], pointPosRots[i]);
+        }
+    }
+
+    static _setupUnit(deskData, unitData, pointPosRot) {
+        const unitNsid = unitData.unitNsid;
+        const unitTemplateId = UNIT_NSID_TO_TEMPLATE_GUID[unitNsid];
+        if (!unitTemplateId) {
+            throw new Error(`cannot find ${unitNsid}`);
+        }
+        const bagNsid = "bag." + unitNsid;
+        const bagTemplateId = BAG_NSID_TO_TEMPLATE_GUID[bagNsid];
+        if (!bagTemplateId) {
+            throw new Error(`cannot find ${bagNsid}`);
         }
 
-        const setupNext = () => {
-            const setupPlan = setupPlans.pop();
-            if (!setupPlan) {
-                return false;
-            }
+        const bag = world.createObjectFromTemplate(
+            bagTemplateId,
+            pointPosRot.pos
+        );
+        assert(bag);
+        bag.setRotation(pointPosRot.rot);
+        bag.clear(); // just in case copied a full one
+        bag.setObjectType(ObjectType.Ground);
+        bag.setOwningPlayerSlot(deskData.playerSlot);
+        const tint = bag.getPrimaryColor();
 
-            // Find unit and bag.
-            const unitNsid = setupPlan.unitData.unitNsid;
-            const bagNsid = "bag." + unitNsid;
-
-            let unitJson = false;
-            let bagJson = false;
-            for (const obj of world.getAllObjects()) {
-                const nsid = ObjectNamespace.getNsid(obj);
-                if (nsid === unitNsid && !unitJson) {
-                    unitJson = obj.toJSONString();
-                }
-                if (nsid === bagNsid && !bagJson) {
-                    bagJson = obj.toJSONString();
-                }
-            }
-            if (!unitJson) {
-                throw new Error(`cannot find ${unitNsid}`);
-            }
-            if (!bagJson) {
-                throw new Error(`cannot find ${bagNsid}`);
-            }
-
-            const bag = world.createObjectFromJSON(bagJson, setupPlan.pos);
-            assert(bag);
-            bag.setRotation(setupPlan.rot);
-            bag.clear(); // just in case copied a full one
-            bag.setObjectType(ObjectType.Ground);
-            bag.setOwningPlayerSlot(playerSlot);
-            const tint = bag.getPrimaryColor();
-
-            for (let i = 0; i < setupPlan.unitData.unitCount; i++) {
-                const aboveBag = setupPlan.pos.add([0, 0, 10 + i]);
-                const unit = world.createObjectFromJSON(unitJson, aboveBag);
-                assert(unit);
-                unit.setOwningPlayerSlot(playerSlot);
-                unit.setPrimaryColor(tint);
-                bag.addObjects([unit]);
-            }
-
-            return true;
-        };
-        const chainSetup = () => {
-            if (setupNext()) {
-                setTimeout(chainSetup, 100);
-            } else {
-                // finished, callback?
-            }
-        };
-        chainSetup();
+        for (let i = 0; i < unitData.unitCount; i++) {
+            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i]);
+            const unit = world.createObjectFromTemplate(
+                unitTemplateId,
+                aboveBag
+            );
+            assert(unit);
+            unit.setOwningPlayerSlot(deskData.playerSlot);
+            unit.setPrimaryColor(tint);
+            bag.addObjects([unit]);
+        }
     }
 }
 
