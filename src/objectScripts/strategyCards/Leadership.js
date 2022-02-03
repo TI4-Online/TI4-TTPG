@@ -1,6 +1,6 @@
 const strategyCard = require("./strategyCard");
-const tp = require('@tabletop-playground/api');
-const { refObject } = require('@tabletop-playground/api');
+const tp = require("@tabletop-playground/api");
+const { refObject } = require("@tabletop-playground/api");
 
 let selections = {};
 let activatingPlayer;
@@ -9,14 +9,20 @@ function createUiWidget(card, withPrimaryText) {
     let verticalBox = new tp.VerticalBox();
 
     if (withPrimaryText) {
-        verticalBox.addChild(new tp.Text().setFontSize(10).setText("You gain 3 command token from the primary ability."));
+        verticalBox.addChild(
+            new tp.Text()
+                .setFontSize(10)
+                .setText("You gain 3 command token from the primary ability.")
+        );
     }
 
-    verticalBox.addChild(new tp.Text().setFontSize(10).setText("Choose the ammount of tokens gained with influence."));
+    verticalBox.addChild(
+        new tp.Text()
+            .setFontSize(10)
+            .setText("Choose the ammount of tokens gained with influence.")
+    );
 
-    let slider = new tp.Slider()
-        .setStepSize(1)
-        .setMaxValue(10);
+    let slider = new tp.Slider().setStepSize(1).setMaxValue(10);
     slider.onValueChanged.add((slider, player, value) => {
         selections[player.getSlot()] = value;
     });
@@ -28,8 +34,7 @@ function createUiWidget(card, withPrimaryText) {
 globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
     const playerSlot = player.getSlot();
     let commandTokenCount = selections[playerSlot];
-    if (activatingPlayer === playerSlot)
-        commandTokenCount += 3;
+    if (activatingPlayer === playerSlot) commandTokenCount += 3;
 
     const message = `${player.getName()} gained ${commandTokenCount} command tokens.`;
     console.log(message);
