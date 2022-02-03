@@ -94,7 +94,7 @@ class Layout {
      * @param {Vector} arcOrigin - arc is on a circle with this origin
      */
     layoutArc(arcOrigin) {
-        //assert(arcOrigin instanceof Vector);
+        assert(typeof arcOrigin.x === "number"); // "instanceof Vector" broken
         assert(this._count > 0);
         assert(this._distanceBetween > 0);
 

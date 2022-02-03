@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../../lib/locale");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Rotator, Vector, world } = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 
 const NSID_TO_TEMPLATE = {};
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
@@ -164,7 +164,7 @@ class Spawn {
     }
 
     /**
-     * Spawn a known-nsid object.  Does not assign name.
+     * Spawn a known-nsid object and assign (locale aware) name.
      *
      * @param {string} nsid
      * @param {Vector} position
@@ -173,20 +173,26 @@ class Spawn {
      */
     static spawn(nsid, position, rotation) {
         assert(typeof nsid === "string");
-        assert(position instanceof Vector);
-        assert(rotation instanceof Rotator);
+        assert(typeof position.x === "number"); // "instanceof Vector" broken
+        assert(typeof rotation.yaw === "number"); // "instanceof Rotator" broken
 
         const templateId = NSID_TO_TEMPLATE[nsid];
         if (!templateId) {
-            throw new Error(`Spawn.spawn invalid nsid "${nsid}"`);
+            throw new Error(`unknown nsid "${nsid}"`);
         }
 
         const obj = world.createObjectFromTemplate(templateId, position);
         if (!obj) {
-            throw new Error(`Spawn.spawn failed for "${nsid}"`);
+            throw new Error(`spawn failed for "${nsid}"`);
         }
 
         obj.setRotation(rotation);
+
+        const name = Spawn.suggestName(nsid);
+        if (name) {
+            obj.setName(name);
+        }
+
         return obj;
     }
 }

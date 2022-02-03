@@ -55,11 +55,8 @@ function asyncSpawnTypes() {
         for (const nsid of nsids) {
             const obj = Spawn.spawn(nsid, pos, rot);
 
-            // Try to name object.
-            const name = Spawn.suggestName(nsid);
-            if (name) {
-                obj.setName(name);
-            } else {
+            // Warn if not able to set a name.
+            if (obj.getName().length === 0) {
                 console.warn(`anonymous ${nsid}`);
             }
 

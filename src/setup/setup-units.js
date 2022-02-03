@@ -1,8 +1,7 @@
 const { Layout } = require("../lib/layout");
-const { ObjectType, Vector, world } = require("../wrapper/api");
+const { Spawn } = require("./spawn/spawn");
+const { ObjectType, Vector } = require("../wrapper/api");
 const assert = require("../wrapper/assert");
-const UNIT_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-unit.json");
-const BAG_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-bag-unit.json");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
@@ -87,34 +86,17 @@ class SetupUnits {
 
     static _setupUnit(deskData, unitData, pointPosRot) {
         const unitNsid = unitData.unitNsid;
-        const unitTemplateId = UNIT_NSID_TO_TEMPLATE_GUID[unitNsid];
-        if (!unitTemplateId) {
-            throw new Error(`cannot find ${unitNsid}`);
-        }
         const bagNsid = "bag." + unitNsid;
-        const bagTemplateId = BAG_NSID_TO_TEMPLATE_GUID[bagNsid];
-        if (!bagTemplateId) {
-            throw new Error(`cannot find ${bagNsid}`);
-        }
 
-        const bag = world.createObjectFromTemplate(
-            bagTemplateId,
-            pointPosRot.pos
-        );
-        assert(bag);
-        bag.setRotation(pointPosRot.rot);
-        bag.clear(); // just in case copied a full one
+        const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
+        bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(deskData.playerSlot);
         const tint = bag.getPrimaryColor();
 
         for (let i = 0; i < unitData.unitCount; i++) {
             const aboveBag = pointPosRot.pos.add([0, 0, 10 + i]);
-            const unit = world.createObjectFromTemplate(
-                unitTemplateId,
-                aboveBag
-            );
-            assert(unit);
+            const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
             unit.setOwningPlayerSlot(deskData.playerSlot);
             unit.setPrimaryColor(tint);
             bag.addObjects([unit]);

@@ -1,8 +1,7 @@
 const { Layout } = require("../lib/layout");
+const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 const assert = require("../wrapper/assert");
-const TOKEN_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-token.json");
-const BAG_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-bag-token.json");
 
 const SUPPLY_BOXES_LEFT = [
     { nsid: "token:base/infantry_1" },
@@ -65,24 +64,10 @@ class SetupSupplyBoxes {
     static _setupBox(supplyBox, pointPosRot) {
         // Find unit and bag.
         const tokenNsid = supplyBox.nsid;
-        const tokenTemplateId = TOKEN_NSID_TO_TEMPLATE_GUID[tokenNsid];
-        if (!tokenTemplateId) {
-            throw new Error(`cannot find ${tokenNsid}`);
-        }
-
         const bagNsid = "bag." + tokenNsid;
-        const bagTemplateId = BAG_NSID_TO_TEMPLATE_GUID[bagNsid];
-        if (!bagTemplateId) {
-            throw new Error(`cannot find ${bagNsid}`);
-        }
 
-        let bag = world.createObjectFromTemplate(
-            bagTemplateId,
-            pointPosRot.pos
-        );
-        assert(bag);
-        bag.setRotation(pointPosRot.rot);
-        bag.clear(); // just in case copied a full one
+        let bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
+        bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
 
         // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
@@ -95,9 +80,9 @@ class SetupSupplyBoxes {
         }
 
         const aboveBag = pointPosRot.pos.add([0, 0, 10]);
-        const unit = world.createObjectFromTemplate(tokenTemplateId, aboveBag);
-        assert(unit);
-        bag.addObjects([unit]);
+        const token = Spawn.spawn(tokenNsid, aboveBag, pointPosRot.rot);
+        assert(token);
+        bag.addObjects([token]);
     }
 }
 

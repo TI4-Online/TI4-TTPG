@@ -1,5 +1,5 @@
-const { ObjectType, Vector, world } = require("../wrapper/api");
-const SHEET_NSID_TO_TEMPLATE_GUID = require("./spawn/template/nsid-sheet.json");
+const { Spawn } = require("./spawn/spawn");
+const { ObjectType, Vector } = require("../wrapper/api");
 
 const SHEET_DATA = [
     { nsid: "sheet:base/command", x: -4, y: 11, z: 6.5 },
@@ -18,16 +18,9 @@ class SetupSheets {
             .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
             .add(deskData.pos);
 
-        const sheetTemplateId = SHEET_NSID_TO_TEMPLATE_GUID[sheetData.nsid];
-        if (!sheetTemplateId) {
-            throw new Error(`cannot find ${sheetData.nsid}`);
-        }
-
-        const obj = world.createObjectFromTemplate(sheetTemplateId, sheetPos);
-        obj.setRotation(deskData.rot);
+        const obj = Spawn.spawn(sheetData.nsid, sheetPos, deskData.rot);
         obj.setObjectType(ObjectType.Ground);
-
-        // TODO XXX PLAYER SLOT
+        obj.setOwningPlayerSlot(deskData.playerSlot);
     }
 }
 
