@@ -1,18 +1,16 @@
 const { Setup } = require("./setup");
 const { SetupUnits } = require("./setup-units");
-const { refObject, world } = require("@tabletop-playground/api");
-const { ObjectNamespace } = require("../lib/object-namespace");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSheets } = require("./setup-sheets");
+const { refObject, world } = require("@tabletop-playground/api");
 
 const ACTION = {
-    PLAYER_DESKS: "*Player Desks",
+    GIZMO_DESKS: "*Gizmo desks",
+    COUNT_OBJECTS: "*Count objects",
+    CLEAN: "*Clean",
     UNITS: "*Units",
-    CLEAN_UNITS: "*Clean Units",
     SUPPLY: "*Supply",
-    CLEAN_SUPPLY: "*Clean Supply",
     SHEETS: "*Sheets",
-    CLEAN_SHEETS: "*Clean Sheets",
 };
 
 for (const action of Object.values(ACTION)) {
@@ -22,52 +20,28 @@ for (const action of Object.values(ACTION)) {
 refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
-    if (actionName === ACTION.PLAYER_DESKS) {
+    if (actionName === ACTION.GIZMO_DESKS) {
         Setup.drawDebug();
-    } else if (actionName === ACTION.UNITS) {
-        for (const deskData of Setup.getPlayerDeskPosRots()) {
-            SetupUnits.setup(deskData);
-        }
-    } else if (actionName === ACTION.CLEAN_UNITS) {
+    } else if (actionName === ACTION.COUNT_OBJECTS) {
+        console.log(`World #objects = ${world.getAllObjects().length}`);
+    } else if (actionName === ACTION.CLEAN) {
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
+            if (obj.getContainer() || obj == refObject) {
                 continue;
             }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid.startsWith("bag.unit")) {
-                obj.destroy();
-            }
-            if (nsid.startsWith("unit")) {
-                obj.destroy();
-            }
+            obj.destroy();
+        }
+    } else if (actionName === ACTION.UNITS) {
+        for (const deskData of Setup.getPlayerDeskPosRots()) {
+            SetupUnits.setupDesk(deskData);
         }
     } else if (actionName === ACTION.SUPPLY) {
         for (const deskData of Setup.getPlayerDeskPosRots()) {
-            SetupSupplyBoxes.setup(deskData);
-        }
-    } else if (actionName === ACTION.CLEAN_SUPPLY) {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid.startsWith("bag.token")) {
-                obj.destroy();
-            }
+            SetupSupplyBoxes.setupDesk(deskData);
         }
     } else if (actionName === ACTION.SHEETS) {
         for (const deskData of Setup.getPlayerDeskPosRots()) {
-            SetupSheets.setup(deskData);
-        }
-    } else if (actionName === ACTION.CLEAN_SHEETS) {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid.startsWith("sheet:")) {
-                obj.destroy();
-            }
+            SetupSheets.setupDesk(deskData);
         }
     }
 });

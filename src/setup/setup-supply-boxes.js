@@ -18,7 +18,7 @@ const SUPPLY_BOXES_RIGHT = [
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 12;
 
 class SetupSupplyBoxes {
-    static setup(deskData) {
+    static setupDesk(deskData) {
         let shelfCenter = new Vector(2.485, -46.844, 4.44)
             .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
             .add(deskData.pos);
@@ -32,7 +32,7 @@ class SetupSupplyBoxes {
             SUPPLY_BOXES_LEFT
         );
 
-        shelfCenter = new Vector(-3.878, 33.346, 4.44)
+        shelfCenter = new Vector(-3.878, 35, 3)
             .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
             .add(deskData.pos);
         arcOrigin = new Vector(-9.003, 3.958, 0)

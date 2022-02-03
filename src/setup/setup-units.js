@@ -54,7 +54,7 @@ const UNIT_DATA = [
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
 class SetupUnits {
-    static setup(deskData) {
+    static setupDesk(deskData) {
         // Desk center [-119.224, 6.05442]
         // Arc origin [-128.069, -8.963]
         // const tCenter = new Vector(-119.224, 6.05442, 0);

@@ -7,7 +7,7 @@ const SHEET_DATA = [
 ];
 
 class SetupSheets {
-    static setup(deskData) {
+    static setupDesk(deskData) {
         SHEET_DATA.map((sheetData) =>
             SetupSheets._setupSheet(deskData, sheetData)
         );
