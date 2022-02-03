@@ -120,8 +120,24 @@ class Spawn {
             return locale("tile.system", { tile: parsedNsid.name });
         }
 
+        if (parsedNsid.type.startsWith("token.attachment")) {
+            let candidate = `token.attachment.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
+
         if (parsedNsid.type.startsWith("token.exploration")) {
             let candidate = `token.exploration.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
+
+        if (parsedNsid.type.startsWith("token.wormhole")) {
+            let candidate = `token.wormhole.${parsedNsid.name}`;
             let candidateResult = locale(candidate);
             if (candidateResult !== candidate) {
                 return candidateResult;
@@ -135,6 +151,15 @@ class Spawn {
         if (parsedNsid.type === "token.control") {
             const factionAbbr = locale(`faction.${parsedNsid.name}`);
             return locale("token.control", { faction: factionAbbr });
+        }
+
+        // Try "token.{name}"?
+        if (parsedNsid.type.startsWith("token")) {
+            let candidate = `token.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
         }
     }
 
