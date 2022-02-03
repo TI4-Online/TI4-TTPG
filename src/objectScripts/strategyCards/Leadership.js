@@ -1,6 +1,6 @@
 const strategyCard = require("./strategyCard");
 const tp = require("@tabletop-playground/api");
-const { refObject } = require("@tabletop-playground/api");
+const locale = require("../lib/locale");
 
 let selections = {};
 let activatingPlayer;
@@ -12,14 +12,14 @@ function createUiWidget(card, withPrimaryText) {
         verticalBox.addChild(
             new tp.Text()
                 .setFontSize(10)
-                .setText("You gain 3 command token from the primary ability.")
+                .setText(locale("strategy_card.leadership.text.primary"))
         );
     }
 
     verticalBox.addChild(
         new tp.Text()
             .setFontSize(10)
-            .setText("Choose the ammount of tokens gained with influence.")
+            .setText(locale("strategy_card.leadership.text"))
     );
 
     let slider = new tp.Slider().setStepSize(1).setMaxValue(10);
@@ -36,8 +36,10 @@ globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
     let commandTokenCount = selections[playerSlot];
     if (activatingPlayer === playerSlot) commandTokenCount += 3;
 
-    const message = `${player.getName()} gained ${commandTokenCount} command tokens.`;
-    console.log(message);
+    const message = locale("strategy_card.leadership.message", {
+        playerName: player.getName(),
+        commandTokenCount: commandTokenCount,
+    });
     strategyCard.broadcastMessage(message, player);
 });
 
