@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "A01D3EF041FC7B5CA81830B354CF14ED",
 	"Name": "Lazax Survivors",
-	"Metadata": "token.exploration.attachment:pok/lazax_survivors",
+	"Metadata": "token.attachment.exploration:pok/lazax_survivors",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "81F04C6F435D849CF50424B59E7E2F42",
 	"Name": "Speaker Token",
-	"Metadata": "",
+	"Metadata": "token:base/speaker",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -6,13 +6,13 @@ const { globalEvents, world } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
 
 const REJECT_REASON = {
-    BAG_NOT_UNIT: 1,
-    BAG_PARSE: 2,
-    BAG_NO_OWNER: 3,
-    UNIT_NOT_UNIT: 4,
-    UNIT_PARSE: 5,
-    MISMATCH_UNIT: 6,
-    MISMATCH_OWNER: 7,
+    BAG_NOT_UNIT: "not unit bag",
+    BAG_PARSE: "bag parse failed",
+    BAG_NO_OWNER: "bag no owner",
+    UNIT_NOT_UNIT: "unit not unit",
+    UNIT_PARSE: "unit parse failed",
+    MISMATCH_OWNER: "mismatch owner",
+    MISMATCH_UNIT: "mismatch unit",
 };
 
 /**
@@ -89,13 +89,17 @@ function onInsertedUnitBag(container, insertObjs, player) {
     for (const insertObj of insertObjs) {
         let rejectReason = getRejectReason(container, insertObj);
 
-        if (rejectReason == REJECT_REASON.MISMATCH_UNIT) {
+        if (rejectReason === REJECT_REASON.MISMATCH_UNIT) {
             // MISMATCH_UNIT is the last check, meaning this is a unit
             // belonging to this player.  Instead of rejecting, try to
             // move it to the correct unit bag.
-            const requiredNsid = "bag." + insertObj.getTemplateMetadata();
+            const requiredNsid = "bag." + ObjectNamespace.getNsid(insertObj);
+            const requirePlayerSlot = insertObj.getOwningPlayerSlot();
             for (const obj of world.getAllObjects()) {
-                if (obj.getTemplateMetadata() == requiredNsid) {
+                if (
+                    ObjectNamespace.getNsid(obj) === requiredNsid &&
+                    obj.getOwningPlayerSlot() === requirePlayerSlot
+                ) {
                     if (!getRejectReason(obj, insertObj)) {
                         rejectReason = false; // cancel outer rejection
                         obj.__addObjectsRaw([insertObj], 0, true);
@@ -107,6 +111,7 @@ function onInsertedUnitBag(container, insertObjs, player) {
 
         if (rejectReason) {
             // Player dropped a non-matching item into a unit bag.
+            //console.log(`onInsertedUnitBag: reject ${rejectReason}`);
             const pos = container.getPosition().add([10, 0, 10]);
             container.take(insertObj, pos, true);
         }

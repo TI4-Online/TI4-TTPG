@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
 	"GUID": "03AEBC3D48C794E99B0880AD84C1E113",
-	"Name": "Wormhole (CreussGamma)",
-	"Metadata": "token.exploration:pok/gamma_wormhole",
+	"Name": "Wormhole (Creuss Gamma)",
+	"Metadata": "token.wormhole.creuss:pok/gamma",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

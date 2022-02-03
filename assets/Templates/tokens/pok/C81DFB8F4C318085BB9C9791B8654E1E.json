@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "C81DFB8F4C318085BB9C9791B8654E1E",
 	"Name": "Titan Sleeper",
-	"Metadata": "token:pok/frontier",
+	"Metadata": "token.ul:pok/sleeper",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

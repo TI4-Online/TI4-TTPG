@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "80413A0E4E384C45BE0BA68D6D77984E",
 	"Name": "Paradise World",
-	"Metadata": "token.exploration.attachment:pok/paradise_world",
+	"Metadata": "token.attachment.exploration:pok/paradise_world",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
