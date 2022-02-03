@@ -16,16 +16,6 @@ const {
 const { ObjectNamespace } = require("../lib/object-namespace");
 const locale = require("../lib/locale");
 
-globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
-    const message = locale("ui.message.strategy_card_play", {
-        playerName: player.getName(),
-        cardName: card.getName(),
-    });
-    for (const p of world.getAllPlayers()) {
-        p.showMessage(message);
-    }
-});
-
 function setupStrategyCard(card) {
     const playButtonName = locale("ui.button.strategy_card_play");
     const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
@@ -65,7 +55,7 @@ globalEvents.onObjectCreated.add((obj) => {
     }
 });
 
-// Script reload doesn't onObjectCreated existing objects, load manually.
+// Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
         if (ObjectNamespace.isStrategyCard(obj)) {

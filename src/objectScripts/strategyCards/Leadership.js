@@ -1,10 +1,11 @@
-const base = require("./strategyCardBase");
+const strategyCard = require("./strategyCard");
 const tp = require('@tabletop-playground/api');
 const { refObject } = require('@tabletop-playground/api');
 
-refObject.onCreated.add(base.setupStrategyCard);
+let selections = {};
+let activatingPlayer;
 
-function createUiWidget(withPrimaryText) {
+function createUiWidget(card, withPrimaryText) {
     let verticalBox = new tp.VerticalBox();
 
     if (withPrimaryText) {
@@ -16,21 +17,32 @@ function createUiWidget(withPrimaryText) {
     let slider = new tp.Slider()
         .setStepSize(1)
         .setMaxValue(10);
+    slider.onValueChanged.add((slider, player, value) => {
+        selections[player.getSlot()] = value;
+    });
     verticalBox.addChild(slider);
 
     return verticalBox;
 }
 
-refObject.onCloseDialog = function(closingPlayer) {
-    if (closingPlayer.getSlot() === refObject.getOwningPlayerSlot()) {
-        const commandTokenCount = slider.getValue() + (closingPlayer === player ? 3 : 0);
-        const message = `${closingPlayer.getName()} gained ${commandTokenCount} command tokens.`;
-        base.broadcastMessage(message, closingPlayer);
-    }
-};
+globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
+    const playerSlot = player.getSlot();
+    let commandTokenCount = selections[playerSlot];
+    if (activatingPlayer === playerSlot)
+        commandTokenCount += 3;
 
-refObject.onPlay = function (player) {
-    const widget = createUiWidget(player);
-    const primartyWidget = createUiWidget(player, true);
-    base.createStragegyCardUi(widget, primartyWidget, player);
-};
+    const message = `${player.getName()} gained ${commandTokenCount} command tokens.`;
+    console.log(message);
+    strategyCard.broadcastMessage(message, player);
+});
+
+globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
+    selection = {};
+    activatingPlayer = player.getSlot();
+    for (const p of world.getAllPlayers()) {
+        selections[player.getSlot()] = 0;
+    }
+    const widget = createUiWidget(card, player);
+    const primartyWidget = createUiWidget(card, player, true);
+    strategyCard.createStragegyCardUi(widget, primartyWidget, player);
+});
