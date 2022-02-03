@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
-	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
-	"Name": "Wormhole (Gamma)",
+	"GUID": "0DCC8CBB4E30ACD14596CAA1BAADAB3A",
+	"Name": "Wormhole (CreussBeta)",
 	"Metadata": "token.exploration:pok/gamma_wormhole",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole_g.png",
+			"Texture": "global/tokens/pok/wormhole_cb.png",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,

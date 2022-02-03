@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
-	"Name": "Wormhole (Gamma)",
-	"Metadata": "token.exploration:pok/gamma_wormhole",
+	"GUID": "81F04C6F435D849CF50424B59E7E2F42",
+	"Name": "Speaker Token",
+	"Metadata": "",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,8 +12,8 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 55,
-		"G": 149,
+		"R": 255,
+		"G": 255,
 		"B": 255
 	},
 	"SecondaryColor":
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/wormhole.obj",
+			"Model": "tokens/role.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,39 +48,30 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole_g.png",
+			"Texture": "locale/tokens/base/role_speaker.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 255,
+				"G": 255,
+				"B": 255
+			},
+			"SecondaryColor":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [
-		{
-			"Model": "tokens/round-col.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1.5,
-				"Y": 1.5,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Type": "Convex"
-		}
-	],
+	"Collision": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":

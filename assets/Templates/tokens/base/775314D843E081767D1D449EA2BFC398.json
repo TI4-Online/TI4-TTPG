@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "2EBCA9924B511E6083C89FA16A0F6B5F",
-	"Name": "Ion Storm",
-	"Metadata": "token.exploration:pok/ion_storm",
+	"GUID": "775314D843E081767D1D449EA2BFC398",
+	"Name": "Nekrovirus (Y)",
+	"Metadata": "token:base/fighter_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/round-msh.obj",
+			"Model": "tokens/rectangle-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,16 +48,16 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/ionstorm_o.png",
+			"Texture": "global/tokens/base/nekro_y_assimilator.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/base/nekro_assimilator_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "tokens/round-msh.obj",
+			"Model": "tokens/rectangle-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -66,19 +66,19 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/ionstorm_r.png",
+			"Texture": "global/tokens/base/nekro_y_assimilator.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/base/nekro_assimilator_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -87,7 +87,7 @@
 	],
 	"Collision": [
 		{
-			"Model": "tokens/round-col.obj",
+			"Model": "tokens/rectangle-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -96,8 +96,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
