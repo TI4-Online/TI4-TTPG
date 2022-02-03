@@ -1,4 +1,3 @@
-const assert = require("../wrapper/assert");
 const { Setup } = require("./setup");
 const { SetupUnits } = require("./setup-units");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
