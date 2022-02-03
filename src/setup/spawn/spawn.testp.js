@@ -80,7 +80,6 @@ function asyncSpawnTypes() {
 }
 
 function spawnChest(name, slotIndex) {
-    const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
     const numCols = 14;
     const col = slotIndex % numCols;
     const row = Math.floor(slotIndex / numCols);
@@ -90,8 +89,8 @@ function spawnChest(name, slotIndex) {
         -100 + col * distanceBetween,
         world.getTableHeight() + 3
     );
-    const bag = world.createObjectFromTemplate(chestTemplateId, pos);
-    bag.setMaxItems(500);
+    const rot = new Rotator(0, 0, 0);
+    const bag = Spawn.spawnGenericContainer(pos, rot);
     bag.setName(name);
 
     const ui = new UIElement();

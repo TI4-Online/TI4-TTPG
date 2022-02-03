@@ -1,7 +1,8 @@
 const { Setup } = require("./setup");
-const { SetupUnits } = require("./setup-units");
-const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSheets } = require("./setup-sheets");
+const { SetupSupplyBoxes } = require("./setup-supply-boxes");
+const { SetupSystemTiles } = require("./setup-system-tiles");
+const { SetupUnits } = require("./setup-units");
 const { refObject, world } = require("@tabletop-playground/api");
 
 const ACTION = {
@@ -11,6 +12,7 @@ const ACTION = {
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
+    SYSTEM_TILES: "*System tiles",
 };
 
 for (const action of Object.values(ACTION)) {
@@ -43,5 +45,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         for (const deskData of Setup.getPlayerDeskPosRots()) {
             SetupSheets.setupDesk(deskData);
         }
+    } else if (actionName === ACTION.SYSTEM_TILES) {
+        SetupSystemTiles.setup();
     }
 });

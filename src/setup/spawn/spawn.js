@@ -18,6 +18,8 @@ Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-unit.json"));
 // such as merging technology.color into an overall technology deck.
 const OVERRIDE_GROUP_NSIDS = ["card.technology"];
 
+let _typeSet = false;
+
 /**
  * Spawn game objects from the hard-coded template json files.
  * This is intended to dump raw objects on an empty table as the first
@@ -42,16 +44,18 @@ class Spawn {
             }
         }
 
-        // Could remember this, but not called during normal play.
-        const typeSet = new Set();
-        for (const nsid of Object.keys(NSID_TO_TEMPLATE)) {
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            typeSet.add(parsed.type);
+        if (!_typeSet) {
+            _typeSet = new Set();
+            for (const nsid of Object.keys(NSID_TO_TEMPLATE)) {
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                _typeSet.add(parsed.type);
+            }
         }
 
         // Failing that, use the most-specific of the template types.
+        // This groups
         let groupName = false;
-        for (const candidateType of typeSet.keys()) {
+        for (const candidateType of _typeSet.keys()) {
             if (nsid.startsWith(candidateType)) {
                 if (!groupName || groupName.length < candidateType.length) {
                     groupName = candidateType;
@@ -194,6 +198,14 @@ class Spawn {
         }
 
         return obj;
+    }
+
+    static spawnGenericContainer(position, rotation) {
+        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+        const bag = world.createObjectFromTemplate(chestTemplateId, position);
+        bag.setRotation(rotation);
+        bag.setMaxItems(500);
+        return bag;
     }
 }
 
