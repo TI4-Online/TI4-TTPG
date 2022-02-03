@@ -2,10 +2,8 @@ const assert = require("assert");
 const locale = require("../locale");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const { UnitAttrs } = require("./unit-attrs");
-const { UnitAttrsSet } = require("./unit-attrs-set");
-const { UnitModifier } = require("./unit-modifier");
-const { AuxData } = require("./auxdata");
 const UNIT_ATTRS = require("./unit-attrs.data");
+const UNIT_MODIFIERS = require("./unit-modifier.data");
 const { world, MockCard, MockCardDetails } = require("../../mock/mock-api");
 
 function _getUnitUpgrade(unitName) {
@@ -44,17 +42,18 @@ it("UNIT_ATTRS locale", () => {
     }
 });
 
-it("UNIT_ATTRS unitModifiers", () => {
+it("UNIT_ATTRS unitAbility", () => {
+    const triggerUnitAbilitySet = new Set();
+    for (const rawModifier of UNIT_MODIFIERS) {
+        if (rawModifier.triggerUnitAbility) {
+            triggerUnitAbilitySet.add(rawModifier.triggerUnitAbility);
+        }
+    }
+    // Make sure all unit abilities match a registered unit modifier.
     for (const rawAttrs of UNIT_ATTRS) {
-        if (rawAttrs.unitModifier) {
-            const unitModifier = new UnitModifier(rawAttrs.unitModifier);
-            const unitAttrsSet = new UnitAttrsSet();
-            const auxData = { self: new AuxData(), opponent: new AuxData() };
-            for (const unit of UnitAttrs.getAllUnitTypes()) {
-                auxData.self.overrideCount(unit, 1);
-                auxData.opponent.overrideCount(unit, 1);
-            }
-            unitModifier.apply(unitAttrsSet, auxData);
+        assert(!rawAttrs.triggerUnitAbility); // units generate, modifiers are triggered
+        if (rawAttrs.unitAbility) {
+            assert(triggerUnitAbilitySet.has(rawAttrs.unitAbility));
         }
     }
 });
@@ -105,8 +104,7 @@ it("static getPlayerUnitUpgrades", () => {
         world.__addObject(cardObjCruiser2FaceDown);
         result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot);
     } finally {
-        world.__removeObject(cardObjCarrier2);
-        world.__removeObject(cardObjCruiser2FaceDown);
+        world.__clear();
     }
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.unit, "carrier");

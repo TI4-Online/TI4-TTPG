@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole.png",
+			"Texture": "global/tokens/pok/wormhole_g.png",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,

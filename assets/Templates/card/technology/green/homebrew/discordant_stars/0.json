@@ -1,0 +1,82 @@
+{
+	"Type": "Card",
+	"GUID": "AB665B9F7B0857DAF6194A51F6021322",
+	"Name": "Technology (Green) (homebrew.discordant_stars)",
+	"Metadata": "card.technology.green:homebrew.discordant_stars/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/technology/green/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/technology/green.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": 0,
+	"NumHorizontal": 5,
+	"NumVertical": 2,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6
+	],
+	"CardNames": {
+		"0": "Blackmail Programs",
+		"1": "Envoy Network",
+		"2": "War Song Implants",
+		"3": "Psychographics",
+		"4": "Stone's Embrace",
+		"5": "Tempest Warheads",
+		"6": "Psychoactive Armaments"
+	},
+	"CardMetadata": {
+		"0": "card.technology.green.florzen:homebrew.discordant_stars/blackmail_programs",
+		"1": "card.technology.green.free_systems:homebrew.discordant_stars/envoy_network",
+		"2": "card.technology.green.ghemina:homebrew.discordant_stars/war_song_implants",
+		"3": "card.technology.green.ilyxum:homebrew.discordant_stars/psychographics",
+		"4": "card.technology.green.khrask:homebrew.discordant_stars/stones_embrace",
+		"5": "card.technology.green.kortali:homebrew.discordant_stars/tempest_warheads",
+		"6": "card.technology.green.mori:homebrew.discordant_stars/psychoactive_armaments"
+	}
+}

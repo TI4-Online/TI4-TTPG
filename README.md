@@ -6,9 +6,7 @@
 
 # Getting Started
 
--   run `yarn install`
 -   run `yarn setup`
--   run `yarn dev` or `yarn watch`
 
 # Getting your work-in-progress into TTPG
 

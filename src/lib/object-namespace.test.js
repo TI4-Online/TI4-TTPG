@@ -1,13 +1,45 @@
 // the "it(string, function)" style works with mocha and jest frameworks
 const { ObjectNamespace } = require("./object-namespace");
 const assert = require("assert");
-const MockCard = require("../mock/mock-card");
-const MockGameObject = require("../mock/mock-game-object");
+const {
+    MockCard,
+    MockCardDetails,
+    MockGameObject,
+} = require("../mock/mock-api");
 
 it("cannot construct", () => {
     assert.throws(() => {
         new ObjectNamespace();
     });
+});
+
+it("parseNsid", () => {
+    const id = "my.type:my.source/my.name";
+    const result = ObjectNamespace.parseNsid(id);
+    assert.equal(result.type, "my.type");
+    assert.equal(result.source, "my.source");
+    assert.equal(result.name, "my.name");
+});
+
+it("getNsid", () => {
+    const id = "my.type:my.source/my.name";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const result = ObjectNamespace.getNsid(obj);
+    assert.equal(result, id);
+});
+
+it("getDeckNsids", () => {
+    const ids = [
+        "my.type:my.source/my.name.1",
+        "my.type:my.source/my.name.2",
+        "my.type:my.source/my.name.3",
+    ];
+    const allCardDetails = ids.map(
+        (id) => new MockCardDetails({ metadata: id })
+    );
+    const deck = new MockCard({ allCardDetails, stackSize: ids.length });
+    const result = ObjectNamespace.getDeckNsids(deck);
+    assert.deepEqual(result, ids);
 });
 
 it("generic", () => {
@@ -25,7 +57,9 @@ it("generic", () => {
 
 it("card", () => {
     const id = "card.action:base/direct_hit.2";
-    const obj = new MockCard({ cardDetails: { metadata: id } });
+    const obj = new MockCard({
+        cardDetails: new MockCardDetails({ metadata: id }),
+    });
     const not = new MockCard({ templateMetadata: "not:not/not" });
 
     const type = ObjectNamespace.getCardType("action");
@@ -115,6 +149,21 @@ it("token", () => {
     assert.equal(result.source, "pok");
     assert.equal(result.name, "tear.nekro");
     assert.equal(result.token, "tear");
+});
+
+it("token bag", () => {
+    const id = "bag.token:base/fighter_1";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const not = new MockGameObject({ templateMetadata: "not:not/not" });
+
+    assert(ObjectNamespace.isTokenBag(obj));
+    assert(!ObjectNamespace.isTokenBag(not));
+
+    const result = ObjectNamespace.parseTokenBag(obj);
+    assert.equal(result.type, "bag.token");
+    assert.equal(result.source, "base");
+    assert.equal(result.name, "fighter_1");
+    assert.equal(result.token, "fighter_1");
 });
 
 it("unit", () => {

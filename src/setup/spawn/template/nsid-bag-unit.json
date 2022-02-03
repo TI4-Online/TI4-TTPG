@@ -1,0 +1,13 @@
+{
+    "bag.unit:base/carrier": "6097E68D492C4D1D2BBF37A7FBF05CD9",
+    "bag.unit:base/cruiser": "71215478450DCB2013E14C87C226ED25",
+    "bag.unit:base/destroyer": "06652352439820E274E5D1AF020FF757",
+    "bag.unit:base/dreadnought": "4FA133C449223AE485999B8B9E19BE78",
+    "bag.unit:base/fighter": "7BA8B96B446215F5834F149BC5FF22AE",
+    "bag.unit:base/flagship": "E1338AEE4DEE403234A186BEF35E568A",
+    "bag.unit:base/infantry": "DB0D773042BE4670388DB1BD5409A78C",
+    "bag.unit:base/pds": "9A91BC1A46946274914631A07A722C64",
+    "bag.unit:base/space_dock": "B364EA034E4639B7ADC7E1882B51C21D",
+    "bag.unit:base/war_sun": "8D235CEA4AF87BD37A30B7BD1D5CC6F6",
+    "bag.unit:pok/mech": "49BF380140B6A91FF3F2C7BEBA970703"
+}

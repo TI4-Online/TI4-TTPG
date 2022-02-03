@@ -1,5 +1,4 @@
 const Ajv = require("ajv");
-const { UNIT_MODIFIER_SCHEMA_JSON } = require("./unit-modifier.schema");
 
 const UNIT_ATTRS_SCHEMA_JSON = {
     $id: "http://example.com/lib/unit/unit_attrs.json",
@@ -18,9 +17,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         requireCapacity: { type: "boolean" },
 
         // Unit attrs can be unit modifiers, apply to all units in fight (e.g. flagship, homebrew)
-        unitModifier: {
-            $ref: "http://example.com/lib/unit/unit_modifier.json",
-        },
+        unitAbility: { type: "string" },
 
         // Unit abilities.
         sustainDamage: { type: "boolean" },
@@ -125,9 +122,9 @@ class UnitAttrsSchema {
             return true;
         }
         if (!_unitAttrsValidator) {
-            _unitAttrsValidator = new Ajv({ useDefaults: true })
-                .addSchema(UNIT_MODIFIER_SCHEMA_JSON)
-                .compile(UNIT_ATTRS_SCHEMA_JSON);
+            _unitAttrsValidator = new Ajv({ useDefaults: true }).compile(
+                UNIT_ATTRS_SCHEMA_JSON
+            );
         }
         if (!_unitAttrsValidator(unit)) {
             (onError ? onError : console.error)(_unitAttrsValidator.errors);

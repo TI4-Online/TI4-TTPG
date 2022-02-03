@@ -88,16 +88,15 @@ it("static getPlayerUnitModifiers", () => {
         world.__addObject(moraleBoost);
         result = UnitModifier.getPlayerUnitModifiers(myPlayerSlot, "self");
     } finally {
-        world.__removeObject(moraleBoost);
+        world.__clear();
     }
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.localeName, "unit_modifier.name.morale_boost");
 });
 
-it("static getFactionAbilityUnitModifiers", () => {
-    const result = UnitModifier.getFactionAbilityUnitModifiers(["fragile"]);
-    assert.equal(result.length, 1);
-    assert.equal(result[0].raw.localeName, "unit_modifier.name.fragile");
+it("static getFactionAbilityUnitModifier", () => {
+    const result = UnitModifier.getFactionAbilityUnitModifier("fragile");
+    assert.equal(result.raw.localeName, "unit_modifier.name.fragile");
 });
 
 it("name/desc", () => {
