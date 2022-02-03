@@ -6,6 +6,10 @@ const { Rotator, Vector, world } = require("../wrapper/api");
 
 class SetupSystemTiles {
     static setup() {
+        const pos = new Vector(0, 0, world.getTableHeight() + 5);
+        const rot = new Rotator(0, 0, 0);
+        const bag = Spawn.spawnGenericContainer(pos, rot);
+
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
             const parsedNsid = ObjectNamespace.parseNsid(nsid);
             return (
@@ -14,13 +18,16 @@ class SetupSystemTiles {
             );
         });
         for (const nsid of nsids) {
-            const pos = new Vector(0, 0, world.getTableHeight());
-            const rot = new Rotator(0, 0, 0);
-            const obj = Spawn.spawn(nsid, pos, rot);
+            const above = pos.add([0, 0, 20]);
+            const obj = Spawn.spawn(nsid, above, rot);
+
+            // Sanity check system tile before adding it.
             const parsed = ObjectNamespace.parseSystemTile(obj);
             assert(parsed);
             const system = System.getByTile(parsed.tile);
             assert(system);
+
+            bag.addObjects([obj]);
         }
     }
 }
