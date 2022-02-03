@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert");
 const { Color, Rotator, Vector, world } = require("../wrapper/api");
 
 // TRH says units in CM, rot in degrees.
@@ -13,6 +14,30 @@ const PLAYER_DESKS = [
     { x: -119.224, y: 6.05442, z: 3, yaw: -90.0, playerSlot: 15 }, // blue
     { x: -90.6987, y: 110.52, z: 3, yaw: -117.5, playerSlot: 18 }, // white
 ];
+
+const SLOT_COLORS = [
+    { r: 0, g: 0.427, b: 0.858, a: 1 },
+    { r: 0.141, g: 1, b: 0.141, a: 1 },
+    { r: 0.572, g: 0, b: 0, a: 1 },
+    { r: 0, g: 0.286, b: 0.286, a: 1 },
+    { r: 0.286, g: 0, b: 0.572, a: 1 },
+    { r: 1, g: 0.427, b: 0.713, a: 1 },
+    { r: 0.858, g: 0.427, b: 0, a: 1 },
+    { r: 0.572, g: 0.286, b: 0, a: 1 },
+    { r: 0.713, g: 0.858, b: 1, a: 1 },
+    { r: 1, g: 1, b: 0.427, a: 1 },
+    { r: 0, g: 0.572, b: 0.572, a: 1 },
+    { r: 1, g: 0.713, b: 0.466, a: 1 },
+    { r: 0.713, g: 0.427, b: 1, a: 1 },
+    { r: 0.427, g: 0.713, b: 1, a: 1 },
+    { r: 0, g: 1, b: 1, a: 1 },
+    { r: 0, g: 0, b: 1, a: 1 },
+    { r: 1, g: 0, b: 0, a: 1 },
+    { r: 0.215, g: 0.215, b: 0.215, a: 1 },
+    { r: 1, g: 1, b: 1, a: 1 },
+    { r: 0, g: 0, b: 0, a: 1 },
+];
+
 class Setup {
     static getPlayerDeskPosRots() {
         return PLAYER_DESKS.map((playerDesk) => {
@@ -26,6 +51,14 @@ class Setup {
                 playerSlot: playerDesk.playerSlot,
             };
         });
+    }
+
+    static getPlayerSlotColor(slot) {
+        assert(typeof slot === "number");
+        const tbl = SLOT_COLORS[slot];
+        if (tbl) {
+            return new Color(tbl.r, tbl.g, tbl.b, tbl.a);
+        }
     }
 
     static drawDebug() {

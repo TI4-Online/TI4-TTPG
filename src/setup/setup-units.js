@@ -1,7 +1,8 @@
+const assert = require("../wrapper/assert");
 const { Layout } = require("../lib/layout");
+const { Setup } = require("./setup");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector } = require("../wrapper/api");
-const assert = require("../wrapper/assert");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
@@ -88,17 +89,19 @@ class SetupUnits {
         const unitNsid = unitData.unitNsid;
         const bagNsid = "bag." + unitNsid;
 
+        const slotColor = Setup.getPlayerSlotColor(deskData.playerSlot);
+
         const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(deskData.playerSlot);
-        const tint = bag.getPrimaryColor();
+        bag.setPrimaryColor(slotColor); // setting owning slot applies default, set again paranoia
 
         for (let i = 0; i < unitData.unitCount; i++) {
             const aboveBag = pointPosRot.pos.add([0, 0, 10 + i]);
             const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
             unit.setOwningPlayerSlot(deskData.playerSlot);
-            unit.setPrimaryColor(tint);
+            unit.setPrimaryColor(slotColor);
             bag.addObjects([unit]);
         }
     }
