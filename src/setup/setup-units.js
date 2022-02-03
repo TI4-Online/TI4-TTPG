@@ -88,7 +88,6 @@ class SetupUnits {
                 rot: pointPosRot.rot,
             });
         }
-        console.log(setupPlans.length);
 
         const setupNext = () => {
             const setupPlan = setupPlans.pop();
@@ -112,19 +111,13 @@ class SetupUnits {
                 }
             }
             if (!unitJson) {
-                console.error(`SetupUnits cannot find unit ${unitNsid}`);
-                throw new Error(`SetupUnits cannot find unit ${unitNsid}`);
+                throw new Error(`cannot find ${unitNsid}`);
             }
             if (!bagJson) {
-                console.log(`SetupUnits cannot find bag ${bagNsid}`);
-                throw new Error(`SetupUnits cannot find bag ${bagNsid}`);
+                throw new Error(`cannot find ${bagNsid}`);
             }
 
             const bag = world.createObjectFromJSON(bagJson, setupPlan.pos);
-            if (!bag) {
-                console.log(`FAIL ${world.getAllObjects().length}`);
-                return false;
-            }
             assert(bag);
             bag.setRotation(setupPlan.rot);
             bag.clear(); // just in case copied a full one
@@ -147,7 +140,7 @@ class SetupUnits {
             if (setupNext()) {
                 setTimeout(chainSetup, 100);
             } else {
-                console.log(`PASS ${world.getAllObjects().length}`);
+                // finished, callback?
             }
         };
         chainSetup();
