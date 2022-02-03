@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
-	"Name": "Wormhole (Gamma)",
-	"Metadata": "token.exploration:pok/gamma_wormhole",
+	"GUID": "C81DFB8F4C318085BB9C9791B8654E1E",
+	"Name": "Titan Sleeper",
+	"Metadata": "token:pok/frontier",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,8 +12,8 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 55,
-		"G": 149,
+		"R": 255,
+		"G": 255,
 		"B": 255
 	},
 	"SecondaryColor":
@@ -22,14 +22,14 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": true,
+	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/wormhole.obj",
+			"Model": "tokens/round-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,7 +48,35 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole_g.png",
+			"Texture": "global/tokens/pok/sleeper_o.png",
+			"NormalMap": "",
+			"ExtraMap": "global/notint.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "tokens/round-msh.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/tokens/pok/sleeper_r.png",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,
@@ -68,8 +96,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":

@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
-	"Name": "Wormhole (Gamma)",
-	"Metadata": "token.exploration:pok/gamma_wormhole",
+	"GUID": "8D97B9AC4831A002E60439BF289EED56",
+	"Name": "Nekrovirus (X)",
+	"Metadata": "token:base/fighter_1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/wormhole.obj",
+			"Model": "tokens/rectangle-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,18 +48,16 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole_g.png",
+			"Texture": "global/tokens/base/nekro_x_assimilator.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/base/nekro_assimilator_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
-		}
-	],
-	"Collision": [
+		},
 		{
-			"Model": "tokens/round-col.obj",
+			"Model": "tokens/rectangle-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -68,8 +66,38 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/tokens/base/nekro_x_assimilator.png",
+			"NormalMap": "",
+			"ExtraMap": "global/tokens/base/nekro_assimilator_x.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [
+		{
+			"Model": "tokens/rectangle-msh.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":

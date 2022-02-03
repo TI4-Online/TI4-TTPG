@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "BD56E65B4E39824FEDFF6CA1624DD29E",
-	"Name": "Wormhole (Gamma)",
-	"Metadata": "token.exploration:pok/gamma_wormhole",
+	"GUID": "6FF6A70144FB85D764F7B69692A21628",
+	"Name": "Terraform",
+	"Metadata": "token.exploration.attachment:pok/biotic_facility",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,8 +12,8 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 55,
-		"G": 149,
+		"R": 255,
+		"G": 255,
 		"B": 255
 	},
 	"SecondaryColor":
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/wormhole.obj",
+			"Model": "tokens/round-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,9 +48,37 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/wormhole_g.png",
+			"Texture": "global/tokens/pok/exploration/terraform.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "tokens/round-msh.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/tokens/pok/exploration/terraform.png",
+			"NormalMap": "",
+			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -68,8 +96,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -87,6 +115,6 @@
 	{
 		"X": 0,
 		"Y": 0,
-		"Z": 0
+		"Z": 1
 	}
 }
