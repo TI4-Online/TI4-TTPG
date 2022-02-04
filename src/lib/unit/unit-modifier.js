@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
+const { PlayerArea } = require("../player-area");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { world, Card } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
@@ -121,16 +122,12 @@ class UnitModifier {
             }
 
             // If an object has an owner, use it before trying to guess owner.
-            const ownerSlot = obj.getOwningPlayerSlot();
-            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
-                continue; // explit different owner
+            let ownerSlot = obj.getOwningPlayerSlot();
+            if (ownerSlot < 0) {
+                ownerSlot = PlayerArea.getClosestPlayerSlot(obj.getPosition());
             }
-
-            // TODO XXX CHECK IF IN PLAYER AREA
-            // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
-            const insidePlayerArea = true; // TODO XXX
-            if (!insidePlayerArea) {
-                continue;
+            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
+                continue; // different owner
             }
 
             // Found a unit modifier!  Add it to the list.

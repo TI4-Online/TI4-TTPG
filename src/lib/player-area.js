@@ -239,13 +239,17 @@ class PlayerArea {
      */
     static getPlayerDesks() {
         // Create new objects on every request b/c caller might mutate them.
-        return PLAYER_DESKS.filter((playerDesk) => {
-            return playerDesk.minPlayerCount <= _playerCount;
-        }).map((playerDesk) => {
+        const result = [];
+        for (let i = 0; i < PLAYER_DESKS.length; i++) {
+            const playerDesk = PLAYER_DESKS[i];
+            if (playerDesk.minPlayerCount > _playerCount) {
+                continue;
+            }
             assert(playerDesk.pos);
             assert(playerDesk.yaw);
             assert(playerDesk.defaultPlayerSlot);
-            return {
+            result.push({
+                seat: i,
                 pos: new Vector(
                     playerDesk.pos.x,
                     playerDesk.pos.y,
@@ -253,8 +257,9 @@ class PlayerArea {
                 ),
                 rot: new Rotator(0, (playerDesk.yaw + 360 + 90) % 360, 0),
                 playerSlot: playerDesk.defaultPlayerSlot,
-            };
-        });
+            });
+        }
+        return result;
     }
 
     /**
