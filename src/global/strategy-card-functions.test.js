@@ -6,8 +6,6 @@ const locale = require("../lib/locale");
 
 // mock global.js event registration
 globalEvents.TI4 = {
-    // Called when a Strategy Card is Played
-    // <(object: card, player:Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate()
 };
 
@@ -29,7 +27,7 @@ it("the custom action triggers the global event on play", () => {
 
     card.onCustomAction.trigger(card, undefined /*player*/, locale("ui.button.strategy_card_play"));
     expect(playButtonHitCounter).toBe(1);
-    card.onCustomAction.trigger(card, undefined /*player*/, "not the play button you are looking for");
+    card.onCustomAction.trigger(card, undefined /*player*/, "not the button you are looking for");
     expect(playButtonHitCounter).toBe(1);
 });
 

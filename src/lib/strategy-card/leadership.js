@@ -1,6 +1,6 @@
-const strategyCard = require("./strategy-card");
-const tp = require("@tabletop-playground/api");
-const locale = require("../lib/locale");
+const { createStragegyCardUi, broadcastMessage } = require("./strategy-card");
+const tp = require("../../wrapper/api");
+const locale = require("../../lib/locale");
 
 let selections = {};
 let activatingPlayer;
@@ -40,7 +40,7 @@ globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
         playerName: player.getName(),
         commandTokenCount: commandTokenCount,
     });
-    strategyCard.broadcastMessage(message, player);
+    broadcastMessage(message, player);
 });
 
 globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
@@ -51,5 +51,5 @@ globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     }
     const widget = createUiWidget(card, player);
     const primartyWidget = createUiWidget(card, player, true);
-    strategyCard.createStragegyCardUi(widget, primartyWidget, player);
+    createStragegyCardUi(widget, primartyWidget, player);
 });

@@ -4,6 +4,7 @@ const GameObject = require("./mock-game-object");
 class GameWorld {
     constructor(data) {
         this._allObjects = data ? data.allObjects : [];
+        this._allPlayers = data ? data.allPlayers : [];
     }
 
     __addObject(gameObject) {
@@ -31,6 +32,10 @@ class GameWorld {
 
     getAllObjects() {
         return this._allObjects;
+    }
+
+    getAllPlayers() {
+        return this._allPlayers;
     }
 }
 

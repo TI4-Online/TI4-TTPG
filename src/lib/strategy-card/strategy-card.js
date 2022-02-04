@@ -3,14 +3,13 @@
  *
  */
 
-const tp = require("@tabletop-playground/api");
-const locale = require("../lib/locale");
+const tp = require("../../wrapper/api");
+const locale = require("../../lib/locale");
 let items = [];
 
-// TODO: make a central util for this kind of functionality
 function broadcastMessage(message, player) {
     for (const p of world.getAllPlayers()) {
-        p.sendChatMessage(message, player.getPlayerColor());
+        p.sendChatMessage(message, player && player.getPlayerColor());
     }
 }
 
@@ -21,29 +20,29 @@ function addCloseButtons(widget, primaryWidget) {
     }
 }
 
+function onCloseButtonClicked(button, closingPlayer) {
+    const owningObject = button.getOwningObject();
+    if (owningObject.getOwningPlayerSlot() !== closingPlayer.getSlot()) {
+        return;
+    }
+
+    items.splice(items.indexOf(owningObject));
+    globalEvents.TI4.onStrategyCardSelectionDone.trigger(
+        owningObject,
+        closingPlayer
+    );
+    owningObject.destroy();
+
+    if (items.length === 0)
+        broadcastMessage(locale("strategy_card.message.all_resolved"));
+}
+
 function addCloseButton(widget) {
     let closeButton = new tp.Button()
         .setFontSize(10)
         .setText(locale("strategy_card.close.button"));
 
-    closeButton.onClicked.add((button, closingPlayer) => {
-        const owningObject = button.getOwningObject();
-        if (owningObject.getOwningPlayerSlot() !== closingPlayer.getSlot()) {
-            return;
-        }
-
-        items.splice(items.indexOf(owningObject));
-        globalEvents.TI4.onStrategyCardSelectionDone.trigger(
-            owningObject,
-            closingPlayer
-        );
-        owningObject.destroy();
-        if (items.length === 0) {
-            for (const p of world.getAllPlayers()) {
-                p.sendChatMessage(locale("strategy_card.message.all_passed"));
-            }
-        }
-    });
+    closeButton.onClicked.add(onCloseButtonClicked);
     widget.addChild(closeButton);
 }
 
