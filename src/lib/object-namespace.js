@@ -119,6 +119,11 @@ class ObjectNamespace {
         return nsid.startsWith("token.command");
     }
 
+    static isCommandTokenBag(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid.startsWith("bag.token.command");
+    }
+
     static parseCommandToken(obj) {
         const result = ObjectNamespace.parseGeneric(obj);
         if (result) {

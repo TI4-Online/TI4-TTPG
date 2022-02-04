@@ -16,7 +16,7 @@ globalEvents.TI4 = {
 
 require("./global/numpad-actions");
 require("./global/patch-infinite-container");
-require("./global/patch-unit-bag");
+require("./global/patch-exclusive-bags");
 require("./global/r-swap-split-combine");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-system-activated");
