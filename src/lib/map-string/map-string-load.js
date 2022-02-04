@@ -47,6 +47,7 @@ class MapStringLoad {
             assert(obj);
             console.log(`placing ${entry.tile} at ${pos} / ${rot}`);
             const animSpeed = 1;
+            obj.setObjectType(ObjectType.Regular);
             if (obj.getContainer()) {
                 obj.getContainer().take(obj, pos, animSpeed > 0);
                 obj.setRotation(rot, animSpeed);
