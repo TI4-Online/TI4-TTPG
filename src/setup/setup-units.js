@@ -1,6 +1,6 @@
 const assert = require("../wrapper/assert");
 const { Layout } = require("../lib/layout");
-const { Setup } = require("./setup");
+const { PlayerArea } = require("../lib/player-area");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector } = require("../wrapper/api");
 
@@ -89,7 +89,7 @@ class SetupUnits {
         const unitNsid = unitData.unitNsid;
         const bagNsid = "bag." + unitNsid;
 
-        const slotColor = Setup.getPlayerSlotColor(deskData.playerSlot);
+        const slotColor = PlayerArea.getPlayerSlotColor(deskData.playerSlot);
 
         const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
         bag.clear(); // paranoia

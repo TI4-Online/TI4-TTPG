@@ -1,4 +1,4 @@
-const { Setup } = require("./setup");
+const { PlayerArea } = require("../lib/player-area");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector } = require("../wrapper/api");
 
@@ -19,7 +19,7 @@ class SetupSheets {
             .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
             .add(deskData.pos);
 
-        const slotColor = Setup.getPlayerSlotColor(deskData.playerSlot);
+        const slotColor = PlayerArea.getPlayerSlotColor(deskData.playerSlot);
 
         const obj = Spawn.spawn(sheetData.nsid, sheetPos, deskData.rot);
         obj.setObjectType(ObjectType.Ground);

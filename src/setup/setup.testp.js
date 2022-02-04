@@ -1,4 +1,4 @@
-const { Setup } = require("./setup");
+const { PlayerArea } = require("../lib/player-area");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
@@ -25,7 +25,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
     if (actionName === ACTION.GIZMO_DESKS) {
-        Setup.drawDebug();
+        PlayerArea.drawDebug();
     } else if (actionName === ACTION.COUNT_OBJECTS) {
         console.log(`World #objects = ${world.getAllObjects().length}`);
     } else if (actionName === ACTION.CLEAN) {
@@ -36,15 +36,15 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             obj.destroy();
         }
     } else if (actionName === ACTION.UNITS) {
-        for (const deskData of Setup.getPlayerDeskPosRots()) {
+        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
             SetupUnits.setupDesk(deskData);
         }
     } else if (actionName === ACTION.SUPPLY) {
-        for (const deskData of Setup.getPlayerDeskPosRots()) {
+        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
             SetupSupplyBoxes.setupDesk(deskData);
         }
     } else if (actionName === ACTION.SHEETS) {
-        for (const deskData of Setup.getPlayerDeskPosRots()) {
+        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
             SetupSheets.setupDesk(deskData);
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
