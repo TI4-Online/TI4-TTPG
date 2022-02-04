@@ -66,19 +66,24 @@ function addObjectsExclusiveBag(insertObjs, index, showAnimation) {
             throw new Error(`addObjects rejected: ${rejectReason}`);
         }
     }
-    this.__addObjectsRaw(insertObjs, index, showAnimation);
 }
 
 // Container.onInserted event handler.
 function onInsertedExclusiveBag(container, insertObjs, player) {
+    const rejectedObjs = [];
     for (const insertObj of insertObjs) {
         const rejectReason = getRejectReason(container, insertObj);
         if (rejectReason) {
             // Player dropped a non-matching item into an exclusive bag.
-            //console.log(`onInsertedExclusiveBag: reject ${rejectReason}`);
-            const pos = container.getPosition().add([10, 0, 10]);
-            container.take(insertObj, pos, true);
+            rejectedObjs.push(insertObj);
         }
+    }
+    if (rejectedObjs.length > 0) {
+        globalEvents.TI4.onContainerRejected.trigger(
+            container,
+            rejectedObjs,
+            player
+        );
     }
 }
 
@@ -100,8 +105,7 @@ function patchExclusiveBag(obj) {
     obj.onInserted.add(onInsertedExclusiveBag);
 
     // Interpose on addObjects, preserves Container.addObjects behavior.
-    obj.__addObjectsRaw = obj.addObjects;
-    obj.addObjects = addObjectsExclusiveBag;
+    obj.addObjectsExclusiveBag = addObjectsExclusiveBag;
 }
 
 // Add our listener to future objects.
