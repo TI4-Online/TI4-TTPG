@@ -14,6 +14,7 @@ globalEvents.TI4 = {
     onStrategyCardPlayed: new TriggerableMulticastDelegate(),
 };
 
+require("./global/numpad-actions");
 require("./global/patch-infinite-container");
 require("./global/patch-unit-bag");
 require("./global/r-swap-split-combine");
