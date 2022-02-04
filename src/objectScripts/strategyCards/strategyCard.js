@@ -76,6 +76,6 @@ function createStragegyCardUi(widget, primaryWidget, activePlayer) {
     }
 }
 module.exports = {
-    createStragegyCardUi: createStragegyCardUi,
-    broadcastMessage: broadcastMessage,
+    createStragegyCardUi,
+    broadcastMessage,
 };

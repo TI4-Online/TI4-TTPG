@@ -12,7 +12,7 @@ const {
     Vector,
     globalEvents,
     world,
-} = require("@tabletop-playground/api");
+} = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const locale = require("../lib/locale");
 
@@ -63,3 +63,7 @@ if (world.getExecutionReason() === "ScriptReload") {
         }
     }
 }
+
+module.exports = {
+    setupStrategyCard
+};
