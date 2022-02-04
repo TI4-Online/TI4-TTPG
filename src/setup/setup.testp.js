@@ -1,4 +1,5 @@
 const { PlayerArea } = require("../lib/player-area");
+const { SetupFaction } = require("./setup-faction");
 const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
@@ -14,9 +15,10 @@ const ACTION = {
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
-    GENERIC_TECH: "*Generic Tech",
+    GENERIC_TECH: "*Generic tech",
     SYSTEM_TILES: "*System tiles",
     DEMO_MAP: "*Demo map",
+    DEMO_FACTION: "*Demo faction",
 };
 
 for (const action of Object.values(ACTION)) {
@@ -59,5 +61,19 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         MapStringLoad.load(
             "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 1 46 79 2 27 45 3 24 29 4 62 37 5 41 38 6 43 40"
         );
+    } else if (actionName === ACTION.DEMO_FACTION) {
+        const factions = [
+            "ul",
+            "arborec",
+            "creuss",
+            "muaat",
+            "nekro",
+            "argent",
+            "vuilraith",
+            "winnu",
+        ];
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupFaction.setupDesk(playerDesk, factions.shift());
+        }
     }
 });

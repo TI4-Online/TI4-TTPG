@@ -55,4 +55,4 @@ class SetupGenericTechDeck {
     }
 }
 
-module.exports = { SetupGenericTechDeck };
+module.exports = { SetupGenericTechDeck, TECH_DECK_LOCAL_OFFSET };
