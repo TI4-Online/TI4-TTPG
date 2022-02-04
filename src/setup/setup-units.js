@@ -1,6 +1,6 @@
 const assert = require("../wrapper/assert");
 const { Layout } = require("../lib/layout");
-const { Setup } = require("./setup");
+const { PlayerArea } = require("../lib/player-area");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector } = require("../wrapper/api");
 
@@ -55,7 +55,7 @@ const UNIT_DATA = [
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
 class SetupUnits {
-    static setupDesk(deskData) {
+    static setupDesk(playerDesk) {
         // Desk center [-119.224, 6.05442]
         // Arc origin [-128.069, -8.963]
         // const tCenter = new Vector(-119.224, 6.05442, 0);
@@ -65,11 +65,11 @@ class SetupUnits {
         // console.log(`${d.x} ${d.y}`);
 
         const shelfCenter = new Vector(5.783, -55.639, 8)
-            .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
-            .add(deskData.pos);
+            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
+            .add(playerDesk.pos);
         const arcOrigin = new Vector(-8.845, -15.017, 0)
-            .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
-            .add(deskData.pos);
+            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
+            .add(playerDesk.pos);
 
         // Use layout to find positions and rotations along an arc.
         const pointPosRots = new Layout()
@@ -81,7 +81,7 @@ class SetupUnits {
 
         assert(UNIT_DATA.length == pointPosRots.length);
         for (let i = 0; i < UNIT_DATA.length; i++) {
-            SetupUnits._setupUnit(deskData, UNIT_DATA[i], pointPosRots[i]);
+            SetupUnits._setupUnit(playerDesk, UNIT_DATA[i], pointPosRots[i]);
         }
     }
 
@@ -89,7 +89,7 @@ class SetupUnits {
         const unitNsid = unitData.unitNsid;
         const bagNsid = "bag." + unitNsid;
 
-        const slotColor = Setup.getPlayerSlotColor(deskData.playerSlot);
+        const slotColor = PlayerArea.getPlayerSlotColor(deskData.playerSlot);
 
         const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
         bag.clear(); // paranoia

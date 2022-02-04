@@ -4,6 +4,12 @@ const GameObject = require("./mock-game-object");
 class GameWorld {
     constructor(data) {
         this._allObjects = data ? data.allObjects : [];
+        this._allPlayers = data ? data.allPlayers : [];
+        this._tableHeight = data ? data.tableHeight : 1;
+    }
+
+    get __isMock() {
+        return true;
     }
 
     __addObject(gameObject) {
@@ -31,6 +37,14 @@ class GameWorld {
 
     getAllObjects() {
         return this._allObjects;
+    }
+
+    getAllPlayers() {
+        return this._allPlayers;
+    }
+
+    getTableHeight() {
+        return this._tableHeight;
     }
 }
 
