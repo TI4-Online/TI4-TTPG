@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../../lib/locale");
+const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
 
@@ -195,6 +196,14 @@ class Spawn {
         const name = Spawn.suggestName(nsid);
         if (name) {
             obj.setName(name);
+        }
+
+        // If this is a system tile, scale it to match Hex size.
+        if (ObjectNamespace.isSystemTile(obj)) {
+            const scale = Hex.SCALE;
+            if (Math.abs(scale - 1) > 0.01) {
+                obj.setScale([scale, scale, 1]);
+            }
         }
 
         return obj;
