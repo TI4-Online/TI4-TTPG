@@ -16,6 +16,7 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
         const parsed = ObjectNamespace.parseGeneric(rejectedObj);
         const bagNsid = `bag.${parsed.type}:${parsed.source}/${parsed.name}`;
         const bagOwner = rejectedObj.getOwningPlayerSlot();
+        let rehomed = false;
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue; // ignore candidates inside containers
@@ -31,9 +32,14 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             }
             // Found a home!  Send item there.
             obj.addObjects([rejectedObj], 0, true);
+            rehomed = true;
+            break;
         }
 
-        const pos = container.getPosition().add([10, 0, 10]);
-        container.take(rejectedObj, pos, true);
+        // Was not able to move it, just pop it out for now.
+        if (!rehomed) {
+            const pos = container.getPosition().add([10, 0, 10]);
+            container.take(rejectedObj, pos, true);
+        }
     }
 });
