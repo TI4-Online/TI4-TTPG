@@ -6,11 +6,29 @@ const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Vector } = require("../wrapper/api");
 const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
 
+const COMMAND_CONTROL_TOKENS = [
+    {
+        localOffset: {},
+        tokenNsidType: "token.command",
+        bagNsidType: "",
+        bagType: 1, // regular
+        tokenCount: 1,
+    },
+    {
+        localOffset: {},
+        tokenNsidType: "token.control",
+        bagNsidType: "",
+        bagType: 2, // infinite
+        tokenCount: 1,
+    },
+];
+
 class SetupFaction {
     static setupDesk(playerDesk, faction) {
         assert(typeof faction === "string");
 
         SetupFaction._setupFactionTech(playerDesk, faction);
+        SetupFaction._setupFactionCommandControlTokens(playerDesk, faction);
     }
 
     static _setupFactionTech(playerDesk, faction) {
@@ -63,6 +81,13 @@ class SetupFaction {
         ReplaceObjects.getReplacedObjects([techDeck]).forEach((replacedObj) => {
             replacedObj.destroy();
         });
+
+        // Currently deck drops, if it hits another deck TTPG will join them.
+        // We could do a cast and join it immediately.  For now nope.
+    }
+
+    static _setupFactionCommandControlTokens(playerDesk, faction) {
+        assert(typeof faction === "string");
     }
 }
 

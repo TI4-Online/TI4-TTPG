@@ -52,6 +52,8 @@ const UNIT_DATA = [
     },
 ];
 
+const SHELF_CENTER_LOCAL_OFFSET = { x: 5.783, y: -55.639, z: 8 };
+const ARC_ORIGIN_LOCAL_OFFSET = { x: -8.845, y: -15.017, z: 0 };
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
 class SetupUnits {
@@ -64,10 +66,12 @@ class SetupUnits {
         // const d = tShelfCenter.subtract(tCenter);
         // console.log(`${d.x} ${d.y}`);
 
-        const shelfCenter = new Vector(5.783, -55.639, 8)
+        let o = SHELF_CENTER_LOCAL_OFFSET;
+        const shelfCenter = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
-        const arcOrigin = new Vector(-8.845, -15.017, 0)
+        o = ARC_ORIGIN_LOCAL_OFFSET;
+        const arcOrigin = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
 

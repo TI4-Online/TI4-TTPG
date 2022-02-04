@@ -8,11 +8,8 @@ const TECH_DECK_LOCAL_OFFSET = { x: 11, y: -24, z: 7 };
 
 class SetupGenericTechDeck {
     static setupDesk(playerDesk) {
-        const deckPos = new Vector(
-            TECH_DECK_LOCAL_OFFSET.x,
-            TECH_DECK_LOCAL_OFFSET.y,
-            TECH_DECK_LOCAL_OFFSET.z
-        )
+        const o = TECH_DECK_LOCAL_OFFSET;
+        const deckPos = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
         const deckRot = playerDesk.rot;
