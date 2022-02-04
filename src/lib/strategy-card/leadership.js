@@ -1,4 +1,4 @@
-const strategyCard = require("./strategyCard");
+const strategyCard = require("./strategy-card");
 const tp = require("@tabletop-playground/api");
 const locale = require("../lib/locale");
 
