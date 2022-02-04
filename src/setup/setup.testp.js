@@ -1,4 +1,5 @@
 const { PlayerArea } = require("../lib/player-area");
+const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
@@ -13,6 +14,7 @@ const ACTION = {
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
+    GENERIC_TECH: "*Generic Tech",
     SYSTEM_TILES: "*System tiles",
     DEMO_MAP: "*Demo map",
 };
@@ -46,6 +48,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     } else if (actionName === ACTION.SHEETS) {
         for (const playerDesk of PlayerArea.getPlayerDesks()) {
             SetupSheets.setupDesk(playerDesk);
+        }
+    } else if (actionName === ACTION.GENERIC_TECH) {
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupGenericTechDeck.setupDesk(playerDesk);
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
         SetupSystemTiles.setup();

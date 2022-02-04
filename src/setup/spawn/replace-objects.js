@@ -12,7 +12,10 @@ class ReplaceObjects {
      *
      * @returns {Array.{GameObject}}
      */
-    static getReplacedObjects() {
+    static getReplacedObjects(objs) {
+        if (!objs) {
+            objs = world.getAllObjects();
+        }
         const newNsidSet = new Set(Object.values(REPLACE_DATA));
 
         // Get nsids for replacements (not the things getting replaced).
@@ -36,7 +39,7 @@ class ReplaceObjects {
 
         // Now find to-be-replaced objects, but only if replacement exists.
         const result = [];
-        for (const obj of world.getAllObjects()) {
+        for (const obj of objs) {
             if (obj instanceof Card && obj.getStackSize() > 1) {
                 // Cards in a deck are not objects, pull them out.
                 const nsids = ObjectNamespace.getDeckNsids(obj);
