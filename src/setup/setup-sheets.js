@@ -8,22 +8,22 @@ const SHEET_DATA = [
 ];
 
 class SetupSheets {
-    static setupDesk(deskData) {
+    static setupDesk(playerDesk) {
         SHEET_DATA.map((sheetData) =>
-            SetupSheets._setupSheet(deskData, sheetData)
+            SetupSheets._setupSheet(playerDesk, sheetData)
         );
     }
 
-    static _setupSheet(deskData, sheetData) {
+    static _setupSheet(playerDesk, sheetData) {
         const sheetPos = new Vector(sheetData.x, sheetData.y, sheetData.z)
-            .rotateAngleAxis(deskData.rot.yaw, [0, 0, 1])
-            .add(deskData.pos);
+            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
+            .add(playerDesk.pos);
 
-        const slotColor = PlayerArea.getPlayerSlotColor(deskData.playerSlot);
+        const slotColor = PlayerArea.getPlayerSlotColor(playerDesk.playerSlot);
 
-        const obj = Spawn.spawn(sheetData.nsid, sheetPos, deskData.rot);
+        const obj = Spawn.spawn(sheetData.nsid, sheetPos, playerDesk.rot);
         obj.setObjectType(ObjectType.Ground);
-        obj.setOwningPlayerSlot(deskData.playerSlot);
+        obj.setOwningPlayerSlot(playerDesk.playerSlot);
         obj.setPrimaryColor(slotColor);
     }
 }

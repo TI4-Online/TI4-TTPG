@@ -36,16 +36,16 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             obj.destroy();
         }
     } else if (actionName === ACTION.UNITS) {
-        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
-            SetupUnits.setupDesk(deskData);
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupUnits.setupDesk(playerDesk);
         }
     } else if (actionName === ACTION.SUPPLY) {
-        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
-            SetupSupplyBoxes.setupDesk(deskData);
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupSupplyBoxes.setupDesk(playerDesk);
         }
     } else if (actionName === ACTION.SHEETS) {
-        for (const deskData of PlayerArea.getPlayerDeskPosRots()) {
-            SetupSheets.setupDesk(deskData);
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupSheets.setupDesk(playerDesk);
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
         SetupSystemTiles.setup();
