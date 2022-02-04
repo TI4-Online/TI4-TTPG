@@ -186,7 +186,8 @@ class Gather {
         // "token:base/fighter_1", "bag.token:base/fighter_1"
         const typeSet = new Set([
             "token.exploration",
-            "token.exploration.attachment",
+            "token.attachment.exploration",
+            "token.wormhole.exploration",
         ]);
         const nameSet = new Set(["frontier"]);
         const parsed = ObjectNamespace.parseNsid(nsid);
@@ -334,11 +335,21 @@ class Gather {
 
     static isFactionToken(nsid) {
         const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            return false;
+        }
+        // Command and control.
         if (
-            parsed &&
-            (parsed.type === "token.command" || parsed.type === "token.control")
+            parsed.type === "token.command" ||
+            parsed.type === "token.control"
         ) {
             return parsed.name;
+        }
+        // Other tokens (dimensional tear, etc)
+        if (parsed.type.startsWith("token")) {
+            const typeParts = parsed.type.split(".");
+            const last = typeParts[typeParts.length - 1];
+            return last; // sloppy, assumes factions do not use reserved names
         }
     }
 
@@ -346,7 +357,7 @@ class Gather {
         const result = Gather.gather(
             (nsid) => Gather.isFactionToken(nsid) === faction
         );
-        assert(result.length === 2);
+        assert(result.length >= 2);
         return result;
     }
 

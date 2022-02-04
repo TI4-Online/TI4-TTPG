@@ -42,7 +42,8 @@ const M = LAYOUT_POINTY;
  * @author Darrell
  */
 class Hex {
-    static HALF_SIZE = 5.77735; // Half of hex width, 11.547cm
+    static SCALE = 1.667; // 1.667 reflects the unit size : hex size from the *other* simulator.
+    static HALF_SIZE = 5.77735 * Hex.SCALE; // Half of hex width, 11.547cm
 
     static _z = 0;
 

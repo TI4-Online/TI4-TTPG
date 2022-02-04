@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "3ECC3BBE476DB4EDD8C24D906B374D2B",
 	"Name": "Rift (Nekro)",
-	"Metadata": "token.exploration:pok/ion_storm",
+	"Metadata": "token.nekro:pok/dimensional_tear",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

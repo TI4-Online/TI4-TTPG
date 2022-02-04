@@ -1,7 +1,8 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../../lib/locale");
+const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Rotator, Vector, world } = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 
 const NSID_TO_TEMPLATE = {};
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
@@ -17,6 +18,8 @@ Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-unit.json"));
 // prefix for releated objects.  In some cases we want to group earlier,
 // such as merging technology.color into an overall technology deck.
 const OVERRIDE_GROUP_NSIDS = ["card.technology"];
+
+let _typeSet = false;
 
 /**
  * Spawn game objects from the hard-coded template json files.
@@ -42,16 +45,18 @@ class Spawn {
             }
         }
 
-        // Could remember this, but not called during normal play.
-        const typeSet = new Set();
-        for (const nsid of Object.keys(NSID_TO_TEMPLATE)) {
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            typeSet.add(parsed.type);
+        if (!_typeSet) {
+            _typeSet = new Set();
+            for (const nsid of Object.keys(NSID_TO_TEMPLATE)) {
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                _typeSet.add(parsed.type);
+            }
         }
 
         // Failing that, use the most-specific of the template types.
+        // This groups
         let groupName = false;
-        for (const candidateType of typeSet.keys()) {
+        for (const candidateType of _typeSet.keys()) {
             if (nsid.startsWith(candidateType)) {
                 if (!groupName || groupName.length < candidateType.length) {
                     groupName = candidateType;
@@ -120,8 +125,24 @@ class Spawn {
             return locale("tile.system", { tile: parsedNsid.name });
         }
 
+        if (parsedNsid.type.startsWith("token.attachment")) {
+            let candidate = `token.attachment.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
+
         if (parsedNsid.type.startsWith("token.exploration")) {
             let candidate = `token.exploration.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
+
+        if (parsedNsid.type.startsWith("token.wormhole")) {
+            let candidate = `token.wormhole.${parsedNsid.name}`;
             let candidateResult = locale(candidate);
             if (candidateResult !== candidate) {
                 return candidateResult;
@@ -136,10 +157,19 @@ class Spawn {
             const factionAbbr = locale(`faction.${parsedNsid.name}`);
             return locale("token.control", { faction: factionAbbr });
         }
+
+        // Try "token.{name}"?
+        if (parsedNsid.type.startsWith("token")) {
+            let candidate = `token.${parsedNsid.name}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
     }
 
     /**
-     * Spawn a known-nsid object.  Does not assign name.
+     * Spawn a known-nsid object and assign (locale aware) name.
      *
      * @param {string} nsid
      * @param {Vector} position
@@ -148,21 +178,41 @@ class Spawn {
      */
     static spawn(nsid, position, rotation) {
         assert(typeof nsid === "string");
-        assert(position instanceof Vector);
-        assert(rotation instanceof Rotator);
+        assert(typeof position.x === "number"); // "instanceof Vector" broken
+        assert(typeof rotation.yaw === "number"); // "instanceof Rotator" broken
 
         const templateId = NSID_TO_TEMPLATE[nsid];
         if (!templateId) {
-            throw new Error(`Spawn.spawn invalid nsid "${nsid}"`);
+            throw new Error(`unknown nsid "${nsid}"`);
         }
 
         const obj = world.createObjectFromTemplate(templateId, position);
         if (!obj) {
-            throw new Error(`Spawn.spawn failed for "${nsid}"`);
+            throw new Error(`spawn failed for "${nsid}"`);
         }
 
         obj.setRotation(rotation);
+
+        const name = Spawn.suggestName(nsid);
+        if (name) {
+            obj.setName(name);
+        }
+
+        // If this is a system tile, scale it to match Hex size.
+        if (ObjectNamespace.isSystemTile(obj)) {
+            const scale = Hex.SCALE * 0.995;
+            obj.setScale([scale, scale, 1]);
+        }
+
         return obj;
+    }
+
+    static spawnGenericContainer(position, rotation) {
+        const chestTemplateId = "C134C94B496A8D48C79534A5BDBC8A3D";
+        const bag = world.createObjectFromTemplate(chestTemplateId, position);
+        bag.setRotation(rotation);
+        bag.setMaxItems(500);
+        return bag;
     }
 }
 

@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "12D092EC490F4E953D1662B88D04447F",
 	"Name": "Nano Forge",
-	"Metadata": "token.exploration.attachment:pok/nano_forge",
+	"Metadata": "token.attachment.exploration:pok/nano_forge",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
