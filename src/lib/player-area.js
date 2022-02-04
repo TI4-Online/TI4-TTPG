@@ -1,4 +1,5 @@
 const assert = require("../wrapper/assert");
+const locale = require("../lib/locale");
 const {
     Button,
     Color,
@@ -180,10 +181,11 @@ class PlayerArea {
             }
 
             const color = PlayerArea.getPlayerSlotColor(playerDesk.playerSlot);
+            const buttonText = locale("ui.button.take_seat");
             const button = new Button()
                 .setTextColor(color)
                 .setFontSize(50)
-                .setText("TAKE SEAT");
+                .setText(buttonText);
             button.onClicked.add((button, player) => {
                 this.seatPlayer(playerDesk.pos, player);
             });
