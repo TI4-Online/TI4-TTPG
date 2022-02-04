@@ -1,6 +1,5 @@
 const assert = require("../wrapper/assert");
 const {
-    Border,
     Button,
     Color,
     Player,
@@ -131,6 +130,12 @@ globalEvents.onTick.add(runOnce);
  * Manage player areas.
  */
 class PlayerArea {
+    /**
+     * Reset number of seats at the table
+     * (not physical desks, but those available for players).
+     *
+     * @param {number} value
+     */
     static setPlayerCount(value) {
         assert(typeof value === "number");
         assert(1 <= value && value <= 8);
@@ -141,6 +146,12 @@ class PlayerArea {
         }
     }
 
+    /**
+     * Move player to seat.
+     *
+     * @param {Vector} position
+     * @param {Player} player
+     */
     static seatPlayer(position, player) {
         assert(typeof position.x === "number"); // "instanceof Vector" broken
         assert(player instanceof Player);
@@ -152,6 +163,9 @@ class PlayerArea {
         PlayerArea.resetUnusedSeats();
     }
 
+    /**
+     * Clear and reset "claim seat" buttons on available player desks.
+     */
     static resetUnusedSeats() {
         // Remove old UI.
         for (const ui of _claimSeatUIs) {
@@ -183,6 +197,11 @@ class PlayerArea {
         }
     }
 
+    /**
+     * Move newly joined players to a non-seat player slot.
+     *
+     * @param {Player} player
+     */
     static moveNewPlayerToNonSeatSlot(player) {
         assert(player instanceof Player);
         const reservedSlots = new Set();
