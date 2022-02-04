@@ -111,11 +111,12 @@ globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
 });
 
 // Unseat host when first loading game.
+const isRescriptReload = world.getExecutionReason() === "ScriptReload";
 const runOnce = () => {
     globalEvents.onTick.remove(runOnce);
 
     // If not reloading scripts move the host to a non-seat slot.
-    if (world.getExecutionReason() !== "ScriptReload") {
+    if (!isRescriptReload) {
         for (const player of world.getAllPlayers()) {
             PlayerArea.moveNewPlayerToNonSeatSlot(player);
         }
@@ -246,7 +247,7 @@ class PlayerArea {
                 pos: new Vector(
                     playerDesk.pos.x,
                     playerDesk.pos.y,
-                    world.getTableHeight() - 5
+                    world.getTableHeight()
                 ),
                 rot: new Rotator(0, (playerDesk.yaw + 360 + 90) % 360, 0),
                 playerSlot: playerDesk.defaultPlayerSlot,
@@ -299,6 +300,13 @@ class PlayerArea {
             throw new Error(`unable to find seat for ${position}`);
         }
         return closestSeat;
+    }
+
+    static getClosestPlayerSlot(position) {
+        assert(typeof position.x === "number"); // "instanceof Vector" broken
+        const seat = PlayerArea.getClosestSeat(position);
+        const playerDesk = PLAYER_DESKS[seat];
+        return playerDesk.defaultPlayerSlot;
     }
 
     /**
