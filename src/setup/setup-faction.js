@@ -4,9 +4,14 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerArea } = require("../lib/player-area");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
-const { Container, ObjectType, Vector, world } = require("../wrapper/api");
+const {
+    Card,
+    Container,
+    ObjectType,
+    Vector,
+    world,
+} = require("../wrapper/api");
 const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
-const Rotator = require("../mock/mock-rotator");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
@@ -28,6 +33,7 @@ const COMMAND_TOKENS = {
         { x: -4.3, y: 4.0, z: 1, yaw: -90 },
     ],
 };
+
 const CONTROL_TOKENS = {
     tokenNsidType: "token.control",
     bagNsid: "bag:base/garbage",
@@ -64,6 +70,8 @@ class SetupFaction {
             faction,
             commandTokensBag
         );
+
+        SetupFaction._placeScoreboardOwnerToken(ownerTokensBag);
     }
 
     static _getFactionSource(factionNsidName) {
@@ -78,16 +86,28 @@ class SetupFaction {
         throw new Error(`unknown faction "${factionNsidName}"`);
     }
 
-    static _setupFactionTech(playerDesk, faction) {
-        assert(typeof faction.nsidName === "string");
+    static _spawnDecksThenFilter(pos, rot, nsidPrefix, filterNsid) {
+        assert(typeof pos.x === "number"); // "instanceof Vector" broken
+        assert(typeof rot.yaw === "number"); // "instanceof Rotator" broken
+        assert(typeof nsidPrefix === "string");
+        assert(typeof filterNsid === "function");
 
-        const o = TECH_DECK_LOCAL_OFFSET;
-        const deckPos = new Vector(o.x, o.y + 8, o.z + 10) // to the side, TTPG does not join on drop
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        const deckRot = playerDesk.rot;
+        // Find existing deck to join.  Dropping a new deck on top only
+        // creates a stack of two decks; TTPG does not auto-join.
+        const start = pos.add([0, 0, 20]);
+        const end = pos.subtract([0, 0, 20]);
+        const traceHit = world.lineTrace(start, end).find((traceHit) => {
+            if (!(traceHit.object instanceof Card)) {
+                return false; // only looking for decks
+            }
+            // ObjectNamespace.getNsid intentionally returns nothing for decks
+            // because there are many nsids inside.  Look at first of those.
+            const nsid = ObjectNamespace.getDeckNsids(traceHit.object)[0];
+            return nsid.startsWith(nsidPrefix);
+        });
+        const existingDeck = traceHit && traceHit.object;
 
-        const deckNsids = Spawn.getAllNSIDs().filter((nsid) => {
+        const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
             // Get the DECK nsids, will need to merge into one deck.
             const parsedNsid = ObjectNamespace.parseNsid(nsid);
             if (parsedNsid.source.startsWith("homebrew")) {
@@ -98,33 +118,67 @@ class SetupFaction {
             }
             return parsedNsid.type.startsWith("card.technology");
         });
-        deckNsids.sort();
+        mergeDeckNsids.sort();
 
         // Spawn the decks, combine into one.
-        let techDeck = false;
-        deckNsids.forEach((deckNsid) => {
-            const deckObj = Spawn.spawn(deckNsid, deckPos, deckRot);
-            if (techDeck) {
-                techDeck.addCards(deckObj);
+        let deck = false;
+        mergeDeckNsids.forEach((mergeDeckNsid) => {
+            const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
+            if (deck) {
+                deck.addCards(mergeDeck);
             } else {
-                techDeck = deckObj;
+                deck = mergeDeck;
             }
         });
 
-        // Remove any non-faction tech.
+        // Remove any filter-rejected cards.
         Gather.gather(
             (nsid) => {
-                return Gather.isFactionTechCardNsid(nsid) !== faction.nsidName;
+                return !filterNsid(nsid);
             },
-            [techDeck]
-        ).forEach((notThisFactionTechCard) => {
-            notThisFactionTechCard.destroy();
+            [deck]
+        ).forEach((filterRejectedCard) => {
+            filterRejectedCard.destroy();
         });
 
         // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([techDeck]).forEach((replacedObj) => {
+        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
             replacedObj.destroy();
         });
+
+        // Add to existing generic tech deck.
+        if (existingDeck) {
+            console.log("jsoi");
+            existingDeck.addCards(deck);
+        }
+    }
+
+    static _deskLocalOffsetToWorld(playerDesk, deskLocalOffset) {
+        return new Vector(
+            deskLocalOffset.x,
+            deskLocalOffset.y,
+            deskLocalOffset.z
+        )
+            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
+            .add(playerDesk.pos);
+    }
+
+    static _setupFactionTech(playerDesk, faction) {
+        assert(typeof faction.nsidName === "string");
+
+        const pos = SetupFaction._deskLocalOffsetToWorld(
+            playerDesk,
+            TECH_DECK_LOCAL_OFFSET
+        );
+        const rot = playerDesk.rot;
+
+        this._spawnDecksThenFilter(pos, rot, "card.technology", (nsid) => {
+            return Gather.isFactionTechCardNsid(nsid) === faction.nsidName;
+        });
+    }
+
+    static _setupFactionPromissoryNotes(playerDesk, faction) {
+        // TODO XXX
     }
 
     static _setupFactionCommandControlTokens(playerDesk, faction, tokenData) {
@@ -207,6 +261,10 @@ class SetupFaction {
             const token = commandTokensBag.takeAt(0, pos, true);
             token.setRotation(rot);
         });
+    }
+
+    static _placeScoreboardOwnerToken(ownerTokensBag) {
+        // TODO XXX
     }
 }
 
