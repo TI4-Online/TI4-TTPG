@@ -17,53 +17,61 @@ const {
  */
 const PLAYER_DESKS = [
     {
+        colorName: "pink",
         pos: { x: 6.0544, y: 149.218, z: 3 },
         yaw: 180.0,
         defaultPlayerSlot: 5,
         minPlayerCount: 7,
-    }, // pink
+    },
     {
+        colorName: "green",
         pos: { x: 96.9075, y: 99.7789, z: 3 },
         yaw: 117.5,
         defaultPlayerSlot: 1,
         minPlayerCount: 2,
-    }, // green
+    },
     {
+        colorName: "red",
         pos: { x: 119.842, y: -6.0544, z: 3 },
         yaw: 90.0,
         defaultPlayerSlot: 16,
         minPlayerCount: 6,
-    }, // red
+    },
     {
+        colorName: "yellow",
         pos: { x: 91.3162, y: -110.52, z: 3 },
         yaw: 62.5,
         defaultPlayerSlot: 9,
         minPlayerCount: 4,
-    }, // yellow
+    },
     {
+        colorName: "orange",
         pos: { x: -6.05441, y: -150.691, z: 3 },
         yaw: 0,
         defaultPlayerSlot: 6,
         minPlayerCount: 8,
-    }, // orange
+    },
     {
+        colorName: "purple",
         pos: { x: -96.29, y: -99.7789, z: 3 },
         yaw: -62.5,
         defaultPlayerSlot: 4,
         minPlayerCount: 3,
-    }, // purple
+    },
     {
+        colorName: "blue",
         pos: { x: -119.224, y: 6.05442, z: 3 },
         yaw: -90.0,
         defaultPlayerSlot: 15,
         minPlayerCount: 5,
-    }, // blue
+    },
     {
+        colorName: "white",
         pos: { x: -90.6987, y: 110.52, z: 3 },
         yaw: -117.5,
         defaultPlayerSlot: 18,
         minPlayerCount: 1,
-    }, // white
+    },
 ];
 
 /**
@@ -250,6 +258,7 @@ class PlayerArea {
             assert(playerDesk.defaultPlayerSlot);
             result.push({
                 seat: i,
+                colorName: playerDesk.colorName,
                 pos: new Vector(
                     playerDesk.pos.x,
                     playerDesk.pos.y,

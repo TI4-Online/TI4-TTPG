@@ -1,5 +1,6 @@
 const { PlayerArea } = require("../lib/player-area");
 const { SetupFaction } = require("./setup-faction");
+const { SetupGenericPromissory } = require("./setup-generic-promissory");
 const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
@@ -16,6 +17,7 @@ const ACTION = {
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
     GENERIC_TECH: "*Generic tech",
+    GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
     DEMO_MAP: "*Demo map",
     DEMO_FACTION: "*Demo faction",
@@ -54,6 +56,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     } else if (actionName === ACTION.GENERIC_TECH) {
         for (const playerDesk of PlayerArea.getPlayerDesks()) {
             SetupGenericTechDeck.setupDesk(playerDesk);
+        }
+    } else if (actionName === ACTION.GENERIC_PROMISSORY) {
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
+            SetupGenericPromissory.setupDesk(playerDesk);
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
         SetupSystemTiles.setup();

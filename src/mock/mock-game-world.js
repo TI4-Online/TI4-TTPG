@@ -46,6 +46,10 @@ class GameWorld {
     getTableHeight() {
         return this._tableHeight;
     }
+
+    static getTableHeight() {
+        return 1;
+    }
 }
 
 module.exports = GameWorld;
