@@ -157,7 +157,7 @@ class UnitModifier {
      * @returns {unitModifier}
      */
     static getUnitAbilityUnitModifier(unitAbility) {
-        assert(typeof factionAbility === "string");
+        assert(typeof unitAbility === "string");
         _maybeInit();
         return _unitAbilityToUnitModifier[unitAbility];
     }

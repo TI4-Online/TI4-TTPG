@@ -1,4 +1,4 @@
-const assert = require("assert");
+const assert = require("../../wrapper/assert");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const UNIT_ATTRS = require("./unit-attrs.data");
