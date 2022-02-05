@@ -363,7 +363,7 @@ class PlayerDesk {
     localPositionToWorld(pos) {
         assert(typeof pos.x === "number"); // instanceof Vector broken
         return new Vector(pos.x, pos.y, pos.z)
-            .rotateAngleAxis(this.rot.yaw)
+            .rotateAngleAxis(this.rot.yaw, [0, 0, 1])
             .add(this.pos);
     }
 }

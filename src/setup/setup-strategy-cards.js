@@ -1,6 +1,7 @@
 const { Spawn } = require("./spawn/spawn");
 const { Vector, world } = require("../wrapper/api");
 const Rotator = require("../mock/mock-rotator");
+const { AbstractSetup } = require("./abstract-setup");
 
 let _nextX = -40;
 function nextPosition() {
@@ -64,14 +65,18 @@ const STRATEGY_CARDS = [
     },
 ];
 
-class SetupStrategyCards {
-    static setup() {
+class SetupStrategyCards extends AbstractSetup {
+    constructor() {
+        super();
+    }
+
+    setup() {
         for (const strategyCard of STRATEGY_CARDS) {
-            SetupStrategyCards._setupStrategyCard(strategyCard);
+            this._setupStrategyCard(strategyCard);
         }
     }
 
-    static _setupStrategyCard(strategyCard) {
+    _setupStrategyCard(strategyCard) {
         const pos = new Vector(
             strategyCard.pos.x,
             strategyCard.pos.y,

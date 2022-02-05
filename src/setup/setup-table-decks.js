@@ -1,8 +1,6 @@
-const { ObjectNamespace } = require("../lib/object-namespace");
-const { ReplaceObjects } = require("./spawn/replace-objects");
-const { Spawn } = require("./spawn/spawn");
 const { Vector, world } = require("../wrapper/api");
 const Rotator = require("../mock/mock-rotator");
+const { AbstractSetup } = require("./abstract-setup");
 
 let _nextX = -40;
 function nextPosition() {
@@ -90,44 +88,24 @@ const TABLE_DECKS = [
     },
 ];
 
-class SetupTableDecks {
-    static setup() {
+class SetupTableDecks extends AbstractSetup {
+    constructor() {
+        super();
+    }
+
+    setup() {
         for (const deckData of TABLE_DECKS) {
-            SetupTableDecks._setupDeck(deckData);
+            this._setupDeck(deckData);
         }
     }
 
-    static _setupDeck(deckData) {
+    _setupDeck(deckData) {
         const pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
         const rot = new Rotator(0, deckData.yaw, 0);
 
-        const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
-            // Get the DECK nsids, will need to merge into one deck.
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            if (parsedNsid.source.startsWith("homebrew")) {
-                return false; // ignore homebrew
-            }
-            if (parsedNsid.source.startsWith("franken")) {
-                return false; // ignore franken
-            }
-            return parsedNsid.type.startsWith(deckData.nsidPrefix);
-        });
-        mergeDeckNsids.sort();
-
         // Spawn the decks, combine into one.
-        let deck = false;
-        mergeDeckNsids.forEach((mergeDeckNsid) => {
-            const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
-            if (deck) {
-                deck.addCards(mergeDeck);
-            } else {
-                deck = mergeDeck;
-            }
-        });
-
-        // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
-            replacedObj.destroy();
+        this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
+            return true; // no need to filter anything
         });
     }
 }

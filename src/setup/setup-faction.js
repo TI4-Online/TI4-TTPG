@@ -2,7 +2,6 @@ const assert = require("../wrapper/assert");
 const { Gather } = require("./spawn/gather");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerArea } = require("../lib/player-area");
-const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
 const {
     Card,
@@ -120,78 +119,6 @@ class SetupFaction {
         assert(typeof rot.yaw === "number"); // "instanceof Rotator" broken
         assert(typeof nsidPrefix === "string");
         assert(typeof filterNsid === "function");
-
-        // Find existing deck to join.  Dropping a new deck on top only
-        // creates a stack of two decks; TTPG does not auto-join.
-        const start = pos.add([0, 0, 20]);
-        const end = pos.subtract([0, 0, 20]);
-        const traceHit = world.lineTrace(start, end).find((traceHit) => {
-            if (!(traceHit.object instanceof Card)) {
-                return false; // only looking for decks
-            }
-            // ObjectNamespace.getNsid intentionally returns nothing for decks
-            // because there are many nsids inside.  Look at first of those.
-            const nsid = ObjectNamespace.getDeckNsids(traceHit.object)[0];
-            return nsid.startsWith(nsidPrefix);
-        });
-        const existingDeck = traceHit && traceHit.object;
-
-        const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
-            // Get the DECK nsids, will need to merge into one deck.
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            if (parsedNsid.source.startsWith("homebrew")) {
-                return false; // ignore homebrew
-            }
-            if (parsedNsid.source.startsWith("franken")) {
-                return false; // ignore franken
-            }
-            return parsedNsid.type.startsWith(nsidPrefix);
-        });
-        mergeDeckNsids.sort();
-
-        // Spawn the decks, combine into one.
-        let deck = false;
-        mergeDeckNsids.forEach((mergeDeckNsid) => {
-            const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
-            if (deck) {
-                deck.addCards(mergeDeck);
-            } else {
-                deck = mergeDeck;
-            }
-        });
-
-        // Remove any filter-rejected cards.
-        Gather.gather(
-            (nsid) => {
-                return !filterNsid(nsid);
-            },
-            [deck]
-        ).forEach((filterRejectedCard) => {
-            filterRejectedCard.destroy();
-        });
-
-        // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
-            replacedObj.destroy();
-        });
-
-        // Add to existing generic tech deck.
-        if (existingDeck) {
-            existingDeck.addCards(deck);
-            deck = existingDeck;
-        }
-
-        return deck;
-    }
-
-    static _deskLocalOffsetToWorld(playerDesk, deskLocalOffset) {
-        return new Vector(
-            deskLocalOffset.x,
-            deskLocalOffset.y,
-            deskLocalOffset.z
-        )
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
     }
 
     static _setupFactionTech(playerDesk, faction) {

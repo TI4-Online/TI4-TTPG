@@ -1,30 +1,32 @@
-const { PlayerArea } = require("../lib/player-area");
+const { AbstractSetup } = require("./abstract-setup");
+const { ObjectType } = require("../wrapper/api");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Vector } = require("../wrapper/api");
 
 const SHEET_DATA = [
-    { nsid: "sheet:base/command", x: -4, y: 11, z: 6.5 },
-    { nsid: "sheet:pok/leader", x: -4, y: -25, z: 6.5 },
+    { nsid: "sheet:base/command", pos: { x: -4, y: 11, z: 6.5 } },
+    { nsid: "sheet:pok/leader", pos: { x: -4, y: -25, z: 6.5 } },
 ];
 
-class SetupSheets {
-    static setupDesk(playerDesk) {
-        SHEET_DATA.map((sheetData) =>
-            SetupSheets._setupSheet(playerDesk, sheetData)
-        );
+class SetupSheets extends AbstractSetup {
+    constructor(playerDesk) {
+        super();
+        this.setPlayerDesk(playerDesk);
     }
 
-    static _setupSheet(playerDesk, sheetData) {
-        const sheetPos = new Vector(sheetData.x, sheetData.y, sheetData.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
+    setup() {
+        SHEET_DATA.map((sheetData) => this._setupSheet(sheetData));
+    }
 
-        const slotColor = PlayerArea.getPlayerSlotColor(playerDesk.playerSlot);
+    _setupSheet(sheetData) {
+        const pos = this.playerDesk.localPositionToWorld(sheetData.pos);
+        const rot = this.playerDesk.rot;
+        const playerSlot = this.playerDesk.playerSlot;
+        const color = this.playerDesk.color;
 
-        const obj = Spawn.spawn(sheetData.nsid, sheetPos, playerDesk.rot);
+        const obj = Spawn.spawn(sheetData.nsid, pos, rot);
         obj.setObjectType(ObjectType.Ground);
-        obj.setOwningPlayerSlot(playerDesk.playerSlot);
-        obj.setPrimaryColor(slotColor);
+        obj.setOwningPlayerSlot(playerSlot);
+        obj.setPrimaryColor(color);
     }
 }
 
