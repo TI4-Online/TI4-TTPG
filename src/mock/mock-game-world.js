@@ -7,6 +7,7 @@ class GameWorld {
         this._allObjects = data ? data.allObjects : [];
         this._allPlayers = data ? data.allPlayers : [];
         this._tableHeight = data ? data.tableHeight : 1;
+        this._savedData = data ? data.savedData : "";
     }
 
     get __isMock() {
@@ -31,11 +32,6 @@ class GameWorld {
         return "ScriptReload";
     }
 
-    // TTPG exposes this both static and per-instance.
-    getExecutionReason() {
-        return GameWorld.getExecutionReason();
-    }
-
     addUI(uiElement) {
         assert(uiElement instanceof UIElement);
         // nop
@@ -49,6 +45,11 @@ class GameWorld {
         return this._allPlayers;
     }
 
+    // TTPG exposes this both static and per-instance.
+    getExecutionReason() {
+        return GameWorld.getExecutionReason();
+    }
+
     getPlayerBySlot(playerSlot) {
         assert(typeof playerSlot === "number");
         for (const player of this.getAllPlayers()) {
@@ -59,6 +60,10 @@ class GameWorld {
         return undefined;
     }
 
+    getSavedData() {
+        return this._savedData;
+    }
+
     getTableHeight() {
         return this._tableHeight;
     }
@@ -66,6 +71,12 @@ class GameWorld {
     removeUI(uiElement) {
         assert(uiElement instanceof UIElement);
         // nop
+    }
+
+    setSavedData(value) {
+        assert(typeof value === "string");
+        assert(value.length < 1024);
+        this._savedData = value;
     }
 }
 
