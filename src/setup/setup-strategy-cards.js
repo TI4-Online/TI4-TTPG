@@ -1,5 +1,3 @@
-const { ObjectNamespace } = require("../lib/object-namespace");
-const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
 const { Vector, world } = require("../wrapper/api");
 const Rotator = require("../mock/mock-rotator");
