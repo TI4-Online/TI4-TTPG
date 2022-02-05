@@ -3,8 +3,10 @@ const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
 const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
 const { SetupSheets } = require("./setup-sheets");
+const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
+const { SetupTableDecks } = require("./setup-table-decks");
 const { SetupUnits } = require("./setup-units");
 const { MapStringLoad } = require("../lib/map-string/map-string-load");
 const { refObject, world } = require("@tabletop-playground/api");
@@ -19,6 +21,8 @@ const ACTION = {
     GENERIC_TECH: "*Generic tech",
     GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
+    TABLE_DECKS: "*Table decks",
+    STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
     DEMO_FACTION: "*Demo faction",
 };
@@ -63,6 +67,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
         SetupSystemTiles.setup();
+    } else if (actionName === ACTION.TABLE_DECKS) {
+        SetupTableDecks.setup();
+    } else if (actionName === ACTION.STRATEGY_CARDS) {
+        SetupStrategyCards.setup();
     } else if (actionName === ACTION.DEMO_MAP) {
         MapStringLoad.load(
             "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 1 46 79 2 27 45 3 24 29 4 62 37 5 41 38 6 43 40"

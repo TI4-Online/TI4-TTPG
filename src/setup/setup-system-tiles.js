@@ -6,7 +6,7 @@ const { Rotator, Vector, world } = require("../wrapper/api");
 
 class SetupSystemTiles {
     static setup() {
-        const pos = new Vector(0, 0, world.getTableHeight() + 5);
+        const pos = new Vector(0, 100, world.getTableHeight() + 5);
         const rot = new Rotator(0, 0, 0);
         const bag = Spawn.spawnGenericContainer(pos, rot);
 
