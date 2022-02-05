@@ -1,6 +1,10 @@
 const assert = require("../wrapper/assert");
 const locale = require("../lib/locale");
 const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./global-saved-data");
+const {
     Button,
     Color,
     Player,
@@ -10,6 +14,32 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+
+/**
+ * Color values corresponding to TTPG player slots.
+ */
+const PLAYER_SLOT_COLORS = [
+    { r: 0, g: 0.427, b: 0.858, a: 1 },
+    { r: 0.141, g: 1, b: 0.141, a: 1 },
+    { r: 0.572, g: 0, b: 0, a: 1 },
+    { r: 0, g: 0.286, b: 0.286, a: 1 },
+    { r: 0.286, g: 0, b: 0.572, a: 1 },
+    { r: 1, g: 0.427, b: 0.713, a: 1 },
+    { r: 0.858, g: 0.427, b: 0, a: 1 },
+    { r: 0.572, g: 0.286, b: 0, a: 1 },
+    { r: 0.713, g: 0.858, b: 1, a: 1 },
+    { r: 1, g: 1, b: 0.427, a: 1 },
+    { r: 0, g: 0.572, b: 0.572, a: 1 },
+    { r: 1, g: 0.713, b: 0.466, a: 1 },
+    { r: 0.713, g: 0.427, b: 1, a: 1 },
+    { r: 0.427, g: 0.713, b: 1, a: 1 },
+    { r: 0, g: 1, b: 1, a: 1 },
+    { r: 0, g: 0, b: 1, a: 1 },
+    { r: 1, g: 0, b: 0, a: 1 },
+    { r: 0.215, g: 0.215, b: 0.215, a: 1 },
+    { r: 1, g: 1, b: 1, a: 1 },
+    { r: 0, g: 0, b: 0, a: 1 },
+];
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.
@@ -74,36 +104,12 @@ const PLAYER_DESKS = [
     },
 ];
 
-/**
- * Color values corresponding to TTPG player slots.
- */
-const PLAYER_SLOT_COLORS = [
-    { r: 0, g: 0.427, b: 0.858, a: 1 },
-    { r: 0.141, g: 1, b: 0.141, a: 1 },
-    { r: 0.572, g: 0, b: 0, a: 1 },
-    { r: 0, g: 0.286, b: 0.286, a: 1 },
-    { r: 0.286, g: 0, b: 0.572, a: 1 },
-    { r: 1, g: 0.427, b: 0.713, a: 1 },
-    { r: 0.858, g: 0.427, b: 0, a: 1 },
-    { r: 0.572, g: 0.286, b: 0, a: 1 },
-    { r: 0.713, g: 0.858, b: 1, a: 1 },
-    { r: 1, g: 1, b: 0.427, a: 1 },
-    { r: 0, g: 0.572, b: 0.572, a: 1 },
-    { r: 1, g: 0.713, b: 0.466, a: 1 },
-    { r: 0.713, g: 0.427, b: 1, a: 1 },
-    { r: 0.427, g: 0.713, b: 1, a: 1 },
-    { r: 0, g: 1, b: 1, a: 1 },
-    { r: 0, g: 0, b: 1, a: 1 },
-    { r: 1, g: 0, b: 0, a: 1 },
-    { r: 0.215, g: 0.215, b: 0.215, a: 1 },
-    { r: 1, g: 1, b: 1, a: 1 },
-    { r: 0, g: 0, b: 0, a: 1 },
-];
-
 const DEFAULT_PLAYER_COUNT = 6;
-
-let _playerCount = DEFAULT_PLAYER_COUNT;
+let _playerCount = false;
+let _playerDesks = false;
 let _claimSeatUIs = [];
+
+// ----------------------------------------------------------------------------
 
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
@@ -136,10 +142,66 @@ const runOnce = () => {
 };
 globalEvents.onTick.add(runOnce);
 
+// ----------------------------------------------------------------------------
+
+/**
+ * Wrapper for raw PLAYER_DESK entries, create TTPG Vector/Rotator objects.
+ * "Player Desk" is a simple representation of larger notion of "Player Area".
+ */
+class PlayerDesk {
+    constructor(attrs) {
+        assert(attrs.minPlayerCount <= PlayerArea.getPlayerCount());
+        this._colorName = attrs.colorName;
+        this._pos = new Vector(
+            attrs.pos.x,
+            attrs.pos.y,
+            world.getTableHeight()
+        );
+        this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
+        this._playerSlot = attrs.defaultPlayerSlot;
+    }
+
+    /**
+     * String color name, mainly for finding per-color promissory notes.
+     * Not localized!
+     *
+     * @return {string}
+     */
+    get colorName() {
+        return this._colorName;
+    }
+    get pos() {
+        return this._pos;
+    }
+    get rot() {
+        return this._rot;
+    }
+    get playerSlot() {
+        return this._playerSlot;
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 /**
  * Manage player areas.
  */
 class PlayerArea {
+    /**
+     * Current player count (available seats, not currently joined players).
+     *
+     * @returns {number}
+     */
+    static getPlayerCount() {
+        if (!_playerCount) {
+            _playerCount = GlobalSavedData.get(
+                GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
+                DEFAULT_PLAYER_COUNT
+            );
+        }
+        return _playerCount;
+    }
+
     /**
      * Reset number of seats at the table
      * (not physical desks, but those available for players).
@@ -149,11 +211,16 @@ class PlayerArea {
     static setPlayerCount(value) {
         assert(typeof value === "number");
         assert(1 <= value && value <= 8);
-        _playerCount = value;
 
-        if (!world.__isMock) {
-            PlayerArea.resetUnusedSeats();
-        }
+        // Keep locally, as well as persist across save/load.
+        _playerCount = value;
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, _playerCount);
+
+        // Clear precomputed availabled desks, recompute on next get.
+        _playerDesks = false;
+
+        // Reset "claim seat" buttons.
+        PlayerArea.resetUnusedSeats();
     }
 
     /**
@@ -167,8 +234,8 @@ class PlayerArea {
         assert(player instanceof Player);
 
         // Assume new seat.
-        const seat = PlayerArea.getClosestSeat(position);
-        player.switchSlot(PLAYER_DESKS[seat].defaultPlayerSlot);
+        const playerDesk = PlayerArea.getClosestPlayerDesk(position);
+        player.switchSlot(playerDesk.playerSlot);
 
         PlayerArea.resetUnusedSeats();
     }
@@ -210,14 +277,15 @@ class PlayerArea {
 
     /**
      * Move newly joined players to a non-seat player slot.
+     * This should be called from a globalEvents.onPlayerJoined handler.
      *
      * @param {Player} player
      */
     static moveNewPlayerToNonSeatSlot(player) {
         assert(player instanceof Player);
         const reservedSlots = new Set();
-        for (const playerDesk of PLAYER_DESKS) {
-            reservedSlots.add(playerDesk.defaultPlayerSlot);
+        for (const playerDesk of this.getPlayerDesks()) {
+            reservedSlots.add(playerDesk.playerSlot);
         }
         for (const otherPlayer of world.getAllPlayers()) {
             if (otherPlayer == player) {
@@ -241,37 +309,6 @@ class PlayerArea {
     }
 
     /**
-     * Get all player slots, accounting for current player count.
-     *
-     * @returns {Array.{Object.{pos:Vector,rot:Rotator,playerSlot:number}}}
-     */
-    static getPlayerDesks() {
-        // Create new objects on every request b/c caller might mutate them.
-        const result = [];
-        for (let i = 0; i < PLAYER_DESKS.length; i++) {
-            const playerDesk = PLAYER_DESKS[i];
-            if (playerDesk.minPlayerCount > _playerCount) {
-                continue;
-            }
-            assert(playerDesk.pos);
-            assert(playerDesk.yaw);
-            assert(playerDesk.defaultPlayerSlot);
-            result.push({
-                seat: i,
-                colorName: playerDesk.colorName,
-                pos: new Vector(
-                    playerDesk.pos.x,
-                    playerDesk.pos.y,
-                    world.getTableHeight()
-                ),
-                rot: new Rotator(0, (playerDesk.yaw + 360 + 90) % 360, 0),
-                playerSlot: playerDesk.defaultPlayerSlot,
-            });
-        }
-        return result;
-    }
-
-    /**
      * Get color associated with TTGP player slot.
      *
      * @param {number} playerSlot
@@ -287,42 +324,64 @@ class PlayerArea {
     }
 
     /**
+     * Get all player desks, accounting for current player count.
+     * Player desks are read-only and shared, DO NOT MUTATE!
+     *
+     * @returns {Array.{PlayerDesk}}
+     */
+    static getPlayerDesks() {
+        if (_playerDesks) {
+            return _playerDesks;
+        }
+        _playerDesks = [];
+        for (let i = 0; i < PLAYER_DESKS.length; i++) {
+            const attrs = PLAYER_DESKS[i];
+            if (attrs.minPlayerCount > PlayerArea.getPlayerCount()) {
+                continue;
+            }
+            _playerDesks.push(new PlayerDesk(attrs));
+        }
+        return _playerDesks;
+    }
+
+    /**
      * Get player seat closest to this position.
      *
      * @param {Vector} position
-     * @returns {number} seat index of ALL player desks
+     * @returns {PlayerDesk}
      */
-    static getClosestSeat(position) {
+    static getClosestPlayerDesk(position) {
         assert(typeof position.x === "number"); // "instanceof Vector" broken
 
         let closestDistanceSq = Number.MAX_VALUE;
-        let closestSeat = -1;
+        let closest = false;
 
         // This might be called a lot, find without creating new objects.
-        for (let i = 0; i < PLAYER_DESKS.length; i++) {
-            const playerDesk = PLAYER_DESKS[i];
-            if (playerDesk.minPlayerCount > _playerCount) {
-                continue;
-            }
+        for (const playerDesk of PlayerArea.getPlayerDesks()) {
             const dx = position.x - playerDesk.pos.x;
             const dy = position.y - playerDesk.pos.y;
             const dSq = dx * dx + dy * dy;
             if (dSq < closestDistanceSq) {
                 closestDistanceSq = dSq;
-                closestSeat = i;
+                closest = playerDesk;
             }
         }
-        if (closestSeat < 0) {
-            throw new Error(`unable to find seat for ${position}`);
+        if (!closest) {
+            throw new Error(`unable to find closest for ${position}`);
         }
-        return closestSeat;
+        return closest;
     }
 
+    /**
+     * Get the player slot connected to the seat closest to this position.
+     *
+     * @param {Vector} position
+     * @returns {number} Player slot owning that player area.
+     */
     static getClosestPlayerSlot(position) {
         assert(typeof position.x === "number"); // "instanceof Vector" broken
-        const seat = PlayerArea.getClosestSeat(position);
-        const playerDesk = PLAYER_DESKS[seat];
-        return playerDesk.defaultPlayerSlot;
+        const playerDesk = PlayerArea.getClosestPlayerDesk(position);
+        return playerDesk.playerSlot;
     }
 
     /**
@@ -348,4 +407,4 @@ class PlayerArea {
     }
 }
 
-module.exports = { PlayerArea, DEFAULT_PLAYER_COUNT };
+module.exports = { PlayerArea, PlayerDesk, DEFAULT_PLAYER_COUNT };

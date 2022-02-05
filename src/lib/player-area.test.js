@@ -1,10 +1,15 @@
 const assert = require("../wrapper/assert");
-const { PlayerArea, DEFAULT_PLAYER_COUNT } = require("./player-area");
+const {
+    PlayerArea,
+    PlayerDesk,
+    DEFAULT_PLAYER_COUNT,
+} = require("./player-area");
 
 it("getPlayerDesks", () => {
     try {
         let playerDesks = PlayerArea.getPlayerDesks();
         assert.equal(playerDesks.length, DEFAULT_PLAYER_COUNT);
+        assert(playerDesks[0] instanceof PlayerDesk);
 
         for (let i = 2; i < 8; i++) {
             PlayerArea.setPlayerCount(i);
@@ -16,10 +21,10 @@ it("getPlayerDesks", () => {
     }
 });
 
-it("getClosestSeat", () => {
+it("getClosestPlayerDesk", () => {
     for (const playerDesk of PlayerArea.getPlayerDesks()) {
-        const closestSeat = PlayerArea.getClosestSeat(playerDesk.pos);
-        assert.equal(closestSeat, playerDesk.seat);
+        const closestDesk = PlayerArea.getClosestPlayerDesk(playerDesk.pos);
+        assert.equal(closestDesk, playerDesk);
     }
 });
 

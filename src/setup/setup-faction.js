@@ -8,6 +8,7 @@ const {
     Card,
     Container,
     ObjectType,
+    Rotator,
     Vector,
     world,
 } = require("../wrapper/api");
@@ -280,11 +281,16 @@ class SetupFaction {
                 0,
             ]);
             const pos = leaderSheet.localPositionToWorld(localOffset);
-            const rot = leaderSheet.localRotationToWorld([
-                0,
-                0,
-                leaderData.roll,
-            ]);
+            // GameObject.localRotationToWorld is broken (should be fixed in Feb2022)
+            //const rot = leaderSheet.localRotationToWorld([
+            //    0,
+            //    0,
+            //    leaderData.roll,
+            //]);
+            // Workaround:
+            const rot = new Rotator(0, 0, leaderData.roll).compose(
+                leaderSheet.getRotation()
+            );
             card.setPosition(pos);
             card.setRotation(rot);
         });
