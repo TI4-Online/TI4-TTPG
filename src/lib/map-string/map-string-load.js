@@ -45,7 +45,7 @@ class MapStringLoad {
             }
             const obj = tileToSystemObj[entry.tile];
             assert(obj);
-            console.log(`placing ${entry.tile} at ${pos} / ${rot}`);
+            //console.log(`placing ${entry.tile} at ${pos} / ${rot}`);
             const animSpeed = 1;
             obj.setObjectType(ObjectType.Regular);
             if (obj.getContainer()) {

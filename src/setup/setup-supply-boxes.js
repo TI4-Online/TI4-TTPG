@@ -15,14 +15,20 @@ const SUPPLY_BOXES_RIGHT = [
     { nsid: "token:base/tradegood_commodity_3" },
 ];
 
+const LEFT_SHELF_CENTER_LOCAL_OFFSET = { x: 2.485, y: -46.844, z: 5 };
+const RIGHT_SHELF_CENTER_LOCAL_OFFSET = { x: -3.878, y: 35, z: 5 };
+const LEFT_ARC_ORIGIN_LOCAL_OFFSET = { x: -8.845, y: -15.017, z: 5 };
+const RIGHT_ARC_ORIGIN_LOCAL_OFFSET = { x: -9.003, y: 3.958, z: 5 };
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 12;
 
 class SetupSupplyBoxes {
     static setupDesk(playerDesk) {
-        let shelfCenter = new Vector(2.485, -46.844, 4.44)
+        let o = LEFT_SHELF_CENTER_LOCAL_OFFSET;
+        let shelfCenter = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
-        let arcOrigin = new Vector(-8.845, -15.017, 0)
+        o = LEFT_ARC_ORIGIN_LOCAL_OFFSET;
+        let arcOrigin = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
         SetupSupplyBoxes._setupBoxesSubset(
@@ -32,10 +38,12 @@ class SetupSupplyBoxes {
             SUPPLY_BOXES_LEFT
         );
 
-        shelfCenter = new Vector(-3.878, 35, 3)
+        o = RIGHT_SHELF_CENTER_LOCAL_OFFSET;
+        shelfCenter = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
-        arcOrigin = new Vector(-9.003, 3.958, 0)
+        o = RIGHT_ARC_ORIGIN_LOCAL_OFFSET;
+        arcOrigin = new Vector(o.x, o.y, o.z)
             .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
             .add(playerDesk.pos);
         SetupSupplyBoxes._setupBoxesSubset(

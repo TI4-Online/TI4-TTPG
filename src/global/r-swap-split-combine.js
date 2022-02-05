@@ -4,8 +4,10 @@
  */
 const { Container, globalEvents, world } = require("../wrapper/api");
 const { Facing } = require("../lib/facing");
+const { Spawn } = require("../setup/spawn/spawn");
 const locale = require("../lib/locale");
 const assert = require("../wrapper/assert");
+const Rotator = require("../mock/mock-rotator");
 
 // NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {
@@ -275,7 +277,9 @@ function onR(obj, player) {
         const consumeBag = getBag(consumeNsid, playerSlot);
         if (isInfiniteContainer(consumeBag)) {
             // See global/patch-infinite-container.js
-            consumeBag.addObjectsEnforceSingleton([obj], 0, true);
+            // consumeBag.addObjectsEnforceSingleton([obj], 0, true);
+            // Instead of returning to infinite bag, destroy (no need to find closest).
+            obj.destroy();
         } else {
             consumeBag.addObjects([obj], 0, true);
         }
@@ -285,7 +289,9 @@ function onR(obj, player) {
         let obj;
         if (isInfiniteContainer(produceBag)) {
             // See global/patch-infinite-container.js
-            obj = produceBag.takeAtEnforceSingleton(0, pos, true);
+            // obj = produceBag.takeAtEnforceSingleton(0, pos, true);
+            // Instead of taking from infinite bag, spawn (no need to find closest).
+            obj = Spawn.spawn(match.produce.nsid, pos, new Rotator(0, 0, 0));
         } else {
             obj = produceBag.takeAt(0, pos, true);
         }
