@@ -159,14 +159,14 @@ class PlayerDesk {
         );
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
+
+        const tbl = PLAYER_SLOT_COLORS[this._playerSlot];
+        this._color = new Color(tbl.r, tbl.g, tbl.b, tbl.a);
     }
 
-    /**
-     * String color name, mainly for finding per-color promissory notes.
-     * Not localized!
-     *
-     * @return {string}
-     */
+    get color() {
+        return this._color;
+    }
     get colorName() {
         return this._colorName;
     }
@@ -178,6 +178,19 @@ class PlayerDesk {
     }
     get playerSlot() {
         return this._playerSlot;
+    }
+
+    /**
+     * Translate a local-to-desk position to world space.
+     *
+     * @param {Vector} pos - can be a {x,y,z} object
+     * @returns {Vector}
+     */
+    localPositionToWorld(pos) {
+        assert(typeof pos.x === "number"); // instanceof Vector broken
+        return new Vector(pos.x, pos.y, pos.z)
+            .rotateAngleAxis(this.rot.yaw)
+            .add(this.pos);
     }
 }
 
