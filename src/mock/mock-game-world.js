@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert");
 const GameObject = require("./mock-game-object");
+const UIElement = require("./mock-ui-element");
 
 class GameWorld {
     constructor(data) {
@@ -35,6 +36,11 @@ class GameWorld {
         return GameWorld.getExecutionReason();
     }
 
+    addUI(uiElement) {
+        assert(uiElement instanceof UIElement);
+        // nop
+    }
+
     getAllObjects() {
         return this._allObjects;
     }
@@ -43,12 +49,23 @@ class GameWorld {
         return this._allPlayers;
     }
 
+    getPlayerBySlot(playerSlot) {
+        assert(typeof playerSlot === "number");
+        for (const player of this.getAllPlayers()) {
+            if (player.getSlot() === playerSlot) {
+                return player;
+            }
+        }
+        return undefined;
+    }
+
     getTableHeight() {
         return this._tableHeight;
     }
 
-    static getTableHeight() {
-        return 1;
+    removeUI(uiElement) {
+        assert(uiElement instanceof UIElement);
+        // nop
     }
 }
 
