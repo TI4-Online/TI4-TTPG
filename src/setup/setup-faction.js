@@ -12,6 +12,7 @@ const {
     world,
 } = require("../wrapper/api");
 const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
+const { PROMISSORY_DECK_LOCAL_OFFSET } = require("./setup-generic-promissory");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
@@ -53,6 +54,7 @@ class SetupFaction {
         };
 
         SetupFaction._setupFactionTech(playerDesk, faction);
+        SetupFaction._setupFactionPromissoryNotes(playerDesk, faction);
 
         const commandTokensBag = SetupFaction._setupFactionCommandControlTokens(
             playerDesk,
@@ -116,7 +118,7 @@ class SetupFaction {
             if (parsedNsid.source.startsWith("franken")) {
                 return false; // ignore franken
             }
-            return parsedNsid.type.startsWith("card.technology");
+            return parsedNsid.type.startsWith(nsidPrefix);
         });
         mergeDeckNsids.sort();
 
@@ -148,7 +150,6 @@ class SetupFaction {
 
         // Add to existing generic tech deck.
         if (existingDeck) {
-            console.log("jsoi");
             existingDeck.addCards(deck);
         }
     }
@@ -178,7 +179,18 @@ class SetupFaction {
     }
 
     static _setupFactionPromissoryNotes(playerDesk, faction) {
-        // TODO XXX
+        assert(typeof faction.nsidName === "string");
+
+        const pos = SetupFaction._deskLocalOffsetToWorld(
+            playerDesk,
+            PROMISSORY_DECK_LOCAL_OFFSET
+        );
+        const rot = playerDesk.rot;
+
+        this._spawnDecksThenFilter(pos, rot, "card.promissory", (nsid) => {
+            console.log(nsid);
+            return Gather.isFactionPromissoryNsid(nsid) === faction.nsidName;
+        });
     }
 
     static _setupFactionCommandControlTokens(playerDesk, faction, tokenData) {
