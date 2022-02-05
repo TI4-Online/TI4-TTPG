@@ -89,7 +89,7 @@ class SystemSchema {
     static validate(system, onError) {
         // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
         if (!Ajv) {
-            console.warn("Ajv not available");
+            //console.warn("Ajv not available");
             return true;
         }
         if (!_systemValidator) {

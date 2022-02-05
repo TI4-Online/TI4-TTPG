@@ -11,6 +11,7 @@ try {
 if (!assert) {
     assert = (test, message) => {
         if (!test) {
+            //console.log(new Error().stack);
             throw new Error(message ? message : "assertion failed");
         }
     };

@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert");
 const _ = require("../../wrapper/lodash");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerArea } = require("../player-area");
+const { PlayerDesk } = require("../player-desk");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world, Card, GameObject } = require("../../wrapper/api");
@@ -119,9 +119,10 @@ class UnitAttrs {
             // If an object has an owner, use it before trying to guess owner.
             let ownerSlot = obj.getOwningPlayerSlot();
             if (ownerSlot < 0) {
-                ownerSlot = PlayerArea.getClosestPlayerSlot(obj.getPosition());
+                const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+                ownerSlot = playerDesk.playerSlot;
             }
-            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
+            if (ownerSlot !== playerSlot) {
                 continue; // explit different owner
             }
 

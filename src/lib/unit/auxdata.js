@@ -89,17 +89,20 @@ class AuxData {
                 aux.unitAttrsSet.upgrade(upgrade);
             }
 
-            // Register any per-unit modifiers in the overall modifiers list.
+            // Register present per-unit modifiers in overall modifiers list.
             // TODO XXX any "opponent" modifiers need to know opponent plastic.
             for (const unitAttrs of aux.unitAttrsSet.values()) {
-                if (unitAttrs.raw.unitAbility) {
-                    const unitModifier =
-                        UnitModifier.getUnitAbilityUnitModifier(
-                            unitAttrs.raw.unitAbility
-                        );
-                    if (unitModifier) {
-                        aux.unitModifiers.push(unitModifier);
-                    }
+                if (!aux.has(unitAttrs.raw.unit)) {
+                    continue; // not present
+                }
+                if (!unitAttrs.raw.unitAbility) {
+                    continue; // no ability
+                }
+                const unitModifier = UnitModifier.getUnitAbilityUnitModifier(
+                    unitAttrs.raw.unitAbility
+                );
+                if (unitModifier) {
+                    aux.unitModifiers.push(unitModifier);
                 }
             }
 

@@ -1,13 +1,13 @@
 const assert = require("../wrapper/assert");
-const { Gather } = require("./spawn/gather");
+const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { PlayerArea } = require("../lib/player-area");
-const { ReplaceObjects } = require("./spawn/replace-objects");
+const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
 const {
     Card,
     Container,
     ObjectType,
+    Rotator,
     Vector,
     world,
 } = require("../wrapper/api");
@@ -63,201 +63,101 @@ const LEADERS = {
 };
 const EXTRA_LEADER_OFFSET_Y = -5;
 
-class SetupFaction {
-    static setupDesk(playerDesk, factionNsidName) {
+// This goes away when faction can be provided as a proper table.
+function _getFactionSource(factionNsidName) {
+    for (const nsid of Spawn.getAllNSIDs()) {
+        if (nsid.startsWith("token.command")) {
+            const parsedNsid = ObjectNamespace.parseNsid(nsid);
+            if (parsedNsid.name === factionNsidName) {
+                return parsedNsid.source;
+            }
+        }
+    }
+    throw new Error(`unknown faction "${factionNsidName}"`);
+}
+
+class SetupFaction extends AbstractSetup {
+    constructor(playerDesk, factionNsidName) {
+        assert(playerDesk instanceof PlayerDesk);
         assert(typeof factionNsidName === "string");
+        super();
+        this.setPlayerDesk(playerDesk);
 
         // Expect the "Faction" class to provide this, for now dig it out.
-        const faction = {
+        this._faction = {
             nsidName: factionNsidName,
-            nsidSource: SetupFaction._getFactionSource(factionNsidName),
+            nsidSource: _getFactionSource(factionNsidName),
         };
-
-        SetupFaction._setupFactionTech(playerDesk, faction);
-        SetupFaction._setupFactionPromissoryNotes(playerDesk, faction);
-
-        const leaderDeck = SetupFaction._setupFactionLeaders(
-            playerDesk,
-            faction
-        );
-        SetupFaction._moveLeadersToSheet(playerDesk, leaderDeck);
-
-        const commandTokensBag = SetupFaction._setupFactionCommandControlTokens(
-            playerDesk,
-            faction,
-            COMMAND_TOKENS
-        );
-        const ownerTokensBag = SetupFaction._setupFactionCommandControlTokens(
-            playerDesk,
-            faction,
-            CONTROL_TOKENS
-        );
-
-        SetupFaction._placeInitialCommandTokens(
-            playerDesk,
-            faction,
-            commandTokensBag
-        );
-
-        SetupFaction._placeScoreboardOwnerToken(ownerTokensBag);
     }
 
-    static _getFactionSource(factionNsidName) {
-        for (const nsid of Spawn.getAllNSIDs()) {
-            if (nsid.startsWith("token.command")) {
-                const parsedNsid = ObjectNamespace.parseNsid(nsid);
-                if (parsedNsid.name === factionNsidName) {
-                    return parsedNsid.source;
-                }
-            }
-        }
-        throw new Error(`unknown faction "${factionNsidName}"`);
+    setup() {
+        this._setupFactionTech();
+        this._setupFactionPromissoryNotes();
+
+        this._leaderDeck = this._setupFactionLeaders();
+        this._moveLeadersToSheet(this._leaderDeck);
+
+        this._commandTokensBag =
+            this._setupFactionCommandControlTokens(COMMAND_TOKENS);
+        this._ownerTokensBag =
+            this._setupFactionCommandControlTokens(CONTROL_TOKENS);
+
+        this._placeInitialCommandTokens(this._commandTokensBag);
+        this._placeScoreboardOwnerToken(this._ownerTokensBag);
     }
 
-    static _spawnDecksThenFilter(pos, rot, nsidPrefix, filterNsid) {
-        assert(typeof pos.x === "number"); // "instanceof Vector" broken
-        assert(typeof rot.yaw === "number"); // "instanceof Rotator" broken
-        assert(typeof nsidPrefix === "string");
-        assert(typeof filterNsid === "function");
-
-        // Find existing deck to join.  Dropping a new deck on top only
-        // creates a stack of two decks; TTPG does not auto-join.
-        const start = pos.add([0, 0, 20]);
-        const end = pos.subtract([0, 0, 20]);
-        const traceHit = world.lineTrace(start, end).find((traceHit) => {
-            if (!(traceHit.object instanceof Card)) {
-                return false; // only looking for decks
-            }
-            // ObjectNamespace.getNsid intentionally returns nothing for decks
-            // because there are many nsids inside.  Look at first of those.
-            const nsid = ObjectNamespace.getDeckNsids(traceHit.object)[0];
-            return nsid.startsWith(nsidPrefix);
-        });
-        const existingDeck = traceHit && traceHit.object;
-
-        const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
-            // Get the DECK nsids, will need to merge into one deck.
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            if (parsedNsid.source.startsWith("homebrew")) {
-                return false; // ignore homebrew
-            }
-            if (parsedNsid.source.startsWith("franken")) {
-                return false; // ignore franken
-            }
-            return parsedNsid.type.startsWith(nsidPrefix);
-        });
-        mergeDeckNsids.sort();
-
-        // Spawn the decks, combine into one.
-        let deck = false;
-        mergeDeckNsids.forEach((mergeDeckNsid) => {
-            const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
-            if (deck) {
-                deck.addCards(mergeDeck);
-            } else {
-                deck = mergeDeck;
-            }
-        });
-
-        // Remove any filter-rejected cards.
-        Gather.gather(
-            (nsid) => {
-                return !filterNsid(nsid);
-            },
-            [deck]
-        ).forEach((filterRejectedCard) => {
-            filterRejectedCard.destroy();
-        });
-
-        // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
-            replacedObj.destroy();
-        });
-
-        // Add to existing generic tech deck.
-        if (existingDeck) {
-            existingDeck.addCards(deck);
-            deck = existingDeck;
-        }
-
-        return deck;
-    }
-
-    static _deskLocalOffsetToWorld(playerDesk, deskLocalOffset) {
-        return new Vector(
-            deskLocalOffset.x,
-            deskLocalOffset.y,
-            deskLocalOffset.z
-        )
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-    }
-
-    static _setupFactionTech(playerDesk, faction) {
-        assert(typeof faction.nsidName === "string");
-
-        const pos = SetupFaction._deskLocalOffsetToWorld(
-            playerDesk,
+    _setupFactionTech() {
+        const pos = this.playerDesk.localPositionToWorld(
             TECH_DECK_LOCAL_OFFSET
         );
-        const rot = playerDesk.rot;
+        const rot = this.playerDesk.rot;
 
-        this._spawnDecksThenFilter(pos, rot, "card.technology", (nsid) => {
-            return Gather.isFactionTechCardNsid(nsid) === faction.nsidName;
+        const nsidPrefix = "card.technology";
+        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+            // "card.technology.red", "card.technology.red.muaat"
+            const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
+            return factionName === this._faction.nsidName;
         });
     }
 
-    static _setupFactionPromissoryNotes(playerDesk, faction) {
-        assert(typeof faction.nsidName === "string");
-
-        const pos = SetupFaction._deskLocalOffsetToWorld(
-            playerDesk,
+    _setupFactionPromissoryNotes() {
+        const pos = this.playerDesk.localPositionToWorld(
             PROMISSORY_DECK_LOCAL_OFFSET
         );
-        const rot = playerDesk.rot;
+        const rot = this.playerDesk.rot;
 
-        this._spawnDecksThenFilter(pos, rot, "card.promissory", (nsid) => {
-            return Gather.isFactionPromissoryNsid(nsid) === faction.nsidName;
+        const nsidPrefix = "card.promissory";
+        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+            // "card.promissory.jolnar" (careful about "card.promissory.blue").
+            const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
+            return factionName === this._faction.nsidName;
         });
     }
 
-    static _setupFactionLeaders(playerDesk, faction) {
-        assert(typeof faction.nsidName === "string");
+    _setupFactionLeaders() {
+        // Arbitrary, will move to leader sheet later.
+        const pos = this.playerDesk.pos.add([0, 0, 5]);
+        const rot = this.playerDesk.rot;
 
-        const pos = playerDesk.pos.add([0, 0, 5]);
-        const rot = playerDesk.rot;
-
-        return this._spawnDecksThenFilter(pos, rot, "card.leader", (nsid) => {
-            return Gather.isFactionLeaderNsid(nsid) === faction.nsidName;
+        const nsidPrefix = "card.leader";
+        return this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+            // "card.leader.agent.x"
+            const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
+            return factionName === this._faction.nsidName;
         });
     }
 
-    static _moveLeadersToSheet(playerDesk, leaderDeck) {
+    _moveLeadersToSheet(leaderDeck) {
         assert(leaderDeck instanceof Card);
 
         // Find the leader sheet.
         const leaderSheetNsid = "sheet:pok/leader";
-        const leaderSheetOwner = playerDesk.playerSlot;
-        let leaderSheet = false;
-        for (const obj of world.getAllObjects()) {
-            if (
-                ObjectNamespace.getNsid(obj) === leaderSheetNsid &&
-                obj.getOwningPlayerSlot() === leaderSheetOwner
-            ) {
-                leaderSheet = obj;
-                break;
-            }
-        }
+        const leaderSheet = this.findOjectOwnedByPlayerDesk(leaderSheetNsid);
         if (!leaderSheet) {
             return; // no leaderSheet sheet? abort.
         }
 
-        const cardObjectArray = Gather.gather(
-            (nsid) => {
-                return true;
-            },
-            [leaderDeck]
-        );
+        const cardObjectArray = this.separateCards(leaderDeck);
 
         const leaderTypeToCount = {
             agent: 0,
@@ -280,74 +180,63 @@ class SetupFaction {
                 0,
             ]);
             const pos = leaderSheet.localPositionToWorld(localOffset);
-            const rot = leaderSheet.localRotationToWorld([
-                0,
-                0,
-                leaderData.roll,
-            ]);
+            // GameObject.localRotationToWorld is broken (should be fixed in Feb2022)
+            //const rot = leaderSheet.localRotationToWorld([
+            //    0,
+            //    0,
+            //    leaderData.roll,
+            //]);
+            // Workaround:
+            const rot = new Rotator(0, 0, leaderData.roll).compose(
+                leaderSheet.getRotation()
+            );
             card.setPosition(pos);
             card.setRotation(rot);
         });
     }
 
-    static _setupFactionCommandControlTokens(playerDesk, faction, tokenData) {
-        assert(typeof faction.nsidName === "string");
-        assert(typeof faction.nsidSource === "string");
-
-        const o = tokenData.bagLocalOffset;
-        const bagPos = new Vector(o.x, o.y, o.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        const bagRot = playerDesk.rot;
-
-        const slotColor = PlayerArea.getPlayerSlotColor(playerDesk.playerSlot);
+    _setupFactionCommandControlTokens(tokenData) {
+        const pos = this.playerDesk.localPositionToWorld(
+            tokenData.bagLocalOffset
+        );
+        const rot = this.playerDesk.rot;
+        const playerSlot = this.playerDesk.playerSlot;
+        const color = this.playerDesk.color;
 
         // Spawn bag.
         const bagNsid = tokenData.bagNsid;
-        let bag = Spawn.spawn(bagNsid, bagPos, bagRot);
+        let bag = Spawn.spawn(bagNsid, pos, rot);
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
-        bag.setPrimaryColor(slotColor);
-        bag.setOwningPlayerSlot(playerDesk.playerSlot);
+        bag.setPrimaryColor(color);
+        bag.setOwningPlayerSlot(playerSlot);
 
         // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
         if (bag.getType() !== tokenData.bagType) {
             bag.setType(tokenData.bagType);
             const json = bag.toJSONString();
             bag.destroy();
-            bag = world.createObjectFromJSON(json, bagPos);
-            bag.setRotation(bagRot);
+            bag = world.createObjectFromJSON(json, pos);
+            bag.setRotation(rot);
         }
 
-        const tokenNsid = `${tokenData.tokenNsidType}:${faction.nsidSource}/${faction.nsidName}`;
-        const above = bagPos.add([0, 0, 10]);
+        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.nsidSource}/${this._faction.nsidName}`;
+        const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.bagTokenCount; i++) {
-            const token = Spawn.spawn(tokenNsid, above, bagRot);
-            token.setPrimaryColor(slotColor);
+            const token = Spawn.spawn(tokenNsid, above, rot);
+            token.setPrimaryColor(color);
             bag.addObjects([token]);
         }
 
         return bag;
     }
 
-    static _placeInitialCommandTokens(playerDesk, faction, commandTokensBag) {
-        assert(typeof faction.nsidName === "string");
-        assert(typeof faction.nsidSource === "string");
+    _placeInitialCommandTokens(commandTokensBag) {
         assert(commandTokensBag instanceof Container);
 
         // Find the command sheet.
         const commandSheetNsid = "sheet:base/command";
-        const commandSheetOwner = playerDesk.playerSlot;
-        let commandSheet = false;
-        for (const obj of world.getAllObjects()) {
-            if (
-                ObjectNamespace.getNsid(obj) === commandSheetNsid &&
-                obj.getOwningPlayerSlot() === commandSheetOwner
-            ) {
-                commandSheet = obj;
-                break;
-            }
-        }
+        const commandSheet = this.findOjectOwnedByPlayerDesk(commandSheetNsid);
         if (!commandSheet) {
             return; // no command sheet? abort.
         }
@@ -372,7 +261,7 @@ class SetupFaction {
         });
     }
 
-    static _placeScoreboardOwnerToken(ownerTokensBag) {
+    _placeScoreboardOwnerToken(ownerTokensBag) {
         // TODO XXX
     }
 }

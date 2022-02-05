@@ -3,9 +3,14 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { System } = require("../lib/system/system");
 const { Rotator, Vector, world } = require("../wrapper/api");
+const { AbstractSetup } = require("./abstract-setup");
 
-class SetupSystemTiles {
-    static setup() {
+class SetupSystemTiles extends AbstractSetup {
+    constructor() {
+        super();
+    }
+
+    setup() {
         const pos = new Vector(0, 100, world.getTableHeight() + 5);
         const rot = new Rotator(0, 0, 0);
         const bag = Spawn.spawnGenericContainer(pos, rot);

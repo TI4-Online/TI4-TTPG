@@ -1,77 +1,65 @@
 const { Layout } = require("../lib/layout");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Vector, world } = require("../wrapper/api");
+const { ObjectType, world } = require("../wrapper/api");
 const assert = require("../wrapper/assert");
+const { AbstractSetup } = require("./abstract-setup");
 
-const SUPPLY_BOXES_LEFT = [
-    { nsid: "token:base/infantry_1" }, // "bottom"
-    { nsid: "token:base/infantry_3" },
-    { nsid: "token:base/fighter_1" },
-    { nsid: "token:base/fighter_3" },
-];
+const SUPPLY_BOXES_LEFT = {
+    shelfCenter: { x: 2.485, y: -46.844, z: 5 },
+    arcOrigin: { x: -8.845, y: -15.017, z: 5 },
+    tokenNsids: [
+        "token:base/infantry_1", // "bottom"
+        "token:base/infantry_3",
+        "token:base/fighter_1",
+        "token:base/fighter_3",
+    ],
+};
 
-const SUPPLY_BOXES_RIGHT = [
-    { nsid: "token:base/tradegood_commodity_3" },
-    { nsid: "token:base/tradegood_commodity_1" }, // "bottom"
-];
+const SUPPLY_BOXES_RIGHT = {
+    shelfCenter: { x: -3.878, y: 35, z: 5 },
+    arcOrigin: { x: -9.003, y: 3.958, z: 5 },
+    tokenNsids: [
+        "token:base/tradegood_commodity_3",
+        "token:base/tradegood_commodity_1", // "bottom"
+    ],
+};
 
-const LEFT_SHELF_CENTER_LOCAL_OFFSET = { x: 2.485, y: -46.844, z: 5 };
-const RIGHT_SHELF_CENTER_LOCAL_OFFSET = { x: -3.878, y: 35, z: 5 };
-const LEFT_ARC_ORIGIN_LOCAL_OFFSET = { x: -8.845, y: -15.017, z: 5 };
-const RIGHT_ARC_ORIGIN_LOCAL_OFFSET = { x: -9.003, y: 3.958, z: 5 };
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 12;
 
-class SetupSupplyBoxes {
-    static setupDesk(playerDesk) {
-        let o = LEFT_SHELF_CENTER_LOCAL_OFFSET;
-        let shelfCenter = new Vector(o.x, o.y, o.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        o = LEFT_ARC_ORIGIN_LOCAL_OFFSET;
-        let arcOrigin = new Vector(o.x, o.y, o.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        SetupSupplyBoxes._setupBoxesSubset(
-            playerDesk,
-            shelfCenter,
-            arcOrigin,
-            SUPPLY_BOXES_LEFT
-        );
-
-        o = RIGHT_SHELF_CENTER_LOCAL_OFFSET;
-        shelfCenter = new Vector(o.x, o.y, o.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        o = RIGHT_ARC_ORIGIN_LOCAL_OFFSET;
-        arcOrigin = new Vector(o.x, o.y, o.z)
-            .rotateAngleAxis(playerDesk.rot.yaw, [0, 0, 1])
-            .add(playerDesk.pos);
-        SetupSupplyBoxes._setupBoxesSubset(
-            playerDesk,
-            shelfCenter,
-            arcOrigin,
-            SUPPLY_BOXES_RIGHT
-        );
+class SetupSupplyBoxes extends AbstractSetup {
+    constructor(playerDesk) {
+        super();
+        this.setPlayerDesk(playerDesk);
     }
 
-    static _setupBoxesSubset(deskData, shelfCenter, arcOrigin, supplyBoxes) {
+    setup() {
+        this._setupBoxes(SUPPLY_BOXES_LEFT);
+        this._setupBoxes(SUPPLY_BOXES_RIGHT);
+    }
+
+    _setupBoxes(boxesData) {
         // Use layout to find positions and rotations along an arc.
+        const shelfCenter = this.playerDesk.localPositionToWorld(
+            boxesData.shelfCenter
+        );
+        const arcOrigin = this.playerDesk.localPositionToWorld(
+            boxesData.arcOrigin
+        );
         const pointPosRots = new Layout()
-            .setCount(supplyBoxes.length)
+            .setCount(boxesData.tokenNsids.length)
             .setDistanceBetween(DISTANCE_BETWEEN_SUPPLY_BOXES)
             .setCenter(shelfCenter)
             .layoutArc(arcOrigin)
             .getPoints();
 
-        assert(supplyBoxes.length == pointPosRots.length);
-        for (let i = 0; i < supplyBoxes.length; i++) {
-            SetupSupplyBoxes._setupBox(supplyBoxes[i], pointPosRots[i]);
+        assert(boxesData.tokenNsids.length == pointPosRots.length);
+        for (let i = 0; i < boxesData.tokenNsids.length; i++) {
+            this._setupBox(boxesData.tokenNsids[i], pointPosRots[i]);
         }
     }
 
-    static _setupBox(supplyBox, pointPosRot) {
+    _setupBox(tokenNsid, pointPosRot) {
         // Find unit and bag.
-        const tokenNsid = supplyBox.nsid;
         const bagNsid = "bag." + tokenNsid;
 
         let bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
