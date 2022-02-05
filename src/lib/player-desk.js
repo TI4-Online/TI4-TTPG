@@ -111,18 +111,87 @@ let _claimSeatUIs = [];
 
 // ----------------------------------------------------------------------------
 
+/**
+ * Clear and reset "claim seat" buttons on available player desks.
+ */
+function resetUnusedSeats() {
+    // Remove old UI.
+    for (const ui of _claimSeatUIs) {
+        world.removeUI(ui);
+    }
+    _claimSeatUIs = [];
+
+    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        if (world.getPlayerBySlot(playerDesk.playerSlot)) {
+            continue; // player in seat
+        }
+
+        const color = playerDesk.color;
+        const buttonText = locale("ui.button.take_seat");
+        const button = new Button()
+            .setTextColor(color)
+            .setFontSize(50)
+            .setText(buttonText);
+        button.onClicked.add((button, player) => {
+            player.switchSlot(playerDesk.playerSlot);
+            resetUnusedSeats();
+        });
+
+        const ui = new UIElement();
+        ui.position = playerDesk.pos.add([0, 0, 5]);
+        ui.rotation = playerDesk.rot;
+        ui.widget = button;
+
+        _claimSeatUIs.push(ui);
+        world.addUI(ui);
+    }
+}
+
+/**
+ * Move newly joined players to a non-seat player slot.
+ * This should be called from a globalEvents.onPlayerJoined handler.
+ *
+ * @param {Player} player
+ */
+function moveNewPlayerToNonSeatSlot(player) {
+    assert(player instanceof Player);
+
+    const reservedSlots = new Set();
+    for (const playerDesk of this.getPlayerDesks()) {
+        reservedSlots.add(playerDesk.playerSlot);
+    }
+    for (const otherPlayer of world.getAllPlayers()) {
+        if (otherPlayer == player) {
+            continue;
+        }
+        reservedSlots.add(otherPlayer.getSlot());
+    }
+    if (!reservedSlots.has(player.getSlot())) {
+        return; // player is in a safe slot
+    }
+    for (let i = 0; i < 20; i++) {
+        if (!reservedSlots.has(i)) {
+            player.switchSlot(i);
+            return;
+        }
+    }
+    throw new Error("unable to find open slot");
+}
+
+// ----------------------------------------------------------------------------
+
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
-    PlayerArea.moveNewPlayerToNonSeatSlot(player);
+    moveNewPlayerToNonSeatSlot(player);
 });
 
 // Release seat when someone leaves.
 globalEvents.onPlayerLeft.add((player) => {
-    PlayerArea.resetUnusedSeats();
+    resetUnusedSeats();
 });
 
 globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
-    PlayerArea.resetUnusedSeats();
+    resetUnusedSeats();
 });
 
 // Unseat host when first loading game.
@@ -133,24 +202,129 @@ const runOnce = () => {
     // If not reloading scripts move the host to a non-seat slot.
     if (!isRescriptReload) {
         for (const player of world.getAllPlayers()) {
-            PlayerArea.moveNewPlayerToNonSeatSlot(player);
+            moveNewPlayerToNonSeatSlot(player);
         }
     }
 
     // Reset "take a seat" UI.
-    PlayerArea.resetUnusedSeats();
+    resetUnusedSeats();
 };
 globalEvents.onTick.add(runOnce);
 
 // ----------------------------------------------------------------------------
 
 /**
- * Wrapper for raw PLAYER_DESK entries, create TTPG Vector/Rotator objects.
- * "Player Desk" is a simple representation of larger notion of "Player Area".
+ * The player desk represents a player's private area.
  */
 class PlayerDesk {
+    /**
+     * Current player count (available seats, not currently joined players).
+     *
+     * @returns {number}
+     */
+    static getPlayerCount() {
+        if (!_playerCount) {
+            _playerCount = GlobalSavedData.get(
+                GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
+                DEFAULT_PLAYER_COUNT
+            );
+        }
+        return _playerCount;
+    }
+
+    /**
+     * Reset number of usable seats at the table.
+     * (Desk spaces may remain, but fewer are used.)
+     *
+     * @param {number} value
+     */
+    static setPlayerCount(value) {
+        assert(typeof value === "number");
+        assert(1 <= value && value <= 8);
+
+        // Keep locally, as well as persist across save/load.
+        _playerCount = value;
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, _playerCount);
+
+        // Clear precomputed availabled desks, recompute on next get.
+        _playerDesks = false;
+
+        // Reset "claim seat" buttons.
+        resetUnusedSeats();
+    }
+    /**
+     * Get all player desks, accounting for current player count.
+     * Player desks are read-only and shared, DO NOT MUTATE!
+     *
+     * @returns {Array.{PlayerDesk}}
+     */
+    static getPlayerDesks() {
+        if (_playerDesks) {
+            return _playerDesks;
+        }
+        _playerDesks = [];
+        for (let i = 0; i < PLAYER_DESKS.length; i++) {
+            const attrs = PLAYER_DESKS[i];
+            if (attrs.minPlayerCount > PlayerDesk.getPlayerCount()) {
+                continue;
+            }
+            _playerDesks.push(new PlayerDesk(attrs));
+        }
+        return _playerDesks;
+    }
+
+    /**
+     * Get player desk closest to this position.
+     *
+     * @param {Vector} position
+     * @returns {PlayerDesk}
+     */
+    static getClosest(position) {
+        assert(typeof position.x === "number"); // "instanceof Vector" broken
+
+        let closestDistanceSq = Number.MAX_VALUE;
+        let closest = false;
+
+        // This might be called a lot, find without creating new objects.
+        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+            const dx = position.x - playerDesk.pos.x;
+            const dy = position.y - playerDesk.pos.y;
+            const dSq = dx * dx + dy * dy;
+            if (dSq < closestDistanceSq) {
+                closestDistanceSq = dSq;
+                closest = playerDesk;
+            }
+        }
+        if (!closest) {
+            throw new Error(`unable to find closest for ${position}`);
+        }
+        return closest;
+    }
+
+    /**
+     * Visualize the player area center / rotation.
+     */
+    static drawDebug() {
+        const colorLine = new Color(0, 1, 0);
+        const colorPoint = new Color(1, 0, 0);
+        const duration = 10;
+        const thicknessLine = 1;
+        const sizePoint = thicknessLine * 3;
+
+        let i = 0;
+        for (const { pos, rot } of PlayerDesk.getPlayerDesks()) {
+            const dir = pos.add(
+                rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
+            );
+            i++;
+
+            world.drawDebugPoint(pos, sizePoint, colorPoint, duration);
+            world.drawDebugLine(pos, dir, colorLine, duration, thicknessLine);
+        }
+    }
+
     constructor(attrs) {
-        assert(attrs.minPlayerCount <= PlayerArea.getPlayerCount());
+        assert(attrs.minPlayerCount <= PlayerDesk.getPlayerCount());
         this._colorName = attrs.colorName;
         this._pos = new Vector(
             attrs.pos.x,
@@ -194,230 +368,4 @@ class PlayerDesk {
     }
 }
 
-// ----------------------------------------------------------------------------
-
-/**
- * Manage player areas.
- */
-class PlayerArea {
-    /**
-     * Current player count (available seats, not currently joined players).
-     *
-     * @returns {number}
-     */
-    static getPlayerCount() {
-        if (!_playerCount) {
-            _playerCount = GlobalSavedData.get(
-                GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
-                DEFAULT_PLAYER_COUNT
-            );
-        }
-        return _playerCount;
-    }
-
-    /**
-     * Reset number of seats at the table
-     * (not physical desks, but those available for players).
-     *
-     * @param {number} value
-     */
-    static setPlayerCount(value) {
-        assert(typeof value === "number");
-        assert(1 <= value && value <= 8);
-
-        // Keep locally, as well as persist across save/load.
-        _playerCount = value;
-        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, _playerCount);
-
-        // Clear precomputed availabled desks, recompute on next get.
-        _playerDesks = false;
-
-        // Reset "claim seat" buttons.
-        PlayerArea.resetUnusedSeats();
-    }
-
-    /**
-     * Move player to seat.
-     *
-     * @param {Vector} position
-     * @param {Player} player
-     */
-    static seatPlayer(position, player) {
-        assert(typeof position.x === "number"); // "instanceof Vector" broken
-        assert(player instanceof Player);
-
-        // Assume new seat.
-        const playerDesk = PlayerArea.getClosestPlayerDesk(position);
-        player.switchSlot(playerDesk.playerSlot);
-
-        PlayerArea.resetUnusedSeats();
-    }
-
-    /**
-     * Clear and reset "claim seat" buttons on available player desks.
-     */
-    static resetUnusedSeats() {
-        // Remove old UI.
-        for (const ui of _claimSeatUIs) {
-            world.removeUI(ui);
-        }
-        _claimSeatUIs = [];
-
-        for (const playerDesk of PlayerArea.getPlayerDesks()) {
-            if (world.getPlayerBySlot(playerDesk.playerSlot)) {
-                continue; // player in seat
-            }
-
-            const color = PlayerArea.getPlayerSlotColor(playerDesk.playerSlot);
-            const buttonText = locale("ui.button.take_seat");
-            const button = new Button()
-                .setTextColor(color)
-                .setFontSize(50)
-                .setText(buttonText);
-            button.onClicked.add((button, player) => {
-                this.seatPlayer(playerDesk.pos, player);
-            });
-
-            const ui = new UIElement();
-            ui.position = playerDesk.pos.add([0, 0, 5]);
-            ui.rotation = playerDesk.rot;
-            ui.widget = button;
-
-            _claimSeatUIs.push(ui);
-            world.addUI(ui);
-        }
-    }
-
-    /**
-     * Move newly joined players to a non-seat player slot.
-     * This should be called from a globalEvents.onPlayerJoined handler.
-     *
-     * @param {Player} player
-     */
-    static moveNewPlayerToNonSeatSlot(player) {
-        assert(player instanceof Player);
-        const reservedSlots = new Set();
-        for (const playerDesk of this.getPlayerDesks()) {
-            reservedSlots.add(playerDesk.playerSlot);
-        }
-        for (const otherPlayer of world.getAllPlayers()) {
-            if (otherPlayer == player) {
-                continue;
-            }
-            reservedSlots.add(otherPlayer.getSlot());
-        }
-        if (!reservedSlots.has(player.getSlot())) {
-            return; // player is in a safe slot
-        }
-        console.log(
-            `PlayerArea.moveNewPlayerToNonSeatSlot "${player.getName()}"`
-        );
-        for (let i = 0; i < 20; i++) {
-            if (!reservedSlots.has(i)) {
-                player.switchSlot(i);
-                return;
-            }
-        }
-        throw new Error("unable to find open slot");
-    }
-
-    /**
-     * Get color associated with TTGP player slot.
-     *
-     * @param {number} playerSlot
-     * @returns {Color}
-     */
-    static getPlayerSlotColor(playerSlot) {
-        assert(typeof playerSlot === "number");
-        const c = PLAYER_SLOT_COLORS[playerSlot];
-        if (!c) {
-            throw new Error(`bad player slot ${playerSlot}`);
-        }
-        return new Color(c.r, c.g, c.b, c.a);
-    }
-
-    /**
-     * Get all player desks, accounting for current player count.
-     * Player desks are read-only and shared, DO NOT MUTATE!
-     *
-     * @returns {Array.{PlayerDesk}}
-     */
-    static getPlayerDesks() {
-        if (_playerDesks) {
-            return _playerDesks;
-        }
-        _playerDesks = [];
-        for (let i = 0; i < PLAYER_DESKS.length; i++) {
-            const attrs = PLAYER_DESKS[i];
-            if (attrs.minPlayerCount > PlayerArea.getPlayerCount()) {
-                continue;
-            }
-            _playerDesks.push(new PlayerDesk(attrs));
-        }
-        return _playerDesks;
-    }
-
-    /**
-     * Get player seat closest to this position.
-     *
-     * @param {Vector} position
-     * @returns {PlayerDesk}
-     */
-    static getClosestPlayerDesk(position) {
-        assert(typeof position.x === "number"); // "instanceof Vector" broken
-
-        let closestDistanceSq = Number.MAX_VALUE;
-        let closest = false;
-
-        // This might be called a lot, find without creating new objects.
-        for (const playerDesk of PlayerArea.getPlayerDesks()) {
-            const dx = position.x - playerDesk.pos.x;
-            const dy = position.y - playerDesk.pos.y;
-            const dSq = dx * dx + dy * dy;
-            if (dSq < closestDistanceSq) {
-                closestDistanceSq = dSq;
-                closest = playerDesk;
-            }
-        }
-        if (!closest) {
-            throw new Error(`unable to find closest for ${position}`);
-        }
-        return closest;
-    }
-
-    /**
-     * Get the player slot connected to the seat closest to this position.
-     *
-     * @param {Vector} position
-     * @returns {number} Player slot owning that player area.
-     */
-    static getClosestPlayerSlot(position) {
-        assert(typeof position.x === "number"); // "instanceof Vector" broken
-        const playerDesk = PlayerArea.getClosestPlayerDesk(position);
-        return playerDesk.playerSlot;
-    }
-
-    /**
-     * Visualize the player area center / rotation.
-     */
-    static drawDebug() {
-        const colorLine = new Color(0, 1, 0);
-        const colorPoint = new Color(1, 0, 0);
-        const duration = 10;
-        const thicknessLine = 1;
-        const sizePoint = thicknessLine * 3;
-
-        let i = 0;
-        for (const { pos, rot } of PlayerArea.getPlayerDeskPosRots()) {
-            const dir = pos.add(
-                rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
-            );
-            i++;
-
-            world.drawDebugPoint(pos, sizePoint, colorPoint, duration);
-            world.drawDebugLine(pos, dir, colorLine, duration, thicknessLine);
-        }
-    }
-}
-
-module.exports = { PlayerArea, PlayerDesk, DEFAULT_PLAYER_COUNT };
+module.exports = { PlayerDesk, DEFAULT_PLAYER_COUNT };
