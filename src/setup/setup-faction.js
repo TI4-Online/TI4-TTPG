@@ -43,6 +43,26 @@ const CONTROL_TOKENS = {
     bagTokenCount: 1,
 };
 
+const LEADERS = {
+    agent: {
+        sheetLocalOffset: { x: 6.88, y: -0.11, z: 1 },
+        roll: 180,
+    },
+    commander: {
+        sheetLocalOffset: { x: 2.28, y: -0.1, z: 1 },
+        roll: 0,
+    },
+    hero: {
+        sheetLocalOffset: { x: -2.28, y: -0.11, z: 1 },
+        roll: 0,
+    },
+    mech: {
+        sheetLocalOffset: { x: -6.88, y: -0.11, z: 1 },
+        roll: 180,
+    },
+};
+const EXTRA_LEADER_OFFSET_Y = -5;
+
 class SetupFaction {
     static setupDesk(playerDesk, factionNsidName) {
         assert(typeof factionNsidName === "string");
@@ -55,6 +75,12 @@ class SetupFaction {
 
         SetupFaction._setupFactionTech(playerDesk, faction);
         SetupFaction._setupFactionPromissoryNotes(playerDesk, faction);
+
+        const leaderDeck = SetupFaction._setupFactionLeaders(
+            playerDesk,
+            faction
+        );
+        SetupFaction._moveLeadersToSheet(playerDesk, leaderDeck);
 
         const commandTokensBag = SetupFaction._setupFactionCommandControlTokens(
             playerDesk,
@@ -151,7 +177,10 @@ class SetupFaction {
         // Add to existing generic tech deck.
         if (existingDeck) {
             existingDeck.addCards(deck);
+            deck = existingDeck;
         }
+
+        return deck;
     }
 
     static _deskLocalOffsetToWorld(playerDesk, deskLocalOffset) {
@@ -188,8 +217,76 @@ class SetupFaction {
         const rot = playerDesk.rot;
 
         this._spawnDecksThenFilter(pos, rot, "card.promissory", (nsid) => {
-            console.log(nsid);
             return Gather.isFactionPromissoryNsid(nsid) === faction.nsidName;
+        });
+    }
+
+    static _setupFactionLeaders(playerDesk, faction) {
+        assert(typeof faction.nsidName === "string");
+
+        const pos = playerDesk.pos.add([0, 0, 5]);
+        const rot = playerDesk.rot;
+
+        return this._spawnDecksThenFilter(pos, rot, "card.leader", (nsid) => {
+            return Gather.isFactionLeaderNsid(nsid) === faction.nsidName;
+        });
+    }
+
+    static _moveLeadersToSheet(playerDesk, leaderDeck) {
+        assert(leaderDeck instanceof Card);
+
+        // Find the leader sheet.
+        const leaderSheetNsid = "sheet:pok/leader";
+        const leaderSheetOwner = playerDesk.playerSlot;
+        let leaderSheet = false;
+        for (const obj of world.getAllObjects()) {
+            if (
+                ObjectNamespace.getNsid(obj) === leaderSheetNsid &&
+                obj.getOwningPlayerSlot() === leaderSheetOwner
+            ) {
+                leaderSheet = obj;
+                break;
+            }
+        }
+        if (!leaderSheet) {
+            return; // no leaderSheet sheet? abort.
+        }
+
+        const cardObjectArray = Gather.gather(
+            (nsid) => {
+                return true;
+            },
+            [leaderDeck]
+        );
+
+        const leaderTypeToCount = {
+            agent: 0,
+            commander: 0,
+            hero: 0,
+            mech: 0,
+        };
+        cardObjectArray.forEach((card) => {
+            const nsid = ObjectNamespace.getNsid(card);
+            assert(nsid.startsWith("card.leader"));
+            const leaderType = nsid.split(".")[2];
+            const count = leaderTypeToCount[leaderType];
+            assert(typeof count === "number");
+            leaderTypeToCount[leaderType] = count + 1;
+            const leaderData = LEADERS[leaderType];
+            const o = leaderData.sheetLocalOffset;
+            const localOffset = new Vector(o.x, o.y, o.z).add([
+                0,
+                EXTRA_LEADER_OFFSET_Y * count,
+                0,
+            ]);
+            const pos = leaderSheet.localPositionToWorld(localOffset);
+            const rot = leaderSheet.localRotationToWorld([
+                0,
+                0,
+                leaderData.roll,
+            ]);
+            card.setPosition(pos);
+            card.setRotation(rot);
         });
     }
 

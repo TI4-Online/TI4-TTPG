@@ -4,15 +4,15 @@ const { ObjectType, Vector, world } = require("../wrapper/api");
 const assert = require("../wrapper/assert");
 
 const SUPPLY_BOXES_LEFT = [
-    { nsid: "token:base/infantry_1" },
+    { nsid: "token:base/infantry_1" }, // "bottom"
     { nsid: "token:base/infantry_3" },
     { nsid: "token:base/fighter_1" },
     { nsid: "token:base/fighter_3" },
 ];
 
 const SUPPLY_BOXES_RIGHT = [
-    { nsid: "token:base/tradegood_commodity_1" },
     { nsid: "token:base/tradegood_commodity_3" },
+    { nsid: "token:base/tradegood_commodity_1" }, // "bottom"
 ];
 
 const LEFT_SHELF_CENTER_LOCAL_OFFSET = { x: 2.485, y: -46.844, z: 5 };
