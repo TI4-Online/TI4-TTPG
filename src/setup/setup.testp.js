@@ -87,7 +87,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             "winnu",
         ];
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            SetupFaction.setupDesk(playerDesk, factions.shift());
+            new SetupFaction(playerDesk, factions.shift()).setup();
         }
     }
 });

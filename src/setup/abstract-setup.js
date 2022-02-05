@@ -135,6 +135,27 @@ class AbstractSetup {
 
         return deck;
     }
+
+    findOjectOwnedByPlayerDesk(nsid) {
+        const ownerSlot = this.playerDesk.playerSlot;
+        for (const obj of world.getAllObjects()) {
+            if (
+                ObjectNamespace.getNsid(obj) === nsid &&
+                obj.getOwningPlayerSlot() === ownerSlot
+            ) {
+                return obj;
+            }
+        }
+    }
+
+    separateCards(deck) {
+        const result = [];
+        while (deck.getStackSize() > 1) {
+            result.push(deck.takeCards(1, true, 1));
+        }
+        result.push(deck);
+        return result;
+    }
 }
 
 module.exports = { AbstractSetup };
