@@ -152,7 +152,7 @@ class SetupFaction extends AbstractSetup {
 
         // Find the leader sheet.
         const leaderSheetNsid = "sheet:pok/leader";
-        const leaderSheet = this.findOjectOwnedByPlayerDesk(leaderSheetNsid);
+        const leaderSheet = this.findObjectOwnedByPlayerDesk(leaderSheetNsid);
         if (!leaderSheet) {
             return; // no leaderSheet sheet? abort.
         }
@@ -236,7 +236,7 @@ class SetupFaction extends AbstractSetup {
 
         // Find the command sheet.
         const commandSheetNsid = "sheet:base/command";
-        const commandSheet = this.findOjectOwnedByPlayerDesk(commandSheetNsid);
+        const commandSheet = this.findObjectOwnedByPlayerDesk(commandSheetNsid);
         if (!commandSheet) {
             return; // no command sheet? abort.
         }
