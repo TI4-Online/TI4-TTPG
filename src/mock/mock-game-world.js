@@ -37,6 +37,12 @@ class GameWorld {
         // nop
     }
 
+    createObjectFromTemplate(templateId, position) {
+        const result = new GameObject();
+        result.setPosition(position);
+        return result;
+    }
+
     getAllObjects() {
         return this._allObjects;
     }

@@ -3,17 +3,24 @@ const {
     Color,
     GameObject,
     Player,
+    Vector,
     globalEvents,
     world,
 } = require("../../wrapper/api");
 
 const _rollInProgressDieGuidToSimpleDie = {};
 
+/**
+ * Setup die.
+ */
 class SimpleDieBuilder {
+    /**
+     * Constructor.
+     */
     constructor() {
         this._callback = false;
         this._color = false;
-        this._deleteAfterSeconds = 10;
+        this._deleteAfterSeconds = -1;
         this._critValue = Number.MAX_SAFE_INTEGER;
         this._hitValue = Number.MAX_SAFE_INTEGER;
         this._name = false;
@@ -21,132 +28,213 @@ class SimpleDieBuilder {
         this._spawnPosition = false;
     }
 
+    /**
+     * Callback when roll finish (or if die is destroyed early).
+     * If die is destroyed before roll finishes value will be -1.
+     *
+     * @param {function} callback - takes SimpleDie as lone argument
+     * @returns {SimpleDie} self for chaining
+     */
     setCallback(callback) {
         assert(typeof callback === "function");
         this._callback = callback;
         return this;
     }
 
+    /**
+     * Rolling this number or above is a crit.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
     setCritValue(value) {
         assert(value instanceof "number");
         this._critValue = value;
         return this;
     }
 
+    /**
+     * Die color.
+     *
+     * @param {Color} color
+     * @returns {SimpleDie} self for chaining
+     */
     setColor(color) {
         assert(color instanceof Color);
         this._color = color;
         return this;
     }
 
+    /**
+     * Delete die GameObject after N seconds.  The SimpleDie wrapper remains.
+     * By default die never deletes itself.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
     setDeleteAfterSeconds(value) {
         assert(typeof value === "number");
         this._deleteAfterSeconds = value;
         return this;
     }
 
+    /**
+     * Rolling this number or above is a hit.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
     setHitValue(value) {
         assert(typeof value === "number");
         this._hitValue = value;
         return this;
     }
 
+    /**
+     * Die name.
+     *
+     * @param {string} name - localized name
+     * @returns {SimpleDie} self for chaining
+     */
     setName(name) {
         assert(typeof name === "string");
         this._name = name;
         return this;
     }
 
+    /**
+     * Reroll once if first roll is below hit value.
+     *
+     * @param {boolean} value
+     * @returns {SimpleDie} self for chaining
+     */
     setReroll(value) {
         assert(typeof value === "boolean");
         this._reroll = value;
         return this;
     }
 
+    /**
+     *
+     * @param {Position} pos
+     * @returns {SimpleDie} self for chaining
+     */
     setSpawnPosition(pos) {
         assert(typeof pos.x === "number");
         this._spawnPosition = pos;
         return this;
     }
 
-    build() {
-        return new SimpleDie(this);
+    /**
+     * Create the die wrapper and die GameObject.
+     *
+     * @param {Player} player
+     * @returns {SimpleDie}
+     */
+    build(player) {
+        assert(player instanceof Player);
+
+        if (!this._spawnPosition) {
+            this._spawnPosition = new Vector(0, 0, world.getTableHeight() + 5);
+        }
+
+        return new SimpleDie(this, player);
     }
 }
 
+/**
+ * Manage a die GameObject.
+ */
 class SimpleDie {
-    constructor(builder) {
+    /**
+     * Constructor.  Use SimpleDieBuilder.build() to create.
+     *
+     * @param {SimpleDieBuilder} builder
+     * @param {Player} player
+     */
+    constructor(builder, player) {
         assert(builder instanceof SimpleDieBuilder);
+        assert(player instanceof Player);
+
         this._callback = builder._callback;
         this._critValue = builder._critValue;
-        this._color = builder._color;
-        this._deleteAfterSeconds = builder._deleteAfterSeconds;
         this._hitValue = builder._hitValue;
-        this._name = builder._name;
         this._reroll = builder._reroll;
-        this._spawnPosition = builder._spawnPosition;
 
-        this._player = false;
-        this._die = false;
+        this._player = player;
         this._value = false;
         this._preRerollValue = false;
-    }
-
-    destroy() {
-        if (this._die.isValid()) {
-            this._die.destroy();
-        }
-    }
-
-    spawnAndRoll(player) {
-        assert(player instanceof Player);
-        assert(!this._die);
-        this._player = player;
-
-        const pos = this._spawnPosition || [0, 0, world.getTableHeight()];
 
         // TTPG D10.
         const templateId = "9065AC5141F87F8ADE1F5AB6390BBEE4";
+        const pos = builder._spawnPosition;
         this._die = world.createObjectFromTemplate(templateId, pos);
 
-        if (this._color) {
+        if (builder._color) {
             this._die.setPrimaryColor(this._color);
         }
-        if (this._deleteAfterSeconds) {
+        if (builder._deleteAfterSeconds > 0) {
             const delayedDelete = () => {
                 if (this._die.isValid()) {
                     this._die.destroy();
                     delete this._die;
                 }
             };
-            setTimeout(delayedDelete, this._deleteAfterSeconds * 1000);
+            setTimeout(delayedDelete, builder._deleteAfterSeconds * 1000);
         }
-        if (this._name) {
-            this._die.setName(this._name);
+        if (builder._name) {
+            this._die.setName(builder._name);
         }
+    }
 
-        _rollInProgressDieGuidToSimpleDie[this._die.getId()] = this;
+    /**
+     * Destroy the die GameObject.
+     */
+    destroy() {
+        // No need to cancel roll in progrss, globalEvents.onObjectDestroyed
+        // handler takes care of that.
+        if (this._die.isValid()) {
+            this._die.destroy();
+        }
+    }
+
+    /**
+     * Roll the die.
+     *
+     * @returns {SimpleDie}
+     */
+    roll() {
+        assert(this._die.isValid());
+
+        const guid = this._die.getId();
+        assert(!_rollInProgressDieGuidToSimpleDie[guid]); // roll in progress?
+        _rollInProgressDieGuidToSimpleDie[guid] = this;
         this._die.roll(this._player); // MUST set player to get OnDiceRolled events
 
         return this;
     }
 
+    /**
+     * Set the die roll result.
+     *
+     * This is normally called only by globalEvents.onDiceRolled, but
+     * expose for unittests.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
     setValue(value) {
         assert(typeof value === "number");
 
         // Reroll if enabled and this is a miss.
-        if (this._reroll && value < this._hitValue) {
+        if (this._die.isValid() && this._reroll && value < this._hitValue) {
             this._reroll = false;
             this._preRerollValue = value;
 
             // Rerolling from inside onDiceRolled callback does not trigger
             // onDiceRolled callback for reroll.  Wait a moment then reroll
             // (which does get callback).  Bug filed Feb 2022.
-            const delayedReroll = () => {
-                _rollInProgressDieGuidToSimpleDie[this._die.getId()] = this;
-                this._die.roll(this._player); // MUST set player to get OnDiceRolled events
-            };
-            setTimeout(delayedReroll, 10);
+            setTimeout(this.roll, 10);
 
             return; // wait for reroll to finish
         }
@@ -158,15 +246,60 @@ class SimpleDie {
         return this;
     }
 
+    /**
+     * True after roll (or reroll) rinishes.
+     *
+     * @returns {boolean}
+     */
     hasValue() {
         return this._value !== false; // value set when roll finishes
     }
 
+    /**
+     * True if roll result >= crit value.
+     *
+     * @returns {boolean}
+     */
+    isCrit() {
+        assert(this.hasValue());
+        return this._value >= this._critValue;
+    }
+
+    /**
+     * True if roll result >= hit value.
+     *
+     * @returns {boolean}
+     */
+    isHit() {
+        assert(this.hasValue());
+        return this._value >= this._hitValue;
+    }
+
+    /**
+     * True if first roll missed and die was rerolled.
+     *
+     * @returns {boolean}
+     */
+    isReroll() {
+        assert(this.hasValue());
+        return this._preRerollValue !== false;
+    }
+
+    /**
+     * Roll result.
+     *
+     * @returns {number}
+     */
     getValue() {
         assert(this.hasValue());
         return this._value;
     }
 
+    /**
+     * Roll result with hit/crit/reroll encoding.
+     *
+     * @returns {string}
+     */
     getValueString() {
         assert(this.hasValue());
         const parts = [];
@@ -203,7 +336,7 @@ globalEvents.onDiceRolled.add((player, dieObjs) => {
     }
 });
 
-// Die was deleted before roll finished??
+// Die deleted before roll finished??
 globalEvents.onObjectDestroyed.add((obj) => {
     assert(obj instanceof GameObject);
     const guid = obj.getId();
