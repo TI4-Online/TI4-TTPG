@@ -2,10 +2,12 @@ const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-deleg
 const Vector = require("./mock-vector");
 const Rotator = require("./mock-rotator");
 
+let _nextId = 1;
+
 class GameObject {
     constructor(data) {
         this._container = (data && data.container) || undefined;
-        this._id = (data && data.id) || "abcd";
+        this._id = (data && data.id) || "abcd" + _nextId++;
         this._isValid = true;
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
         this._position = (data && data.position) || new Vector(0, 0, 0);
