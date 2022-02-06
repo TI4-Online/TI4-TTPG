@@ -12,11 +12,10 @@ it("roll callback", () => {
     };
 
     const player = new MockPlayer();
-    const simpleDie = new SimpleDieBuilder()
-        .setCallback(callback)
-        .build(player);
+    const simpleDie = new SimpleDieBuilder().build(player);
 
     assert(!simpleDie.hasValue());
-    simpleDie.setValue(1); // fake roll
+    simpleDie.roll(callback);
+    simpleDie.setValue(1); // fake on-roll-completed event
     assert(didCallback);
 });

@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert");
 const {
     Color,
+    Dice,
     GameObject,
     Player,
     Vector,
@@ -18,7 +19,6 @@ class SimpleDieBuilder {
      * Constructor.
      */
     constructor() {
-        this._callback = false;
         this._color = false;
         this._deleteAfterSeconds = -1;
         this._critValue = Number.MAX_SAFE_INTEGER;
@@ -26,19 +26,6 @@ class SimpleDieBuilder {
         this._name = false;
         this._reroll = false;
         this._spawnPosition = false;
-    }
-
-    /**
-     * Callback when roll finish (or if die is destroyed early).
-     * If die is destroyed before roll finishes value will be -1.
-     *
-     * @param {function} callback - takes SimpleDie as lone argument
-     * @returns {SimpleDie} self for chaining
-     */
-    setCallback(callback) {
-        assert(typeof callback === "function");
-        this._callback = callback;
-        return this;
     }
 
     /**
@@ -156,7 +143,6 @@ class SimpleDie {
         assert(builder instanceof SimpleDieBuilder);
         assert(player instanceof Player);
 
-        this._callback = builder._callback;
         this._critValue = builder._critValue;
         this._hitValue = builder._hitValue;
         this._reroll = builder._reroll;
@@ -169,6 +155,7 @@ class SimpleDie {
         const templateId = "9065AC5141F87F8ADE1F5AB6390BBEE4";
         const pos = builder._spawnPosition;
         this._die = world.createObjectFromTemplate(templateId, pos);
+        assert(this._die instanceof Dice);
 
         if (builder._color) {
             this._die.setPrimaryColor(this._color);
@@ -203,8 +190,12 @@ class SimpleDie {
      *
      * @returns {SimpleDie}
      */
-    roll() {
+    roll(callback) {
+        assert(typeof callback === "function");
         assert(this._die.isValid());
+        assert(this._value === false); // can only roll once!
+
+        this._callback = callback;
 
         const guid = this._die.getId();
         assert(!_rollInProgressDieGuidToSimpleDie[guid]); // roll in progress?
@@ -234,7 +225,10 @@ class SimpleDie {
             // Rerolling from inside onDiceRolled callback does not trigger
             // onDiceRolled callback for reroll.  Wait a moment then reroll
             // (which does get callback).  Bug filed Feb 2022.
-            setTimeout(this.roll, 10);
+            const delayedReroll = () => {
+                this.roll(this._callback);
+            };
+            setTimeout(delayedReroll, 10);
 
             return; // wait for reroll to finish
         }
