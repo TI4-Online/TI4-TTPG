@@ -2,12 +2,11 @@
  * Press the R key on a relevant object (potentially with other selected
  * objects) to swap, split, or combine.
  */
-const { Container, globalEvents, world } = require("../wrapper/api");
+const { Container, Rotator, globalEvents, world } = require("../wrapper/api");
 const { Facing } = require("../lib/facing");
 const { Spawn } = require("../setup/spawn/spawn");
 const locale = require("../lib/locale");
 const assert = require("../wrapper/assert");
-const Rotator = require("../mock/mock-rotator");
 
 // NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {

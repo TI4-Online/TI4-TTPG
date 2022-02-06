@@ -1,6 +1,5 @@
 const { Spawn } = require("./spawn/spawn");
-const { Vector, world } = require("../wrapper/api");
-const Rotator = require("../mock/mock-rotator");
+const { Rotator, Vector, world } = require("../wrapper/api");
 const { AbstractSetup } = require("./abstract-setup");
 
 let _nextX = -40;
