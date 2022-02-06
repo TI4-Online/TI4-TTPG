@@ -197,7 +197,8 @@ globalEvents.onDiceRolled.add((player, dieObjs) => {
         const simpleDie = _rollInProgressDieGuidToSimpleDie[guid];
         if (simpleDie) {
             delete _rollInProgressDieGuidToSimpleDie[guid];
-            simpleDie.setValue(dieObj.getCurrentFaceIndex());
+            const value = dieObj.getCurrentFaceIndex() + 1;
+            simpleDie.setValue(value);
         }
     }
 });
