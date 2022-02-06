@@ -2,6 +2,7 @@ const { PlayerDesk } = require("../lib/player-desk");
 const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
 const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
+const { SetupHands } = require("./setup-hands");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
@@ -18,6 +19,7 @@ const ACTION = {
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
+    HANDS: "*Hands",
     GENERIC_TECH: "*Generic tech",
     GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
@@ -35,6 +37,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
     if (actionName === ACTION.GIZMO_DESKS) {
+        console.log(player.getPosition());
+        console.log(player.getRotation());
         PlayerDesk.drawDebug();
     } else if (actionName === ACTION.COUNT_OBJECTS) {
         console.log(`World #objects = ${world.getAllObjects().length}`);
@@ -56,6 +60,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     } else if (actionName === ACTION.SHEETS) {
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {
             new SetupSheets(playerDesk).setup();
+        }
+    } else if (actionName === ACTION.HANDS) {
+        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+            new SetupHands(playerDesk).setup();
         }
     } else if (actionName === ACTION.GENERIC_TECH) {
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {

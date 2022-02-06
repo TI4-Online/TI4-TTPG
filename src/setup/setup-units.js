@@ -52,7 +52,6 @@ const UNIT_DATA = [
     },
 ];
 
-// Desk center [-119.224, 6.05442]
 const SHELF_CENTER_LOCAL_OFFSET = { x: 5.783, y: -55.639, z: 8 };
 const ARC_ORIGIN_LOCAL_OFFSET = { x: -8.845, y: -15.017, z: 0 };
 const DISTANCE_BETWEEN_UNITS = 5.5;

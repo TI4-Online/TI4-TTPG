@@ -104,6 +104,11 @@ const PLAYER_DESKS = [
     },
 ];
 
+const SEAT_CAMERA = {
+    pos: { x: -90, y: -10, z: 100 },
+    rot: { pitch: -40, yaw: 0, roll: 0 },
+};
+
 const DEFAULT_PLAYER_COUNT = 6;
 let _playerCount = false;
 let _playerDesks = false;
@@ -133,7 +138,7 @@ function resetUnusedSeats() {
             .setFontSize(50)
             .setText(buttonText);
         button.onClicked.add((button, player) => {
-            player.switchSlot(playerDesk.playerSlot);
+            playerDesk.seatPlayer(player);
             resetUnusedSeats();
         });
 
@@ -356,6 +361,7 @@ class PlayerDesk {
 
     /**
      * Translate a local-to-desk position to world space.
+     * "Bottom" desk center [-119.224, 6.05442] for manual calculation.
      *
      * @param {Vector} pos - can be a {x,y,z} object
      * @returns {Vector}
@@ -365,6 +371,25 @@ class PlayerDesk {
         return new Vector(pos.x, pos.y, pos.z)
             .rotateAngleAxis(this.rot.yaw, [0, 0, 1])
             .add(this.pos);
+    }
+
+    /**
+     * Traslate a local-to-desk rotation to world space.
+     *
+     * @param {Rotator} rot - can be a {yaw, pitch, roll} object
+     * @returns {Rotator}
+     */
+    localRotationToWorld(rot) {
+        assert(typeof rot.yaw === "number"); // instanceof Rotator broken
+        return new Rotator(rot.pitch, rot.yaw, rot.roll).compose(this.rot);
+    }
+
+    seatPlayer(player) {
+        assert(player instanceof Player);
+        player.switchSlot(this.playerSlot);
+        const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
+        const rot = this.localRotationToWorld(SEAT_CAMERA.rot);
+        player.setPositionAndRotation(pos, rot);
     }
 }
 
