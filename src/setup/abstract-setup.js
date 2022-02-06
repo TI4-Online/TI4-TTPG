@@ -136,7 +136,14 @@ class AbstractSetup {
         return deck;
     }
 
-    findOjectOwnedByPlayerDesk(nsid) {
+    /**
+     * Find an object with the given NSID with the same owner as the player desk.
+     * Useful for command/leader sheet lookup.
+     *
+     * @param {string} nsid
+     * @returns {GameObject}
+     */
+    findObjectOwnedByPlayerDesk(nsid) {
         const ownerSlot = this.playerDesk.playerSlot;
         for (const obj of world.getAllObjects()) {
             if (
@@ -148,6 +155,12 @@ class AbstractSetup {
         }
     }
 
+    /**
+     * Split a deck ("Card" with multiple cards) into indivudual card objects.
+     *
+     * @param {Card} deck
+     * @returns {Array.{Card}}
+     */
     separateCards(deck) {
         const result = [];
         while (deck.getStackSize() > 1) {

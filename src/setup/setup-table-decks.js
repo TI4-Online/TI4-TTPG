@@ -1,5 +1,4 @@
-const { Vector, world } = require("../wrapper/api");
-const Rotator = require("../mock/mock-rotator");
+const { Rotator, Vector, world } = require("../wrapper/api");
 const { AbstractSetup } = require("./abstract-setup");
 
 let _nextX = -40;
@@ -9,7 +8,7 @@ function nextPosition() {
         y: -100,
         z: world.getTableHeight() + 5,
     };
-    _nextX += 7;
+    _nextX += 6;
     return result;
 }
 
@@ -82,6 +81,18 @@ const TABLE_DECKS = [
     },
     {
         nsidPrefix: "card.legendary_planet",
+        parent: false,
+        pos: nextPosition(),
+        yaw: -90,
+    },
+    {
+        nsidPrefix: "card.faction_token",
+        parent: false,
+        pos: nextPosition(),
+        yaw: -90,
+    },
+    {
+        nsidPrefix: "card.faction_reference",
         parent: false,
         pos: nextPosition(),
         yaw: -90,

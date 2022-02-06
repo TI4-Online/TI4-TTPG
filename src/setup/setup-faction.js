@@ -61,7 +61,7 @@ const LEADERS = {
         roll: 180,
     },
 };
-const EXTRA_LEADER_OFFSET_Y = -5;
+const EXTRA_LEADER_OFFSET_Y = -2;
 
 // This goes away when faction can be provided as a proper table.
 function _getFactionSource(factionNsidName) {
@@ -88,6 +88,13 @@ class SetupFaction extends AbstractSetup {
             nsidName: factionNsidName,
             nsidSource: _getFactionSource(factionNsidName),
         };
+
+        this._leaderTypeToCount = {
+            agent: 0,
+            commander: 0,
+            hero: 0,
+            mech: 0,
+        };
     }
 
     setup() {
@@ -96,6 +103,9 @@ class SetupFaction extends AbstractSetup {
 
         this._leaderDeck = this._setupFactionLeaders();
         this._moveLeadersToSheet(this._leaderDeck);
+
+        this._allianceDeck = this._setupFactionAlliance();
+        this._moveLeadersToSheet(this._allianceDeck);
 
         this._commandTokensBag =
             this._setupFactionCommandControlTokens(COMMAND_TOKENS);
@@ -147,37 +157,49 @@ class SetupFaction extends AbstractSetup {
         });
     }
 
+    _setupFactionAlliance() {
+        // Arbitrary, will move to leader sheet later.
+        const pos = this.playerDesk.pos.add([-5, 0, 5]);
+        const rot = this.playerDesk.rot;
+
+        const nsidPrefix = "card.alliance";
+        return this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+            // "card.alliance:pok/faction"
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const factionName = parsed.name;
+            return factionName === this._faction.nsidName;
+        });
+    }
+
     _moveLeadersToSheet(leaderDeck) {
         assert(leaderDeck instanceof Card);
 
         // Find the leader sheet.
         const leaderSheetNsid = "sheet:pok/leader";
-        const leaderSheet = this.findOjectOwnedByPlayerDesk(leaderSheetNsid);
+        const leaderSheet = this.findObjectOwnedByPlayerDesk(leaderSheetNsid);
         if (!leaderSheet) {
             return; // no leaderSheet sheet? abort.
         }
 
         const cardObjectArray = this.separateCards(leaderDeck);
 
-        const leaderTypeToCount = {
-            agent: 0,
-            commander: 0,
-            hero: 0,
-            mech: 0,
-        };
         cardObjectArray.forEach((card) => {
             const nsid = ObjectNamespace.getNsid(card);
-            assert(nsid.startsWith("card.leader"));
-            const leaderType = nsid.split(".")[2];
-            const count = leaderTypeToCount[leaderType];
+            let leaderType = false;
+            if (nsid.startsWith("card.leader")) {
+                leaderType = nsid.split(".")[2];
+            } else if (nsid.startsWith("card.alliance")) {
+                leaderType = "commander";
+            }
+            const count = this._leaderTypeToCount[leaderType];
             assert(typeof count === "number");
-            leaderTypeToCount[leaderType] = count + 1;
+            this._leaderTypeToCount[leaderType] = count + 1;
             const leaderData = LEADERS[leaderType];
             const o = leaderData.sheetLocalOffset;
             const localOffset = new Vector(o.x, o.y, o.z).add([
                 0,
                 EXTRA_LEADER_OFFSET_Y * count,
-                0,
+                count,
             ]);
             const pos = leaderSheet.localPositionToWorld(localOffset);
             // GameObject.localRotationToWorld is broken (should be fixed in Feb2022)
@@ -187,7 +209,10 @@ class SetupFaction extends AbstractSetup {
             //    leaderData.roll,
             //]);
             // Workaround:
-            const rot = new Rotator(0, 0, leaderData.roll).compose(
+            const roll = nsid.startsWith("card.alliance")
+                ? 180
+                : leaderData.roll;
+            const rot = new Rotator(0, 0, roll).compose(
                 leaderSheet.getRotation()
             );
             card.setPosition(pos);
@@ -236,7 +261,7 @@ class SetupFaction extends AbstractSetup {
 
         // Find the command sheet.
         const commandSheetNsid = "sheet:base/command";
-        const commandSheet = this.findOjectOwnedByPlayerDesk(commandSheetNsid);
+        const commandSheet = this.findObjectOwnedByPlayerDesk(commandSheetNsid);
         if (!commandSheet) {
             return; // no command sheet? abort.
         }
