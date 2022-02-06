@@ -6,6 +6,7 @@ class GameObject {
     constructor(data) {
         this._container = (data && data.container) || undefined;
         this._id = (data && data.id) || "abcd";
+        this._isValid = true;
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
         this._position = (data && data.position) || new Vector(0, 0, 0);
         this._primaryColor = data && data.primaryColor;
@@ -28,6 +29,10 @@ class GameObject {
     onSnapped = new TriggerableMulticastDelegate();
     onTick = new TriggerableMulticastDelegate();
 
+    destroy() {
+        this._isValid = false;
+    }
+
     getContainer() {
         return this._container;
     }
@@ -38,10 +43,6 @@ class GameObject {
 
     getOwningPlayerSlot() {
         return this._owningPlayerSlot;
-    }
-
-    setOwningPlayerSlot(value) {
-        this._owningPlayerSlot = value;
     }
 
     getPosition() {
@@ -64,12 +65,24 @@ class GameObject {
         return this._savedData;
     }
 
-    setSavedData(value) {
-        this._savedData = value;
-    }
-
     getTemplateMetadata() {
         return this._templateMetadata;
+    }
+
+    isValid() {
+        return this._isValid;
+    }
+
+    setOwningPlayerSlot(value) {
+        this._owningPlayerSlot = value;
+    }
+
+    setPosition(position) {
+        this._position = position;
+    }
+
+    setSavedData(value) {
+        this._savedData = value;
     }
 }
 

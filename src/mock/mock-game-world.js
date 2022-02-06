@@ -1,4 +1,5 @@
 const assert = require("../wrapper/assert");
+const Dice = require("./mock-dice");
 const GameObject = require("./mock-game-object");
 const UIElement = require("./mock-ui-element");
 
@@ -35,6 +36,17 @@ class GameWorld {
     addUI(uiElement) {
         assert(uiElement instanceof UIElement);
         // nop
+    }
+
+    createObjectFromTemplate(templateId, position) {
+        let result;
+        if (templateId === "9065AC5141F87F8ADE1F5AB6390BBEE4") {
+            result = new Dice();
+        } else {
+            result = new GameObject();
+        }
+        result.setPosition(position);
+        return result;
     }
 
     getAllObjects() {
