@@ -1,5 +1,5 @@
 const { AbstractSetup } = require("./abstract-setup");
-const { world } = require("../wrapper/api");
+const { ObjectType, world } = require("../wrapper/api");
 
 const HAND_LOCAL_OFFSET = {
     x: -29.7,
@@ -24,6 +24,7 @@ class SetupHands extends AbstractSetup {
         const obj = world.createObjectFromTemplate(templateId, pos);
         obj.setRotation(rot);
         obj.setOwningPlayerSlot(playerSlot);
+        obj.setObjectType(ObjectType.Ground);
 
         // The built-in card holder does not show backs.  Leave it be.
         // We *could* edit json or make a template, but wait for a good one.
