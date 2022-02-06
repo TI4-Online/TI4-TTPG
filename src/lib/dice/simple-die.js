@@ -1,6 +1,11 @@
 const assert = require("../../wrapper/assert");
-const { Color, Player, globalEvents, world } = require("../../wrapper/api");
-const GameObject = require("../../mock/mock-game-object");
+const {
+    Color,
+    GameObject,
+    Player,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 const _rollInProgressDieGuidToSimpleDie = {};
 
@@ -9,6 +14,7 @@ class SimpleDieBuilder {
         this._callback = false;
         this._color = false;
         this._deleteAfterSeconds = 10;
+        this._critValue = Number.MAX_SAFE_INTEGER;
         this._hitValue = Number.MAX_SAFE_INTEGER;
         this._name = false;
         this._reroll = false;
@@ -18,6 +24,12 @@ class SimpleDieBuilder {
     setCallback(callback) {
         assert(typeof callback === "function");
         this._callback = callback;
+        return this;
+    }
+
+    setCritValue(value) {
+        assert(value instanceof "number");
+        this._critValue = value;
         return this;
     }
 
@@ -66,6 +78,7 @@ class SimpleDie {
     constructor(builder) {
         assert(builder instanceof SimpleDieBuilder);
         this._callback = builder._callback;
+        this._critValue = builder._critValue;
         this._color = builder._color;
         this._deleteAfterSeconds = builder._deleteAfterSeconds;
         this._hitValue = builder._hitValue;
@@ -77,6 +90,12 @@ class SimpleDie {
         this._die = false;
         this._value = false;
         this._preRerollValue = false;
+    }
+
+    destroy() {
+        if (this._die.isValid()) {
+            this._die.destroy();
+        }
     }
 
     spawnAndRoll(player) {
@@ -113,14 +132,22 @@ class SimpleDie {
     }
 
     setValue(value) {
+        assert(typeof value === "number");
+
         // Reroll if enabled and this is a miss.
-        if (
-            this._reroll &&
-            this._preRerollValue === false &&
-            value < this._hitValue
-        ) {
+        if (this._reroll && value < this._hitValue) {
+            this._reroll = false;
             this._preRerollValue = value;
-            this._die.roll(this._player); // MUST set player to get OnDiceRolled events
+
+            // Rerolling from inside onDiceRolled callback does not trigger
+            // onDiceRolled callback for reroll.  Wait a moment then reroll
+            // (which does get callback).  Bug filed Feb 2022.
+            const delayedReroll = () => {
+                _rollInProgressDieGuidToSimpleDie[this._die.getId()] = this;
+                this._die.roll(this._player); // MUST set player to get OnDiceRolled events
+            };
+            setTimeout(delayedReroll, 10);
+
             return; // wait for reroll to finish
         }
 
@@ -143,13 +170,19 @@ class SimpleDie {
     getValueString() {
         assert(this.hasValue());
         const parts = [];
+
         if (this._preRerollValue !== false) {
             parts.push(`${this._preRerollValue}->`);
         }
+
         parts.push(`${this._value}`);
-        if (this._value >= this._hitValue) {
+
+        if (this._value >= this._critValue) {
+            parts.push("$");
+        } else if (this._value >= this._hitValue) {
             parts.push("*");
         }
+
         return parts.join("");
     }
 }
@@ -158,8 +191,8 @@ class SimpleDie {
 globalEvents.onDiceRolled.add((player, dieObjs) => {
     assert(player instanceof Player);
     assert(Array.isArray(dieObjs));
-
-    for (const dieObj in dieObjs) {
+    for (const dieObj of dieObjs) {
+        assert(dieObj instanceof GameObject);
         const guid = dieObj.getId();
         const simpleDie = _rollInProgressDieGuidToSimpleDie[guid];
         if (simpleDie) {
