@@ -127,7 +127,7 @@ it("isTableTokenOrTokenBag", () => {
     assert(Gather.isTableTokenOrTokenBag("bag.token:pok/frontier"));
     assert(
         Gather.isTableTokenOrTokenBag(
-            "token.exploration.attachment:pok/tomb_of_emphidia"
+            "token.attachment.exploration:pok/tomb_of_emphidia"
         )
     );
     assert(!Gather.isTableTokenOrTokenBag("bag.token:base/fighter_1"));

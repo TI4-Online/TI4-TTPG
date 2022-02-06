@@ -91,6 +91,7 @@ it("static getPlayerUnitUpgrades", () => {
         }),
         owningPlayerSlot: myPlayerSlot,
     });
+    assert.equal(cardObjCarrier2.getOwningPlayerSlot(), myPlayerSlot);
     const cardObjCruiser2FaceDown = new MockCard({
         cardDetails: new MockCardDetails({
             metadata: "card.technology.unit_upgrade:base/cruiser_2",

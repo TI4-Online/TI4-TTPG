@@ -6,7 +6,7 @@ try {
     lodash = false;
 }
 if (!lodash) {
-    lodash = require("../node_modules/lodash/lang.js");
+    lodash = require("../node_modules/lodash/lodash.js");
 }
 //console.log(`LODASH ${typeof lodash}`)
 module.exports = lodash;

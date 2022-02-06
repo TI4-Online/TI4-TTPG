@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "12D092EC490F4E953D1662B88D04447F",
-	"Name": "Nano Forge",
-	"Metadata": "token.exploration.attachment:pok/nano_forge",
+	"GUID": "03AEBC3D48C794E99B0880AD84C1E113",
+	"Name": "Wormhole (Creuss Gamma)",
+	"Metadata": "token.wormhole.creuss:pok/gamma",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,8 +12,8 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 255,
-		"G": 255,
+		"R": 55,
+		"G": 149,
 		"B": 255
 	},
 	"SecondaryColor":
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "tokens/round-msh.obj",
+			"Model": "tokens/wormhole.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 1.25,
+				"Y": 1.25,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,37 +48,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/pok/exploration/exploration_2-2-legend_c.png",
+			"Texture": "global/tokens/pok/wormhole_cg.png",
 			"NormalMap": "",
-			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
-			"IsTransparent": false,
-			"CastShadow": true,
-			"UseOverrides": true,
-			"SurfaceType": "Plastic"
-		},
-		{
-			"Model": "tokens/round-msh.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 180,
-				"Y": 0,
-				"Z": 0
-			},
-			"Texture": "global/tokens/pok/exploration/exploration_2-2-legend_c.png",
-			"NormalMap": "",
-			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
+			"ExtraMap": "global/notint.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -96,8 +68,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 1.5,
+				"Y": 1.5,
 				"Z": 1
 			},
 			"Rotation":
@@ -115,6 +87,6 @@
 	{
 		"X": 0,
 		"Y": 0,
-		"Z": 1
+		"Z": 0
 	}
 }

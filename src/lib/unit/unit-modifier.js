@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
+const { PlayerDesk } = require("../player-desk");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { world, Card } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
@@ -113,24 +114,21 @@ class UnitModifier {
             }
 
             // Enfoce modifier type (self, opponent, any).
-            if (
-                unitModifier.raw !== "any" &&
-                unitModifier.raw.owner !== withOwner
-            ) {
-                continue; // wrong owner
-            }
+            if (unitModifier.raw !== "any") {
+                // Not an "any", require it be of "withType".
+                if (unitModifier.raw.owner !== withOwner) {
+                    continue;
+                }
 
-            // If an object has an owner, use it before trying to guess owner.
-            const ownerSlot = obj.getOwningPlayerSlot();
-            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
-                continue; // explit different owner
-            }
-
-            // TODO XXX CHECK IF IN PLAYER AREA
-            // TODO XXX MAYBE USE obj.getOwningPlayerSlot IF SET?
-            const insidePlayerArea = true; // TODO XXX
-            if (!insidePlayerArea) {
-                continue;
+                // Matches "withType", require it belong to player.
+                let ownerSlot = obj.getOwningPlayerSlot();
+                if (ownerSlot < 0) {
+                    const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+                    ownerSlot = playerDesk.playerSlot;
+                }
+                if (ownerSlot !== playerSlot) {
+                    continue; // different owner
+                }
             }
 
             // Found a unit modifier!  Add it to the list.
@@ -160,7 +158,7 @@ class UnitModifier {
      * @returns {unitModifier}
      */
     static getUnitAbilityUnitModifier(unitAbility) {
-        assert(typeof factionAbility === "string");
+        assert(typeof unitAbility === "string");
         _maybeInit();
         return _unitAbilityToUnitModifier[unitAbility];
     }

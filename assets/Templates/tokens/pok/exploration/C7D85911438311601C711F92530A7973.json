@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "CB0C7752474A1152071620B1D6403878",
 	"Name": "Propulsion Facility",
-	"Metadata": "token.exploration.attachment:pok/propulsion_facility",
+	"Metadata": "token.attachment.exploration:pok/propulsion_facility",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "2EBCA9924B511E6083C89FA16A0F6B5F",
-	"Name": "Ion Storm",
-	"Metadata": "token.exploration:pok/ion_storm",
+	"GUID": "12D092EC490F4E953D1662B88D04447F",
+	"Name": "Nano Forge",
+	"Metadata": "token.attachment.exploration:pok/nano_forge",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,8 +12,8 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 55,
-		"G": 149,
+		"R": 255,
+		"G": 255,
 		"B": 255
 	},
 	"SecondaryColor":
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -48,9 +48,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/ionstorm_o.png",
+			"Texture": "global/tokens/pok/exploration/exploration_2-2-legend_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -66,19 +66,19 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/ionstorm_r.png",
+			"Texture": "global/tokens/pok/exploration/exploration_2-2-legend_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/notint.png",
+			"ExtraMap": "global/tokens/pok/exploration/exploration_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -96,8 +96,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -115,6 +115,6 @@
 	{
 		"X": 0,
 		"Y": 0,
-		"Z": 0
+		"Z": 1
 	}
 }
