@@ -80,9 +80,6 @@ class GameWorld {
         return this._tableHeight;
     }
 
-    // for jest-mocking purposes
-    createObjectFromTemplate() {}
-
     lineTrace(src, dst) {
         return [];
     }

@@ -84,7 +84,7 @@ class GameObject {
 
     addUI(ui) {
         this._uis.push(ui);
-        ui.setOwningObject(this);
+        ui._owningObject = this;
     }
 
     getUIs() {

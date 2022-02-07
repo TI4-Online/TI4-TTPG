@@ -3,6 +3,7 @@ const { globalEvents, MockGameObject } = require("../mock/mock-api");
 const { setupStrategyCard } = require("./strategy-card-functions");
 const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 const locale = require("../lib/locale");
+const { doesNotMatch } = require("assert");
 
 // mock global.js event registration
 globalEvents.TI4 = {
@@ -44,13 +45,14 @@ describe("on actions", () => {
         expect(playButtonHitCounter).toBe(1);
     });
 
-    it("the button triggers the global event on click", () => {
-        expect.assertions(2);
+    it("the button triggers the global event on click", (done) => {
         let card = new MockGameObject();
         const player = {};
-        globalEvents.TI4.onStrategyCardPlayed.add(() => {
-            assert(true);
-        });
+        globalEvents.TI4.onStrategyCardPlayed.add(
+            (owningObject, clickingPlayer) => {
+                done();
+            }
+        );
 
         setupStrategyCard(card);
         const playButton = card.play_button;

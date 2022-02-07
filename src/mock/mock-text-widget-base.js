@@ -11,9 +11,11 @@ class TextWidgetBase extends MockWidget {
         this._isItalic = false;
         this._font = undefined;
     }
-
     getFontSize() {
         return this._fontSize;
+    }
+    getText() {
+        return this._text;
     }
     getTextColor() {
         return this._textColor;
@@ -42,6 +44,10 @@ class TextWidgetBase extends MockWidget {
     }
     setTextColor(value) {
         this._textColor = value;
+        return this;
+    }
+    setText(value) {
+        this._text = value;
         return this;
     }
 }
