@@ -6,6 +6,7 @@ const { PlayerDesk } = require("../player-desk");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world, Card, GameObject } = require("../../wrapper/api");
+
 let _allUnitTypes = false;
 let _unitToDefaultRawAttrs = false;
 let _triggerNsidToUnitUpgrade = false;
@@ -22,12 +23,8 @@ function _getUnitUpgrade(gameObject) {
 
             // Unit upgrade card.
             if (rawAttrs.triggerNsid) {
+                assert(!_triggerNsidToUnitUpgrade[rawAttrs.triggerNsid]);
                 _triggerNsidToUnitUpgrade[rawAttrs.triggerNsid] = unitUpgrade;
-            }
-
-            // Faction override (list of faction units provided by each faction).
-            if (rawAttrs.triggerFactionUnit) {
-                // TODO XXX
             }
         }
     }
@@ -131,6 +128,9 @@ class UnitAttrs {
                 unitUpgrades.push(unitUpgrade);
             }
         }
+
+        // TODO XXX APPLY FACTION UNITS!
+
         return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades);
     }
 

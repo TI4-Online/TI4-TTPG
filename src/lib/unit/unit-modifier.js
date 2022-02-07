@@ -44,18 +44,21 @@ function _maybeInit() {
         }
         if (rawModifier.triggerNsids) {
             for (const triggerNsid of rawModifier.triggerNsids) {
+                assert(!_triggerNsidToUnitModifier[triggerNsid]);
                 _triggerNsidToUnitModifier[triggerNsid] = unitModifier;
             }
         }
 
         if (rawModifier.triggerFactionAbility) {
-            _factionAbilityToUnitModifier[rawModifier.triggerFactionAbility] =
-                unitModifier;
+            const ability = rawModifier.triggerFactionAbility;
+            assert(!_factionAbilityToUnitModifier[ability]);
+            _factionAbilityToUnitModifier[ability] = unitModifier;
         }
 
         if (rawModifier.triggerUnitAbility) {
-            _unitAbilityToUnitModifier[rawModifier.triggerUnitAbility] =
-                unitModifier;
+            const ability = rawModifier.triggerUnitAbility;
+            assert(!_unitAbilityToUnitModifier[ability]);
+            _unitAbilityToUnitModifier[ability] = unitModifier;
         }
     }
 }

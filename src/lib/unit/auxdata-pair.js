@@ -205,6 +205,11 @@ class AuxDataPair {
     computeSelfUnitCounts(selfAuxData) {
         assert(selfAuxData instanceof AuxData);
 
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
+
         // Get hex and adjacent plastic for this player.
         // Also get counts, beware of x3 tokens!
         const playerHexPlastic = this._hexPlastic.filter(
@@ -236,6 +241,11 @@ class AuxDataPair {
     computeSelfUnitUpgrades(selfAuxData) {
         assert(selfAuxData instanceof AuxData);
 
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
+
         // Apply unit upgrades.
         const upgrades = UnitAttrs.getPlayerUnitUpgrades(
             selfAuxData.playerSlot
@@ -252,6 +262,11 @@ class AuxDataPair {
      * @param {AuxData} selfAuxData
      */
     computeSelfUnitAbilities(selfAuxData) {
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
+
         for (const unitAttrs of selfAuxData.unitAttrsSet.values()) {
             if (!selfAuxData.has(unitAttrs.raw.unit)) {
                 continue; // not present
@@ -278,6 +293,11 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
+
         // Get modifiers.  For each perspective get "self modifiers" and
         // "opponent modifiers applied to opponent".
         const modifiersSelf = UnitModifier.getPlayerUnitModifiers(
@@ -302,6 +322,11 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
+
         // TODO XXX LOOK UP FACTION BY PLAYER SLOT, ADD MODIFIERS TO AUX.FACTIONABILITIES!
         for (const factionAbility of []) {
             const unitModifier =
@@ -322,6 +347,11 @@ class AuxDataPair {
     applySelfUnitModifiers(selfAuxData, opponentAuxData) {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
+
+        // Abort if anonymous AuxData.
+        if (selfAuxData.playerSlot < 0) {
+            return;
+        }
 
         UnitModifier.sortPriorityOrder(selfAuxData.unitModifiers);
         for (const unitModifier of selfAuxData.unitModifiers) {

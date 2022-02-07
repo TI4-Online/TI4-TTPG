@@ -152,8 +152,8 @@ module.exports = [
     {
         unit: "fighter",
         upgradeLevel: 2,
-        localeName: "unit.destroyer",
-        triggerNsid: "card.technology.unit_upgrade:base/destroyer_2",
+        localeName: "unit.fighter",
+        triggerNsid: "card.technology.unit_upgrade:base/fighter_2",
         spaceCombat: { hit: 8 },
         move: 2,
         requireCapacity: false,
