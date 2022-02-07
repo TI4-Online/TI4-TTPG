@@ -80,6 +80,10 @@ class GameWorld {
         return this._tableHeight;
     }
 
+    lineTrace(src, dst) {
+        return [];
+    }
+
     removeUI(uiElement) {
         assert(uiElement instanceof UIElement);
         // nop

@@ -1,11 +1,13 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../locale");
+const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
+const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitModifier } = require("./unit-modifier");
 const { UnitPlastic } = require("./unit-plastic");
-const { AuxData } = require("./auxdata");
+const { world } = require("../../wrapper/api");
 
 /**
  * Given a combat between two players, create and fill in the AuxData
@@ -129,6 +131,22 @@ class AuxDataPair {
             // TODO XXX WORMHOLE ADJACENCY
             // TODO XXX HYPERLANE ADJACENCY
         }
+
+        // Remove any hexes that do not contain a system tile.
+        const newAdjHexes = new Set();
+        this._adjHexes.forEach((hex) => {
+            const pos = Hex.toPosition(hex);
+            const src = pos.add([0, 0, 10]);
+            const dst = pos.subtract([0, 0, 10]);
+            const hits = world.lineTrace(src, dst);
+            for (const hit of hits) {
+                if (ObjectNamespace.isSystemTile(hit.object)) {
+                    newAdjHexes.add(hex);
+                    break;
+                }
+            }
+        });
+        this._adjHexes = newAdjHexes;
     }
 
     /**
