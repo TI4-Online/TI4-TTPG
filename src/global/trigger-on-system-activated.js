@@ -21,7 +21,6 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
         systemTile: system.tile,
         systemName: system.getSummaryStr(),
     });
-    console.log(message);
     Broadcast.broadcastAll(message);
 });
 
