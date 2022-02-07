@@ -32,15 +32,23 @@ function onCommandTokenReleased(
     grabPosition,
     grabRotation
 ) {
-    if (Turns.isActivePlayer(player)) {
-        const src = obj.getPosition();
-        const dst = new Vector(src.x, src.y, world.getTableHeight() - 5);
-        const hits = world.lineTrace(src, dst);
-        for (const hit of hits) {
-            if (ObjectNamespace.isSystemTile(hit.object)) {
-                globalEvents.TI4.onSystemActivated.trigger(hit.object, player);
-                break;
-            }
+    if (!Turns.isActivePlayer(player)) {
+        return; // not the active player
+    }
+    if (player.getSlot() !== obj.getOwningPlayerSlot()) {
+        console.log(
+            `player:${player.getSlot()} obj:${obj.getOwningPlayerSlot()}`
+        );
+        return; // token not owned by player
+    }
+
+    const src = obj.getPosition();
+    const dst = new Vector(src.x, src.y, world.getTableHeight() - 5);
+    const hits = world.lineTrace(src, dst);
+    for (const hit of hits) {
+        if (ObjectNamespace.isSystemTile(hit.object)) {
+            globalEvents.TI4.onSystemActivated.trigger(hit.object, player);
+            break;
         }
     }
 }
