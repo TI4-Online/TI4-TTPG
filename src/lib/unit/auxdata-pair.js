@@ -35,17 +35,26 @@ class AuxDataPair {
      * @param {number} playerSlot2 - may be -1 to identify opponent based on plastic
      * @param {string} hex
      * @param {string} planetLocaleName - omit for non-planet combat
+     * @param {Array.{UnitModifier}} extraPlayer1Modifiers
      */
-    constructor(playerSlot1, playerSlot2, hex, planetLocaleName) {
+    constructor(
+        playerSlot1,
+        playerSlot2,
+        hex,
+        planetLocaleName,
+        extraPlayer1Modifiers
+    ) {
         assert(typeof playerSlot1 === "number");
         assert(typeof playerSlot2 === "number");
         assert(!hex || typeof hex === "string");
         assert(!planetLocaleName || typeof planet === "string");
+        assert(Array.isArray(extraPlayer1Modifiers));
 
         this._playerSlot1 = playerSlot1;
         this._playerSlot2 = playerSlot2;
         this._hex = hex;
         this._planet = planetLocaleName;
+        this._extraPlayer1Modifiers = extraPlayer1Modifiers;
 
         this._adjHexes = new Set();
 
@@ -69,6 +78,7 @@ class AuxDataPair {
                 this.computeOpponent();
                 this._aux1 = new AuxData(this._playerSlot1);
                 this._aux2 = new AuxData(this._playerSlot2);
+                this._aux1.unitModifiers.push(...this._extraPlayer1Modifiers);
             },
             () => {
                 this.computeSelfUnitCounts(this._aux1);
@@ -157,8 +167,8 @@ class AuxDataPair {
         const newAdjHexes = new Set();
         this._adjHexes.forEach((hex) => {
             const pos = Hex.toPosition(hex);
-            const src = pos.add([0, 0, 10]);
-            const dst = pos.subtract([0, 0, 10]);
+            const src = pos.add([0, 0, 50]);
+            const dst = pos.subtract([0, 0, 50]);
             const hits = world.lineTrace(src, dst);
             for (const hit of hits) {
                 if (ObjectNamespace.isSystemTile(hit.object)) {
@@ -393,11 +403,12 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
-        // Abort if anonymous AuxData.
-        if (selfAuxData.playerSlot < 0) {
-            return;
-        }
+        // Make sure there are no duplicates (paranoia).
+        selfAuxData.unitModifiers.filter(
+            (value, index, self) => self.indexOf(value) === index
+        );
 
+        // Apply in mutate -> adjust -> choose order.
         UnitModifier.sortPriorityOrder(selfAuxData.unitModifiers);
         for (const unitModifier of selfAuxData.unitModifiers) {
             unitModifier.apply(selfAuxData.unitAttrsSet, {

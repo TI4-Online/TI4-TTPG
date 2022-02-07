@@ -6,11 +6,15 @@
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
     "ui.message.none": "none",
+    "ui.message.no_units": "no units",
+    "ui.message.player_rolled": "{playerName} rolled: {report}",
+    "ui.message.player_landed_hits": "{playerName} landed {hits} {#hits|hit|hits}",
     "ui.message.roll.hit": "HIT",
     "ui.message.roll.crit": "CRIT",
 
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
+    "ui.error.no_active_system": "No active system",
 
     "ui.button.take_seat": "TAKE SEAT",
 
@@ -220,7 +224,7 @@
     "unit_modifier.name.navarch_feng": "Navarch Feng",
     "unit_modifier.desc.navarch_feng": "You can produce your flagship without spending resources.",
     "unit_modifier.name.nebula_defense": "Nebula Defense",
-    "unit_modifier.desc.nebula_defense": "+1 to SPACE COMBAT rolls (defender)",
+    "unit_modifier.desc.nebula_defense": "+1 to defender SPACE COMBAT rolls",
     "unit_modifier.name.plasma_scoring": "Plasma Scoring",
     "unit_modifier.desc.plasma_scoring": "+1 die to a single SPACE CANNON or BOMBARDMENT roll",
     "unit_modifier.name.prophecy_of_ixth": "Prophecy of Ixth",

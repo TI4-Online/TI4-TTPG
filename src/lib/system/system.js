@@ -106,6 +106,11 @@ class System {
         if (systemAttrs.wormholes) {
             this._wormholes.push(...systemAttrs.wormholes);
         }
+
+        this._anomalies = [];
+        if (systemAttrs.anomalies) {
+            this._anomalies.push(...systemAttrs.anomalies);
+        }
     }
 
     get tile() {
@@ -121,6 +126,10 @@ class System {
         // TODO XXX check if system if face up / down
         // Depending on how we manage wormhole tokens might be adding/removing!
         return this._wormholes;
+    }
+
+    get anomalies() {
+        return this._anomalies;
     }
 
     get raw() {

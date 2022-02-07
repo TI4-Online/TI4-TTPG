@@ -85,7 +85,8 @@ it("getPairSync", () => {
             selfPlayerSlot,
             -1,
             "<0,0,0>",
-            false
+            false,
+            []
         ).getPairSync();
     } finally {
         for (const gameObject of world.getAllObjects()) {
@@ -125,7 +126,8 @@ it("unknown opponent", () => {
         selfPlayerSlot,
         -1,
         "<0,0,0>",
-        false
+        false,
+        []
     ).getPairSync();
     assert.equal(aux1.playerSlot, selfPlayerSlot);
     assert.equal(aux2.playerSlot, -1);
@@ -162,7 +164,8 @@ it("too many opponents", () => {
             selfPlayerSlot,
             -1,
             "<0,0,0>",
-            false
+            false,
+            []
         ).getPairSync();
     } finally {
         for (const gameObject of world.getAllObjects()) {

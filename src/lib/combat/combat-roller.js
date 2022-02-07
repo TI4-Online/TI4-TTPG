@@ -54,15 +54,8 @@ class CombatRoller {
     }
 
     getRollReport(unitToDice) {
-        // local item = '[HIT:' .. dice.hitValue
-        // if dice.critCount and dice.critValue then
-        //     item = item .. ', CRIT(x' .. (dice.critCount + 1) .. '):' .. dice.critValue
-        // end
-        // item = item .. ']: '
-        //         table.insert(message, dice.unitName .. ' ' .. item .. table.concat(rollValues, ', '))
-        // broadcastToAll(playerName .. ' rolled: [ffffff]' .. table.concat(message, ', '), playerColor)
-        // broadcastToAll(playerName .. ' landed ' .. hits .. ' hit' .. (hits == 1 and '' or 's') .. '.', playerColor)
-        const message = [];
+        // Generate one message per unit type with to-hit required and roll values.
+        const unitMessages = [];
         for (const [unit, dice] of Object.entries(unitToDice)) {
             const unitAttrs = this._auxData.unitAttrsSet.get(unit);
             const rollAttrs = unitAttrs.raw[this._rollType];
@@ -86,9 +79,33 @@ class CombatRoller {
                 return die.getValueStr();
             });
             unitMessage.push(diceMessages.join(", "));
-            message.push(unitMessage.join(""));
+            unitMessages.push(unitMessage.join(""));
         }
-        return message.join(", ");
+        const perUnitReport =
+            unitMessages.length > 0
+                ? unitMessages.join(", ")
+                : locale("ui.message.no_units");
+
+        // Generate total-hits message.
+        let totalHits = 0;
+        for (const dice of Object.values(unitToDice)) {
+            for (const die of dice) {
+                totalHits += die.countHits();
+            }
+        }
+        const landed = locale("ui.message.player_landed_hits", {
+            playerName: this._player.getName(),
+            hits: totalHits,
+        });
+
+        return (
+            locale("ui.message.player_rolled", {
+                playerName: this._player.getName(),
+                report: perUnitReport,
+            }) +
+            "\n" +
+            landed
+        );
     }
 
     /**
@@ -98,20 +115,38 @@ class CombatRoller {
      */
     getUnitToDiceCount() {
         const unitToDiceCount = {};
+
         for (const unitAttrs of this._auxData.unitAttrsSet.values()) {
             const unit = unitAttrs.raw.unit;
-            if (!this._auxData.has(unit)) {
-                continue; // no units of this type
-            }
             const rollAttrs = unitAttrs.raw[this._rollType];
             if (!rollAttrs) {
                 continue; // unit does not have this roll type
             }
-            const unitCount = this._auxData.count(unit);
-            const dicePerUnit = rollAttrs.dice || 1;
-            const extraDice = rollAttrs.extraDice || 0;
-            unitToDiceCount[unit] = unitCount * dicePerUnit + extraDice;
+
+            let count = 0;
+
+            // Count in-hex units.
+            if (this._auxData.has(unit)) {
+                const unitCount = this._auxData.count(unit);
+                const dicePerUnit = rollAttrs.dice || 1;
+                count += unitCount * dicePerUnit;
+            }
+
+            // Count adjacent units IF THEY HAVE RANGE.
+            const ranged = rollAttrs.range && rollAttrs.range > 0;
+            if (ranged && this._auxData.hasAdjacent(unit)) {
+                const unitCount = this._auxData.adjacentCount(unit);
+                const dicePerUnit = rollAttrs.dice || 1;
+                count += unitCount * dicePerUnit;
+            }
+
+            // Apply any extra dice IF ROLLING AT LEAST ONE.
+            if (count > 0) {
+                const extraDice = rollAttrs.extraDice || 0;
+                unitToDiceCount[unit] = count + extraDice;
+            }
         }
+
         return unitToDiceCount;
     }
 

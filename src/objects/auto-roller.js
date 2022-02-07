@@ -15,6 +15,7 @@ const {
     world,
 } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
+const { UnitModifier } = require("../lib/unit/unit-modifier");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.
@@ -97,11 +98,25 @@ class AutoRoller {
             playerSlot2 = -1; // determine opponent by inspecting plastic
         }
         const planetLocaleName = planet ? planet.localeName : false;
+
+        // Defending player gets nebula defense!
+        const extraPlayer1Modifiers = [];
+        const isNebula = this._activeSystem.anomalies.includes("nebula");
+        const player1IsDefender = playerSlot1 !== this._activatingPlayerSlot;
+        if (isNebula && player1IsDefender) {
+            const nebulaDefense = UnitModifier.getNsidUnitModifier(
+                "token:base/nebula_defense"
+            );
+            assert(nebulaDefense);
+            extraPlayer1Modifiers.push(nebulaDefense);
+        }
+
         const auxDataPair = new AuxDataPair(
             playerSlot1,
             playerSlot2,
             this._activeHex,
-            planetLocaleName
+            planetLocaleName,
+            extraPlayer1Modifiers
         );
         const [aux1, aux2] = auxDataPair.getPairSync();
         assert(aux1 && aux2);

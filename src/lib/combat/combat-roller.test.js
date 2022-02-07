@@ -44,7 +44,7 @@ it("getRollReport", () => {
         unitToDice["destroyer"][i].finishRoll();
     }
     const report = combatRoller.getRollReport(unitToDice);
-    assert.equal(report, "Destroyer [HIT:9]: 1, 1, 1, 1");
+    assert(report.includes("Destroyer [HIT:9]: 1, 1, 1, 1"));
 });
 
 it("getUnitToDiceCount", () => {
