@@ -3,6 +3,7 @@ const { AuxData } = require("../unit/auxdata");
 const { CombatRoller } = require("./combat-roller");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { MockPlayer, MockVector } = require("../../wrapper/api");
+const { DiscrError } = require("ajv/dist/vocabularies/discriminator/types");
 
 it("constructor", () => {
     const auxData = new AuxData(-1);
@@ -20,7 +21,7 @@ it("getModifierReport empty", () => {
     assert.equal(report, "Roll modifiers: none");
 });
 
-it("static getModifierReport", () => {
+it("getModifierReport", () => {
     const auxData = new AuxData(-1);
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
@@ -30,6 +31,21 @@ it("static getModifierReport", () => {
     const combatRoller = new CombatRoller(auxData, rollType, player);
     const report = combatRoller.getModifiersReport(true);
     assert.equal(report, "Roll modifier: Fragile (-1 to all COMBAT rolls)");
+});
+it("getRollReport", () => {
+    const auxData = new AuxData(-1);
+    const rollType = "antiFighterBarrage";
+    const player = new MockPlayer();
+    auxData.overrideCount("destroyer", 2);
+    const combatRoller = new CombatRoller(auxData, rollType, player);
+    const dicePos = new MockVector(0, 0, 0);
+    const unitToDice = combatRoller.spawnDice(dicePos);
+    for (let i = 0; i < 4; i++) {
+        unitToDice["destroyer"][i].roll(() => {});
+        unitToDice["destroyer"][i].finishRoll();
+    }
+    const report = combatRoller.getRollReport(unitToDice);
+    assert.equal(report, "Destroyer [HIT:9]: 1, 1, 1, 1");
 });
 
 it("getUnitToDiceCount", () => {
@@ -53,7 +69,7 @@ it("spawnDice", () => {
     assert.equal(unitToDice["destroyer"].length, 4);
 });
 
-it("static roll", () => {
+it("roll", () => {
     const auxData = new AuxData(-1);
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();

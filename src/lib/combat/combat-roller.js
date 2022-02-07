@@ -52,6 +52,44 @@ class CombatRoller {
         });
     }
 
+    getRollReport(unitToDice) {
+        // local item = '[HIT:' .. dice.hitValue
+        // if dice.critCount and dice.critValue then
+        //     item = item .. ', CRIT(x' .. (dice.critCount + 1) .. '):' .. dice.critValue
+        // end
+        // item = item .. ']: '
+        //         table.insert(message, dice.unitName .. ' ' .. item .. table.concat(rollValues, ', '))
+        // broadcastToAll(playerName .. ' rolled: [ffffff]' .. table.concat(message, ', '), playerColor)
+        // broadcastToAll(playerName .. ' landed ' .. hits .. ' hit' .. (hits == 1 and '' or 's') .. '.', playerColor)
+        const message = [];
+        for (const [unit, dice] of Object.entries(unitToDice)) {
+            const unitAttrs = this._auxData.unitAttrsSet.get(unit);
+            const rollAttrs = unitAttrs.raw[this._rollType];
+            const unitMessage = [
+                locale(unitAttrs.raw.localeName),
+                " [",
+                locale("ui.message.roll.hit"),
+                ":",
+                rollAttrs.hit,
+            ];
+            if (rollAttrs.extraDice) {
+                unitMessage.push(", ");
+                unitMessage.push(locale("ui.message.roll.crit"));
+                unitMessage.push("(x");
+                unitMessage.push((rollAttrs.extraDice.count || 1) + 1);
+                unitMessage.push("):");
+                unitMessage.push(rollAttrs.value);
+            }
+            unitMessage.push("]: ");
+            const diceMessages = dice.map((die) => {
+                return die.getValueStr();
+            });
+            unitMessage.push(diceMessages.join(", "));
+            message.push(unitMessage.join(""));
+        }
+        return message.join(", ");
+    }
+
     /**
      * Compute how many dice to roll for each unit type.
      *
@@ -129,17 +167,6 @@ class CombatRoller {
         });
 
         return dice;
-    }
-
-    static reportRollResult(unitToDice) {
-        // local item = '[HIT:' .. dice.hitValue
-        // if dice.critCount and dice.critValue then
-        //     item = item .. ', CRIT(x' .. (dice.critCount + 1) .. '):' .. dice.critValue
-        // end
-        // item = item .. ']: '
-        //         table.insert(message, dice.unitName .. ' ' .. item .. table.concat(rollValues, ', '))
-        // broadcastToAll(playerName .. ' rolled: [ffffff]' .. table.concat(message, ', '), playerColor)
-        // broadcastToAll(playerName .. ' landed ' .. hits .. ' hit' .. (hits == 1 and '' or 's') .. '.', playerColor)
     }
 }
 
