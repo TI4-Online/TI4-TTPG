@@ -27,7 +27,9 @@ class Broadcast {
         for (const player of world.getAllPlayers()) {
             player.sendChatMessage(message, color);
         }
-        console.log(">> " + message);
+        if (!world.__isMock) {
+            console.log(">> " + message);
+        }
     }
 }
 
