@@ -53,8 +53,8 @@ class SimpleDieBuilder {
     }
 
     /**
-     * Delete die GameObject after N seconds.  The SimpleDie wrapper remains.
-     * By default die never deletes itself.
+     * Delete die GameObject after N seconds, the SimpleDie wrapper remains.
+     * Set to negative to keep forever, default is keep forever.
      *
      * @param {number} value
      * @returns {SimpleDie} self for chaining
@@ -120,11 +120,6 @@ class SimpleDieBuilder {
      */
     build(player) {
         assert(player instanceof Player);
-
-        if (!this._spawnPosition) {
-            this._spawnPosition = new Vector(0, 0, world.getTableHeight() + 5);
-        }
-
         return new SimpleDie(this, player);
     }
 }
@@ -148,7 +143,6 @@ class SimpleDie {
     constructor(builder, player) {
         assert(builder instanceof SimpleDieBuilder);
         assert(player instanceof Player);
-        assert(builder._spawnPosition);
 
         this._critValue = builder._critValue;
         this._hitValue = builder._hitValue;
@@ -161,7 +155,10 @@ class SimpleDie {
 
         // TTPG D10.
         const templateId = "9065AC5141F87F8ADE1F5AB6390BBEE4";
-        const pos = builder._spawnPosition;
+        let pos = builder._spawnPosition;
+        if (!pos) {
+            pos = new Vector(0, 0, world.getTableHeight() + 5);
+        }
         this._die = world.createObjectFromTemplate(templateId, pos);
         assert(this._die instanceof Dice);
 
@@ -180,6 +177,24 @@ class SimpleDie {
         if (builder._name) {
             this._die.setName(builder._name);
         }
+    }
+
+    /**
+     * Rolling this number or above is a crit.
+     *
+     * @returns {number}
+     */
+    getCritValue() {
+        return this._critValue;
+    }
+
+    /**
+     * Rolling this number or above is a crit.
+     *
+     * @returns {number}
+     */
+    getHitValue() {
+        return this._hitValue;
     }
 
     /**
