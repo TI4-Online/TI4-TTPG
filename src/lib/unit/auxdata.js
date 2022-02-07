@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert");
+const { Hex } = require("../hex");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 const { UnitModifier } = require("./unit-modifier");
@@ -28,38 +29,70 @@ class AuxData {
      * This is a VERY expensive method, may want to make it asynchronous.
      *
      * @param {number} playerSlot1
-     * @param {number} playerSlot2 - optional, omit or pass -1 to ignore
-     * @param {string} hex - optional
-     * @param {Set.<string>} adjacentHexes - optional
+     * @param {number} playerSlot2 - pass -1 to compute based on hex and/or planet
+     * @param {string} hex - optional, restrict to units in this and adjacent hexes
+     * @param {string} planet - optional, restrict to units on or above planet
      * @returns {[AuxData, AuxData]} list with two AuxData entries
      */
-    static createForPair(playerSlot1, playerSlot2, hex, adjacentHexes) {
+    static createForPair(playerSlot1, playerSlot2, hex, planet) {
         assert(typeof playerSlot1 === "number");
         assert(typeof playerSlot2 === "number");
         assert(!hex || typeof hex === "string");
-        assert(!adjacentHexes || adjacentHexes instanceof Set);
+        assert(!planet || typeof planet === "string");
 
-        playerSlot2 = playerSlot2 >= 0 ? playerSlot2 : -1;
-        adjacentHexes = adjacentHexes ? adjacentHexes : new Set();
+        // If given a hex but not a planet, look for units in adjacent hexes.
+        const adjHexes = new Set();
+        if (hex && !planet) {
+            for (const adjHex of Hex.neighbors(hex)) {
+                adjHexes.add(adjHex);
+            }
+            // TODO XXX WORMHOLE ADJACENCY
+            // TODO XXX HYPERLANE ADJACENCY
+        }
 
         // Get plastic, group into per-unit hex and adjacent sets.
         const allPlastic = hex ? UnitPlastic.getAll() : [];
-        const hexPlastic = allPlastic.filter((plastic) => plastic.hex === hex);
+        let hexPlastic = allPlastic.filter((plastic) => plastic.hex === hex);
         const adjPlastic = allPlastic.filter((plastic) =>
-            adjacentHexes.has(plastic.hex)
+            adjHexes.has(plastic.hex)
         );
         UnitPlastic.assignTokens(hexPlastic);
         UnitPlastic.assignTokens(adjPlastic);
 
+        // If no explicit opponent, figure it from "not-us" plastic in hex.
+        if (playerSlot2 < 0) {
+            for (const plastic of hexPlastic) {
+                if (plastic.owningPlayerSlot === playerSlot1) {
+                    continue; // ignore our own units
+                }
+                if (plastic.owningPlayerSlot === playerSlot2) {
+                    continue; // ignore if we already think this is opponent
+                }
+                if (playerSlot2 < 0) {
+                    playerSlot2 = plastic.owningPlayerSlot;
+                } else {
+                    // Multiple opponents!
+                    // TODO XXX REPORT ERROR
+                    playerSlot2 = -1;
+                    break;
+                }
+            }
+        }
+
         // Only assign units in hex to planets.
-        // TODO XXX UnitPlastic.assignPlanets(hexPlastic)
+        if (planet) {
+            UnitPlastic.assignPlanets(hexPlastic);
+            hexPlastic = hexPlastic.filter(
+                (plastic) => plastic.planet === planet
+            );
+        }
 
         // Create and fill in for a single player.
         const createSolo = (selfSlot, opponentSlot) => {
             assert(typeof selfSlot === "number");
             assert(typeof opponentSlot === "number");
 
-            const aux = new AuxData();
+            const aux = new AuxData(selfSlot);
             if (selfSlot < 0) {
                 return aux;
             }
@@ -159,7 +192,11 @@ class AuxData {
     /**
      * Constructor.  Creates an empty but usable AuxData.
      */
-    constructor() {
+    constructor(playerSlot) {
+        assert(typeof playerSlot === "number");
+
+        this._playerSlot = playerSlot;
+
         this._unitAttrsSet = new UnitAttrsSet();
         this._unitModifiers = []; // Array.{UnitModifier}
 
@@ -239,6 +276,15 @@ class AuxData {
         assert(typeof unit === "string");
         assert(typeof value === "number");
         this._unitToAdjacentCount[unit] = value;
+    }
+
+    /**
+     * Player slot.
+     *
+     * @returns {number} -1 if unknown
+     */
+    get playerSlot() {
+        return this._playerSlot;
     }
 
     /**

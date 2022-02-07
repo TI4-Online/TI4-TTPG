@@ -83,15 +83,18 @@ it("static createForPair", () => {
     try {
         [aux1, aux2] = AuxData.createForPair(
             selfPlayerSlot,
-            opponentPlayerSlot,
+            -1,
             "<0,0,0>",
-            new Set()
+            false
         );
     } finally {
         for (const gameObject of world.getAllObjects()) {
             world.__removeObject(gameObject);
         }
     }
+
+    // Identified opponent?
+    assert.equal(aux2._playerSlot, opponentPlayerSlot);
 
     // Basic finding.
     assert.equal(aux1.count("fighter"), 4);
@@ -116,5 +119,5 @@ it("static createForPair", () => {
 });
 
 it("constructor", () => {
-    new AuxData();
+    new AuxData(-1);
 });
