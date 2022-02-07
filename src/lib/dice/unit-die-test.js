@@ -8,6 +8,7 @@ it("fighter", () => {
     assert.equal(unitAttrs.raw.spaceCombat.hit, 9);
 
     const unitDie = new UnitDieBuilder(unitAttrs, "spaceCombat").build();
+    assert(unitDie instanceof UnitDie);
     assert.equal(unitDie.getHitValue(), 9);
     assert.equal(unitDie._die.getName(), locale(unitAttrs.raw.localeName));
 });
