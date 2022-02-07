@@ -35,7 +35,7 @@ Object.assign(module.exports, {
     Text: module.exports.MockText,
     UIElement: module.exports.MockUIElement,
     Vector: module.exports.MockVector,
-    VerticalBox: module.exports.MockVerticalBox
+    VerticalBox: module.exports.MockVerticalBox,
 });
 
 // SHARE global objects.

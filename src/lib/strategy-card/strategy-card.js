@@ -3,7 +3,12 @@
  *
  */
 
-const { globalEvents, Border, UIElement, Vector } = require("../../wrapper/api");
+const {
+    globalEvents,
+    Border,
+    UIElement,
+    Vector,
+} = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 let openSelections = {};
 
@@ -21,6 +26,9 @@ function onUiClosedClicked(button, player) {
         return;
     }
 
+    // trigger event for the card itself
+    globalEvents.TI4.onStrategyCardSelectionDone.trigger(owningObject, player);
+
     // clear internal data and send notifications
     let selections = openSelections[owningObject.TI4.relatedCard.getId()];
     selections.splice(selections.indexOf(player.getSlot()), 1);
@@ -29,11 +37,6 @@ function onUiClosedClicked(button, player) {
         broadcastMessage(locale("strategy_card.message.all_resolved"));
     }
 
-    // trigger event for the card itself
-    globalEvents.TI4.onStrategyCardSelectionDone.trigger(
-        owningObject,
-        player
-    );
     owningObject.destroy();
 }
 
@@ -52,7 +55,7 @@ function createStrategyCardUi(card, widget) {
         openSelections[cardId] = openSelections[cardId] || [];
         openSelections[cardId].push(player.getSlot());
         item.TI4 = {
-            relatedCard: card
+            relatedCard: card,
         };
         offset += 100;
         let ui = new UIElement();

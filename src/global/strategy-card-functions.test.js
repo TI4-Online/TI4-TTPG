@@ -6,7 +6,7 @@ const locale = require("../lib/locale");
 
 // mock global.js event registration
 globalEvents.TI4 = {
-    onStrategyCardPlayed: new TriggerableMulticastDelegate()
+    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
 };
 
 it("setupStrategyCard creates a play button and a custom action", () => {
@@ -25,9 +25,17 @@ it("the custom action triggers the global event on play", () => {
 
     setupStrategyCard(card);
 
-    card.onCustomAction.trigger(card, undefined /*player*/, locale("ui.button.strategy_card_play"));
+    card.onCustomAction.trigger(
+        card,
+        undefined /*player*/,
+        locale("ui.button.strategy_card_play")
+    );
     expect(playButtonHitCounter).toBe(1);
-    card.onCustomAction.trigger(card, undefined /*player*/, "not the button you are looking for");
+    card.onCustomAction.trigger(
+        card,
+        undefined /*player*/,
+        "not the button you are looking for"
+    );
     expect(playButtonHitCounter).toBe(1);
 });
 
@@ -35,10 +43,12 @@ it("the button triggers the global event on click", () => {
     expect.assertions(2);
     let card = new MockGameObject();
     const player = {};
-    globalEvents.TI4.onStrategyCardPlayed.add((owningObject, clickingPlayer) => {
-        expect(owningObject).toBe(card);
-        expect(clickingPlayer).toBe(player);
-    });
+    globalEvents.TI4.onStrategyCardPlayed.add(
+        (owningObject, clickingPlayer) => {
+            expect(owningObject).toBe(card);
+            expect(clickingPlayer).toBe(player);
+        }
+    );
 
     setupStrategyCard(card);
     const playButton = card.play_button;

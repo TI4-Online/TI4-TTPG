@@ -1,5 +1,16 @@
-const { onUiClosedClicked, createStrategyCardUi, broadcastMessage } = require("./strategy-card");
-const { globalEvents, Button, CheckBox, Slider, Text, VerticalBox } = require("../../wrapper/api");
+const {
+    onUiClosedClicked,
+    createStrategyCardUi,
+    broadcastMessage,
+} = require("./strategy-card");
+const {
+    globalEvents,
+    Button,
+    CheckBox,
+    Slider,
+    Text,
+    VerticalBox,
+} = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
 let selections = {};
@@ -9,7 +20,7 @@ function getPlayerSelectionBySlot(player) {
     const slot = player.getSlot();
     selections[slot] = selections[slot] || {
         value: 0,
-        primary: false
+        primary: false,
     };
 
     return selections[slot];
@@ -31,7 +42,7 @@ function createUiWidget() {
         new Text()
             .setFontSize(10)
             .setText(locale("strategy_card.leadership.text"))
-    )
+    );
 
     let slider = new Slider().setStepSize(1).setMaxValue(10);
     slider.onValueChanged.add((slider, player, value) => {
