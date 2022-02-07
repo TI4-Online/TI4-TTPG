@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../locale");
 const { AuxData } = require("../unit/auxdata");
+const { RollGroup } = require("../dice/roll-group");
 const { UnitDieBuilder } = require("../dice/unit-die");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { Player } = require("../../wrapper/api");
@@ -83,21 +84,24 @@ class MultiRoller {
      * @param {AuxData} auxData - unit counts and attributes
      * @param {string} rollType - antiFighterBarrage, etc
      * @param {Player} player
-     * @param {Vector} pos - spawn dice "around" this position
+     * @param {Vector} dicePos - spawn dice "around" this position
      * @returns {Object.{string:Array.{UnitDie}}} unit to dice count
      */
-    static spawnDice(auxData, rollType, player, pos) {
+    static spawnDice(auxData, rollType, player, dicePos) {
         assert(auxData instanceof AuxData);
         assert(typeof rollType === "string");
         assert(player instanceof Player);
-        assert(typeof pos.x === "number");
+        assert(typeof dicePos.x === "number");
 
         const unitToDiceCount = this.getUnitToDiceCount(auxData, rollType);
         const unitToDice = {};
         for (const [unit, diceCount] of Object.entries(unitToDiceCount)) {
             const unitAttrs = auxData.unitAttrsSet.get(unit);
-            const spawnPos = pos;
-            const unitDieBuilder = new UnitDieBuilder(unitAttrs, rollType);
+            const spawnPos = dicePos; // XXX TODO
+            const unitDieBuilder = new UnitDieBuilder(
+                unitAttrs,
+                rollType
+            ).setDeleteAfterSeconds(30);
             unitToDice[unit] = [];
             for (let i = 0; i < diceCount; i++) {
                 unitToDice[unit].push(
@@ -105,6 +109,7 @@ class MultiRoller {
                 );
             }
         }
+        return unitToDice;
     }
 
     /**
@@ -116,12 +121,28 @@ class MultiRoller {
      * @param {AuxData} auxData - unit counts and attributes
      * @param {string} rollType - antiFighterBarrage, etc
      * @param {Vector} dicePos - spawn dice "around" this position
+     * @returns {Array.{UnitDie}}
      */
-    static roll(auxData, rollType, dicePos) {
+    static roll(auxData, rollType, player, dicePos) {
         assert(auxData instanceof AuxData);
         assert(typeof rollType === "string");
+        assert(player instanceof Player);
         assert(typeof dicePos.x === "number");
+
+        const unitToDice = this.spawnDice(auxData, rollType, player, dicePos);
+        const dice = [];
+        for (const unitDice of Object.values(unitToDice)) {
+            dice.push(...unitDice);
+        }
+
+        RollGroup.roll(dice, () => {
+            this.reportRollResult(auxData, unitToDice);
+        });
+
+        return dice;
     }
+
+    static reportRollResult(auxData, unitToDice) {}
 }
 
 module.exports = { MultiRoller };

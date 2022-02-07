@@ -179,7 +179,7 @@ class SimpleDie {
         if (builder._color) {
             this._die.setPrimaryColor(builder._color);
         }
-        if (builder._deleteAfterSeconds > 0) {
+        if (builder._deleteAfterSeconds > 0 && !world.__isMock) {
             const delayedDelete = () => {
                 if (this._die.isValid()) {
                     this._die.destroy();

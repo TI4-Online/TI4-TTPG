@@ -28,16 +28,16 @@ class UnitDieBuilder extends SimpleDieBuilder {
         const rollAttrs = unitAttrs.raw[rollType];
         assert(rollAttrs);
         assert(rollAttrs.hit);
-        this.setHitValue(unitAttrs.raw.hit);
-
-        if (rollAttrs.rerollMisses) {
-            this.setReroll(true);
-        }
+        this.setHitValue(rollAttrs.hit);
 
         if (rollAttrs.extraHitsOn) {
             assert(rollAttrs.extraHitsOn.value);
             this.setCritValue(rollAttrs.extraHitsOn.value);
             this.setCritCount(rollAttrs.extraHitsOn.count || 1);
+        }
+
+        if (rollAttrs.rerollMisses) {
+            this.setReroll(true);
         }
     }
 
