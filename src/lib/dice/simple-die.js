@@ -21,11 +21,24 @@ class SimpleDieBuilder {
     constructor() {
         this._color = false;
         this._deleteAfterSeconds = -1;
+        this._critCount = 1;
         this._critValue = Number.MAX_SAFE_INTEGER;
         this._hitValue = Number.MAX_SAFE_INTEGER;
         this._name = false;
         this._reroll = false;
         this._spawnPosition = false;
+    }
+
+    /**
+     * Rolling a crit generates this many extra hits.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
+    setCritCount(value) {
+        assert(typeof value === "number");
+        this._critCount = value;
+        return this;
     }
 
     /**
@@ -53,8 +66,8 @@ class SimpleDieBuilder {
     }
 
     /**
-     * Delete die GameObject after N seconds.  The SimpleDie wrapper remains.
-     * By default die never deletes itself.
+     * Delete die GameObject after N seconds, the SimpleDie wrapper remains.
+     * Set to negative to keep forever, default is keep forever.
      *
      * @param {number} value
      * @returns {SimpleDie} self for chaining
@@ -120,11 +133,6 @@ class SimpleDieBuilder {
      */
     build(player) {
         assert(player instanceof Player);
-
-        if (!this._spawnPosition) {
-            this._spawnPosition = new Vector(0, 0, world.getTableHeight() + 5);
-        }
-
         return new SimpleDie(this, player);
     }
 }
@@ -148,8 +156,8 @@ class SimpleDie {
     constructor(builder, player) {
         assert(builder instanceof SimpleDieBuilder);
         assert(player instanceof Player);
-        assert(builder._spawnPosition);
 
+        this._critCount = builder._critCount;
         this._critValue = builder._critValue;
         this._hitValue = builder._hitValue;
         this._reroll = builder._reroll;
@@ -161,14 +169,17 @@ class SimpleDie {
 
         // TTPG D10.
         const templateId = "9065AC5141F87F8ADE1F5AB6390BBEE4";
-        const pos = builder._spawnPosition;
+        let pos = builder._spawnPosition;
+        if (!pos) {
+            pos = new Vector(0, 0, world.getTableHeight() + 5);
+        }
         this._die = world.createObjectFromTemplate(templateId, pos);
         assert(this._die instanceof Dice);
 
         if (builder._color) {
             this._die.setPrimaryColor(builder._color);
         }
-        if (builder._deleteAfterSeconds > 0) {
+        if (builder._deleteAfterSeconds > 0 && !world.__isMock) {
             const delayedDelete = () => {
                 if (this._die.isValid()) {
                     this._die.destroy();
@@ -180,6 +191,47 @@ class SimpleDie {
         if (builder._name) {
             this._die.setName(builder._name);
         }
+    }
+
+    /**
+     * Accounting for crits, how many hits did this roll generate?
+     */
+    countHits() {
+        let result = 0;
+        if (this.isHit()) {
+            result += 1;
+        }
+        if (this.isCrit()) {
+            result += this.getCritCount();
+        }
+        return result;
+    }
+
+    /**
+     * Rolling a crit generates this many extra hits.
+     *
+     * @returns {number}
+     */
+    getCritCount() {
+        return this._critCount;
+    }
+
+    /**
+     * Rolling this number or above is a crit.
+     *
+     * @returns {number}
+     */
+    getCritValue() {
+        return this._critValue;
+    }
+
+    /**
+     * Rolling this number or above is a crit.
+     *
+     * @returns {number}
+     */
+    getHitValue() {
+        return this._hitValue;
     }
 
     /**
@@ -306,12 +358,14 @@ class SimpleDie {
 
         parts.push(`${this._value}`);
 
-        if (this._value >= this._critValue) {
-            parts.push("$");
-        } else if (this._value >= this._hitValue) {
-            parts.push("*");
+        if (this.isHit()) {
+            parts.push("#");
         }
-
+        if (this.isCrit()) {
+            for (let i = 0; i < this.getCritCount(); i++) {
+                parts.push("#");
+            }
+        }
         return parts.join("");
     }
 }
