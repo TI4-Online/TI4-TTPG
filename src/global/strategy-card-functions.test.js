@@ -18,39 +18,42 @@ it("setupStrategyCard creates a play button and a custom action", () => {
     assert(card._customActions.length === 1);
 });
 
-it("the custom action triggers the global event on play", () => {
-    let card = new MockGameObject();
-    let playButtonHitCounter = 0;
-    globalEvents.TI4.onStrategyCardPlayed.add(() => playButtonHitCounter++);
+describe("on actions", () => {
+    afterEach(() => {
+        globalEvents.TI4.onStrategyCardPlayed.clear();
+    });
 
-    setupStrategyCard(card);
+    it("the custom action triggers the global event on play", () => {
+        let card = new MockGameObject();
+        let playButtonHitCounter = 0;
+        globalEvents.TI4.onStrategyCardPlayed.add(() => playButtonHitCounter++);
 
-    card.onCustomAction.trigger(
-        card,
-        undefined /*player*/,
-        locale("ui.button.strategy_card_play")
-    );
-    expect(playButtonHitCounter).toBe(1);
-    card.onCustomAction.trigger(
-        card,
-        undefined /*player*/,
-        "not the button you are looking for"
-    );
-    expect(playButtonHitCounter).toBe(1);
-});
+        setupStrategyCard(card);
 
-it("the button triggers the global event on click", () => {
-    expect.assertions(2);
-    let card = new MockGameObject();
-    const player = {};
-    globalEvents.TI4.onStrategyCardPlayed.add(
-        (owningObject, clickingPlayer) => {
-            expect(owningObject).toBe(card);
-            expect(clickingPlayer).toBe(player);
-        }
-    );
+        card.onCustomAction.trigger(
+            card,
+            undefined /*player*/,
+            locale("ui.button.strategy_card_play")
+        );
+        expect(playButtonHitCounter).toBe(1);
+        card.onCustomAction.trigger(
+            card,
+            undefined /*player*/,
+            "not the button you are looking for"
+        );
+        expect(playButtonHitCounter).toBe(1);
+    });
 
-    setupStrategyCard(card);
-    const playButton = card.play_button;
-    playButton.widget.onClicked.trigger(playButton, player);
+    it("the button triggers the global event on click", () => {
+        expect.assertions(2);
+        let card = new MockGameObject();
+        const player = {};
+        globalEvents.TI4.onStrategyCardPlayed.add(() => {
+            assert(true);
+        });
+
+        setupStrategyCard(card);
+        const playButton = card.play_button;
+        playButton.widget.onClicked.trigger(playButton.widget, player);
+    });
 });

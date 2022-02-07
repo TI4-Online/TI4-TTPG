@@ -1,6 +1,6 @@
-const Widget = require("./mock-widget");
+const MockWidget = require("./mock-widget");
 
-class TextWidgetBase extends Widget {
+class TextWidgetBase extends MockWidget {
     constructor(data) {
         super(data);
         this._text = (data && data.text) || undefined;
