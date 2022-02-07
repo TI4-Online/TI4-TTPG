@@ -4,6 +4,7 @@ const { AuxData } = require("../unit/auxdata");
 const { RollGroup } = require("../dice/roll-group");
 const { UnitDieBuilder } = require("../dice/unit-die");
 const { Player } = require("../../wrapper/api");
+const { Broadcast } = require("../broadcast");
 
 /**
  * Let players manually enter unit counts.
@@ -72,13 +73,13 @@ class CombatRoller {
                 ":",
                 rollAttrs.hit,
             ];
-            if (rollAttrs.extraDice) {
+            if (rollAttrs.extraHitsOn) {
                 unitMessage.push(", ");
                 unitMessage.push(locale("ui.message.roll.crit"));
                 unitMessage.push("(x");
-                unitMessage.push((rollAttrs.extraDice.count || 1) + 1);
+                unitMessage.push((rollAttrs.extraHitsOn.count || 1) + 1);
                 unitMessage.push("):");
-                unitMessage.push(rollAttrs.value);
+                unitMessage.push(rollAttrs.extraHitsOn.value);
             }
             unitMessage.push("]: ");
             const diceMessages = dice.map((die) => {
@@ -162,8 +163,12 @@ class CombatRoller {
             dice.push(...unitDice);
         }
 
+        const report = this.getModifiersReport(true);
+        Broadcast.chatAll(report);
+
         RollGroup.roll(dice, () => {
-            this.reportRollResult(unitToDice);
+            const report = this.getRollReport(unitToDice);
+            Broadcast.broadcastAll(report);
         });
 
         return dice;

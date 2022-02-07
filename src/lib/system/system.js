@@ -51,8 +51,16 @@ class Planet {
         this._attrs = attrs;
     }
 
+    get localeName() {
+        return this.raw.localeName;
+    }
+
     get raw() {
         return this._attrs;
+    }
+
+    getNameStr() {
+        return locale(this.localeName);
     }
 }
 
