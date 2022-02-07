@@ -46,6 +46,9 @@ class GameWorld {
     getTableHeight() {
         return this._tableHeight;
     }
+
+    // for jest-mocking purposes
+    createObjectFromTemplate() {}
 }
 
 module.exports = GameWorld;
