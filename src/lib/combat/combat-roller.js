@@ -3,26 +3,29 @@ const locale = require("../locale");
 const { AuxData } = require("../unit/auxdata");
 const { RollGroup } = require("../dice/roll-group");
 const { UnitDieBuilder } = require("../dice/unit-die");
-const { UnitModifier } = require("../unit/unit-modifier");
 const { Player } = require("../../wrapper/api");
 
 /**
  * Let players manually enter unit counts.
  */
-class MultiRoller {
-    constructor() {}
+class CombatRoller {
+    constructor(auxData, rollType, player) {
+        assert(auxData instanceof AuxData);
+        assert(typeof rollType === "string");
+        assert(player instanceof Player);
+
+        this._auxData = auxData;
+        this._rollType = rollType;
+        this._player = player;
+    }
 
     /**
      * Create a localized, human-readable report of active unit modifiers.
      *
-     * @param {Array.{UnitModifier}} auxData
      * @returns {string}
      */
-    static getModifiersReport(unitModifiers, combatOnly) {
-        assert(Array.isArray(unitModifiers));
-        unitModifiers.forEach((unitModifier) => {
-            assert(unitModifier instanceof UnitModifier);
-        });
+    getModifiersReport(combatOnly) {
+        let unitModifiers = this._auxData.unitModifiers;
 
         if (combatOnly) {
             unitModifiers = unitModifiers.filter((unitModifier) => {
@@ -52,25 +55,20 @@ class MultiRoller {
     /**
      * Compute how many dice to roll for each unit type.
      *
-     * @param {AuxData} auxData - unit counts and attributes
-     * @param {string} rollType - antiFighterBarrage, etc
      * @returns {Object.{string:number}} unit to dice count
      */
-    static getUnitToDiceCount(auxData, rollType) {
-        assert(auxData instanceof AuxData);
-        assert(typeof rollType === "string");
-
+    getUnitToDiceCount() {
         const unitToDiceCount = {};
-        for (const unitAttrs of auxData.unitAttrsSet.values()) {
+        for (const unitAttrs of this._auxData.unitAttrsSet.values()) {
             const unit = unitAttrs.raw.unit;
-            if (!auxData.has(unit)) {
+            if (!this._auxData.has(unit)) {
                 continue; // no units of this type
             }
-            const rollAttrs = unitAttrs.raw[rollType];
+            const rollAttrs = unitAttrs.raw[this._rollType];
             if (!rollAttrs) {
                 continue; // unit does not have this roll type
             }
-            const unitCount = auxData.count(unit);
+            const unitCount = this._auxData.count(unit);
             const dicePerUnit = rollAttrs.dice || 1;
             const extraDice = rollAttrs.extraDice || 0;
             unitToDiceCount[unit] = unitCount * dicePerUnit + extraDice;
@@ -81,31 +79,27 @@ class MultiRoller {
     /**
      * Create (but do not roll) dice.
      *
-     * @param {AuxData} auxData - unit counts and attributes
-     * @param {string} rollType - antiFighterBarrage, etc
-     * @param {Player} player
      * @param {Vector} dicePos - spawn dice "around" this position
      * @returns {Object.{string:Array.{UnitDie}}} unit to dice count
      */
-    static spawnDice(auxData, rollType, player, dicePos) {
-        assert(auxData instanceof AuxData);
-        assert(typeof rollType === "string");
-        assert(player instanceof Player);
+    spawnDice(dicePos) {
         assert(typeof dicePos.x === "number");
 
-        const unitToDiceCount = this.getUnitToDiceCount(auxData, rollType);
+        const unitToDiceCount = this.getUnitToDiceCount();
         const unitToDice = {};
         for (const [unit, diceCount] of Object.entries(unitToDiceCount)) {
-            const unitAttrs = auxData.unitAttrsSet.get(unit);
+            const unitAttrs = this._auxData.unitAttrsSet.get(unit);
             const spawnPos = dicePos; // XXX TODO
             const unitDieBuilder = new UnitDieBuilder(
                 unitAttrs,
-                rollType
+                this._rollType
             ).setDeleteAfterSeconds(30);
             unitToDice[unit] = [];
             for (let i = 0; i < diceCount; i++) {
                 unitToDice[unit].push(
-                    unitDieBuilder.setSpawnPosition(spawnPos).build(player)
+                    unitDieBuilder
+                        .setSpawnPosition(spawnPos)
+                        .build(this._player)
                 );
             }
         }
@@ -118,31 +112,35 @@ class MultiRoller {
      *
      * Assumes unit modifiers have already been applied to AuxData.
      *
-     * @param {AuxData} auxData - unit counts and attributes
-     * @param {string} rollType - antiFighterBarrage, etc
      * @param {Vector} dicePos - spawn dice "around" this position
      * @returns {Array.{UnitDie}}
      */
-    static roll(auxData, rollType, player, dicePos) {
-        assert(auxData instanceof AuxData);
-        assert(typeof rollType === "string");
-        assert(player instanceof Player);
+    roll(dicePos) {
         assert(typeof dicePos.x === "number");
 
-        const unitToDice = this.spawnDice(auxData, rollType, player, dicePos);
+        const unitToDice = this.spawnDice(dicePos);
         const dice = [];
         for (const unitDice of Object.values(unitToDice)) {
             dice.push(...unitDice);
         }
 
         RollGroup.roll(dice, () => {
-            this.reportRollResult(auxData, unitToDice);
+            this.reportRollResult(unitToDice);
         });
 
         return dice;
     }
 
-    static reportRollResult(auxData, unitToDice) {}
+    static reportRollResult(unitToDice) {
+        // local item = '[HIT:' .. dice.hitValue
+        // if dice.critCount and dice.critValue then
+        //     item = item .. ', CRIT(x' .. (dice.critCount + 1) .. '):' .. dice.critValue
+        // end
+        // item = item .. ']: '
+        //         table.insert(message, dice.unitName .. ' ' .. item .. table.concat(rollValues, ', '))
+        // broadcastToAll(playerName .. ' rolled: [ffffff]' .. table.concat(message, ', '), playerColor)
+        // broadcastToAll(playerName .. ' landed ' .. hits .. ' hit' .. (hits == 1 and '' or 's') .. '.', playerColor)
+    }
 }
 
-module.exports = { MultiRoller };
+module.exports = { CombatRoller };

@@ -6,6 +6,8 @@
     "ui.message.system_activated": "{playerName} activated {systemName}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
     "ui.message.none": "none",
+    "ui.message.roll.hit": "HIT",
+    "ui.message.roll.crit": "CRIT",
 
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
