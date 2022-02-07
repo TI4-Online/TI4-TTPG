@@ -6,6 +6,7 @@
 const {
     globalEvents,
     Border,
+    Rotator,
     UIElement,
     Vector,
 } = require("../../wrapper/api");
@@ -54,7 +55,7 @@ function createStrategyCardUi(card, widget) {
         // one is created for each player and will be destroyed on "close".
         let item = world.createObjectFromTemplate(
             "C5DDE2AC45DD926BFEB81F92B29828A1",
-            matchingDesk.localPositionToWorld({ x: 35, y: 0, z: 0 })
+            matchingDesk.localPositionToWorld({ x: 30, y: 0, z: 0 })
         ); // slightly above a 90cm table
         item.setOwningPlayerSlot(player.getSlot());
         const cardId = card.getId();
@@ -72,6 +73,7 @@ function createStrategyCardUi(card, widget) {
         ui.width = 350;
         ui.scale = 0.75;
         ui.position = new Vector(0, 0, world.getTableHeight() + 10);
+        ui.rotation = matchingDesk.localRotationToWorld(new Rotator(30, 0, 0));
         item.addUI(ui);
     }
 }

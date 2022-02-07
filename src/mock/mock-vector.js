@@ -27,6 +27,10 @@ class Vector {
     magnitudeSquared() {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
+
+    rotateAngleAxis() {
+        return this;
+    }
 }
 
 module.exports = Vector;
