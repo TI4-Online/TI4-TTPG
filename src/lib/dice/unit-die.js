@@ -37,6 +37,7 @@ class UnitDieBuilder extends SimpleDieBuilder {
         if (rollAttrs.extraHitsOn) {
             assert(rollAttrs.extraHitsOn.value);
             this.setCritValue(rollAttrs.extraHitsOn.value);
+            this.setCritCount(rollAttrs.extraHitsOn.count || 1);
         }
     }
 
