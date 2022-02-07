@@ -7,7 +7,7 @@ class Broadcast {
      *
      * @param {string} message
      */
-    static broadcastAll(message, color) {
+    static broadcastAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
         assert(Array.isArray(color) || color instanceof Color);
 
@@ -20,7 +20,7 @@ class Broadcast {
     /**
      * Send a message to all players' chat windows.
      */
-    static chatAll(message, color) {
+    static chatAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
         assert(Array.isArray(color) || color instanceof Color);
 
