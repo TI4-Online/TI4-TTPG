@@ -1,5 +1,6 @@
 // Export under the mock names so tests can be explicit they are not using TTPG objects.
 Object.assign(module.exports, {
+    MockBorder: require("./mock-border"),
     MockButton: require("./mock-button"),
     MockCard: require("./mock-card"),
     MockCardDetails: require("./mock-card-details"),
@@ -11,10 +12,12 @@ Object.assign(module.exports, {
     MockRotator: require("./mock-rotator"),
     MockUIElement: require("./mock-ui-element"),
     MockVector: require("./mock-vector"),
+    MockVerticalBox: require("./mock-vertical-box"),
 });
 
 // Export under the TTPG api names for unaware consumers.
 Object.assign(module.exports, {
+    Border: module.exports.MockBorder,
     Button: module.exports.MockButton,
     Card: module.exports.MockCard,
     CardDetails: module.exports.MockCardDetails,
@@ -26,6 +29,7 @@ Object.assign(module.exports, {
     Rotator: module.exports.MockRotator,
     UIElement: module.exports.MockUIElement,
     Vector: module.exports.MockVector,
+    VerticalBox: module.exports.MockVerticalBox
 });
 
 // SHARE global objects.

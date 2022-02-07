@@ -86,6 +86,8 @@ class GameObject {
     getUIs() {
         return this._uis;
     }
+
+    destroy() {}
 }
 
 module.exports = GameObject;

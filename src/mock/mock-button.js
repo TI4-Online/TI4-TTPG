@@ -1,8 +1,9 @@
 const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 
 class Button {
-    constructor() {
+    constructor(data) {
         this._clickEvents = [];
+        this._owningObject = (data && data.owningObject) || undefined;
     }
 
     setText(text) {
@@ -21,6 +22,10 @@ class Button {
 
     getFontSize() {
         return this._fontSize;
+    }
+
+    getOwningObject() {
+        return this._owningObject;
     }
 
     onClicked = new TriggerableMulticastDelegate();

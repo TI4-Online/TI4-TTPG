@@ -37,6 +37,9 @@ class GameWorld {
     getAllPlayers() {
         return this._allPlayers;
     }
+
+    // for jest-mocking purposes
+    createObjectFromTemplate() {}
 }
 
 module.exports = GameWorld;

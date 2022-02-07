@@ -3,9 +3,9 @@
  *
  */
 
-const tp = require("../../wrapper/api");
+const { globalEvents, Border, UIElement, Vector } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
-let items = [];
+let openSelections = {};
 
 function broadcastMessage(message, player) {
     for (const p of world.getAllPlayers()) {
@@ -13,59 +13,51 @@ function broadcastMessage(message, player) {
     }
 }
 
-function addCloseButtons(widget, primaryWidget) {
-    addCloseButton(widget);
-    if (primaryWidget) {
-        addCloseButton(primaryWidget);
-    }
-}
-
-function onCloseButtonClicked(button, closingPlayer) {
+function onUiClosedClicked(button, player) {
     const owningObject = button.getOwningObject();
-    if (owningObject.getOwningPlayerSlot() !== closingPlayer.getSlot()) {
+
+    // only react on the correct player
+    if (owningObject.getOwningPlayerSlot() !== player.getSlot()) {
         return;
     }
 
-    items.splice(items.indexOf(owningObject));
+    // clear internal data and send notifications
+    let selections = openSelections[owningObject.TI4.relatedCard.getId()];
+    selections.splice(selections.indexOf(player.getSlot()), 1);
+    if (selections.length === 0) {
+        delete openSelections[owningObject.getId()];
+        broadcastMessage(locale("strategy_card.message.all_resolved"));
+    }
+
+    // trigger event for the card itself
     globalEvents.TI4.onStrategyCardSelectionDone.trigger(
         owningObject,
-        closingPlayer
+        player
     );
     owningObject.destroy();
-
-    if (items.length === 0)
-        broadcastMessage(locale("strategy_card.message.all_resolved"));
 }
 
-function addCloseButton(widget) {
-    let closeButton = new tp.Button()
-        .setFontSize(10)
-        .setText(locale("strategy_card.close.button"));
-
-    closeButton.onClicked.add(onCloseButtonClicked);
-    widget.addChild(closeButton);
-}
-
-function createStragegyCardUi(widget, primaryWidget, activePlayer) {
-    addCloseButtons(widget, primaryWidget);
+function createStragegyCardUi(card, widget) {
     let offset = 0;
 
-    for (const p of world.getAllPlayers()) {
+    for (const player of world.getAllPlayers()) {
         // creating an item to anchor the UI to.
         // one is created for each player and will be destroyed on "close".
         let item = world.createObjectFromTemplate(
             "C5DDE2AC45DD926BFEB81F92B29828A1",
             new Vector(offset, 0, 90.5)
         ); // slightly above a 90cm table
-        item.setOwningPlayerSlot(p.getSlot());
-        items.push(item);
-
+        item.setOwningPlayerSlot(player.getSlot());
+        const cardId = card.getId();
+        openSelections[cardId] = openSelections[cardId] || [];
+        openSelections[cardId].push(player.getSlot());
+        item.TI4 = {
+            relatedCard: card
+        };
         offset += 100;
-        let ui = new tp.UIElement();
-        let border = new tp.Border().setColor(p.getPlayerColor());
-        border.setChild(
-            primaryWidget && p === activePlayer ? primaryWidget : widget
-        );
+        let ui = new UIElement();
+        let border = new Border().setColor(player.getPlayerColor());
+        border.setChild(widget);
         ui.useWidgetSize = false;
         ui.widget = border;
         ui.width = 350;
@@ -77,4 +69,5 @@ function createStragegyCardUi(widget, primaryWidget, activePlayer) {
 module.exports = {
     createStragegyCardUi,
     broadcastMessage,
+    onUiClosedClicked,
 };
