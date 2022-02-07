@@ -1,8 +1,17 @@
 class Player {
     constructor(data) {
+        this._name = (data && data.name) || 0;
         this._playerColor = (data && data.playerColor) || "?";
         this._selectedObjects = (data && data.selectedObjects) || [];
         this._slot = (data && data.slot) || 0;
+    }
+
+    setName(name) {
+        this._name = name;
+    }
+
+    getName() {
+        return this._name;
     }
 
     getPlayerColor() {

@@ -1,9 +1,7 @@
 const assert = require("assert");
 const { globalEvents, MockButton, MockGameObject, MockGameWorld, MockPlayer, MockVerticalBox } = require("../../mock/mock-api");
-const { broadcastMessage, createStragegyCardUi, onUiClosedClicked } = require("./strategy-card");
-const strategyCard = require("./strategy-card"); // direct require for mocking the function form a module
+const { broadcastMessage, createStrategyCardUi, onUiClosedClicked } = require("./strategy-card");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
-const locale = require("../../lib/locale");
 
 // mock global.js event registration
 globalEvents.TI4 = {
@@ -41,7 +39,7 @@ describe("creating a strategy card", () => {
         let gameObject = new MockGameObject();
         jest.spyOn( global.world, "createObjectFromTemplate").mockReturnValueOnce(gameObject);
 
-        createStragegyCardUi(gameObject, widget);
+        createStrategyCardUi(gameObject, widget);
 
         assert(gameObject.getUIs().length === 1);
     });
@@ -75,7 +73,7 @@ describe("when the close button is clicked in a players selection", () => {
     it("in case the owner clicked the button, then the global event triggers", () => {
         const card = new MockGameObject({id: "card1"});
         const globalEventTriggerSpy = jest.spyOn(globalEvents.TI4.onStrategyCardSelectionDone, "trigger");
-        createStragegyCardUi(card, widget);
+        createStrategyCardUi(card, widget);
 
         onUiClosedClicked(player1Button, player1);
 
@@ -85,7 +83,7 @@ describe("when the close button is clicked in a players selection", () => {
     it("in case the another player clicked the button, then the global event does not trigger", () => {
         const card = new MockGameObject({id: "card2"});
         const globalEventTriggerSpy = jest.spyOn(globalEvents.TI4.onStrategyCardSelectionDone, "trigger");
-        createStragegyCardUi(card, widget);
+        createStrategyCardUi(card, widget);
 
         onUiClosedClicked(player1Button, player2);
 
@@ -96,7 +94,7 @@ describe("when the close button is clicked in a players selection", () => {
         const card = new MockGameObject({id: "card3"});
         const player1SendChatMessageSpy = jest.spyOn(player1, "sendChatMessage");
         const player2SendChatMessageSpy = jest.spyOn(player2, "sendChatMessage");
-        createStragegyCardUi(card, widget);
+        createStrategyCardUi(card, widget);
 
         onUiClosedClicked(player2Button, player2);
         onUiClosedClicked(player1Button, player1);

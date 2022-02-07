@@ -1,5 +1,11 @@
-class Border {
-    constructor() {}
+const Widget = require("./mock-widget");
+
+class Border extends Widget {
+    constructor(data) {
+        super(data);
+        this._color = (data && data.color) || undefined;
+        this._child = (data && data.child) || undefined;
+    }
 
     setColor(color) {
         this._color = color;
@@ -15,7 +21,7 @@ class Border {
         return this;
     }
 
-    setChild() {
+    getChild() {
         return this._child;
     }
 }

@@ -112,7 +112,7 @@ class UnitModifier {
                 continue; // face down card
             }
 
-            // Enfoce modifier type (self, opponent, any).
+            // Enforce modifier type (self, opponent, any).
             if (
                 unitModifier.raw !== "any" &&
                 unitModifier.raw.owner !== withOwner
@@ -123,7 +123,7 @@ class UnitModifier {
             // If an object has an owner, use it before trying to guess owner.
             const ownerSlot = obj.getOwningPlayerSlot();
             if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
-                continue; // explit different owner
+                continue; // explicit different owner
             }
 
             // TODO XXX CHECK IF IN PLAYER AREA
@@ -142,7 +142,7 @@ class UnitModifier {
     }
 
     /**
-     * Get faction abilility.
+     * Get faction ability.
      *
      * @param {string} factionAbility
      * @returns {unitModifier}

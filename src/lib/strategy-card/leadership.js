@@ -1,36 +1,39 @@
-const { onUiClosedClicked, createStragegyCardUi, broadcastMessage } = require("./strategy-card");
-const tp = require("../../wrapper/api");
+const { onUiClosedClicked, createStrategyCardUi, broadcastMessage } = require("./strategy-card");
+const { globalEvents, Button, CheckBox, Slider, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
 let selections = {};
 let activatingPlayer;
 
 function getPlayerSelectionBySlot(player) {
-    selections[player.getSlot()] = selections[player.getSlot()] || {
+    const slot = player.getSlot();
+    selections[slot] = selections[slot] || {
         value: 0,
         primary: false
     };
+
+    return selections[slot];
 }
 
-function createUiWidget(card) {
-    let verticalBox = new tp.VerticalBox();
+function createUiWidget() {
+    let verticalBox = new VerticalBox();
 
-    let primaryCheckBox = new tp.CheckBox()
+    let primaryCheckBox = new CheckBox()
         .setFontSize(10)
         .setText(locale("strategy_card.leadership.text.primary"));
-    primaryCheckBox.onCheckStateChanged((checkBox, player, isChecked) => {
+    primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
         getPlayerSelectionBySlot(player).primary = isChecked;
     });
 
     verticalBox.addChild(primaryCheckBox);
 
     verticalBox.addChild(
-        new tp.Text()
+        new Text()
             .setFontSize(10)
             .setText(locale("strategy_card.leadership.text"))
     )
 
-    let slider = new tp.Slider().setStepSize(1).setMaxValue(10);
+    let slider = new Slider().setStepSize(1).setMaxValue(10);
     slider.onValueChanged.add((slider, player, value) => {
         getPlayerSelectionBySlot(player).value = value;
     });
@@ -41,7 +44,7 @@ function createUiWidget(card) {
         .setText(locale("strategy_card.close.button"));
 
     closeButton.onClicked.add(onUiClosedClicked);
-    widget.addChild(closeButton);
+    verticalBox.addChild(closeButton);
 
     return verticalBox;
 }
@@ -49,11 +52,8 @@ function createUiWidget(card) {
 globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
-    for (const p of world.getAllPlayers()) {
-        selections[player.getSlot()] = 0;
-    }
     const widget = createUiWidget(card);
-    createStragegyCardUi(card, widget);
+    createStrategyCardUi(card, widget);
 });
 
 globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {

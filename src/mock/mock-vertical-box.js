@@ -1,14 +1,9 @@
-class VerticalBox {
-    constructor() {
+const Widget = require("./mock-widget");
+
+class VerticalBox extends Widget{
+    constructor(data) {
+        super(data);
         this._children = [];
-    }
-
-    setOwningObject(owningObject) {
-        this._owningObject = owningObject;
-    }
-
-    getOwningObject() {
-        return this._owningObject;
     }
 
     addChild(widget) {

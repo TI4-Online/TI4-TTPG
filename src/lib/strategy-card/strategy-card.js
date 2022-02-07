@@ -37,7 +37,7 @@ function onUiClosedClicked(button, player) {
     owningObject.destroy();
 }
 
-function createStragegyCardUi(card, widget) {
+function createStrategyCardUi(card, widget) {
     let offset = 0;
 
     for (const player of world.getAllPlayers()) {
@@ -67,7 +67,7 @@ function createStragegyCardUi(card, widget) {
     }
 }
 module.exports = {
-    createStragegyCardUi,
+    createStrategyCardUi,
     broadcastMessage,
     onUiClosedClicked,
 };

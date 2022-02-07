@@ -320,8 +320,8 @@
 
     "strategy_card.close.button": "Close",
     "strategy_card.message.all_resolved": "<<< All players have resolved the strategy card! >>>",
-    "strategy_card.leadership.text.primary": "You gain 3 command token from the primary ability.",
-    "strategy_card.leadership.text": "Choose the ammount of tokens gained with influence.",
+    "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
+    "strategy_card.leadership.text": "Choose the amount of tokens gained with influence.",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
