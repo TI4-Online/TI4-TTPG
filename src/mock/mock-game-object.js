@@ -12,6 +12,8 @@ class GameObject {
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
         this._savedData = (data && data.savedData) || "";
         this._templateMetadata = (data && data.templateMetadata) || "";
+        this._uis = (data && data.uis) || [];
+        this._customActions = (data && data.customActions) || [];
     }
 
     onCreated = new TriggerableMulticastDelegate();
@@ -27,6 +29,10 @@ class GameObject {
     onSecondaryAction = new TriggerableMulticastDelegate();
     onSnapped = new TriggerableMulticastDelegate();
     onTick = new TriggerableMulticastDelegate();
+
+    addCustomAction(customAction) {
+        this._customActions.push(customAction);
+    }
 
     getContainer() {
         return this._container;
@@ -71,6 +77,17 @@ class GameObject {
     getTemplateMetadata() {
         return this._templateMetadata;
     }
+
+    addUI(ui) {
+        this._uis.push(ui);
+        ui.setOwningObject(this);
+    }
+
+    getUIs() {
+        return this._uis;
+    }
+
+    destroy() {}
 }
 
 module.exports = GameObject;

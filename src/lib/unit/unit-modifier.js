@@ -113,7 +113,7 @@ class UnitModifier {
                 continue; // face down card
             }
 
-            // Enfoce modifier type (self, opponent, any).
+            // Enforce modifier type (self, opponent, any).
             if (
                 unitModifier.raw !== "any" &&
                 unitModifier.raw.owner !== withOwner
@@ -139,7 +139,7 @@ class UnitModifier {
     }
 
     /**
-     * Get faction abilility.
+     * Get faction ability.
      *
      * @param {string} factionAbility
      * @returns {unitModifier}
