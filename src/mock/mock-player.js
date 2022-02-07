@@ -16,6 +16,10 @@ class Player {
     getSlot() {
         return this._slot;
     }
+
+    sendChatMessage(message, color) {}
+
+    showMessage(message) {}
 }
 
 module.exports = Player;

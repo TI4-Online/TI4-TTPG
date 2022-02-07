@@ -6,6 +6,7 @@
     "ui.message.system_activated": "{playerName} activated {systemName}",
 
     "ui.error.empty_supply": "{unit_name} supply is empty",
+    "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
 
     "ui.button.take_seat": "TAKE SEAT",
 

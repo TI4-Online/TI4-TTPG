@@ -1,4 +1,6 @@
 const assert = require("../../wrapper/assert");
+const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
@@ -72,7 +74,9 @@ class AuxData {
                     playerSlot2 = plastic.owningPlayerSlot;
                 } else {
                     // Multiple opponents!
-                    // TODO XXX REPORT ERROR
+                    Broadcast.broadcastAll(
+                        locale("ui.error.too_many_opponents")
+                    );
                     playerSlot2 = -1;
                     break;
                 }
@@ -123,7 +127,6 @@ class AuxData {
             }
 
             // Register present per-unit modifiers in overall modifiers list.
-            // TODO XXX any "opponent" modifiers need to know opponent plastic.
             for (const unitAttrs of aux.unitAttrsSet.values()) {
                 if (!aux.has(unitAttrs.raw.unit)) {
                     continue; // not present
