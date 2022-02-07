@@ -1,21 +1,22 @@
-class UIElement {
-    constructor() {}
+const MockRotator = require("./mock-rotator");
+const MockVector = require("./mock-vector");
 
-    setOwningObject(slot) {
-        this._owningPlayerSlot = slot;
-        return this;
+class UIElement {
+    constructor() {
+        this.height = 90;
+        this.position = new MockVector(0, 0, 0);
+        this.rotation = new MockRotator(0, 0, 0);
+        this.scale = 1;
+        this.useWidgetSize = true;
+        this.widget = undefined;
+        this.width = 160;
     }
 
     getOwningPlayerSlot() {
         return this._owningPlayerSlot;
     }
 
-    setOwningObject(owningObject) {
-        this._owningObject = owningObject;
-        return this;
-    }
-
-    setOwningObject() {
+    getOwningObject() {
         return this._owningObject;
     }
 }

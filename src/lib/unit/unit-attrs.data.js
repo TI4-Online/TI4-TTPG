@@ -6,6 +6,7 @@ module.exports = [
         unit: "carrier",
         localeName: "unit.carrier",
         unitNsid: "unit:base/carrier",
+        diceColor: { r: 0, g: 0, b: 1, a: 1 }, // Blue
         cost: 3,
         spaceCombat: { dice: 1, hit: 9 },
         move: 1,
@@ -16,6 +17,7 @@ module.exports = [
         unit: "cruiser",
         localeName: "unit.cruiser",
         unitNsid: "unit:base/cruiser",
+        diceColor: { r: 0.75, g: 0.5, b: 0, a: 1 }, // Brown
         cost: 2,
         spaceCombat: { dice: 1, hit: 7 },
         move: 2,
@@ -25,6 +27,7 @@ module.exports = [
         unit: "destroyer",
         localeName: "unit.destroyer",
         unitNsid: "unit:base/destroyer",
+        diceColor: { r: 1, g: 0, b: 0, a: 1 }, // Red
         antiFighterBarrage: { dice: 2, hit: 9 },
         cost: 1,
         spaceCombat: { dice: 1, hit: 9 },
@@ -35,6 +38,7 @@ module.exports = [
         unit: "dreadnought",
         localeName: "unit.dreadnought",
         unitNsid: "unit:base/dreadnought",
+        diceColor: { r: 0.5, g: 0.25, b: 0.5, a: 1 }, // Purple
         sustainDamage: true,
         bombardment: { dice: 1, hit: 5 },
         cost: 4,
@@ -47,6 +51,7 @@ module.exports = [
         unit: "fighter",
         localeName: "unit.fighter",
         unitNsid: "unit:base/fighter",
+        diceColor: { r: 0, g: 1, b: 1, a: 1 }, // Teal
         cost: 1,
         produce: 2,
         spaceCombat: { dice: 1, hit: 9 },
@@ -57,6 +62,7 @@ module.exports = [
         unit: "flagship",
         localeName: "unit.flagship",
         unitNsid: "unit:base/flagship",
+        diceColor: { r: 0, g: 0, b: 0, a: 1 }, // Black
         sustainDamage: true,
         cost: 8,
         move: 1,
@@ -67,6 +73,7 @@ module.exports = [
         unit: "infantry",
         localeName: "unit.infantry",
         unitNsid: "unit:base/infantry",
+        diceColor: { r: 0, g: 1, b: 0, a: 1 }, // Green
         cost: 1,
         produce: 2,
         groundCombat: { dice: 1, hit: 8 },
@@ -77,6 +84,7 @@ module.exports = [
         unit: "mech",
         localeName: "unit.mech",
         unitNsid: "unit:pok/mech",
+        diceColor: { r: 1, g: 0.427, b: 0.713, a: 1 }, // Pink
         cost: 2,
         groundCombat: { dice: 1, hit: 6 },
         sustainDamage: true,
@@ -87,6 +95,7 @@ module.exports = [
         unit: "pds",
         localeName: "unit.pds",
         unitNsid: "unit:base/pds",
+        diceColor: { r: 1, g: 0.5, b: 0, a: 1 }, // Orange
         planetaryShield: true,
         spaceCannon: { dice: 1, hit: 6 },
         structure: true,
@@ -95,6 +104,7 @@ module.exports = [
         unit: "space_dock",
         localeName: "unit.space_dock",
         unitNsid: "unit:base/space_dock",
+        diceColor: { r: 1, g: 1, b: 0, a: 1 }, // Yellow
         production: -2,
         structure: true,
     },
@@ -102,6 +112,7 @@ module.exports = [
         unit: "war_sun",
         localeName: "unit.war_sun",
         unitNsid: "unit:base/war_sun",
+        diceColor: { r: 1, g: 0.5, b: 0, a: 1 }, // Orange
         ship: true,
     },
 
@@ -141,8 +152,8 @@ module.exports = [
     {
         unit: "fighter",
         upgradeLevel: 2,
-        localeName: "unit.destroyer",
-        triggerNsid: "card.technology.unit_upgrade:base/destroyer_2",
+        localeName: "unit.fighter",
+        triggerNsid: "card.technology.unit_upgrade:base/fighter_2",
         spaceCombat: { hit: 8 },
         move: 2,
         requireCapacity: false,

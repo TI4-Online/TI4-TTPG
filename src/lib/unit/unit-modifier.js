@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerArea } = require("../player-area");
+const { PlayerDesk } = require("../player-desk");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { world, Card } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
@@ -44,18 +44,21 @@ function _maybeInit() {
         }
         if (rawModifier.triggerNsids) {
             for (const triggerNsid of rawModifier.triggerNsids) {
+                assert(!_triggerNsidToUnitModifier[triggerNsid]);
                 _triggerNsidToUnitModifier[triggerNsid] = unitModifier;
             }
         }
 
         if (rawModifier.triggerFactionAbility) {
-            _factionAbilityToUnitModifier[rawModifier.triggerFactionAbility] =
-                unitModifier;
+            const ability = rawModifier.triggerFactionAbility;
+            assert(!_factionAbilityToUnitModifier[ability]);
+            _factionAbilityToUnitModifier[ability] = unitModifier;
         }
 
         if (rawModifier.triggerUnitAbility) {
-            _unitAbilityToUnitModifier[rawModifier.triggerUnitAbility] =
-                unitModifier;
+            const ability = rawModifier.triggerUnitAbility;
+            assert(!_unitAbilityToUnitModifier[ability]);
+            _unitAbilityToUnitModifier[ability] = unitModifier;
         }
     }
 }
@@ -113,21 +116,22 @@ class UnitModifier {
                 continue; // face down card
             }
 
-            // Enforce modifier type (self, opponent, any).
-            if (
-                unitModifier.raw !== "any" &&
-                unitModifier.raw.owner !== withOwner
-            ) {
-                continue; // wrong owner
-            }
+            // Enfoce modifier type (self, opponent, any).
+            if (unitModifier.raw !== "any") {
+                // Not an "any", require it be of "withType".
+                if (unitModifier.raw.owner !== withOwner) {
+                    continue;
+                }
 
-            // If an object has an owner, use it before trying to guess owner.
-            let ownerSlot = obj.getOwningPlayerSlot();
-            if (ownerSlot < 0) {
-                ownerSlot = PlayerArea.getClosestPlayerSlot(obj.getPosition());
-            }
-            if (ownerSlot >= 0 && ownerSlot !== playerSlot) {
-                continue; // different owner
+                // Matches "withType", require it belong to player.
+                let ownerSlot = obj.getOwningPlayerSlot();
+                if (ownerSlot < 0) {
+                    const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+                    ownerSlot = playerDesk.playerSlot;
+                }
+                if (ownerSlot !== playerSlot) {
+                    continue; // different owner
+                }
             }
 
             // Found a unit modifier!  Add it to the list.
@@ -157,7 +161,7 @@ class UnitModifier {
      * @returns {unitModifier}
      */
     static getUnitAbilityUnitModifier(unitAbility) {
-        assert(typeof factionAbility === "string");
+        assert(typeof unitAbility === "string");
         _maybeInit();
         return _unitAbilityToUnitModifier[unitAbility];
     }

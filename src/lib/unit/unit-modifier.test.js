@@ -34,7 +34,7 @@ it("UNIT_MODIFIERS apply", () => {
     for (const rawModifier of UNIT_MODIFIERS) {
         const unitModifier = new UnitModifier(rawModifier);
         const unitAttrsSet = new UnitAttrsSet();
-        const auxData = { self: new AuxData(), opponent: new AuxData() };
+        const auxData = { self: new AuxData(-1), opponent: new AuxData(-1) };
         for (const unit of UnitAttrs.getAllUnitTypes()) {
             auxData.self.overrideCount(unit, 1);
             auxData.opponent.overrideCount(unit, 1);

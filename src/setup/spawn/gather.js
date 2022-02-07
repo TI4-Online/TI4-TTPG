@@ -31,11 +31,14 @@ class Gather {
      * @param {function} filterNsid
      * @returns {Array.{GameObject}}
      */
-    static gather(filterNsid) {
+    static gather(filterNsid, objs) {
         assert(typeof filterNsid === "function");
+        if (!objs) {
+            objs = world.getAllObjects();
+        }
 
         const result = [];
-        for (const obj of world.getAllObjects()) {
+        for (const obj of objs) {
             if (obj.getContainer()) {
                 continue; // only scan on-table objects
             }

@@ -2,10 +2,14 @@ const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-deleg
 const Vector = require("./mock-vector");
 const Rotator = require("./mock-rotator");
 
+let _nextId = 1;
+
 class GameObject {
     constructor(data) {
         this._container = (data && data.container) || undefined;
-        this._id = (data && data.id) || "abcd";
+        this._id = (data && data.id) || "abcd" + _nextId++;
+        this._isValid = true;
+        this._name = (data && data.name) || "";
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
         this._position = (data && data.position) || new Vector(0, 0, 0);
         this._primaryColor = data && data.primaryColor;
@@ -34,6 +38,10 @@ class GameObject {
         this._customActions.push(customAction);
     }
 
+    destroy() {
+        this._isValid = false;
+    }
+
     getContainer() {
         return this._container;
     }
@@ -42,12 +50,12 @@ class GameObject {
         return this._id;
     }
 
-    getOwningPlayerSlot() {
-        return this._owningPlayerSlot;
+    getName() {
+        return this._name;
     }
 
-    setOwningPlayerSlot(value) {
-        this._owningPlayerSlot = value;
+    getOwningPlayerSlot() {
+        return this._owningPlayerSlot;
     }
 
     getPosition() {
@@ -70,10 +78,6 @@ class GameObject {
         return this._savedData;
     }
 
-    setSavedData(value) {
-        this._savedData = value;
-    }
-
     getTemplateMetadata() {
         return this._templateMetadata;
     }
@@ -87,7 +91,25 @@ class GameObject {
         return this._uis;
     }
 
-    destroy() {}
+    isValid() {
+        return this._isValid;
+    }
+
+    setName(value) {
+        this._name = value;
+    }
+
+    setOwningPlayerSlot(value) {
+        this._owningPlayerSlot = value;
+    }
+
+    setPosition(position) {
+        this._position = position;
+    }
+
+    setSavedData(value) {
+        this._savedData = value;
+    }
 }
 
 module.exports = GameObject;

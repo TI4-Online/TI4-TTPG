@@ -27,6 +27,8 @@ class Player {
     }
 
     sendChatMessage(message, color) {}
+
+    showMessage(message) {}
 }
 
 module.exports = Player;

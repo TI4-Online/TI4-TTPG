@@ -1,4 +1,4 @@
-const assert = require("assert");
+const assert = require("../../wrapper/assert");
 const { UnitAttrs } = require("./unit-attrs");
 
 /**

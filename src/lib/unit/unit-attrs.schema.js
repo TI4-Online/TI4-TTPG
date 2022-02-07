@@ -9,6 +9,14 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         localeName: { type: "string" }, // human-readable name (after locale)
         unitNsid: { type: "string" }, // plastic unit nsid, for finding units on table
         triggerNsid: { type: "string" }, // find in player area to apply this unit upgrade
+        diceColor: {
+            type: "object",
+            properties: {
+                r: { type: "number", minimum: 0, maximum: 1 },
+                g: { type: "number", minimum: 0, maximum: 1 },
+                b: { type: "number", minimum: 0, maximum: 1 },
+            },
+        },
 
         ship: { type: "boolean" },
         ground: { type: "boolean" },
@@ -118,7 +126,7 @@ class UnitAttrsSchema {
     static validate(unit, onError) {
         // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
         if (!Ajv) {
-            console.warn("Ajv not available");
+            //console.warn("Ajv not available");
             return true;
         }
         if (!_unitAttrsValidator) {

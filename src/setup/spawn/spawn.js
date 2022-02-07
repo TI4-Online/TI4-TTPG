@@ -150,11 +150,11 @@ class Spawn {
         }
 
         if (parsedNsid.type === "token.command") {
-            const factionAbbr = locale(`faction.${parsedNsid.name}`);
+            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
             return locale("token.command", { faction: factionAbbr });
         }
         if (parsedNsid.type === "token.control") {
-            const factionAbbr = locale(`faction.${parsedNsid.name}`);
+            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
             return locale("token.control", { faction: factionAbbr });
         }
 

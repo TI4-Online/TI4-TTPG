@@ -130,15 +130,22 @@ function onInsertedEnforceSingleton(container, insertedObjs, player) {
     const masterTemplateId = masterObject.getTemplateId();
 
     // Reject mismatched items and delete extra corrent ones.
+    const rejectedObjs = [];
     for (const containedObj of containedObjs) {
         if (containedObj.getTemplateId() !== masterTemplateId) {
             // Mismatch.
-            const pos = container.getPosition().add([10, 0, 10]);
-            container.take(containedObj, pos, true);
+            rejectedObjs.push(containedObj);
         } else if (containedObj != masterObject) {
             // Redundant extra.
             container.remove(containedObj);
         }
+    }
+    if (rejectedObjs.length > 0) {
+        globalEvents.TI4.onContainerRejected.trigger(
+            container,
+            rejectedObjs,
+            player
+        );
     }
 }
 
