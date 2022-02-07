@@ -3,7 +3,6 @@ const { AuxData } = require("../unit/auxdata");
 const { CombatRoller } = require("./combat-roller");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { MockPlayer, MockVector } = require("../../wrapper/api");
-const { DiscrError } = require("ajv/dist/vocabularies/discriminator/types");
 
 it("constructor", () => {
     const auxData = new AuxData(-1);
