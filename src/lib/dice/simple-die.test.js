@@ -84,13 +84,15 @@ it("getValueString hit", () => {
     simpleDie.finishRoll();
 
     assert.equal(simpleDie.getValue(), 6);
-    assert.equal(simpleDie.getValueStr(), "6*");
+    assert.equal(simpleDie.countHits(), 1);
+    assert.equal(simpleDie.getValueStr(), "6#");
 });
 it("getValueString crit", () => {
     const player = new MockPlayer();
     const simpleDie = new SimpleDieBuilder()
         .setHitValue(5)
         .setCritValue(8)
+        .setCritCount(2)
         .build(player);
 
     // Roll to register onDiceRolled handler, then trigger it to set value.
@@ -99,7 +101,8 @@ it("getValueString crit", () => {
     simpleDie.finishRoll();
 
     assert.equal(simpleDie.getValue(), 9);
-    assert.equal(simpleDie.getValueStr(), "9$");
+    assert.equal(simpleDie.countHits(), 3);
+    assert.equal(simpleDie.getValueStr(), "9###");
 });
 
 it("getValueString reroll", () => {

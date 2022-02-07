@@ -21,11 +21,24 @@ class SimpleDieBuilder {
     constructor() {
         this._color = false;
         this._deleteAfterSeconds = -1;
+        this._critCount = 1;
         this._critValue = Number.MAX_SAFE_INTEGER;
         this._hitValue = Number.MAX_SAFE_INTEGER;
         this._name = false;
         this._reroll = false;
         this._spawnPosition = false;
+    }
+
+    /**
+     * Rolling a crit generates this many extra hits.
+     *
+     * @param {number} value
+     * @returns {SimpleDie} self for chaining
+     */
+    setCritCount(value) {
+        assert(typeof value === "number");
+        this._critCount = value;
+        return this;
     }
 
     /**
@@ -144,6 +157,7 @@ class SimpleDie {
         assert(builder instanceof SimpleDieBuilder);
         assert(player instanceof Player);
 
+        this._critCount = builder._critCount;
         this._critValue = builder._critValue;
         this._hitValue = builder._hitValue;
         this._reroll = builder._reroll;
@@ -177,6 +191,29 @@ class SimpleDie {
         if (builder._name) {
             this._die.setName(builder._name);
         }
+    }
+
+    /**
+     * Accounting for crits, how many hits did this roll generate?
+     */
+    countHits() {
+        let result = 0;
+        if (this.isHit()) {
+            result += 1;
+        }
+        if (this.isCrit()) {
+            result += this.getCritCount();
+        }
+        return result;
+    }
+
+    /**
+     * Rolling a crit generates this many extra hits.
+     *
+     * @returns {number}
+     */
+    getCritCount() {
+        return this._critCount;
     }
 
     /**
@@ -321,12 +358,14 @@ class SimpleDie {
 
         parts.push(`${this._value}`);
 
-        if (this._value >= this._critValue) {
-            parts.push("$");
-        } else if (this._value >= this._hitValue) {
-            parts.push("*");
+        if (this.isHit()) {
+            parts.push("#");
         }
-
+        if (this.isCrit()) {
+            for (let i = 0; i < this.getCritCount(); i++) {
+                parts.push("#");
+            }
+        }
         return parts.join("");
     }
 }
