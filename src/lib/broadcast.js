@@ -12,7 +12,7 @@ class Broadcast {
         assert(Array.isArray(color) || color instanceof Color);
 
         for (const player of world.getAllPlayers()) {
-            player.showMessage(player);
+            player.showMessage(message);
         }
         Broadcast.chatAll(message, color);
     }
@@ -25,7 +25,7 @@ class Broadcast {
         assert(Array.isArray(color) || color instanceof Color);
 
         for (const player of world.getAllPlayers()) {
-            player.sendChatMessage(player, color);
+            player.sendChatMessage(message, color);
         }
     }
 }

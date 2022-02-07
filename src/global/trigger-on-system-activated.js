@@ -7,19 +7,22 @@
  */
 
 const { globalEvents, world, Vector } = require("@tabletop-playground/api");
+const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { System } = require("../lib/system/system");
 const { Turns } = require("../lib/turns");
 const locale = require("../lib/locale");
 
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
+    const system = System.getBySystemTileObject(obj);
     const message = locale("ui.message.system_activated", {
         playerName: player.getName(),
-        systemName: obj.getTemplateMetadata(), // XXX TODO
+        systemTile: system.tile,
+        systemName: system.getSummaryStr(),
     });
-    for (const player of world.getAllPlayers()) {
-        player.showMessage(message);
-    }
+    console.log(message);
+    Broadcast.broadcastAll(message);
 });
 
 // Called when a player drops a command token.

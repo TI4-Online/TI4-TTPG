@@ -1,8 +1,9 @@
 const assert = require("../../wrapper/assert");
-const { SystemSchema } = require("./system.schema");
-const SYSTEM_ATTRS = require("./system-attrs.data");
-const { Card } = require("../../wrapper/api");
+const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
+const { SystemSchema } = require("./system.schema");
+const { Card, GameObject } = require("../../wrapper/api");
+const SYSTEM_ATTRS = require("./system-attrs.data");
 
 let _tileToSystem = false;
 let _planetLocaleNameToPlanet = false;
@@ -66,21 +67,36 @@ class System {
      * @param {number} tile
      * @returns {System}
      */
-    static getByTile(tile) {
+    static getByTileNumber(tile) {
         assert(typeof tile === "number");
         _maybeInit();
         return _tileToSystem[tile];
     }
 
+    static getBySystemTileObject(obj) {
+        assert(obj instanceof GameObject);
+        if (ObjectNamespace.isSystemTile(obj)) {
+            const parsed = ObjectNamespace.parseSystemTile(obj);
+            return this.getByTileNumber(parsed.tile);
+        }
+    }
+
     constructor(systemAttrs) {
         assert(SystemSchema.validate(systemAttrs));
         this._attrs = systemAttrs;
+
+        this._planets = [];
         if (systemAttrs.planets) {
-            this._planets = systemAttrs.planets.map(
-                (planeAttrs) => new Planet(planeAttrs)
+            this._planets.push(
+                ...systemAttrs.planets.map(
+                    (planeAttrs) => new Planet(planeAttrs)
+                )
             );
-        } else {
-            this._planets = []; // keep an empty array, mirage/etc might be added later
+        }
+
+        this._wormholes = [];
+        if (systemAttrs.wormholes) {
+            this._wormholes.push(...systemAttrs.wormholes);
         }
     }
 
@@ -89,11 +105,33 @@ class System {
     }
 
     get planets() {
+        // Planets may be added (Mirage) and removed (Stellar Converter).
         return this._planets;
+    }
+
+    get wormholes() {
+        // TODO XXX check if system if face up / down
+        // Depending on how we manage wormhole tokens might be adding/removing!
+        return this._wormholes;
     }
 
     get raw() {
         return this._attrs;
+    }
+
+    getSummaryStr() {
+        const summary = [];
+        summary.push(
+            ...this.planets.map((planet) => {
+                return locale(planet.raw.localeName);
+            })
+        );
+        summary.push(
+            ...this.wormholes.map((wormhole) => {
+                return locale("wormhole." + wormhole);
+            })
+        );
+        return summary.join(", ");
     }
 }
 

@@ -3,7 +3,7 @@
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
-    "ui.message.system_activated": "{playerName} activated {systemName}",
+    "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
     "ui.message.none": "none",
     "ui.message.roll.hit": "HIT",
