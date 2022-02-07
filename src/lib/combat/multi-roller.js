@@ -69,7 +69,7 @@ class MultiRoller {
             if (!rollAttrs) {
                 continue; // unit does not have this roll type
             }
-            const unitCount = unitAttrs.count(unit);
+            const unitCount = auxData.count(unit);
             const dicePerUnit = rollAttrs.dice || 1;
             const extraDice = rollAttrs.extraDice || 0;
             unitToDiceCount[unit] = unitCount * dicePerUnit + extraDice;
