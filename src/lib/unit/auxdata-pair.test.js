@@ -1,5 +1,4 @@
 const assert = require("../../wrapper/assert");
-const { AuxData } = require("./auxdata");
 const { AuxDataPair } = require("./auxdata-pair");
 const {
     MockCard,
@@ -95,6 +94,7 @@ it("getPairSync", () => {
     }
 
     // Identified opponent?
+    assert.equal(aux1.playerSlot, selfPlayerSlot);
     assert.equal(aux2.playerSlot, opponentPlayerSlot);
 
     // Basic finding.
@@ -119,6 +119,58 @@ it("getPairSync", () => {
     assert(aux2.unitAttrsSet.get("pds").raw.planetaryShield); // opponent still has it
 });
 
-it("constructor", () => {
-    new AuxData(-1);
+it("unknown opponent", () => {
+    const selfPlayerSlot = 7;
+    const [aux1, aux2] = new AuxDataPair(
+        selfPlayerSlot,
+        -1,
+        "<0,0,0>",
+        false
+    ).getPairSync();
+    assert.equal(aux1.playerSlot, selfPlayerSlot);
+    assert.equal(aux2.playerSlot, -1);
+});
+
+it("too many opponents", () => {
+    const selfPlayerSlot = 7;
+    const opponentPlayerSlot = 8;
+    const otherPlayerSlot = 9;
+
+    // Place a few units and tokens.
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/fighter",
+            owningPlayerSlot: selfPlayerSlot,
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/fighter",
+            owningPlayerSlot: opponentPlayerSlot,
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/fighter",
+            owningPlayerSlot: otherPlayerSlot,
+        })
+    );
+
+    let aux1, aux2;
+    try {
+        [aux1, aux2] = new AuxDataPair(
+            selfPlayerSlot,
+            -1,
+            "<0,0,0>",
+            false
+        ).getPairSync();
+    } finally {
+        for (const gameObject of world.getAllObjects()) {
+            world.__removeObject(gameObject);
+        }
+    }
+
+    // Cannot identify opponent when more than one to choose from.
+    assert.equal(aux1.playerSlot, selfPlayerSlot);
+    assert.equal(aux2.playerSlot, -1);
 });
