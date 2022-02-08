@@ -1,5 +1,6 @@
-const assert = require("../wrapper/assert");
-const { System } = require("../lib/system/system");
+const assert = require("../../wrapper/assert");
+const locale = require("../../lib/locale");
+const { System } = require("../../lib/system/system");
 const {
     Border,
     Button,
@@ -10,7 +11,7 @@ const {
     UIElement,
     Vector,
     VerticalBox,
-} = require("../wrapper/api");
+} = require("../../wrapper/api");
 
 /**
  * Manage the UI on an AutoRoller object.
@@ -64,64 +65,61 @@ class AutoRollerUI {
     resetAfterSystemActivation(system) {
         assert(system instanceof System);
 
-        const panel = new VerticalBox().setChildDistance(5);
-        let button;
-        let subPanel;
+        const panels = [new VerticalBox().setChildDistance(5)];
 
-        button = new Button().setText("Space Cannon Offense");
-        button.onClicked.add((button, player) => {
-            this._onButton("spaceCannon", false, player);
-        });
-        panel.addChild(button);
+        const addButton = (localeText, combatType, planet) => {
+            const button = new Button().setText(locale(localeText));
+            button.onClicked.add((button, player) => {
+                this._onButton(combatType, planet, player);
+            });
+            panels[panels.length - 1].addChild(button);
+        };
 
-        panel.addChild(new Button().setText("Anti-Fighter Barrage"));
-        panel.addChild(
-            new Text()
-                .setText("Announce Retreats")
-                .setJustification(TextJustification.Center)
-        );
-        panel.addChild(new Button().setText("Space Combat"));
-        panel.addChild(
-            new Text()
-                .setText("Retreat")
-                .setJustification(TextJustification.Center)
-        );
+        const addText = (localeText) => {
+            const text = new Text()
+                .setText(locale(localeText))
+                .setJustification(TextJustification.Left);
+            panels[panels.length - 1].addChild(text);
+        };
 
-        panel.addChild(
-            new Text()
-                .setText("Bombardment")
-                .setJustification(TextJustification.Center)
+        const addHorizontalSubPanel = () => {
+            const panel = new HorizontalBox().setChildDistance(5);
+            panels[panels.length - 1].addChild(panel);
+            panels.push(panel);
+        };
+
+        addButton("ui.roller.space_cannon_offsense", "spaceCannon", false);
+        addButton(
+            "ui.roller.anti_fighter_barrage",
+            "antiFighterBarrage",
+            false
         );
-        subPanel = new HorizontalBox().setChildDistance(5);
+        addText("ui.roller.announce_retreats");
+        addButton("ui.roller.space_combat", "spaceCombat", false);
+
+        addText("ui.roller.bombardment");
+        addHorizontalSubPanel();
         system.planets.forEach((planet) => {
-            subPanel.addChild(new Button().setText(planet.getNameStr()));
+            addButton(planet.localeName, "bombardment", planet);
         });
-        panel.addChild(subPanel);
+        panels.pop();
 
-        panel.addChild(
-            new Text()
-                .setText("Space Cannon Defense")
-                .setJustification(TextJustification.Center)
-        );
-        subPanel = new HorizontalBox().setChildDistance(5);
+        addText("ui.roller.space_cannon_defense");
+        addHorizontalSubPanel();
         system.planets.forEach((planet) => {
-            subPanel.addChild(new Button().setText(planet.getNameStr()));
+            addButton(planet.localeName, "spaceCannon", planet);
         });
-        panel.addChild(subPanel);
+        panels.pop();
 
-        panel.addChild(
-            new Text()
-                .setText("Ground Combat")
-                .setJustification(TextJustification.Center)
-        );
-        subPanel = new HorizontalBox().setChildDistance(5);
+        addText("ui.roller.bombardment");
+        addHorizontalSubPanel();
         system.planets.forEach((planet) => {
-            subPanel.addChild(new Button().setText(planet.getNameStr()));
+            addButton(planet.localeName, "groundCombat", planet);
         });
-        panel.addChild(subPanel);
+        panels.pop();
 
         // GameObject.updateUI does NOT update if you change the widget.
-        this._uiElement.widget = new Border().setChild(panel);
+        this._uiElement.widget = new Border().setChild(panels[0]);
         this._obj.removeUI(this._uiElement);
         this._obj.addUI(this._uiElement);
     }

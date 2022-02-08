@@ -1,10 +1,10 @@
-const assert = require("../wrapper/assert");
-const locale = require("../lib/locale");
+const assert = require("../../wrapper/assert");
+const locale = require("../../lib/locale");
 const { AutoRollerUI } = require("./auto-roller-ui");
-const { AuxDataPair } = require("../lib/unit/auxdata-pair");
-const { CombatRoller } = require("../lib/combat/combat-roller");
-const { Hex } = require("../lib/hex");
-const { System, Planet } = require("../lib/system/system");
+const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
+const { CombatRoller } = require("../../lib/combat/combat-roller");
+const { Hex } = require("../../lib/hex");
+const { System, Planet } = require("../../lib/system/system");
 
 const {
     GameObject,
@@ -13,9 +13,9 @@ const {
     globalEvents,
     refObject,
     world,
-} = require("../wrapper/api");
-const { Broadcast } = require("../lib/broadcast");
-const { UnitModifier } = require("../lib/unit/unit-modifier");
+} = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
+const { UnitModifier } = require("../../lib/unit/unit-modifier");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.

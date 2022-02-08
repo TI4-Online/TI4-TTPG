@@ -66,6 +66,11 @@ class CombatRoller {
                 ":",
                 rollAttrs.hit,
             ];
+            if (rollAttrs.dice && rollAttrs.dice > 1) {
+                unitMessage.push("(x");
+                unitMessage.push(rollAttrs.dice);
+                unitMessage.push(")");
+            }
             if (rollAttrs.extraHitsOn) {
                 unitMessage.push(", ");
                 unitMessage.push(locale("ui.message.roll.crit"));
@@ -198,13 +203,23 @@ class CombatRoller {
             dice.push(...unitDice);
         }
 
+        Broadcast.broadcastAll(
+            locale("ui.message.player_rolling_for", {
+                playerName: this._player.getName(),
+                rollType: this._rollType, // XXX TODO
+            })
+        );
         const report = this.getModifiersReport(true);
         Broadcast.chatAll(report);
 
-        RollGroup.roll(dice, () => {
-            const report = this.getRollReport(unitToDice);
-            Broadcast.broadcastAll(report);
-        });
+        if (dice.length === 0) {
+            Broadcast.broadcastAll(locale("ui.message.no_units"));
+        } else {
+            RollGroup.roll(dice, () => {
+                const report = this.getRollReport(unitToDice);
+                Broadcast.broadcastAll(report);
+            });
+        }
 
         return dice;
     }
