@@ -52,7 +52,7 @@ const UNIT_ATTRS_SCHEMA_JSON = {
         },
         planetaryShield: { type: "boolean" },
         production: { type: "integer" }, // if negative use as R+ value (e.g. space dock 1 = -2)
-        spaceConnon: {
+        spaceCannon: {
             type: "object",
             properties: {
                 dice: { type: "integer", default: 1 },

@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 
 /**
  * Lookalike for TTPG's MulticastDelegate, but with a trigger method.

@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { System } = require("../lib/system/system");
@@ -29,7 +29,7 @@ class SetupSystemTiles extends AbstractSetup {
             // Sanity check system tile before adding it.
             const parsed = ObjectNamespace.parseSystemTile(obj);
             assert(parsed);
-            const system = System.getByTile(parsed.tile);
+            const system = System.getByTileNumber(parsed.tile);
             assert(system);
 
             bag.addObjects([obj]);

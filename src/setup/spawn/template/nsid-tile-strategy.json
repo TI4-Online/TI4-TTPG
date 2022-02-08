@@ -7,6 +7,6 @@
     "tile.strategy:base/technology": "B67A7E0A478E39D9CE13CDA81BC1A9EF",
     "tile.strategy:base/trade": "C3C0BA3F4E3444C39C5E17ADF8D3D25E",
     "tile.strategy:base/warfare": "224262F740D5D252D33B149E08D17FC8",
-    "tile.strategy:codex.ordinian/diplomacy": "09FA74F649473D09799D5799F2394D91",
+    "tile.strategy:base/diplomacy.errata": "09FA74F649473D09799D5799F2394D91",
     "tile.strategy:pok/construction": "E7F3582546442EE1CC419DB71BFC1467"
 }

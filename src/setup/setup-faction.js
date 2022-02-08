@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
@@ -250,6 +250,7 @@ class SetupFaction extends AbstractSetup {
         for (let i = 0; i < tokenData.bagTokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);
             token.setPrimaryColor(color);
+            token.setOwningPlayerSlot(playerSlot);
             bag.addObjects([token]);
         }
 

@@ -21,7 +21,7 @@ const STRATEGY_CARDS = [
         yaw: -90,
     },
     {
-        nsid: "tile.strategy:codex.ordinian/diplomacy",
+        nsid: "tile.strategy:base/diplomacy.errata",
         parent: false,
         pos: nextPosition(),
         yaw: -90,
@@ -33,7 +33,7 @@ const STRATEGY_CARDS = [
         yaw: -90,
     },
     {
-        nsid: "tile.strategy:base/construction",
+        nsid: "tile.strategy:pok/construction",
         parent: false,
         pos: nextPosition(),
         yaw: -90,

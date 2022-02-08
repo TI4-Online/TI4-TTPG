@@ -31,3 +31,6 @@ require("./global/patch-exclusive-bags");
 require("./global/r-swap-split-combine");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-system-activated");
+
+// Player desk is naughty and wants to register global event listeners.
+require("./lib/player-desk");

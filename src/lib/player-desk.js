@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const {
     GlobalSavedData,
@@ -162,7 +162,7 @@ function moveNewPlayerToNonSeatSlot(player) {
     assert(player instanceof Player);
 
     const reservedSlots = new Set();
-    for (const playerDesk of this.getPlayerDesks()) {
+    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
         reservedSlots.add(playerDesk.playerSlot);
     }
     for (const otherPlayer of world.getAllPlayers()) {

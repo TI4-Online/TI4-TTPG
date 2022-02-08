@@ -409,7 +409,7 @@ module.exports = [
         localeDescription: "unit_modifier.desc.nebula_defense",
         owner: "self",
         priority: "adjust",
-        // TODO XXX TRIGGER??
+        triggerNsid: "token:base/nebula_defense",
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;

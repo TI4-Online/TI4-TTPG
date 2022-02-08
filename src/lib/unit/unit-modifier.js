@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
@@ -140,6 +140,18 @@ class UnitModifier {
             }
         }
         return unitModifiers;
+    }
+
+    /**
+     * Get unit modifier associated with nsid.
+     *
+     * @param {string} nsid
+     * @returns {unitModifier}
+     */
+    static getNsidUnitModifier(nsid) {
+        assert(typeof nsid === "string");
+        _maybeInit();
+        return _triggerNsidToUnitModifier[nsid];
     }
 
     /**
