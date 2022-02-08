@@ -26,7 +26,7 @@ function getPlayerSelectionBySlot(player) {
     return selections[slot];
 }
 
-function createUiWidget() {
+function createUiWidgetFactory() {
     let verticalBox = new VerticalBox();
 
     let primaryCheckBox = new CheckBox()
@@ -63,8 +63,7 @@ function createUiWidget() {
 globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
-    const widget = createUiWidget(card);
-    createStrategyCardUi(card, widget);
+    createStrategyCardUi(card, createUiWidgetFactory);
 });
 
 globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {

@@ -18,11 +18,8 @@ class Border extends Widget {
 
     setChild(child) {
         this._child = child;
+        child._parent = this;
         return this;
-    }
-
-    getChild() {
-        return this._child;
     }
 }
 

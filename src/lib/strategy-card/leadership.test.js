@@ -30,19 +30,13 @@ PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 it("when a leadership play button is clicked", () => {
     let card = new MockGameObject();
-    const player = new MockPlayer();
-    let gameObject = new MockGameObject();
-    jest.spyOn(global.world, "createObjectFromTemplate").mockReturnValue(
-        gameObject
-    );
-    const addUiSpy = jest.spyOn(gameObject, "addUI");
 
     globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-    expect(addUiSpy).toBeCalledTimes(2);
+    expect(global.world.getUIs().length).toBe(2);
 });
 
-describe("when a player has done the strategy selection", () => {
+it("when a player has done the strategy selection", () => {
     let card = new MockGameObject();
     const player1Spy = jest.spyOn(player1, "sendChatMessage");
     const player2Spy = jest.spyOn(player1, "sendChatMessage");

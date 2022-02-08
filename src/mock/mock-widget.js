@@ -6,6 +6,14 @@ class Widget {
     getOwningObject() {
         return this._owningObject;
     }
+
+    getParent() {
+        return this._parent;
+    }
+
+    getChild() {
+        return this._child;
+    }
 }
 
 module.exports = Widget;
