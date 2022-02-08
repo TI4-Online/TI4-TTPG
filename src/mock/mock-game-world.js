@@ -89,7 +89,11 @@ class GameWorld {
         return [];
     }
 
-    removeUI(uiElement) {
+    removeUI(index) {
+        this._uis.splice(index, 1);
+    }
+
+    removeUIElement(uiElement) {
         assert(uiElement instanceof UIElement);
         this._uis.splice(this._uis.indexOf(uiElement), 1);
     }

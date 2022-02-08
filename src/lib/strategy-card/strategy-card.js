@@ -3,12 +3,7 @@
  *
  */
 
-const {
-    globalEvents,
-    Rotator,
-    UIElement,
-    world,
-} = require("../../wrapper/api");
+const { globalEvents, Rotator, UIElement } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./StrategyCardBorder");
 const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");

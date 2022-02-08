@@ -1,4 +1,3 @@
-const assert = require("assert");
 const {
     globalEvents,
     MockButton,
@@ -54,21 +53,19 @@ it("broadcastMessage", () => {
 });
 
 describe("creating a strategy card", () => {
-    beforeEach(() => {
-        const red = {
-            r: 1,
-            g: 0,
-            b: 0,
-        };
-        const player = new MockPlayer({
-            playerColor: red,
-        });
-        global.world = new MockGameWorld({
-            allPlayers: [player],
-        });
-        PlayerDesk.setPlayerCount(1);
-        PlayerDesk.getPlayerDesks()[0].seatPlayer(player);
+    const red = {
+        r: 1,
+        g: 0,
+        b: 0,
+    };
+    const player = new MockPlayer({
+        playerColor: red,
     });
+    global.world = new MockGameWorld({
+        allPlayers: [player],
+    });
+    PlayerDesk.setPlayerCount(1);
+    PlayerDesk.getPlayerDesks()[0].seatPlayer(player);
 
     it("with a widgetFactory", () => {
         let widget = new MockVerticalBox();
