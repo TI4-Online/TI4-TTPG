@@ -8,6 +8,7 @@ const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
 const { SetupTableDecks } = require("./setup-table-decks");
+const { SetupTableTokens } = require("./setup-table-tokens");
 const { SetupUnits } = require("./setup-units");
 const { MapStringLoad } = require("../lib/map-string/map-string-load");
 const { refObject, world } = require("@tabletop-playground/api");
@@ -15,7 +16,7 @@ const { refObject, world } = require("@tabletop-playground/api");
 const ACTION = {
     GIZMO_DESKS: "*Gizmo desks",
     COUNT_OBJECTS: "*Count objects",
-    CLEAN: "*Clean",
+    CLEAN: "*CLEAN",
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
@@ -24,6 +25,7 @@ const ACTION = {
     GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
     TABLE_DECKS: "*Table decks",
+    TABLE_TOKENS: "*Table tokens",
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
     DEMO_FACTION: "*Demo faction",
@@ -77,6 +79,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         new SetupSystemTiles().setup();
     } else if (actionName === ACTION.TABLE_DECKS) {
         new SetupTableDecks().setup();
+    } else if (actionName === ACTION.TABLE_TOKENS) {
+        new SetupTableTokens().setup();
     } else if (actionName === ACTION.STRATEGY_CARDS) {
         new SetupStrategyCards().setup();
     } else if (actionName === ACTION.DEMO_MAP) {
