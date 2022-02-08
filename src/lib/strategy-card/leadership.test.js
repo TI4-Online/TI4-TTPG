@@ -1,6 +1,3 @@
-import * as strategyCardApi from "./strategy-card";
-
-const assert = require("assert");
 const {
     globalEvents,
     MockGameObject,
@@ -28,12 +25,30 @@ PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
 PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
-it("when a leadership play button is clicked", () => {
-    let card = new MockGameObject();
+describe("when a strategy card is played", () => {
+    afterEach(() => {
+        global.world.getUIs().map((ui) => global.world.removeUI(ui));
+    });
 
-    globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+    it("but its another one", () => {
+        let card = new MockGameObject({
+            name: "Some other card!"
+        });
 
-    expect(global.world.getUIs().length).toBe(2);
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        expect(global.world.getUIs().length).toBe(0);
+    });
+
+    it("and it is leadership", () => {
+        let card = new MockGameObject({
+            name: "Leadership"
+        });
+
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        expect(global.world.getUIs().length).toBe(2);
+    });
 });
 
 it("when a player has done the strategy selection", () => {
