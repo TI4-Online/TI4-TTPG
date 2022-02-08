@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const { SimpleDie } = require("./simple-die");
 
 class RollGroup {

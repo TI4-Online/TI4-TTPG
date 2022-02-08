@@ -6,7 +6,7 @@ const { Container, Rotator, globalEvents, world } = require("../wrapper/api");
 const { Facing } = require("../lib/facing");
 const { Spawn } = require("../setup/spawn/spawn");
 const locale = require("../lib/locale");
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 
 // NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {

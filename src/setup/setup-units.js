@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { Layout } = require("../lib/layout");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType } = require("../wrapper/api");

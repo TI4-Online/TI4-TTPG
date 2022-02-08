@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { Color, world } = require("../wrapper/api");
 
 class Broadcast {

@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AutoRollerUI } = require("./auto-roller-ui");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
