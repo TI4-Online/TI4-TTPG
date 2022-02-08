@@ -27,12 +27,12 @@ PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 describe("when a strategy card is played", () => {
     afterEach(() => {
-        global.world.getUIs().map((ui) => global.world.removeUI(ui));
+        global.world.getUIs().map((ui) => global.world.removeUIElement(ui));
     });
 
     it("but its another one", () => {
         let card = new MockGameObject({
-            name: "Some other card!"
+            name: "Some other card!",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -42,7 +42,7 @@ describe("when a strategy card is played", () => {
 
     it("and it is diplomacy", () => {
         let card = new MockGameObject({
-            name: "Diplomacy"
+            name: "Diplomacy",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -53,7 +53,7 @@ describe("when a strategy card is played", () => {
 
 describe("when a player has done the strategy selection", () => {
     let card = new MockGameObject({
-        name: "Diplomacy"
+        name: "Diplomacy",
     });
 
     let player1Spy, player2Spy;

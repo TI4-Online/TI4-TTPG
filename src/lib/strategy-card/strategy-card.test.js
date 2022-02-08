@@ -5,42 +5,40 @@ const {
     MockGameObject,
     MockGameWorld,
     MockPlayer,
-    MockVerticalBox
+    MockVerticalBox,
 } = require("../../mock/mock-api");
-const {
-    PlayerDesk
-} = require("../../lib/player-desk");
+const { PlayerDesk } = require("../../lib/player-desk");
 const {
     broadcastMessage,
     createStrategyCardUi,
-    onUiClosedClicked
+    onUiClosedClicked,
 } = require("./strategy-card");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
 // mock global.js event registration
 globalEvents.TI4 = {
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate()
+    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
 it("broadcastMessage", () => {
     const red = {
         r: 1,
         g: 0,
-        b: 0
+        b: 0,
     };
     const green = {
         r: 0,
         g: 1,
-        b: 0
+        b: 0,
     };
     const player1 = new MockPlayer({
-        playerColor: red
+        playerColor: red,
     });
     const player2 = new MockPlayer({
-        playerColor: green
+        playerColor: green,
     });
     global.world = new MockGameWorld({
-        allPlayers: [player1, player2]
+        allPlayers: [player1, player2],
     });
 
     const player1MessageSpy = jest.spyOn(player1, "sendChatMessage");
@@ -60,13 +58,13 @@ describe("creating a strategy card", () => {
         const red = {
             r: 1,
             g: 0,
-            b: 0
+            b: 0,
         };
         const player = new MockPlayer({
-            playerColor: red
+            playerColor: red,
         });
         global.world = new MockGameWorld({
-            allPlayers: [player]
+            allPlayers: [player],
         });
         PlayerDesk.setPlayerCount(1);
         PlayerDesk.getPlayerDesks()[0].seatPlayer(player);
@@ -77,7 +75,7 @@ describe("creating a strategy card", () => {
         widget.addChild(new MockButton());
         const widgetFactory = function () {
             return widget;
-        }
+        };
 
         let gameObject = new MockGameObject();
 
@@ -89,34 +87,31 @@ describe("creating a strategy card", () => {
 });
 
 describe("when the close button is clicked in a players selection", () => {
-    let player1,
-        player2,
-        buttons,
-        widgetFactory;
+    let player1, player2, buttons, widgetFactory;
 
     beforeEach(() => {
         const red = {
             r: 1,
             g: 0,
-            b: 0
+            b: 0,
         };
         const green = {
             r: 0,
             g: 1,
-            b: 0
+            b: 0,
         };
         player1 = new MockPlayer({
             name: "player1",
             playerColor: red,
-            slot: 1
+            slot: 1,
         });
         player2 = new MockPlayer({
             name: "player2",
             playerColor: green,
-            slot: 2
+            slot: 2,
         });
         global.world = new MockGameWorld({
-            allPlayers: [player1, player2]
+            allPlayers: [player1, player2],
         });
 
         buttons = [new MockButton(), new MockButton()];
@@ -127,7 +122,7 @@ describe("when the close button is clicked in a players selection", () => {
             widget.addChild(buttons[index]);
             index++;
             return widget;
-        }
+        };
 
         PlayerDesk.setPlayerCount(2);
         PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
@@ -140,7 +135,7 @@ describe("when the close button is clicked in a players selection", () => {
 
     it("in case the owner clicked the button, then the global event triggers", () => {
         const card = new MockGameObject({
-            id: "card1"
+            id: "card1",
         });
         const globalEventTriggerSpy = jest.spyOn(
             globalEvents.TI4.onStrategyCardSelectionDone,
@@ -155,7 +150,7 @@ describe("when the close button is clicked in a players selection", () => {
 
     it("in case the another player clicked the button, then the global event does not trigger", () => {
         const card = new MockGameObject({
-            id: "card2"
+            id: "card2",
         });
         const globalEventTriggerSpy = jest.spyOn(
             globalEvents.TI4.onStrategyCardSelectionDone,
@@ -170,7 +165,7 @@ describe("when the close button is clicked in a players selection", () => {
 
     it("in case all players have resolved the strategy card, a message is broadcast", () => {
         const card = new MockGameObject({
-            id: "card3"
+            id: "card3",
         });
         const player1SendChatMessageSpy = jest.spyOn(
             player1,

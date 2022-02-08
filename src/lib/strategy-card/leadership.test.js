@@ -27,12 +27,12 @@ PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 describe("when a strategy card is played", () => {
     afterEach(() => {
-        global.world.getUIs().map((ui) => global.world.removeUI(ui));
+        global.world.getUIs().map((ui) => global.world.removeUIElement(ui));
     });
 
     it("but its another one", () => {
         let card = new MockGameObject({
-            name: "Some other card!"
+            name: "Some other card!",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -42,7 +42,7 @@ describe("when a strategy card is played", () => {
 
     it("and it is leadership", () => {
         let card = new MockGameObject({
-            name: "Leadership"
+            name: "Leadership",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -51,20 +51,44 @@ describe("when a strategy card is played", () => {
     });
 });
 
-it("when a player has done the strategy selection", () => {
-    let card = new MockGameObject();
-    const player1Spy = jest.spyOn(player1, "sendChatMessage");
-    const player2Spy = jest.spyOn(player2, "sendChatMessage");
+describe("when a player has done the strategy selection", () => {
+    it("and it is another card", () => {
+        let card = new MockGameObject({
+            name: "Some other card!",
+        });
+        const player1Spy = jest.spyOn(player1, "sendChatMessage");
+        const player2Spy = jest.spyOn(player2, "sendChatMessage");
 
-    globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-    globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
 
-    expect(player1Spy).toBeCalledWith(
-        "one gained 0 command tokens.",
-        player1.getPlayerColor()
-    );
-    expect(player2Spy).toBeCalledWith(
-        "one gained 0 command tokens.",
-        player1.getPlayerColor()
-    );
+        expect(player1Spy).toBeCalledWith(
+            "one gained 0 command tokens.",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one gained 0 command tokens.",
+            player1.getPlayerColor()
+        );
+    });
+
+    it("and it is the leadership card", () => {
+        let card = new MockGameObject({
+            name: "Leadership",
+        });
+        const player1Spy = jest.spyOn(player1, "sendChatMessage");
+        const player2Spy = jest.spyOn(player2, "sendChatMessage");
+
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
+
+        expect(player1Spy).toBeCalledWith(
+            "one gained 0 command tokens.",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one gained 0 command tokens.",
+            player1.getPlayerColor()
+        );
+    });
 });

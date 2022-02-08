@@ -13,21 +13,21 @@ const locale = require("../../lib/locale");
 
 function onPrimaryClicked(button, player) {
     const message = locale("strategy_card.diplomacy.message.primary", {
-        playerName: player.getName()
+        playerName: player.getName(),
     });
     broadcastMessage(message, player);
 }
 
 function onSecondaryClicked(button, player) {
     const message = locale("strategy_card.diplomacy.message.secondary", {
-        playerName: player.getName()
+        playerName: player.getName(),
     });
     broadcastMessage(message, player);
 }
 
 function onPassClicked(button, player) {
     const message = locale("strategy_card.diplomacy.message.pass", {
-        playerName: player.getName()
+        playerName: player.getName(),
     });
     broadcastMessage(message, player);
 }

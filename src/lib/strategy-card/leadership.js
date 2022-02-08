@@ -27,29 +27,30 @@ function getPlayerSelectionBySlot(player) {
 }
 
 function createUiWidgetFactory() {
-    let verticalBox = new VerticalBox();
     let primaryCheckBox = new CheckBox()
         .setFontSize(10)
         .setText(locale("strategy_card.leadership.text.primary"));
     primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
         getPlayerSelectionBySlot(player).primary = isChecked;
     });
+    let slider = new Slider().setStepSize(1).setMaxValue(10);
+    slider.onValueChanged.add((slider, player, value) => {
+        getPlayerSelectionBySlot(player).value = value;
+    });
+    let closeButton = new Button()
+        .setFontSize(10)
+        .setText(locale("strategy_card.close.button"));
+
+    closeButton.onClicked.add(onUiClosedClicked);
+
+    let verticalBox = new VerticalBox();
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(
         new Text()
             .setFontSize(10)
             .setText(locale("strategy_card.leadership.text"))
     );
-    let slider = new Slider().setStepSize(1).setMaxValue(10);
-    slider.onValueChanged.add((slider, player, value) => {
-        getPlayerSelectionBySlot(player).value = value;
-    });
     verticalBox.addChild(slider);
-    let closeButton = new Button()
-        .setFontSize(10)
-        .setText(locale("strategy_card.close.button"));
-
-    closeButton.onClicked.add(onUiClosedClicked);
     verticalBox.addChild(closeButton);
 
     return verticalBox;
@@ -59,12 +60,17 @@ globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     if (card.getName() !== "Leadership") {
         return;
     }
+
     selections = {};
     activatingPlayer = player.getSlot();
     createStrategyCardUi(card, createUiWidgetFactory);
 });
 
 globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
+    if (card.getName() !== "Leadership") {
+        return;
+    }
+
     let commandTokenCount = getPlayerSelectionBySlot(player).value;
     if (getPlayerSelectionBySlot(player).primary) commandTokenCount += 3;
 
