@@ -679,7 +679,7 @@ module.exports = [
                 trait: ["industrial"],
             },
             {
-                localeName: "planet.joel_ir",
+                localeName: "planet.jeol_ir",
                 resources: 2,
                 influence: 3,
                 trait: ["industrial"],
