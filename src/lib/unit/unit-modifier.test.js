@@ -4,7 +4,7 @@ const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { UnitModifier, PRIORITY, OWNER } = require("./unit-modifier");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
-const { AuxData } = require("./auxdata");
+const { AuxDataBuilder } = require("./auxdata");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 const { world, MockCard, MockCardDetails } = require("../../mock/mock-api");
 
@@ -30,16 +30,28 @@ it("UNIT_MODIFIERS locale", () => {
     }
 });
 
+it("UNIT_MODIFIERS triggerIf", () => {
+    const auxData = new AuxDataBuilder().build();
+    for (const rawModifier of UNIT_MODIFIERS) {
+        if (rawModifier.triggerIf) {
+            rawModifier.triggerIf(auxData);
+        }
+    }
+});
+
 it("UNIT_MODIFIERS apply", () => {
     for (const rawModifier of UNIT_MODIFIERS) {
+        const aux1 = new AuxDataBuilder().build();
+        const aux2 = new AuxDataBuilder().build();
+        aux1.setOpponent(aux2);
+        aux2.setOpponent(aux1);
+        for (const unit of UnitAttrs.getAllUnitTypes()) {
+            aux1.overrideCount(unit, 1);
+            aux2.overrideCount(unit, 1);
+        }
         const unitModifier = new UnitModifier(rawModifier);
         const unitAttrsSet = new UnitAttrsSet();
-        const auxData = { self: new AuxData(-1), opponent: new AuxData(-1) };
-        for (const unit of UnitAttrs.getAllUnitTypes()) {
-            auxData.self.overrideCount(unit, 1);
-            auxData.opponent.overrideCount(unit, 1);
-        }
-        unitModifier.apply(unitAttrsSet, auxData);
+        unitModifier.apply(unitAttrsSet, aux1);
     }
 });
 

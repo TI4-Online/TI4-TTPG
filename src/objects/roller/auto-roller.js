@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AutoRollerUI } = require("./auto-roller-ui");
+const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
+const { Broadcast } = require("../../lib/broadcast");
 const { CombatRoller } = require("../../lib/combat/combat-roller");
 const { Hex } = require("../../lib/hex");
 const { System, Planet } = require("../../lib/system/system");
@@ -14,8 +16,6 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
-const { UnitModifier } = require("../../lib/unit/unit-modifier");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.
@@ -88,38 +88,28 @@ class AutoRoller {
             return;
         }
 
-        // Clicking player is always the roller.
-        const playerSlot1 = player.getSlot();
-
-        // Opponent is the activating player if not also the clicking player.
-        // If clicking player is active player, let AuxDataPair figure it out.
-        let playerSlot2 = this._activatingPlayerSlot;
-        if (playerSlot2 === playerSlot1) {
-            playerSlot2 = -1; // determine opponent by inspecting plastic
+        // Build self.
+        const auxDataBuilder = new AuxDataBuilder()
+            .setPlayerSlot(player.getSlot())
+            .setHex(this._activeHex)
+            .setActivatingPlayerSlot(this._activatingPlayerSlot)
+            .setActiveSystem(this._activeSystem);
+        if (planet) {
+            auxDataBuilder.setActivePlanet(planet);
         }
-        const planetLocaleName = planet ? planet.localeName : false;
+        const aux1 = auxDataBuilder.build();
 
-        // Defending player gets nebula defense!
-        const extraPlayer1Modifiers = [];
-        const isNebula = this._activeSystem.anomalies.includes("nebula");
-        const player1IsDefender = playerSlot1 !== this._activatingPlayerSlot;
-        if (isNebula && player1IsDefender) {
-            const nebulaDefense = UnitModifier.getNsidUnitModifier(
-                "token:base/nebula_defense"
-            );
-            assert(nebulaDefense);
-            extraPlayer1Modifiers.push(nebulaDefense);
+        // Build opponent.
+        if (player.getSlot() === this._activatingPlayerSlot) {
+            // Active player clicked.  Set opponent to -1 to figure it out.
+            auxDataBuilder.setPlayerSlot(-1);
+        } else {
+            // Not-active player clicked, opponent is always active player.
+            auxDataBuilder.setPlayerSlot(this._activatingPlayerSlot);
         }
+        const aux2 = auxDataBuilder.build();
 
-        const auxDataPair = new AuxDataPair(
-            playerSlot1,
-            playerSlot2,
-            this._activeHex,
-            planetLocaleName,
-            extraPlayer1Modifiers
-        );
-        const [aux1, aux2] = auxDataPair.getPairSync();
-        assert(aux1 && aux2);
+        new AuxDataPair(aux1, aux2).fillPairSync();
 
         // COMBAT TIME!!
         const combatRoller = new CombatRoller(aux1, rollType, player);
