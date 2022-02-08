@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { SimpleDieBuilder, SimpleDie } = require("./simple-die");
 const { UnitAttrs } = require("../unit/unit-attrs");

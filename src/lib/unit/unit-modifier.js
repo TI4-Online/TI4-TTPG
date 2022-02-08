@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
@@ -27,6 +27,7 @@ const OWNER = {
 let _triggerNsidToUnitModifier = false;
 let _factionAbilityToUnitModifier = false;
 let _unitAbilityToUnitModifier = false;
+let _triggerIfUnitModifiers = false;
 
 function _maybeInit() {
     if (_triggerNsidToUnitModifier) {
@@ -35,6 +36,7 @@ function _maybeInit() {
     _triggerNsidToUnitModifier = {};
     _factionAbilityToUnitModifier = {};
     _unitAbilityToUnitModifier = {};
+    _triggerIfUnitModifiers = [];
 
     for (const rawModifier of UNIT_MODIFIERS) {
         const unitModifier = new UnitModifier(rawModifier);
@@ -59,6 +61,10 @@ function _maybeInit() {
             const ability = rawModifier.triggerUnitAbility;
             assert(!_unitAbilityToUnitModifier[ability]);
             _unitAbilityToUnitModifier[ability] = unitModifier;
+        }
+
+        if (rawModifier.triggerIf) {
+            _triggerIfUnitModifiers.push(unitModifier);
         }
     }
 }
@@ -135,11 +141,38 @@ class UnitModifier {
             }
 
             // Found a unit modifier!  Add it to the list.
-            if (!unitModifiers.includes(unitModifier)) {
+            unitModifiers.push(unitModifier);
+        }
+        return unitModifiers;
+    }
+
+    /**
+     * In addition to "found an object" modifiers, let generic modifiers
+     * inspect state to see if they apply.
+     *
+     * @param {AuxData} auxData
+     * @returns {Array.{UnitModifier}}
+     */
+    static getTriggerIfUnitModifiers(auxData) {
+        const unitModifiers = [];
+        for (const unitModifier of _triggerIfUnitModifiers) {
+            if (unitModifier.raw.triggerIf(auxData)) {
                 unitModifiers.push(unitModifier);
             }
         }
         return unitModifiers;
+    }
+
+    /**
+     * Get unit modifier associated with nsid.
+     *
+     * @param {string} nsid
+     * @returns {unitModifier}
+     */
+    static getNsidUnitModifier(nsid) {
+        assert(typeof nsid === "string");
+        _maybeInit();
+        return _triggerNsidToUnitModifier[nsid];
     }
 
     /**

@@ -3,13 +3,8 @@
  *
  */
 
-const {
-    globalEvents,
-    Border,
-    Rotator,
-    UIElement,
-    Vector,
-} = require("../../wrapper/api");
+const { globalEvents, Rotator, UIElement } = require("../../wrapper/api");
+const { StrategyCardBorder } = require("./StrategyCardBorder");
 const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");
 let openSelections = {};
@@ -21,29 +16,34 @@ function broadcastMessage(message, player) {
 }
 
 function onUiClosedClicked(button, player) {
-    const owningObject = button.getOwningObject();
+    const border = getTopLevelWidget(button);
 
     // only react on the correct player
-    if (owningObject.getOwningPlayerSlot() !== player.getSlot()) {
+    if (border.getPlayer() !== player) {
         return;
     }
 
     // trigger event for the card itself
-    globalEvents.TI4.onStrategyCardSelectionDone.trigger(owningObject, player);
+    globalEvents.TI4.onStrategyCardSelectionDone.trigger(border, player);
 
     // clear internal data and send notifications
-    let selections = openSelections[owningObject.TI4.relatedCard.getId()];
-    selections.splice(selections.indexOf(player.getSlot()), 1);
+    let selections = openSelections[border.getCard().getId()];
+
+    world.removeUIElement(border.getUI());
+
+    selections.splice(selections.indexOf(border.getPlayer().getSlot()), 1);
     if (selections.length === 0) {
-        delete openSelections[owningObject.getId()];
+        delete openSelections[border.getCard().getId()];
         broadcastMessage(locale("strategy_card.message.all_resolved"));
     }
-
-    owningObject.destroy();
 }
 
-function createStrategyCardUi(card, widget) {
-    let offset = 0;
+function getTopLevelWidget(element) {
+    const parent = element.getParent();
+    return parent ? getTopLevelWidget(parent) : element;
+}
+
+function createStrategyCardUi(card, widgetFactory) {
     const playerDesks = PlayerDesk.getPlayerDesks();
 
     for (const player of world.getAllPlayers()) {
@@ -51,30 +51,26 @@ function createStrategyCardUi(card, widget) {
             (desk) => desk._playerSlot === player.getSlot()
         );
 
-        // creating an item to anchor the UI to.
-        // one is created for each player and will be destroyed on "close".
-        let item = world.createObjectFromTemplate(
-            "C5DDE2AC45DD926BFEB81F92B29828A1",
-            matchingDesk.localPositionToWorld({ x: 30, y: 0, z: 0 })
-        ); // slightly above a 90cm table
-        item.setOwningPlayerSlot(player.getSlot());
+        if (!matchingDesk) {
+            continue; // unseated player
+        }
+
         const cardId = card.getId();
+        let ui = new UIElement();
         openSelections[cardId] = openSelections[cardId] || [];
         openSelections[cardId].push(player.getSlot());
-        item.TI4 = {
-            relatedCard: card,
-        };
-        offset += 100;
-        let ui = new UIElement();
-        let border = new Border().setColor(player.getPlayerColor());
-        border.setChild(widget);
+        let border = new StrategyCardBorder().setColor(player.getPlayerColor());
+        border.setChild(widgetFactory());
+        border.setUI(ui);
+        border.setPlayer(player);
+        border.setCard(card);
         ui.useWidgetSize = false;
         ui.widget = border;
         ui.width = 350;
         ui.scale = 0.75;
-        ui.position = new Vector(0, 0, world.getTableHeight() + 10);
+        ui.position = matchingDesk.localPositionToWorld({ x: 30, y: 0, z: 10 });
         ui.rotation = matchingDesk.localRotationToWorld(new Rotator(30, 0, 0));
-        item.addUI(ui);
+        const i = world.addUI(ui);
     }
 }
 module.exports = {

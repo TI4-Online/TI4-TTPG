@@ -1,5 +1,5 @@
 const { Vector } = require("../wrapper/api");
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 
 // Transforms for flat-top hex grid.
 const LAYOUT_FLAT = {

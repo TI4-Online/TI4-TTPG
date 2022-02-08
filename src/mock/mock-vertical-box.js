@@ -8,6 +8,7 @@ class VerticalBox extends Widget {
 
     addChild(widget) {
         this._children.push(widget);
+        widget._parent = this;
     }
 
     getChildren() {

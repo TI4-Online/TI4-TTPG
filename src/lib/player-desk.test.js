@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { PlayerDesk, DEFAULT_PLAYER_COUNT } = require("./player-desk");
 const { Color } = require("../wrapper/api");
 

@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const { AuxDataPair } = require("./auxdata-pair");
 const {
     MockCard,
@@ -7,6 +7,7 @@ const {
     MockVector,
     world,
 } = require("../../wrapper/api");
+const { AuxDataBuilder } = require("./auxdata");
 
 it("getPairSync", () => {
     const selfPlayerSlot = 7;
@@ -81,12 +82,12 @@ it("getPairSync", () => {
 
     let aux1, aux2;
     try {
-        [aux1, aux2] = new AuxDataPair(
-            selfPlayerSlot,
-            -1,
-            "<0,0,0>",
-            false
-        ).getPairSync();
+        aux1 = new AuxDataBuilder()
+            .setPlayerSlot(selfPlayerSlot)
+            .setHex("<0,0,0>")
+            .build();
+        aux2 = new AuxDataBuilder().build();
+        new AuxDataPair(aux1, aux2).fillPairSync();
     } finally {
         for (const gameObject of world.getAllObjects()) {
             world.__removeObject(gameObject);
@@ -121,12 +122,12 @@ it("getPairSync", () => {
 
 it("unknown opponent", () => {
     const selfPlayerSlot = 7;
-    const [aux1, aux2] = new AuxDataPair(
-        selfPlayerSlot,
-        -1,
-        "<0,0,0>",
-        false
-    ).getPairSync();
+    const aux1 = new AuxDataBuilder()
+        .setPlayerSlot(selfPlayerSlot)
+        .setHex("<0,0,0>")
+        .build();
+    const aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).fillPairSync();
     assert.equal(aux1.playerSlot, selfPlayerSlot);
     assert.equal(aux2.playerSlot, -1);
 });
@@ -158,12 +159,12 @@ it("too many opponents", () => {
 
     let aux1, aux2;
     try {
-        [aux1, aux2] = new AuxDataPair(
-            selfPlayerSlot,
-            -1,
-            "<0,0,0>",
-            false
-        ).getPairSync();
+        aux1 = new AuxDataBuilder()
+            .setPlayerSlot(selfPlayerSlot)
+            .setHex("<0,0,0>")
+            .build();
+        aux2 = new AuxDataBuilder().build();
+        new AuxDataPair(aux1, aux2).fillPairSync();
     } finally {
         for (const gameObject of world.getAllObjects()) {
             world.__removeObject(gameObject);

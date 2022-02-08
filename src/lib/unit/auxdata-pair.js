@@ -1,10 +1,11 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrs } = require("./unit-attrs");
+const { UnitAttrsSet } = require("./unit-attrs-set");
 const { UnitModifier } = require("./unit-modifier");
 const { UnitPlastic } = require("./unit-plastic");
 const { world } = require("../../wrapper/api");
@@ -27,25 +28,30 @@ const { world } = require("../../wrapper/api");
  * This is a VERY expensive process, may want to make it asynchronous.
  */
 class AuxDataPair {
-    constructor(playerSlot1, playerSlot2, hex, planet) {
-        assert(typeof playerSlot1 === "number");
-        assert(typeof playerSlot2 === "number");
-        assert(!hex || typeof hex === "string");
-        assert(!planet || typeof planet === "string");
+    /**
+     * Fill in AuxData objects for a combat between two players.
+     *
+     * Adjancy calculations use auxData1.hex.
+     * Planet assigment uses auxData1.planet.
+     *
+     * @param {AuxData} auxData1
+     * @param {AuxData} auxData2 - may be -1 to identify opponent based on plastic
+     */
+    constructor(auxData1, auxData2) {
+        assert(auxData1 instanceof AuxData);
+        assert(auxData2 instanceof AuxData);
 
-        this._playerSlot1 = playerSlot1;
-        this._playerSlot2 = playerSlot2;
-        this._hex = hex;
-        this._planet = planet;
+        this._aux1 = auxData1;
+        this._aux2 = auxData2;
 
+        this._aux1.setOpponent(this._aux2);
+
+        this._hex = this._aux1.hex;
+        this._planet = this._aux1.planet;
         this._adjHexes = new Set();
-
         this._allPlastic = false;
         this._hexPlastic = false;
         this._adjPlastic = false;
-
-        this._aux1 = false;
-        this._aux2 = false;
     }
 
     _getProcessQueue() {
@@ -58,8 +64,6 @@ class AuxDataPair {
             },
             () => {
                 this.computeOpponent();
-                this._aux1 = new AuxData(this._playerSlot1);
-                this._aux2 = new AuxData(this._playerSlot2);
             },
             () => {
                 this.computeSelfUnitCounts(this._aux1);
@@ -100,22 +104,31 @@ class AuxDataPair {
         ];
     }
 
-    getPairSync() {
+    /**
+     * Fill in the two AuxData objects.
+     */
+    fillPairSync() {
         const processQueue = this._getProcessQueue();
         for (const processEntry of processQueue) {
             processEntry();
         }
-        return [this._aux1, this._aux2];
     }
 
-    getPairAsync(callback) {
+    /**
+     * Fill in the two AuxData objects.
+     *
+     * @param {function} callback - (AuxData, AuxData) args
+     */
+    fillPairAsync(callback) {
         const processQueue = this._getProcessQueue();
         const processNext = () => {
             const processEntry = processQueue.shift();
             if (!processEntry) {
                 callback(this._aux1, this._aux2);
+                return;
             }
-            setTimeout(processNext, 10);
+            processEntry();
+            process.nextTick(processNext);
         };
         processNext();
     }
@@ -136,8 +149,8 @@ class AuxDataPair {
         const newAdjHexes = new Set();
         this._adjHexes.forEach((hex) => {
             const pos = Hex.toPosition(hex);
-            const src = pos.add([0, 0, 10]);
-            const dst = pos.subtract([0, 0, 10]);
+            const src = pos.add([0, 0, 50]);
+            const dst = pos.subtract([0, 0, 50]);
             const hits = world.lineTrace(src, dst);
             for (const hit of hits) {
                 if (ObjectNamespace.isSystemTile(hit.object)) {
@@ -163,10 +176,14 @@ class AuxDataPair {
         );
         UnitPlastic.assignTokens(this._hexPlastic);
         UnitPlastic.assignTokens(this._adjPlastic);
+
         if (this._planet) {
-            UnitPlastic.assignPlanets(this._planet);
-            this._planethexPlastic = this._planethexPlastic.filter(
-                (plastic) => plastic.planet === this._planetplanet
+            // If using a planet, get units on and ships above planet.
+            UnitPlastic.assignPlanets(this._hexPlastic);
+            this._hexPlastic = this._hexPlastic.filter(
+                (plastic) =>
+                    plastic.planet &&
+                    plastic.planet.localeName === this._planet.localeName
             );
         }
     }
@@ -175,23 +192,46 @@ class AuxDataPair {
      * If no opponent was given compute one based on "not us" plastic in fight.
      */
     computeOpponent() {
-        if (this._playerSlot2 >= 0) {
+        if (this._aux2.playerSlot >= 0) {
             return; // already have an oppoent
         }
-        // Units pruned down to just those involved in space/planet fight.
-        for (const plastic of this._hexPlastic) {
-            if (plastic.owningPlayerSlot === this._playerSlot1) {
-                continue; // ignore our own units
-            }
-            if (plastic.owningPlayerSlot === this._playerSlot2) {
+
+        // Consider a system with two planets controlled by A and B, and
+        // player C controls the space area.  Player D then activates the
+        // system with the intention of firing PDS2 at player C.
+        //
+        // Units have already been pruned down to only those on/above planet
+        // for per-planet fights.
+
+        // Prune down to other players' plastic.
+        let otherPlastic = this._hexPlastic.filter(
+            (plastic) => plastic.owningPlayerSlot !== this._aux1.playerSlot
+        );
+
+        // If combat does not have a planet only consider ships.  Note there
+        // may be some odd cases like a mech in space that has not yet gotten
+        // that attribute set.  Ignore those for now, would need multiple
+        // passes and/or special "early" modifiers for those.
+        if (!this._planet) {
+            const defaultUnitAttrsSet = new UnitAttrsSet();
+            otherPlastic = otherPlastic.filter((plastic) => {
+                const unitAttrs = defaultUnitAttrsSet.get(plastic.unit);
+                return unitAttrs.raw.ship;
+            });
+        }
+
+        // Expect at most one other player's plastic, they are the opponent.
+        for (const plastic of otherPlastic) {
+            if (plastic.owningPlayerSlot === this._aux2.playerSlot) {
                 continue; // ignore if we already think this is opponent
             }
-            if (this._playerSlot2 < 0) {
-                this._playerSlot2 = plastic.owningPlayerSlot;
+            if (this._aux2.playerSlot < 0) {
+                // First opponent found, use it.
+                this._aux2.overridePlayerSlot(plastic.owningPlayerSlot);
             } else {
-                // Multiple opponents!
+                // Different opponent found, not a legal board state!
                 Broadcast.broadcastAll(locale("ui.error.too_many_opponents"));
-                this._playerSlot2 = -1;
+                this._aux2.overridePlayerSlot(-1);
                 break;
             }
         }
@@ -204,11 +244,6 @@ class AuxDataPair {
      */
     computeSelfUnitCounts(selfAuxData) {
         assert(selfAuxData instanceof AuxData);
-
-        // Abort if anonymous AuxData.
-        if (selfAuxData.playerSlot < 0) {
-            return;
-        }
 
         // Get hex and adjacent plastic for this player.
         // Also get counts, beware of x3 tokens!
@@ -310,6 +345,11 @@ class AuxDataPair {
         );
         selfAuxData.unitModifiers.push(...modifiersSelf);
         selfAuxData.unitModifiers.push(...modifiersOpponent);
+
+        // Get other modifiers that decide if they apply based on more
+        // information, such as nebula defense checks for nebula and defender.
+        const modifiersIf = UnitModifier.getTriggerIfUnitModifiers(selfAuxData);
+        selfAuxData.unitModifiers.push(...modifiersIf);
     }
 
     /**
@@ -348,17 +388,15 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
-        // Abort if anonymous AuxData.
-        if (selfAuxData.playerSlot < 0) {
-            return;
-        }
+        // Make sure there are no duplicates (paranoia).
+        selfAuxData.unitModifiers.filter(
+            (value, index, self) => self.indexOf(value) === index
+        );
 
+        // Apply in mutate -> adjust -> choose order.
         UnitModifier.sortPriorityOrder(selfAuxData.unitModifiers);
         for (const unitModifier of selfAuxData.unitModifiers) {
-            unitModifier.apply(selfAuxData.unitAttrsSet, {
-                self: selfAuxData,
-                opponent: opponentAuxData,
-            });
+            unitModifier.apply(selfAuxData.unitAttrsSet, selfAuxData);
         }
     }
 }

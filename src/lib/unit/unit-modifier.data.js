@@ -409,7 +409,15 @@ module.exports = [
         localeDescription: "unit_modifier.desc.nebula_defense",
         owner: "self",
         priority: "adjust",
-        // TODO XXX TRIGGER??
+        triggerNsid: "token:base/nebula_defense",
+        triggerIf: (auxData) => {
+            const isDefender =
+                auxData.self.playerSlot !== auxData.self.activatingPlayerSlot;
+            const isNebula =
+                auxData.self.activeSystem &&
+                auxData.self.activeSystem.anomalies.includes("nebula");
+            return isDefender && isNebula;
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -428,10 +436,14 @@ module.exports = [
             // Space cannon.
             let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (
-                    unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)
-                ) {
+                // Consider adjacent units if they have range.
+                let has = auxData.self.has(unitAttrs.raw.unit);
+                if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
+                    has =
+                        unitAttrs.raw.spaceCannon.range &&
+                        unitAttrs.raw.spaceCannon.range > 0;
+                }
+                if (unitAttrs.raw.spaceCannon && has) {
                     if (
                         !best ||
                         unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit
@@ -663,10 +675,13 @@ module.exports = [
             // Space cannon.
             best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (
-                    unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)
-                ) {
+                let has = auxData.self.has(unitAttrs.raw.unit);
+                if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
+                    has =
+                        unitAttrs.raw.spaceCannon.range &&
+                        unitAttrs.raw.spaceCannon.range > 0;
+                }
+                if (unitAttrs.raw.spaceCannon && has) {
                     if (
                         !best ||
                         unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit
@@ -873,10 +888,13 @@ module.exports = [
             // Space cannon.
             best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
-                if (
-                    unitAttrs.raw.spaceCannon &&
-                    auxData.self.has(unitAttrs.raw.unit)
-                ) {
+                let has = auxData.self.has(unitAttrs.raw.unit);
+                if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
+                    has =
+                        unitAttrs.raw.spaceCannon.range &&
+                        unitAttrs.raw.spaceCannon.range > 0;
+                }
+                if (unitAttrs.raw.spaceCannon && has) {
                     if (
                         !best ||
                         unitAttrs.raw.spaceCannon.hit < best.raw.spaceCannon.hit

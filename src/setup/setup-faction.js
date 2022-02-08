@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
@@ -137,11 +137,13 @@ class SetupFaction extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.promissory";
-        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.promissory.jolnar" (careful about "card.promissory.blue").
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             return factionName === this._faction.nsidName;
         });
+
+        this.moveToCardHolder(deck);
     }
 
     _setupFactionLeaders() {
@@ -250,6 +252,7 @@ class SetupFaction extends AbstractSetup {
         for (let i = 0; i < tokenData.bagTokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);
             token.setPrimaryColor(color);
+            token.setOwningPlayerSlot(playerSlot);
             bag.addObjects([token]);
         }
 

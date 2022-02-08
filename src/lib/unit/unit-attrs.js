@@ -1,5 +1,5 @@
-const assert = require("../../wrapper/assert");
-const _ = require("../../wrapper/lodash");
+const assert = require("../../wrapper/assert-wrapper");
+const _ = require("../../wrapper/lodash-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");

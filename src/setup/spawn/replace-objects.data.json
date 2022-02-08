@@ -10,5 +10,5 @@
     "card.promissory.winnu:base/acquiescence": "card.promissory.winnu:base/acquiescence.omega",
 
     "tile.strategy:base/construction": "tile.strategy:pok/construction",
-    "tile.strategy:base/diplomacy": "tile.strategy:codex.ordinian/diplomacy"
+    "tile.strategy:base/diplomacy": "tile.strategy:base/diplomacy.errata"
 }

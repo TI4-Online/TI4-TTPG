@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");

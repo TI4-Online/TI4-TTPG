@@ -13,7 +13,7 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-require("./leadership");
+require("./diplomacy");
 
 const red = { r: 1, g: 0, b: 0 };
 const green = { r: 0, g: 1, b: 0 };
@@ -40,9 +40,9 @@ describe("when a strategy card is played", () => {
         expect(global.world.getUIs().length).toBe(0);
     });
 
-    it("and it is leadership", () => {
+    it("and it is diplomacy", () => {
         let card = new MockGameObject({
-            name: "Leadership",
+            name: "Diplomacy",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -52,36 +52,73 @@ describe("when a strategy card is played", () => {
 });
 
 describe("when a player has done the strategy selection", () => {
-    it("and it is another card", () => {
-        let card = new MockGameObject({
-            name: "Some other card!",
-        });
-        const player1Spy = jest.spyOn(player1, "sendChatMessage");
-        const player2Spy = jest.spyOn(player2, "sendChatMessage");
-
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
-
-        expect(player1Spy).toBeCalledTimes(0);
-        expect(player2Spy).toBeCalledTimes(0);
+    let card = new MockGameObject({
+        name: "Diplomacy",
     });
 
-    it("and it is the leadership card", () => {
-        let card = new MockGameObject({
-            name: "Leadership",
-        });
-        const player1Spy = jest.spyOn(player1, "sendChatMessage");
-        const player2Spy = jest.spyOn(player2, "sendChatMessage");
+    let player1Spy, player2Spy;
 
+    let uis = [];
+
+    const original = global.world.addUI;
+    global.world.addUI = jest.fn((ui) => {
+        uis.push(ui);
+        original.call(global.world, ui);
+    });
+
+    beforeEach(() => {
+        player1Spy = jest.spyOn(player1, "sendChatMessage");
+        player2Spy = jest.spyOn(player2, "sendChatMessage");
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it("by selecting the primary button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
+
+        const button = uis[0].widget.getChild().getChildren()[1];
+        button.onClicked.trigger(button, player1);
 
         expect(player1Spy).toBeCalledWith(
-            "one gained 0 command tokens.",
+            "one uses the primary ability of Diplomacy.",
             player1.getPlayerColor()
         );
         expect(player2Spy).toBeCalledWith(
-            "one gained 0 command tokens.",
+            "one uses the primary ability of Diplomacy.",
+            player1.getPlayerColor()
+        );
+    });
+
+    it("by selecting the secondary button", () => {
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        const button = uis[0].widget.getChild().getChildren()[2];
+        button.onClicked.trigger(button, player1);
+
+        expect(player1Spy).toBeCalledWith(
+            "one uses the secondary ability of Diplomacy.",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one uses the secondary ability of Diplomacy.",
+            player1.getPlayerColor()
+        );
+    });
+
+    it("by selecting the pass button", () => {
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        const button = uis[0].widget.getChild().getChildren()[3];
+        button.onClicked.trigger(button, player1);
+
+        expect(player1Spy).toBeCalledWith(
+            "one passes on Diplomacy.",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one passes on Diplomacy.",
             player1.getPlayerColor()
         );
     });

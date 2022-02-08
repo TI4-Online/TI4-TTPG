@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { Color, world } = require("../wrapper/api");
 
 class Broadcast {
@@ -12,7 +12,7 @@ class Broadcast {
         assert(Array.isArray(color) || color instanceof Color);
 
         for (const player of world.getAllPlayers()) {
-            player.showMessage(player);
+            player.showMessage(message);
         }
         Broadcast.chatAll(message, color);
     }
@@ -25,7 +25,10 @@ class Broadcast {
         assert(Array.isArray(color) || color instanceof Color);
 
         for (const player of world.getAllPlayers()) {
-            player.sendChatMessage(player, color);
+            player.sendChatMessage(message, color);
+        }
+        if (!world.__isMock) {
+            console.log(">> " + message);
         }
     }
 }

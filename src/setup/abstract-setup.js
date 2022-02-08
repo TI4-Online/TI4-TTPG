@@ -1,9 +1,9 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
-const { Card, world } = require("../wrapper/api");
+const { Card, CardHolder, Rotator, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
@@ -144,8 +144,13 @@ class AbstractSetup {
      * @returns {GameObject}
      */
     findObjectOwnedByPlayerDesk(nsid) {
+        assert(typeof nsid === "string");
+
         const ownerSlot = this.playerDesk.playerSlot;
         for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
             if (
                 ObjectNamespace.getNsid(obj) === nsid &&
                 obj.getOwningPlayerSlot() === ownerSlot
@@ -162,12 +167,53 @@ class AbstractSetup {
      * @returns {Array.{Card}}
      */
     separateCards(deck) {
+        assert(deck instanceof Card);
+
         const result = [];
         while (deck.getStackSize() > 1) {
             result.push(deck.takeCards(1, true, 1));
         }
         result.push(deck);
         return result;
+    }
+
+    /**
+     * Move each card into desk's card holder.
+     *
+     * @param {Card} deck
+     */
+    moveToCardHolder(deck) {
+        assert(deck instanceof Card);
+        assert(this.playerDesk);
+
+        let hand = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
+            if (
+                obj instanceof CardHolder &&
+                obj.getOwningPlayerSlot() === this.playerDesk.playerSlot
+            ) {
+                hand = obj;
+                break;
+            }
+        }
+        if (!hand) {
+            // No hand, abort.
+            return false;
+        }
+
+        const cards = this.separateCards(deck);
+        for (const card of cards) {
+            if (!card.isFaceUp()) {
+                const rot = new Rotator(0, 0, 180).compose(card.getRotation());
+                card.setRotation(rot);
+            }
+
+            const index = hand.getNumCards();
+            hand.insert(card, index);
+        }
     }
 }
 

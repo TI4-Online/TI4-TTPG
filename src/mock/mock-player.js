@@ -1,6 +1,6 @@
 class Player {
     constructor(data) {
-        this._name = (data && data.name) || 0;
+        this._name = (data && data.name) || "";
         this._playerColor = (data && data.playerColor) || "?";
         this._selectedObjects = (data && data.selectedObjects) || [];
         this._slot = (data && data.slot) || 0;
@@ -25,6 +25,12 @@ class Player {
     getSlot() {
         return this._slot;
     }
+
+    switchSlot(slot) {
+        this._slot = slot;
+    }
+
+    setPositionAndRotation() {}
 
     sendChatMessage(message, color) {}
 
