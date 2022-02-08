@@ -47,7 +47,7 @@ class AuxDataPair {
         assert(typeof playerSlot1 === "number");
         assert(typeof playerSlot2 === "number");
         assert(!hex || typeof hex === "string");
-        assert(!planetLocaleName || typeof planet === "string");
+        assert(!planetLocaleName || typeof planetLocaleName === "string");
         assert(Array.isArray(extraPlayer1Modifiers));
 
         this._playerSlot1 = playerSlot1;
