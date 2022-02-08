@@ -7,6 +7,7 @@ const {
     MockPlayer,
     MockVerticalBox,
 } = require("../../mock/mock-api");
+const { PlayerDesk } = require("../../lib/player-desk");
 const {
     broadcastMessage,
     createStrategyCardUi,
@@ -43,6 +44,9 @@ describe("creating a strategy card", () => {
         const red = { r: 1, g: 0, b: 0 };
         const player = new MockPlayer({ playerColor: red });
         global.world = new MockGameWorld({ allPlayers: [player] });
+        PlayerDesk.setPlayerCount(1);
+        PlayerDesk.getPlayerDesks()[0].seatPlayer(player);
+
     });
 
     it("with a widget", () => {
@@ -80,6 +84,10 @@ describe("when the close button is clicked in a players selection", () => {
         player2Card = new MockGameObject({ owningPlayerSlot: 2 });
         player2Button = new MockButton({ owningObject: player2Card });
         widget = new MockVerticalBox();
+
+        PlayerDesk.setPlayerCount(2);
+        PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
+        PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
         jest.spyOn(global.world, "createObjectFromTemplate")
             .mockReturnValueOnce(player1Card)

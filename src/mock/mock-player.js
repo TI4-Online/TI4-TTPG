@@ -26,6 +26,12 @@ class Player {
         return this._slot;
     }
 
+    switchSlot(slot) {
+        this._slot = slot;
+    }
+
+    setPositionAndRotation() {}
+
     sendChatMessage(message, color) {}
 
     showMessage(message) {}

@@ -51,6 +51,10 @@ function createStrategyCardUi(card, widget) {
             (desk) => desk._playerSlot === player.getSlot()
         );
 
+        if (!matchingDesk) {
+            continue; // unseated player
+        }
+
         // creating an item to anchor the UI to.
         // one is created for each player and will be destroyed on "close".
         let item = world.createObjectFromTemplate(

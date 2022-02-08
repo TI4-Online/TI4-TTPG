@@ -7,7 +7,7 @@ const {
     MockGameWorld,
     MockPlayer,
 } = require("../../mock/mock-api");
-const { createStrategyCardUi } = require("./strategy-card");
+const { PlayerDesk } = require("../../lib/player-desk");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
 // mock global.js event registration
@@ -23,6 +23,10 @@ const green = { r: 0, g: 1, b: 0 };
 const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 global.world = new MockGameWorld({ allPlayers: [player1, player2] });
+
+PlayerDesk.setPlayerCount(2);
+PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
+PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 it("when a leadership play button is clicked", () => {
     let card = new MockGameObject();
