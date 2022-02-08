@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const { System, Planet } = require("./system");
 const { Card, CardDetails, GameObject } = require("../../wrapper/api");
 

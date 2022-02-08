@@ -1,7 +1,7 @@
 /**
  * Numpad key actions
  */
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { Spawn } = require("../setup/spawn/spawn");
 const { Player, Rotator, globalEvents } = require("../wrapper/api");
 

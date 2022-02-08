@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");

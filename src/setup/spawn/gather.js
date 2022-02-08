@@ -1,5 +1,5 @@
 const locale = require("../../lib/locale");
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
 

@@ -1,7 +1,7 @@
 const { Layout } = require("../lib/layout");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, world } = require("../wrapper/api");
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 
 const SUPPLY_BOXES_LEFT = {

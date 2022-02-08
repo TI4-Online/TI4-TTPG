@@ -5,7 +5,7 @@ const {
     MockGameObject,
     world,
 } = require("../../wrapper/api");
-const assert = require("../../wrapper/assert");
+const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 
 it("static getReplacedObjects", () => {

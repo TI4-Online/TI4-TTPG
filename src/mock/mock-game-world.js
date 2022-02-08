@@ -1,4 +1,4 @@
-const assert = require("../wrapper/assert");
+const assert = require("../wrapper/assert-wrapper");
 const Dice = require("./mock-dice");
 const GameObject = require("./mock-game-object");
 const UIElement = require("./mock-ui-element");
