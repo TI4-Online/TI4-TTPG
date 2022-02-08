@@ -54,7 +54,7 @@ describe("when a strategy card is played", () => {
 it("when a player has done the strategy selection", () => {
     let card = new MockGameObject();
     const player1Spy = jest.spyOn(player1, "sendChatMessage");
-    const player2Spy = jest.spyOn(player1, "sendChatMessage");
+    const player2Spy = jest.spyOn(player2, "sendChatMessage");
 
     globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
     globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
