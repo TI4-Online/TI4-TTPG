@@ -143,6 +143,18 @@ class UnitModifier {
     }
 
     /**
+     * Get unit modifier associated with nsid.
+     *
+     * @param {string} nsid
+     * @returns {unitModifier}
+     */
+    static getNsidUnitModifier(nsid) {
+        assert(typeof nsid === "string");
+        _maybeInit();
+        return _triggerNsidToUnitModifier[nsid];
+    }
+
+    /**
      * Get faction abilility.
      *
      * @param {string} factionAbility

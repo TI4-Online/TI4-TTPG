@@ -29,7 +29,7 @@ class SetupSystemTiles extends AbstractSetup {
             // Sanity check system tile before adding it.
             const parsed = ObjectNamespace.parseSystemTile(obj);
             assert(parsed);
-            const system = System.getByTile(parsed.tile);
+            const system = System.getByTileNumber(parsed.tile);
             assert(system);
 
             bag.addObjects([obj]);

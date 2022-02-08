@@ -250,6 +250,7 @@ class SetupFaction extends AbstractSetup {
         for (let i = 0; i < tokenData.bagTokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);
             token.setPrimaryColor(color);
+            token.setOwningPlayerSlot(playerSlot);
             bag.addObjects([token]);
         }
 

@@ -3,7 +3,6 @@ const { AuxData } = require("../unit/auxdata");
 const { CombatRoller } = require("./combat-roller");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { MockPlayer, MockVector } = require("../../wrapper/api");
-const { DiscrError } = require("ajv/dist/vocabularies/discriminator/types");
 
 it("constructor", () => {
     const auxData = new AuxData(-1);
@@ -45,7 +44,7 @@ it("getRollReport", () => {
         unitToDice["destroyer"][i].finishRoll();
     }
     const report = combatRoller.getRollReport(unitToDice);
-    assert.equal(report, "Destroyer [HIT:9]: 1, 1, 1, 1");
+    assert(report.includes("Destroyer [HIT:9(x2)]: 1, 1, 1, 1"));
 });
 
 it("getUnitToDiceCount", () => {
