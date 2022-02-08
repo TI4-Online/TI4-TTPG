@@ -396,7 +396,6 @@ class AuxDataPair {
         // Apply in mutate -> adjust -> choose order.
         UnitModifier.sortPriorityOrder(selfAuxData.unitModifiers);
         for (const unitModifier of selfAuxData.unitModifiers) {
-            console.log(`applying ${unitModifier.raw.localeName}`);
             unitModifier.apply(selfAuxData.unitAttrsSet, selfAuxData);
         }
     }

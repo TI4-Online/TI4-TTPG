@@ -26,8 +26,8 @@ class SetupHands extends AbstractSetup {
         obj.setOwningPlayerSlot(playerSlot);
         obj.setObjectType(ObjectType.Ground);
 
-        // The built-in card holder does not show backs.  Leave it be.
-        // We *could* edit json or make a template, but wait for a good one.
+        // Set "show backs" for how to hide cards.
+        // TODO XXX UPCOMING TTPG CHANGE
     }
 }
 

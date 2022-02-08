@@ -137,11 +137,13 @@ class SetupFaction extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.promissory";
-        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.promissory.jolnar" (careful about "card.promissory.blue").
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             return factionName === this._faction.nsidName;
         });
+
+        this.moveToCardHolder(deck);
     }
 
     _setupFactionLeaders() {
