@@ -15,11 +15,13 @@ class SetupGenericPromissory extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.promissory";
-        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.promissory.blue" (careful about "card.promissory.jolnar").
             const colorName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             return colorName === this.playerDesk.colorName;
         });
+
+        this.moveToCardHolder(deck);
     }
 }
 
