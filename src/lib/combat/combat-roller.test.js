@@ -1,18 +1,18 @@
 const assert = require("assert");
-const { AuxData } = require("../unit/auxdata");
+const { AuxDataBuilder } = require("../unit/auxdata");
 const { CombatRoller } = require("./combat-roller");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { MockPlayer, MockVector } = require("../../wrapper/api");
 
 it("constructor", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     new CombatRoller(auxData, rollType, player);
 });
 
 it("getModifierReport empty", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     const combatRoller = new CombatRoller(auxData, rollType, player);
@@ -21,7 +21,7 @@ it("getModifierReport empty", () => {
 });
 
 it("getModifierReport", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     auxData.unitModifiers.push(
@@ -32,7 +32,7 @@ it("getModifierReport", () => {
     assert.equal(report, "Roll modifier: Fragile (-1 to all COMBAT rolls)");
 });
 it("getRollReport", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     auxData.overrideCount("destroyer", 2);
@@ -48,7 +48,7 @@ it("getRollReport", () => {
 });
 
 it("getUnitToDiceCount", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     auxData.overrideCount("destroyer", 2);
@@ -58,7 +58,7 @@ it("getUnitToDiceCount", () => {
 });
 
 it("spawnDice", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     auxData.overrideCount("destroyer", 2);
@@ -69,7 +69,7 @@ it("spawnDice", () => {
 });
 
 it("roll", () => {
-    const auxData = new AuxData(-1);
+    const auxData = new AuxDataBuilder().build();
     const rollType = "antiFighterBarrage";
     const player = new MockPlayer();
     auxData.overrideCount("destroyer", 2);

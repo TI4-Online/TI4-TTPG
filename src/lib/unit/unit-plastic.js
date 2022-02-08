@@ -66,6 +66,8 @@ class UnitPlastic {
      * @param {Array.<UnitPlastic>} unitPlastics
      */
     static assignTokens(unitPlastics) {
+        assert(Array.isArray(unitPlastics));
+
         const hexToOwnedArray = {};
         const hexToAnonArray = {};
         for (const unitPlastic of unitPlastics) {
@@ -111,6 +113,8 @@ class UnitPlastic {
      * @param {Array.<UnitPlastic>} unitPlastics
      */
     static assignPlanets(unitPlastics) {
+        assert(Array.isArray(unitPlastics));
+
         // TODO XXX
         throw new Error("not yet implemented");
     }
@@ -186,7 +190,7 @@ class UnitPlastic {
     /**
      * Unit is on this planet (after UnitPlastic.assignPlanets).
      *
-     * return {string|undefined}
+     * return {Planet|undefined}
      */
     get planet() {
         return this._planet;
