@@ -62,14 +62,8 @@ describe("when a player has done the strategy selection", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
         globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
 
-        expect(player1Spy).toBeCalledWith(
-            "one gained 0 command tokens.",
-            player1.getPlayerColor()
-        );
-        expect(player2Spy).toBeCalledWith(
-            "one gained 0 command tokens.",
-            player1.getPlayerColor()
-        );
+        expect(player1Spy).toBeCalledTimes(0);
+        expect(player2Spy).toBeCalledTimes(0);
     });
 
     it("and it is the leadership card", () => {

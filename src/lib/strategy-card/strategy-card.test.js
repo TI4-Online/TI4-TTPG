@@ -52,7 +52,7 @@ it("broadcastMessage", () => {
     expect(player2MessageSpy).toHaveBeenCalledWith(testMessage, green);
 });
 
-describe("creating a strategy card", () => {
+it("creating a strategy card with a widgetFactory", () => {
     const red = {
         r: 1,
         g: 0,
@@ -67,20 +67,18 @@ describe("creating a strategy card", () => {
     PlayerDesk.setPlayerCount(1);
     PlayerDesk.getPlayerDesks()[0].seatPlayer(player);
 
-    it("with a widgetFactory", () => {
-        let widget = new MockVerticalBox();
-        widget.addChild(new MockButton());
-        const widgetFactory = function () {
-            return widget;
-        };
+    let widget = new MockVerticalBox();
+    widget.addChild(new MockButton());
+    const widgetFactory = function () {
+        return widget;
+    };
 
-        let gameObject = new MockGameObject();
+    let gameObject = new MockGameObject();
 
-        createStrategyCardUi(gameObject, widgetFactory);
+    createStrategyCardUi(gameObject, widgetFactory);
 
-        expect(global.world.getUIs().length).toBe(1);
-        expect(global.world.getUIs()[0].widget.getChild()).toBe(widget);
-    });
+    expect(global.world.getUIs().length).toBe(1);
+    expect(global.world.getUIs()[0].widget.getChild()).toBe(widget);
 });
 
 describe("when the close button is clicked in a players selection", () => {
