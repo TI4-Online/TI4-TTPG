@@ -5,19 +5,19 @@ const {
     MockGameObject,
     MockGameWorld,
     MockPlayer,
-    MockVerticalBox,
+    MockVerticalBox
 } = require("../../mock/mock-api");
 const { PlayerDesk } = require("../../lib/player-desk");
 const {
     broadcastMessage,
     createStrategyCardUi,
-    onUiClosedClicked,
+    onUiClosedClicked
 } = require("./strategy-card");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
 // mock global.js event registration
 globalEvents.TI4 = {
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
+    onStrategyCardSelectionDone: new TriggerableMulticastDelegate()
 };
 
 it("broadcastMessage", () => {
