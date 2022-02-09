@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
+const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
@@ -63,19 +64,6 @@ const LEADERS = {
 };
 const EXTRA_LEADER_OFFSET_Y = -2;
 
-// This goes away when faction can be provided as a proper table.
-function _getFactionSource(factionNsidName) {
-    for (const nsid of Spawn.getAllNSIDs()) {
-        if (nsid.startsWith("token.command")) {
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            if (parsedNsid.name === factionNsidName) {
-                return parsedNsid.source;
-            }
-        }
-    }
-    throw new Error(`unknown faction "${factionNsidName}"`);
-}
-
 class SetupFaction extends AbstractSetup {
     constructor(playerDesk, factionNsidName) {
         assert(playerDesk instanceof PlayerDesk);
@@ -83,11 +71,8 @@ class SetupFaction extends AbstractSetup {
         super();
         this.setPlayerDesk(playerDesk);
 
-        // Expect the "Faction" class to provide this, for now dig it out.
-        this._faction = {
-            nsidName: factionNsidName,
-            nsidSource: _getFactionSource(factionNsidName),
-        };
+        this._faction = Faction.getByNsidName(factionNsidName);
+        assert(this._faction);
 
         this._leaderTypeToCount = {
             agent: 0,
@@ -122,11 +107,27 @@ class SetupFaction extends AbstractSetup {
         );
         const rot = this.playerDesk.rot;
 
+        // Only use items listed in faction tables, not just because in deck.
+        const acceptNames = new Set();
+        this._faction.raw.techs.forEach((name) => acceptNames.add(name));
+        this._faction.raw.units.forEach((name) => acceptNames.add(name));
+
         const nsidPrefix = "card.technology";
         this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.technology.red", "card.technology.red.muaat"
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
-            return factionName === this._faction.nsidName;
+            if (factionName !== this._faction.raw.faction) {
+                return false;
+            }
+            // Check if legal name.  Include "name.omega", etc versions.
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name.split(".")[0];
+            if (!acceptNames.has(name)) {
+                // Unwanted card in the deck, or a typo?
+                console.log(`Unregistered "${nsid}"`);
+                return false;
+            }
+            return true;
         });
     }
 
@@ -136,11 +137,28 @@ class SetupFaction extends AbstractSetup {
         );
         const rot = this.playerDesk.rot;
 
+        // Only use items listed in faction tables, not just because in deck.
+        const acceptNames = new Set();
+        this._faction.raw.promissoryNotes.forEach((name) =>
+            acceptNames.add(name)
+        );
+
         const nsidPrefix = "card.promissory";
         const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.promissory.jolnar" (careful about "card.promissory.blue").
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
-            return factionName === this._faction.nsidName;
+            if (factionName !== this._faction.raw.faction) {
+                return false;
+            }
+            // Check if legal name.  Include "name.omega", etc versions.
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name.split(".")[0];
+            if (!acceptNames.has(name)) {
+                // Unwanted card in the deck, or a typo?
+                console.log(`Unregistered "${nsid}"`);
+                return false;
+            }
+            return true;
         });
 
         this.moveToCardHolder(deck);
@@ -151,11 +169,35 @@ class SetupFaction extends AbstractSetup {
         const pos = this.playerDesk.pos.add([0, 0, 5]);
         const rot = this.playerDesk.rot;
 
+        // Only use items listed in faction tables, not just because in deck.
+        const acceptNames = new Set();
+        this._faction.raw.leaders.agents.forEach((name) =>
+            acceptNames.add(name)
+        );
+        this._faction.raw.leaders.commanders.forEach((name) =>
+            acceptNames.add(name)
+        );
+        this._faction.raw.leaders.heroes.forEach((name) =>
+            acceptNames.add(name)
+        );
+        this._faction.raw.units.forEach((name) => acceptNames.add(name));
+
         const nsidPrefix = "card.leader";
         return this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.leader.agent.x"
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
-            return factionName === this._faction.nsidName;
+            if (factionName !== this._faction.raw.faction) {
+                return false;
+            }
+            // Check if legal name.  Include "name.omega", etc versions.
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name.split(".")[0];
+            if (!acceptNames.has(name)) {
+                // Unwanted card in the deck, or a typo?
+                console.log(`Unregistered "${nsid}"`);
+                return false;
+            }
+            return true;
         });
     }
 
@@ -169,7 +211,7 @@ class SetupFaction extends AbstractSetup {
             // "card.alliance:pok/faction"
             const parsed = ObjectNamespace.parseNsid(nsid);
             const factionName = parsed.name;
-            return factionName === this._faction.nsidName;
+            return factionName === this._faction.raw.faction;
         });
     }
 
@@ -247,7 +289,7 @@ class SetupFaction extends AbstractSetup {
             bag.setRotation(rot);
         }
 
-        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.nsidSource}/${this._faction.nsidName}`;
+        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.raw.source}/${this._faction.raw.faction}`;
         const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.bagTokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);
