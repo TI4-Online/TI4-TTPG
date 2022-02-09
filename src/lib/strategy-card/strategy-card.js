@@ -4,7 +4,7 @@
  */
 
 const { globalEvents, Rotator, UIElement } = require("../../wrapper/api");
-const { StrategyCardBorder } = require("./StrategyCardBorder");
+const { StrategyCardBorder } = require("./strategy-card-border");
 const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");
 let openSelections = {};
