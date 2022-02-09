@@ -8,8 +8,8 @@ const {
     Button,
     Text,
     VerticalBox,
-} = require("../../../wrapper/api");
-const locale = require("../../locale");
+} = require("../../wrapper/api");
+const locale = require("../../lib/locale");
 
 function onPrimaryClicked(button, player) {
     const message = locale("strategy_card.diplomacy.message.primary", {

@@ -1,11 +1,6 @@
-const assert = require("../../../wrapper/assert-wrapper");
-const {
-    Border,
-    GameObject,
-    Rotator,
-    UIElement,
-} = require("../../../wrapper/api");
-const { PlayerDesk } = require("../../player-desk");
+const assert = require("../../wrapper/assert-wrapper");
+const { Border, GameObject, Rotator, UIElement } = require("../../wrapper/api");
+const { PlayerDesk } = require("../../lib/player-desk");
 
 /**
  * A border holding the UI elements for the strategy card popups.

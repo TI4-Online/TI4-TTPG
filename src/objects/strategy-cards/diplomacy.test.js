@@ -3,9 +3,9 @@ const {
     MockGameObject,
     MockGameWorld,
     MockPlayer,
-} = require("../../../mock/mock-api");
-const { PlayerDesk } = require("../../player-desk");
-const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
+} = require("../../mock/mock-api");
+const { PlayerDesk } = require("../../lib/player-desk");
+const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
 // mock global.js event registration
 globalEvents.TI4 = {

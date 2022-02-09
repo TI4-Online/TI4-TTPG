@@ -3,10 +3,10 @@
  *
  */
 
-const { globalEvents, Rotator, UIElement } = require("../../../wrapper/api");
+const { globalEvents, UIElement } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
-const { PlayerDesk } = require("../../player-desk");
-const locale = require("../../locale");
+const { PlayerDesk } = require("../../lib/player-desk");
+const locale = require("../../lib/locale");
 let openSelections = {};
 
 function broadcastMessage(message, player) {
@@ -17,8 +17,6 @@ function broadcastMessage(message, player) {
 
 function onUiClosedClicked(button, player) {
     const border = getTopLevelWidget(button);
-
-    console.warn(border);
     const owningPlayerSlot = border.desk.playerSlot;
 
     // only react on the correct player
@@ -27,7 +25,7 @@ function onUiClosedClicked(button, player) {
     }
 
     // trigger event for the card itself
-    globalEvents.TI4.onStrategyCardSelectionDone.trigger(border, player);
+    globalEvents.TI4.onStrategyCardSelectionDone.trigger(border.card, player);
 
     // clear internal data and send notifications
     let selections = openSelections[border.card.getId()];

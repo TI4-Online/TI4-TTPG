@@ -25,7 +25,7 @@
 	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "lib/objects/strategy-cards/leadership.js",
+	"ScriptName": "objects/strategy-cards/leadership.js",
 	"Blueprint": "",
 	"Models": [
 		{

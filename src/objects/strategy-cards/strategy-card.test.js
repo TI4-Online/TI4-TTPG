@@ -5,14 +5,14 @@ const {
     MockGameWorld,
     MockPlayer,
     MockVerticalBox,
-} = require("../../../mock/mock-api");
-const { PlayerDesk } = require("../../player-desk");
+} = require("../../mock/mock-api");
+const { PlayerDesk } = require("../../lib/player-desk");
 const {
     broadcastMessage,
     createStrategyCardUi,
     onUiClosedClicked,
 } = require("./strategy-card");
-const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
+const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
 // mock global.js event registration
 globalEvents.TI4 = {

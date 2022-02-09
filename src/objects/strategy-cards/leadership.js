@@ -1,5 +1,3 @@
-console.log("test");
-
 const {
     onUiClosedClicked,
     createStrategyCardUi,
@@ -12,9 +10,9 @@ const {
     Slider,
     Text,
     VerticalBox,
-    refObject,
-} = require("../../../wrapper/api");
-const locale = require("../../locale");
+} = require("../../wrapper/api");
+const locale = require("../../lib/locale");
+const { GameObject } = require("@tabletop-playground/api");
 
 let selections = {};
 let activatingPlayer;
@@ -59,7 +57,7 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-const onStrategyCardPlayed = (card, player) => {
+globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
     if (card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
@@ -67,9 +65,8 @@ const onStrategyCardPlayed = (card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
     createStrategyCardUi(card, createUiWidgetFactory);
-};
-
-const onStrategyCardDone = (card, player) => {
+});
+globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
     if (card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
@@ -82,12 +79,9 @@ const onStrategyCardDone = (card, player) => {
         commandTokenCount: commandTokenCount,
     });
     broadcastMessage(message, player);
-};
+});
 
-globalEvents.TI4.onStrategyCardPlayed.add(onStrategyCardPlayed);
-globalEvents.TI4.onStrategyCardSelectionDone.add(onStrategyCardDone);
-/*
 refObject.onDestroyed.add((obj) => {
     globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
     globalEvents.TI4.onStrategyCardSelectionDone.remove(onStrategyCardDone);
-});*/
+});
