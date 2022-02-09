@@ -12,6 +12,9 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.leader.commander.l1z1x:base/2ram",
+        filter: (auxData) => {
+            auxData.rollType === "bombardment";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
                 unitAttrs.raw.disablePlanetaryShield = true;
@@ -20,6 +23,7 @@ module.exports = [
     },
     {
         // Does not count against capacity when with a ship with capacity
+        isCombat: false,
         localeName: "unit.mech.aerie_sentinel",
         localeDescription: "unit_modifier.desc.aerie_sentinel",
         owner: "self",
@@ -47,6 +51,9 @@ module.exports = [
         owner: "opponent",
         priority: "adjust",
         triggerNsid: "card.technology.blue:base/antimass_deflectors",
+        filter: (auxData) => {
+            auxData.rollType === "spaceCannon";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
                 unitAttrs.raw.spaceCannon.hit += 1;
@@ -61,16 +68,16 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.arvicon_rex",
+        filter: (auxData) => {
+            // TODO XXX
+        },
         applyAll: (unitAttrsSet, auxData) => {
-            let opponentTokenInFleetPool = false; // TODO XXX
-            if (opponentTokenInFleetPool) {
-                const flagshipAttrs = unitAttrsSet.get("flagship");
-                if (flagshipAttrs.raw.spaceCombat) {
-                    flagshipAttrs.raw.spaceCombat.hit -= 2;
-                }
-                if (flagshipAttrs.raw.groundCombat) {
-                    flagshipAttrs.raw.groundCombat.hit -= 2;
-                }
+            const flagshipAttrs = unitAttrsSet.get("flagship");
+            if (flagshipAttrs.raw.spaceCombat) {
+                flagshipAttrs.raw.spaceCombat.hit -= 2;
+            }
+            if (flagshipAttrs.raw.groundCombat) {
+                flagshipAttrs.raw.groundCombat.hit -= 2;
             }
         },
     },
@@ -79,14 +86,18 @@ module.exports = [
         isCombat: true,
         localeName: "unit_modifier.name.articles_of_war",
         localeDescription: "unit_modifier.desc.articles_of_war",
-        owner: "self",
+        owner: "any",
         priority: "mutate",
         triggerNsid: "card.agenda:pok/articles_of_war",
+        filter: (auxData) => {
+            return auxData.has("mech");
+        },
         applyAll: (unitAttrsSet, auxData) => {
             const mechAttrs = unitAttrsSet.get("mech");
             delete mechAttrs.raw.antiFighterBarrage;
             delete mechAttrs.raw.bombardment;
-            delete mechAttrs.raw.roduction;
+            delete mechAttrs.raw.planetaryShield;
+            delete mechAttrs.raw.production;
             delete mechAttrs.raw.spaceCannon;
         },
     },
@@ -98,6 +109,9 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.action:codex.ordinian/blitz",
+        filter: (auxData) => {
+            return auxData.rollType === "bombardment";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (
                 unitAttrs.raw.ship &&
@@ -131,6 +145,9 @@ module.exports = [
         owner: "any",
         priority: "adjust",
         triggerNsid: "card.action:base/bunker",
+        filter: (auxData) => {
+            return auxData.rollType === "bombardment";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
                 unitAttrs.raw.bombardment.hit += 4;
@@ -145,6 +162,9 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.cmorran_norr",
+        filter: (auxData) => {
+            return auxData.rollType === "spaceCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (
                 unitAttrs.raw.ship &&
@@ -248,6 +268,9 @@ module.exports = [
         owner: "opponent",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.fourth_moon",
+        filter: (auxData) => {
+            return auxData.opponent.has("flagship");
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.ship && unitAttrs.raw.sustainDamage) {
                 unitAttrs.raw.sustainDamage = false;
@@ -262,6 +285,10 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerFactionAbility: "fragile",
+        filter: (auxData) => {
+            auxData.rollType === "spaceCombat" &&
+                auxData.rollType === "groundCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit += 1;
@@ -279,16 +306,25 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.mech.iconoclast",
+        filter: (auxData) => {
+            if (
+                auxData.rollType !== "spaceCombat" &&
+                auxData.rollType !== "groundCombat"
+            ) {
+                return false; // not COMBAT
+            }
+            if (!auxData.has("mech")) {
+                return false; // no mech
+            }
+            // TODO XXX Opponent has fragment?
+        },
         applyAll: (unitAttrsSet, auxData) => {
-            let opponentHasFragment = false; // TODO XXX
-            if (opponentHasFragment) {
-                const mechAttrs = unitAttrsSet.get("mech");
-                if (mechAttrs.raw.spaceCombat) {
-                    mechAttrs.raw.spaceCombat.hit -= 2;
-                }
-                if (mechAttrs.raw.groundCombat) {
-                    mechAttrs.raw.groundCombat.hit -= 2;
-                }
+            const mechAttrs = unitAttrsSet.get("mech");
+            if (mechAttrs.raw.spaceCombat) {
+                mechAttrs.raw.spaceCombat.hit -= 2;
+            }
+            if (mechAttrs.raw.groundCombat) {
+                mechAttrs.raw.groundCombat.hit -= 2;
             }
         },
     },
@@ -315,6 +351,11 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.matriarch",
+        filter: (auxData) => {
+            return (
+                auxData.has("fighter") && auxData.rollType === "groundCombat"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (
                 unitAttrs.raw.unit === "fighter" &&
@@ -336,6 +377,9 @@ module.exports = [
         owner: "opponent",
         priority: "mutate",
         triggerUnitAbility: "unit.mech.moll_terminus",
+        filter: (auxData) => {
+            return auxData.rollType === "groundCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (
                 unitAttrs.raw.ground &&
@@ -376,6 +420,18 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.mech.mordred",
+        filter: (auxData) => {
+            if (
+                auxData.rollType !== "spaceCombat" &&
+                auxData.rollType !== "groundCombat"
+            ) {
+                return false; // not COMBAT
+            }
+            if (!auxData.has("mech")) {
+                return false; // no mech
+            }
+            // TODO XXX Opponent has X/Y token?
+        },
         applyAll: (unitAttrsSet, auxData) => {
             let opponentHasXYToken = false; // TODO XXX
             if (opponentHasXYToken) {
@@ -418,6 +474,9 @@ module.exports = [
                 auxData.self.activeSystem.anomalies.includes("nebula");
             return isDefender && isNebula;
         },
+        filter: (auxData) => {
+            return auxData.rollType === "spaceCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -432,6 +491,12 @@ module.exports = [
         owner: "self",
         priority: "choose",
         triggerNsid: "card.technology.red:base/plasma_scoring",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannon" ||
+                auxData.rollType === "bombardment"
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             // Space cannon.
             let best = false;
@@ -485,6 +550,13 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.agenda:base/prophecy_of_ixth",
+        filter: (auxData) => {
+            return (
+                auxData.has("fighter") &&
+                (auxData.rollType === "spaceCombat" ||
+                    auxData.rollType === "groundCombat")
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
@@ -495,6 +567,7 @@ module.exports = [
             }
         },
     },
+    // XXX TODO FILTER ADDITIONS HAVE GOTTEN THIS FAR, NEED MORE BELOW
     {
         // "War Suns lose SUSTAIN DAMAGE",
         isCombat: true,
@@ -538,14 +611,28 @@ module.exports = [
         },
     },
     {
-        // "+2 to combat rolls",
+        // "+2 to combat rolls (Mecatol, home, or legendary)",
         isCombat: true,
         localeName: "unit_modifier.name.rickar_rickani",
         localeDescription: "unit_modifier.desc.rickar_rickani",
         owner: "self",
         priority: "adjust",
-        toggleActive: true,
         triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
+        filter: (auxData) => {
+            const system = auxData.self.activeSystem;
+            if (system) {
+                if (system.tile === 18) {
+                    return true; // Mecatol
+                }
+                for (const planet of system.planets) {
+                    if (planet.raw.legendary) {
+                        return true; // legendary
+                    }
+                }
+                const faction = auxData.self.faction;
+                return faction && faction.home == system.tile;
+            }
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 2;
