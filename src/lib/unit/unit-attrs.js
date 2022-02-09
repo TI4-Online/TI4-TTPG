@@ -164,8 +164,12 @@ class UnitAttrs {
         const unitUpgrades = [];
         for (const factionUnit of faction.raw.units) {
             const unitUpgrade = UnitAttrs.getNsidNameUnitUpgrade(factionUnit);
+            assert(unitUpgrade);
             // Only find base-level overrides (higher-level upgrades require the card).
-            if (unitUpgrade && unitUpgrade.upgradeLevel == 1) {
+            if (
+                !unitUpgrade.raw.upgradeLevel ||
+                unitUpgrade.raw.upgradeLevel === 1
+            ) {
                 unitUpgrades.push(unitUpgrade);
             }
         }

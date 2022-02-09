@@ -1,5 +1,6 @@
 const assert = require("assert");
 const locale = require("../locale");
+const { Faction } = require("../faction/faction");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const { UnitAttrs } = require("./unit-attrs");
 const UNIT_ATTRS = require("./unit-attrs.data");
@@ -116,6 +117,12 @@ it("static getPlayerUnitUpgrades", () => {
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.unit, "carrier");
     assert.equal(result[0].raw.upgradeLevel, 2);
+});
+
+it("static getFactionUnitUpgrades", () => {
+    const arborec = Faction.getByNsidName("arborec");
+    const unitUpgraes = UnitAttrs.getFactionUnitUpgrades(arborec);
+    assert.equal(unitUpgraes.length, 3); // mech, flagship, letani(1)
 });
 
 it("name", () => {
