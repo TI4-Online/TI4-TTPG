@@ -12,7 +12,6 @@ const {
     VerticalBox,
 } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
-const { GameObject } = require("@tabletop-playground/api");
 
 let selections = {};
 let activatingPlayer;
