@@ -6,7 +6,7 @@ it("validate good", () => {
         faction: "my_faction",
         source: "homebrew.unittest",
         abilities: [],
-        commodoties: 4,
+        commodities: 4,
         home: 18,
         leaders: {
             agents: [],

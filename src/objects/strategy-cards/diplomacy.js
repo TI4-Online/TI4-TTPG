@@ -6,8 +6,10 @@ const {
 const {
     globalEvents,
     Button,
+    GameObject,
     Text,
     VerticalBox,
+    refObject,
 } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
@@ -64,13 +66,25 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-globalEvents.TI4.onStrategyCardPlayed.add((card) => {
+const onStrategyCardPlayed = (card) => {
+    // refObject not currently available in mock.  Fake it for testing.
+    const object = world.__isMock ? card : refObject;
     if (
-        card.getId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
-        card.getId() !== "09FA74F649473D09799D5799F2394D91"
+        (card.getTemplateId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
+            card.getTemplateId() !== "09FA74F649473D09799D5799F2394D91") ||
+        object !== card
     ) {
         return;
     }
 
     createStrategyCardUi(card, createUiWidgetFactory);
+};
+
+globalEvents.TI4.onStrategyCardPlayed.add(onStrategyCardPlayed);
+
+// refObject not currently available in mock.  Fake it for testing.
+const object = world.__isMock ? new GameObject() : refObject;
+
+object.onDestroyed.add((obj) => {
+    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
 });

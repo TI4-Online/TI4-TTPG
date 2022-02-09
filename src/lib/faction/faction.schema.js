@@ -14,7 +14,7 @@ const FACTION_SCHEMA = {
         // Locale key "faction.ability.{x}".
         abilities: { type: "array", items: { type: "string" } },
 
-        commodoties: { type: "integer" },
+        commodities: { type: "integer" },
         home: { type: "integer" }, // home system tile index
 
         leaders: {
@@ -67,7 +67,7 @@ const FACTION_SCHEMA = {
     required: [
         "faction",
         "abilities",
-        "commodoties",
+        "commodities",
         "home",
         "leaders",
         "units",
@@ -96,7 +96,7 @@ class FactionSchema {
      * @param {function} onError - takes the error as single argument
      * @returns {boolean} true if valid
      */
-    static validate(system, onError) {
+    static validate(faction, onError) {
         // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
         if (!Ajv) {
             //console.warn("Ajv not available");
@@ -107,7 +107,7 @@ class FactionSchema {
                 FACTION_SCHEMA
             );
         }
-        if (!_factionValidator(system)) {
+        if (!_factionValidator(faction)) {
             (onError ? onError : console.error)(_factionValidator.errors);
             return false;
         }
