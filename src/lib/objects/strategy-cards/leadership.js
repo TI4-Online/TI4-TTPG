@@ -1,3 +1,5 @@
+console.log("test");
+
 const {
     onUiClosedClicked,
     createStrategyCardUi,
@@ -10,8 +12,9 @@ const {
     Slider,
     Text,
     VerticalBox,
-} = require("../../wrapper/api");
-const locale = require("../../lib/locale");
+    refObject,
+} = require("../../../wrapper/api");
+const locale = require("../../locale");
 
 let selections = {};
 let activatingPlayer;
@@ -56,18 +59,18 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
-    if (card.getId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
+const onStrategyCardPlayed = (card, player) => {
+    if (card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
 
     selections = {};
     activatingPlayer = player.getSlot();
     createStrategyCardUi(card, createUiWidgetFactory);
-});
+};
 
-globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
-    if (card.getId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
+const onStrategyCardDone = (card, player) => {
+    if (card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
 
@@ -79,4 +82,12 @@ globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
         commandTokenCount: commandTokenCount,
     });
     broadcastMessage(message, player);
-});
+};
+
+globalEvents.TI4.onStrategyCardPlayed.add(onStrategyCardPlayed);
+globalEvents.TI4.onStrategyCardSelectionDone.add(onStrategyCardDone);
+/*
+refObject.onDestroyed.add((obj) => {
+    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
+    globalEvents.TI4.onStrategyCardSelectionDone.remove(onStrategyCardDone);
+});*/

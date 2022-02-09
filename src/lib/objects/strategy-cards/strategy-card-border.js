@@ -1,6 +1,11 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { Border, GameObject, Rotator, UIElement } = require("../../wrapper/api");
-const { PlayerDesk } = require("../../lib/player-desk");
+const assert = require("../../../wrapper/assert-wrapper");
+const {
+    Border,
+    GameObject,
+    Rotator,
+    UIElement,
+} = require("../../../wrapper/api");
+const { PlayerDesk } = require("../../player-desk");
 
 /**
  * A border holding the UI elements for the strategy card popups.
@@ -66,7 +71,7 @@ class StrategyCardBorder extends Border {
         this._ui.scale = 0.75;
         this._ui.position = this._desk.localPositionToWorld({
             x: 30,
-            y: 0,
+            y: -10,
             z: 10,
         });
         this._ui.rotation = this._desk.localRotationToWorld(

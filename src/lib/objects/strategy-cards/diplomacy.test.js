@@ -3,9 +3,9 @@ const {
     MockGameObject,
     MockGameWorld,
     MockPlayer,
-} = require("../../mock/mock-api");
-const { PlayerDesk } = require("../../lib/player-desk");
-const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
+} = require("../../../mock/mock-api");
+const { PlayerDesk } = require("../../player-desk");
+const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 
 // mock global.js event registration
 globalEvents.TI4 = {
@@ -36,7 +36,7 @@ describe("when a strategy card is played", () => {
 
     it("but its another one", () => {
         let card = new MockGameObject({
-            id: "Some other card!",
+            templateId: "Some other card!",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -46,7 +46,7 @@ describe("when a strategy card is played", () => {
 
     it("and it is the diplomacy card", () => {
         let card = new MockGameObject({
-            id: "2A40632D4704B3D7EE37C2AF646EE5BB",
+            templateId: "2A40632D4704B3D7EE37C2AF646EE5BB",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -56,7 +56,7 @@ describe("when a strategy card is played", () => {
 
     it("and it is the (revisited) diplomacy card", () => {
         let card = new MockGameObject({
-            id: "09FA74F649473D09799D5799F2394D91",
+            templateId: "09FA74F649473D09799D5799F2394D91",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -67,7 +67,7 @@ describe("when a strategy card is played", () => {
 
 describe("when a player has done the strategy selection", () => {
     let card = new MockGameObject({
-        id: "2A40632D4704B3D7EE37C2AF646EE5BB",
+        templateId: "2A40632D4704B3D7EE37C2AF646EE5BB",
     });
 
     let player1Spy, player2Spy;
@@ -75,14 +75,14 @@ describe("when a player has done the strategy selection", () => {
     let uis = [];
 
     const original = global.world.addUI;
-    global.world.addUI = jest.fn((ui) => {
-        uis.push(ui);
-        original.call(global.world, ui);
-    });
 
     beforeEach(() => {
         player1Spy = jest.spyOn(player1, "sendChatMessage");
         player2Spy = jest.spyOn(player2, "sendChatMessage");
+        global.world.addUI = jest.fn((ui) => {
+            uis.push(ui);
+            original.call(global.world, ui);
+        });
     });
 
     afterEach(() => {

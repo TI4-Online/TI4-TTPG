@@ -15,6 +15,7 @@ class GameObject {
         this._primaryColor = data && data.primaryColor;
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
         this._savedData = (data && data.savedData) || "";
+        this._templateId = (data && data.templateId) || "";
         this._templateMetadata = (data && data.templateMetadata) || "";
         this._uis = (data && data.uis) || [];
         this._customActions = (data && data.customActions) || [];
@@ -76,6 +77,10 @@ class GameObject {
 
     getSavedData() {
         return this._savedData;
+    }
+
+    getTemplateId() {
+        return this._templateId;
     }
 
     getTemplateMetadata() {

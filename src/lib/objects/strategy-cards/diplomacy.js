@@ -8,8 +8,8 @@ const {
     Button,
     Text,
     VerticalBox,
-} = require("../../wrapper/api");
-const locale = require("../../lib/locale");
+} = require("../../../wrapper/api");
+const locale = require("../../locale");
 
 function onPrimaryClicked(button, player) {
     const message = locale("strategy_card.diplomacy.message.primary", {
@@ -64,13 +64,19 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-globalEvents.TI4.onStrategyCardPlayed.add((card) => {
+const onStrategyCardPlayed = (card) => {
     if (
-        card.getId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
-        card.getId() !== "09FA74F649473D09799D5799F2394D91"
+        card.getTemplateId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
+        card.getTemplateId() !== "09FA74F649473D09799D5799F2394D91"
     ) {
         return;
     }
 
     createStrategyCardUi(card, createUiWidgetFactory);
-});
+};
+
+globalEvents.TI4.onStrategyCardPlayed.add(onStrategyCardPlayed);
+/*
+refObject.onDestroyed.add((obj) => {
+    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
+});*/

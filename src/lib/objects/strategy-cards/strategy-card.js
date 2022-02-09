@@ -3,10 +3,10 @@
  *
  */
 
-const { globalEvents, Rotator, UIElement } = require("../../wrapper/api");
+const { globalEvents, Rotator, UIElement } = require("../../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
-const { PlayerDesk } = require("../../lib/player-desk");
-const locale = require("../../lib/locale");
+const { PlayerDesk } = require("../../player-desk");
+const locale = require("../../locale");
 let openSelections = {};
 
 function broadcastMessage(message, player) {
@@ -18,6 +18,7 @@ function broadcastMessage(message, player) {
 function onUiClosedClicked(button, player) {
     const border = getTopLevelWidget(button);
 
+    console.warn(border);
     const owningPlayerSlot = border.desk.playerSlot;
 
     // only react on the correct player

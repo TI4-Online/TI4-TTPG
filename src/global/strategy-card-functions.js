@@ -16,6 +16,8 @@ const {
 const { ObjectNamespace } = require("../lib/object-namespace");
 const locale = require("../lib/locale");
 
+console.log("test");
+
 function setupStrategyCard(card) {
     const playButtonName = locale("ui.button.strategy_card_play");
     const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
