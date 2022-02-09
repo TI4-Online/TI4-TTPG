@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { Faction } = require("../faction/faction");
 const { System, Planet } = require("../system/system");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 
@@ -37,7 +38,7 @@ class AuxDataBuilder {
      * @returns {AuxDataBuilder} self for chaining
      */
     setFaction(faction) {
-        // TODO XXX
+        assert(!faction || faction instanceof Faction);
         this._faction = faction;
         return this;
     }
@@ -72,7 +73,7 @@ class AuxDataBuilder {
      * @returns {AuxDataBuilder} self for chaining
      */
     setActiveSystem(system) {
-        assert(system instanceof System);
+        assert(!system || system instanceof System);
         this._activeSystem = system;
         return this;
     }
@@ -83,7 +84,7 @@ class AuxDataBuilder {
      * @returns {AuxDataBuilder} self for chaining
      */
     setActivePlanet(planet) {
-        assert(planet instanceof Planet);
+        assert(!planet || planet instanceof Planet);
         this._activePlanet = planet;
         return this;
     }

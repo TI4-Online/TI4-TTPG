@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
@@ -143,6 +144,19 @@ class UnitModifier {
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier);
         }
+
+        // Add faction abilities.
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction) {
+            for (const factionAbility of faction.raw.abilities) {
+                const unitModifier =
+                    UnitModifier.getFactionAbilityUnitModifier(factionAbility);
+                if (unitModifier) {
+                    unitModifiers.push(unitModifier);
+                }
+            }
+        }
+
         return unitModifiers;
     }
 

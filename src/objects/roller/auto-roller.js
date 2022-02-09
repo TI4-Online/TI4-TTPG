@@ -16,6 +16,7 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
+const { Faction } = require("../../lib/faction/faction");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.
@@ -89,25 +90,34 @@ class AutoRoller {
         }
 
         // Build self.
-        const auxDataBuilder = new AuxDataBuilder()
+        let faction = Faction.getByPlayerSlot(player.getSlot());
+        const aux1 = new AuxDataBuilder()
             .setPlayerSlot(player.getSlot())
+            .setFaction(faction)
             .setHex(this._activeHex)
             .setActivatingPlayerSlot(this._activatingPlayerSlot)
-            .setActiveSystem(this._activeSystem);
-        if (planet) {
-            auxDataBuilder.setActivePlanet(planet);
-        }
-        const aux1 = auxDataBuilder.build();
+            .setActiveSystem(this._activeSystem)
+            .setActivePlanet(planet)
+            .build();
 
         // Build opponent.
+        let opponentPlayerSlot;
         if (player.getSlot() === this._activatingPlayerSlot) {
             // Active player clicked.  Set opponent to -1 to figure it out.
-            auxDataBuilder.setPlayerSlot(-1);
+            opponentPlayerSlot = -1;
         } else {
             // Not-active player clicked, opponent is always active player.
-            auxDataBuilder.setPlayerSlot(this._activatingPlayerSlot);
+            opponentPlayerSlot = this._activatingPlayerSlot;
         }
-        const aux2 = auxDataBuilder.build();
+        faction = Faction.getByPlayerSlot(opponentPlayerSlot);
+        const aux2 = new AuxDataBuilder()
+            .setPlayerSlot(opponentPlayerSlot)
+            .setFaction(faction)
+            .setHex(this._activeHex)
+            .setActivatingPlayerSlot(this._activatingPlayerSlot)
+            .setActiveSystem(this._activeSystem)
+            .setActivePlanet(planet)
+            .build();
 
         new AuxDataPair(aux1, aux2).fillPairSync();
 

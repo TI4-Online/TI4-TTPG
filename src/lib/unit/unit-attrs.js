@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const _ = require("../../wrapper/lodash-wrapper");
 const locale = require("../locale");
+const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
@@ -143,12 +144,20 @@ class UnitAttrs {
             }
 
             // Found a unit upgrade!  Add it to the list.
-            if (!unitUpgrades.includes(unitUpgrade)) {
-                unitUpgrades.push(unitUpgrade);
-            }
+            unitUpgrades.push(unitUpgrade);
         }
 
-        // TODO XXX APPLY FACTION UNITS!
+        // Apply base-level overrides (higher-level upgrades require the card).
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction) {
+            for (const factionUnit of faction.raw.units) {
+                const unitUpgrade =
+                    UnitAttrs.getNsidNameUnitUpgrade(factionUnit);
+                if (unitUpgrade && unitUpgrade.upgradeLevel == 1) {
+                    unitUpgrades.push(unitUpgrade);
+                }
+            }
+        }
 
         return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades);
     }

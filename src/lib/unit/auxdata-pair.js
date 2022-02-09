@@ -281,10 +281,15 @@ class AuxDataPair {
             return;
         }
 
-        // Apply unit upgrades.
+        // Find unit upgrades.
         const upgrades = UnitAttrs.getPlayerUnitUpgrades(
             selfAuxData.playerSlot
         );
+
+        // Make sure there are no duplicates (paranoia).
+        upgrades.filter((value, index, self) => self.indexOf(value) === index);
+
+        // Apply upgrades now, so unit modifiers can see upgraded units.
         for (const upgrade of upgrades) {
             selfAuxData.unitAttrsSet.upgrade(upgrade);
         }
