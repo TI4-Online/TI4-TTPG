@@ -69,6 +69,12 @@ it("static getAllUnitTypes", () => {
     assert(all.includes("fighter"));
 });
 
+it("static getNsidNameUnitUpgrade", () => {
+    const fighter2 = UnitAttrs.getNsidNameUnitUpgrade("fighter_2");
+    assert.equal(fighter2.raw.unit, "fighter");
+    assert.equal(fighter2.raw.upgradeLevel, 2);
+});
+
 it("static sortUpgradeLevelOrder", () => {
     const carrier2 = _getUnitUpgrade("carrier");
     const carrier3 = _getUnitUpgrade("carrier");
