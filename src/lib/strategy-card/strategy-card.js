@@ -18,8 +18,10 @@ function broadcastMessage(message, player) {
 function onUiClosedClicked(button, player) {
     const border = getTopLevelWidget(button);
 
+    const owningPlayerSlot = border.desk.playerSlot;
+
     // only react on the correct player
-    if (border.getPlayer() !== player) {
+    if (owningPlayerSlot !== player.getSlot()) {
         return;
     }
 
@@ -27,13 +29,13 @@ function onUiClosedClicked(button, player) {
     globalEvents.TI4.onStrategyCardSelectionDone.trigger(border, player);
 
     // clear internal data and send notifications
-    let selections = openSelections[border.getCard().getId()];
+    let selections = openSelections[border.card.getId()];
 
-    world.removeUIElement(border.getUI());
+    world.removeUIElement(border.ui);
 
-    selections.splice(selections.indexOf(border.getPlayer().getSlot()), 1);
+    selections.splice(selections.indexOf(owningPlayerSlot), 1);
     if (selections.length === 0) {
-        delete openSelections[border.getCard().getId()];
+        delete openSelections[border.card.getId()];
         broadcastMessage(locale("strategy_card.message.all_resolved"));
     }
 }
@@ -44,35 +46,22 @@ function getTopLevelWidget(element) {
 }
 
 function createStrategyCardUi(card, widgetFactory) {
-    const playerDesks = PlayerDesk.getPlayerDesks();
-
-    for (const player of world.getAllPlayers()) {
-        const matchingDesk = playerDesks.find(
-            (desk) => desk._playerSlot === player.getSlot()
-        );
-
-        if (!matchingDesk) {
-            continue; // unseated player
-        }
-
+    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
         const cardId = card.getId();
-        let ui = new UIElement();
         openSelections[cardId] = openSelections[cardId] || [];
-        openSelections[cardId].push(player.getSlot());
-        let border = new StrategyCardBorder().setColor(player.getPlayerColor());
+        openSelections[cardId].push(playerDesk.playerSlot);
+
+        let ui = new UIElement();
+        let border = new StrategyCardBorder({
+            ui: ui,
+            desk: playerDesk,
+            card: card,
+        }).setColor(playerDesk.color);
         border.setChild(widgetFactory());
-        border.setUI(ui);
-        border.setPlayer(player);
-        border.setCard(card);
-        ui.useWidgetSize = false;
-        ui.widget = border;
-        ui.width = 350;
-        ui.scale = 0.75;
-        ui.position = matchingDesk.localPositionToWorld({ x: 30, y: 0, z: 10 });
-        ui.rotation = matchingDesk.localRotationToWorld(new Rotator(30, 0, 0));
-        const i = world.addUI(ui);
+        border.spawnUi();
     }
 }
+
 module.exports = {
     createStrategyCardUi,
     broadcastMessage,

@@ -33,39 +33,42 @@ function onPassClicked(button, player) {
 }
 
 function createUiWidgetFactory() {
-    let verticalBox = new VerticalBox();
-    verticalBox.addChild(
-        new Text()
-            .setFontSize(10)
-            .setText(locale("strategy_card.diplomacy.text"))
-    );
+    let headerText = new Text()
+        .setFontSize(10)
+        .setText(locale("strategy_card.diplomacy.text"));
 
     let primaryButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.primary"));
     primaryButton.onClicked.add(onPrimaryClicked);
     primaryButton.onClicked.add(onUiClosedClicked);
-    verticalBox.addChild(primaryButton);
+
     let secondaryButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.secondary"));
-
     secondaryButton.onClicked.add(onSecondaryClicked);
     secondaryButton.onClicked.add(onUiClosedClicked);
-    verticalBox.addChild(secondaryButton);
+
     let passButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.pass"));
-
     passButton.onClicked.add(onPassClicked);
     passButton.onClicked.add(onUiClosedClicked);
+
+    let verticalBox = new VerticalBox();
+    verticalBox.addChild(headerText);
+    verticalBox.addChild(primaryButton);
+    verticalBox.addChild(secondaryButton);
     verticalBox.addChild(passButton);
 
     return verticalBox;
 }
 
 globalEvents.TI4.onStrategyCardPlayed.add((card) => {
-    if (card.getId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" && card.getId() !== "09FA74F649473D09799D5799F2394D91") {
+    if (
+        card.getId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
+        card.getId() !== "09FA74F649473D09799D5799F2394D91"
+    ) {
         return;
     }
 
