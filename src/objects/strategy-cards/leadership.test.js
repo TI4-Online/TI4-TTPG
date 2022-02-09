@@ -13,13 +13,13 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-require("./leadership");
-
 const red = { r: 1, g: 0, b: 0 };
 const green = { r: 0, g: 1, b: 0 };
 const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 global.world = new MockGameWorld({ allPlayers: [player1, player2] });
+
+require("./leadership");
 
 PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);

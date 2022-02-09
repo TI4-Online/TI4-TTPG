@@ -13,14 +13,13 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-// mock a second script instance (i.e. card clone)
-require("./diplomacy");
-
 const red = { r: 1, g: 0, b: 0 };
 const green = { r: 0, g: 1, b: 0 };
 const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 global.world = new MockGameWorld({ allPlayers: [player1, player2] });
+
+require("./diplomacy");
 
 PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
