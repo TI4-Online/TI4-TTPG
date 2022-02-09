@@ -106,7 +106,6 @@ const PLAYER_DESKS = [
 
 const SEAT_CAMERA = {
     pos: { x: -90, y: -10, z: 100 },
-    rot: { pitch: -40, yaw: 0, roll: 0 },
 };
 
 const DEFAULT_PLAYER_COUNT = 6;
@@ -388,13 +387,11 @@ class PlayerDesk {
         assert(player instanceof Player);
         player.switchSlot(this.playerSlot);
 
-        // This appears to be buggy, WASD camera movement goes
-        // under the table very easily after doing this.
+        // Careful, need to look at a position on the top surface of
+        // the table or else the camera can bug out and fall below table.
         const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
-        const rot = this.localRotationToWorld(SEAT_CAMERA.rot);
-        assert(pos && rot); // suppress unused warnings
-        // TODO XXX REVISIT AFTER TTPG CAMERA FIXES
-        //player.setPositionAndRotation(pos, rot);
+        const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
+        player.setPositionAndRotation(pos, rot);
     }
 }
 
