@@ -32,7 +32,7 @@ describe("when a strategy card is played", () => {
 
     it("but its another one", () => {
         let card = new MockGameObject({
-            name: "Some other card!",
+            id: "Some other card!",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -42,7 +42,7 @@ describe("when a strategy card is played", () => {
 
     it("and it is leadership", () => {
         let card = new MockGameObject({
-            name: "Leadership",
+            id: "851C062745CD8B4CEEB4BEB3F1057152",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -54,7 +54,7 @@ describe("when a strategy card is played", () => {
 describe("when a player has done the strategy selection", () => {
     it("and it is another card", () => {
         let card = new MockGameObject({
-            name: "Some other card!",
+            id: "Some other card!",
         });
         const player1Spy = jest.spyOn(player1, "sendChatMessage");
         const player2Spy = jest.spyOn(player2, "sendChatMessage");
@@ -68,7 +68,7 @@ describe("when a player has done the strategy selection", () => {
 
     it("and it is the leadership card", () => {
         let card = new MockGameObject({
-            name: "Leadership",
+            id: "851C062745CD8B4CEEB4BEB3F1057152",
         });
         const player1Spy = jest.spyOn(player1, "sendChatMessage");
         const player2Spy = jest.spyOn(player2, "sendChatMessage");

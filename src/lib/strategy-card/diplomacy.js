@@ -65,7 +65,7 @@ function createUiWidgetFactory() {
 }
 
 globalEvents.TI4.onStrategyCardPlayed.add((card) => {
-    if (card.getName() !== "Diplomacy") {
+    if (card.getId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" && card.getId() !== "09FA74F649473D09799D5799F2394D91") {
         return;
     }
 

@@ -13,6 +13,7 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
+// mock a second script instance (i.e. card clone)
 require("./diplomacy");
 
 const red = { r: 1, g: 0, b: 0 };
@@ -27,12 +28,15 @@ PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 describe("when a strategy card is played", () => {
     afterEach(() => {
-        global.world.getUIs().map((ui) => global.world.removeUIElement(ui));
+        const uiCount = global.world.getUIs().length;
+        for (let i = 0; i < uiCount; i++) {
+            global.world.removeUI(0);
+        }
     });
 
     it("but its another one", () => {
         let card = new MockGameObject({
-            name: "Some other card!",
+            id: "Some other card!",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -40,9 +44,19 @@ describe("when a strategy card is played", () => {
         expect(global.world.getUIs().length).toBe(0);
     });
 
-    it("and it is diplomacy", () => {
+    it("and it is the diplomacy card", () => {
         let card = new MockGameObject({
-            name: "Diplomacy",
+            id: "2A40632D4704B3D7EE37C2AF646EE5BB",
+        });
+
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        expect(global.world.getUIs().length).toBe(2);
+    });
+
+    it("and it is the (revisited) diplomacy card", () => {
+        let card = new MockGameObject({
+            id: "09FA74F649473D09799D5799F2394D91",
         });
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -53,7 +67,7 @@ describe("when a strategy card is played", () => {
 
 describe("when a player has done the strategy selection", () => {
     let card = new MockGameObject({
-        name: "Diplomacy",
+        id: "2A40632D4704B3D7EE37C2AF646EE5BB",
     });
 
     let player1Spy, player2Spy;

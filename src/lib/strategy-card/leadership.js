@@ -57,7 +57,7 @@ function createUiWidgetFactory() {
 }
 
 globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
-    if (card.getName() !== "Leadership") {
+    if (card.getId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
 
@@ -67,7 +67,7 @@ globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
 });
 
 globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
-    if (card.getName() !== "Leadership") {
+    if (card.getId() !== "851C062745CD8B4CEEB4BEB3F1057152") {
         return;
     }
 
