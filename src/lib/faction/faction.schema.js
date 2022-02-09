@@ -23,9 +23,8 @@ const FACTION_SCHEMA = {
                 agents: { type: "array", items: { type: "string" } },
                 commanders: { type: "array", items: { type: "string" } },
                 heroes: { type: "array", items: { type: "string" } },
-                mechs: { type: "array", items: { type: "string" } },
             },
-            required: ["agents", "commanders", "heroes", "mechs"],
+            required: ["agents", "commanders", "heroes"],
         },
 
         // Promissory notes e.g. "fires_of_the_gashlai".
@@ -38,7 +37,7 @@ const FACTION_SCHEMA = {
 
         // Faction unit overrides/upgrades, e.g.["advanced_carrier", "advanced_carrier_2"].
         // Just NSID name ("card.technology.unit_upgrade.sol:base/advanced_carrier_2").
-        // INCLUDES FLAGSHIP!
+        // INCLUDES FLAGSHIP AND MECH!
         units: { type: "array", items: { type: "string" } },
 
         // Any special setup instructions (e.g. "choose 2 tech").
