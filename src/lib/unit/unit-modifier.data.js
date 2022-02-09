@@ -52,10 +52,7 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.technology.blue:base/antimass_deflectors",
         filter: (auxData) => {
-            return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense"
-            );
+            return auxData.rollType === "spaceCannon";
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
@@ -496,8 +493,7 @@ module.exports = [
         triggerNsid: "card.technology.red:base/plasma_scoring",
         filter: (auxData) => {
             return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "spaceCannon" ||
                 auxData.rollType === "bombardment"
             );
         },
@@ -598,7 +594,7 @@ module.exports = [
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.quetzecoatl",
         filter: (auxData) => {
-            auxData.rollType === "spaceCannonOffense";
+            return auxData.rollType === "spaceCannon" && !auxData.activePlanet;
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
@@ -735,8 +731,7 @@ module.exports = [
         triggerNsid: "card.promissory.argent:pok/strike_wing_ambuscade",
         filter: (auxData) => {
             return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "spaceCannon" ||
                 auxData.rollType === "antiFighterBarrage" ||
                 auxData.rollType === "bombardment"
             );
@@ -840,8 +835,7 @@ module.exports = [
         triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
         filter: (auxData) => {
             return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "spaceCannon" ||
                 auxData.rollType === "antiFighterBarrage" ||
                 auxData.rollType === "bombardment"
             );
@@ -982,8 +976,7 @@ module.exports = [
         triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
         filter: (auxData) => {
             return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "spaceCannon" ||
                 auxData.rollType === "antiFighterBarrage" ||
                 auxData.rollType === "bombardment"
             );
@@ -1062,10 +1055,7 @@ module.exports = [
         toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
         filter: (auxData) => {
-            return (
-                auxData.rollType === "spaceCannonOffense" ||
-                auxData.rollType === "spaceCannonDefense"
-            );
+            return auxData.rollType === "spaceCannon";
         },
         applyAll: (unitAttrsSet, auxData) => {
             if (auxData.self.has("space_dock")) {
