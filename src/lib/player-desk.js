@@ -390,9 +390,10 @@ class PlayerDesk {
 
         // This appears to be buggy, WASD camera movement goes
         // under the table very easily after doing this.
+        const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
+        const rot = this.localRotationToWorld(SEAT_CAMERA.rot);
+        assert(pos && rot); // suppress unused warnings
         // TODO XXX REVISIT AFTER TTPG CAMERA FIXES
-        //const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
-        //const rot = this.localRotationToWorld(SEAT_CAMERA.rot);
         //player.setPositionAndRotation(pos, rot);
     }
 }
