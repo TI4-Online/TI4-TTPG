@@ -84,6 +84,13 @@ class AutoRoller {
         assert(!planet || planet instanceof Planet);
         assert(player instanceof Player);
 
+        // Some modifiers differentiate space cannon offense vs defense.
+        if (rollType === "spaceCannon") {
+            throw new Error(
+                'please specify "spaceCannonOffense" or "spaceCannonDefense"'
+            );
+        }
+
         if (!this._activeHex) {
             Broadcast.broadcastAll(locale("ui.error.no_active_system"));
             return;
@@ -122,6 +129,14 @@ class AutoRoller {
             .build();
 
         new AuxDataPair(aux1, aux2).fillPairSync();
+
+        // At this point all space cannon rolls are spaceCannon.
+        if (
+            rollType === "spaceCannonOffense" ||
+            rollType === "spaceCannonDefense"
+        ) {
+            rollType = "spaceCannon";
+        }
 
         // COMBAT TIME!!
         const combatRoller = new CombatRoller(aux1, rollType, player);

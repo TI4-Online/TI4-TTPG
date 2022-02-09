@@ -52,7 +52,10 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.technology.blue:base/antimass_deflectors",
         filter: (auxData) => {
-            auxData.rollType === "spaceCannon";
+            return (
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense"
+            );
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
@@ -493,7 +496,8 @@ module.exports = [
         triggerNsid: "card.technology.red:base/plasma_scoring",
         filter: (auxData) => {
             return (
-                auxData.rollType === "spaceCannon" ||
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense" ||
                 auxData.rollType === "bombardment"
             );
         },
@@ -567,7 +571,6 @@ module.exports = [
             }
         },
     },
-    // XXX TODO FILTER ADDITIONS HAVE GOTTEN THIS FAR, NEED MORE BELOW
     {
         // "War Suns lose SUSTAIN DAMAGE",
         isCombat: true,
@@ -576,6 +579,11 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.agenda:base/publicize_weapon_schematics",
+        filter: (auxData) => {
+            return (
+                auxData.self.has("war_sun") || auxData.opponent.has("war_sun")
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             const warSunAttrs = unitAttrsSet.get("war_sun");
             delete warSunAttrs.raw.sustainDamage;
@@ -589,6 +597,9 @@ module.exports = [
         owner: "opponent",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.quetzecoatl",
+        filter: (auxData) => {
+            auxData.rollType === "spaceCannonOffense";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCannon) {
                 delete unitAttrs.raw.spaceCannon;
@@ -678,6 +689,9 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.mech.shield_paling",
+        filter: (auxData) => {
+            return auxData.has("mech") && auxData.has("infantry");
+        },
         applyAll: (unitAttrsSet, auxData) => {
             // Normally mech is paired with Jol-Nar + FRAGILE, but watch out for Franken!
             let hasFragile = false;
@@ -719,6 +733,14 @@ module.exports = [
         owner: "self",
         priority: "choose",
         triggerNsid: "card.promissory.argent:pok/strike_wing_ambuscade",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "antiFighterBarrage" ||
+                auxData.rollType === "bombardment"
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             // antiFighterBarrage.
             let best = false;
@@ -792,6 +814,12 @@ module.exports = [
         priority: "adjust",
         toggleActive: true,
         triggerNsid: "card.technology.red.naazrokha:pok/supercharge",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -810,6 +838,14 @@ module.exports = [
         priority: "adjust",
         toggleActive: true,
         triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "antiFighterBarrage" ||
+                auxData.rollType === "bombardment"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.antiFighterBarrage) {
                 unitAttrs.raw.antiFighterBarrage.rerollMisses = true;
@@ -830,6 +866,9 @@ module.exports = [
         owner: "any",
         priority: "adjust",
         triggerNsid: "card.promissory.norr:base/tekklar_legion",
+        filter: (auxData) => {
+            return auxData.rollType === "groundCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.groundCombat) {
                 const bonus = auxData.self.faction == "norr" ? -1 : 1;
@@ -863,6 +902,9 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.the_alastor",
+        filter: (auxData) => {
+            return auxData.rollType === "spaceCombat";
+        },
         applyEach: (unitAttrs, auxData) => {
             if (
                 unitAttrs.raw.ground &&
@@ -914,6 +956,12 @@ module.exports = [
         priority: "adjust",
         toggleActive: true,
         triggerNsid: "card.agenda:base.only/the_crown_of_thalnos",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -932,6 +980,14 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense" ||
+                auxData.rollType === "antiFighterBarrage" ||
+                auxData.rollType === "bombardment"
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             // antiFighterBarrage.
             let best = false;
@@ -1005,6 +1061,12 @@ module.exports = [
         priority: "mutate",
         toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannonOffense" ||
+                auxData.rollType === "spaceCannonDefense"
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             if (auxData.self.has("space_dock")) {
                 unitAttrsSet.addSpecialUnit(
@@ -1026,6 +1088,12 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerFactionAbility: "unrelenting",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -1044,6 +1112,9 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.agent.letnev:pok/viscount_unlenn",
+        filter: (auxData) => {
+            return auxData.rollType === "spaceCombat";
+        },
         applyAll: (unitAttrsSet, auxData) => {
             let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
@@ -1073,6 +1144,9 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.visz_el_vir",
+        filter: (auxData) => {
+            return auxData.self.has("mech");
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.unit === "mech" && unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.extraDice =
