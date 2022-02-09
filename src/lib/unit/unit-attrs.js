@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const _ = require("../../wrapper/lodash-wrapper");
 const locale = require("../locale");
+const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
@@ -106,10 +107,10 @@ class UnitAttrs {
     }
 
     /**
-     * Find player's unit upgrades.
+     * Find player's unit upgrades, EXCLUDES FACTION OVERRIDES!
      *
      * @param {number} playerSlot
-     * @returns {Array.<UnitAttrs>} upgrades in level order
+     * @returns {Array.<UnitAttrs>} upgrades
      */
     static getPlayerUnitUpgrades(playerSlot) {
         assert(typeof playerSlot === "number");
@@ -143,14 +144,36 @@ class UnitAttrs {
             }
 
             // Found a unit upgrade!  Add it to the list.
-            if (!unitUpgrades.includes(unitUpgrade)) {
+            unitUpgrades.push(unitUpgrade);
+        }
+
+        return unitUpgrades;
+    }
+
+    /**
+     * Get faction-intrisic unit overrides.  These are only the base level
+     * unit upgrades, higher level ones require the card in play (detected
+     * by getPlayerUnitUpgrades).
+     *
+     * @param {Faction} faction
+     * @returns {Array.<UnitAttrs>} upgrades
+     */
+    static getFactionUnitUpgrades(faction) {
+        assert(faction instanceof Faction);
+
+        const unitUpgrades = [];
+        for (const factionUnit of faction.raw.units) {
+            const unitUpgrade = UnitAttrs.getNsidNameUnitUpgrade(factionUnit);
+            assert(unitUpgrade);
+            // Only find base-level overrides (higher-level upgrades require the card).
+            if (
+                !unitUpgrade.raw.upgradeLevel ||
+                unitUpgrade.raw.upgradeLevel === 1
+            ) {
                 unitUpgrades.push(unitUpgrade);
             }
         }
-
-        // TODO XXX APPLY FACTION UNITS!
-
-        return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades);
+        return unitUpgrades;
     }
 
     // ------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AuxDataBuilder, AuxData } = require("./auxdata");
+const { Faction } = require("../faction/faction");
 const { System } = require("../system/system");
 
 it("constructor", () => {
@@ -9,7 +10,7 @@ it("constructor", () => {
 
 it("rich constructor", () => {
     const playerSlot = 7;
-    const faction = {}; // TODO XXX
+    const faction = Faction.getByNsidName("arborec");
     const hex = "<0,0,0>";
     const activatingPlayerSlot = 8;
     const activeSystem = System.getByTileNumber(18);

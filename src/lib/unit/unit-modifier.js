@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
@@ -94,7 +95,7 @@ class UnitModifier {
     }
 
     /**
-     * Find player's unit modifiers.
+     * Find player's unit modifiers, EXCLUDES FACTION MODIFIERS!
      *
      * @param {number} playerSlot
      * @param {string} withOwner - self, opponent, any
@@ -142,6 +143,37 @@ class UnitModifier {
 
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier);
+        }
+
+        return unitModifiers;
+    }
+
+    /**
+     * Get faction-intrinsic unit modifiers based on faction abilities.
+     *
+     * @param {Faction} faction
+     * @param {string} withOwner - self, opponent, any
+     * @returns {Array.<unitModifier>} modifiers
+     */
+    static getFactionUnitModifiers(faction, withOwner) {
+        assert(faction instanceof Faction);
+        assert(typeof withOwner === "string");
+        assert(OWNER[withOwner]);
+
+        const unitModifiers = [];
+        for (const factionAbility of faction.raw.abilities) {
+            const unitModifier = _factionAbilityToUnitModifier[factionAbility];
+            if (unitModifier) {
+                // Enfoce modifier type (self, opponent, any).
+                if (unitModifier.raw !== "any") {
+                    // Not an "any", require it be of "withType".
+                    if (unitModifier.raw.owner !== withOwner) {
+                        continue;
+                    }
+
+                    unitModifiers.push(unitModifier);
+                }
+            }
         }
         return unitModifiers;
     }
