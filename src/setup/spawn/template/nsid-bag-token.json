@@ -6,5 +6,7 @@
     "bag.token:base/infantry_1": "2D8CEDFA410679881E5DE1ABB7FDE97F",
     "bag.token:base/infantry_3": "F9CA00B54686360C97E584AC6ADBFD0C",
     "bag.token:base/tradegood_commodity_1": "7DFAF0594B6DD7DCF8668EBA9E871BD8",
-    "bag.token:base/tradegood_commodity_3": "8142976C4893E4AD049501B10959C665"
+    "bag.token:base/tradegood_commodity_3": "8142976C4893E4AD049501B10959C665",
+    "bag.token.command:base/*": "9B1CF539407041F971C4279D64A79D9B",
+    "bag.token.control:base/*": "F27C043642293592D082B28C869C34E8"
 }

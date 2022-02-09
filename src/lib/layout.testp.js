@@ -22,7 +22,9 @@ let _layoutMode = false;
 const UNIT_COUNT = 11;
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
+// eslint-disable-next-line no-unused-vars
 const SUPPLY_COUNT = 3;
+// eslint-disable-next-line no-unused-vars
 const DISTANCE_BETWEEN_SUPPLY = 12;
 
 for (const action of Object.values(ACTION)) {
@@ -56,8 +58,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         const arcOrigin = obj.getPosition();
         _layout = new Layout()
             .setCenter(marker.getPosition())
-            .setCount(SUPPLY_COUNT)
-            .setDistanceBetween(DISTANCE_BETWEEN_SUPPLY)
+            .setCount(UNIT_COUNT)
+            .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
             .layoutArc(arcOrigin)
             .drawDebug();
         _layoutMode = actionName;

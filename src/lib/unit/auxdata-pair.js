@@ -401,10 +401,20 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
+        // Filter out duplicates and then let modifiers remove themselves.
+        let modifiers = selfAuxData.unitModifiers;
         // Make sure there are no duplicates (paranoia).
-        selfAuxData.unitModifiers.filter(
+        modifiers = modifiers.filter(
             (value, index, self) => self.indexOf(value) === index
         );
+        modifiers = modifiers.filter((modifier) => {
+            if (!modifier.raw.filter) {
+                return true; // no filter
+            }
+            return modifier.raw.filter(selfAuxData);
+        });
+        selfAuxData.unitModifiers.length = 0; // clears
+        selfAuxData.unitModifiers.push(...modifiers);
 
         // Apply in mutate -> adjust -> choose order.
         UnitModifier.sortPriorityOrder(selfAuxData.unitModifiers);

@@ -98,6 +98,7 @@ class AutoRoller {
             .setActivatingPlayerSlot(this._activatingPlayerSlot)
             .setActiveSystem(this._activeSystem)
             .setActivePlanet(planet)
+            .setRollType(rollType)
             .build();
 
         // Build opponent.
@@ -117,6 +118,7 @@ class AutoRoller {
             .setActivatingPlayerSlot(this._activatingPlayerSlot)
             .setActiveSystem(this._activeSystem)
             .setActivePlanet(planet)
+            .setRollType(rollType)
             .build();
 
         new AuxDataPair(aux1, aux2).fillPairSync();

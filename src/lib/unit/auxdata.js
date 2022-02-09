@@ -17,6 +17,7 @@ class AuxDataBuilder {
         this._activatingPlayerSlot = -1;
         this._activeSystem = false;
         this._activePlanet = false;
+        this._rollType = false;
     }
 
     /**
@@ -68,6 +69,7 @@ class AuxDataBuilder {
     }
 
     /**
+     * Set active system, may be false.
      *
      * @param {System} system
      * @returns {AuxDataBuilder} self for chaining
@@ -79,6 +81,7 @@ class AuxDataBuilder {
     }
 
     /**
+     * Set active planet, may be false.
      *
      * @param {Planet} planet
      * @returns {AuxDataBuilder} self for chaining
@@ -86,6 +89,18 @@ class AuxDataBuilder {
     setActivePlanet(planet) {
         assert(!planet || planet instanceof Planet);
         this._activePlanet = planet;
+        return this;
+    }
+
+    /**
+     * Set combat type ("antiFighterBarrage").
+     *
+     * @param {string} rollType
+     * @returns {AuxDataBuilder} self for chaining
+     */
+    setRollType(rollType) {
+        assert(typeof rollType === "string");
+        this._rollType = rollType;
         return this;
     }
 
