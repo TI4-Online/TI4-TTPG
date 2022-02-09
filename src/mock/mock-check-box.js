@@ -1,12 +1,12 @@
 const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
-const MockTextWidgetBase = require("./mock-text-widget-base");
+const TextWidgetBase = require("./mock-text-widget-base");
 
-class Button extends MockTextWidgetBase {
+class Button extends TextWidgetBase {
     constructor(data) {
         super(data);
     }
 
-    onClicked = new TriggerableMulticastDelegate();
+    onCheckStateChanged = new TriggerableMulticastDelegate();
 }
 
 module.exports = Button;

@@ -18,6 +18,10 @@ globalEvents.TI4 = {
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(),
+
+    // Called when a Strategy Card selection is done by a player
+    // <(object: card, player:Player) => void>
+    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
 require("./global/numpad-actions");

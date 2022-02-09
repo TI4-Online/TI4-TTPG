@@ -1,3 +1,5 @@
+const Rotator = require("./mock-rotator");
+
 /**
  * Mock https://api.tabletop-playground.com/classes/_api_.vector.html
  */
@@ -26,6 +28,14 @@ class Vector {
 
     magnitudeSquared() {
         return this.x * this.x + this.y * this.y + this.z * this.z;
+    }
+
+    rotateAngleAxis() {
+        return this;
+    }
+
+    findLookAtRotation() {
+        return new Rotator();
     }
 }
 

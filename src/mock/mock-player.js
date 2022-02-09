@@ -6,6 +6,10 @@ class Player {
         this._slot = (data && data.slot) || 0;
     }
 
+    setName(name) {
+        this._name = name;
+    }
+
     getName() {
         return this._name;
     }
@@ -21,6 +25,12 @@ class Player {
     getSlot() {
         return this._slot;
     }
+
+    switchSlot(slot) {
+        this._slot = slot;
+    }
+
+    setPositionAndRotation() {}
 
     sendChatMessage(message, color) {}
 

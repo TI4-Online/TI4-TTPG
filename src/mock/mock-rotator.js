@@ -4,6 +4,10 @@ class Rotator {
         this.yaw = yaw;
         this.roll = roll;
     }
+
+    compose() {
+        return this;
+    }
 }
 
 module.exports = Rotator;

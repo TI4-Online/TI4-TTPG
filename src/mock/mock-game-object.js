@@ -15,7 +15,10 @@ class GameObject {
         this._primaryColor = data && data.primaryColor;
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
         this._savedData = (data && data.savedData) || "";
+        this._templateId = (data && data.templateId) || "";
         this._templateMetadata = (data && data.templateMetadata) || "";
+        this._uis = (data && data.uis) || [];
+        this._customActions = (data && data.customActions) || [];
     }
 
     onCreated = new TriggerableMulticastDelegate();
@@ -31,6 +34,10 @@ class GameObject {
     onSecondaryAction = new TriggerableMulticastDelegate();
     onSnapped = new TriggerableMulticastDelegate();
     onTick = new TriggerableMulticastDelegate();
+
+    addCustomAction(customAction) {
+        this._customActions.push(customAction);
+    }
 
     destroy() {
         this._isValid = false;
@@ -72,8 +79,21 @@ class GameObject {
         return this._savedData;
     }
 
+    getTemplateId() {
+        return this._templateId;
+    }
+
     getTemplateMetadata() {
         return this._templateMetadata;
+    }
+
+    addUI(ui) {
+        this._uis.push(ui);
+        ui._owningObject = this;
+    }
+
+    getUIs() {
+        return this._uis;
     }
 
     isValid() {
