@@ -107,10 +107,10 @@ class UnitAttrs {
     }
 
     /**
-     * Find player's unit upgrades.
+     * Find player's unit upgrades, EXCLUDES FACTION OVERRIDES!
      *
      * @param {number} playerSlot
-     * @returns {Array.<UnitAttrs>} upgrades in level order
+     * @returns {Array.<UnitAttrs>} upgrades
      */
     static getPlayerUnitUpgrades(playerSlot) {
         assert(typeof playerSlot === "number");
@@ -147,19 +147,29 @@ class UnitAttrs {
             unitUpgrades.push(unitUpgrade);
         }
 
-        // Apply base-level overrides (higher-level upgrades require the card).
-        const faction = Faction.getByPlayerSlot(playerSlot);
-        if (faction) {
-            for (const factionUnit of faction.raw.units) {
-                const unitUpgrade =
-                    UnitAttrs.getNsidNameUnitUpgrade(factionUnit);
-                if (unitUpgrade && unitUpgrade.upgradeLevel == 1) {
-                    unitUpgrades.push(unitUpgrade);
-                }
+        return unitUpgrades;
+    }
+
+    /**
+     * Get faction-intrisic unit overrides.  These are only the base level
+     * unit upgrades, higher level ones require the card in play (detected
+     * by getPlayerUnitUpgrades).
+     *
+     * @param {Faction} faction
+     * @returns {Array.<UnitAttrs>} upgrades
+     */
+    static getFactionUnitUpgrades(faction) {
+        assert(faction instanceof Faction);
+
+        const unitUpgrades = [];
+        for (const factionUnit of faction.raw.units) {
+            const unitUpgrade = UnitAttrs.getNsidNameUnitUpgrade(factionUnit);
+            // Only find base-level overrides (higher-level upgrades require the card).
+            if (unitUpgrade && unitUpgrade.upgradeLevel == 1) {
+                unitUpgrades.push(unitUpgrade);
             }
         }
-
-        return UnitAttrs.sortUpgradeLevelOrder(unitUpgrades);
+        return unitUpgrades;
     }
 
     // ------------------------------------------------------------------------

@@ -285,11 +285,18 @@ class AuxDataPair {
         const upgrades = UnitAttrs.getPlayerUnitUpgrades(
             selfAuxData.playerSlot
         );
+        if (selfAuxData.faction) {
+            const factionUpgrades = UnitAttrs.getFactionUnitUpgrades(
+                selfAuxData.faction
+            );
+            upgrades.push(...factionUpgrades);
+        }
 
         // Make sure there are no duplicates (paranoia).
         upgrades.filter((value, index, self) => self.indexOf(value) === index);
 
         // Apply upgrades now, so unit modifiers can see upgraded units.
+        UnitAttrs.sortUpgradeLevelOrder(upgrades);
         for (const upgrade of upgrades) {
             selfAuxData.unitAttrsSet.upgrade(upgrade);
         }
@@ -367,20 +374,21 @@ class AuxDataPair {
         assert(selfAuxData instanceof AuxData);
         assert(opponentAuxData instanceof AuxData);
 
-        // Abort if anonymous AuxData.
-        if (selfAuxData.playerSlot < 0) {
-            return;
+        // Get faction-intrinsic modifiers (faction abilities).
+        if (selfAuxData.faction) {
+            const factionModifiers = UnitModifier.getFactionUnitModifiers(
+                selfAuxData.faction,
+                "self"
+            );
+            selfAuxData.unitModifiers.push(...factionModifiers);
         }
-
-        // TODO XXX LOOK UP FACTION BY PLAYER SLOT, ADD MODIFIERS TO AUX.FACTIONABILITIES!
-        for (const factionAbility of []) {
-            const unitModifier =
-                UnitModifier.getFactionAbilityUnitModifier(factionAbility);
-            if (unitModifier) {
-                selfAuxData.unitModifiers.push(unitModifier);
-            }
+        if (opponentAuxData.faction) {
+            const factionModifiers = UnitModifier.getFactionUnitModifiers(
+                opponentAuxData.faction,
+                "opponent"
+            );
+            selfAuxData.unitModifiers.push(...factionModifiers);
         }
-        // TODO XXX Repeat for opponent's "opponent" modifiers.
     }
 
     /**
