@@ -56,8 +56,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         const arcOrigin = obj.getPosition();
         _layout = new Layout()
             .setCenter(marker.getPosition())
-            .setCount(SUPPLY_COUNT)
-            .setDistanceBetween(DISTANCE_BETWEEN_SUPPLY)
+            .setCount(UNIT_COUNT)
+            .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
             .layoutArc(arcOrigin)
             .drawDebug();
         _layoutMode = actionName;

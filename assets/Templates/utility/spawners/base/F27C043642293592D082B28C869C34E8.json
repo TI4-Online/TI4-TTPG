@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "F27C043642293592D082B28C869C34E8",
 	"Name": "Control Token",
-	"Metadata": "bag.unit:base/carrier",
+	"Metadata": "bag.token.control:base/*",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
