@@ -14,6 +14,11 @@ const UNIT_MODIFIER_SCHEMA_JSON = {
         priority: { type: "string" }, // mutate, adjust, or choose
         toggleActive: { type: "boolean" },
         isCombat: { type: "boolean" },
+
+        // triggerIf (AuxData) => boolean, trigger if true.
+        // filter (AuxData) => boolean, called for triggered modifiers to discard.
+        // applyEach (UnitAttrs, AuxData) mutate UnitAttrs in place
+        // applyAll (UnitAttrsSet, AuxData) given all units (to choose?) mutate.
     },
     required: ["localeName", "localeDescription", "owner", "priority"],
 };

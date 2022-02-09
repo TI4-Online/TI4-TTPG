@@ -16,8 +16,8 @@ const { PROMISSORY_DECK_LOCAL_OFFSET } = require("./setup-generic-promissory");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
-    bagNsid: "bag:base/garbage",
-    bagLocalOffset: { x: -10, y: 23, z: 0 },
+    bagNsid: "bag.token.command:base/*",
+    bagLocalOffset: { x: -12, y: 24, z: 0 },
     bagType: 2, // regular
     bagTokenCount: 16,
     commandSheetLocalOffsets: [
@@ -37,8 +37,8 @@ const COMMAND_TOKENS = {
 
 const CONTROL_TOKENS = {
     tokenNsidType: "token.control",
-    bagNsid: "bag:base/garbage",
-    bagLocalOffset: { x: -22, y: 23, z: 0 },
+    bagNsid: "bag.token.control:base/*",
+    bagLocalOffset: { x: -18, y: 23, z: 0 },
     bagType: 1, // infinite
     bagTokenCount: 1,
 };

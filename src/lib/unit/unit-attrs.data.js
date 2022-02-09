@@ -199,7 +199,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.carrier.advanced_carrier",
         triggerNsid:
-            "card.technology.unit_upgrade.sol:franken.base/advanced_carrier_1",
+            "card.technology.unit_upgrade.sol:franken.base/advanced_carrier",
         capacity: 6,
     },
     {
@@ -216,7 +216,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.dreadnought.exotrireme",
         triggerNsid:
-            "card.technology.unit_upgrade.norr:franken.base/exotrireme_1",
+            "card.technology.unit_upgrade.norr:franken.base/exotrireme",
         bombardment: { dice: 2, hit: 4 },
     },
     {
@@ -232,7 +232,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.space_dock.floating_factory",
         triggerNsid:
-            "card.technology.unit_upgrade.saar:franken.base/floating_factory_1",
+            "card.technology.unit_upgrade.saar:franken.base/floating_factory",
         production: 5,
         move: 1,
         capacity: 4,
@@ -252,7 +252,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.fighter.hybrid_crystal_fighter",
         triggerNsid:
-            "card.technology.unit_upgrade.naalu:franken.base/hybrid_crystal_fighter_1",
+            "card.technology.unit_upgrade.naalu:franken.base/hybrid_crystal_fighter",
         spaceCombat: { hit: 8 },
     },
     {
@@ -269,7 +269,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.infantry.letani_warrior",
         triggerNsid:
-            "card.technology.unit_upgrade.arborec:franken.base/letani_warrior_1",
+            "card.technology.unit_upgrade.arborec:franken.base/letani_warrior",
         production: 1,
     },
     {
@@ -286,7 +286,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.war_sun.prototype_war_sun",
         triggerNsid:
-            "card.technology.unit_upgrade.muaat:franken.base/prototype_war_sun_1",
+            "card.technology.unit_upgrade.muaat:franken.base/prototype_war_sun",
         disablePlanetaryShield: true,
         sustainDamage: true,
         bombardment: { dice: 3, hit: 3 },
@@ -313,7 +313,7 @@ module.exports = [
         unit: "infantry",
         upgradeLevel: 1,
         localeName: "unit.infantry.spec_ops",
-        triggerNsid: "card.technology.unit_upgrade.sol:franken.base/spec_ops_1",
+        triggerNsid: "card.technology.unit_upgrade.sol:franken.base/spec_ops",
         groundCombat: { hit: 7 },
     },
     {
@@ -328,7 +328,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.dreadnought.super_dreadnought",
         triggerNsid:
-            "card.technology.unit_upgrade.l1z1x:franken.base/superdreadnought_1",
+            "card.technology.unit_upgrade.l1z1x:franken.base/superdreadnought",
         capacity: 2,
     },
     {
@@ -347,7 +347,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.destroyer.strike_wing_alpha",
         triggerNsid:
-            "card.technology.unit_upgrade.argent:franken.pok/strike_wing_alpha_1",
+            "card.technology.unit_upgrade.argent:franken.pok/strike_wing_alpha",
         spaceCombat: { hit: 8 },
         capacity: 1,
     },
@@ -366,7 +366,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.infantry.crimson_legionnaire",
         triggerNsid:
-            "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire_1",
+            "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire",
         groundCombat: { hit: 8 },
     },
     {
@@ -382,7 +382,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.cruiser.saturn_engine",
         triggerNsid:
-            "card.technology.unit_upgrade.ul:franken.pok/saturn_engine_1",
+            "card.technology.unit_upgrade.ul:franken.pok/saturn_engine",
         spaceCombat: { hit: 7 },
         capacity: 1,
     },
@@ -400,7 +400,7 @@ module.exports = [
         unit: "pds",
         upgradeLevel: 1,
         localeName: "unit.pds.hel_titan",
-        triggerNsid: "card.technology.unit_upgrade.ul:franken.pok/heltitan_1",
+        triggerNsid: "card.technology.unit_upgrade.ul:franken.pok/heltitan",
         groundCombat: { hit: 7, dice: 1 },
         planetaryShield: true,
         spaceCannon: { dice: 1, hit: 6 },
@@ -423,7 +423,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.space_dock.dimensional_tear",
         triggerNsid:
-            "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear_1",
+            "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear",
         production: 5,
     },
     {
@@ -713,7 +713,7 @@ module.exports = [
         unit: "flagship",
         upgradeLevel: 1,
         localeName: "unit.flagship.memoria_i",
-        triggerNsid: "card.technology.unit_upgrade.nomad:franken.pok/memoria_1",
+        triggerNsid: "card.technology.unit_upgrade.nomad:franken.pok/memoria",
         antiFighterBarrage: { dice: 3, hit: 8 },
         spaceCombat: { dice: 2, hit: 7 },
     },
