@@ -34,7 +34,7 @@ const FACTION_DATA = [
         faction: "letnev",
         home: 10,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["viscount_unlenn"],
             commanders: ["rear_admiral_farran"],
             heroes: ["darktalon_treilla"],
         },
@@ -58,7 +58,7 @@ const FACTION_DATA = [
         faction: "saar",
         home: 11,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["captain_mendosa"],
             commanders: ["rowl_sarrig"],
             heroes: ["gurno_aggero"],
         },
@@ -86,7 +86,7 @@ const FACTION_DATA = [
         faction: "muaat",
         home: 4,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["umbat"],
             commanders: ["magmus"],
             heroes: ["adjudicator_baal"],
         },
@@ -113,7 +113,7 @@ const FACTION_DATA = [
         faction: "hacan",
         home: 16,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["carth_of_golden_sands"],
             commanders: ["gila_the_silvertongue"],
             heroes: ["harrugh_gefhara"],
         },
@@ -136,7 +136,7 @@ const FACTION_DATA = [
         faction: "sol",
         home: 1,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["evelyn_delouis"],
             commanders: ["claire_gibson"],
             heroes: ["jace_x_4th_air_legion"],
         },
@@ -166,7 +166,7 @@ const FACTION_DATA = [
         faction: "creuss",
         home: 51,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["emissary_taivra"],
             commanders: ["sai_seravus"],
             heroes: ["riftwalker_meian"],
         },
@@ -189,7 +189,7 @@ const FACTION_DATA = [
         faction: "l1z1x",
         home: 6,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["i48s"],
             commanders: ["2ram"],
             heroes: ["the_helmsman"],
         },
@@ -213,7 +213,7 @@ const FACTION_DATA = [
         faction: "mentak",
         home: 2,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["suffi_an"],
             commanders: ["sula_mentarion"],
             heroes: ["ipswitch_loose_cannon"],
         },
@@ -237,7 +237,7 @@ const FACTION_DATA = [
         faction: "naalu",
         home: 9,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["zeu"],
             commanders: ["maban"],
             heroes: ["the_oracle"],
         },
@@ -271,7 +271,7 @@ const FACTION_DATA = [
         faction: "nekro",
         home: 8,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["nekro_malleon"],
             commanders: ["nekro_acidos"],
             heroes: ["unitdsgnflayesh"],
         },
@@ -299,7 +299,7 @@ const FACTION_DATA = [
         faction: "norr",
         home: 13,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["tro"],
             commanders: ["ghom_sekkus"],
             heroes: ["shval_harbinger"],
         },
@@ -327,7 +327,7 @@ const FACTION_DATA = [
         faction: "jolnar",
         home: 12,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["doctor_sucaban"],
             commanders: ["ta_zern"],
             heroes: ["rin_the_masters_legacy"],
         },
@@ -356,7 +356,7 @@ const FACTION_DATA = [
         faction: "winnu",
         home: 7,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["berekar_berekon"],
             commanders: ["rickar_rickani"],
             heroes: ["mathis_mathinus"],
         },
@@ -380,7 +380,7 @@ const FACTION_DATA = [
         faction: "xxcha",
         home: 14,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["ggrocuto_rinn"],
             commanders: ["elder_qanoj"],
             heroes: ["xxekir_grom"],
         },
@@ -404,7 +404,7 @@ const FACTION_DATA = [
         faction: "yin",
         home: 3,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["brother_milor"],
             commanders: ["brother_omar"],
             heroes: ["dannel_of_the_tenth"],
         },
@@ -427,7 +427,7 @@ const FACTION_DATA = [
         faction: "yssaril",
         home: 15,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["ssruu"],
             commanders: ["so_ata"],
             heroes: ["kyver_blade_and_key"],
         },
@@ -451,7 +451,7 @@ const FACTION_DATA = [
         faction: "nomad",
         home: 53,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["the_thundarian"],
             commanders: ["navarch_feng"],
             heroes: ["ahksyl_siven"],
         },
@@ -475,7 +475,7 @@ const FACTION_DATA = [
         faction: "vuilraith",
         home: 54,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["the_stillness_of_stars"],
             commanders: ["that_which_molds_flesh"],
             heroes: ["it_feeds_on_carrion"],
         },
@@ -504,7 +504,7 @@ const FACTION_DATA = [
         faction: "argent",
         home: 58,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["trilossa_aun_mirik"],
             commanders: ["trrakan_aun_zulok"],
             heroes: ["mirik_aun_sissiri"],
         },
@@ -533,7 +533,7 @@ const FACTION_DATA = [
         faction: "ul",
         home: 55,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["tellurian"],
             commanders: ["tungstantus"],
             heroes: ["ul_the_progenitor"],
         },
@@ -563,7 +563,7 @@ const FACTION_DATA = [
         faction: "empyrean",
         home: 56,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["acamar"],
             commanders: ["xuange"],
             heroes: ["conservator_procyon"],
         },
@@ -586,7 +586,7 @@ const FACTION_DATA = [
         faction: "mahact",
         home: 52,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["jae_mir_kan"],
             commanders: ["il_na_viroset"],
             heroes: ["airo_shir_aur"],
         },
@@ -615,7 +615,7 @@ const FACTION_DATA = [
         faction: "naazrokha",
         home: 57,
         leaders: {
-            agents: ["UNKNOWN_XXX"],
+            agents: ["garv_and_gunn"],
             commanders: ["dart_and_tai"],
             heroes: ["hesh_and_prit"],
         },
