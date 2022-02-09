@@ -82,16 +82,16 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.unit_upgrade.argent:franken.pok/quetzecoatl",
-		"1": "card.technology.unit_upgrade.argent:franken.pok/strike_wing_alpha_1",
+		"1": "card.technology.unit_upgrade.argent:franken.pok/strike_wing_alpha",
 		"2": "card.technology.unit_upgrade.empyrean:franken.pok/dynamo",
 		"3": "card.technology.unit_upgrade.mahact:franken.pok/arvicon_rex",
-		"4": "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire_1",
+		"4": "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire",
 		"5": "card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir",
-		"6": "card.technology.unit_upgrade.nomad:franken.pok/memoria_1",
-		"7": "card.technology.unit_upgrade.ul:franken.pok/heltitan_1",
+		"6": "card.technology.unit_upgrade.nomad:franken.pok/memoria",
+		"7": "card.technology.unit_upgrade.ul:franken.pok/heltitan",
 		"8": "card.technology.unit_upgrade.ul:franken.pok/ouranos",
-		"9": "card.technology.unit_upgrade.ul:franken.pok/saturn_engine_1",
-		"10": "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear_1",
+		"9": "card.technology.unit_upgrade.ul:franken.pok/saturn_engine",
+		"10": "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear",
 		"11": "card.technology.unit_upgrade.vuilraith:franken.pok/the_terror_between"
 	}
 }

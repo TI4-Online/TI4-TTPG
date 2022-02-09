@@ -5,31 +5,35 @@ const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const UNIT_ATTRS = require("./unit-attrs.data");
-const { world, Card, GameObject } = require("../../wrapper/api");
+const { world, Card } = require("../../wrapper/api");
 
 let _allUnitTypes = false;
 let _unitToDefaultRawAttrs = false;
 let _triggerNsidToUnitUpgrade = false;
+let _nsidNameToUnitUpgrade = false;
 
-function _getUnitUpgrade(gameObject) {
-    assert(gameObject instanceof GameObject);
-    if (!_triggerNsidToUnitUpgrade) {
-        _triggerNsidToUnitUpgrade = {};
-        for (const rawAttrs of UNIT_ATTRS) {
-            if (!rawAttrs.upgradeLevel) {
-                continue; // basic unit, not an upgrade
-            }
-            const unitUpgrade = new UnitAttrs(rawAttrs);
+function _maybeInit() {
+    if (_triggerNsidToUnitUpgrade) {
+        return; // already done
+    }
+    _triggerNsidToUnitUpgrade = {};
+    _nsidNameToUnitUpgrade = {};
+    for (const rawAttrs of UNIT_ATTRS) {
+        if (!rawAttrs.upgradeLevel) {
+            continue; // basic unit, not an upgrade
+        }
+        const unitUpgrade = new UnitAttrs(rawAttrs);
 
-            // Unit upgrade card.
-            if (rawAttrs.triggerNsid) {
-                assert(!_triggerNsidToUnitUpgrade[rawAttrs.triggerNsid]);
-                _triggerNsidToUnitUpgrade[rawAttrs.triggerNsid] = unitUpgrade;
-            }
+        // Unit override/upgrade card.
+        if (rawAttrs.triggerNsid) {
+            assert(!_triggerNsidToUnitUpgrade[rawAttrs.triggerNsid]);
+            _triggerNsidToUnitUpgrade[rawAttrs.triggerNsid] = unitUpgrade;
+
+            const parsed = ObjectNamespace.parseNsid(rawAttrs.triggerNsid);
+            assert(!_nsidNameToUnitUpgrade[parsed.name]);
+            _nsidNameToUnitUpgrade[parsed.name] = unitUpgrade;
         }
     }
-    const nsid = ObjectNamespace.getNsid(gameObject);
-    return _triggerNsidToUnitUpgrade[nsid];
 }
 
 /**
@@ -89,6 +93,19 @@ class UnitAttrs {
     }
 
     /**
+     * Lookup unit upgrade by the name portion of triggering NSID.
+     * Useful for finding per-faction overrides.
+     *
+     * @param {string} nsidName
+     * @returns {UnitAttrs}
+     */
+    static getNsidNameUnitUpgrade(nsidName) {
+        assert(typeof nsidName === "string");
+        _maybeInit();
+        return _nsidNameToUnitUpgrade[nsidName];
+    }
+
+    /**
      * Find player's unit upgrades.
      *
      * @param {number} playerSlot
@@ -97,9 +114,11 @@ class UnitAttrs {
     static getPlayerUnitUpgrades(playerSlot) {
         assert(typeof playerSlot === "number");
 
+        _maybeInit();
         const unitUpgrades = [];
         for (const obj of world.getAllObjects()) {
-            const unitUpgrade = _getUnitUpgrade(obj);
+            const nsid = ObjectNamespace.getNsid(obj);
+            const unitUpgrade = _triggerNsidToUnitUpgrade[nsid];
             if (!unitUpgrade) {
                 continue; // not a candidate
             }

@@ -3,7 +3,7 @@ const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { SystemSchema } = require("./system.schema");
 const { Card, GameObject } = require("../../wrapper/api");
-const SYSTEM_ATTRS = require("./system-attrs.data");
+const SYSTEM_ATTRS = require("./system.data");
 
 let _tileToSystem = false;
 let _planetLocaleNameToPlanet = false;
