@@ -10,17 +10,25 @@ const {
     ObjectType,
     Rotator,
     Vector,
-    world,
 } = require("../wrapper/api");
 const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("./setup-generic-promissory");
 
+const FACTION_SHEET = {
+    pos: {
+        x: -8,
+        y: -6,
+        z: 0,
+    },
+};
+
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
+    tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
-    bagLocalOffset: { x: -12, y: 24, z: 0 },
+    //bagPos: { x: -12, y: 24, z: 0 },
+    bagPos: { x: -13.71, y: 35.79, z: 0 },
     bagType: 2, // regular
-    bagTokenCount: 16,
     commandSheetLocalOffsets: [
         // Tactic
         { x: 6.7, y: -2.3, z: 1, yaw: -90 },
@@ -38,10 +46,11 @@ const COMMAND_TOKENS = {
 
 const CONTROL_TOKENS = {
     tokenNsidType: "token.control",
+    tokenCount: 1,
     bagNsid: "bag.token.control:base/*",
-    bagLocalOffset: { x: -18, y: 23, z: 0 },
     bagType: 1, // infinite
-    bagTokenCount: 1,
+    //bagPos: { x: -18, y: 23, z: 0 },
+    bagPos: { x: -7.55, y: 35.32, z: 0 },
 };
 
 const LEADERS = {
@@ -83,6 +92,7 @@ class SetupFaction extends AbstractSetup {
     }
 
     setup() {
+        this._setupFactionSheet();
         this._setupFactionTech();
         this._setupFactionPromissoryNotes();
 
@@ -99,6 +109,14 @@ class SetupFaction extends AbstractSetup {
 
         this._placeInitialCommandTokens(this._commandTokensBag);
         this._placeScoreboardOwnerToken(this._ownerTokensBag);
+    }
+
+    _setupFactionSheet() {
+        const sheetNsid = "sheet.faction:base/???"; // temporary until assets are in
+        const pos = this.playerDesk.localPositionToWorld(FACTION_SHEET.pos);
+        const rot = this.playerDesk.rot;
+        const sheet = Spawn.spawn(sheetNsid, pos, rot);
+        sheet.setObjectType(ObjectType.Ground);
     }
 
     _setupFactionTech() {
@@ -265,40 +283,8 @@ class SetupFaction extends AbstractSetup {
     }
 
     _setupFactionCommandControlTokens(tokenData) {
-        const pos = this.playerDesk.localPositionToWorld(
-            tokenData.bagLocalOffset
-        );
-        const rot = this.playerDesk.rot;
-        const playerSlot = this.playerDesk.playerSlot;
-        const color = this.playerDesk.color;
-
-        // Spawn bag.
-        const bagNsid = tokenData.bagNsid;
-        let bag = Spawn.spawn(bagNsid, pos, rot);
-        bag.clear(); // paranoia
-        bag.setObjectType(ObjectType.Ground);
-        bag.setPrimaryColor(color);
-        bag.setOwningPlayerSlot(playerSlot);
-
-        // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
-        if (bag.getType() !== tokenData.bagType) {
-            bag.setType(tokenData.bagType);
-            const json = bag.toJSONString();
-            bag.destroy();
-            bag = world.createObjectFromJSON(json, pos);
-            bag.setRotation(rot);
-        }
-
-        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.raw.source}/${this._faction.raw.faction}`;
-        const above = pos.add([0, 0, 10]);
-        for (let i = 0; i < tokenData.bagTokenCount; i++) {
-            const token = Spawn.spawn(tokenNsid, above, rot);
-            token.setPrimaryColor(color);
-            token.setOwningPlayerSlot(playerSlot);
-            bag.addObjects([token]);
-        }
-
-        return bag;
+        tokenData.tokenNsid = `${tokenData.tokenNsidType}:${this._faction.raw.source}/${this._faction.raw.faction}`;
+        return this.spawnTokensAndBag(tokenData);
     }
 
     _placeInitialCommandTokens(commandTokensBag) {
@@ -336,4 +322,4 @@ class SetupFaction extends AbstractSetup {
     }
 }
 
-module.exports = { SetupFaction };
+module.exports = { SetupFaction, FACTION_SHEET };

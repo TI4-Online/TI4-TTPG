@@ -1,10 +1,17 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectType } = require("../wrapper/api");
 const { Spawn } = require("./spawn/spawn");
+const { FACTION_SHEET } = require("./setup-faction");
 
 const SHEET_DATA = [
-    { nsid: "sheet:base/command", pos: { x: -4, y: 11, z: 6.5 } },
-    { nsid: "sheet:pok/leader", pos: { x: -4, y: -25, z: 6.5 } },
+    {
+        nsid: "sheet:base/command",
+        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y + 20.8, z: 6.5 },
+    },
+    {
+        nsid: "sheet:pok/leader",
+        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y - 19, z: 6.5 },
+    },
 ];
 
 class SetupSheets extends AbstractSetup {
