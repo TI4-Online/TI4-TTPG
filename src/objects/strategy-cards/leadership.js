@@ -1,13 +1,12 @@
 const {
-    onUiClosedClicked,
-    createStrategyCardUi,
     broadcastMessage,
+    onUiClosedClicked,
+    registerStrategyCard,
 } = require("./strategy-card");
 const {
-    globalEvents,
     Button,
     CheckBox,
-    GameObject,
+    Color,
     Slider,
     Text,
     VerticalBox,
@@ -29,6 +28,9 @@ function getPlayerSelectionBySlot(player) {
 }
 
 function createUiWidgetFactory() {
+    let headerText = new Text()
+        .setFontSize(20)
+        .setText(locale("strategy_card.leadership.text"));
     let primaryCheckBox = new CheckBox()
         .setFontSize(10)
         .setText(locale("strategy_card.leadership.text.primary"));
@@ -46,11 +48,12 @@ function createUiWidgetFactory() {
     closeButton.onClicked.add(onUiClosedClicked);
 
     let verticalBox = new VerticalBox();
+    verticalBox.addChild(headerText);
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(
         new Text()
             .setFontSize(10)
-            .setText(locale("strategy_card.leadership.text"))
+            .setText(locale("strategy_card.leadership.slider_text"))
     );
     verticalBox.addChild(slider);
     verticalBox.addChild(closeButton);
@@ -58,30 +61,12 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
-    // refObject not currently available in mock.  Fake it for testing.
-    const object = world.__isMock ? card : refObject;
-    if (
-        card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152" ||
-        object !== card
-    ) {
-        return;
-    }
-
+const onStrategyCardAdd = (card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
-    createStrategyCardUi(card, createUiWidgetFactory);
-});
-globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
-    // refObject not currently available in mock.  Fake it for testing.
-    const object = world.__isMock ? card : refObject;
-    if (
-        card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152" ||
-        object !== card
-    ) {
-        return;
-    }
+};
 
+const onStrategyCardSelectionDone = (card, player) => {
     let commandTokenCount = getPlayerSelectionBySlot(player).value;
     if (getPlayerSelectionBySlot(player).primary) commandTokenCount += 3;
 
@@ -89,13 +74,14 @@ globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
         playerName: player.getName(),
         commandTokenCount: commandTokenCount,
     });
-    broadcastMessage(message, player);
-});
+    broadcastMessage(message, {}, player);
+};
 
-// refObject not currently available in mock.  Fake it for testing.
-const object = world.__isMock ? new GameObject() : refObject;
-
-object.onDestroyed.add((obj) => {
-    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
-    globalEvents.TI4.onStrategyCardSelectionDone.remove(onStrategyCardDone);
-});
+registerStrategyCard(
+    refObject,
+    createUiWidgetFactory,
+    125,
+    new Color(0.925, 0.109, 0.141),
+    onStrategyCardAdd,
+    onStrategyCardSelectionDone
+);

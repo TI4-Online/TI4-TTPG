@@ -71,8 +71,14 @@ class SetupTableTokens extends AbstractSetup {
             }
         });
         nsids.forEach((nsid) => {
-            const token = Spawn.spawn(nsid, above, rot);
-            bag.addObjects([token]);
+            let count = 1;
+            if (nsid === "token.wormhole.exploration:pok/gamma") {
+                count = 3;
+            }
+            for (let i = 0; i < count; i++) {
+                const token = Spawn.spawn(nsid, above, rot);
+                bag.addObjects([token]);
+            }
         });
     }
 

@@ -14,23 +14,26 @@ class StrategyCardBorder extends Border {
     /**
      * Constructor of a new StrategyCardBorder.
      * To handle the item correct on triggered events, the associations
-     * <code>ui</code>, <code>card</code> and <code>playerDesk</code>
+     * <code>ui</code>, <code>card</code> and <code>playerDesk</code>, <code>height</code>
      * are necessary.
      *
      * @param data {object}
-     * @param data.card {GameObject} the strategy card containing the border
-     * @param data.desk {PlayerDesk} the player desk where the border will be placed
-     * @param data.ui {UIElement} the UIElement containing the border
+     * @param data.card {GameObject} The strategy card containing the border
+     * @param data.desk {PlayerDesk} The player desk where the border will be placed
+     * @param data.height {Integer} The height of the UI
+     * @param data.ui {UIElement} The UIElement containing the border
      */
     constructor(data) {
         assert(data.card instanceof GameObject);
         assert(data.desk instanceof PlayerDesk);
+        assert(Number.isInteger(data.height));
         assert(data.ui instanceof UIElement);
 
         super(data);
 
         this._card = data.card;
         this._desk = data.desk;
+        this._height = data.height;
         this._ui = data.ui;
     }
 
@@ -49,6 +52,13 @@ class StrategyCardBorder extends Border {
     }
 
     /**
+     * @returns {Integer} The height of the UI
+     */
+    get height() {
+        return this._height;
+    }
+
+    /**
      * @returns {UIElement} The playerDesk card associated with the border
      */
     get ui() {
@@ -63,6 +73,7 @@ class StrategyCardBorder extends Border {
         this._ui.useWidgetSize = false;
         this._ui.widget = this;
         this._ui.width = 350;
+        this._ui.height = this.height;
         this._ui.scale = 0.75;
         this._ui.position = this._desk.localPositionToWorld({
             x: 30,

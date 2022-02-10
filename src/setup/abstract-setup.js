@@ -3,7 +3,13 @@ const { ReplaceObjects } = require("./spawn/replace-objects");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
-const { Card, CardHolder, Rotator, world } = require("../wrapper/api");
+const {
+    Card,
+    CardHolder,
+    ObjectType,
+    Rotator,
+    world,
+} = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
@@ -214,6 +220,41 @@ class AbstractSetup {
             const index = hand.getNumCards();
             hand.insert(card, index);
         }
+    }
+
+    spawnTokensAndBag(tokenData) {
+        const pos = this.playerDesk.localPositionToWorld(tokenData.bagPos);
+        const rot = this.playerDesk.rot;
+        const playerSlot = this.playerDesk.playerSlot;
+        const color = this.playerDesk.color;
+
+        // Spawn bag.
+        const bagNsid = tokenData.bagNsid;
+        let bag = Spawn.spawn(bagNsid, pos, rot);
+        bag.clear(); // paranoia
+        bag.setObjectType(ObjectType.Ground);
+        bag.setPrimaryColor(color);
+        bag.setOwningPlayerSlot(playerSlot);
+
+        // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
+        if (bag.getType() !== tokenData.bagType) {
+            bag.setType(tokenData.bagType);
+            const json = bag.toJSONString();
+            bag.destroy();
+            bag = world.createObjectFromJSON(json, pos);
+            bag.setRotation(rot);
+        }
+
+        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.raw.source}/${this._faction.raw.faction}`;
+        const above = pos.add([0, 0, 10]);
+        for (let i = 0; i < tokenData.tokenCount; i++) {
+            const token = Spawn.spawn(tokenNsid, above, rot);
+            token.setPrimaryColor(color);
+            token.setOwningPlayerSlot(playerSlot);
+            bag.addObjects([token]);
+        }
+
+        return bag;
     }
 }
 

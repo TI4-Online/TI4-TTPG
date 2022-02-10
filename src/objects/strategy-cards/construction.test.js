@@ -1,3 +1,5 @@
+// This test is representing all strategy cards build with the registers-standard-card.js
+
 const {
     globalEvents,
     MockGameObject,
@@ -19,7 +21,7 @@ const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 global.world = new MockGameWorld({ allPlayers: [player1, player2] });
 
-require("./diplomacy");
+require("./construction");
 
 PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
@@ -33,7 +35,7 @@ describe("when a strategy card is played", () => {
         }
     });
 
-    it("and it is the diplomacy card", () => {
+    it("and it is the construction card", () => {
         let card = new MockGameObject();
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -64,34 +66,66 @@ describe("when a player has done the strategy selection", () => {
         jest.resetAllMocks();
     });
 
-    it("by selecting the primary button", () => {
+    it("by selecting the primary 1 space dock and 1 pds button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         const button = uis[0].widget.getChild().getChildren()[1];
         button.onClicked.trigger(button, player1);
 
         expect(player1Spy).toBeCalledWith(
-            "one uses the primary ability of Diplomacy.",
+            "one uses the primary ability of Construction (1 Space Dock and 1 PDS).",
             player1.getPlayerColor()
         );
         expect(player2Spy).toBeCalledWith(
-            "one uses the primary ability of Diplomacy.",
+            "one uses the primary ability of Construction (1 Space Dock and 1 PDS).",
             player1.getPlayerColor()
         );
     });
 
-    it("by selecting the secondary button", () => {
+    it("by selecting the primary 2 pds button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         const button = uis[0].widget.getChild().getChildren()[2];
         button.onClicked.trigger(button, player1);
 
         expect(player1Spy).toBeCalledWith(
-            "one uses the secondary ability of Diplomacy.",
+            "one uses the primary ability of Construction (2 PDS).",
             player1.getPlayerColor()
         );
         expect(player2Spy).toBeCalledWith(
-            "one uses the secondary ability of Diplomacy.",
+            "one uses the primary ability of Construction (2 PDS).",
+            player1.getPlayerColor()
+        );
+    });
+
+    it("by selecting the secondary 1 space dock button", () => {
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        const button = uis[0].widget.getChild().getChildren()[3];
+        button.onClicked.trigger(button, player1);
+
+        expect(player1Spy).toBeCalledWith(
+            "one uses the secondary ability of Construction (1 Space Dock).",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one uses the secondary ability of Construction (1 Space Dock).",
+            player1.getPlayerColor()
+        );
+    });
+
+    it("by selecting the secondary 1 pds button", () => {
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+
+        const button = uis[0].widget.getChild().getChildren()[4];
+        button.onClicked.trigger(button, player1);
+
+        expect(player1Spy).toBeCalledWith(
+            "one uses the secondary ability of Construction (1 PDS).",
+            player1.getPlayerColor()
+        );
+        expect(player2Spy).toBeCalledWith(
+            "one uses the secondary ability of Construction (1 PDS).",
             player1.getPlayerColor()
         );
     });
@@ -99,15 +133,15 @@ describe("when a player has done the strategy selection", () => {
     it("by selecting the pass button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        const button = uis[0].widget.getChild().getChildren()[3];
+        const button = uis[0].widget.getChild().getChildren()[5];
         button.onClicked.trigger(button, player1);
 
         expect(player1Spy).toBeCalledWith(
-            "one passes on Diplomacy.",
+            "one passes on Construction.",
             player1.getPlayerColor()
         );
         expect(player2Spy).toBeCalledWith(
-            "one passes on Diplomacy.",
+            "one passes on Construction.",
             player1.getPlayerColor()
         );
     });
