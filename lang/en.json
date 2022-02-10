@@ -461,5 +461,10 @@
     "strategy_card.diplomacy.message.secondary": "{playerName} uses the secondary ability of Diplomacy.",
     "strategy_card.diplomacy.message.pass": "{playerName} passes on Diplomacy.",
 
+    "strategy_card.politics.text": "Politics",
+    "strategy_card.politics.message.primary": "{playerName} uses the primary ability of Politics.",
+    "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
+    "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
