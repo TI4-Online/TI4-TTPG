@@ -263,6 +263,7 @@ class PlayerDesk {
         // Reset "claim seat" buttons.
         resetUnusedSeats();
     }
+
     /**
      * Get all player desks, accounting for current player count.
      * Player desks are read-only and shared, DO NOT MUTATE!
@@ -298,8 +299,8 @@ class PlayerDesk {
 
         // This might be called a lot, find without creating new objects.
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            const dx = position.x - playerDesk.pos.x;
-            const dy = position.y - playerDesk.pos.y;
+            const dx = position.x - playerDesk._center.x;
+            const dy = position.y - playerDesk._center.y;
             const dSq = dx * dx + dy * dy;
             if (dSq < closestDistanceSq) {
                 closestDistanceSq = dSq;
@@ -323,14 +324,20 @@ class PlayerDesk {
         const sizePoint = thicknessLine * 3;
 
         let i = 0;
-        for (const { pos, rot } of PlayerDesk.getPlayerDesks()) {
-            const dir = pos.add(
+        for (const { _center, rot } of PlayerDesk.getPlayerDesks()) {
+            const dir = _center.add(
                 rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
             );
             i++;
 
-            world.drawDebugPoint(pos, sizePoint, colorPoint, duration);
-            world.drawDebugLine(pos, dir, colorLine, duration, thicknessLine);
+            world.drawDebugPoint(_center, sizePoint, colorPoint, duration);
+            world.drawDebugLine(
+                _center,
+                dir,
+                colorLine,
+                duration,
+                thicknessLine
+            );
         }
     }
 
@@ -347,6 +354,10 @@ class PlayerDesk {
 
         const tbl = PLAYER_SLOT_COLORS[this._playerSlot];
         this._color = new Color(tbl.r, tbl.g, tbl.b, tbl.a);
+
+        // Pos is a bit to the right of the visual center of the main desk
+        // area.  Compute that visual center as well for "nearest" checks.
+        this._center = this.localPositionToWorld(new Vector(0, -6, 0));
     }
 
     get color() {
