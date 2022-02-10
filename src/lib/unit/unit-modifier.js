@@ -208,7 +208,7 @@ class UnitModifier {
     }
 
     /**
-     * Get faction abilility.
+     * Get faction ability.
      *
      * @param {string} factionAbility
      * @returns {unitModifier}

@@ -446,5 +446,20 @@
     "planet.ylir": "Ylir",
     "planet.zohbat": "Zohbat",
 
+    "strategy_card.close.button": "Close",
+    "strategy_card.message.all_resolved": "<<< All players have resolved the strategy card! >>>",
+    "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
+    "strategy_card.leadership.text": "Choose the amount of tokens gained with influence.",
+    "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
+
+    "strategy_card.base.button.primary": "Primary Ability",
+    "strategy_card.base.button.secondary": "Secondary Ability",
+    "strategy_card.base.button.pass": "Pass",
+
+    "strategy_card.diplomacy.text": "Diplomacy",
+    "strategy_card.diplomacy.message.primary": "{playerName} uses the primary ability of Diplomacy.",
+    "strategy_card.diplomacy.message.secondary": "{playerName} uses the secondary ability of Diplomacy.",
+    "strategy_card.diplomacy.message.pass": "{playerName} passes on Diplomacy.",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

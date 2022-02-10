@@ -11,6 +11,14 @@ class UIElement {
         this.widget = undefined;
         this.width = 160;
     }
+
+    getOwningPlayerSlot() {
+        return this._owningPlayerSlot;
+    }
+
+    getOwningObject() {
+        return this._owningObject;
+    }
 }
 
 module.exports = UIElement;

@@ -1,8 +1,10 @@
 // Export under the mock names so tests can be explicit they are not using TTPG objects.
 Object.assign(module.exports, {
+    MockBorder: require("./mock-border"),
     MockButton: require("./mock-button"),
     MockCard: require("./mock-card"),
     MockCardDetails: require("./mock-card-details"),
+    MockCheckBox: require("./mock-check-box"),
     MockColor: require("./mock-color"),
     MockContainer: require("./mock-container"),
     MockDice: require("./mock-dice"),
@@ -11,16 +13,21 @@ Object.assign(module.exports, {
     MockGlobalScriptingEvents: require("./mock-global-scripting-events"),
     MockPlayer: require("./mock-player"),
     MockRotator: require("./mock-rotator"),
+    MockSlider: require("./mock-slider"),
+    MockText: require("./mock-text"),
     MockTextWidgetBase: require("./mock-text-widget-base"),
     MockUIElement: require("./mock-ui-element"),
     MockVector: require("./mock-vector"),
+    MockVerticalBox: require("./mock-vertical-box"),
 });
 
 // Export under the TTPG api names for unaware consumers.
 Object.assign(module.exports, {
+    Border: module.exports.MockBorder,
     Button: module.exports.MockButton,
     Card: module.exports.MockCard,
     CardDetails: module.exports.MockCardDetails,
+    CheckBox: module.exports.MockCheckBox,
     Color: module.exports.MockColor,
     Container: module.exports.MockContainer,
     Dice: module.exports.MockDice,
@@ -29,9 +36,12 @@ Object.assign(module.exports, {
     GlobalScriptingEvents: module.exports.MockGlobalScriptingEvents,
     Player: module.exports.MockPlayer,
     Rotator: module.exports.MockRotator,
+    Slider: module.exports.MockSlider,
+    Text: module.exports.MockText,
     TextWidgetBase: module.exports.MockTextWidgetBase,
     UIElement: module.exports.MockUIElement,
     Vector: module.exports.MockVector,
+    VerticalBox: module.exports.MockVerticalBox,
 });
 
 // SHARE global objects.

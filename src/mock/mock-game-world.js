@@ -9,6 +9,7 @@ class GameWorld {
         this._allPlayers = data ? data.allPlayers : [];
         this._tableHeight = data ? data.tableHeight : 1;
         this._savedData = data ? data.savedData : "";
+        this._uis = data && data.uis ? data.uis : [];
     }
 
     get __isMock() {
@@ -35,7 +36,7 @@ class GameWorld {
 
     addUI(uiElement) {
         assert(uiElement instanceof UIElement);
-        // nop
+        this._uis.push(uiElement);
     }
 
     createObjectFromTemplate(templateId, position) {
@@ -80,13 +81,21 @@ class GameWorld {
         return this._tableHeight;
     }
 
+    getUIs() {
+        return this._uis;
+    }
+
     lineTrace(src, dst) {
         return [];
     }
 
-    removeUI(uiElement) {
+    removeUI(index) {
+        this._uis.splice(index, 1);
+    }
+
+    removeUIElement(uiElement) {
         assert(uiElement instanceof UIElement);
-        // nop
+        this._uis.splice(this._uis.indexOf(uiElement), 1);
     }
 
     setSavedData(value) {
