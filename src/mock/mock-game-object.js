@@ -41,6 +41,7 @@ class GameObject {
 
     destroy() {
         this._isValid = false;
+        this.onDestroyed.trigger(this);
     }
 
     getContainer() {

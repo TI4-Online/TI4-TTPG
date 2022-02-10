@@ -33,30 +33,8 @@ describe("when a strategy card is played", () => {
         }
     });
 
-    it("but its another one", () => {
-        let card = new MockGameObject({
-            templateId: "Some other card!",
-        });
-
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
-        expect(global.world.getUIs().length).toBe(0);
-    });
-
     it("and it is the diplomacy card", () => {
-        let card = new MockGameObject({
-            templateId: "2A40632D4704B3D7EE37C2AF646EE5BB",
-        });
-
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
-        expect(global.world.getUIs().length).toBe(2);
-    });
-
-    it("and it is the (revisited) diplomacy card", () => {
-        let card = new MockGameObject({
-            templateId: "09FA74F649473D09799D5799F2394D91",
-        });
+        let card = new MockGameObject();
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
@@ -65,9 +43,7 @@ describe("when a strategy card is played", () => {
 });
 
 describe("when a player has done the strategy selection", () => {
-    let card = new MockGameObject({
-        templateId: "2A40632D4704B3D7EE37C2AF646EE5BB",
-    });
+    let card = new MockGameObject();
 
     let player1Spy, player2Spy;
 
