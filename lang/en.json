@@ -448,7 +448,7 @@
 
     "strategy_card.close.button": "Close",
     "strategy_card.message.all_resolved": "<<< All players have resolved the strategy card! >>>",
-    
+
     "strategy_card.leadership.text": "Leadership",
     "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
     "strategy_card.leadership.slider_text": "Choose the amount of tokens gained with influence.",
@@ -467,7 +467,7 @@
     "strategy_card.politics.message.primary": "{playerName} uses the primary ability of Politics.",
     "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
     "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
-    
+
     "strategy_card.construction.text": "Construction",
     "strategy_card.construction.button.primary_1dock_1pds": "Primary (1 Space Dock and 1 PDS)",
     "strategy_card.construction.button.primary_2pds": "Primary (2 PDS)",
