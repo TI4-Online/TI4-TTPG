@@ -105,7 +105,7 @@ const PLAYER_DESKS = [
 ];
 
 const TAKE_SEAT_BUTTON = {
-    pos: { x: 25, y: -6, z: 0 },
+    pos: { x: 25, y: -6, z: 10 },
 };
 
 const SEAT_CAMERA = {
@@ -145,8 +145,11 @@ function resetUnusedSeats() {
             resetUnusedSeats();
         });
 
+        const pos = playerDesk.localPositionToWorld(TAKE_SEAT_BUTTON.pos);
+        pos.z = 10;
+
         const ui = new UIElement();
-        ui.position = playerDesk.localPositionToWorld(TAKE_SEAT_BUTTON.pos);
+        ui.position = pos;
         ui.rotation = playerDesk.rot;
         ui.widget = button;
 
