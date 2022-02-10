@@ -1,6 +1,5 @@
-// the "it(string, function)" style works with mocha and jest frameworks
-const { ObjectNamespace } = require("./object-namespace");
 const assert = require("assert");
+const { ObjectNamespace } = require("./object-namespace");
 const {
     MockCard,
     MockCardDetails,

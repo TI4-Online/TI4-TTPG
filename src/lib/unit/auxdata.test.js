@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
+const assert = require("assert");
 const { AuxDataBuilder, AuxData } = require("./auxdata");
 const { Faction } = require("../faction/faction");
 const { System } = require("../system/system");
