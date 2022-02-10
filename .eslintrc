@@ -16,6 +16,11 @@
         "no-extra-semi": 0
     },
     "globals": {
-        "it": "readonly"
+        "it": "readonly",
+        "describe": "readonly",
+        "afterEach": "readonly",
+        "beforeEach": "readonly",
+        "expect": "readonly",
+        "jest": "readonly"
     }
 }
