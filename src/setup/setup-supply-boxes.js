@@ -16,8 +16,10 @@ const SUPPLY_BOXES_LEFT = {
 };
 
 const SUPPLY_BOXES_RIGHT = {
-    shelfCenter: { x: -3.878, y: 35, z: 5 },
-    arcOrigin: { x: -9.003, y: 3.958, z: 5 },
+    //shelfCenter: { x: -3.878, y: 35, z: 5 },
+    //arcOrigin: { x: -9.003, y: 3.958, z: 5 },
+    shelfCenter: { x: 5.46, y: 30.4, z: 5 },
+    arcOrigin: { x: -12.164, y: -1.446, z: 5 },
     tokenNsids: [
         "token:base/tradegood_commodity_3",
         "token:base/tradegood_commodity_1", // "bottom"

@@ -165,6 +165,7 @@ const FACTION_DATA = [
         commodities: 4,
         faction: "creuss",
         home: 51,
+        homeSurrogate: 17,
         leaders: {
             agents: ["emissary_taivra"],
             commanders: ["sai_seravus"],
@@ -182,6 +183,17 @@ const FACTION_DATA = [
         },
         techs: ["wormhole_generator", "dimensional_splicer"],
         units: ["hil_colish", "icarus_drive"],
+        unpackExtra: [
+            {
+                tokenNsid: "token.wormhole.creuss:base/alpha",
+            },
+            {
+                tokenNsid: "token.wormhole.creuss:base/beta",
+            },
+            {
+                tokenNsid: "token.wormhole.creuss:pok/gamma",
+            },
+        ],
     },
     {
         abilities: ["assimilate", "harrow"],
@@ -260,6 +272,11 @@ const FACTION_DATA = [
             "hybrid_crystal_fighter_2",
             "iconoclast",
         ],
+        unpackExtra: [
+            {
+                tokenNsid: "token.naalu:base/zero",
+            },
+        ],
     },
     {
         abilities: [
@@ -292,6 +309,18 @@ const FACTION_DATA = [
         },
         techs: ["valefar_assimilator_x", "valefar_assimilator_y"],
         units: ["the_alastor", "mordred"],
+        unpackExtra: [
+            {
+                tokenNsid: "token.nekro:base/valefar_assimilator_x",
+            },
+            {
+                tokenNsid: "token.nekro:base/valefar_assimilator_y",
+            },
+            {
+                tokenNsid: "token.nekro:pok/dimensional_tear",
+                tokenCount: 3,
+            },
+        ],
     },
     {
         abilities: ["unrelenting"],
@@ -497,6 +526,12 @@ const FACTION_DATA = [
             "dimensional_tear_2",
             "reanimator",
         ],
+        unpackExtra: [
+            {
+                tokenNsid: "token.vuilraith:pok/dimensional_tear",
+                tokenCount: 3,
+            },
+        ],
     },
     {
         abilities: ["zeal", "raid_formation"],
@@ -555,6 +590,12 @@ const FACTION_DATA = [
             "heltitan",
             "heltitan_2",
             "hecatoncheires",
+        ],
+        unpackExtra: [
+            {
+                tokenNsid: "token.ul:pok/sleeper",
+                tokenCount: 5,
+            },
         ],
     },
     {
