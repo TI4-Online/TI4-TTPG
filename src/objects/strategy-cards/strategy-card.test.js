@@ -1,5 +1,6 @@
 const {
     globalEvents,
+    Color,
     MockButton,
     MockGameObject,
     MockGameWorld,
@@ -133,7 +134,7 @@ describe("when a strategy card UI is created", () => {
             b: 0,
         };
 
-        registerStrategyCard(card, widgetFactory);
+        registerStrategyCard(card, widgetFactory, 100);
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         // one UI per player
@@ -180,7 +181,7 @@ describe("when the close button is clicked in a players selection", () => {
             globalEvents.TI4.onStrategyCardSelectionDone,
             "trigger"
         );
-        registerStrategyCard(card, widgetFactory);
+        registerStrategyCard(card, widgetFactory, 100);
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[0], player1);
@@ -194,7 +195,7 @@ describe("when the close button is clicked in a players selection", () => {
             globalEvents.TI4.onStrategyCardSelectionDone,
             "trigger"
         );
-        registerStrategyCard(card, widgetFactory);
+        registerStrategyCard(card, widgetFactory, 100);
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[0], player2);
@@ -212,7 +213,7 @@ describe("when the close button is clicked in a players selection", () => {
             player2,
             "sendChatMessage"
         );
-        registerStrategyCard(card, widgetFactory);
+        registerStrategyCard(card, widgetFactory, 100);
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[1], player2);
@@ -241,6 +242,8 @@ describe("when registering a strategy card", () => {
         registerStrategyCard(
             card,
             widgetFactory,
+            100,
+            new Color(1, 0, 0),
             onStrategyCardPlayed,
             onStrategyCardSelectionDone
         );
@@ -268,6 +271,8 @@ describe("when registering a strategy card", () => {
         registerStrategyCard(
             card,
             widgetFactory,
+            100,
+            new Color(1, 0, 0),
             onStrategyCardPlayed,
             onStrategyCardSelectionDone
         );

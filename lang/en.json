@@ -448,8 +448,10 @@
 
     "strategy_card.close.button": "Close",
     "strategy_card.message.all_resolved": "<<< All players have resolved the strategy card! >>>",
+
+    "strategy_card.leadership.text": "Leadership",
     "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
-    "strategy_card.leadership.text": "Choose the amount of tokens gained with influence.",
+    "strategy_card.leadership.slider_text": "Choose the amount of tokens gained with influence.",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
 
     "strategy_card.base.button.primary": "Primary Ability",
@@ -460,6 +462,32 @@
     "strategy_card.diplomacy.message.primary": "{playerName} uses the primary ability of Diplomacy.",
     "strategy_card.diplomacy.message.secondary": "{playerName} uses the secondary ability of Diplomacy.",
     "strategy_card.diplomacy.message.pass": "{playerName} passes on Diplomacy.",
+
+    "strategy_card.politics.text": "Politics",
+    "strategy_card.politics.message.primary": "{playerName} uses the primary ability of Politics.",
+    "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
+    "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
+
+    "strategy_card.construction.text": "Construction",
+    "strategy_card.construction.button.primary_1dock_1pds": "Primary (1 Space Dock and 1 PDS)",
+    "strategy_card.construction.button.primary_2pds": "Primary (2 PDS)",
+    "strategy_card.construction.button.secondary_1dock": "Secondary (1 Space Dock)",
+    "strategy_card.construction.button.secondary_1pds": "Secondary (1 PDS)",
+    "strategy_card.construction.message.primary_1dock_1pds": "{playerName} uses the primary ability of Construction (1 Space Dock and 1 PDS).",
+    "strategy_card.construction.message.primary_2pds": "{playerName} uses the primary ability of Construction (2 PDS).",
+    "strategy_card.construction.message.secondary_1dock": "{playerName} uses the secondary ability of Construction (1 Space Dock).",
+    "strategy_card.construction.message.secondary_1pds": "{playerName} uses the secondary ability of Construction (1 PDS).",
+    "strategy_card.construction.message.pass": "{playerName} passes on Construction.",
+
+    "strategy_card.warfare.text": "Warfare",
+    "strategy_card.warfare.message.primary": "{playerName} uses the primary ability of Warfare.",
+    "strategy_card.warfare.message.secondary": "{playerName} uses the secondary ability of Warfare.",
+    "strategy_card.warfare.message.pass": "{playerName} passes on Warfare.",
+
+    "strategy_card.imperial.text": "Imperial",
+    "strategy_card.imperial.message.primary": "{playerName} uses the primary ability of Imperial.",
+    "strategy_card.imperial.message.secondary": "{playerName} uses the secondary ability of Imperial.",
+    "strategy_card.imperial.message.pass": "{playerName} passes on Imperial.",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
