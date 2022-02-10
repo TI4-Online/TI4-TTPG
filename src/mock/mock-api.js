@@ -48,8 +48,13 @@ Object.assign(module.exports, {
 const globalEvents = new module.exports.GlobalScriptingEvents();
 const world = new module.exports.GameWorld();
 
+// 'refObject' is tricky, it should be per-object and potentially meaningful.
+// Create a dummy catch-all, specific tests can override if needed.
+const refObject = new module.exports.GameObject();
+
 // Create TTPG runtime objects.
 Object.assign(module.exports, {
+    refObject,
     globalEvents,
     world,
 });

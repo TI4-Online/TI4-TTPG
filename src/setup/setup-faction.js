@@ -73,6 +73,8 @@ const LEADERS = {
 };
 const EXTRA_LEADER_OFFSET_Y = -2;
 
+const EXTRA_OFFSET = [0, 5, 0];
+
 class SetupFaction extends AbstractSetup {
     constructor(playerDesk, factionNsidName) {
         assert(playerDesk instanceof PlayerDesk);
@@ -106,6 +108,8 @@ class SetupFaction extends AbstractSetup {
             this._setupFactionCommandControlTokens(COMMAND_TOKENS);
         this._ownerTokensBag =
             this._setupFactionCommandControlTokens(CONTROL_TOKENS);
+
+        this._unpackExtra();
 
         this._placeInitialCommandTokens(this._commandTokensBag);
         this._placeScoreboardOwnerToken(this._ownerTokensBag);
@@ -314,6 +318,36 @@ class SetupFaction extends AbstractSetup {
             ]);
             const token = commandTokensBag.takeAt(0, pos, true);
             token.setRotation(rot);
+        });
+    }
+
+    _unpackExtra() {
+        const extra = this._faction.raw.unpackExtra;
+        if (!extra) {
+            console.log(`no extras for ${this._faction.raw.faction}`);
+            return; // nothing to unpack
+        }
+        const pos = PROMISSORY_DECK_LOCAL_OFFSET;
+        let nextPos = new Vector(pos.x, pos.y, pos.z).add(EXTRA_OFFSET);
+        extra.forEach((extra) => {
+            if (extra.tokenNsid && extra.bagNsid) {
+                extra.bagPos = nextPos;
+                this.spawnTokensAndBag(extra);
+                nextPos = nextPos.add(EXTRA_OFFSET);
+            } else if (extra.tokenNsid) {
+                const count = extra.tokenCount || 1;
+                for (let i = 0; i < count; i++) {
+                    const pos = this.playerDesk.localPositionToWorld(nextPos);
+                    const rot = this.playerDesk.rot;
+                    const playerSlot = this.playerDesk.playerSlot;
+                    console.log(`spawning "${extra.tokenNsid} at ${pos}"`);
+                    const token = Spawn.spawn(extra.tokenNsid, pos, rot);
+                    token.setOwningPlayerSlot(playerSlot);
+                    nextPos = nextPos.add(EXTRA_OFFSET);
+                }
+            } else {
+                throw new Error("unknown faction.unpackExtra");
+            }
         });
     }
 

@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
+const assert = require("assert");
 const locale = require("../locale");
 const { System, Planet } = require("./system");
 const { SystemSchema } = require("./system.schema");

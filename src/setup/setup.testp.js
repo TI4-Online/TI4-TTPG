@@ -1,3 +1,4 @@
+const { CleanFaction } = require("./clean-faction");
 const { PlayerDesk } = require("../lib/player-desk");
 const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
@@ -29,6 +30,7 @@ const ACTION = {
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
     DEMO_FACTION: "*Demo faction",
+    CLEAN_FACTIONS: "*Clean factions",
 };
 
 for (const action of Object.values(ACTION)) {
@@ -100,6 +102,20 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         ];
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {
             new SetupFaction(playerDesk, factions.shift()).setup();
+        }
+    } else if (actionName === ACTION.CLEAN_FACTIONS) {
+        const factions = [
+            "ul",
+            "arborec",
+            "creuss",
+            "muaat",
+            "nekro",
+            "argent",
+            "vuilraith",
+            "winnu",
+        ];
+        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+            new CleanFaction(playerDesk, factions.shift()).clean();
         }
     }
 });

@@ -1,4 +1,4 @@
-const Ajv = require("ajv");
+const Ajv = require("../../wrapper/ajv-wrapper");
 
 const FACTION_SCHEMA = {
     type: "object",
@@ -64,13 +64,16 @@ const FACTION_SCHEMA = {
                 war_sun: { type: "integer" },
             },
         },
-        uppackExtra: {
-            type: "object",
-            properties: {
-                tokenNsid: { type: "string" }, // "token.wormhole.creuss:base/alpha"
-                tokenCount: { type: "integer" },
-                bagNsid: { type: "string" }, // optinal, if given make token bag
-                bagType: { type: "integer" },
+        unpackExtra: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: {
+                    tokenNsid: { type: "string" }, // "token.wormhole.creuss:base/alpha"
+                    tokenCount: { type: "integer" },
+                    bagNsid: { type: "string" }, // optinal, if given make token bag
+                    bagType: { type: "integer" },
+                },
             },
         },
     },
@@ -107,11 +110,6 @@ class FactionSchema {
      * @returns {boolean} true if valid
      */
     static validate(faction, onError) {
-        // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
-        if (!Ajv) {
-            //console.warn("Ajv not available");
-            return true;
-        }
         if (!_factionValidator) {
             _factionValidator = new Ajv({ useDefaults: true }).compile(
                 FACTION_SCHEMA

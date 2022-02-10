@@ -2,7 +2,7 @@
 	"Type": "Card",
 	"GUID": "A1440B9FEF4A5D3AF09F5B943EB32592",
 	"Name": "Faction Sheet stand-in",
-	"Metadata": "sheet.facton:base/???",
+	"Metadata": "sheet.faction:base/???",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -61,5 +61,6 @@
 	},
 	"CardMetadata":
 	{
+		"0": "sheet.faction:base/???"
 	}
 }

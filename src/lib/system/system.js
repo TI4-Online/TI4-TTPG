@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
-const { SystemSchema } = require("./system.schema");
 const { Card, GameObject } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
@@ -90,7 +89,6 @@ class System {
     }
 
     constructor(systemAttrs) {
-        assert(SystemSchema.validate(systemAttrs));
         this._attrs = systemAttrs;
 
         this._planets = [];

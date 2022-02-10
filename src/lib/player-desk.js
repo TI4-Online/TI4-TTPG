@@ -19,26 +19,26 @@ const {
  * Color values corresponding to TTPG player slots.
  */
 const PLAYER_SLOT_COLORS = [
-    { r: 0, g: 0.427, b: 0.858, a: 1 },
-    { r: 0.141, g: 1, b: 0.141, a: 1 },
-    { r: 0.572, g: 0, b: 0, a: 1 },
-    { r: 0, g: 0.286, b: 0.286, a: 1 },
-    { r: 0.286, g: 0, b: 0.572, a: 1 },
-    { r: 1, g: 0.427, b: 0.713, a: 1 },
-    { r: 0.858, g: 0.427, b: 0, a: 1 },
-    { r: 0.572, g: 0.286, b: 0, a: 1 },
-    { r: 0.713, g: 0.858, b: 1, a: 1 },
-    { r: 1, g: 1, b: 0.427, a: 1 },
-    { r: 0, g: 0.572, b: 0.572, a: 1 },
-    { r: 1, g: 0.713, b: 0.466, a: 1 },
-    { r: 0.713, g: 0.427, b: 1, a: 1 },
-    { r: 0.427, g: 0.713, b: 1, a: 1 },
-    { r: 0, g: 1, b: 1, a: 1 },
-    { r: 0, g: 0, b: 1, a: 1 },
-    { r: 1, g: 0, b: 0, a: 1 },
-    { r: 0.215, g: 0.215, b: 0.215, a: 1 },
-    { r: 1, g: 1, b: 1, a: 1 },
-    { r: 0, g: 0, b: 0, a: 1 },
+    { r: 0, g: 0.427, b: 0.858 },
+    { r: 0.141, g: 1, b: 0.141 },
+    { r: 0.572, g: 0, b: 0 },
+    { r: 0, g: 0.286, b: 0.286 },
+    { r: 0.286, g: 0, b: 0.572 },
+    { r: 1, g: 0.427, b: 0.713 },
+    { r: 0.858, g: 0.427, b: 0 },
+    { r: 0.572, g: 0.286, b: 0 },
+    { r: 0.713, g: 0.858, b: 1 },
+    { r: 1, g: 1, b: 0.427 },
+    { r: 0, g: 0.572, b: 0.572 },
+    { r: 1, g: 0.713, b: 0.466 },
+    { r: 0.713, g: 0.427, b: 1 },
+    { r: 0.427, g: 0.713, b: 1 },
+    { r: 0, g: 1, b: 1 },
+    { r: 0, g: 0, b: 1 },
+    { r: 1, g: 0, b: 0 },
+    { r: 0.215, g: 0.215, b: 0.215 },
+    { r: 1, g: 1, b: 1 },
+    { r: 0, g: 0, b: 0 },
 ];
 
 /**
@@ -48,6 +48,7 @@ const PLAYER_SLOT_COLORS = [
 const PLAYER_DESKS = [
     {
         colorName: "pink",
+        hexColor: "#F46FCD",
         pos: { x: 6.0544, y: 149.218, z: 3 },
         yaw: 180.0,
         defaultPlayerSlot: 5,
@@ -55,6 +56,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "green",
+        hexColor: "#007306",
         pos: { x: 96.9075, y: 99.7789, z: 3 },
         yaw: 117.5,
         defaultPlayerSlot: 1,
@@ -62,6 +64,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "red",
+        hexColor: "#CB0000",
         pos: { x: 119.842, y: -6.0544, z: 3 },
         yaw: 90.0,
         defaultPlayerSlot: 16,
@@ -69,6 +72,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "yellow",
+        hexColor: "#D6B700",
         pos: { x: 91.3162, y: -110.52, z: 3 },
         yaw: 62.5,
         defaultPlayerSlot: 9,
@@ -76,6 +80,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "orange",
+        hexColor: "#F3631C",
         pos: { x: -6.05441, y: -150.691, z: 3 },
         yaw: 0,
         defaultPlayerSlot: 6,
@@ -83,6 +88,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "purple",
+        hexColor: "#7400B7",
         pos: { x: -96.29, y: -99.7789, z: 3 },
         yaw: -62.5,
         defaultPlayerSlot: 4,
@@ -90,6 +96,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "blue",
+        hexColor: "#07B2FF",
         pos: { x: -119.224, y: 6.05442, z: 3 },
         yaw: -90.0,
         defaultPlayerSlot: 15,
@@ -97,6 +104,7 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "white",
+        hexColor: "#8B8B8B",
         pos: { x: -90.6987, y: 110.52, z: 3 },
         yaw: -117.5,
         defaultPlayerSlot: 18,
@@ -104,8 +112,12 @@ const PLAYER_DESKS = [
     },
 ];
 
+const TAKE_SEAT_BUTTON = {
+    pos: { x: 25, y: -6, z: 10 },
+};
+
 const SEAT_CAMERA = {
-    pos: { x: -90, y: -10, z: 100 },
+    pos: { x: -90, y: -6, z: 100 },
 };
 
 const DEFAULT_PLAYER_COUNT = 6;
@@ -141,8 +153,11 @@ function resetUnusedSeats() {
             resetUnusedSeats();
         });
 
+        const pos = playerDesk.localPositionToWorld(TAKE_SEAT_BUTTON.pos);
+        pos.z = 10;
+
         const ui = new UIElement();
-        ui.position = playerDesk.pos.add([0, 0, 5]);
+        ui.position = pos;
         ui.rotation = playerDesk.rot;
         ui.widget = button;
 
@@ -256,6 +271,7 @@ class PlayerDesk {
         // Reset "claim seat" buttons.
         resetUnusedSeats();
     }
+
     /**
      * Get all player desks, accounting for current player count.
      * Player desks are read-only and shared, DO NOT MUTATE!
@@ -291,8 +307,8 @@ class PlayerDesk {
 
         // This might be called a lot, find without creating new objects.
         for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            const dx = position.x - playerDesk.pos.x;
-            const dy = position.y - playerDesk.pos.y;
+            const dx = position.x - playerDesk._center.x;
+            const dy = position.y - playerDesk._center.y;
             const dSq = dx * dx + dy * dy;
             if (dSq < closestDistanceSq) {
                 closestDistanceSq = dSq;
@@ -316,14 +332,20 @@ class PlayerDesk {
         const sizePoint = thicknessLine * 3;
 
         let i = 0;
-        for (const { pos, rot } of PlayerDesk.getPlayerDesks()) {
-            const dir = pos.add(
+        for (const { _center, rot } of PlayerDesk.getPlayerDesks()) {
+            const dir = _center.add(
                 rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
             );
             i++;
 
-            world.drawDebugPoint(pos, sizePoint, colorPoint, duration);
-            world.drawDebugLine(pos, dir, colorLine, duration, thicknessLine);
+            world.drawDebugPoint(_center, sizePoint, colorPoint, duration);
+            world.drawDebugLine(
+                _center,
+                dir,
+                colorLine,
+                duration,
+                thicknessLine
+            );
         }
     }
 
@@ -338,8 +360,20 @@ class PlayerDesk {
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
 
-        const tbl = PLAYER_SLOT_COLORS[this._playerSlot];
-        this._color = new Color(tbl.r, tbl.g, tbl.b, tbl.a);
+        if (attrs.hexColor) {
+            const m = attrs.hexColor.match(/^#([0-9a-f]{6})$/i)[1];
+            const r = parseInt(m.substr(0, 2), 16);
+            const g = parseInt(m.substr(2, 2), 16);
+            const b = parseInt(m.substr(4, 2), 16);
+            this._color = new Color(r / 255, g / 255, b / 255, 1);
+        } else {
+            const tbl = PLAYER_SLOT_COLORS[this._playerSlot];
+            this._color = new Color(tbl.r, tbl.g, tbl.b, 1);
+        }
+
+        // Pos is a bit to the right of the visual center of the main desk
+        // area.  Compute that visual center as well for "nearest" checks.
+        this._center = this.localPositionToWorld(new Vector(0, -6, 0));
     }
 
     get color() {

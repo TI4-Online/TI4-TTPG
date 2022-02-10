@@ -3,7 +3,6 @@ const locale = require("../locale");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
-const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { world, Card } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
@@ -240,7 +239,6 @@ class UnitModifier {
      */
     constructor(modifier) {
         assert(typeof modifier === "object");
-        assert(UnitModifierSchema.validate(modifier));
         this._modifier = modifier;
     }
 
@@ -285,11 +283,6 @@ class UnitModifier {
         }
         if (this._modifier.applyAll) {
             this._modifier.applyAll(unitAttrsSet, auxData);
-        }
-
-        // Paranoid verify modifier did not break it.
-        for (const unitAttrs of unitAttrsSet.values()) {
-            assert(unitAttrs.validate());
         }
     }
 }

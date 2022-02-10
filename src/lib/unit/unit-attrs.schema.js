@@ -1,4 +1,4 @@
-const Ajv = require("ajv");
+const Ajv = require("../../wrapper/ajv-wrapper");
 
 const UNIT_ATTRS_SCHEMA_JSON = {
     $id: "http://example.com/lib/unit/unit_attrs.json",
@@ -124,11 +124,6 @@ class UnitAttrsSchema {
      * @returns {boolean} true if valid
      */
     static validate(unit, onError) {
-        // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
-        if (!Ajv) {
-            //console.warn("Ajv not available");
-            return true;
-        }
         if (!_unitAttrsValidator) {
             _unitAttrsValidator = new Ajv({ useDefaults: true }).compile(
                 UNIT_ATTRS_SCHEMA_JSON

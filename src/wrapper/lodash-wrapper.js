@@ -1,12 +1,18 @@
 // Temporary workaround for node_modules require bug on MacOS
-let lodash;
+let lodash = false;
 try {
-    lodash = require("lodash");
+    //lodash = require("lodash");
 } catch {
     lodash = false;
 }
 if (!lodash) {
-    lodash = require("../node_modules/lodash/lodash.js");
+    try {
+        lodash = require("../node_modules/lodash/lodash.js");
+    } catch {
+        // Another location for jest tests
+        lodash = require("../../node_modules/lodash/lodash.js");
+    }
 }
+
 //console.log(`LODASH ${typeof lodash}`)
 module.exports = lodash;

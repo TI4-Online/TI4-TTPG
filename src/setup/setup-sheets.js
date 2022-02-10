@@ -14,6 +14,8 @@ const SHEET_DATA = [
     },
 ];
 
+const SHEET_SCALE_Z = 0.16;
+
 class SetupSheets extends AbstractSetup {
     constructor(playerDesk) {
         super();
@@ -34,6 +36,7 @@ class SetupSheets extends AbstractSetup {
         obj.setObjectType(ObjectType.Ground);
         obj.setOwningPlayerSlot(playerSlot);
         obj.setPrimaryColor(color);
+        obj.setScale([1, 1, SHEET_SCALE_Z]);
     }
 }
 
