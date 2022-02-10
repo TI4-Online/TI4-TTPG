@@ -1,13 +1,11 @@
 const {
-    onUiClosedClicked,
-    createStrategyCardUi,
     broadcastMessage,
+    onUiClosedClicked,
+    registerStrategyCard,
 } = require("./strategy-card");
 const {
-    globalEvents,
     Button,
     CheckBox,
-    GameObject,
     Slider,
     Text,
     VerticalBox,
@@ -58,30 +56,12 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-globalEvents.TI4.onStrategyCardPlayed.add((card, player) => {
-    // refObject not currently available in mock.  Fake it for testing.
-    const object = world.__isMock ? card : refObject;
-    if (
-        card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152" ||
-        object !== card
-    ) {
-        return;
-    }
-
+const onStrategyCardAdd = (card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
-    createStrategyCardUi(card, createUiWidgetFactory);
-});
-globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
-    // refObject not currently available in mock.  Fake it for testing.
-    const object = world.__isMock ? card : refObject;
-    if (
-        card.getTemplateId() !== "851C062745CD8B4CEEB4BEB3F1057152" ||
-        object !== card
-    ) {
-        return;
-    }
+};
 
+const onStrategyCardSelectionDone = (card, player) => {
     let commandTokenCount = getPlayerSelectionBySlot(player).value;
     if (getPlayerSelectionBySlot(player).primary) commandTokenCount += 3;
 
@@ -89,13 +69,12 @@ globalEvents.TI4.onStrategyCardSelectionDone.add((card, player) => {
         playerName: player.getName(),
         commandTokenCount: commandTokenCount,
     });
-    broadcastMessage(message, player);
-});
+    broadcastMessage(message, {}, player);
+};
 
-// refObject not currently available in mock.  Fake it for testing.
-const object = world.__isMock ? new GameObject() : refObject;
-
-object.onDestroyed.add((obj) => {
-    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
-    globalEvents.TI4.onStrategyCardSelectionDone.remove(onStrategyCardDone);
-});
+registerStrategyCard(
+    refObject,
+    createUiWidgetFactory,
+    onStrategyCardAdd,
+    onStrategyCardSelectionDone
+);
