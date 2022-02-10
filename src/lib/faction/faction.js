@@ -1,5 +1,4 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { FactionSchema } = require("./faction.schema");
 const { FACTION_DATA } = require("./faction.data");
 
 let _nsidNameToFaction = false;
@@ -27,8 +26,6 @@ class Faction {
     }
 
     constructor(factionAttrs) {
-        assert(FactionSchema.validate(factionAttrs));
-
         this._factionAttrs = factionAttrs;
     }
 

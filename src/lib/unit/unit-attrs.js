@@ -4,7 +4,6 @@ const locale = require("../locale");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
-const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world, Card } = require("../../wrapper/api");
 
@@ -185,7 +184,6 @@ class UnitAttrs {
      */
     constructor(attrs) {
         assert(typeof attrs == "object");
-        assert(UnitAttrsSchema.validate(attrs));
         this._attrs = _.cloneDeep(attrs);
     }
 
@@ -214,15 +212,6 @@ class UnitAttrs {
      */
     get raw() {
         return this._attrs;
-    }
-
-    /**
-     * Assert this UnitAttrs complies with the schema.
-     *
-     * @param {function} onError - optional, called with the error
-     */
-    validate(onError) {
-        return UnitAttrsSchema.validate(this._attrs, onError);
     }
 
     /**

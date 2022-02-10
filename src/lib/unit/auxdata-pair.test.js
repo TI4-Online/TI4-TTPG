@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
+const assert = require("assert");
 const { AuxDataPair } = require("./auxdata-pair");
 const {
     MockCard,

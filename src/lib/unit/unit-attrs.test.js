@@ -131,24 +131,6 @@ it("name", () => {
     assert.equal(typeof carrier.name, "string");
 });
 
-it("validate", () => {
-    const carrier = UnitAttrs.getDefaultUnitAttrs("carrier");
-    assert(carrier instanceof UnitAttrs);
-    carrier.validate();
-
-    carrier.raw.unit = false;
-
-    // Fail by returning a bool, empty error handler to suppress console log.
-    assert(!carrier.validate((err) => {}));
-
-    // Fail using custom error handler.
-    assert.throws(() => {
-        carrier.validate((err) => {
-            throw new Error(err);
-        });
-    });
-});
-
 it("upgrade", () => {
     const carrier = UnitAttrs.getDefaultUnitAttrs("carrier");
     const carrier2 = _getUnitUpgrade("carrier");
