@@ -466,5 +466,17 @@
     "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
     "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
 
+    
+    "strategy_card.construction.text": "Construction",
+    "strategy_card.construction.button.primary-1dock-1pds": "Primary (1 Space Dock and 1 PDS)",
+    "strategy_card.construction.button.primary-2pds": "Primary (2 PDS)",
+    "strategy_card.construction.button.secondary-1dock": "Secondary (1 Space Dock)",
+    "strategy_card.construction.button.secondary-1pds": "Secondary (1 PDS)",
+    "strategy_card.construction.message.primary-1dock-1pds": "{playerName} uses the primary ability of Construction (1 Space Dock and 1 PDS).",
+    "strategy_card.construction.message.primary-2pds": "{playerName} uses the primary ability of Construction (2 PDS).",
+    "strategy_card.construction.message.secondary-1dock": "{playerName} uses the secondary ability of Construction (1 Space Dock).",
+    "strategy_card.construction.message.secondary-1pds": "{playerName} uses the secondary ability of Construction (1 PDS).",
+    "strategy_card.construction.message.pass": "{playerName} passes on Construction.",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
