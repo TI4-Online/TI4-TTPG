@@ -2,9 +2,9 @@
 // Remove this when TTPG fixes it, fix requires to use real assert.
 // Usage: const assert = require('./wrapper/assert')
 
-let assert;
+let assert = false;
 try {
-    assert = require("assert");
+    //assert = require("assert");
 } catch {
     assert = false;
 }

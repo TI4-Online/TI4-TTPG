@@ -1,4 +1,4 @@
-const Ajv = require("ajv");
+const Ajv = require("../../wrapper/ajv-wrapper");
 
 const PLANET_SCHEMA = {
     type: "object",
@@ -87,11 +87,6 @@ class SystemSchema {
      * @returns {boolean} true if valid
      */
     static validate(system, onError) {
-        // TODO XXX REMOVE THIS WHEN MACOS REQUIRE NODE_MODULES WORKS
-        if (!Ajv) {
-            //console.warn("Ajv not available");
-            return true;
-        }
         if (!_systemValidator) {
             _systemValidator = new Ajv({ useDefaults: true }).compile(
                 SYSTEM_SCHEMA
