@@ -4,6 +4,7 @@
  */
 const { Container, Rotator, globalEvents, world } = require("../wrapper/api");
 const { Facing } = require("../lib/facing");
+const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("../setup/spawn/spawn");
 const locale = require("../lib/locale");
 const assert = require("../wrapper/assert-wrapper");
@@ -103,8 +104,11 @@ function getBag(nsid, playerSlot) {
     assert(typeof playerSlot === "number");
 
     for (const obj of world.getAllObjects()) {
+        if (obj.getContainer()) {
+            continue; // ignore inside container
+        }
         if (!(obj instanceof Container)) {
-            continue;
+            continue; // ignore non-container
         }
 
         if (isInfiniteContainer(obj)) {
@@ -204,6 +208,13 @@ const _ignoreSet = new Set();
 
 function onR(obj, player) {
     const playerSlot = player.getSlot();
+
+    // Only seated players may use R.
+    if (!PlayerDesk.getByPlayerSlot(playerSlot)) {
+        const msg = locale("ui.error.only_seated_players_may_r");
+        player.sendChatMessage(msg, [1, 0, 0]);
+        return;
+    }
 
     // Careful, if multiple objects selected ALL get a separate call!
     // Pressing "R" outside any selected object still calls for each.

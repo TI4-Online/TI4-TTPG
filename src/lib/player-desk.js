@@ -294,6 +294,20 @@ class PlayerDesk {
     }
 
     /**
+     * Get player desk by owning player slot.
+     *
+     * @param {number} playerSlot
+     * @returns {PlayerDesk|undefined}
+     */
+    static getByPlayerSlot(playerSlot) {
+        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+            if (playerDesk.playerSlot === playerSlot) {
+                return playerDesk;
+            }
+        }
+    }
+
+    /**
      * Get player desk closest to this position.
      *
      * @param {Vector} position
