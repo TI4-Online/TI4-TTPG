@@ -3,7 +3,13 @@ const {
     onUiClosedClicked,
     registerStrategyCard,
 } = require("./strategy-card");
-const { Button, Text, VerticalBox, refObject } = require("../../wrapper/api");
+const {
+    Button,
+    Color,
+    Text,
+    VerticalBox,
+    refObject,
+} = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
 const onPrimary1Dock1PdsClicked = (button, player) => {
@@ -90,4 +96,9 @@ const widgetFactory = () => {
     return verticalBox;
 };
 
-registerStrategyCard(refObject, widgetFactory, 170);
+registerStrategyCard(
+    refObject,
+    widgetFactory,
+    170,
+    new Color(0.054, 0.45, 0.188)
+);

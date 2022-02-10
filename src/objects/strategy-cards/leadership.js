@@ -6,6 +6,7 @@ const {
 const {
     Button,
     CheckBox,
+    Color,
     Slider,
     Text,
     VerticalBox,
@@ -80,6 +81,7 @@ registerStrategyCard(
     refObject,
     createUiWidgetFactory,
     125,
+    new Color(0.925, 0.109, 0.141),
     onStrategyCardAdd,
     onStrategyCardSelectionDone
 );

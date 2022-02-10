@@ -6,7 +6,7 @@ const {
 const { Button, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
-module.exports = function registerStandardCard(refObject, name) {
+module.exports = function registerStandardCard(refObject, name, color) {
     const onPrimaryClicked = (button, player) => {
         broadcastMessage(
             `strategy_card.${name}.message.primary`,
@@ -61,5 +61,5 @@ module.exports = function registerStandardCard(refObject, name) {
         return verticalBox;
     };
 
-    registerStrategyCard(refObject, widgetFactory, 120);
-}
+    registerStrategyCard(refObject, widgetFactory, 120, color);
+};

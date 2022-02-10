@@ -27,17 +27,20 @@ function getTopLevelWidget(element) {
  * their removal in case of the destruction of the object.
  * The play card is mandatory while the
  *
- * @param refObject The object instance of the strategy card
- * @param widgetFactory A factory creating the UI for each player
- * @param [onStrategyCardPlayed] Event handler of the "Play" button pressed.
+ * @param {GameObject} refObject The object instance of the strategy card
+ * @param {function} widgetFactory A factory creating the UI for each player
+ * @param {Integer} height Height of the UI for each player
+ * @param {Color} color Color of the UI for each player
+ * @param {function} [onStrategyCardPlayed] Event handler of the "Play" button pressed.
  * This function only is required if the Play button should do more than just creating a UI.
  * The whole UI creation should belong into the widgetFactory to separate concerns.
- * @param [onStrategyCardSelectionDone] Event handler for the close
+ * @param {function} [onStrategyCardSelectionDone] Event handler for the closing event.
  */
 function registerStrategyCard(
     refObject,
     widgetFactory,
     height,
+    color,
     onStrategyCardPlayed,
     onStrategyCardSelectionDone
 ) {
@@ -62,7 +65,7 @@ function registerStrategyCard(
     const onStrategyCardPlayedGlobalEventHandler = (card, player) => {
         // strategy card tests have a mocked object not matching the card
         if (object !== card && !world.__isMock) return;
-        createStrategyCardUi(card, widgetFactory, height);
+        createStrategyCardUi(card, widgetFactory, height, color);
         if (!onStrategyCardPlayed) return;
         onStrategyCardPlayed(card, player);
     };
@@ -98,7 +101,7 @@ function registerStrategyCard(
     }
 }
 
-function createStrategyCardUi(card, widgetFactory, height) {
+function createStrategyCardUi(card, widgetFactory, height, color) {
     const cardId = card.getId();
 
     // clear existing UIs from the card instance
@@ -117,7 +120,7 @@ function createStrategyCardUi(card, widgetFactory, height) {
             desk: playerDesk,
             height: height,
             ui: ui,
-        }).setColor(playerDesk.color);
+        }).setColor(color);
         border.setChild(widgetFactory());
         border.spawnUi();
 

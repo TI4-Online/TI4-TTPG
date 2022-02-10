@@ -1,3 +1,5 @@
+// This test is representing all strategy cards build with the registers-standard-card.js
+
 const {
     globalEvents,
     MockGameObject,
