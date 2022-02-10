@@ -105,6 +105,21 @@ it("control token", () => {
     assert.equal(result.faction, "arborec");
 });
 
+it("faction sheet", () => {
+    const id = "sheet.faction:base/arborec";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const not = new MockGameObject({ templateMetadata: "not:not/not" });
+
+    assert(ObjectNamespace.isFactionSheet(obj));
+    assert(!ObjectNamespace.isFactionSheet(not));
+
+    const result = ObjectNamespace.parseFactionSheet(obj);
+    assert.equal(result.type, "sheet.faction");
+    assert.equal(result.source, "base");
+    assert.equal(result.name, "arborec");
+    assert.equal(result.faction, "arborec");
+});
+
 it("strategy card", () => {
     const id = "tile.strategy:base/leadership.omega";
     const obj = new MockGameObject({ templateMetadata: id });

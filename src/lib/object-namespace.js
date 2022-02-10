@@ -145,6 +145,19 @@ class ObjectNamespace {
         return result;
     }
 
+    static isFactionSheet(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid.startsWith("sheet.faction");
+    }
+
+    static parseFactionSheet(obj) {
+        const result = ObjectNamespace.parseGeneric(obj);
+        if (result) {
+            result.faction = result.name;
+        }
+        return result;
+    }
+
     static isStrategyCard(obj) {
         const nsid = ObjectNamespace.getNsid(obj);
         return nsid.startsWith("tile.strategy");
