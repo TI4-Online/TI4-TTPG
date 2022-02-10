@@ -1,40 +1,34 @@
 const {
-    onUiClosedClicked,
-    createStrategyCardUi,
     broadcastMessage,
+    onUiClosedClicked,
+    registerStrategyCard,
 } = require("./strategy-card");
-const {
-    globalEvents,
-    Button,
-    GameObject,
-    Text,
-    VerticalBox,
-    refObject,
-} = require("../../wrapper/api");
+const { Button, Text, VerticalBox, refObject } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
-function onPrimaryClicked(button, player) {
-    const message = locale("strategy_card.diplomacy.message.primary", {
-        playerName: player.getName(),
-    });
-    broadcastMessage(message, player);
-}
+const onPrimaryClicked = (button, player) => {
+    broadcastMessage(
+        "strategy_card.diplomacy.message.primary",
+        { playerName: player.getName() },
+        player
+    );
+};
+const onSecondaryClicked = (button, player) => {
+    broadcastMessage(
+        "strategy_card.diplomacy.message.secondary",
+        { playerName: player.getName() },
+        player
+    );
+};
+const onPassClicked = (button, player) => {
+    broadcastMessage(
+        "strategy_card.diplomacy.message.pass",
+        { playerName: player.getName() },
+        player
+    );
+};
 
-function onSecondaryClicked(button, player) {
-    const message = locale("strategy_card.diplomacy.message.secondary", {
-        playerName: player.getName(),
-    });
-    broadcastMessage(message, player);
-}
-
-function onPassClicked(button, player) {
-    const message = locale("strategy_card.diplomacy.message.pass", {
-        playerName: player.getName(),
-    });
-    broadcastMessage(message, player);
-}
-
-function createUiWidgetFactory() {
+const widgetFactory = () => {
     let headerText = new Text()
         .setFontSize(10)
         .setText(locale("strategy_card.diplomacy.text"));
@@ -64,27 +58,6 @@ function createUiWidgetFactory() {
     verticalBox.addChild(passButton);
 
     return verticalBox;
-}
-
-const onStrategyCardPlayed = (card) => {
-    // refObject not currently available in mock.  Fake it for testing.
-    const object = world.__isMock ? card : refObject;
-    if (
-        (card.getTemplateId() !== "2A40632D4704B3D7EE37C2AF646EE5BB" &&
-            card.getTemplateId() !== "09FA74F649473D09799D5799F2394D91") ||
-        object !== card
-    ) {
-        return;
-    }
-
-    createStrategyCardUi(card, createUiWidgetFactory);
 };
 
-globalEvents.TI4.onStrategyCardPlayed.add(onStrategyCardPlayed);
-
-// refObject not currently available in mock.  Fake it for testing.
-const object = world.__isMock ? new GameObject() : refObject;
-
-object.onDestroyed.add((obj) => {
-    globalEvents.TI4.onStrategyCardPlayed.remove(onStrategyCardPlayed);
-});
+registerStrategyCard(refObject, widgetFactory);

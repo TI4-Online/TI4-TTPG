@@ -25,25 +25,13 @@ PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
 PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
-describe("when a strategy card is played", () => {
+describe("when a leadership card", () => {
     afterEach(() => {
         global.world.getUIs().map((ui) => global.world.removeUIElement(ui));
     });
 
-    it("but its another one", () => {
-        let card = new MockGameObject({
-            templateId: "Some other card!",
-        });
-
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
-        expect(global.world.getUIs().length).toBe(0);
-    });
-
-    it("and it is leadership", () => {
-        let card = new MockGameObject({
-            templateId: "851C062745CD8B4CEEB4BEB3F1057152",
-        });
+    it("is played", () => {
+        let card = new MockGameObject();
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
@@ -51,25 +39,9 @@ describe("when a strategy card is played", () => {
     });
 });
 
-describe("when a player has done the strategy selection", () => {
-    it("and it is another card", () => {
-        let card = new MockGameObject({
-            templateId: "Some other card!",
-        });
-        const player1Spy = jest.spyOn(player1, "sendChatMessage");
-        const player2Spy = jest.spyOn(player2, "sendChatMessage");
-
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
-
-        expect(player1Spy).toBeCalledTimes(0);
-        expect(player2Spy).toBeCalledTimes(0);
-    });
-
-    it("and it is the leadership card", () => {
-        let card = new MockGameObject({
-            templateId: "851C062745CD8B4CEEB4BEB3F1057152",
-        });
+describe("when a player has done the leadership selection", () => {
+    it("it sends messages", () => {
+        let card = new MockGameObject();
         const player1Spy = jest.spyOn(player1, "sendChatMessage");
         const player2Spy = jest.spyOn(player2, "sendChatMessage");
 

@@ -4,7 +4,7 @@ const MockColor = require("./mock-color");
 class TextWidgetBase extends MockWidget {
     constructor(data) {
         super(data);
-        this._text = "text";
+        this._text = (data && data.text) || "text";
         this._fontSize = 12;
         this._textColor = new MockColor(1, 1, 1, 1);
         this._isBold = false;
