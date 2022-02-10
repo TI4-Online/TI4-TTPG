@@ -27,6 +27,9 @@ function getPlayerSelectionBySlot(player) {
 }
 
 function createUiWidgetFactory() {
+    let headerText = new Text()
+        .setFontSize(20)
+        .setText(locale("strategy_card.leadership.text"));
     let primaryCheckBox = new CheckBox()
         .setFontSize(10)
         .setText(locale("strategy_card.leadership.text.primary"));
@@ -44,11 +47,12 @@ function createUiWidgetFactory() {
     closeButton.onClicked.add(onUiClosedClicked);
 
     let verticalBox = new VerticalBox();
+    verticalBox.addChild(headerText);
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(
         new Text()
             .setFontSize(10)
-            .setText(locale("strategy_card.leadership.text"))
+            .setText(locale("strategy_card.leadership.slider_text"))
     );
     verticalBox.addChild(slider);
     verticalBox.addChild(closeButton);
@@ -75,6 +79,7 @@ const onStrategyCardSelectionDone = (card, player) => {
 registerStrategyCard(
     refObject,
     createUiWidgetFactory,
+    125,
     onStrategyCardAdd,
     onStrategyCardSelectionDone
 );

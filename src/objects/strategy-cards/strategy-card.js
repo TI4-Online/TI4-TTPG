@@ -37,6 +37,7 @@ function getTopLevelWidget(element) {
 function registerStrategyCard(
     refObject,
     widgetFactory,
+    height,
     onStrategyCardPlayed,
     onStrategyCardSelectionDone
 ) {
@@ -48,6 +49,7 @@ function registerStrategyCard(
 
     assert(object instanceof GameObject);
     assert(typeof widgetFactory === "function");
+    assert(Number.isInteger(height));
     assert(
         onStrategyCardPlayed === undefined ||
             typeof onStrategyCardSelectionDone === "function"
@@ -60,7 +62,7 @@ function registerStrategyCard(
     const onStrategyCardPlayedGlobalEventHandler = (card, player) => {
         // strategy card tests have a mocked object not matching the card
         if (object !== card && !world.__isMock) return;
-        createStrategyCardUi(card, widgetFactory);
+        createStrategyCardUi(card, widgetFactory, height);
         if (!onStrategyCardPlayed) return;
         onStrategyCardPlayed(card, player);
     };
@@ -96,7 +98,7 @@ function registerStrategyCard(
     }
 }
 
-function createStrategyCardUi(card, widgetFactory) {
+function createStrategyCardUi(card, widgetFactory, height) {
     const cardId = card.getId();
 
     // clear existing UIs from the card instance
@@ -111,9 +113,10 @@ function createStrategyCardUi(card, widgetFactory) {
     for (const playerDesk of PlayerDesk.getPlayerDesks()) {
         let ui = new UIElement();
         let border = new StrategyCardBorder({
-            ui: ui,
-            desk: playerDesk,
             card: card,
+            desk: playerDesk,
+            height: height,
+            ui: ui,
         }).setColor(playerDesk.color);
         border.setChild(widgetFactory());
         border.spawnUi();
