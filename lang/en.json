@@ -17,6 +17,7 @@
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
+    "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
 
     "ui.button.take_seat": "TAKE SEAT",
 
