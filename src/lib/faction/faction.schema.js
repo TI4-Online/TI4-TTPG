@@ -16,6 +16,7 @@ const FACTION_SCHEMA = {
 
         commodities: { type: "integer" },
         home: { type: "integer" }, // home system tile index
+        homeSurrogate: { type: "integer" }, // home off-map, tile in home pos
 
         leaders: {
             type: "object",
@@ -61,6 +62,15 @@ const FACTION_SCHEMA = {
                 pds: { type: "integer" },
                 space_dock: { type: "integer" },
                 war_sun: { type: "integer" },
+            },
+        },
+        uppackExtra: {
+            type: "object",
+            properties: {
+                tokenNsid: { type: "string" }, // "token.wormhole.creuss:base/alpha"
+                tokenCount: { type: "integer" },
+                bagNsid: { type: "string" }, // optinal, if given make token bag
+                bagType: { type: "integer" },
             },
         },
     },

@@ -19,13 +19,24 @@ const MARKER_GUID = "__layoutMarker__";
 let _layout = false;
 let _layoutMode = false;
 
-const UNIT_COUNT = 11;
-const DISTANCE_BETWEEN_UNITS = 5.5;
-
-// eslint-disable-next-line no-unused-vars
-const SUPPLY_COUNT = 3;
-// eslint-disable-next-line no-unused-vars
-const DISTANCE_BETWEEN_SUPPLY = 12;
+const LAYOUT = {
+    units: {
+        count: 11,
+        distance: 5.5,
+    },
+    supplyLeft: {
+        count: 4,
+        distance: 12,
+    },
+    supplyRight: {
+        count: 2,
+        distance: 12,
+    },
+    tokensRight: {
+        count: 2,
+        distance: 5.5,
+    },
+};
 
 for (const action of Object.values(ACTION)) {
     refObject.addCustomAction(action);
@@ -47,8 +58,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             .findLookAtRotation(marker.getPosition());
         _layout = new Layout()
             .setCenter(marker.getPosition())
-            .setCount(UNIT_COUNT)
-            .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
+            .setCount(LAYOUT.units.count)
+            .setDistanceBetween(LAYOUT.units.distance)
             .layoutLinear(forward.yaw)
             .drawDebug();
         _layoutMode = actionName;
@@ -58,20 +69,26 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         const arcOrigin = obj.getPosition();
         _layout = new Layout()
             .setCenter(marker.getPosition())
-            .setCount(UNIT_COUNT)
-            .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
+            .setCount(LAYOUT.tokensRight.count)
+            .setDistanceBetween(LAYOUT.tokensRight.distance)
             .layoutArc(arcOrigin)
             .drawDebug();
         _layoutMode = actionName;
     } else if (actionName === ACTION.STOP_LAYOUT) {
-        const bag = world.getObjectById("y7j");
-        const json = bag.toJSONString();
-        for (const { pos, rot } of _layout.getPoints()) {
-            const obj = world.createObjectFromJSON(json, pos);
-            obj.setRotation(rot);
+        console.log(_layout.getPoints());
+        for (const point of _layout.getPoints()) {
+            console.log(point.pos.subtract([-119.224, 6.05442, 0]));
         }
+
         _layout = false;
         _layoutMode = false;
+
+        const shelfCenter = world
+            .getObjectById(MARKER_GUID)
+            .getPosition()
+            .subtract([-119.224, 6.05442, 0]);
+        const arcOrigin = obj.getPosition().subtract([-119.224, 6.05442, 0]);
+        console.log(`shelfCenter: ${shelfCenter} arcOrigin: ${arcOrigin}`);
     }
 });
 
