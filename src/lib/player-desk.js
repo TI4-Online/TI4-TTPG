@@ -121,7 +121,6 @@ let _claimSeatUIs = [];
 function resetUnusedSeats() {
     // Remove old UI.
     for (const ui of _claimSeatUIs) {
-        console.log
         world.removeUIElement(ui);
     }
     _claimSeatUIs = [];
