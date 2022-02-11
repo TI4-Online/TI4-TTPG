@@ -458,6 +458,7 @@
     "strategy_card.base.button.primary": "Primary Ability",
     "strategy_card.base.button.secondary": "Secondary Ability",
     "strategy_card.base.button.pass": "Pass",
+    "strategy_card.base.button.close": "Close",
 
     "strategy_card.diplomacy.text": "Diplomacy",
     "strategy_card.diplomacy.message.primary": "{playerName} uses the primary ability of Diplomacy.",
@@ -471,7 +472,7 @@
 
     "strategy_card.trade.text": "Trade",
     "strategy_card.trade.text.allowReplenish": "Allow players secondary without command token",
-    "strategy_card.construction.message.allow_replenish": "{playerName} allows {targetPlayerName} to use the secondary ability of Trade without spending a strategy token.",
+    "strategy_card.trade.message.allow_replenish": "{playerName} allows {targetPlayerName} to use the secondary ability of Trade without spending a strategy token.",
     "strategy_card.trade.message.primary": "{playerName} uses the primary ability of Trade.",
     "strategy_card.trade.message.secondary": "{playerName} uses the secondary ability of Trade.",
     "strategy_card.trade.message.pass": "{playerName} passes on Trade.",
