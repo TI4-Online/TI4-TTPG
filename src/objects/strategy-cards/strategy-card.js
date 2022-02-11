@@ -73,7 +73,8 @@ class RegisterStrategyCardUI {
         this._height = data && data.height;
         this._color = data && data.color;
         this._onStrategyCardPlayed = data && data.onStrategyCardPlayed;
-        this._onStrategyCardSelectionDone = data && data.onStrategyCardSelectionDone;
+        this._onStrategyCardSelectionDone =
+            data && data.onStrategyCardSelectionDone;
     }
 
     setCard(value) {
