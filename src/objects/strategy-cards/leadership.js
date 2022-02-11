@@ -43,7 +43,7 @@ function widgetFactory() {
     });
     let closeButton = new Button()
         .setFontSize(10)
-        .setText(locale("strategy_card.close.button"));
+        .setText(locale("strategy_card.base.button.close"));
 
     closeButton.onClicked.add(onUiClosedClicked);
 
