@@ -113,6 +113,24 @@ class System {
         }
     }
 
+    /**
+     * Get all system tiles on the table.
+     *
+     * @returns {Array.{GameObject}}
+     */
+    static getAllSystemTileObjects() {
+        const result = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
+            if (ObjectNamespace.isSystemTile(obj)) {
+                result.push(obj);
+            }
+        }
+        return result;
+    }
+
     constructor(systemAttrs) {
         this._attrs = systemAttrs;
 
