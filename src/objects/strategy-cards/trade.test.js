@@ -2,9 +2,11 @@
 
 const {
     globalEvents,
+    MockButton,
     MockGameObject,
     MockGameWorld,
     MockPlayer,
+    MockText,
 } = require("../../mock/mock-api");
 const { PlayerDesk } = require("../../lib/player-desk");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
@@ -21,7 +23,7 @@ const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 global.world = new MockGameWorld({ allPlayers: [player1, player2] });
 
-require("./construction");
+require("./trade");
 
 PlayerDesk.setPlayerCount(2);
 PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
@@ -35,7 +37,7 @@ describe("when a strategy card is played", () => {
         }
     });
 
-    it("and it is the construction card", () => {
+    it("and it is the trade card", () => {
         let card = new MockGameObject();
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
@@ -66,7 +68,7 @@ describe("when a player has done the strategy selection", () => {
         jest.resetAllMocks();
     });
 
-    it("by selecting the primary 1 space dock and 1 pds button", () => {
+    it("by selecting the primary ability button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         const button = uis[0].widget.getChild().getChildren()[1];
@@ -76,17 +78,27 @@ describe("when a player has done the strategy selection", () => {
         expect(player2Spy).toBeCalledTimes(1);
     });
 
-    it("by selecting the primary 2 pds button", () => {
+    it("by selecting the replenish button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        const button = uis[0].widget.getChild().getChildren()[2];
-        button.onClicked.trigger(button, player1);
+        const replenishBorder = uis[0].widget.getChild().getChildren()[2];
+        const replenishButton = replenishBorder.getChild().getChildren()[1];
+
+        expect(replenishBorder.getChild().getChildren().length).toBe(2);
+        expect(replenishBorder.getChild().getChildren()[0].constructor).toBe(
+            MockText
+        );
+        expect(replenishButton.constructor).toBe(MockButton);
+        replenishBorder
+            .getChild()
+            .getChildren()[1]
+            .onClicked.trigger(replenishButton, player1);
 
         expect(player1Spy).toBeCalledTimes(1);
         expect(player2Spy).toBeCalledTimes(1);
     });
 
-    it("by selecting the secondary 1 space dock button", () => {
+    it("by selecting the secondary ability button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         const button = uis[0].widget.getChild().getChildren()[3];
@@ -96,20 +108,10 @@ describe("when a player has done the strategy selection", () => {
         expect(player2Spy).toBeCalledTimes(1);
     });
 
-    it("by selecting the secondary 1 pds button", () => {
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
-        const button = uis[0].widget.getChild().getChildren()[4];
-        button.onClicked.trigger(button, player1);
-
-        expect(player1Spy).toBeCalledTimes(1);
-        expect(player2Spy).toBeCalledTimes(1);
-    });
-
     it("by selecting the pass button", () => {
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        const button = uis[0].widget.getChild().getChildren()[5];
+        const button = uis[0].widget.getChild().getChildren()[4];
         button.onClicked.trigger(button, player1);
 
         expect(player1Spy).toBeCalledTimes(1);

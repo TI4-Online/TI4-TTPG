@@ -1,7 +1,7 @@
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
 const {
     Button,
@@ -81,6 +81,7 @@ const widgetFactory = () => {
 
     let passButton = new Button()
         .setFontSize(10)
+        .setTextColor(new Color(0.972, 0.317, 0.286))
         .setText(locale("strategy_card.base.button.pass"));
     passButton.onClicked.add(onPassClicked);
     passButton.onClicked.add(onUiClosedClicked);
@@ -96,9 +97,9 @@ const widgetFactory = () => {
     return verticalBox;
 };
 
-registerStrategyCard(
-    refObject,
-    widgetFactory,
-    170,
-    new Color(0.054, 0.45, 0.188)
-);
+new RegisterStrategyCardUI()
+    .setCard(refObject)
+    .setWidgetFactory(widgetFactory)
+    .setHeight(170)
+    .setColor(new Color(0.054, 0.45, 0.188))
+    .register();
