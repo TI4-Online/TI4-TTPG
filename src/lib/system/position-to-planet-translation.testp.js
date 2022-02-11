@@ -1,7 +1,6 @@
 const {
     getClosestPlanet,
     getExactPlanet,
-    getSystem,
 } = require("./position-to-planet-translation");
 const { refObject } = require("@tabletop-playground/api");
 

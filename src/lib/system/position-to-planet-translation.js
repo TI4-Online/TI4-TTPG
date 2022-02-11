@@ -274,4 +274,4 @@ function getExactPlanet(pos, debug) {
     }
 }
 
-module.exports = { getClosestPlanet, getExactPlanet, getSystem };
+module.exports = { getClosestPlanet, getExactPlanet };
