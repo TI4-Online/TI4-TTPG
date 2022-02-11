@@ -71,7 +71,6 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
             .setText(deskOwningPlayer || playerDesk.colorName) // in case the player is currently not seated
             .setTextColor(playerDesk.color);
         primaryAllowReplenishButton.onClicked.add(onAllowReplenishClicked);
-        primaryAllowReplenishButton.onClicked.add(onUiClosedClicked);
         replenishBox.addChild(primaryAllowReplenishButton);
     });
 };
@@ -79,25 +78,29 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
 const widgetFactory = (playerDesk) => {
     let headerText = new Text()
         .setFontSize(20)
-        .setText(locale("strategy_card.trade.headerText"));
+        .setText(locale("strategy_card.trade.text"));
 
     let primaryButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.primary"));
     primaryButton.onClicked.add(onPrimaryClicked);
-    primaryButton.onClicked.add(onUiClosedClicked);
 
     let secondaryButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.secondary"));
     secondaryButton.onClicked.add(onSecondaryClicked);
-    secondaryButton.onClicked.add(onUiClosedClicked);
 
     let passButton = new Button()
         .setFontSize(10)
+        .setTextColor(new Color(0.972, 0.317, 0.286))
         .setText(locale("strategy_card.base.button.pass"));
     passButton.onClicked.add(onPassClicked);
     passButton.onClicked.add(onUiClosedClicked);
+
+    let closeButton = new Button()
+        .setFontSize(10)
+        .setText(locale("strategy_card.base.button.close"));
+    closeButton.onClicked.add(onUiClosedClicked);
 
     let verticalBox = new VerticalBox();
     verticalBox.addChild(headerText);
@@ -105,6 +108,7 @@ const widgetFactory = (playerDesk) => {
     addReplenishPlayersSection(playerDesk, verticalBox);
     verticalBox.addChild(secondaryButton);
     verticalBox.addChild(passButton);
+    verticalBox.addChild(closeButton);
 
     return verticalBox;
 };
@@ -117,5 +121,5 @@ new RegisterStrategyCardUI()
     .setCard(refObject)
     .setWidgetFactory(widgetFactory)
     .setHeight(calculateHeight) // variable height by player count
-    .setColor(new Color(0.054, 0.45, 0.188))
+    .setColor(new Color(0, 0.486, 0.435))
     .register();

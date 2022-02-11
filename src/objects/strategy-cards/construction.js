@@ -81,6 +81,7 @@ const widgetFactory = () => {
 
     let passButton = new Button()
         .setFontSize(10)
+        .setTextColor(new Color(0.972, 0.317, 0.286))
         .setText(locale("strategy_card.base.button.pass"));
     passButton.onClicked.add(onPassClicked);
     passButton.onClicked.add(onUiClosedClicked);
