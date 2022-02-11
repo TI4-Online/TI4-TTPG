@@ -73,7 +73,10 @@ const format = function (mapTiles) {
     const centerTile = mapTiles.shift();
     let centerTileString = "";
     if (centerTile.tile != MECATOL_REX_SYSTEM_TILE) {
-        centerTileString = "{" + centerTile.tile + "} ";
+        centerTileString =
+            "{" +
+            [centerTile.tile, centerTile.side, centerTile.rotation].join("") +
+            "} ";
     }
     return (
         centerTileString +
