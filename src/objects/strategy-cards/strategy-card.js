@@ -68,12 +68,12 @@ class RegisterStrategyCardUI {
      * @param {function} [data.onStrategyCardSelectionDone] Event handler for the closing event.
      */
     constructor(data) {
-        this._card = data?.card;
-        this._widgetFactory = data?.widgetFactory;
-        this._height = data?.height;
-        this._color = data?.color;
-        this._onStrategyCardPlayed = data?.onStrategyCardPlayed;
-        this._onStrategyCardSelectionDone = data?.onStrategyCardSelectionDone;
+        this._card = data && data.card;
+        this._widgetFactory = data && data.widgetFactory;
+        this._height = data && data.height;
+        this._color = data && data.color;
+        this._onStrategyCardPlayed = data && data.onStrategyCardPlayed;
+        this._onStrategyCardSelectionDone = data && data.onStrategyCardSelectionDone;
     }
 
     setCard(value) {
