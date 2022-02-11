@@ -116,9 +116,9 @@ class RegisterStrategyCardUI {
         assert(!this._registered);
 
         // the refObject is undefined in a test environment
-        this._card === undefined && world.__isMock
-            ? new GameObject()
-            : this._card;
+        if (world.__isMock) {
+            this._card = this._card || new GameObject();
+        }
 
         assert(this._card instanceof GameObject);
         assert(typeof this._widgetFactory === "function");

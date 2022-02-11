@@ -3,7 +3,7 @@ const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
-const { Button, Text, VerticalBox } = require("../../wrapper/api");
+const { Button, Color, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
 module.exports = function registerStandardCard(
