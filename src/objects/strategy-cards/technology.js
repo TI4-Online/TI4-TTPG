@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -11,9 +10,6 @@ const {
     refObject,
 } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
-
-let selections = {};
-let activatingPlayer;
 
 function widgetFactory() {
     let headerText = new Text()
@@ -32,15 +28,15 @@ function widgetFactory() {
     return verticalBox;
 }
 
-const onStrategyCardPlayed = (card, player) => {};
+//const onStrategyCardPlayed = (card, player) => {};
 
-const onStrategyCardSelectionDone = (card, player) => {};
+//const onStrategyCardSelectionDone = (card, player) => {};
 
 new RegisterStrategyCardUI()
     .setCard(refObject)
     .setWidgetFactory(widgetFactory)
     .setHeight(71)
     .setColor(new Color(0.027, 0.203, 0.466))
-    .setOnStrategyCardPlayed(onStrategyCardPlayed)
-    .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
+    //.setOnStrategyCardPlayed(onStrategyCardPlayed)
+    //.setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
     .register();
