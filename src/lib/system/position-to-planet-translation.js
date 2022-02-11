@@ -19,72 +19,58 @@ const TILE_HEIGHT = 0.253;
 const RADIUS_BUFFER = 0.0;
 
 function getPlanetHelper(system) {
-    const tile = system.tile;
     const planetCount = system.planets.length;
     const home = system.raw.home;
-    if (tile === 11) {
-        // Clan of Saar Home System
+    if (home && planetCount === 1) {
         return [
-            { x: 2, y: -1.25, r: 1.75 },
-            { x: -1.8, y: 1.75, r: 1.75 },
+            {
+                position: system.planets[0].position || { x: 0.65, y: 0 },
+                radius: system.planets[0].radius || 2,
+            },
         ];
-    } else if (tile === 16) {
-        // Hacan Home System
-        return [
-            { x: 0.5, y: -2.75, r: 2 },
-            { x: 2.3, y: 1.3, r: 2 },
-            { x: -2.4, y: 1.9, r: 2 },
-        ];
-    } else if (tile === 18) {
-        // Mecatol Rex
-        return [{ x: 0, y: 0, r: 4 }];
-    } else if (tile === 51) {
-        // Creuss Home System
-        return [{ x: 1, y: 0, r: 2 }];
-    } else if (tile === 55) {
-        // Elysium Titans Home System
-        return [{ x: 0.75, y: 0, r: 3.25 }];
-    } else if (tile === 58) {
-        // Argent Home System
-        return [
-            { x: 0.5, y: -2.75, r: 2 },
-            { x: 2.3, y: 1.3, r: 2 },
-            { x: -2.5, y: 1.7, r: 2 },
-        ];
-    } else if (tile === 65 || tile === 66) {
-        // Hope's End or Primor
-        return [{ x: 0, y: 0, r: 3.25 }];
-    } else if (tile === 67) {
-        // Cormund
-        return [{ x: 0.7, y: -1, r: 2 }];
-    } else if (tile === 68) {
-        // Everra
-        return [{ x: 0.5, y: -1, r: 2 }];
-    } else if (tile === 82) {
-        // Malice
-        return [{ x: 1.2, y: 1, r: 2 }];
-    } else if (tile === 25 || tile === 26 || tile == 64) {
-        // standard one planet systems with starting wormhole
-        return [{ x: 2, y: -1.25, r: 2 }];
-    } else if (home && planetCount === 1) {
-        return [{ x: 0.65, y: 0, r: 2 }];
     } else if (!home && planetCount === 1) {
-        return [{ x: 0, y: 0, r: 2 }];
+        return [
+            {
+                position: system.planets[0].position || { x: 0, y: 0 },
+                radius: system.planets[0].radius || 2,
+            },
+        ];
     } else if (home && planetCount === 2) {
         return [
-            { x: 2, y: -1.25, r: 2 },
-            { x: -1.8, y: 1.9, r: 2 },
+            {
+                position: system.planets[0].position || { x: 2, y: -1.25 },
+                radius: system.planets[0].radius || 2,
+            },
+            {
+                position: system.planets[1].position || { x: -1.8, y: 1.9 },
+                radius: system.planets[1].radius || 2,
+            },
         ];
     } else if (!home && planetCount === 2) {
         return [
-            { x: 2, y: -1.25, r: 2 },
-            { x: -2, y: 1, r: 2 },
+            {
+                position: system.planets[0].position || { x: 2, y: -1.25 },
+                radius: system.planets[0].radius || 2,
+            },
+            {
+                position: system.planets[1].position || { x: -2, y: 1 },
+                radius: system.planets[1].radius || 2,
+            },
         ];
     } else if (planetCount === 3) {
         return [
-            { x: 0.5, y: -3, r: 2 },
-            { x: 2, y: 1.5, r: 2 },
-            { x: -2.7, y: 1.65, r: 2 },
+            {
+                position: system.planets[0].position || { x: 0.5, y: -3 },
+                radius: system.planets[0].radius || 2,
+            },
+            {
+                position: system.planets[1].position || { x: 2, y: 1.5 },
+                radius: system.planets[1].radius || 2,
+            },
+            {
+                position: system.planets[2].position || { x: -2.7, y: 1.65 },
+                radius: system.planets[2].radius || 2,
+            },
         ];
     } else {
         return [];
@@ -124,7 +110,6 @@ function getSystem(pos) {
     for (const hit of hits) {
         if (ObjectNamespace.isSystemTile(hit.object)) {
             const parsedSystem = ObjectNamespace.parseSystemTile(hit.object);
-            const pos = hit.object.getPosition();
             return {
                 system: System.getByTileNumber(parsedSystem.tile),
                 obj: hit.object,
@@ -158,8 +143,8 @@ function distance(src, dest) {
  * @param {{x: Number, y: Number}} point
  * @returns {Number}
  */
-function withinCircle(circle, point) {
-    return distance(circle, point) <= circle.r + RADIUS_BUFFER;
+function withinCircle(center, radius, point) {
+    return distance(center, point) <= radius + RADIUS_BUFFER;
 }
 
 function getLocalPosition(obj, pos) {
@@ -194,7 +179,7 @@ function getClosestPlanet(pos, debug) {
 
         const distances = planetPositions.map((element, index) => {
             if (!planets[index].destroyed) {
-                return distance(element, localPos);
+                return distance(element.position, localPos);
             } else {
                 return 1e4;
             }
@@ -203,12 +188,12 @@ function getClosestPlanet(pos, debug) {
         const closestPlanetIndex = distances.indexOf(Math.min(...distances));
 
         if (debug) {
-            const closestPos = planetPositions[closestPlanetIndex];
-            const worldPos = getWorldPosition(system.obj, closestPos);
+            const closest = planetPositions[closestPlanetIndex];
+            const worldPos = getWorldPosition(system.obj, closest.position);
 
             // convert the planet radius to world
-            const planetRadius = (RADIUS_BUFFER + closestPos.r) * Hex.SCALE;
-            drawSphereAroundPlanet(worldPos, planetRadius);
+            const radius = (RADIUS_BUFFER + closest.radius) * Hex.SCALE;
+            drawSphereAroundPlanet(worldPos, radius);
         }
 
         return planets[closestPlanetIndex];
@@ -225,18 +210,19 @@ function getExactPlanet(pos, debug) {
         const onPlanet = planetPositions
             .map(
                 (element, index) =>
-                    withinCircle(element, localPos) && !planets[index].destroyed
+                    withinCircle(element.position, element.radius, localPos) &&
+                    !planets[index].destroyed
             )
             .indexOf(true);
 
         if (onPlanet > -1) {
             if (debug) {
-                const planetPos = planetPositions[onPlanet];
-                const worldPos = getWorldPosition(system.obj, planetPos);
+                const planet = planetPositions[onPlanet];
+                const worldPos = getWorldPosition(system.obj, planet.position);
 
                 // convert the planet radius to world position
-                const planetRadius = (RADIUS_BUFFER + planetPos.r) * Hex.SCALE;
-                drawSphereAroundPlanet(worldPos, planetRadius);
+                const radius = (RADIUS_BUFFER + planet.radius) * Hex.SCALE;
+                drawSphereAroundPlanet(worldPos, radius);
             }
             return planets[onPlanet];
         }

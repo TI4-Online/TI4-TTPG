@@ -62,6 +62,14 @@ class Planet {
         return this.raw.destroyed;
     }
 
+    get radius() {
+        return this.raw.radius;
+    }
+
+    get position() {
+        return this.raw.position;
+    }
+
     set destroyed(value) {
         this.raw.destroyed = value;
     }
