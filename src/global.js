@@ -11,6 +11,12 @@ globalEvents.TI4 = {
     // <(container: Container, rejectedObjects: Array.{GameObject}, player: Player) => void>
     onContainerRejected: new TriggerableMulticastDelegate(),
 
+    // Called after a player unpacks (or re-packs!) a faction.
+    // Note the the "player" is the player who clicked the button, they
+    // might not be seated at the given desk.
+    // <(deskPlayerSlot: number, player: Player|undefined) => void>
+    onFactionChanged: new TriggerableMulticastDelegate(),
+
     // Called when the active player dropped a command token on a system.
     // <(systemTile: GameObject, player: Player) => void>
     onSystemActivated: new TriggerableMulticastDelegate(),

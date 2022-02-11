@@ -18,6 +18,13 @@ it("static getPlayerDesks", () => {
     }
 });
 
+it("static getBySlot", () => {
+    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        const bySlot = PlayerDesk.getByPlayerSlot(playerDesk.playerSlot);
+        assert.equal(bySlot, playerDesk);
+    }
+});
+
 it("static getClosest", () => {
     for (const playerDesk of PlayerDesk.getPlayerDesks()) {
         const closestDesk = PlayerDesk.getClosest(playerDesk.pos);
