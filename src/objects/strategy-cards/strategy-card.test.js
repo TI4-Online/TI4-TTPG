@@ -11,7 +11,7 @@ const { PlayerDesk } = require("../../lib/player-desk");
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
 const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 
@@ -127,14 +127,18 @@ describe("when a strategy card UI is created", () => {
         jest.clearAllMocks();
     });
 
-    it("by calling the registerStrategyCard and trigger the 'Play' event", () => {
+    it("by calling the RegisterStrategyCardUI and trigger the 'Play' event", () => {
         const red = {
             r: 1,
             g: 0,
             b: 0,
         };
 
-        registerStrategyCard(card, widgetFactory, 100);
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .register();
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         // one UI per player
@@ -181,7 +185,11 @@ describe("when the close button is clicked in a players selection", () => {
             globalEvents.TI4.onStrategyCardSelectionDone,
             "trigger"
         );
-        registerStrategyCard(card, widgetFactory, 100);
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .register();
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[0], player1);
@@ -195,7 +203,11 @@ describe("when the close button is clicked in a players selection", () => {
             globalEvents.TI4.onStrategyCardSelectionDone,
             "trigger"
         );
-        registerStrategyCard(card, widgetFactory, 100);
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .register();
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[0], player2);
@@ -213,7 +225,11 @@ describe("when the close button is clicked in a players selection", () => {
             player2,
             "sendChatMessage"
         );
-        registerStrategyCard(card, widgetFactory, 100);
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .register();
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         onUiClosedClicked(buttons[1], player2);
@@ -239,14 +255,14 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the play button is pressed as well as a player UI is closed", () => {
-        registerStrategyCard(
-            card,
-            widgetFactory,
-            100,
-            new Color(1, 0, 0),
-            onStrategyCardPlayed,
-            onStrategyCardSelectionDone
-        );
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .setColor(new Color(1, 0, 0))
+            .setOnStrategyCardPlayed(onStrategyCardPlayed)
+            .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
+            .register();
 
         expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(1);
         expect(
@@ -268,14 +284,14 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the object is destroyed", () => {
-        registerStrategyCard(
-            card,
-            widgetFactory,
-            100,
-            new Color(1, 0, 0),
-            onStrategyCardPlayed,
-            onStrategyCardSelectionDone
-        );
+        new RegisterStrategyCardUI()
+            .setCard(card)
+            .setWidgetFactory(widgetFactory)
+            .setHeight(100)
+            .setColor(new Color(1, 0, 0))
+            .setOnStrategyCardPlayed(onStrategyCardPlayed)
+            .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
+            .register();
 
         card.destroy();
 

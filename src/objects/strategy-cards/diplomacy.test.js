@@ -58,15 +58,20 @@ describe("when a player has done the strategy selection", () => {
             uis.push(ui);
             original.call(global.world, ui);
         });
+
+        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
     });
 
     afterEach(() => {
         jest.resetAllMocks();
+
+        const uiCount = global.world.getUIs().length;
+        for (let i = 0; i < uiCount; i++) {
+            global.world.removeUI(0);
+        }
     });
 
     it("by selecting the primary button", () => {
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
         const button = uis[0].widget.getChild().getChildren()[1];
         button.onClicked.trigger(button, player1);
 
@@ -81,8 +86,6 @@ describe("when a player has done the strategy selection", () => {
     });
 
     it("by selecting the secondary button", () => {
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
         const button = uis[0].widget.getChild().getChildren()[2];
         button.onClicked.trigger(button, player1);
 
@@ -97,8 +100,6 @@ describe("when a player has done the strategy selection", () => {
     });
 
     it("by selecting the pass button", () => {
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-
         const button = uis[0].widget.getChild().getChildren()[3];
         button.onClicked.trigger(button, player1);
 

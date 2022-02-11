@@ -22,93 +22,14 @@ function getTopLevelWidget(element) {
     return parent ? getTopLevelWidget(parent) : element;
 }
 
-/**
- * Registers a new strategy card object by adding event handlers as well as
- * their removal in case of the destruction of the object.
- * The play card is mandatory while the
- *
- * @param {GameObject} refObject The object instance of the strategy card
- * @param {function} widgetFactory A factory creating the UI for each player
- * @param {Integer} height Height of the UI for each player
- * @param {Color} color Color of the UI for each player
- * @param {function} [onStrategyCardPlayed] Event handler of the "Play" button pressed.
- * This function only is required if the Play button should do more than just creating a UI.
- * The whole UI creation should belong into the widgetFactory to separate concerns.
- * @param {function} [onStrategyCardSelectionDone] Event handler for the closing event.
- */
-function registerStrategyCard(
-    refObject,
-    widgetFactory,
-    height,
-    color,
-    onStrategyCardPlayed,
-    onStrategyCardSelectionDone
-) {
-    // the refObject is undefined in a test environment
-    let object =
-        refObject === undefined && world.__isMock
-            ? new GameObject()
-            : refObject;
-
-    assert(object instanceof GameObject);
-    assert(typeof widgetFactory === "function");
-    assert(Number.isInteger(height));
-    assert(
-        onStrategyCardPlayed === undefined ||
-            typeof onStrategyCardSelectionDone === "function"
-    );
-    assert(
-        onStrategyCardSelectionDone === undefined ||
-            typeof onStrategyCardSelectionDone === "function"
-    );
-
-    const onStrategyCardPlayedGlobalEventHandler = (card, player) => {
-        // strategy card tests have a mocked object not matching the card
-        if (object !== card && !world.__isMock) return;
-        createStrategyCardUi(card, widgetFactory, height, color);
-        if (!onStrategyCardPlayed) return;
-        onStrategyCardPlayed(card, player);
-    };
-
-    globalEvents.TI4.onStrategyCardPlayed.add(
-        onStrategyCardPlayedGlobalEventHandler
-    );
-
-    object.onDestroyed.add(() => {
-        globalEvents.TI4.onStrategyCardPlayed.remove(
-            onStrategyCardPlayedGlobalEventHandler
-        );
-    });
-
-    if (onStrategyCardSelectionDone) {
-        const onStrategyCardSelectionDoneGlobalEventHandler = (
-            card,
-            player
-        ) => {
-            // strategy card tests have a mocked object not matching the card
-            if (object !== card && !world.__isMock) return;
-            onStrategyCardSelectionDone(card, player);
-        };
-
-        globalEvents.TI4.onStrategyCardSelectionDone.add(
-            onStrategyCardSelectionDoneGlobalEventHandler
-        );
-        object.onDestroyed.add((obj) => {
-            globalEvents.TI4.onStrategyCardSelectionDone.remove(
-                onStrategyCardSelectionDoneGlobalEventHandler
-            );
-        });
-    }
-}
-
 function createStrategyCardUi(card, widgetFactory, height, color) {
     const cardId = card.getId();
 
     // clear existing UIs from the card instance
     if (openSelections[cardId]) {
-        for (let border in openSelections[cardId]) {
+        openSelections[cardId].forEach((border) => {
             world.removeUIElement(border.ui);
-        }
+        });
     }
 
     openSelections[cardId] = [];
@@ -121,10 +42,146 @@ function createStrategyCardUi(card, widgetFactory, height, color) {
             height: height,
             ui: ui,
         }).setColor(color);
-        border.setChild(widgetFactory());
+        border.setChild(widgetFactory(playerDesk));
         border.spawnUi();
 
         openSelections[cardId].push(border);
+    }
+}
+
+/**
+ * Builder class for registering a new strategy card object by adding event
+ * handlers as well as their removal in case of the destruction of the object.
+ */
+class RegisterStrategyCardUI {
+    /**
+     *
+     * @param {object} [data]
+     * @param {GameObject} [data.card] The object instance of the strategy card
+     * @param {function} [data.widgetFactory] A factory creating the UI for each player
+     * @param {Integer | function} [data.height] Height of the UI for each player. Can also be provided as a function
+     * to determine the height dynamically on UI creation
+     * @param {Color} [data.color] Color of the UI for each player
+     * @param {function} [data.onStrategyCardPlayed] Event handler of the "Play" button pressed.
+     * This function only is required if the Play button should do more than just creating a UI.
+     * The whole UI creation should belong into the widgetFactory to separate concerns.
+     * @param {function} [data.onStrategyCardSelectionDone] Event handler for the closing event.
+     */
+    constructor(data) {
+        this._card = data && data.card;
+        this._widgetFactory = data && data.widgetFactory;
+        this._height = data && data.height;
+        this._color = data && data.color;
+        this._onStrategyCardPlayed = data && data.onStrategyCardPlayed;
+        this._onStrategyCardSelectionDone =
+            data && data.onStrategyCardSelectionDone;
+    }
+
+    setCard(value) {
+        this._card = value;
+        return this;
+    }
+
+    setWidgetFactory(value) {
+        this._widgetFactory = value;
+        return this;
+    }
+
+    setHeight(value) {
+        this._height = value;
+        return this;
+    }
+
+    setColor(value) {
+        this._color = value;
+        return this;
+    }
+
+    setOnStrategyCardPlayed(value) {
+        this._onStrategyCardPlayed = value;
+        return this;
+    }
+
+    setOnStrategyCardSelectionDone(value) {
+        this._onStrategyCardSelectionDone = value;
+        return this;
+    }
+
+    /**
+     * Actual registration of the strategy card UI creation.
+     * At this point it is mandatory that <code>object</code>, <code>widgetFactory</code> and
+     * <code>height</code> are set.
+     */
+    register() {
+        // only on registration is allowed at this time
+        assert(!this._registered);
+
+        // the refObject is undefined in a test environment
+        if (world.__isMock) {
+            this._card = this._card || new GameObject();
+        }
+
+        assert(this._card instanceof GameObject);
+        assert(typeof this._widgetFactory === "function");
+        assert(
+            Number.isInteger(this._height) || typeof this._height === "function"
+        );
+        assert(
+            this._onStrategyCardPlayed === undefined ||
+                typeof this._onStrategyCardPlayed === "function"
+        );
+        assert(
+            this._onStrategyCardSelectionDone === undefined ||
+                typeof this._onStrategyCardSelectionDone === "function"
+        );
+
+        const onStrategyCardPlayedGlobalEventHandler = (card, player) => {
+            // strategy card tests have a mocked object not matching the card
+            if (this._card !== card && !world.__isMock) return;
+            createStrategyCardUi(
+                this._card,
+                this._widgetFactory,
+                typeof this._height === "function"
+                    ? this._height()
+                    : this._height,
+                this._color
+            );
+            if (!this._onStrategyCardPlayed) return;
+            this._onStrategyCardPlayed(this._card, player);
+        };
+
+        globalEvents.TI4.onStrategyCardPlayed.add(
+            onStrategyCardPlayedGlobalEventHandler
+        );
+
+        this._card.onDestroyed.add(() => {
+            globalEvents.TI4.onStrategyCardPlayed.remove(
+                onStrategyCardPlayedGlobalEventHandler
+            );
+        });
+
+        if (this._onStrategyCardSelectionDone) {
+            const onStrategyCardSelectionDoneGlobalEventHandler = (
+                card,
+                player
+            ) => {
+                // strategy card tests have a mocked object not matching the card
+                if (this._card !== card && !world.__isMock) return;
+                this._onStrategyCardSelectionDone(this._card, player);
+            };
+
+            globalEvents.TI4.onStrategyCardSelectionDone.add(
+                onStrategyCardSelectionDoneGlobalEventHandler
+            );
+            this._card.onDestroyed.add((obj) => {
+                globalEvents.TI4.onStrategyCardSelectionDone.remove(
+                    onStrategyCardSelectionDoneGlobalEventHandler
+                );
+            });
+        }
+
+        this._registered = true;
+        return this;
     }
 }
 
@@ -155,5 +212,5 @@ function onUiClosedClicked(button, player) {
 module.exports = {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 };

@@ -1,12 +1,16 @@
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
-const { Button, Text, VerticalBox } = require("../../wrapper/api");
+const { Button, Color, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
-module.exports = function registerStandardCard(refObject, name, color) {
+module.exports = function registerStandardCard(
+    strategyCardInstance,
+    name,
+    color
+) {
     const onPrimaryClicked = (button, player) => {
         broadcastMessage(
             `strategy_card.${name}.message.primary`,
@@ -48,6 +52,7 @@ module.exports = function registerStandardCard(refObject, name, color) {
 
         let passButton = new Button()
             .setFontSize(10)
+            .setTextColor(new Color(0.972, 0.317, 0.286))
             .setText(locale("strategy_card.base.button.pass"));
         passButton.onClicked.add(onPassClicked);
         passButton.onClicked.add(onUiClosedClicked);
@@ -61,5 +66,10 @@ module.exports = function registerStandardCard(refObject, name, color) {
         return verticalBox;
     };
 
-    registerStrategyCard(refObject, widgetFactory, 120, color);
+    new RegisterStrategyCardUI()
+        .setCard(strategyCardInstance)
+        .setWidgetFactory(widgetFactory)
+        .setHeight(120)
+        .setColor(color)
+        .register();
 };

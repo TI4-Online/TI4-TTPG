@@ -1,7 +1,7 @@
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
 const {
     Button,
@@ -27,7 +27,7 @@ function getPlayerSelectionBySlot(player) {
     return selections[slot];
 }
 
-function createUiWidgetFactory() {
+function widgetFactory() {
     let headerText = new Text()
         .setFontSize(20)
         .setText(locale("strategy_card.leadership.text"));
@@ -61,7 +61,7 @@ function createUiWidgetFactory() {
     return verticalBox;
 }
 
-const onStrategyCardAdd = (card, player) => {
+const onStrategyCardPlayed = (card, player) => {
     selections = {};
     activatingPlayer = player.getSlot();
 };
@@ -77,11 +77,11 @@ const onStrategyCardSelectionDone = (card, player) => {
     broadcastMessage(message, {}, player);
 };
 
-registerStrategyCard(
-    refObject,
-    createUiWidgetFactory,
-    125,
-    new Color(0.925, 0.109, 0.141),
-    onStrategyCardAdd,
-    onStrategyCardSelectionDone
-);
+new RegisterStrategyCardUI()
+    .setCard(refObject)
+    .setWidgetFactory(widgetFactory)
+    .setHeight(125)
+    .setColor(new Color(0.925, 0.109, 0.141))
+    .setOnStrategyCardPlayed(onStrategyCardPlayed)
+    .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
+    .register();
