@@ -16,14 +16,19 @@ class MapStringSave {
         const mapTiles = [];
         for (const obj of systemTileObjs) {
             assert(ObjectNamespace.isSystemTile(obj));
+            const tile = ObjectNamespace.parseSystemTile(obj).tile;
+            const system = System.getByTileNumber(tile);
+
+            // Ignore if not part of the main map.
+            if (system.raw.offMap) {
+                continue;
+            }
 
             // Get location in the map string.
             const hex = Hex.fromPosition(obj.getPosition());
             const index = MapStringHex.hexStringToIdx(hex);
 
             // Assemble tile data.
-            const tile = ObjectNamespace.parseSystemTile(obj).tile;
-            const system = System.getByTileNumber(tile);
             const entry = {
                 tile: tile,
             };
