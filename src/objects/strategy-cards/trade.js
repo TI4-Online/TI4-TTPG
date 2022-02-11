@@ -23,7 +23,7 @@ const onPrimaryClicked = (button, player) => {
 };
 const onAllowReplenishClicked = (button, player) => {
     broadcastMessage(
-        "strategy_card.construction.message.allow_replenish",
+        "strategy_card.trade.message.allow_replenish",
         {
             playerName: player.getName(),
             targetPlayerName: button.getText(),
@@ -113,8 +113,10 @@ const widgetFactory = (playerDesk) => {
     return verticalBox;
 };
 
+PlayerDesk.setPlayerCount(3);
+
 const calculateHeight = () => {
-    return 125 + (PlayerDesk.getPlayerCount() - 1) * 30;
+    return 166 + (PlayerDesk.getPlayerCount() - 1) * 25;
 };
 
 new RegisterStrategyCardUI()
