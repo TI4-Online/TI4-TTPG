@@ -8,6 +8,12 @@ const { Card, world } = require("../wrapper/api");
  * Remove a setup faction.
  */
 class CleanFaction {
+    /**
+     * Constructor.
+     *
+     * @param {PlayerDeck} playerDesk
+     * @param {string} factionNsidName - name portion "token.command:base/jolnar" -> "jolnar"
+     */
     constructor(playerDesk, factionNsidName) {
         assert(playerDesk instanceof PlayerDesk);
         assert(typeof factionNsidName === "string");
@@ -33,6 +39,11 @@ class CleanFaction {
         }
     }
 
+    /**
+     * Remove the constructor-specified faction from the player desk/table.
+     * This is only intended as an undo immediately after faction unpacking,
+     * it should not be used once a game is in progress.
+     */
     clean() {
         // Scan objects, look inside decks.
         for (const obj of world.getAllObjects()) {
@@ -40,10 +51,16 @@ class CleanFaction {
                 continue;
             }
 
-            if (
-                PlayerDesk.getClosest(obj.getPosition()).playerSlot !==
-                this._playerSlot
-            ) {
+            // Clean owner tokens on table.
+            if (ObjectNamespace.isControlToken(obj)) {
+                if (obj.getOwningPlayerSlot() === this._playerSlot) {
+                    obj.destroy();
+                }
+            }
+
+            // Otherwise restrict to player desk.
+            const closestDesk = PlayerDesk.getClosest(obj.getPosition());
+            if (closestDesk.playerSlot !== this._playerSlot) {
                 continue;
             }
 
