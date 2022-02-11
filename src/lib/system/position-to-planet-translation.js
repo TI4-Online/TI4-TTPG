@@ -18,22 +18,10 @@ const TILE_HEIGHT = 0.253;
 // decrease it to make the check more strict
 const RADIUS_BUFFER = 0.0;
 
-// Arrays to group systems whose planets are all in the same locations.
-const STANDARD_ONE_PLANET_HOME_SYSTEMS = [
-    1, 2, 3, 4, 5, 6, 7, 8, 52, 53, 54, 56,
-];
-const STANDARD_TWO_PLANET_HOME_SYSTEMS = [9, 10, 12, 13, 14, 15, 57];
-const STANDARD_ONE_PLANET_SYSTEMS = [
-    19, 20, 21, 22, 23, 24, 59, 60, 61, 62, 63,
-];
-const ONE_PLANET_WITH_WORMHOLE_SYSTEMS = [25, 26, 64];
-const STANDARD_TWO_PLANET_SYSTEMS = [
-    27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 69, 70, 71, 72, 73, 74,
-];
-const STANDARD_THREE_PLANET_SYSTEMS = [75, 76];
-
 function getPlanetHelper(system) {
     const tile = system.tile;
+    const planetCount = system.planets.length;
+    const home = system.raw.home;
     if (tile === 11) {
         // Clan of Saar Home System
         return [
@@ -72,26 +60,27 @@ function getPlanetHelper(system) {
     } else if (tile === 68) {
         // Everra
         return [{ x: 0.5, y: -1, r: 2 }];
-    } else if (tile == 82) {
+    } else if (tile === 82) {
         // Malice
         return [{ x: 1.2, y: 1, r: 2 }];
-    } else if (STANDARD_ONE_PLANET_HOME_SYSTEMS.indexOf(tile) > -1) {
-        return [{ x: 0.65, y: 0, r: 2 }];
-    } else if (STANDARD_ONE_PLANET_SYSTEMS.indexOf(tile) > -1) {
-        return [{ x: 0, y: 0, r: 2 }];
-    } else if (ONE_PLANET_WITH_WORMHOLE_SYSTEMS.indexOf(tile) > -1) {
+    } else if (tile === 25 || tile === 26 || tile == 64) {
+        // standard one planet systems with starting wormhole
         return [{ x: 2, y: -1.25, r: 2 }];
-    } else if (STANDARD_TWO_PLANET_HOME_SYSTEMS.indexOf(tile) > -1) {
+    } else if (home && planetCount === 1) {
+        return [{ x: 0.65, y: 0, r: 2 }];
+    } else if (!home && planetCount === 1) {
+        return [{ x: 0, y: 0, r: 2 }];
+    } else if (home && planetCount === 2) {
         return [
             { x: 2, y: -1.25, r: 2 },
             { x: -1.8, y: 1.9, r: 2 },
         ];
-    } else if (STANDARD_TWO_PLANET_SYSTEMS.indexOf(tile) > -1) {
+    } else if (!home && planetCount === 2) {
         return [
             { x: 2, y: -1.25, r: 2 },
             { x: -2, y: 1, r: 2 },
         ];
-    } else if (STANDARD_THREE_PLANET_SYSTEMS.indexOf(tile) > -1) {
+    } else if (planetCount === 3) {
         return [
             { x: 0.5, y: -3, r: 2 },
             { x: 2, y: 1.5, r: 2 },
@@ -120,24 +109,6 @@ function drawSphereAroundPlanet(planetPos, planetRadius) {
         DEBUG_DURATION,
         DEBUG_THICKNESS
     );
-}
-
-/**
- * Given a System, return an array of the planet names in the
- * original schema. This is necessary to check if planets have been destroyed
- *
- * @param {System} system
- * @returns {[string]}
- */
-function getOriginalSystemPlanets(system) {
-    const tile = system.tile;
-    for (const rawAttrs of SYSTEM_ATTRS) {
-        if (rawAttrs.tile === tile && rawAttrs.planets) {
-            return rawAttrs.planets.map((element) => {
-                return element.localeName;
-            });
-        }
-    }
 }
 
 /**
@@ -191,31 +162,6 @@ function withinCircle(circle, point) {
     return distance(circle, point) <= circle.r + RADIUS_BUFFER;
 }
 
-/**
- * Given a System returns the index in the original System planets array of
- * each destroyed planet in the system, or an empty array if there were no
- * destroyed planets.
- *
- * @param {System} system
- * @returns {[Number]}
- */
-function getDestroyedPlanets(system) {
-    const originalPlanets = getOriginalSystemPlanets(system);
-    const currPlanetNames = system.planets.map(
-        (element) => element.raw.localeName
-    );
-
-    let destroyedPlanets = [];
-    if (originalPlanets) {
-        originalPlanets.forEach((element, index) => {
-            if (currPlanetNames.indexOf(element) === -1) {
-                destroyedPlanets.push(index);
-            }
-        });
-    }
-    return destroyedPlanets;
-}
-
 function getLocalPosition(obj, pos) {
     const localPosition = obj.worldPositionToLocal(pos);
     if (Facing.isFaceUp(obj)) {
@@ -244,20 +190,20 @@ function getClosestPlanet(pos, debug) {
     if (system && system.system.planets.length > 0) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);
-        const destroyedPlanets = getDestroyedPlanets(system.system);
+        const planets = system.system.planets;
 
-        const remainingPlanetPositions = planetPositions.filter(
-            (_element, index) => destroyedPlanets.indexOf(index) === -1
-        );
-
-        const distances = remainingPlanetPositions.map((element) =>
-            distance(element, localPos)
-        );
+        const distances = planetPositions.map((element, index) => {
+            if (!planets[index].destroyed) {
+                return distance(element, localPos);
+            } else {
+                return 1e4;
+            }
+        });
 
         const closestPlanetIndex = distances.indexOf(Math.min(...distances));
 
         if (debug) {
-            const closestPos = remainingPlanetPositions[closestPlanetIndex];
+            const closestPos = planetPositions[closestPlanetIndex];
             const worldPos = getWorldPosition(system.obj, closestPos);
 
             // convert the planet radius to world
@@ -265,7 +211,7 @@ function getClosestPlanet(pos, debug) {
             drawSphereAroundPlanet(worldPos, planetRadius);
         }
 
-        return system.system.planets[closestPlanetIndex];
+        return planets[closestPlanetIndex];
     }
 }
 
@@ -274,26 +220,25 @@ function getExactPlanet(pos, debug) {
     if (system && system.system.planets.length > 0) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);
-        const destroyedPlanets = getDestroyedPlanets(system.system);
+        const planets = system.system.planets;
 
-        const remainingPlanetPositions = planetPositions.filter(
-            (_element, index) => destroyedPlanets.indexOf(index) === -1
-        );
-
-        const onPlanet = remainingPlanetPositions
-            .map((element) => withinCircle(element, localPos))
+        const onPlanet = planetPositions
+            .map(
+                (element, index) =>
+                    withinCircle(element, localPos) && !planets[index].destroyed
+            )
             .indexOf(true);
 
         if (onPlanet > -1) {
             if (debug) {
-                const planetPos = remainingPlanetPositions[onPlanet];
+                const planetPos = planetPositions[onPlanet];
                 const worldPos = getWorldPosition(system.obj, planetPos);
 
                 // convert the planet radius to world position
                 const planetRadius = (RADIUS_BUFFER + planetPos.r) * Hex.SCALE;
                 drawSphereAroundPlanet(worldPos, planetRadius);
             }
-            return system.system.planets[onPlanet];
+            return planets[onPlanet];
         }
     }
 }

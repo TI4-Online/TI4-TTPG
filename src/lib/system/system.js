@@ -58,6 +58,14 @@ class Planet {
         return this._attrs;
     }
 
+    get destroyed() {
+        return this.raw.destroyed;
+    }
+
+    set destroyed(value) {
+        this.raw.destroyed = value;
+    }
+
     getNameStr() {
         return locale(this.localeName);
     }

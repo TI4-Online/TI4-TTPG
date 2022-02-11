@@ -6,6 +6,7 @@ const PLANET_SCHEMA = {
         localeName: { type: "string" },
         resources: { type: "integer" },
         influence: { type: "integer" },
+        destroyed: { type: "boolean", default: false },
         trait: {
             type: "array",
             items: { enum: ["cultural", "hazardous", "industrial"] },

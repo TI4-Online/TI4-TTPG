@@ -25,14 +25,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             console.log("Not on a Planet.");
         }
     } else if (actionName === "Destroy Planet") {
-        const exactPlanet = getExactPlanet(obj.getPosition(), false);
+        const exactPlanet = getExactPlanet(obj.getPosition());
         if (exactPlanet) {
             console.log("Destroying ", exactPlanet.raw.localeName);
-            const system = getSystem(obj.getPosition());
-            system.system.planets.splice(
-                system.system.planets.indexOf(exactPlanet),
-                1
-            );
+            exactPlanet.destroyed = true;
         } else {
             console.log("Must be exactly on a planet to destroy it.");
         }
