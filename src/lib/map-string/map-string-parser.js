@@ -69,7 +69,15 @@ const parse = function (mapString) {
  * @returns {string} A map string
  */
 const format = function (mapTiles) {
-    mapTiles = mapTiles.slice();
+    mapTiles = mapTiles.slice(); // copy
+
+    // Replace any missing entries with "0".
+    for (let i = 0; i < mapTiles.length; i++) {
+        if (mapTiles[i] === undefined) {
+            mapTiles[i] = { tile: 0 };
+        }
+    }
+
     const centerTile = mapTiles.shift();
     let centerTileString = "";
     if (centerTile.tile != MECATOL_REX_SYSTEM_TILE) {

@@ -108,3 +108,11 @@ it("format with side and rotation", () => {
         "7 83b2"
     );
 });
+
+it("format with missing tile", () => {
+    const mapTiles = [];
+    (mapTiles[0] = { tile: 18 }),
+        (mapTiles[1] = { tile: 1 }),
+        (mapTiles[3] = { tile: 3 }),
+        assert.equal(format(mapTiles), "1 0 3");
+});

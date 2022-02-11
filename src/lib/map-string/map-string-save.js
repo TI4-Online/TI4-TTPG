@@ -1,26 +1,21 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { Facing } = require("../facing");
 const { Hex } = require("../hex");
 const MapStringHex = require("./map-string-hex");
 const MapStringParser = require("./map-string-parser");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
-const { world } = require("../../wrapper/api");
 
 /**
  * Save the map string based on current table state.
  */
 class MapStringSave {
     static save() {
-        // Scan the table, find all system tiles with their map string index.
         // Take note of rotation and side for hyperlanes.
+        const systemTileObjs = System.getAllSystemTileObjects();
         const mapTiles = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore objects inside containers
-            }
-            if (!ObjectNamespace.isSystemTile(obj)) {
-                continue; // not a map tile
-            }
+        for (const obj of systemTileObjs) {
+            assert(ObjectNamespace.isSystemTile(obj));
 
             // Get location in the map string.
             const hex = Hex.fromPosition(obj.getPosition());
