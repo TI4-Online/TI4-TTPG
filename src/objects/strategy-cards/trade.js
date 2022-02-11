@@ -113,8 +113,10 @@ const widgetFactory = (playerDesk) => {
     return verticalBox;
 };
 
+PlayerDesk.setPlayerCount(3);
+
 const calculateHeight = () => {
-    return 125 + (PlayerDesk.getPlayerCount() - 1) * 30;
+    return 166 + (PlayerDesk.getPlayerCount() - 1) * 25;
 };
 
 new RegisterStrategyCardUI()
