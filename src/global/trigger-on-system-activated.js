@@ -6,7 +6,7 @@
  * when the active player drops a command token on a system tile.
  */
 
-const { globalEvents, world, Vector } = require("@tabletop-playground/api");
+const { globalEvents, world } = require("@tabletop-playground/api");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { System } = require("../lib/system/system");
@@ -42,14 +42,10 @@ function onCommandTokenReleased(
         return; // token not owned by player
     }
 
-    const src = obj.getPosition();
-    const dst = new Vector(src.x, src.y, world.getTableHeight() - 5);
-    const hits = world.lineTrace(src, dst);
-    for (const hit of hits) {
-        if (ObjectNamespace.isSystemTile(hit.object)) {
-            globalEvents.TI4.onSystemActivated.trigger(hit.object, player);
-            break;
-        }
+    const pos = obj.getPosition();
+    const systemTile = System.getSystemTileObjectByPosition(pos);
+    if (systemTile) {
+        globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
     }
 }
 

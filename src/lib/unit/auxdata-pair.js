@@ -3,12 +3,11 @@ const locale = require("../locale");
 const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
-const { ObjectNamespace } = require("../object-namespace");
+const { System } = require("../system/system");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 const { UnitModifier } = require("./unit-modifier");
 const { UnitPlastic } = require("./unit-plastic");
-const { world } = require("../../wrapper/api");
 
 /**
  * Given a combat between two players, create and fill in the AuxData
@@ -149,14 +148,8 @@ class AuxDataPair {
         const newAdjHexes = new Set();
         this._adjHexes.forEach((hex) => {
             const pos = Hex.toPosition(hex);
-            const src = pos.add([0, 0, 50]);
-            const dst = pos.subtract([0, 0, 50]);
-            const hits = world.lineTrace(src, dst);
-            for (const hit of hits) {
-                if (ObjectNamespace.isSystemTile(hit.object)) {
-                    newAdjHexes.add(hex);
-                    break;
-                }
+            if (System.getSystemTileObjectByPosition(pos)) {
+                newAdjHexes.add(hex);
             }
         });
         this._adjHexes = newAdjHexes;
