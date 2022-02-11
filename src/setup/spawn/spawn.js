@@ -166,6 +166,15 @@ class Spawn {
                 return candidateResult;
             }
         }
+
+        // Try "{type}" for "{type}:{source}/*".
+        if (parsedNsid.name === "*") {
+            let candidate = `${parsedNsid.type}`;
+            let candidateResult = locale(candidate);
+            if (candidateResult !== candidate) {
+                return candidateResult;
+            }
+        }
     }
 
     /**

@@ -276,8 +276,8 @@
 
     "token.command": "Command Token ({faction})",
     "token.control": "Control Token ({faction})",
-    "bag.token.command": "Command Token Reinforcements ({faction})",
-    "bag.token.control": "Control Tokens ({faction})",
+    "bag.token.command": "Command Token Reinforcements",
+    "bag.token.control": "Control Tokens",
 
     "token.speaker": "Speaker",
 
