@@ -23,7 +23,7 @@ const onPrimaryClicked = (button, player) => {
 };
 const onAllowReplenishClicked = (button, player) => {
     broadcastMessage(
-        "strategy_card.construction.message.allow_replenish",
+        "strategy_card.trade.message.allow_replenish",
         {
             playerName: player.getName(),
             targetPlayerName: button.getText(),

@@ -19,7 +19,7 @@ let activatingPlayer;
 function widgetFactory() {
     let headerText = new Text()
         .setFontSize(20)
-        .setText(locale("strategy_card.techology.text"));
+        .setText(locale("strategy_card.technology.text"));
     let closeButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.close"));
