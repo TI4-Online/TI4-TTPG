@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
-const { Card, GameObject } = require("../../wrapper/api");
+const { Card, GameObject, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
 let _tileToSystem = false;
@@ -80,11 +80,36 @@ class System {
         return _tileToSystem[tile];
     }
 
+    /**
+     * Get the system from the associated system tile game object.
+     *
+     * @param {GameObject} obj
+     * @returns {System|undefined}
+     */
     static getBySystemTileObject(obj) {
         assert(obj instanceof GameObject);
         if (ObjectNamespace.isSystemTile(obj)) {
             const parsed = ObjectNamespace.parseSystemTile(obj);
             return this.getByTileNumber(parsed.tile);
+        }
+    }
+
+    /**
+     * Get the first system tile game object at position.
+     *
+     * @param {Vector} pos
+     * @returns {GameObject}
+     */
+    static getSystemTileObjectByPosition(pos) {
+        assert(typeof pos.x === "number");
+
+        const src = pos.add([0, 0, 50]);
+        const dst = pos.subtract([0, 0, 50]);
+        const hits = world.lineTrace(src, dst);
+        for (const hit of hits) {
+            if (ObjectNamespace.isSystemTile(hit.object)) {
+                return hit.object;
+            }
         }
     }
 
@@ -113,6 +138,10 @@ class System {
 
     get tile() {
         return this._attrs.tile;
+    }
+
+    get home() {
+        return this._attrs.home;
     }
 
     get planets() {
