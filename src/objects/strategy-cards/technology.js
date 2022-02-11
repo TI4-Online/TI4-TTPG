@@ -15,7 +15,6 @@ const locale = require("../../lib/locale");
 let selections = {};
 let activatingPlayer;
 
-
 function widgetFactory() {
     let headerText = new Text()
         .setFontSize(20)
