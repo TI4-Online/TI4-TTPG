@@ -61,6 +61,17 @@ class Planet {
     getNameStr() {
         return locale(this.localeName);
     }
+
+    getPlanetNsidName() {
+        const localeName = this.localeName;
+        const m = this.localeName.match(/^planet\.([^.]*)$/);
+        if (!m) {
+            throw new Error(
+                `planet "${localeName}" does not follow name convention`
+            );
+        }
+        return m[1];
+    }
 }
 
 /**
