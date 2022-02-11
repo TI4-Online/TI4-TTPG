@@ -1,7 +1,7 @@
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
 const { Button, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
@@ -65,5 +65,10 @@ module.exports = function registerStandardCard(
         return verticalBox;
     };
 
-    registerStrategyCard(strategyCardInstance, widgetFactory, 120, color);
+    new RegisterStrategyCardUI()
+        .setCard(strategyCardInstance)
+        .setWidgetFactory(widgetFactory)
+        .setHeight(120)
+        .setColor(color)
+        .register();
 };

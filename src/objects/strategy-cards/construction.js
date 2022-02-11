@@ -1,7 +1,7 @@
 const {
     broadcastMessage,
     onUiClosedClicked,
-    registerStrategyCard,
+    RegisterStrategyCardUI,
 } = require("./strategy-card");
 const {
     Button,
@@ -96,9 +96,9 @@ const widgetFactory = () => {
     return verticalBox;
 };
 
-registerStrategyCard(
-    refObject,
-    widgetFactory,
-    170,
-    new Color(0.054, 0.45, 0.188)
-);
+new RegisterStrategyCardUI()
+    .setCard(refObject)
+    .setWidgetFactory(widgetFactory)
+    .setHeight(170)
+    .setColor(new Color(0.054, 0.45, 0.188))
+    .register();
