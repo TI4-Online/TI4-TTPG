@@ -447,7 +447,6 @@
     "planet.ylir": "Ylir",
     "planet.zohbat": "Zohbat",
 
-    "strategy_card.close.button": "Close",
     "strategy_card.message.all_resolved": "<<< All players have resolved the strategy card! >>>",
 
     "strategy_card.leadership.text": "Leadership",
@@ -493,6 +492,8 @@
     "strategy_card.warfare.message.secondary": "{playerName} uses the secondary ability of Warfare.",
     "strategy_card.warfare.message.pass": "{playerName} passes on Warfare.",
 
+    "strategy_card.technology.text": "Technology",
+    
     "strategy_card.imperial.text": "Imperial",
     "strategy_card.imperial.message.primary": "{playerName} uses the primary ability of Imperial.",
     "strategy_card.imperial.message.secondary": "{playerName} uses the secondary ability of Imperial.",
