@@ -55,7 +55,10 @@ function _maybeInit() {
         for (const [slot, sheet] of Object.entries(slotToSheet)) {
             const nsidName = ObjectNamespace.parseFactionSheet(sheet).faction;
             const faction = Faction.getByNsidName(nsidName);
-            assert(faction);
+            if (!faction) {
+                const nsid = ObjectNamespace.getNsid(sheet);
+                throw new Error(`unknown faction from sheet "${nsid}"`);
+            }
             _playerSlotToFaction[slot] = faction;
         }
     }
