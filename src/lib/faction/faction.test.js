@@ -2,8 +2,16 @@ const assert = require("assert");
 const locale = require("../../lib/locale");
 const { Faction } = require("./faction");
 const { FactionSchema } = require("./faction.schema");
-const { FACTION_DATA } = require("./faction.data");
+const { ObjectNamespace } = require("../object-namespace");
+const { PlayerDesk } = require("../player-desk");
 const { UnitAttrs } = require("../unit/unit-attrs");
+const { FACTION_DATA } = require("./faction.data");
+const {
+    MockGameObject,
+    MockPlayer,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 it("FACTION_DATA schema", () => {
     FACTION_DATA.forEach((faction) => {
@@ -41,5 +49,25 @@ it("FACTION_DATA faction locale", () => {
 
 it("static getByNsidName", () => {
     const faction = Faction.getByNsidName("arborec");
+    assert.equal(faction.raw.faction, "arborec");
+});
+
+it("static getByPlayerSlot", () => {
+    const desk = PlayerDesk.getPlayerDesks()[0];
+    const sheet = new MockGameObject({
+        templateMetadata: "sheet.faction:base/arborec",
+        position: desk.center,
+    });
+    assert(ObjectNamespace.isFactionSheet(sheet));
+
+    world.__clear();
+    world.__addObject(sheet);
+
+    // Tell Faction to invalidate any caches.
+    const player = new MockPlayer();
+    globalEvents.TI4.onFactionChanged.trigger(desk.playerSlot, player);
+
+    const faction = Faction.getByPlayerSlot(desk.playerSlot);
+    assert(faction);
     assert.equal(faction.raw.faction, "arborec");
 });

@@ -1,3 +1,5 @@
+const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
+
 // Export under the mock names so tests can be explicit they are not using TTPG objects.
 Object.assign(module.exports, {
     MockBorder: require("./mock-border"),
@@ -51,6 +53,15 @@ const world = new module.exports.GameWorld();
 // 'refObject' is tricky, it should be per-object and potentially meaningful.
 // Create a dummy catch-all, specific tests can override if needed.
 const refObject = new module.exports.GameObject();
+
+// Register TI4 events.
+globalEvents.TI4 = {
+    onContainerRejected: new TriggerableMulticastDelegate(),
+    onFactionChanged: new TriggerableMulticastDelegate(),
+    onSystemActivated: new TriggerableMulticastDelegate(),
+    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
+    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
+};
 
 // Create TTPG runtime objects.
 Object.assign(module.exports, {
