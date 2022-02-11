@@ -399,6 +399,9 @@ class PlayerDesk {
     get pos() {
         return this._pos;
     }
+    get center() {
+        return this._center;
+    }
     get rot() {
         return this._rot;
     }
