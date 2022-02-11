@@ -1,7 +1,6 @@
 const { System } = require("./system");
 const { ObjectNamespace } = require("../object-namespace");
 const { Vector, world, Color } = require("@tabletop-playground/api");
-const SYSTEM_ATTRS = require("./system.data");
 const { Hex } = require("../hex");
 const { Facing } = require("../facing");
 
@@ -18,6 +17,13 @@ const TILE_HEIGHT = 0.253;
 // decrease it to make the check more strict
 const RADIUS_BUFFER = 0.0;
 
+/**
+ * Returns an array of the x, y position and radius of each planet in the
+ * given system.
+ *
+ * @param {System} system
+ * @returns {[{position: {x: number, y: number}, radius: number}]}
+ */
 function getPlanetHelper(system) {
     const planetCount = system.planets.length;
     const home = system.raw.home;
@@ -98,11 +104,11 @@ function drawSphereAroundPlanet(planetPos, planetRadius) {
 }
 
 /**
- * Returns the System, if any, that pos is over top of along with the
- * local position of pos relative to the System.
+ * Returns the System, if any, that pos is over top of. Also returns the
+ * GameObject for the system tile.
  *
  * @param {Vector} pos
- * @returns {{system: System, localPos: Vector}}
+ * @returns {{system: System, obj: GameObject }}
  */
 function getSystem(pos) {
     const dst = new Vector(pos.x, pos.y, world.getTableHeight() - 5);
@@ -124,29 +130,40 @@ function getSystem(pos) {
  * Not using the TTPG built in Vector distance because we don't care about the
  * Z dimension.
  *
- * @param {{x: Number, y: Number}} src
- * @param {{x: Number, y: Number}} dest
- * @returns {Number}
+ * @param {{x: number, y: number}} src
+ * @param {{x: number, y: number}} dest
+ * @returns {number}
  */
 function distance(src, dest) {
     return Math.sqrt(Math.pow(src.x - dest.x, 2) + Math.pow(src.y - dest.y, 2));
 }
 
 /**
- * Returns true if point lies inside a circle.
+ * Returns true if point lies inside a circle defined by center and radius.
  * With a tolerance of RADIUS_BUFFER
  *
  * Not using TTPG built in Vector distance because we don't care about the
  * Z dimension.
  *
- * @param {{x: Number, y: Number, r: Number}} circle
- * @param {{x: Number, y: Number}} point
- * @returns {Number}
+ * @param {{x: number, y: number}} center
+ * @param {number} radius
+ * @param {{x: number, y: number}} point
+ * @returns {number}
  */
 function withinCircle(center, radius, point) {
     return distance(center, point) <= radius + RADIUS_BUFFER;
 }
 
+/**
+ * Converts world position of pos to local position relative to obj.
+ *
+ * If obj is flipped upsidedown, the y dimension is negated after
+ * calling worldPositionToLocal
+ *
+ * @param {GameObject} obj
+ * @param {Vector} pos
+ * @returns {Vector}
+ */
 function getLocalPosition(obj, pos) {
     const localPosition = obj.worldPositionToLocal(pos);
     if (Facing.isFaceUp(obj)) {
@@ -161,6 +178,16 @@ function getLocalPosition(obj, pos) {
     }
 }
 
+/**
+ * Converts the local position of pos relative to obj to a world position.
+ *
+ * If obj is flipped upsidedown, the y dimension is negated before calling
+ * localPositionToWorld
+ *
+ * @param {GameObject} obj
+ * @param {Vector} pos
+ * @returns {Vector}
+ */
 function getWorldPosition(obj, pos) {
     if (Facing.isFaceUp(obj)) {
         return obj.localPositionToWorld(pos);
@@ -170,6 +197,15 @@ function getWorldPosition(obj, pos) {
     }
 }
 
+/**
+ * Returns the closest Planet to pos, if pos is over a sytem tile.
+ *
+ * If debug is true, a sphere is drawn around the closest planet.
+ *
+ * @param {Vector} pos
+ * @param {boolean} debug
+ * @returns {Planet}
+ */
 function getClosestPlanet(pos, debug) {
     const system = getSystem(pos);
     if (system && system.system.planets.length > 0) {
@@ -200,6 +236,15 @@ function getClosestPlanet(pos, debug) {
     }
 }
 
+/**
+ * Returns the planet, if any, that pos is directly over top of.
+ *
+ * If debug is true, a sphere is drawn around the planet.
+ *
+ * @param {Vector} pos
+ * @param {boolean} debug
+ * @returns {Planet}
+ */
 function getExactPlanet(pos, debug) {
     const system = getSystem(pos);
     if (system && system.system.planets.length > 0) {
