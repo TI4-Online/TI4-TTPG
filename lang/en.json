@@ -469,6 +469,13 @@
     "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
     "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
 
+    "strategy_card.trade.text": "Trade",
+    "strategy_card.trade.text.allowReplenish": "Allow players secondary without command token",
+    "strategy_card.construction.message.allow_replenish": "{playerName} allows {targetPlayerName} to use the secondary ability of Trade without spending a strategy token.",
+    "strategy_card.trade.message.primary": "{playerName} uses the primary ability of Trade.",
+    "strategy_card.trade.message.secondary": "{playerName} uses the secondary ability of Trade.",
+    "strategy_card.trade.message.pass": "{playerName} passes on Trade.",
+
     "strategy_card.construction.text": "Construction",
     "strategy_card.construction.button.primary_1dock_1pds": "Primary (1 Space Dock and 1 PDS)",
     "strategy_card.construction.button.primary_2pds": "Primary (2 PDS)",

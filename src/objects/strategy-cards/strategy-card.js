@@ -42,7 +42,7 @@ function createStrategyCardUi(card, widgetFactory, height, color) {
             height: height,
             ui: ui,
         }).setColor(color);
-        border.setChild(widgetFactory());
+        border.setChild(widgetFactory(playerDesk));
         border.spawnUi();
 
         openSelections[cardId].push(border);
@@ -59,7 +59,8 @@ class RegisterStrategyCardUI {
      * @param {object} [data]
      * @param {GameObject} [data.card] The object instance of the strategy card
      * @param {function} [data.widgetFactory] A factory creating the UI for each player
-     * @param {Integer} [data.height] Height of the UI for each player
+     * @param {Integer | function} [data.height] Height of the UI for each player. Can also be provided as a function
+     * to determine the height dynamically on UI creation
      * @param {Color} [data.color] Color of the UI for each player
      * @param {function} [data.onStrategyCardPlayed] Event handler of the "Play" button pressed.
      * This function only is required if the Play button should do more than just creating a UI.
@@ -121,7 +122,9 @@ class RegisterStrategyCardUI {
 
         assert(this._card instanceof GameObject);
         assert(typeof this._widgetFactory === "function");
-        assert(Number.isInteger(this._height));
+        assert(
+            Number.isInteger(this._height) || typeof this._height === "function"
+        );
         assert(
             this._onStrategyCardPlayed === undefined ||
                 typeof this._onStrategyCardPlayed === "function"
@@ -137,7 +140,9 @@ class RegisterStrategyCardUI {
             createStrategyCardUi(
                 this._card,
                 this._widgetFactory,
-                this._height,
+                typeof this._height === "function"
+                    ? this._height()
+                    : this._height,
                 this._color
             );
             if (!this._onStrategyCardPlayed) return;
