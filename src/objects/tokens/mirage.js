@@ -21,7 +21,6 @@ function detachMirage() {
         const prevMirageSystem = System.getByTileNumber(
             _mirageSystemTileNumber
         );
-        console.log("Detaching mirage from", _mirageSystemTileNumber);
 
         // mirage only goes in 0 planet systems so removing the first
         // planet will remove mirage
@@ -49,7 +48,6 @@ function attachMirage(obj) {
         }
 
         // attach mirage to the system
-        console.log("Attaching mirage to", system.tile);
         const mirage = new Planet(MIRAGE_ATTRS, system);
         system.planets.push(mirage);
         _mirageSystemTileNumber = system.tile;
