@@ -1,3 +1,4 @@
+const GameObjectFinder = require("./game-object-finder");
 const { ObjectNamespace } = require("./object-namespace");
 
 class ReturnGameObjectHome {
@@ -6,7 +7,7 @@ class ReturnGameObjectHome {
      * @throws always
      */
     constructor() {
-        throw new Error('Static only')
+        throw new Error("Static only")
     }
 
     /**
@@ -44,10 +45,10 @@ class ReturnGameObjectHome {
             return ReturnGameObjectHome.returnToken(gameObject)
         }
         if(ObjectNamespace.isUnit(gameObject)) {
-            return ReturnGameObjectHome.returnToPlayerReinforcements(gameObject)
+            return ReturnGameObjectHome.returnPlayerUnit(gameObject)
         }
 
-        throw new Error('Unable to return unknown object type')
+        throw new Error("Unable to return unknown object type")
     }
 
     static returnCard() {}
@@ -55,6 +56,22 @@ class ReturnGameObjectHome {
     static returnSystemTile() {}
     static returnToken() {}
     static returnToPlayerReinforcements() {}
+    static returnPlayerUnit(gameObject) {
+        const owningPlayer = gameObject.getOwningPlayerSlot()
+        const metadata = gameObject.getTemplateMetadata()
+
+        if(!owningPlayer || owningPlayer === -1) {
+            throw new Error("Failed to find object's player slot")
+        }
+
+        const playerUnitContainer = GameObjectFinder.getPlayerUnitBag(owningPlayer, metadata)
+
+        if(!playerUnitContainer) {
+            throw new Error(`Failed to find player slot ${owningPlayer}'s container`)
+        }
+
+        playerUnitContainer.addObjects([gameObject])
+    }
 }
 
 module.exports = ReturnGameObjectHome;
