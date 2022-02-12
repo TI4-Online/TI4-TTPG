@@ -74,9 +74,18 @@ function attachMirage(obj) {
         obj.setPosition(miragePos);
         obj.setRotation(mirageRot);
         obj.setScale(scale);
-        obj.toggleLock();
+
+        // convert to a "ground" object so that it cant be moved
+        // using toggleLock() causes the token to be unlocked when coming
+        // back from a script reload
+        obj.setObjectType(1);
     }
 }
 
 refObject.onReleased.add(attachMirage);
 refObject.onGrab.add(detachMirage);
+refObject.onCreated.add(attachMirage);
+
+if (world.getExecutionReason() === "ScriptReload") {
+    attachMirage(refObject);
+}
