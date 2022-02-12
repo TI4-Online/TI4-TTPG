@@ -23,14 +23,14 @@ class SetupHands extends AbstractSetup {
         const templateId = "A12757C14B19B37232C9FCAC9B04CEA7";
         let obj = world.createObjectFromTemplate(templateId, pos);
 
-        // Set "show backs" for how to hide cards.
-        // TODO XXX TTPG DOES NOT YET SUPPORT THIS VIA SCRIPT.
-        // REPLACE THIS SICKNESS WITH obj.setShowCardBacks(true) WHEN ABLE!
-        // LIKEWISE IF A BETTER TEMPLATE EXISTS IT MAY BE ABLE TO APPLY THIS.
-        let json = obj.toJSONString();
-        json = json.replace('"showCardBacks":false', '"showCardBacks":true');
+        // TTPG does not provide script methods to edit these attributes, nor
+        // are all avaialble in the template editor (that I can see).
+        // REPLACE THIS SICKNESS WITH obj.setX() WHEN ABLE!
+        const json = JSON.parse(obj.toJSONString());
+        json.showCardBacks = true;
+        json.MaxCards = 100;
         obj.destroy();
-        obj = world.createObjectFromJSON(json, pos);
+        obj = world.createObjectFromJSON(JSON.stringify(json), pos);
 
         obj.setRotation(rot);
         obj.setOwningPlayerSlot(playerSlot);
