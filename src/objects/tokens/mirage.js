@@ -14,20 +14,29 @@ const MIRAGE_ATTRS = {
 // track the system mirage is in so we don't have to go searching for it
 let _mirageSystemTileNumber = 0;
 
+function detachMirage() {
+    if (_mirageSystemTileNumber) {
+        const prevMirageSystem = System.getByTileNumber(
+            _mirageSystemTileNumber
+        );
+        console.log("Detaching mirage from", _mirageSystemTileNumber);
+
+        // mirage only goes in 0 planet systems so removing the first
+        // planet will remove mirage
+        prevMirageSystem.planets.splice(0, 1);
+        _mirageSystemTileNumber = 0;
+    }
+}
+
 function attachMirage(obj) {
     const pos = obj.getPosition();
     const systemObj = System.getSystemTileObjectByPosition(pos);
     if (systemObj) {
+        // if mirage was already attached somewhere else, detach it first
+        // before attaching to the new system
+        detachMirage();
+
         const system = System.getBySystemTileObject(systemObj);
-        if (_mirageSystemTileNumber) {
-            const prevMirageSystem = System.getByTileNumber(
-                _mirageSystemTileNumber
-            );
-            console.log("Detaching mirage from", _mirageSystemTileNumber);
-            // mirage can only go in 0 planet systems
-            prevMirageSystem.planets.splice(0, 1);
-            _mirageSystemTileNumber = 0;
-        }
         if (system.planets.length === 0) {
             console.log("Attaching mirage to", system.tile);
             const mirage = new Planet(MIRAGE_ATTRS, system);
@@ -50,3 +59,4 @@ function attachMirage(obj) {
 }
 
 refObject.onReleased.add(attachMirage);
+refObject.onGrab.add(detachMirage);
