@@ -10,7 +10,6 @@ const MIRAGE_ATTRS = {
     legendary: true,
     legendaryCard: "card.legendary_planet:pok/mirage_flight_academy",
 };
-const MIRAGE = new Planet(MIRAGE_ATTRS);
 let MIRAGE_SYSTEM = 0;
 
 function attachMirage(obj) {
@@ -27,14 +26,15 @@ function attachMirage(obj) {
         }
         if (system.planets.length === 0) {
             console.log("Attaching mirage to", system.tile);
-            system.planets.push(MIRAGE);
+            const mirage = new Planet(MIRAGE_ATTRS, system);
+            system.planets.push(mirage);
             const systemRot = systemObj.getRotation();
             const mirageRot = new Rotator(
                 systemRot.pitch,
                 systemRot.yaw - 100,
                 systemRot.roll
             );
-            obj.setPosition(systemObj.localPositionToWorld(MIRAGE.position));
+            obj.setPosition(systemObj.localPositionToWorld(mirage.position));
             obj.setRotation(mirageRot);
             obj.setScale(systemObj.getScale());
             obj.toggleLock();
