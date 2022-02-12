@@ -1,7 +1,6 @@
-const { refObject, Rotator } = require("../../wrapper/api");
+const { refObject, Rotator, Vector } = require("../../wrapper/api");
 const { System, Planet } = require("../../lib/system/system");
 const { Broadcast } = require("../../lib/broadcast");
-const Vector = require("../../mock/mock-vector");
 
 const MIRAGE_ATTRS = {
     localeName: "planet.mirage",
