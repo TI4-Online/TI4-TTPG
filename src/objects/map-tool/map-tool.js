@@ -3,6 +3,7 @@ const { MapStringLoad } = require("../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { PlayerDesk } = require("../../lib/player-desk");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../../lib/system/system");
 const {
@@ -74,6 +75,9 @@ class MapTool {
             },
             clearFrontierTokens: () => {
                 this.clearFrontierTokens();
+            },
+            placeHyperlanes: () => {
+                this.placeHyperlanes();
             },
         };
         this._ui = new MapToolUI(this._obj, onButtonMap);
@@ -250,6 +254,13 @@ class MapTool {
                 obj.destroy();
             }
         }
+    }
+
+    placeHyperlanes() {
+        const playerCount = PlayerDesk.getPlayerCount();
+        console.log(`MapTool.placeHyperlanes for ${playerCount} player count`);
+
+        // XXX TODO
     }
 }
 
