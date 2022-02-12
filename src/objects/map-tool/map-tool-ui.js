@@ -59,6 +59,7 @@ class MapToolUI {
         addButton("ui.maptool.clear_cards", f.clearCards);
         addButton("ui.maptool.place_frontier_tokens", f.placeFrontierTokens);
         addButton("ui.maptool.clear_frontier_tokens", f.clearFrontierTokens);
+        addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
 
         // GameObject.updateUI does NOT update if you change the widget.
         this._uiElement.widget = new Border().setChild(panel);
