@@ -1,5 +1,6 @@
 const { refObject, Rotator } = require("../../wrapper/api");
 const { System, Planet } = require("../../lib/system/system");
+const { Broadcast } = require("../../lib/broadcast");
 
 const MIRAGE_ATTRS = {
     localeName: "planet.mirage",
@@ -37,24 +38,30 @@ function attachMirage(obj) {
         detachMirage();
 
         const system = System.getBySystemTileObject(systemObj);
-        if (system.planets.length === 0) {
-            console.log("Attaching mirage to", system.tile);
-            const mirage = new Planet(MIRAGE_ATTRS, system);
-            system.planets.push(mirage);
-            const systemRot = systemObj.getRotation();
-            const mirageRot = new Rotator(
-                systemRot.pitch,
-                systemRot.yaw - 100,
-                systemRot.roll
+
+        // check that the system is a valid target for mirage
+        if (system.planets.length > 0) {
+            Broadcast.chatAll(
+                "Mirage must be attached to a system with 0 planets."
             );
-            obj.setPosition(systemObj.localPositionToWorld(mirage.position));
-            obj.setRotation(mirageRot);
-            obj.setScale(systemObj.getScale());
-            obj.toggleLock();
-            _mirageSystemTileNumber = system.tile;
-        } else {
-            console.log("Mirage must be attached to a system with 0 planets");
+            return;
         }
+
+        // attach mirage to the system
+        console.log("Attaching mirage to", system.tile);
+        const mirage = new Planet(MIRAGE_ATTRS, system);
+        system.planets.push(mirage);
+        const systemRot = systemObj.getRotation();
+        const mirageRot = new Rotator(
+            systemRot.pitch,
+            systemRot.yaw - 100,
+            systemRot.roll
+        );
+        obj.setPosition(systemObj.localPositionToWorld(mirage.position));
+        obj.setRotation(mirageRot);
+        obj.setScale(systemObj.getScale());
+        obj.toggleLock();
+        _mirageSystemTileNumber = system.tile;
     }
 }
 
