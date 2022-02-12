@@ -56,11 +56,7 @@ function attachMirage(obj) {
 
         // shift the yaw so that the token text is upright in the system
         const systemRot = systemObj.getRotation();
-        const mirageRot = new Rotator(
-            systemRot.pitch,
-            systemRot.yaw - 110,
-            systemRot.roll
-        );
+        const mirageRot = systemRot.compose(new Rotator(0, -110, 0));
 
         // shift the position down slightly to account for the planet label
         const scale = systemObj.getScale();
