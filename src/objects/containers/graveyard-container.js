@@ -1,4 +1,4 @@
-const ReturnGameObjectHome = require('../../lib/return-game-object-home');
+const ReturnGameObjectHome = require("../../lib/return-game-object-home");
 
 class GraveyardContainer {
 

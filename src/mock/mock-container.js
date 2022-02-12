@@ -1,6 +1,6 @@
-const { isArray } = require('../wrapper/lodash-wrapper')
-const TriggerableMulticastDelegate = require('../lib/triggerable-multicast-delegate')
-const MockGameObject = require('./mock-game-object')
+const { isArray } = require("../wrapper/lodash-wrapper")
+const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate")
+const MockGameObject = require("./mock-game-object")
 
 class MockContainer extends MockGameObject {
     _objects = []

@@ -1,6 +1,6 @@
 
-const { world } = require('@tabletop-playground/api')
-const { find, get, set } = require('../wrapper/lodash-wrapper')
+const { world } = require("@tabletop-playground/api")
+const { find, get, set } = require("../wrapper/lodash-wrapper")
 
 class GameObjectFinder {
 

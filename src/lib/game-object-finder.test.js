@@ -1,6 +1,6 @@
-const { world } = require('@tabletop-playground/api')
-const { MockGameObject } = require('../mock/mock-api')
-const GameObjectFinder = require('./game-object-finder');
+const { world } = require("@tabletop-playground/api")
+const { MockGameObject } = require("../mock/mock-api")
+const GameObjectFinder = require("./game-object-finder");
 
 const createMockGameObject = (metadata, playerSlot) => {
     const args = { templateMetadata : metadata }
@@ -12,12 +12,12 @@ const createMockGameObject = (metadata, playerSlot) => {
     return new MockGameObject(args)
 }
 
-describe('GameObjectFinder', () => {
-    const targetUnitMetadata = 'unit:base/fighter'
+describe("GameObjectFinder", () => {
+    const targetUnitMetadata = "unit:base/fighter"
     let worldObjects
 
     beforeEach(() => {
-        jest.spyOn(world, 'getAllObjects').mockImplementation(() => worldObjects)
+        jest.spyOn(world, "getAllObjects").mockImplementation(() => worldObjects)
     });
 
     afterEach(() => {
@@ -25,7 +25,7 @@ describe('GameObjectFinder', () => {
         GameObjectFinder.clearCache()
     });
 
-    describe('#getPlayerUnitBag', () => {
+    describe("#getPlayerUnitBag", () => {
         beforeEach(() => {
             worldObjects = [
                 ...[1, 2, 3].map(slot => createMockGameObject(`bag.${targetUnitMetadata}`, slot)),
@@ -33,11 +33,11 @@ describe('GameObjectFinder', () => {
             ]
         });
 
-        it('returns the correct unit bag', () => {
+        it("returns the correct unit bag", () => {
             expect(GameObjectFinder.getPlayerUnitBag(2, targetUnitMetadata)).toBe(worldObjects[1])
         });
 
-        describe('subsequent calls for the same object', () => {
+        describe("subsequent calls for the same object", () => {
             let secondCallReturn
 
             beforeEach(() => {
@@ -45,11 +45,11 @@ describe('GameObjectFinder', () => {
                 secondCallReturn = GameObjectFinder.getPlayerUnitBag(2, targetUnitMetadata)
             });
 
-            it('returns the correct unit bag', () => {
+            it("returns the correct unit bag", () => {
                 expect(secondCallReturn).toBe(worldObjects[1])
             });
 
-            it('only searches for the bag once', () => {
+            it("only searches for the bag once", () => {
                 expect(world.getAllObjects).toHaveBeenCalledTimes(1)
             });
         });
