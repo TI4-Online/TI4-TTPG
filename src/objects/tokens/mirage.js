@@ -10,19 +10,23 @@ const MIRAGE_ATTRS = {
     legendary: true,
     legendaryCard: "card.legendary_planet:pok/mirage_flight_academy",
 };
-let MIRAGE_SYSTEM = 0;
+
+// track the system mirage is in so we don't have to go searching for it
+let _mirageSystemTileNumber = 0;
 
 function attachMirage(obj) {
     const pos = obj.getPosition();
     const systemObj = System.getSystemTileObjectByPosition(pos);
     if (systemObj) {
         const system = System.getBySystemTileObject(systemObj);
-        if (MIRAGE_SYSTEM) {
-            const prevMirageSystem = System.getByTileNumber(MIRAGE_SYSTEM);
-            console.log("Detaching mirage from", MIRAGE_SYSTEM);
+        if (_mirageSystemTileNumber) {
+            const prevMirageSystem = System.getByTileNumber(
+                _mirageSystemTileNumber
+            );
+            console.log("Detaching mirage from", _mirageSystemTileNumber);
             // mirage can only go in 0 planet systems
             prevMirageSystem.planets.splice(0, 1);
-            MIRAGE_SYSTEM = 0;
+            _mirageSystemTileNumber = 0;
         }
         if (system.planets.length === 0) {
             console.log("Attaching mirage to", system.tile);
@@ -38,7 +42,7 @@ function attachMirage(obj) {
             obj.setRotation(mirageRot);
             obj.setScale(systemObj.getScale());
             obj.toggleLock();
-            MIRAGE_SYSTEM = system.tile;
+            _mirageSystemTileNumber = system.tile;
         } else {
             console.log("Mirage must be attached to a system with 0 planets");
         }
