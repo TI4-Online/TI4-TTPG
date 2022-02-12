@@ -46,20 +46,25 @@ class Planet {
         return _planetLocaleNameToPlanet[localeName];
     }
 
-    constructor(attrs) {
+    constructor(attrs, system) {
         this._attrs = attrs;
-    }
-
-    get localeName() {
-        return this.raw.localeName;
+        this._system = system;
     }
 
     get raw() {
         return this._attrs;
     }
 
+    get localeName() {
+        return this.raw.localeName;
+    }
+
     get destroyed() {
         return this.raw.destroyed;
+    }
+
+    set destroyed(value) {
+        this.raw.destroyed = value;
     }
 
     get radius() {
@@ -70,8 +75,8 @@ class Planet {
         return this.raw.position;
     }
 
-    set destroyed(value) {
-        this.raw.destroyed = value;
+    get system() {
+        return this._system;
     }
 
     getNameStr() {
@@ -165,7 +170,7 @@ class System {
         if (systemAttrs.planets) {
             this._planets.push(
                 ...systemAttrs.planets.map(
-                    (planeAttrs) => new Planet(planeAttrs)
+                    (planeAttrs) => new Planet(planeAttrs, this)
                 )
             );
         }

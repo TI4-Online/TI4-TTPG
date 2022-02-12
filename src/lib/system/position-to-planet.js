@@ -1,8 +1,7 @@
-const { System } = require("./system");
-const { ObjectNamespace } = require("../object-namespace");
-const { Vector, world, Color } = require("@tabletop-playground/api");
 const { Hex } = require("../hex");
 const { Facing } = require("../facing");
+const { System } = require("./system");
+const { Color, Vector, world } = require("../../wrapper/api");
 
 // TODO: mirage
 // TODO: better Clan of Saar home system
@@ -108,19 +107,17 @@ function drawSphereAroundPlanet(planetPos, planetRadius) {
  * GameObject for the system tile.
  *
  * @param {Vector} pos
+ * @param {GameObject} systemObject - optional, will find if omitted
  * @returns {{system: System, obj: GameObject }}
  */
-function getSystem(pos) {
-    const dst = new Vector(pos.x, pos.y, world.getTableHeight() - 5);
-    const hits = world.lineTrace(pos, dst);
-    for (const hit of hits) {
-        if (ObjectNamespace.isSystemTile(hit.object)) {
-            const parsedSystem = ObjectNamespace.parseSystemTile(hit.object);
-            return {
-                system: System.getByTileNumber(parsedSystem.tile),
-                obj: hit.object,
-            };
-        }
+function getSystem(pos, systemObject) {
+    const obj = systemObject || System.getSystemTileObjectByPosition(pos);
+    if (obj) {
+        const system = System.getBySystemTileObject(obj);
+        return {
+            system,
+            obj,
+        };
     }
 }
 
@@ -203,11 +200,12 @@ function getWorldPosition(obj, pos) {
  * If debug is true, a sphere is drawn around the closest planet.
  *
  * @param {Vector} pos
+ * @param {GameObject} systemObject - optional, will find if omitted
  * @param {boolean} debug
  * @returns {Planet}
  */
-function getClosestPlanet(pos, debug) {
-    const system = getSystem(pos);
+function getClosestPlanet(pos, systemObject, debug) {
+    const system = getSystem(pos, systemObject);
     if (system && system.system.planets.length > 0) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);
@@ -242,11 +240,12 @@ function getClosestPlanet(pos, debug) {
  * If debug is true, a sphere is drawn around the planet.
  *
  * @param {Vector} pos
+ * @param {GameObject} systemObject - optional, will find if omitted
  * @param {boolean} debug
  * @returns {Planet}
  */
-function getExactPlanet(pos, debug) {
-    const system = getSystem(pos);
+function getExactPlanet(pos, systemObject, debug) {
+    const system = getSystem(pos, systemObject);
     if (system && system.system.planets.length > 0) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);

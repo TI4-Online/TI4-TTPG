@@ -116,6 +116,10 @@ class GameObject {
     setSavedData(value) {
         this._savedData = value;
     }
+
+    worldPositionToLocal(position) {
+        return position; // true if object at origin with no rotation...
+    }
 }
 
 module.exports = GameObject;
