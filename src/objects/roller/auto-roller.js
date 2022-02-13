@@ -134,7 +134,7 @@ class AutoRoller {
 
         // COMBAT TIME!!
         const combatRoller = new CombatRoller(aux1, rollType, player);
-        const dicePos = new Vector(0, 0, world.getTableHeight());
+        const dicePos = new Vector(20, -60, world.getTableHeight());
         combatRoller.roll(dicePos);
     }
 }
