@@ -19,6 +19,10 @@
                 "dev": "DEE44C689452447E8ED6FDDBEB19BB23",
                 "prd": "2D526E10FD0641B3B7BF8D1A7E13E27E"
             },
+            "modId": {
+                "dev": 1800303,
+                "prd": 1732619
+            },
             "assets": [{ "from": "Textures/en", "to": "Textures/locale" }],
             "lang": ["en"]
         }

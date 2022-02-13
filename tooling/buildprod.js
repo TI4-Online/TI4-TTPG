@@ -29,6 +29,7 @@ const setupWorkspace = () => {
         Name: variantConfig.name,
         Version: variantConfig.version,
         GUID: variantConfig.guid.prd,
+        ModID: variantConfig.modId.prd,
     };
 
     console.log("building 'prd' folder");
