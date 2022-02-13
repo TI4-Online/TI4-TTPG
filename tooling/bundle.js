@@ -76,6 +76,7 @@ const buildZip = () => {
             Name: variantConfig.name,
             Version: variantConfig.version,
             GUID: variantConfig.guid.prd,
+            ModID: variantConfig.modId.prd,
         };
         output.on("close", () => {
             console.log(chalk.white("Zip Compiled"));
