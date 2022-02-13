@@ -1,6 +1,6 @@
 const assert = require("assert");
 const { UnitPlastic, _getUnitPlastic } = require("./unit-plastic");
-const { world, MockGameObject } = require("../../wrapper/api");
+const { MockGameObject, MockVector, world } = require("../../wrapper/api");
 
 it("static getAll", () => {
     world.__clear();
@@ -42,6 +42,31 @@ it("static assignTokens", () => {
     UnitPlastic.assignTokens([fighter, fighter_x3]);
     assert.equal(fighter.owningPlayerSlot, 7);
     assert.equal(fighter_x3.owningPlayerSlot, 7);
+});
+
+it("static assignPlanets", () => {
+    world.__clear();
+    const infantry = new MockGameObject({
+        templateMetadata: "unit:base/infantry",
+        owningPlayerSlot: 7,
+        position: new MockVector(0, 0, 0),
+    });
+    const system = new MockGameObject({
+        templateMetadata: "tile.system:base/18",
+        position: new MockVector(0, 0, 0),
+    });
+    world.__addObject(system);
+    world.__addObject(infantry);
+    const result = UnitPlastic.getAll();
+    UnitPlastic.assignPlanets(result);
+    world.__clear();
+    assert.equal(result.length, 1);
+    const unitPlastic = result[0];
+    assert.equal(unitPlastic.gameObject, infantry);
+    assert.equal(unitPlastic.unit, "infantry");
+    assert.equal(unitPlastic.count, 1);
+    assert(unitPlastic.planet);
+    assert.equal(unitPlastic.planet.localeName, "planet.mecatol_rex");
 });
 
 it("constructor + getters", () => {
