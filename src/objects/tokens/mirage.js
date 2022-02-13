@@ -1,6 +1,7 @@
 const { refObject, Rotator, Vector } = require("../../wrapper/api");
 const { System, Planet } = require("../../lib/system/system");
 const { Broadcast } = require("../../lib/broadcast");
+const assert = require("../../wrapper/assert-wrapper");
 
 const MIRAGE_ATTRS = {
     localeName: "planet.mirage",
@@ -22,8 +23,9 @@ function detachMirage() {
             _mirageSystemTileNumber
         );
 
-        // mirage only goes in 0 planet systems so removing the first
-        // planet will remove mirage
+        // mirage only goes in 0 planet systems so removing the first planet
+        // will remove mirage
+        assert(prevMirageSystem.planets[0].raw.localeName === "planet.mirage");
         prevMirageSystem.planets.splice(0, 1);
         _mirageSystemTileNumber = 0;
     }
