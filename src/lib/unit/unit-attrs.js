@@ -1,11 +1,12 @@
 const assert = require("../../wrapper/assert-wrapper");
 const _ = require("../../wrapper/lodash-wrapper");
 const locale = require("../locale");
+const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
 const UNIT_ATTRS = require("./unit-attrs.data");
-const { world, Card } = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 
 let _allUnitTypes = false;
 let _unitToDefaultRawAttrs = false;
@@ -123,18 +124,8 @@ class UnitAttrs {
                 continue; // not a candidate
             }
 
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            } else if (!(obj instanceof Card)) {
-                continue; // ignore non-cards.
-            } else if (obj.getStackSize() > 1) {
-                continue; // deck
-            } else if (!obj.isFaceUp()) {
-                continue; // face down
-            } else if (obj.isHeld()) {
-                continue; // held by a player
-            } else if (obj.isInHolder()) {
-                continue; // in a player's card holder
+            if (!CardUtil.isLooseCard(obj)) {
+                continue; // not a lone, faceup card on the table
             }
 
             // If an object has an owner, use it before trying to guess owner.
