@@ -88,6 +88,7 @@ it("static sortPriorityOrder", () => {
 });
 
 it("static getPlayerUnitModifiers", () => {
+    world.__clear();
     const myPlayerSlot = 7;
     const moraleBoost = new MockCard({
         cardDetails: new MockCardDetails({
@@ -95,13 +96,8 @@ it("static getPlayerUnitModifiers", () => {
         }),
         owningPlayerSlot: myPlayerSlot,
     });
-    let result;
-    try {
-        world.__addObject(moraleBoost);
-        result = UnitModifier.getPlayerUnitModifiers(myPlayerSlot, "self");
-    } finally {
-        world.__clear();
-    }
+    world.__addObject(moraleBoost);
+    const result = UnitModifier.getPlayerUnitModifiers(myPlayerSlot, "self");
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.localeName, "unit_modifier.name.morale_boost");
 });

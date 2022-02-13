@@ -42,7 +42,9 @@ it("static System.getBySystemTileObject", () => {
     const mecatol = System.getBySystemTileObject(obj);
     assert.equal(mecatol.tile, 18);
 });
+
 it("static System.getAllSystemTileObjects", () => {
+    world.__clear();
     world.__addObject(
         new MockGameObject({ templateMetadata: "tile.system:base/1" })
     );
@@ -50,7 +52,6 @@ it("static System.getAllSystemTileObjects", () => {
         new MockGameObject({ templateMetadata: "tile.system:base/2" })
     );
     const objs = System.getAllSystemTileObjects();
-    world.__clear();
     const nsids = objs.map((obj) => ObjectNamespace.getNsid(obj));
     nsids.sort();
     assert.deepEqual(nsids, ["tile.system:base/1", "tile.system:base/2"]);

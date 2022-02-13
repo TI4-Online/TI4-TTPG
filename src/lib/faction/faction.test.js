@@ -53,14 +53,13 @@ it("static getByNsidName", () => {
 });
 
 it("static getByPlayerSlot", () => {
+    world.__clear();
     const desk = PlayerDesk.getPlayerDesks()[0];
     const sheet = new MockGameObject({
         templateMetadata: "sheet.faction:base/arborec",
         position: desk.center,
     });
     assert(ObjectNamespace.isFactionSheet(sheet));
-
-    world.__clear();
     world.__addObject(sheet);
 
     // Tell Faction to invalidate any caches.

@@ -10,6 +10,8 @@ const {
 const { AuxDataBuilder } = require("./auxdata");
 
 it("getPairSync", () => {
+    world.__clear();
+
     const selfPlayerSlot = 7;
     const opponentPlayerSlot = 8;
 
@@ -80,19 +82,12 @@ it("getPairSync", () => {
         })
     );
 
-    let aux1, aux2;
-    try {
-        aux1 = new AuxDataBuilder()
-            .setPlayerSlot(selfPlayerSlot)
-            .setHex("<0,0,0>")
-            .build();
-        aux2 = new AuxDataBuilder().build();
-        new AuxDataPair(aux1, aux2).fillPairSync();
-    } finally {
-        for (const gameObject of world.getAllObjects()) {
-            world.__removeObject(gameObject);
-        }
-    }
+    const aux1 = new AuxDataBuilder()
+        .setPlayerSlot(selfPlayerSlot)
+        .setHex("<0,0,0>")
+        .build();
+    const aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).fillPairSync();
 
     // Identified opponent?
     assert.equal(aux1.playerSlot, selfPlayerSlot);
@@ -121,6 +116,7 @@ it("getPairSync", () => {
 });
 
 it("unknown opponent", () => {
+    world.__clear();
     const selfPlayerSlot = 7;
     const aux1 = new AuxDataBuilder()
         .setPlayerSlot(selfPlayerSlot)
@@ -133,6 +129,8 @@ it("unknown opponent", () => {
 });
 
 it("too many opponents", () => {
+    world.__clear();
+
     const selfPlayerSlot = 7;
     const opponentPlayerSlot = 8;
     const otherPlayerSlot = 9;
@@ -157,19 +155,12 @@ it("too many opponents", () => {
         })
     );
 
-    let aux1, aux2;
-    try {
-        aux1 = new AuxDataBuilder()
-            .setPlayerSlot(selfPlayerSlot)
-            .setHex("<0,0,0>")
-            .build();
-        aux2 = new AuxDataBuilder().build();
-        new AuxDataPair(aux1, aux2).fillPairSync();
-    } finally {
-        for (const gameObject of world.getAllObjects()) {
-            world.__removeObject(gameObject);
-        }
-    }
+    const aux1 = new AuxDataBuilder()
+        .setPlayerSlot(selfPlayerSlot)
+        .setHex("<0,0,0>")
+        .build();
+    const aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).fillPairSync();
 
     // Cannot identify opponent when more than one to choose from.
     assert.equal(aux1.playerSlot, selfPlayerSlot);
