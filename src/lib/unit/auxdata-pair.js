@@ -201,7 +201,6 @@ class AuxDataPair {
      * If no opponent was given compute one based on "not us" plastic in fight.
      */
     computeOpponent() {
-        console.log("computeOpponent");
         if (this._aux2.playerSlot >= 0) {
             return; // already have an oppoent
         }
