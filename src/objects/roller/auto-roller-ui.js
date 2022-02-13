@@ -49,7 +49,7 @@ class AutoRollerUI {
         );
 
         // GameObject.updateUI does NOT update if you change the widget.
-        this._obj.removeUI(this._uiElement);
+        this._obj.removeUIElement(this._uiElement);
         this._obj.addUI(this._uiElement);
     }
 
@@ -120,7 +120,7 @@ class AutoRollerUI {
 
         // GameObject.updateUI does NOT update if you change the widget.
         this._uiElement.widget = new Border().setChild(panels[0]);
-        this._obj.removeUI(this._uiElement);
+        this._obj.removeUIElement(this._uiElement);
         this._obj.addUI(this._uiElement);
     }
 }
