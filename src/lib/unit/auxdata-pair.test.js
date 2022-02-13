@@ -88,6 +88,7 @@ it("getPairSync", () => {
         .build();
     const aux2 = new AuxDataBuilder().build();
     new AuxDataPair(aux1, aux2).fillPairSync();
+    world.__clear();
 
     // Identified opponent?
     assert.equal(aux1.playerSlot, selfPlayerSlot);
@@ -124,6 +125,7 @@ it("unknown opponent", () => {
         .build();
     const aux2 = new AuxDataBuilder().build();
     new AuxDataPair(aux1, aux2).fillPairSync();
+    world.__clear();
     assert.equal(aux1.playerSlot, selfPlayerSlot);
     assert.equal(aux2.playerSlot, -1);
 });
@@ -161,6 +163,7 @@ it("too many opponents", () => {
         .build();
     const aux2 = new AuxDataBuilder().build();
     new AuxDataPair(aux1, aux2).fillPairSync();
+    world.__clear();
 
     // Cannot identify opponent when more than one to choose from.
     assert.equal(aux1.playerSlot, selfPlayerSlot);

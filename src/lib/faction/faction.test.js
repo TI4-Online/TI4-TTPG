@@ -67,6 +67,7 @@ it("static getByPlayerSlot", () => {
     globalEvents.TI4.onFactionChanged.trigger(desk.playerSlot, player);
 
     const faction = Faction.getByPlayerSlot(desk.playerSlot);
+    world.__clear();
     assert(faction);
     assert.equal(faction.raw.faction, "arborec");
 });

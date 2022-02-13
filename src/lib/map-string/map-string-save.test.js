@@ -23,6 +23,7 @@ it("mecatol-only save", () => {
         })
     );
     const mapString = MapStringSave.save();
+    world.__clear();
     assert.equal(mapString, "");
 });
 
@@ -35,6 +36,7 @@ it("non-standard center save", () => {
         })
     );
     const mapString = MapStringSave.save();
+    world.__clear();
     assert.equal(mapString, "{19}");
 });
 
@@ -48,6 +50,7 @@ it("hyperlane center save", () => {
         })
     );
     const mapString = MapStringSave.save();
+    world.__clear();
     assert.equal(mapString, "{84B1}");
 });
 
@@ -60,5 +63,6 @@ it("missing entry", () => {
         })
     );
     const mapString = MapStringSave.save();
+    world.__clear();
     assert.equal(mapString, "{0} 0 0 0 1");
 });

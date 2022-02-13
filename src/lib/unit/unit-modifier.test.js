@@ -98,6 +98,7 @@ it("static getPlayerUnitModifiers", () => {
     });
     world.__addObject(moraleBoost);
     const result = UnitModifier.getPlayerUnitModifiers(myPlayerSlot, "self");
+    world.__clear();
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.localeName, "unit_modifier.name.morale_boost");
 });

@@ -61,6 +61,7 @@ it("gather", () => {
     );
 
     const found = Gather.gather((nsid) => true);
+    world.__clear();
     assert.equal(found.length, 7);
 });
 

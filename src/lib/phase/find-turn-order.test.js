@@ -38,6 +38,7 @@ it("order", () => {
         })
     );
     const order = FindTurnOrder.order();
+    world.__clear();
     assert.equal(order[0], playerDesks[2].playerSlot); // zero token
     assert.equal(order[1], playerDesks[0].playerSlot); // diplomacy
     assert.equal(order[2], playerDesks[1].playerSlot); // trade

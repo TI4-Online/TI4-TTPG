@@ -37,6 +37,7 @@ it("system tile wormholes", () => {
     const playerSlot = -1;
     const adjSet = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
     const adjList = [...adjSet].sort();
+    world.__clear();
     assert.deepEqual(adjList, ["<2,0,-2>"]);
 });
 
@@ -56,6 +57,7 @@ it("token wormholes", () => {
     const playerSlot = -1;
     const adjSet = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
     const adjList = [...adjSet].sort();
+    world.__clear();
     assert.deepEqual(adjList, ["<2,0,-2>"]);
 });
 
@@ -87,5 +89,6 @@ it("wormhole_reconstruction", () => {
     const playerSlot = -1;
     const adjSet = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
     const adjList = [...adjSet].sort();
+    world.__clear();
     assert.deepEqual(adjList, ["<2,0,-2>", "<3,0,-3>"]);
 });

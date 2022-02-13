@@ -54,6 +54,7 @@ it("static System.getAllSystemTileObjects", () => {
     const objs = System.getAllSystemTileObjects();
     const nsids = objs.map((obj) => ObjectNamespace.getNsid(obj));
     nsids.sort();
+    world.__clear();
     assert.deepEqual(nsids, ["tile.system:base/1", "tile.system:base/2"]);
 });
 

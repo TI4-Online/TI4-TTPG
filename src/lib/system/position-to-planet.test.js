@@ -12,5 +12,6 @@ it("getClosestPlanet", () => {
     world.__addObject(systemObject);
     const pos = new MockVector(0, 0, 0);
     const planet = PositionToPlanet.getClosestPlanet(pos, systemObject, false);
+    world.__clear();
     assert.equal(planet.localeName, "planet.mecatol_rex");
 });

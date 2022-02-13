@@ -14,6 +14,7 @@ it("static getAll", () => {
     world.__addObject(fighter);
     world.__addObject(fighter_x3);
     const result = UnitPlastic.getAll();
+    world.__clear();
     assert.equal(result.length, 2);
     assert.equal(result[0].gameObject, fighter);
     assert.equal(result[0].unit, "fighter");

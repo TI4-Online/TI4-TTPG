@@ -42,6 +42,7 @@ it("static getReplacedObjects", () => {
 
     const replacedObjects = ReplaceObjects.getReplacedObjects();
     const nsids = replacedObjects.map((obj) => ObjectNamespace.getNsid(obj));
+    world.__clear();
     assert.equal(nsids.length, 2);
     assert(nsids.includes("tile.strategy:base/construction"));
     assert(nsids.includes("card.promissory.winnu:base/acquiescence"));

@@ -111,6 +111,7 @@ it("static getPlayerUnitUpgrades", () => {
     world.__addObject(cardObjCarrier2);
     world.__addObject(cardObjCruiser2FaceDown);
     const result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot);
+    world.__clear();
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.unit, "carrier");
     assert.equal(result[0].raw.upgradeLevel, 2);
