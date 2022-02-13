@@ -67,7 +67,10 @@ function attachMirage(obj) {
         );
         const miragePos = systemObj.localPositionToWorld(shiftedMiragePos);
 
-        obj.setPosition(miragePos);
+        // offset position in the z direction to ensure that the mirage is always
+        // on top of the system tile, otherwise it sometimes appears partially
+        // underneath the tile
+        obj.setPosition(miragePos.add(new Vector(0, 0, systemObj.getSize().z)));
         obj.setRotation(mirageRot);
         obj.setScale(scale);
 
