@@ -91,6 +91,8 @@ it("static sortUpgradeLevelOrder", () => {
 });
 
 it("static getPlayerUnitUpgrades", () => {
+    world.__clear();
+
     const myPlayerSlot = 7;
     const cardObjCarrier2 = new MockCard({
         cardDetails: new MockCardDetails({
@@ -106,14 +108,10 @@ it("static getPlayerUnitUpgrades", () => {
         owningPlayerSlot: myPlayerSlot,
         faceUp: false,
     });
-    let result;
-    try {
-        world.__addObject(cardObjCarrier2);
-        world.__addObject(cardObjCruiser2FaceDown);
-        result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot);
-    } finally {
-        world.__clear();
-    }
+    world.__addObject(cardObjCarrier2);
+    world.__addObject(cardObjCruiser2FaceDown);
+    const result = UnitAttrs.getPlayerUnitUpgrades(myPlayerSlot);
+    world.__clear();
     assert.equal(result.length, 1);
     assert.equal(result[0].raw.unit, "carrier");
     assert.equal(result[0].raw.upgradeLevel, 2);

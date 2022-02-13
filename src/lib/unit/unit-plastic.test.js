@@ -3,6 +3,7 @@ const { UnitPlastic, _getUnitPlastic } = require("./unit-plastic");
 const { world, MockGameObject } = require("../../wrapper/api");
 
 it("static getAll", () => {
+    world.__clear();
     const fighter = new MockGameObject({
         templateMetadata: "unit:base/fighter",
         owningPlayerSlot: 7,
@@ -12,19 +13,15 @@ it("static getAll", () => {
     });
     world.__addObject(fighter);
     world.__addObject(fighter_x3);
-    try {
-        const result = UnitPlastic.getAll();
-        assert.equal(result.length, 2);
-        assert.equal(result[0].gameObject, fighter);
-        assert.equal(result[0].unit, "fighter");
-        assert.equal(result[0].count, 1);
-        assert.equal(result[1].gameObject, fighter_x3);
-        assert.equal(result[1].unit, "fighter");
-        assert.equal(result[1].count, 3);
-    } finally {
-        world.__removeObject(fighter);
-        world.__removeObject(fighter_x3);
-    }
+    const result = UnitPlastic.getAll();
+    world.__clear();
+    assert.equal(result.length, 2);
+    assert.equal(result[0].gameObject, fighter);
+    assert.equal(result[0].unit, "fighter");
+    assert.equal(result[0].count, 1);
+    assert.equal(result[1].gameObject, fighter_x3);
+    assert.equal(result[1].unit, "fighter");
+    assert.equal(result[1].count, 3);
 });
 
 it("static assignTokens", () => {

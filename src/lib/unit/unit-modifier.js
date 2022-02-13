@@ -115,11 +115,17 @@ class UnitModifier {
             }
 
             if (obj.getContainer()) {
-                continue; // inside a container
-            }
-
-            if (obj instanceof Card && !obj.isFaceUp()) {
-                continue; // face down card
+                continue; // ignore inside container
+            } else if (!(obj instanceof Card)) {
+                continue; // ignore non-cards.
+            } else if (obj.getStackSize() > 1) {
+                continue; // deck
+            } else if (!obj.isFaceUp()) {
+                continue; // face down
+            } else if (obj.isHeld()) {
+                continue; // held by a player
+            } else if (obj.isInHolder()) {
+                continue; // in a player's card holder
             }
 
             // Enfoce modifier type (self, opponent, any).

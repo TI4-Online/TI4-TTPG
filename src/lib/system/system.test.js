@@ -1,8 +1,16 @@
 const assert = require("assert");
 const locale = require("../locale");
+const { ObjectNamespace } = require("../object-namespace");
 const { System, Planet } = require("./system");
 const { SystemSchema } = require("./system.schema");
-const { Card, CardDetails, GameObject } = require("../../wrapper/api");
+const {
+    MockCard,
+    MockCardDetails,
+    MockGameObject,
+    MockPlayer,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
 it("SYSTEM_ATTRS validate", () => {
@@ -30,14 +38,39 @@ it("static System.getByTileNumber", () => {
 });
 
 it("static System.getBySystemTileObject", () => {
-    const obj = new GameObject({ templateMetadata: "tile.system:base/18" });
+    const obj = new MockGameObject({ templateMetadata: "tile.system:base/18" });
     const mecatol = System.getBySystemTileObject(obj);
     assert.equal(mecatol.tile, 18);
 });
 
+it("static System.getAllSystemTileObjects", () => {
+    world.__clear();
+    world.__addObject(
+        new MockGameObject({ templateMetadata: "tile.system:base/1" })
+    );
+    world.__addObject(
+        new MockGameObject({ templateMetadata: "tile.system:base/2" })
+    );
+    const objs = System.getAllSystemTileObjects();
+    const nsids = objs.map((obj) => ObjectNamespace.getNsid(obj));
+    nsids.sort();
+    world.__clear();
+    assert.deepEqual(nsids, ["tile.system:base/1", "tile.system:base/2"]);
+});
+
+it("static getActiveSystemTileObject", () => {
+    const mecatolObj = new MockGameObject({
+        templateMetadata: "tile.system:base/18",
+    });
+    const player = new MockPlayer();
+    globalEvents.TI4.onSystemActivated.trigger(mecatolObj, player);
+    const activeObj = System.getActiveSystemTileObject();
+    assert.equal(activeObj, mecatolObj);
+});
+
 it("static Planet.getByPlanetCard", () => {
-    const card = new Card({
-        cardDetails: new CardDetails({
+    const card = new MockCard({
+        cardDetails: new MockCardDetails({
             metadata: "card.planet:base/mecatol_rex",
         }),
     });

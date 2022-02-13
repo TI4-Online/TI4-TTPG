@@ -1,11 +1,19 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
-const { Card, GameObject, world } = require("../../wrapper/api");
+const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
+// Lookup tables.
 let _tileToSystem = false;
 let _planetLocaleNameToPlanet = false;
+
+// Reset every globalEvents.TI4.onSystemActivated
+let _activeSystemGameObject = false;
+
+globalEvents.TI4.onSystemActivated.add((systemTile, player) => {
+    _activeSystemGameObject = systemTile;
+});
 
 function _maybeInit(tile) {
     if (!_tileToSystem) {
@@ -161,6 +169,17 @@ class System {
             }
         }
         return result;
+    }
+
+    /**
+     * Get the currently active system tile.  Note that a competing
+     * globalEvents.TI4.onSystemActivated handler might be called first,
+     * and should used the given active system tile argument.
+     *
+     * @returns {GameObject|undefined}
+     */
+    static getActiveSystemTileObject() {
+        return _activeSystemGameObject;
     }
 
     constructor(systemAttrs) {

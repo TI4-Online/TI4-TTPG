@@ -7,6 +7,8 @@ let _nextId = 1;
 class GameObject {
     constructor(data) {
         this._container = (data && data.container) || undefined;
+        this._isHeld = (data && data.isHeld) || false;
+        this._isInHolder = (data && data.isInHolder) || false;
         this._id = (data && data.id) || "abcd" + _nextId++;
         this._isValid = true;
         this._name = (data && data.name) || "";
@@ -95,6 +97,14 @@ class GameObject {
 
     getUIs() {
         return this._uis;
+    }
+
+    isHeld() {
+        return this._held;
+    }
+
+    isInHolder() {
+        return this._isInHolder;
     }
 
     isValid() {

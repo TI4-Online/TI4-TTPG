@@ -29,6 +29,8 @@ it("sortByNsid", () => {
 });
 
 it("gather", () => {
+    world.__clear();
+
     const looseNsids = [
         "tile.strategy:base/construction", // replaced by :pok
         "tile.strategy:pok/construction", // replaces :base
@@ -58,12 +60,9 @@ it("gather", () => {
         })
     );
 
-    try {
-        const found = Gather.gather((nsid) => true);
-        assert.equal(found.length, 7);
-    } finally {
-        world.__clear();
-    }
+    const found = Gather.gather((nsid) => true);
+    world.__clear();
+    assert.equal(found.length, 7);
 });
 
 it("isGenericTechCardNsid", () => {
