@@ -1,15 +1,19 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
+const { CardUtil } = require("../lib/card/card-util");
 const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
+const { System } = require("../lib/system/system");
 const {
     Card,
     Container,
+    GameObject,
     ObjectType,
     Rotator,
     Vector,
+    world,
 } = require("../wrapper/api");
 const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("./setup-generic-promissory");
@@ -109,7 +113,13 @@ class SetupFaction extends AbstractSetup {
         this._ownerTokensBag =
             this._setupFactionCommandControlTokens(CONTROL_TOKENS);
 
+        this._setupHomeSystemTile();
+        this._setupPlanetCards();
+
         this._unpackExtra();
+
+        this._setupStartingTech();
+        this._setupStartingUnits();
 
         this._placeInitialCommandTokens(this._commandTokensBag);
         this._placeScoreboardOwnerToken(this._ownerTokensBag);
@@ -237,6 +247,14 @@ class SetupFaction extends AbstractSetup {
         });
     }
 
+    _setupStartingTech() {
+        // TODO XXX
+    }
+
+    _setupStartingUnits() {
+        // TODO XXX
+    }
+
     _moveLeadersToSheet(leaderDeck) {
         assert(leaderDeck instanceof Card);
 
@@ -321,10 +339,61 @@ class SetupFaction extends AbstractSetup {
         });
     }
 
+    _setupHomeSystemTile() {
+        const nsids = new Set();
+        nsids.add(
+            `tile.system:${this._faction.raw.source}/${this._faction.raw.home}`
+        );
+        if (this._faction.raw.homeSurrogate) {
+            nsids.add(
+                `tile.system:${this._faction.raw.source}/${this._faction.raw.homeSurrogate}`
+            );
+        }
+        const objs = [];
+        for (const obj of world.getAllObjects()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsids.has(nsid)) {
+                const container = obj.getContainer();
+                if (container) {
+                    const above = obj.getPosition().add([0, 0, 5]);
+                    if (container.take(obj, above)) {
+                        objs.push(obj);
+                    }
+                } else {
+                    objs.push(obj);
+                }
+            }
+        }
+        for (const obj of objs) {
+            assert(obj instanceof GameObject);
+            obj.setPosition(this.playerDesk.center.add([0, 0, 5]));
+        }
+    }
+
+    _setupPlanetCards() {
+        const homeSystem = System.getByTileNumber(this._faction.raw.home);
+        const planetNsidNames = new Set();
+        for (const planet of homeSystem.planets) {
+            planetNsidNames.add(planet.getPlanetNsidName());
+        }
+        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+            if (!nsid.startsWith("card.planet")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            return planetNsidNames.has(parsed.name);
+        });
+        if (cards.length === 0) {
+            return; // no planet cards??
+        }
+
+        const deck = CardUtil.makeDeck(cards);
+        this.moveToCardHolder(deck);
+    }
+
     _unpackExtra() {
         const extra = this._faction.raw.unpackExtra;
         if (!extra) {
-            console.log(`no extras for ${this._faction.raw.faction}`);
             return; // nothing to unpack
         }
         const pos = PROMISSORY_DECK_LOCAL_OFFSET;
@@ -340,7 +409,6 @@ class SetupFaction extends AbstractSetup {
                     const pos = this.playerDesk.localPositionToWorld(nextPos);
                     const rot = this.playerDesk.rot;
                     const playerSlot = this.playerDesk.playerSlot;
-                    console.log(`spawning "${extra.tokenNsid} at ${pos}"`);
                     const token = Spawn.spawn(extra.tokenNsid, pos, rot);
                     token.setOwningPlayerSlot(playerSlot);
                     nextPos = nextPos.add(EXTRA_OFFSET);

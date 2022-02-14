@@ -1,7 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
+const { CardUtil } = require("../lib/card/card-util");
 const { Faction } = require("../lib/faction/faction");
-const { PlayerDesk } = require("../lib/player-desk");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { PlayerDesk } = require("../lib/player-desk");
+const { System } = require("../lib/system/system");
 const { Card, world } = require("../wrapper/api");
 
 /**
@@ -51,14 +53,18 @@ class CleanFaction {
                 continue;
             }
 
-            // Clean owner tokens on table.
-            if (ObjectNamespace.isControlToken(obj)) {
+            // Clean command and control tokens anywhere on table.
+            if (
+                ObjectNamespace.isCommandToken(obj) ||
+                ObjectNamespace.isControlToken(obj)
+            ) {
                 if (obj.getOwningPlayerSlot() === this._playerSlot) {
                     obj.destroy();
                 }
+                continue;
             }
 
-            // Otherwise restrict to player desk.
+            // Otherwise restrict to on-table, on-player-desk.
             const closestDesk = PlayerDesk.getClosest(obj.getPosition());
             if (closestDesk.playerSlot !== this._playerSlot) {
                 continue;
@@ -84,21 +90,22 @@ class CleanFaction {
             } else {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (this._shouldClean(nsid)) {
+                    if (obj instanceof Card && obj.isInHolder()) {
+                        obj.removeFromHolder();
+                    }
                     obj.destroy();
                 }
             }
         }
+
+        this._returnUnits();
+        this._returnPlanetCards();
+        this._returnTechCards();
+        this._returnSystemTiles();
     }
 
     _shouldClean(nsid) {
-        console.log("candidate " + nsid);
         const parsed = ObjectNamespace.parseNsid(nsid);
-
-        // Placeholder faction sheet used during testing.
-        // Remove this when real faction sheets are ready.
-        if (nsid === "sheet.faction:base/???") {
-            return true;
-        }
 
         // Sheet ("sheet.faction:base/x").
         if (nsid.startsWith("sheet.faction")) {
@@ -148,6 +155,84 @@ class CleanFaction {
         }
 
         return this._extraNsids.has(nsid);
+    }
+
+    _returnUnits() {
+        const unitToBag = {};
+        const units = [];
+
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (ObjectNamespace.isUnitBag(obj)) {
+                const parsed = ObjectNamespace.parseUnitBag(obj);
+                unitToBag[parsed.unit] = obj;
+            }
+            if (ObjectNamespace.isUnit(obj)) {
+                units.push(obj);
+            }
+        }
+
+        for (const obj of units) {
+            const parsed = ObjectNamespace.parseUnit(obj);
+            const bag = unitToBag[parsed.unit];
+            assert(bag);
+            bag.addObjects([obj]);
+        }
+    }
+
+    _returnPlanetCards() {
+        const homeSystem = System.getByTileNumber(this._faction.raw.home);
+        const planetNsidNames = new Set();
+        for (const planet of homeSystem.planets) {
+            planetNsidNames.add(planet.getPlanetNsidName());
+        }
+        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+            if (!nsid.startsWith("card.planet")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            return planetNsidNames.has(parsed.name);
+        });
+        if (cards.length === 0) {
+            return; // no planet cards??
+        }
+        const deck = CardUtil.makeDeck(cards);
+
+        // TODO XXX MOVE TO PLANET DECK
+        deck.setPosition([0, 0, world.getTableHeight() + 5], 1);
+    }
+
+    _returnTechCards() {
+        // TODO XXX
+    }
+
+    _returnSystemTiles() {
+        const nsids = new Set();
+        nsids.add(
+            `tile.system:${this._faction.raw.source}/${this._faction.raw.home}`
+        );
+        if (this._faction.raw.homeSurrogate) {
+            nsids.add(
+                `tile.system:${this._faction.raw.source}/${this._faction.raw.homeSurrogate}`
+            );
+        }
+        const objs = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsids.has(nsid)) {
+                objs.push(obj);
+            }
+        }
+
+        // TODO XXX MOVE TO CONTAINER
+        for (const obj of objs) {
+            obj.setPosition([0, 0, world.getTableHeight() + 5], 1);
+        }
     }
 }
 
