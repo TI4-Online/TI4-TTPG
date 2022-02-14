@@ -51,7 +51,7 @@ class CardUtil {
     }
 
     /**
-     * Get cards on table or from on-table decks.
+     * Get cards on table, on-table decks, and card holders.
      *
      * @param {function} filterNsid - (nsid: string, cardOrDeck: GameObject) => boolean
      * @returns {Array.{Card}}
@@ -64,8 +64,11 @@ class CardUtil {
             if (obj.getContainer()) {
                 continue; // only scan on-table objects
             }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
 
-            if (obj instanceof Card && obj.getStackSize() > 1) {
+            if (obj.getStackSize() > 1) {
                 // Cards in a deck are not objects, pull them out.
                 const nsids = ObjectNamespace.getDeckNsids(obj);
                 for (let i = nsids.length - 1; i >= 0; i--) {
@@ -85,11 +88,39 @@ class CardUtil {
             } else {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (filterNsid(nsid, obj)) {
+                    if (obj.isInHolder()) {
+                        obj.removeFromHolder();
+                    }
                     result.push(obj);
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * Make a deck from cards.
+     *
+     * @param {Array.{Card}} cards
+     * @returns {Card}
+     */
+    static makeDeck(cards) {
+        assert(Array.isArray(cards));
+        if (cards.length == 0) {
+            return undefined;
+        }
+
+        const deck = cards.shift();
+        assert(deck instanceof Card);
+        if (deck.isInHolder()) {
+            deck.removeFromHolder();
+        }
+
+        for (const card of cards) {
+            assert(card instanceof Card);
+            deck.addCards(card);
+        }
+        return deck;
     }
 }
 
