@@ -86,7 +86,19 @@ class GameWorld {
     }
 
     lineTrace(src, dst) {
-        return [];
+        // Return any exact matches.
+        const result = [];
+        for (const obj of this._allObjects) {
+            if (
+                obj.getPosition().x === src.x &&
+                obj.getPosition().y === src.y
+            ) {
+                result.push({
+                    object: obj,
+                });
+            }
+        }
+        return result;
     }
 
     removeUI(index) {

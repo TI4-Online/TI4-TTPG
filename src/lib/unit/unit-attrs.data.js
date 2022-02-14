@@ -467,6 +467,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.mech.eidolon",
         triggerNsid: "card.leader.mech.naazrokha:pok/eidolon",
+        unitAbility: "unit.mech.eidolon",
         spaceCombat: { dice: 2, hit: 8, requireSpace: true },
         groundCombat: { dice: 2, hit: 6, requireGround: true },
     },

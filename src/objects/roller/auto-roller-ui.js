@@ -49,7 +49,7 @@ class AutoRollerUI {
         );
 
         // GameObject.updateUI does NOT update if you change the widget.
-        this._obj.removeUI(this._uiElement);
+        this._obj.removeUIElement(this._uiElement);
         this._obj.addUI(this._uiElement);
     }
 
@@ -111,7 +111,7 @@ class AutoRollerUI {
         });
         panels.pop();
 
-        addText("ui.roller.bombardment");
+        addText("ui.roller.ground_combat");
         addHorizontalSubPanel();
         system.planets.forEach((planet) => {
             addButton(planet.localeName, "groundCombat", planet);
@@ -119,8 +119,8 @@ class AutoRollerUI {
         panels.pop();
 
         // GameObject.updateUI does NOT update if you change the widget.
+        this._obj.removeUIElement(this._uiElement);
         this._uiElement.widget = new Border().setChild(panels[0]);
-        this._obj.removeUI(this._uiElement);
         this._obj.addUI(this._uiElement);
     }
 }

@@ -1,9 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDesk } = require("../player-desk");
-const { world, Card } = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
 const PRIORITY = {
@@ -114,18 +115,8 @@ class UnitModifier {
                 continue;
             }
 
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            } else if (!(obj instanceof Card)) {
-                continue; // ignore non-cards.
-            } else if (obj.getStackSize() > 1) {
-                continue; // deck
-            } else if (!obj.isFaceUp()) {
-                continue; // face down
-            } else if (obj.isHeld()) {
-                continue; // held by a player
-            } else if (obj.isInHolder()) {
-                continue; // in a player's card holder
+            if (!CardUtil.isLooseCard(obj)) {
+                continue; // not a lone, faceup card on the table
             }
 
             // Enfoce modifier type (self, opponent, any).

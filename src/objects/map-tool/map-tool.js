@@ -54,7 +54,7 @@ class MapTool {
         this._obj = gameObject;
 
         // Pass wrapped functions that call with "this" correctly.
-        const onButtonMap = {
+        const onButtonCallbacks = {
             clear: () => {
                 this.clear();
             },
@@ -80,7 +80,7 @@ class MapTool {
                 this.placeHyperlanes();
             },
         };
-        this._ui = new MapToolUI(this._obj, onButtonMap);
+        this._ui = new MapToolUI(this._obj, onButtonCallbacks);
     }
 
     clear() {

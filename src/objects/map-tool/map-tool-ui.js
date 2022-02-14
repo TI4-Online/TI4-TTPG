@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
 const {
-    Border,
     Button,
     GameObject,
     MultilineTextBox,
@@ -11,18 +11,18 @@ const {
 } = require("../../wrapper/api");
 
 class MapToolUI {
-    constructor(gameObject, onButtonMap) {
+    constructor(gameObject, onButtonCallbacks) {
         assert(gameObject instanceof GameObject);
 
         this._obj = gameObject;
-        this._onButtonMap = onButtonMap;
+        this._onButtonCallbacks = onButtonCallbacks;
 
         this._mapStringTextBox = new MultilineTextBox().setMaxLength(1000);
 
         this._uiElement = new UIElement();
         this._uiElement.position = new Vector(0, 0, 5);
 
-        this._uiElement.widget = new Border();
+        this._uiElement.widget = new CollapsiblePanel();
         this._obj.addUI(this._uiElement);
 
         this.reset();
@@ -51,7 +51,7 @@ class MapToolUI {
             panel.addChild(button);
         };
 
-        const f = this._onButtonMap;
+        const f = this._onButtonCallbacks;
         addButton("ui.maptool.clear", f.clear);
         addButton("ui.maptool.save", f.save);
         addButton("ui.maptool.load", f.load);
@@ -61,10 +61,8 @@ class MapToolUI {
         addButton("ui.maptool.clear_frontier_tokens", f.clearFrontierTokens);
         addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
 
-        // GameObject.updateUI does NOT update if you change the widget.
-        this._uiElement.widget = new Border().setChild(panel);
-        this._obj.removeUI(this._uiElement);
-        this._obj.addUI(this._uiElement);
+        this._uiElement.widget.setChild(panel);
+        this._obj.updateUI(this._uiElement);
     }
 }
 

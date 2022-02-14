@@ -1,6 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
+const PositionToPlanet = require("../system/position-to-planet");
+const { System } = require("../system/system");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { GameObject, world } = require("../../wrapper/api");
 
@@ -115,8 +117,30 @@ class UnitPlastic {
     static assignPlanets(unitPlastics) {
         assert(Array.isArray(unitPlastics));
 
-        // TODO XXX
-        throw new Error("not yet implemented");
+        // Get system objects.
+        const hexToSystemObject = {};
+        for (const unitPlastic of unitPlastics) {
+            const hex = unitPlastic.hex;
+            if (hexToSystemObject[hex] === undefined) {
+                const pos = Hex.toPosition(hex);
+                let obj = System.getSystemTileObjectByPosition(pos);
+                obj = obj || false; // store a nack to prevent repeat lookups
+                hexToSystemObject[hex] = obj;
+            }
+        }
+
+        for (const unitPlastic of unitPlastics) {
+            const pos = unitPlastic.gameObject.getPosition();
+            const systemObj = hexToSystemObject[unitPlastic.hex];
+            unitPlastic._planet = PositionToPlanet.getClosestPlanet(
+                pos,
+                systemObj
+            );
+            unitPlastic._exactPlanet = PositionToPlanet.getExactPlanet(
+                pos,
+                systemObj
+            );
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -140,6 +164,7 @@ class UnitPlastic {
         this._hex = Hex.fromPosition(gameObject.getPosition());
         this._owningPlayerSlot = gameObject.getOwningPlayerSlot();
         this._planet = false;
+        this._exactPlanet = false;
     }
 
     /**
@@ -188,12 +213,21 @@ class UnitPlastic {
     }
 
     /**
-     * Unit is on this planet (after UnitPlastic.assignPlanets).
+     * Unit is closest to this planet (after UnitPlastic.assignPlanets).
      *
      * return {Planet|undefined}
      */
     get planet() {
         return this._planet;
+    }
+
+    /**
+     * Unit is exactly on this planet (after UnitPlastic.assignPlanets).
+     *
+     * return {Planet|undefined}
+     */
+    get exactPlanet() {
+        return this._exactPlanet;
     }
 }
 

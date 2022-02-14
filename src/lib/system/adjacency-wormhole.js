@@ -1,10 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { CardUtil } = require("../card/card-util");
 const { Facing } = require("../facing");
 const { Faction } = require("../faction/faction");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("./system");
-const { Card, GameObject, world } = require("../../wrapper/api");
+const { GameObject, world } = require("../../wrapper/api");
 
 /**
  * Get adjacent-via-wormhole hexes.
@@ -47,21 +48,9 @@ class AdjacencyWormhole {
 
     _updateConnectedForCards() {
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            } else if (!(obj instanceof Card)) {
-                continue; // ignore non-cards.
-            } else if (obj.getStackSize() > 1) {
-                continue; // deck
-            } else if (!obj.isFaceUp()) {
-                continue; // face down
-            } else if (obj.isHeld()) {
-                continue; // held by a player
-            } else if (obj.isInHolder()) {
-                continue; // in a player's card holder
+            if (!CardUtil.isLooseCard(obj)) {
+                continue; // not a lone, faceup card on the table
             }
-
-            // TODO XXX in disard pile?
             const nsid = ObjectNamespace.getNsid(obj);
             this._updateConnectedForCardNsid(nsid);
         }
