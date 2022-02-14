@@ -283,7 +283,7 @@ const FACTIONS = {
             cmdGuid: "3877ED7E1F754BA8880370C64359261E",
         },
         nazrokha: {
-            name: "Naz-Rokha",
+            name: "Naaz-Rokha",
             ownGuid: "36325EA7599F469A9C3C5397D6BB7262",
             cmdGuid: "7F3923F9715A47B9B48C99CB5A4E83E1",
         },

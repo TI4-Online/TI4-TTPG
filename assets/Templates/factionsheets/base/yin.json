@@ -1,8 +1,8 @@
 {
 	"Type": "Card",
-	"GUID": "A1440B9FEF4A5D3AF09F5B943EB32592",
-	"Name": "Faction Sheet stand-in",
-	"Metadata": "sheet.faction:base/???",
+	"GUID": "6033F3DE682871782FE21D5E83E50820",
+	"Name": "Faction Sheet (Yin)",
+	"Metadata": "sheet.faction:base/yin",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -10,14 +10,12 @@
 	"SurfaceType": "Cardboard",
 	"Roughness": 1,
 	"Metallic": 0,
-	"PrimaryColor":
-	{
+	"PrimaryColor": {
 		"R": 255,
 		"G": 255,
 		"B": 255
 	},
-	"SecondaryColor":
-	{
+	"SecondaryColor": {
 		"R": 0,
 		"G": 0,
 		"B": 0
@@ -31,14 +29,13 @@
 	"Collision": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
-	"ZoomViewDirection":
-	{
+	"ZoomViewDirection": {
 		"X": 0,
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "global/card/faction_reference.back.jpg",
-	"BackTexture": "",
+	"FrontTexture": "locale/factionsheets/base/yin.face.jpg",
+	"BackTexture": "locale/factionsheets/base/yin.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": 0,
 	"HiddenIndex": -1,
@@ -49,18 +46,17 @@
 	"Thickness": 0.1,
 	"HiddenInHand": false,
 	"UsedWithCardHolders": false,
-	"CanStack": true,
+	"CanStack": false,
 	"UsePrimaryColorForSide": false,
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
 	"Model": "Square",
-	"Indices": [ 0 ],
-	"CardNames":
-	{
-	},
-	"CardMetadata":
-	{
-		"0": "sheet.faction:base/???"
+	"Indices": [
+		0
+	],
+	"CardNames": {},
+	"CardMetadata": {
+		"0": "sheet.faction:base/yin"
 	}
 }
