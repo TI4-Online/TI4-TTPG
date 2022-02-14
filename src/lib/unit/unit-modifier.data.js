@@ -1,4 +1,6 @@
+const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const { PlayerDesk } = require("../player-desk");
 const { UnitAttrs } = require("./unit-attrs");
 const { world } = require("../../wrapper/api");
 
@@ -69,7 +71,35 @@ module.exports = [
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.arvicon_rex",
         filter: (auxData) => {
-            // TODO XXX
+            if (!auxData.self.has("flagship")) {
+                return false;
+            }
+            // Find own command sheet and opponent command tokens.
+            const selfSlot = auxData.self.playerSlot;
+            const opptSlot = auxData.opponent.playerSlot;
+            let selfSheet = false;
+            const opponentCommandTokens = [];
+            for (const obj of world.getAllObjects()) {
+                const nsid = ObjectNamespace.getNsid(obj);
+                const owner = obj.getOwningPlayerSlot();
+                if (nsid === "sheet:base/command" && owner === selfSlot) {
+                    selfSheet = obj;
+                }
+                if (ObjectNamespace.isCommandToken(obj) && owner === opptSlot) {
+                    opponentCommandTokens.push(obj);
+                }
+            }
+            if (!selfSheet) {
+                return false;
+            }
+            for (const opponentCommandToken in opponentCommandTokens) {
+                const worldPos = opponentCommandToken.getPosition();
+                const sheetPos = selfSheet.worldPositionToLocal(worldPos);
+                // 15 is somewhat generous but nowhere near map area.
+                if (sheetPos.magnitudeSquared() < 225) {
+                    return true;
+                }
+            }
         },
         applyAll: (unitAttrsSet, auxData) => {
             const flagshipAttrs = unitAttrsSet.get("flagship");
@@ -187,6 +217,41 @@ module.exports = [
             const pdsAttrs = unitAttrsSet.get("pds");
             delete pdsAttrs.raw.planetaryShield;
             delete pdsAttrs.raw.spaceCannon;
+        },
+    },
+    {
+        // Count as ship when off planet.
+        isCombat: true,
+        localeName: "unit.mech.eidolon",
+        localeDescription: "unit_modifier.desc.eidolon",
+        owner: "self",
+        priority: "mutate",
+        triggerUnitAbility: "unit.mech.eidolon",
+        filter: (auxData) => {
+            return (
+                auxData.self.has("mech") &&
+                (auxData.rollType === "spaceCombat" ||
+                    auxData.rollType === "groundCombat")
+            );
+        },
+        applyAll: (unitAttrsSet, auxData) => {
+            let spaceCount = 0;
+            let groundCount = 0;
+            for (const unitPlastic of auxData.self.plastic) {
+                if (unitPlastic.exactPlanet) {
+                    groundCount += 1;
+                } else {
+                    spaceCount += 1;
+                }
+            }
+            if (auxData.rollType === "spaceCombat" && spaceCount > 0) {
+                const mechAttrs = unitAttrsSet.get("mech");
+                mechAttrs.raw.ship = true;
+                auxData.self.overrideCount("mech", spaceCount);
+            }
+            if (auxData.rollType === "groundCombat" && spaceCount > 0) {
+                auxData.self.overrideCount("mech", groundCount);
+            }
         },
     },
     {
@@ -316,7 +381,22 @@ module.exports = [
             if (!auxData.has("mech")) {
                 return false; // no mech
             }
-            // TODO XXX Opponent has fragment?
+            for (const obj of world.getAllObjects()) {
+                if (!CardUtil.isLooseCard(obj)) {
+                    continue;
+                }
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (!nsid.startsWith("card.exploration")) {
+                    continue;
+                }
+                if (!nsid.includes("_relic_fragment")) {
+                    continue;
+                }
+                const owner = PlayerDesk.getClosest(obj.getPosition());
+                if (owner === auxData.playerSlot) {
+                    return true;
+                }
+            }
         },
         applyAll: (unitAttrsSet, auxData) => {
             const mechAttrs = unitAttrsSet.get("mech");
@@ -430,18 +510,24 @@ module.exports = [
             if (!auxData.has("mech")) {
                 return false; // no mech
             }
-            // TODO XXX Opponent has X/Y token?
+            for (const obj of world.getAllObjects()) {
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (nsid.startsWith("token.nekro:base/valefar_assimilator")) {
+                    const tokenPos = obj.getPosition();
+                    const closest = PlayerDesk.getClosest(tokenPos);
+                    if (closest.playerSlot == auxData.opponent.playerSlot) {
+                        return true;
+                    }
+                }
+            }
         },
         applyAll: (unitAttrsSet, auxData) => {
-            let opponentHasXYToken = false; // TODO XXX
-            if (opponentHasXYToken) {
-                const mechAttrs = unitAttrsSet.get("mech");
-                if (mechAttrs.raw.spaceCombat) {
-                    mechAttrs.raw.spaceCombat.hit -= 2;
-                }
-                if (mechAttrs.raw.groundCombat) {
-                    mechAttrs.raw.groundCombat.hit -= 2;
-                }
+            const mechAttrs = unitAttrsSet.get("mech");
+            if (mechAttrs.raw.spaceCombat) {
+                mechAttrs.raw.spaceCombat.hit -= 2;
+            }
+            if (mechAttrs.raw.groundCombat) {
+                mechAttrs.raw.groundCombat.hit -= 2;
             }
         },
     },
@@ -657,15 +743,16 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.salai_sai_corian",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCombat" &&
+                auxData.self.has("flagship")
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             let nonFighterShipCount = 0;
-            // TODO XXX NazRhoka mech on planet vs space (count as ship)
             for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
-                if (
-                    unitAttrs.raw.ship &&
-                    unitAttrs.raw.unit !== "fighter" &&
-                    auxData.opponent.has(unitAttrs.raw.unit)
-                ) {
+                if (unitAttrs.raw.ship && unitAttrs.raw.unit !== "fighter") {
                     nonFighterShipCount += auxData.opponent.count(
                         unitAttrs.raw.unit
                     );

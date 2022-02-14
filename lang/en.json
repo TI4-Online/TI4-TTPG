@@ -180,6 +180,7 @@
     "unit.flagship.ysia_yssrila": "Y'sia Y'ssrila",
 
     "unit_modifier.desc.aerie_sentinel": "Does not count against capacity when with a ship with capacity",
+    "unit_modifier.desc.eidolon": "Mech in space (not on a planet) count as ships",
     "unit_modifier.desc.iconoclast": "+2 mech COMBAT rolls if opponent has fragment",
     "unit_modifier.desc.moll_terminus": "Other's ground forces on planet cannot SUSTAIN DAMAGE",
     "unit_modifier.desc.mordred": "+2 mech COMBAT rolls if opponent has X/Y token",
