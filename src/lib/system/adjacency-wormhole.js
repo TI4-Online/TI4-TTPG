@@ -6,6 +6,7 @@ const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("./system");
 const { GameObject, world } = require("../../wrapper/api");
+const { PlayerDesk } = require("../player-desk");
 
 /**
  * Get adjacent-via-wormhole hexes.
@@ -55,6 +56,7 @@ class AdjacencyWormhole {
             this._updateConnectedForCardNsid(nsid);
         }
     }
+
     _updateConnectedForCardNsid(nsid) {
         if (nsid === "card.agenda:base/wormhole_reconstruction") {
             this._connected.alpha.add("beta");
@@ -107,7 +109,7 @@ class AdjacencyWormhole {
         for (const systemObject of System.getAllSystemTileObjects()) {
             const system = System.getBySystemTileObject(systemObject);
             for (const wormhole of system.wormholes) {
-                this._updateHexToWormholeObj(systemObject, wormhole);
+                this._addHexWormhole(systemObject, wormhole);
             }
         }
     }
@@ -120,16 +122,45 @@ class AdjacencyWormhole {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "token.exploration:pok/ion_storm") {
                 const wormhole = Facing.isFaceUp(obj) ? "alpha" : "beta";
-                this._updateHexToWormholeObj(obj, wormhole);
+                this._addHexWormhole(obj, wormhole);
             }
             if (nsid.startsWith("token.wormhole")) {
                 const wormhole = ObjectNamespace.parseNsid(nsid).name;
-                this._updateHexToWormholeObj(obj, wormhole);
+                this._addHexWormhole(obj, wormhole);
             }
         }
     }
 
-    _updateHexToWormholeObj(obj, wormhole) {
+    _updateHexToWormholeFlagship() {
+        let flagshipPlayerSlot = -1;
+        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+            const deskPlayerSlot = playerDesk.playerSlot;
+            const faction = Faction.getByPlayerSlot(deskPlayerSlot);
+            if (faction && faction.raw.units.includes("hil_colish")) {
+                flagshipPlayerSlot = deskPlayerSlot;
+                break;
+            }
+        }
+        if (flagshipPlayerSlot < 0) {
+            return;
+        }
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "unit:base/flagship") {
+                continue; // not a flagship
+            }
+            if (obj.getOwningPlayerSlot() !== flagshipPlayerSlot) {
+                continue; // flagship, but not correct owner
+            }
+            this._addHexWormhole(obj, "delta");
+            // Do not break, allow multiple flagships!
+        }
+    }
+
+    _addHexWormhole(obj, wormhole) {
         assert(obj instanceof GameObject);
         assert(typeof wormhole === "string");
         const hex = Hex.fromPosition(obj.getPosition());
@@ -152,6 +183,7 @@ class AdjacencyWormhole {
         // Get wormholes in the given hex (and all other hexes).
         this._updateHexToWormholeSystems();
         this._updateHexToWormholeTokens();
+        this._updateHexToWormholeFlagship();
         const hexWormholes = this._hexToWormholes[this._hex];
         if (!hexWormholes) {
             return adjacentHexSet;
