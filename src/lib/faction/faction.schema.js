@@ -16,7 +16,7 @@ const FACTION_SCHEMA = {
 
         commodities: { type: "integer" },
         home: { type: "integer" }, // home system tile index
-        homeSurrogate: { type: "integer" }, // home off-map, tile in home pos
+        homeSurrogate: { type: "integer" }, // home is off-map, place this tile in home pos
 
         leaders: {
             type: "object",
