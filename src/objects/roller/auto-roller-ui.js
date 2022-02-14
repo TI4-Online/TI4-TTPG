@@ -88,7 +88,7 @@ class AutoRollerUI {
             panels.push(panel);
         };
 
-        addButton("ui.roller.space_cannon_offsense", "spaceCannon", false);
+        addButton("ui.roller.space_cannon_offense", "spaceCannon", false);
         addButton(
             "ui.roller.anti_fighter_barrage",
             "antiFighterBarrage",

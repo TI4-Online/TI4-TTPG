@@ -76,9 +76,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/base/fighter_3_c.png",
+			"Texture": "global/tokens/base/infantry_3_c.png",
 			"NormalMap": "",
-			"ExtraMap": "global/tokens/base/fighter_3_x.png",
+			"ExtraMap": "global/tokens/base/infantry_3_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
