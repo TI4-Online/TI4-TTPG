@@ -116,9 +116,9 @@ class SetupFaction extends AbstractSetup {
     }
 
     _setupFactionSheet() {
-        const sheetNsid = "sheet.faction:base/???"; // temporary until assets are in
+        const sheetNsid = `sheet.faction:${this._faction.raw.source}/${this._faction.raw.faction}`;
         const pos = this.playerDesk.localPositionToWorld(FACTION_SHEET.pos);
-        const rot = this.playerDesk.rot;
+        const rot = new Rotator(0, 0, 180).compose(this.playerDesk.rot);
         const sheet = Spawn.spawn(sheetNsid, pos, rot);
         sheet.setObjectType(ObjectType.Ground);
     }
