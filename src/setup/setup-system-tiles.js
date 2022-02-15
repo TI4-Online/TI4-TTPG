@@ -35,6 +35,23 @@ class SetupSystemTiles extends AbstractSetup {
             bag.addObjects([obj]);
         }
     }
+
+    clean() {
+        for (const obj of world.getAllObjects()) {
+            // Look inside containers too.
+            if (ObjectNamespace.isSystemTile(obj)) {
+                const container = obj.getContainer();
+                if (container) {
+                    const above = container.getPosition().add([0, 0, 10]);
+                    if (container.take(obj, above)) {
+                        obj.destroy();
+                    }
+                } else {
+                    obj.destroy();
+                }
+            }
+        }
+    }
 }
 
 module.exports = { SetupSystemTiles };

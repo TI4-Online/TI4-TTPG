@@ -1,8 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
+const { AbstractSetup } = require("./abstract-setup");
 const { Layout } = require("../lib/layout");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType } = require("../wrapper/api");
-const { AbstractSetup } = require("./abstract-setup");
+const { ObjectType, world } = require("../wrapper/api");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
@@ -64,8 +65,7 @@ const UNIT_SCALE = 0.9;
 
 class SetupUnits extends AbstractSetup {
     constructor(playerDesk) {
-        super();
-        this.setPlayerDesk(playerDesk);
+        super(playerDesk);
     }
 
     setup() {
@@ -87,6 +87,21 @@ class SetupUnits extends AbstractSetup {
         assert(UNIT_DATA.length == pointPosRots.length);
         for (let i = 0; i < UNIT_DATA.length; i++) {
             this._setupUnit(UNIT_DATA[i], pointPosRots[i]);
+        }
+    }
+
+    clean() {
+        const playerSlot = this.playerDesk.playerSlot;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue;
+            }
+            if (ObjectNamespace.isUnit(obj) || ObjectNamespace.isUnitBag(obj)) {
+                obj.destroy();
+            }
         }
     }
 

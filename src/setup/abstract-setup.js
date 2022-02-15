@@ -1,32 +1,43 @@
 const assert = require("../wrapper/assert-wrapper");
-const { ReplaceObjects } = require("./spawn/replace-objects");
+const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
+const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
-const {
-    Card,
-    CardHolder,
-    ObjectType,
-    Rotator,
-    world,
-} = require("../wrapper/api");
+const { Card, ObjectType, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
+ *
+ * Subclasses must implement "setup" and "clean".
  */
 class AbstractSetup {
-    constructor() {
-        this._playerDesk = false;
+    /**
+     * Constructor.
+     *
+     * @param {PlayerDesk} optional playerDesk
+     * @param {Faction} optional faction
+     */
+    constructor(playerDesk, faction) {
+        assert(!playerDesk || playerDesk instanceof PlayerDesk);
+        this._playerDesk = playerDesk;
+        this._faction = faction;
     }
 
+    /**
+     * Linked player desk.
+     *
+     * @returns {PlayerDesk|undefined}
+     */
     get playerDesk() {
         return this._playerDesk;
     }
 
-    setPlayerDesk(playerDesk) {
-        assert(playerDesk instanceof PlayerDesk);
-        this._playerDesk = playerDesk;
-        return this;
+    /**
+     * Linked faction.
+     */
+    get faction() {
+        return this._faction;
     }
 
     /**
@@ -154,12 +165,10 @@ class AbstractSetup {
 
         const ownerSlot = this.playerDesk.playerSlot;
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
             if (
-                ObjectNamespace.getNsid(obj) === nsid &&
-                obj.getOwningPlayerSlot() === ownerSlot
+                !obj.getContainer() &&
+                obj.getOwningPlayerSlot() === ownerSlot &&
+                ObjectNamespace.getNsid(obj) === nsid
             ) {
                 return obj;
             }
@@ -167,62 +176,21 @@ class AbstractSetup {
     }
 
     /**
-     * Split a deck ("Card" with multiple cards) into indivudual card objects.
+     * Spawn a bag and fill with faction tokens.
      *
-     * @param {Card} deck
-     * @returns {Array.{Card}}
-     */
-    separateCards(deck) {
-        assert(deck instanceof Card);
-
-        const result = [];
-        while (deck.getStackSize() > 1) {
-            result.push(deck.takeCards(1, true, 1));
-        }
-        result.push(deck);
-        return result;
-    }
-
-    /**
-     * Move each card into desk's card holder.
+     * Token data has:
+     * - {string} bagNsid
+     * - {string} tokenNsidType
+     * - {number} tokenCount
      *
-     * @param {Card} deck
+     * Token nsid is 'tokenNsidType:factionSource:factionNsidName'
+     *
+     * @param {Object} tokenData
+     * @returns {Container} spawned bag
      */
-    moveToCardHolder(deck) {
-        assert(deck instanceof Card);
-        assert(this.playerDesk);
+    spawnFactionTokensAndBag(tokenData) {
+        assert(this.faction instanceof Faction);
 
-        let hand = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
-            if (
-                obj instanceof CardHolder &&
-                obj.getOwningPlayerSlot() === this.playerDesk.playerSlot
-            ) {
-                hand = obj;
-                break;
-            }
-        }
-        if (!hand) {
-            // No hand, abort.
-            return false;
-        }
-
-        const cards = this.separateCards(deck);
-        for (const card of cards) {
-            if (!card.isFaceUp()) {
-                const rot = new Rotator(0, 0, 180).compose(card.getRotation());
-                card.setRotation(rot);
-            }
-
-            const index = hand.getNumCards();
-            hand.insert(card, index);
-        }
-    }
-
-    spawnTokensAndBag(tokenData) {
         const pos = this.playerDesk.localPositionToWorld(tokenData.bagPos);
         const rot = this.playerDesk.rot;
         const playerSlot = this.playerDesk.playerSlot;
@@ -245,7 +213,7 @@ class AbstractSetup {
             bag.setRotation(rot);
         }
 
-        const tokenNsid = `${tokenData.tokenNsidType}:${this._faction.raw.source}/${this._faction.raw.faction}`;
+        const tokenNsid = `${tokenData.tokenNsidType}:${this.faction.raw.source}/${this.faction.raw.faction}`;
         const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.tokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);

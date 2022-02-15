@@ -393,7 +393,7 @@ class SetupFaction extends AbstractSetup {
             if (nsids.has(nsid)) {
                 const container = obj.getContainer();
                 if (container) {
-                    const above = obj.getPosition().add([0, 0, 5]);
+                    const above = container.getPosition().add([0, 0, 5]);
                     if (container.take(obj, above)) {
                         objs.push(obj);
                     }

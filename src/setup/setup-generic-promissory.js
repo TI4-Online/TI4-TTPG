@@ -1,11 +1,12 @@
 const { AbstractSetup } = require("./abstract-setup");
+const { CardUtil } = require("../lib/card/card-util");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 const PROMISSORY_DECK_LOCAL_OFFSET = { x: 11, y: -16, z: 7 };
 
 class SetupGenericPromissory extends AbstractSetup {
     constructor(playerDesk) {
-        super();
-        this.setPlayerDesk(playerDesk);
+        super(playerDesk);
     }
 
     setup() {
@@ -21,7 +22,24 @@ class SetupGenericPromissory extends AbstractSetup {
             return colorName === this.playerDesk.colorName;
         });
 
-        this.moveToCardHolder(deck);
+        const playerSlot = this.playerDesk.playerSlot;
+        CardUtil.moveCardsToCardHolder(deck, playerSlot);
+    }
+
+    clean() {
+        const filter = (nsid, cardOrDeck) => {
+            // "card.promissory.blue" (careful about "card.promissory.jolnar").
+            if (!nsid.startsWith("card.promissory")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const colorName = parsed.type.split(".")[2];
+            return colorName === this.playerDesk.colorName;
+        };
+        const cards = CardUtil.gatherCards(filter);
+        for (const card of cards) {
+            card.destroy();
+        }
     }
 }
 

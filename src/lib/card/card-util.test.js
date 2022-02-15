@@ -1,6 +1,11 @@
 const assert = require("assert");
 const { CardUtil } = require("./card-util");
-const { MockCard, MockCardDetails, world } = require("../../wrapper/api");
+const {
+    MockCard,
+    MockCardDetails,
+    MockCardHolder,
+    world,
+} = require("../../wrapper/api");
 
 it("isLooseCard", () => {
     const faceUp = new MockCard({ faceUp: true });
@@ -9,7 +14,7 @@ it("isLooseCard", () => {
     assert(!CardUtil.isLooseCard(faceDown));
 });
 
-it("takeCards", () => {
+it("gatherCards", () => {
     world.__clear();
     world.__addObject(
         new MockCard({
@@ -25,4 +30,18 @@ it("takeCards", () => {
     });
     world.__clear();
     assert.equal(cards.length, 1);
+});
+
+it("getCardHolder", () => {
+    const cardHolder = new MockCardHolder({
+        owningPlayerSlot: 7,
+    });
+
+    world.__clear();
+    world.__addObject(cardHolder);
+    const missing = CardUtil.getCardHolder(6);
+    const found = CardUtil.getCardHolder(7);
+    world.__clear();
+    assert(!missing);
+    assert.equal(found, cardHolder);
 });

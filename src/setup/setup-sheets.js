@@ -18,12 +18,15 @@ const SHEET_SCALE_Z = 0.16;
 
 class SetupSheets extends AbstractSetup {
     constructor(playerDesk) {
-        super();
-        this.setPlayerDesk(playerDesk);
+        super(playerDesk);
     }
 
     setup() {
         SHEET_DATA.map((sheetData) => this._setupSheet(sheetData));
+    }
+
+    clean() {
+        SHEET_DATA.map((sheetData) => this._cleanSheet(sheetData));
     }
 
     _setupSheet(sheetData) {
@@ -37,6 +40,13 @@ class SetupSheets extends AbstractSetup {
         obj.setOwningPlayerSlot(playerSlot);
         obj.setPrimaryColor(color);
         obj.setScale([1, 1, SHEET_SCALE_Z]);
+    }
+
+    _cleanSheet(sheetData) {
+        const obj = this.findObjectOwnedByPlayerDesk(sheetData.nsid);
+        if (obj) {
+            obj.destroy();
+        }
     }
 }
 

@@ -1,5 +1,6 @@
-const { Rotator, Vector, world } = require("../wrapper/api");
 const { AbstractSetup } = require("./abstract-setup");
+const { Card, Rotator, Vector, world } = require("../wrapper/api");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 let _nextX = -40;
 function nextPosition() {
@@ -107,6 +108,25 @@ class SetupTableDecks extends AbstractSetup {
     setup() {
         for (const deckData of TABLE_DECKS) {
             this._setupDeck(deckData);
+        }
+    }
+
+    clean() {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside containers
+            }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            const nsids = ObjectNamespace.getDeckNsids(obj);
+            const nsid = nsids[0];
+            for (const deckData of TABLE_DECKS) {
+                if (nsid.startsWith(deckData.nsidPrefix)) {
+                    obj.destroy();
+                    break;
+                }
+            }
         }
     }
 
