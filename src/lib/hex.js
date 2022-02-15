@@ -45,6 +45,9 @@ class Hex {
     static SCALE = 1.5; // 1.667 reflects the unit size : hex size from the *other* simulator.
     static HALF_SIZE = 5.77735 * Hex.SCALE; // Half of hex width, 11.547cm
 
+    // TTPG hex grid parameters:
+    // Z: 11.33, H: 17.332, W: 12.999, [13x9] grid
+
     static _z = 0;
 
     /**
