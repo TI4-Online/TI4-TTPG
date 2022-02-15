@@ -10,6 +10,7 @@ const {
     Text,
     VerticalBox,
     refObject,
+    world,
 } = require("../../wrapper/api");
 const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");

@@ -4,7 +4,12 @@
  */
 
 const assert = require("../../wrapper/assert-wrapper");
-const { globalEvents, GameObject, UIElement } = require("../../wrapper/api");
+const {
+    GameObject,
+    UIElement,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
 const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");

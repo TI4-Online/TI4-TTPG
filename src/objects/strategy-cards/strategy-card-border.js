@@ -1,5 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Border, GameObject, Rotator, UIElement } = require("../../wrapper/api");
+const {
+    Border,
+    GameObject,
+    Rotator,
+    UIElement,
+    world,
+} = require("../../wrapper/api");
 const { PlayerDesk } = require("../../lib/player-desk");
 
 /**
