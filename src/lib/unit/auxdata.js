@@ -12,12 +12,13 @@ const { UnitAttrsSet } = require("./unit-attrs-set");
 class AuxDataBuilder {
     constructor() {
         this._playerSlot = -1;
-        this._faction = false;
-        this._hex = false;
+        this._faction = undefined;
+        this._hex = undefined;
         this._activatingPlayerSlot = -1;
-        this._activeSystem = false;
-        this._activePlanet = false;
-        this._rollType = false;
+        this._activeSystem = undefined;
+        this._activePlanet = undefined;
+        this._rollType = undefined;
+        this._isFirstBombardmentPlanet = undefined;
     }
 
     /**
@@ -105,6 +106,18 @@ class AuxDataBuilder {
     }
 
     /**
+     * When bombarding multiple planets, was this the first one bombarded?
+     *
+     * @param {boolean} value
+     * @returns {AuxDataBuilder} self for chaining
+     */
+    setIsFirstBombardmentPlanet(value) {
+        assert(typeof value === "boolean");
+        this._isFirstBombardmentPlanet = value;
+        return this;
+    }
+
+    /**
      * Build AuxData.
      *
      * @returns {AuxData}
@@ -134,6 +147,8 @@ class AuxData {
         this._activatingPlayerSlot = auxDataBuilder._activatingPlayerSlot;
         this._activeSystem = auxDataBuilder._activeSystem;
         this._activePlanet = auxDataBuilder._activePlanet;
+        this._isFirstBombardmentPlanet =
+            auxDataBuilder._isFirstBombardmentPlanet;
 
         this._unitAttrsSet = new UnitAttrsSet();
         this._unitModifiers = []; // Array.{UnitModifier}
@@ -226,6 +241,13 @@ class AuxData {
      */
     get activePlanet() {
         return this._activePlanet;
+    }
+
+    /**
+     * When bombarding multiple planets, was this the first one bombarded?
+     */
+    get isFirstBombardmentPlanet() {
+        return this._isFirstBombardmentPlanet;
     }
 
     /**

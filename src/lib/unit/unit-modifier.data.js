@@ -578,10 +578,13 @@ module.exports = [
         priority: "choose",
         triggerNsid: "card.technology.red:base/plasma_scoring",
         filter: (auxData) => {
-            return (
-                auxData.rollType === "spaceCannon" ||
-                auxData.rollType === "bombardment"
-            );
+            if (auxData.rollType === "spaceCannon") {
+                return true;
+            } else if (auxData.rollType === "bombardment") {
+                // If a first planet is specified, only apply to first.
+                const isFirst = auxData.isFirstBombardmentPlanet;
+                return isFirst === undefined || isFirst;
+            }
         },
         applyAll: (unitAttrsSet, auxData) => {
             // Space cannon.
