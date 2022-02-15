@@ -36,6 +36,15 @@ it("FACTION_DATA units", () => {
     });
 });
 
+it("FACTION_DATA starting units", () => {
+    const allUnitTypes = UnitAttrs.getAllUnitTypes();
+    FACTION_DATA.forEach((faction) => {
+        Object.keys(faction.startingUnits).forEach((nsidName) => {
+            assert(allUnitTypes.includes(nsidName));
+        });
+    });
+});
+
 it("FACTION_DATA faction locale", () => {
     FACTION_DATA.forEach((faction) => {
         const abbrKey = "faction.abbr." + faction.faction;

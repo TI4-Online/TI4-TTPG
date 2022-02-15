@@ -113,8 +113,6 @@ const widgetFactory = (playerDesk) => {
     return verticalBox;
 };
 
-PlayerDesk.setPlayerCount(3);
-
 const calculateHeight = () => {
     return 166 + (PlayerDesk.getPlayerCount() - 1) * 25;
 };
