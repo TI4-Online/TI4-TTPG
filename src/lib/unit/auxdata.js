@@ -147,6 +147,7 @@ class AuxData {
         this._activatingPlayerSlot = auxDataBuilder._activatingPlayerSlot;
         this._activeSystem = auxDataBuilder._activeSystem;
         this._activePlanet = auxDataBuilder._activePlanet;
+        this._rollType = auxDataBuilder._rollType;
         this._isFirstBombardmentPlanet =
             auxDataBuilder._isFirstBombardmentPlanet;
 
@@ -244,7 +245,18 @@ class AuxData {
     }
 
     /**
+     * Current combat roll type.
+     *
+     * @returns {string} e.g. "bombardment"
+     */
+    get rollType() {
+        return this._rollType;
+    }
+
+    /**
      * When bombarding multiple planets, was this the first one bombarded?
+     *
+     * @returns {boolean|undefined} undefined if never set
      */
     get isFirstBombardmentPlanet() {
         return this._isFirstBombardmentPlanet;
