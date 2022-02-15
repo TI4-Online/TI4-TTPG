@@ -20,6 +20,7 @@ class CleanFaction {
         assert(playerDesk instanceof PlayerDesk);
         assert(typeof factionNsidName === "string");
 
+        this._playerDesk = playerDesk;
         this._playerSlot = playerDesk.playerSlot;
         this._factionNsidName = factionNsidName;
 
@@ -205,7 +206,49 @@ class CleanFaction {
     }
 
     _returnTechCards() {
-        // TODO XXX
+        // Find tech deck.
+        let techDeck = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            if (obj.getStackSize() === 1) {
+                continue;
+            }
+            const nsids = ObjectNamespace.getDeckNsids(obj);
+            const nsid = nsids[0];
+            if (!nsid.startsWith("card.technology")) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const closestDesk = PlayerDesk.getClosest(pos);
+            if (closestDesk !== this._playerDesk) {
+                continue;
+            }
+            techDeck = obj;
+            break;
+        }
+        if (!techDeck) {
+            return;
+        }
+        const startingTechNsidNames = this._faction.raw.startingTech;
+        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+            if (!nsid.startsWith("card.technology")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            if (!startingTechNsidNames.includes(parsed.name)) {
+                return false;
+            }
+            const pos = cardOrDeckObj.getPosition();
+            const closestDesk = PlayerDesk.getClosest(pos);
+            return closestDesk === this._playerDesk;
+        });
+        const deck = CardUtil.makeDeck(cards);
+        techDeck.addCards(deck);
     }
 
     _returnSystemTiles() {

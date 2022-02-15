@@ -248,7 +248,21 @@ class SetupFaction extends AbstractSetup {
     }
 
     _setupStartingTech() {
-        // TODO XXX
+        const startingTechNsidNames = this._faction.raw.startingTech;
+        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+            if (!nsid.startsWith("card.technology")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            if (!startingTechNsidNames.includes(parsed.name)) {
+                return false;
+            }
+            const pos = cardOrDeckObj.getPosition();
+            const closestDesk = PlayerDesk.getClosest(pos);
+            return closestDesk === this.playerDesk;
+        });
+        const deck = CardUtil.makeDeck(cards);
+        this.moveToCardHolder(deck);
     }
 
     _setupStartingUnits() {
