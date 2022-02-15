@@ -281,14 +281,14 @@ class SetupFaction extends AbstractSetup {
         }
 
         const startingUnits = this._faction.raw.startingUnits;
+        let pos = this.playerDesk.center.add([0, 0, 10]);
         for (const [unit, count] of Object.entries(startingUnits)) {
             const bag = unitToBag[unit];
-            console.log(unit);
             assert(bag);
             assert(bag.getNumItems() >= count);
             for (let i = 0; i < count; i++) {
-                const pos = this.playerDesk.center.add([0, 0, 10]);
                 bag.takeAt(0, pos, true);
+                pos = pos.add([0, 0, 3]);
             }
         }
     }
@@ -402,9 +402,13 @@ class SetupFaction extends AbstractSetup {
                 }
             }
         }
+        let pos = this.playerDesk.center.add([0, 0, 5]);
         for (const obj of objs) {
             assert(obj instanceof GameObject);
-            obj.setPosition(this.playerDesk.center.add([0, 0, 5]));
+            obj.setObjectType(ObjectType.Regular);
+            obj.setPosition(pos);
+            obj.setRotation(this.playerDesk.rot);
+            pos = pos.add([0, 0, 2]);
         }
     }
 

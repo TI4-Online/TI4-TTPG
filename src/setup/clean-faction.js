@@ -4,7 +4,7 @@ const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { PlayerDesk } = require("../lib/player-desk");
 const { System } = require("../lib/system/system");
-const { Card, world } = require("../wrapper/api");
+const { Card, Vector, world } = require("../wrapper/api");
 
 /**
  * Remove a setup faction.
@@ -276,8 +276,10 @@ class CleanFaction {
         }
 
         // TODO XXX MOVE TO CONTAINER
+        let pos = new Vector(0, 0, world.getTableHeight() + 5);
         for (const obj of objs) {
-            obj.setPosition([0, 0, world.getTableHeight() + 5], 1);
+            obj.setPosition(pos);
+            pos = pos.add([0, 0, 2]);
         }
     }
 }
