@@ -1,15 +1,13 @@
 const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const { PlayerDeskUI } = require("./player-desk-ui");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
 } = require("./global-saved-data");
 const {
-    Button,
     Color,
     Player,
     Rotator,
-    UIElement,
     Vector,
     globalEvents,
     world,
@@ -112,10 +110,6 @@ const PLAYER_DESKS = [
     },
 ];
 
-const TAKE_SEAT_BUTTON = {
-    pos: { x: 25, y: -6, z: 10 },
-};
-
 const SEAT_CAMERA = {
     pos: { x: -90, y: -6, z: 100 },
 };
@@ -141,26 +135,7 @@ function resetUnusedSeats() {
         if (world.getPlayerBySlot(playerDesk.playerSlot)) {
             continue; // player in seat
         }
-
-        const color = playerDesk.color;
-        const buttonText = locale("ui.button.take_seat");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(50)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            playerDesk.seatPlayer(player);
-            resetUnusedSeats();
-        });
-
-        const pos = playerDesk.localPositionToWorld(TAKE_SEAT_BUTTON.pos);
-        pos.z = 10;
-
-        const ui = new UIElement();
-        ui.position = pos;
-        ui.rotation = playerDesk.rot;
-        ui.widget = button;
-
+        const ui = new PlayerDeskUI(playerDesk).create();
         _claimSeatUIs.push(ui);
         world.addUI(ui);
     }
@@ -443,6 +418,8 @@ class PlayerDesk {
         const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
         const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
         player.setPositionAndRotation(pos, rot);
+
+        resetUnusedSeats();
     }
 }
 
