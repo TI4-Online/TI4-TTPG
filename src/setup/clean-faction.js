@@ -166,6 +166,9 @@ class CleanFaction {
             if (obj.getContainer()) {
                 continue;
             }
+            if (obj.getOwningPlayerSlot() !== this._playerSlot) {
+                continue;
+            }
             if (ObjectNamespace.isUnitBag(obj)) {
                 const parsed = ObjectNamespace.parseUnitBag(obj);
                 unitToBag[parsed.unit] = obj;
