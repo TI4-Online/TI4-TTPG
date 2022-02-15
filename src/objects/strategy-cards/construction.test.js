@@ -2,24 +2,17 @@
 
 const {
     globalEvents,
+    world,
     MockGameObject,
-    MockGameWorld,
     MockPlayer,
 } = require("../../mock/mock-api");
 const { PlayerDesk } = require("../../lib/player-desk");
-const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
-
-// mock global.js event registration
-globalEvents.TI4 = {
-    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
-};
 
 const red = { r: 1, g: 0, b: 0 };
 const green = { r: 0, g: 1, b: 0 };
 const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
-global.world = new MockGameWorld({ allPlayers: [player1, player2] });
+world.__setPlayers([player1, player2]);
 
 require("./construction");
 
@@ -29,18 +22,19 @@ PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
 
 describe("when a strategy card is played", () => {
     afterEach(() => {
-        const uiCount = global.world.getUIs().length;
+        const uiCount = world.getUIs().length;
         for (let i = 0; i < uiCount; i++) {
-            global.world.removeUI(0);
+            world.removeUI(0);
         }
     });
 
     it("and it is the construction card", () => {
-        let card = new MockGameObject();
+        const beforeCount = world.getUIs().length;
 
+        let card = new MockGameObject();
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        expect(global.world.getUIs().length).toBe(2);
+        expect(world.getUIs().length).toBe(beforeCount + 2);
     });
 });
 
@@ -51,14 +45,14 @@ describe("when a player has done the strategy selection", () => {
 
     let uis = [];
 
-    const original = global.world.addUI;
+    const original = world.addUI;
 
     beforeEach(() => {
         player1Spy = jest.spyOn(player1, "sendChatMessage");
         player2Spy = jest.spyOn(player2, "sendChatMessage");
-        global.world.addUI = jest.fn((ui) => {
+        world.addUI = jest.fn((ui) => {
             uis.push(ui);
-            original.call(global.world, ui);
+            original.call(world, ui);
         });
     });
 

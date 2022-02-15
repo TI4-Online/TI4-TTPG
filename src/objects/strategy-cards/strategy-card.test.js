@@ -1,9 +1,9 @@
 const {
     globalEvents,
+    world,
     Color,
     MockButton,
     MockGameObject,
-    MockGameWorld,
     MockPlayer,
     MockVerticalBox,
 } = require("../../mock/mock-api");
@@ -13,13 +13,6 @@ const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
-const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
-
-// mock global.js event registration
-globalEvents.TI4 = {
-    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
-};
 
 const red = {
     r: 1,
@@ -44,9 +37,7 @@ const player2 = new MockPlayer({
     slot: 2,
 });
 
-global.world = new MockGameWorld({
-    allPlayers: [player1, player2],
-});
+world.__setPlayers([player1, player2]);
 
 describe("broadcaseMessage", () => {
     let player1MessageSpy, player2MessageSpy;
@@ -128,26 +119,22 @@ describe("when a strategy card UI is created", () => {
     });
 
     it("by calling the RegisterStrategyCardUI and trigger the 'Play' event", () => {
-        const red = {
-            r: 1,
-            g: 0,
-            b: 0,
-        };
-
         new RegisterStrategyCardUI()
             .setCard(card)
             .setWidgetFactory(widgetFactory)
             .setHeight(100)
             .register();
+
+        const beforeCount = world.getUIs().length;
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
         // one UI per player
-        expect(global.world.getUIs().length).toBe(2);
+        expect(world.getUIs().length).toBe(beforeCount + 2);
         expect(
-            global.world.getUIs()[0].widget.getChild().getChildren()[0]
+            world.getUIs()[beforeCount].widget.getChild().getChildren()[0]
         ).toBe(buttons[0]);
         expect(
-            global.world.getUIs()[1].widget.getChild().getChildren()[0]
+            world.getUIs()[beforeCount + 1].widget.getChild().getChildren()[0]
         ).toBe(buttons[1]);
     });
 });

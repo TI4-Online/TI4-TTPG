@@ -15,7 +15,6 @@ const {
 const locale = require("../../lib/locale");
 
 let selections = {};
-let activatingPlayer;
 
 function getPlayerSelectionBySlot(player) {
     const slot = player.getSlot();
@@ -63,7 +62,6 @@ function widgetFactory() {
 
 const onStrategyCardPlayed = (card, player) => {
     selections = {};
-    activatingPlayer = player.getSlot();
 };
 
 const onStrategyCardSelectionDone = (card, player) => {

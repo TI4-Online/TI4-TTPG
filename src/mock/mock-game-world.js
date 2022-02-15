@@ -1,6 +1,7 @@
 const assert = require("assert");
 const Dice = require("./mock-dice");
 const GameObject = require("./mock-game-object");
+const Player = require("./mock-player");
 const UIElement = require("./mock-ui-element");
 
 class GameWorld {
@@ -26,8 +27,16 @@ class GameWorld {
         this._allObjects = this._allObjects.filter((obj) => obj != gameObject);
     }
 
+    __setPlayers(players) {
+        assert(Array.isArray(players));
+        players.forEach((player) => assert(player instanceof Player));
+        this._allPlayers = players;
+    }
+
     __clear() {
         this._allObjects = [];
+        this._allPlayers = [];
+        this._uis = [];
     }
 
     static getExecutionReason() {
