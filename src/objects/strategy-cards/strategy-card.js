@@ -26,7 +26,7 @@ function getTopLevelWidget(element) {
     return parent ? getTopLevelWidget(parent) : element;
 }
 
-function createStrategyCardUi(card, widgetFactory, height, color) {
+function createStrategyCardUi(card, widgetFactory, height, width, color) {
     const cardId = card.getId();
 
     // clear existing UIs from the card instance
@@ -35,7 +35,7 @@ function createStrategyCardUi(card, widgetFactory, height, color) {
             world.removeUIElement(border.ui);
         });
     }
-
+    
     openSelections[cardId] = [];
 
     for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -43,7 +43,12 @@ function createStrategyCardUi(card, widgetFactory, height, color) {
         let border = new StrategyCardBorder({
             card: card,
             desk: playerDesk,
-            height: height,
+            height: typeof height === "function"
+                ? height(playerDesk.playerSlot)
+                : height,
+            width: typeof width === "function"
+                ? height(playerDesk.playerSlot)
+                : width,
             ui: ui,
         }).setColor(color);
         border.setChild(widgetFactory(playerDesk));
@@ -65,6 +70,8 @@ class RegisterStrategyCardUI {
      * @param {function} [data.widgetFactory] A factory creating the UI for each player
      * @param {Integer | function} [data.height] Height of the UI for each player. Can also be provided as a function
      * to determine the height dynamically on UI creation
+     * @param {Integer | function} [data.width] Width of the UI for each player. Can also be provided as a function
+     * to determine the height dynamically on UI creation
      * @param {Color} [data.color] Color of the UI for each player
      * @param {function} [data.onStrategyCardPlayed] Event handler of the "Play" button pressed.
      * This function only is required if the Play button should do more than just creating a UI.
@@ -75,6 +82,7 @@ class RegisterStrategyCardUI {
         this._card = data && data.card;
         this._widgetFactory = data && data.widgetFactory;
         this._height = data && data.height;
+        this._width = (data && data.width) || 350;
         this._color = data && data.color;
         this._onStrategyCardPlayed = data && data.onStrategyCardPlayed;
         this._onStrategyCardSelectionDone =
@@ -93,6 +101,11 @@ class RegisterStrategyCardUI {
 
     setHeight(value) {
         this._height = value;
+        return this;
+    }
+
+    setWidth(value) {
+        this._width = value;
         return this;
     }
 
@@ -131,6 +144,9 @@ class RegisterStrategyCardUI {
             Number.isInteger(this._height) || typeof this._height === "function"
         );
         assert(
+            Number.isInteger(this._width) || typeof this._width === "function"
+        );
+        assert(
             this._onStrategyCardPlayed === undefined ||
                 typeof this._onStrategyCardPlayed === "function"
         );
@@ -145,9 +161,8 @@ class RegisterStrategyCardUI {
             createStrategyCardUi(
                 this._card,
                 this._widgetFactory,
-                typeof this._height === "function"
-                    ? this._height()
-                    : this._height,
+                this._height,
+                this._width,
                 this._color
             );
             if (!this._onStrategyCardPlayed) return;
