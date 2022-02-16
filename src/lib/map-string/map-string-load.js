@@ -25,7 +25,7 @@ class MapStringLoad {
 
         // Make sure we have the named tiles.
         for (const entry of parsedMapString) {
-            if (!tileToSystemObj[entry.tile]) {
+            if (entry.tile > 0 && !tileToSystemObj[entry.tile]) {
                 throw new Error(`missing system tile ${entry.tile}`);
             }
         }
@@ -33,6 +33,9 @@ class MapStringLoad {
         // Place!
         for (let i = 0; i < parsedMapString.length; i++) {
             const entry = parsedMapString[i];
+            if (entry.tile <= 0) {
+                continue;
+            }
             const hex = MapStringHex.idxToHexString(i);
             const pos = Hex.toPosition(hex);
             pos.z = world.getTableHeight() + 10;
