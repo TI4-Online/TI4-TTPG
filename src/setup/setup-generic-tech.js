@@ -4,7 +4,7 @@ const { world } = require("../wrapper/api");
 
 const TECH_DECK_LOCAL_OFFSET = { x: 11, y: -24, z: 7 };
 
-class SetupGenericTechDeck extends AbstractSetup {
+class SetupGenericTech extends AbstractSetup {
     constructor(playerDesk) {
         super(playerDesk);
     }
@@ -38,4 +38,4 @@ class SetupGenericTechDeck extends AbstractSetup {
     }
 }
 
-module.exports = { SetupGenericTechDeck, TECH_DECK_LOCAL_OFFSET };
+module.exports = { SetupGenericTech, TECH_DECK_LOCAL_OFFSET };
