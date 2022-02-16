@@ -3,6 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { world } = require("../../wrapper/api");
+const { Vector } = require("@tabletop-playground/api");
 
 class SetupStartingUnits extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -11,6 +12,10 @@ class SetupStartingUnits extends AbstractSetup {
 
     setup() {
         const playerSlot = this.playerDesk.playerSlot;
+        const homeSystemNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
+        const startingUnits = this.faction.raw.startingUnits;
+
+        let homeSystemObj = false;
         const unitToBag = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
@@ -22,6 +27,9 @@ class SetupStartingUnits extends AbstractSetup {
                 const parsed = ObjectNamespace.parseUnitBag(obj);
                 unitToBag[parsed.unit] = obj;
             }
+            if (ObjectNamespace.getNsid(obj) === homeSystemNsid) {
+                homeSystemObj = obj;
+            }
         }
 
         // Make sure all bags exist before doing anything.
@@ -32,17 +40,31 @@ class SetupStartingUnits extends AbstractSetup {
                 console.warn("SetupStartingUnits: missing unit bags");
                 return;
             }
+            if (bag.getNumItems() < (startingUnits[unit] || 0)) {
+                console.warn("SetupStartingUnits: not enough units in bags");
+                return;
+            }
+        }
+        if (!homeSystemObj) {
+            console.warn("SetupStartingUnits: missing home system");
+            return;
         }
 
-        const startingUnits = this._faction.raw.startingUnits;
-        let pos = this.playerDesk.center.add([0, 0, 10]);
+        let totalCount = 0;
+        for (const count of Object.values(startingUnits)) {
+            totalCount += count;
+        }
+        const rotate = 360 / Math.max(totalCount, 1);
+
+        let localPos = new Vector(3, 0, 2);
         for (const [unit, count] of Object.entries(startingUnits)) {
             const bag = unitToBag[unit];
             assert(bag);
             assert(bag.getNumItems() >= count);
             for (let i = 0; i < count; i++) {
+                const pos = homeSystemObj.localPositionToWorld(localPos);
                 bag.takeAt(0, pos, true);
-                pos = pos.add([0, 0, 3]);
+                localPos = localPos.rotateAngleAxis(rotate, [0, 0, 1]);
             }
         }
     }

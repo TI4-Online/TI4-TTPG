@@ -6,8 +6,8 @@ const { Spawn } = require("./spawn/spawn");
 const { ObjectType, world } = require("../wrapper/api");
 
 const SUPPLY_BOXES_LEFT = {
-    shelfCenter: { x: 2.485, y: -46.844, z: 5 },
-    arcOrigin: { x: -8.845, y: -15.017, z: 5 },
+    shelfCenter: { x: 2.485, y: -46.844, z: 0 },
+    arcOrigin: { x: -8.845, y: -15.017, z: 0 },
     tokenNsids: [
         "token:base/infantry_1", // "bottom"
         "token:base/infantry_3",
@@ -17,10 +17,10 @@ const SUPPLY_BOXES_LEFT = {
 };
 
 const SUPPLY_BOXES_RIGHT = {
-    //shelfCenter: { x: -3.878, y: 35, z: 5 },
-    //arcOrigin: { x: -9.003, y: 3.958, z: 5 },
-    shelfCenter: { x: 5.46, y: 30.4, z: 5 },
-    arcOrigin: { x: -12.164, y: -1.446, z: 5 },
+    //shelfCenter: { x: -3.878, y: 35, z: 0 },
+    //arcOrigin: { x: -9.003, y: 3.958, z: 0 },
+    shelfCenter: { x: 5.46, y: 30.4, z: 0 },
+    arcOrigin: { x: -12.164, y: -1.446, z: 0 },
     tokenNsids: [
         "token:base/tradegood_commodity_3",
         "token:base/tradegood_commodity_1", // "bottom"

@@ -2,7 +2,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 
-const PROMISSORY_DECK_LOCAL_OFFSET = { x: 11, y: -16, z: 7 };
+const PROMISSORY_DECK_LOCAL_OFFSET = { x: 11, y: -16, z: 0 };
 
 class SetupGenericPromissory extends AbstractSetup {
     constructor(playerDesk) {

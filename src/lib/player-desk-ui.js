@@ -33,6 +33,7 @@ const {
     world,
 } = require("../wrapper/api");
 const { ObjectNamespace } = require("./object-namespace");
+const { SetupCardHolders } = require("../setup/setup-card-holders");
 
 const DESK_UI_POSITION = {
     pos: { x: 25, y: -6, z: 5 },
@@ -147,8 +148,8 @@ class PlayerDeskUI {
             const setups = this._getFactionSetups();
             setups.forEach((setup) => setup.setup());
             const playerSlot = this._playerDesk.playerSlot;
-            this._playerDesk.resetUI();
             globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
+            this._playerDesk.resetUI();
         });
         return button;
     }
@@ -164,14 +165,15 @@ class PlayerDeskUI {
             const setups = this._getFactionSetups();
             setups.forEach((setup) => setup.clean());
             const playerSlot = this._playerDesk.playerSlot;
-            this._playerDesk.resetUI();
             globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
+            this._playerDesk.resetUI();
         });
         return button;
     }
 
     _getGenericSetups() {
         return [
+            new SetupCardHolders(this._playerDesk),
             new SetupGenericPromissory(this._playerDesk),
             new SetupGenericTech(this._playerDesk),
             new SetupUnits(this._playerDesk),

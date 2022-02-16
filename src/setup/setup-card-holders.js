@@ -8,7 +8,7 @@ const HAND_LOCAL_OFFSET = {
     z: 5,
 };
 
-class SetupHands extends AbstractSetup {
+class SetupCardHolders extends AbstractSetup {
     constructor(playerDesk) {
         super(playerDesk);
     }
@@ -46,4 +46,4 @@ class SetupHands extends AbstractSetup {
     }
 }
 
-module.exports = { SetupHands };
+module.exports = { SetupCardHolders };

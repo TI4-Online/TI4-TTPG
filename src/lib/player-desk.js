@@ -358,6 +358,7 @@ class PlayerDesk {
         // Pos is a bit to the right of the visual center of the main desk
         // area.  Compute that visual center as well for "nearest" checks.
         this._center = this.localPositionToWorld(new Vector(0, -6, 0));
+        this._center.z = this._pos.z;
     }
 
     get color() {
