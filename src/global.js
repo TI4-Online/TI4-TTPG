@@ -52,4 +52,11 @@ world.TI4 = {
     getClosestPlayerDesk: (pos) => {
         return PlayerDesk.getClosest(pos);
     },
+
+    getPlayerCount: () => {
+        return PlayerDesk.getPlayerCount();
+    },
+    setPlayerCount: (count) => {
+        return PlayerDesk.setPlayerCount(count);
+    },
 };

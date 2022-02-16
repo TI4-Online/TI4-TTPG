@@ -135,9 +135,9 @@ function resetUnusedSeats() {
         if (world.getPlayerBySlot(playerDesk.playerSlot)) {
             continue; // player in seat
         }
-        //const ui = new PlayerDeskUI(playerDesk).create();
-        //_claimSeatUIs.push(ui);
-        //world.addUI(ui);
+        const ui = new PlayerDeskUI(playerDesk).create();
+        _claimSeatUIs.push(ui);
+        world.addUI(ui);
     }
 }
 
