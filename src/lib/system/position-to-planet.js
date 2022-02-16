@@ -1,6 +1,5 @@
 const { Hex } = require("../hex");
 const { Facing } = require("../facing");
-const { System } = require("./system");
 const { Color, Vector, world } = require("../../wrapper/api");
 
 // TODO: mirage
@@ -111,9 +110,9 @@ function drawSphereAroundPlanet(planetPos, planetRadius) {
  * @returns {{system: System, obj: GameObject }}
  */
 function getSystem(pos, systemObject) {
-    const obj = systemObject || System.getSystemTileObjectByPosition(pos);
+    const obj = systemObject || world.TI4.getSystemTileObjectByPosition(pos);
     if (obj) {
-        const system = System.getBySystemTileObject(obj);
+        const system = world.TI4.getSystemBySystemTileObject(obj);
         return {
             system,
             obj,

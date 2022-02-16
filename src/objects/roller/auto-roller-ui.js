@@ -11,6 +11,7 @@ const {
     UIElement,
     Vector,
     VerticalBox,
+    world,
 } = require("../../wrapper/api");
 
 /**
@@ -36,7 +37,7 @@ class AutoRollerUI {
 
         //this.resetAwaitingSystemActivation();
 
-        const system = System.getByTileNumber(69);
+        const system = world.TI4.getSystemByTileNumber(69);
         this.resetAfterSystemActivation(system);
     }
 
@@ -58,7 +59,7 @@ class AutoRollerUI {
      *
      * Get localized planet names by: `system.planets[].getNameStr()`
      *
-     * To test with a system get one via `System.getByTileNumber(#)`.
+     * To test with a system get one via `world.TI4.getSystemByTileNumber(#)`.
      *
      * @param {System} system
      */

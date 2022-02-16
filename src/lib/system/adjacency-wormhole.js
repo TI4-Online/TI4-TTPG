@@ -4,7 +4,6 @@ const { Facing } = require("../facing");
 const { Faction } = require("../faction/faction");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
-const { System } = require("./system");
 const { GameObject, world } = require("../../wrapper/api");
 
 /**
@@ -73,11 +72,11 @@ class AdjacencyWormhole {
         // adjacent to all other systems that contain a wormhole during
         // this tactical action."
         if (nsid === "card.leader.agent.creuss:pok/emissary_taivra") {
-            const activeObj = System.getActiveSystemTileObject();
+            const activeObj = world.TI4.getActiveSystemTileObject();
             if (!activeObj) {
                 return;
             }
-            const system = System.getBySystemTileObject(activeObj);
+            const system = world.TI4.getSystemBySystemTileObject(activeObj);
             let nonDelta = false;
             for (const wormhole of system.wormholes) {
                 if (wormhole !== "delta") {
@@ -105,8 +104,8 @@ class AdjacencyWormhole {
     }
 
     _updateHexToWormholeSystems() {
-        for (const systemObject of System.getAllSystemTileObjects()) {
-            const system = System.getBySystemTileObject(systemObject);
+        for (const systemObject of world.TI4.getAllSystemTileObjects()) {
+            const system = world.TI4.getSystemBySystemTileObject(systemObject);
             for (const wormhole of system.wormholes) {
                 this._addHexWormhole(systemObject, wormhole);
             }

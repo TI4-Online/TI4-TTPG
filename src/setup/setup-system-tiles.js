@@ -1,7 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
-const { System } = require("../lib/system/system");
 const { Rotator, Vector, world } = require("../wrapper/api");
 const { AbstractSetup } = require("./abstract-setup");
 
@@ -25,7 +24,7 @@ class SetupSystemTiles extends AbstractSetup {
             }
             // Ignore home systems.
             const tile = Number.parseInt(parsed.name);
-            const system = System.getByTileNumber(tile);
+            const system = world.TI4.getSystemByTileNumber(tile);
             if (system && system.raw.home) {
                 return false;
             }
@@ -38,7 +37,7 @@ class SetupSystemTiles extends AbstractSetup {
             // Sanity check system tile before adding it.
             const parsed = ObjectNamespace.parseSystemTile(obj);
             assert(parsed);
-            const system = System.getByTileNumber(parsed.tile);
+            const system = world.TI4.getSystemByTileNumber(parsed.tile);
             assert(system);
             assert(!system.raw.home);
 
@@ -53,7 +52,7 @@ class SetupSystemTiles extends AbstractSetup {
                 continue;
             }
             const parsed = ObjectNamespace.parseSystemTile(obj);
-            const system = System.getByTileNumber(parsed.tile);
+            const system = world.TI4.getSystemByTileNumber(parsed.tile);
             if (system && system.raw.home) {
                 continue;
             }

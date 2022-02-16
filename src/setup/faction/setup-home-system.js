@@ -2,7 +2,6 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { System } = require("../../lib/system/system");
 const { ObjectType, world } = require("../../wrapper/api");
 
 class SetupHomeSystem extends AbstractSetup {
@@ -69,7 +68,9 @@ class SetupHomeSystem extends AbstractSetup {
     }
 
     _setupPlanetCards() {
-        const homeSystem = System.getByTileNumber(this.faction.raw.home);
+        const homeSystem = world.TI4.getSystemByTileNumber(
+            this.faction.raw.home
+        );
         const planetNsidNames = new Set();
         for (const planet of homeSystem.planets) {
             planetNsidNames.add(planet.getPlanetNsidName());
@@ -94,7 +95,9 @@ class SetupHomeSystem extends AbstractSetup {
     }
 
     _cleanPlanetCards() {
-        const homeSystem = System.getByTileNumber(this.faction.raw.home);
+        const homeSystem = world.TI4.getSystemByTileNumber(
+            this.faction.raw.home
+        );
         const planetNsidNames = new Set();
         for (const planet of homeSystem.planets) {
             planetNsidNames.add(planet.getPlanetNsidName());

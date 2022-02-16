@@ -1,4 +1,5 @@
 const assert = require("../wrapper/assert-wrapper");
+const { ObjectNamespace } = require("./object-namespace");
 const { PlayerDeskUI } = require("./player-desk-ui");
 const {
     GlobalSavedData,
@@ -12,6 +13,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { ColorUtil } = require("./color/color-util");
 
 /**
  * Color values corresponding to TTPG player slots.
@@ -289,34 +291,6 @@ class PlayerDesk {
         return closest;
     }
 
-    /**
-     * Visualize the player area center / rotation.
-     */
-    static drawDebug() {
-        const colorLine = new Color(0, 1, 0);
-        const colorPoint = new Color(1, 0, 0);
-        const duration = 10;
-        const thicknessLine = 1;
-        const sizePoint = thicknessLine * 3;
-
-        let i = 0;
-        for (const { _center, rot } of PlayerDesk.getAllPlayerDesks()) {
-            const dir = _center.add(
-                rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
-            );
-            i++;
-
-            world.drawDebugPoint(_center, sizePoint, colorPoint, duration);
-            world.drawDebugLine(
-                _center,
-                dir,
-                colorLine,
-                duration,
-                thicknessLine
-            );
-        }
-    }
-
     static resetUIs() {
         for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             playerDesk.resetUI();
@@ -333,8 +307,8 @@ class PlayerDesk {
     }
 
     constructor(attrs) {
-        assert(attrs.minPlayerCount <= PlayerDesk.getPlayerCount());
         this._colorName = attrs.colorName;
+        this._color = ColorUtil.colorFromHex(attrs.hexColor);
         this._pos = new Vector(
             attrs.pos.x,
             attrs.pos.y,
@@ -343,17 +317,6 @@ class PlayerDesk {
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
         this._ui = false;
-
-        if (attrs.hexColor) {
-            const m = attrs.hexColor.match(/^#([0-9a-f]{6})$/i)[1];
-            const r = parseInt(m.substr(0, 2), 16);
-            const g = parseInt(m.substr(2, 2), 16);
-            const b = parseInt(m.substr(4, 2), 16);
-            this._color = new Color(r / 255, g / 255, b / 255, 1);
-        } else {
-            const tbl = PLAYER_SLOT_COLORS[this._playerSlot];
-            this._color = new Color(tbl.r, tbl.g, tbl.b, 1);
-        }
 
         // Pos is a bit to the right of the visual center of the main desk
         // area.  Compute that visual center as well for "nearest" checks.
@@ -405,6 +368,11 @@ class PlayerDesk {
         return new Rotator(rot.pitch, rot.yaw, rot.roll).compose(this.rot);
     }
 
+    /**
+     * Move a player to this seat.
+     *
+     * @param {Player} player
+     */
     seatPlayer(player) {
         assert(player instanceof Player);
         player.switchSlot(this.playerSlot);
@@ -417,6 +385,156 @@ class PlayerDesk {
 
         this.resetUI();
     }
+
+    /**
+     * Get changeColor options.
+     *
+     * @returns {Array.{colorName:string,color:Color}}
+     */
+    getColorOptions() {
+        const result = [];
+        for (let i = 0; i < PLAYER_DESKS.length; i++) {
+            const attrs = PLAYER_DESKS[i];
+            result.push({
+                colorName: attrs.colorName,
+                color: ColorUtil.colorFromHex(attrs.hexColor),
+            });
+        }
+        return result;
+    }
+
+    /**
+     * Change seat color.
+     *
+     * Note this does not attempt to recolor other objects, caller should
+     * clean up any per-color components and restore in the new color after.
+     *
+     * @param {string} colorName - for promissory notes ("Ceasefile (Blue)")
+     * @param {Color} colorTint
+     */
+    changeColor(colorName, colorTint) {
+        assert(typeof colorName === "string");
+        assert(colorTint instanceof Color);
+
+        let legalColorName = false;
+        for (const deskAttrs of PLAYER_DESKS) {
+            if (deskAttrs.colorName === colorName) {
+                legalColorName = true;
+                break;
+            }
+        }
+        assert(legalColorName);
+
+        const srcColorName = this.colorName;
+        const srcColorTint = this.color;
+        const srcPlayerSlot = this.playerSlot;
+        const dstColorName = colorName;
+        const dstColorTint = colorTint;
+        let dstPlayerSlot = -1;
+
+        // This another desk is already using this color name, swap the two.
+        let swapWith = false;
+        for (const otherDesk of PlayerDesk.getAllPlayerDesks()) {
+            if (otherDesk.colorName === colorName && otherDesk !== this) {
+                swapWith = otherDesk;
+                break;
+            }
+        }
+        if (swapWith) {
+            dstPlayerSlot = swapWith.playerSlot;
+        } else {
+            // Not swapping with an active seat.  Lookup from unused seats.
+            for (const deskAttrs of PLAYER_DESKS) {
+                if (deskAttrs.colorName === colorName) {
+                    dstPlayerSlot = deskAttrs.defaultPlayerSlot;
+                    break;
+                }
+            }
+        }
+
+        // Do not change color of an active seat!
+        if (this.isSetup() || (swapWith && swapWith.isSetup())) {
+            return false;
+        }
+
+        // At this point all src/dst values are known.  Remove any players from
+        // slots and swap things around.
+        assert(dstPlayerSlot >= 0);
+        const srcPlayer = world.getPlayerBySlot(srcPlayerSlot);
+        const dstPlayer = world.getPlayerBySlot(dstPlayerSlot);
+        if (srcPlayer) {
+            moveNewPlayerToNonSeatSlot(srcPlayer);
+        }
+        if (dstPlayer) {
+            moveNewPlayerToNonSeatSlot(dstPlayer);
+        }
+
+        if (swapWith) {
+            swapWith._colorName = srcColorName;
+            swapWith._color = srcColorTint;
+            swapWith._playerSlot = srcPlayerSlot;
+        }
+
+        this._colorName = dstColorName;
+        this._color = dstColorTint;
+        this._playerSlot = dstPlayerSlot;
+
+        if (srcPlayer) {
+            srcPlayer.switchSlot(dstPlayerSlot);
+        }
+        if (dstPlayer) {
+            dstPlayer.switchSlot(srcPlayerSlot);
+        }
+
+        this.resetUI();
+        swapWith.resetUI();
+
+        return true;
+    }
+
+    /**
+     * Has this desk been setup?  That is, per-desk items unpacked.
+     *
+     * @returns {boolean}
+     */
+    isSetup() {
+        const playerSlot = this.playerSlot;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
+            if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue; // require sheet be linked to slot
+            }
+            if (ObjectNamespace.isCommandSheet(obj)) {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Visualize the player area center / rotation.
+     */
+    drawDebug() {
+        const colorLine = new Color(0, 1, 0);
+        const colorPoint = new Color(1, 0, 0);
+        const duration = 10;
+        const thicknessLine = 1;
+        const sizePoint = thicknessLine * 3;
+
+        const dir = this.center.add(
+            this.rot.getForwardVector().multiply(sizePoint * 5)
+        );
+
+        world.drawDebugPoint(this.center, sizePoint, colorPoint, duration);
+        world.drawDebugLine(
+            this.center,
+            dir,
+            colorLine,
+            duration,
+            thicknessLine
+        );
+    }
 }
 
-module.exports = { PlayerDesk, DEFAULT_PLAYER_COUNT };
+module.exports = { PlayerDesk, DEFAULT_PLAYER_COUNT, PLAYER_SLOT_COLORS };

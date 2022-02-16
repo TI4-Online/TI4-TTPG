@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const PositionToPlanet = require("../system/position-to-planet");
-const { System } = require("../system/system");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { GameObject, world } = require("../../wrapper/api");
 
@@ -123,7 +122,7 @@ class UnitPlastic {
             const hex = unitPlastic.hex;
             if (hexToSystemObject[hex] === undefined) {
                 const pos = Hex.toPosition(hex);
-                let obj = System.getSystemTileObjectByPosition(pos);
+                let obj = world.TI4.getSystemTileObjectByPosition(pos);
                 obj = obj || false; // store a nack to prevent repeat lookups
                 hexToSystemObject[hex] = obj;
             }

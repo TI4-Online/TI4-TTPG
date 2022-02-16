@@ -69,13 +69,18 @@ it("static getActiveSystemTileObject", () => {
     assert.equal(activeObj, mecatolObj);
 });
 
-it("static Planet.getByPlanetCard", () => {
+it("static Planet.getByCard", () => {
     const card = new MockCard({
         cardDetails: new MockCardDetails({
             metadata: "card.planet:base/mecatol_rex",
         }),
     });
-    const planet = Planet.getByPlanetCard(card);
+    const planet = Planet.getByCard(card);
+    assert.equal(planet.raw.localeName, "planet.mecatol_rex");
+});
+
+it("static Planet.getByCardNsid", () => {
+    const planet = Planet.getByCardNsid("card.planet:base/mecatol_rex");
     assert.equal(planet.raw.localeName, "planet.mecatol_rex");
 });
 

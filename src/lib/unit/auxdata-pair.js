@@ -6,11 +6,11 @@ const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
 const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
-const { System } = require("../system/system");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 const { UnitModifier } = require("./unit-modifier");
 const { UnitPlastic } = require("./unit-plastic");
+const { world } = require("../../wrapper/api");
 
 /**
  * Given a combat between two players, create and fill in the AuxData
@@ -164,7 +164,7 @@ class AuxDataPair {
         const newAdjHexes = new Set();
         this._adjHexes.forEach((hex) => {
             const pos = Hex.toPosition(hex);
-            if (System.getSystemTileObjectByPosition(pos)) {
+            if (world.TI4.getSystemTileObjectByPosition(pos)) {
                 newAdjHexes.add(hex);
             }
         });

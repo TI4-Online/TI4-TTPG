@@ -27,12 +27,13 @@ const { SetupStartingUnits } = require("../setup/faction/setup-starting-units");
 const {
     Border,
     Button,
+    HorizontalBox,
+    Text,
     UIElement,
     VerticalBox,
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { ObjectNamespace } = require("./object-namespace");
 const { SetupCardHolders } = require("../setup/setup-card-holders");
 
 const DESK_UI_POSITION = {
@@ -57,23 +58,11 @@ class PlayerDeskUI {
             panel.addChild(this._createTakeSeatButton());
         }
 
-        let isSetup = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            if (obj.getOwningPlayerSlot() !== playerSlot) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "sheet:base/command") {
-                isSetup = true;
-                break;
-            }
-        }
+        let isSetup = this._playerDesk.isSetup();
         if (isSetup) {
             panel.addChild(this._createCleanButton());
         } else {
+            panel.addChild(this._createChangeColorButton());
             panel.addChild(this._createSetupButton());
         }
 
@@ -105,6 +94,35 @@ class PlayerDeskUI {
             this._playerDesk.seatPlayer(player);
         });
         return button;
+    }
+
+    _createChangeColorButton() {
+        // Create a swatch with not-setup peer colors.
+        const color = this._playerDesk.color;
+        const labelText = locale("ui.label.change_color");
+        const text = new Text()
+            .setTextColor(color)
+            .setFontSize(LARGE_FONT_SIZE)
+            .setText(labelText);
+
+        const colorChoices = new HorizontalBox();
+        for (const colorOption of this._playerDesk.getColorOptions()) {
+            const button = new Button()
+                .setTextColor(colorOption.color)
+                .setFontSize(LARGE_FONT_SIZE)
+                .setText("[X]");
+            button.onClicked.add((button, player) => {
+                const success = this._playerDesk.changeColor(
+                    colorOption.colorName,
+                    colorOption.color
+                );
+                if (!success) {
+                    player.showMessage(locale("ui.message.color_in_use"));
+                }
+            });
+            colorChoices.addChild(button);
+        }
+        return new VerticalBox().addChild(text).addChild(colorChoices);
     }
 
     _createSetupButton() {
