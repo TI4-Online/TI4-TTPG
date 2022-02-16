@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const { FACTION_DATA } = require("./faction.data");
 const { globalEvents, world } = require("../../wrapper/api");
 
@@ -38,7 +37,8 @@ function _maybeInit() {
             if (!ObjectNamespace.isFactionSheet(obj)) {
                 continue; // not a faction sheet
             }
-            const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+            const pos = obj.getPosition();
+            const playerDesk = world.TI4.getClosestPlayerDesk(pos);
             const playerSlot = playerDesk.playerSlot;
             const existing = slotToSheet[playerSlot];
             if (existing) {

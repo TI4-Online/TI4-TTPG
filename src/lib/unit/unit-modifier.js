@@ -3,7 +3,6 @@ const locale = require("../locale");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const { world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
@@ -129,7 +128,8 @@ class UnitModifier {
                 // Matches "withType", require it belong to player.
                 let ownerSlot = obj.getOwningPlayerSlot();
                 if (ownerSlot < 0) {
-                    const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+                    const pos = obj.getPosition();
+                    const playerDesk = world.TI4.getClosestPlayerDesk(pos);
                     ownerSlot = playerDesk.playerSlot;
                 }
                 if (ownerSlot !== playerSlot) {
