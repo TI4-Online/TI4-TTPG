@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const { GameObject, world } = require("../../wrapper/api");
 
 const ZERO_TOKEN_NSID = "token.naalu:base/zero";
@@ -82,7 +81,7 @@ class FindTurnOrder {
 
         // Seed initiatives.
         const playerSlotToInitiative = {};
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerSlotToInitiative[playerDesk.playerSlot] =
                 Number.MAX_SAFE_INTEGER;
         }
@@ -91,7 +90,9 @@ class FindTurnOrder {
         for (const initiativeObject of initiativeObjects) {
             const obj = initiativeObject.obj;
             const initiative = initiativeObject.initiative;
-            const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+            const playerDesk = world.TI4.getClosestPlayerDesk(
+                obj.getPosition()
+            );
             if (playerSlotToInitiative[playerDesk.playerSlot] > initiative) {
                 playerSlotToInitiative[playerDesk.playerSlot] = initiative;
             }

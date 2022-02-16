@@ -4,7 +4,6 @@ const locale = require("../locale");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world } = require("../../wrapper/api");
 
@@ -131,7 +130,9 @@ class UnitAttrs {
             // If an object has an owner, use it before trying to guess owner.
             let ownerSlot = obj.getOwningPlayerSlot();
             if (ownerSlot < 0) {
-                const playerDesk = PlayerDesk.getClosest(obj.getPosition());
+                const playerDesk = world.TI4.getClosestPlayerDesk(
+                    obj.getPosition()
+                );
                 ownerSlot = playerDesk.playerSlot;
             }
             if (ownerSlot !== playerSlot) {

@@ -1,6 +1,7 @@
+const { AbstractSetup } = require("./abstract-setup");
 const { Spawn } = require("./spawn/spawn");
 const { Rotator, Vector, world } = require("../wrapper/api");
-const { AbstractSetup } = require("./abstract-setup");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 let _nextX = -40;
 function nextPosition() {
@@ -72,6 +73,14 @@ class SetupStrategyCards extends AbstractSetup {
     setup() {
         for (const strategyCard of STRATEGY_CARDS) {
             this._setupStrategyCard(strategyCard);
+        }
+    }
+
+    clean() {
+        for (const obj of world.getAllObjects()) {
+            if (ObjectNamespace.isStrategyCard(obj)) {
+                obj.destroy();
+            }
         }
     }
 

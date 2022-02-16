@@ -1,9 +1,7 @@
-const { CleanFaction } = require("./clean-faction");
-const { CleanGenericPromissory } = require("./clean-generic-promissory");
 const { PlayerDesk } = require("../lib/player-desk");
 const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
-const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
+const { SetupGenericTech } = require("./setup-generic-tech");
 const { SetupHands } = require("./setup-hands");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
@@ -13,12 +11,12 @@ const { SetupTableDecks } = require("./setup-table-decks");
 const { SetupTableTokens } = require("./setup-table-tokens");
 const { SetupUnits } = require("./setup-units");
 const { MapStringLoad } = require("../lib/map-string/map-string-load");
-const { refObject, world } = require("@tabletop-playground/api");
+const { globalEvents, refObject, world } = require("@tabletop-playground/api");
 
 const ACTION = {
     GIZMO_DESKS: "*Gizmo desks",
     COUNT_OBJECTS: "*Count objects",
-    CLEAN: "*CLEAN",
+    CLEAN: "*CLEAN ALL",
     UNITS: "*Units",
     SUPPLY: "*Supply",
     SHEETS: "*Sheets",
@@ -31,9 +29,9 @@ const ACTION = {
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
     DEMO_FACTION: "*Demo faction",
-    CLEAN_PROMISSORY: "*Clean promissory",
-    CLEAN_FACTIONS: "*Clean factions",
 };
+
+let _isSetupMode = true;
 
 for (const action of Object.values(ACTION)) {
     refObject.addCustomAction(action);
@@ -41,6 +39,9 @@ for (const action of Object.values(ACTION)) {
 
 refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
+    console.log(`isDown: ${player.isScriptKeyDown(10)}`);
+
+    const setups = [];
 
     if (actionName === ACTION.GIZMO_DESKS) {
         console.log(player.getPosition());
@@ -56,40 +57,40 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             obj.destroy();
         }
     } else if (actionName === ACTION.UNITS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupUnits(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupUnits(playerDesk));
         }
     } else if (actionName === ACTION.SUPPLY) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupSupplyBoxes(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupSupplyBoxes(playerDesk));
         }
     } else if (actionName === ACTION.SHEETS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupSheets(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupSheets(playerDesk));
         }
     } else if (actionName === ACTION.HANDS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupHands(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupHands(playerDesk));
         }
     } else if (actionName === ACTION.GENERIC_TECH) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupGenericTechDeck(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupGenericTech(playerDesk));
         }
     } else if (actionName === ACTION.GENERIC_PROMISSORY) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new SetupGenericPromissory(playerDesk).setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupGenericPromissory(playerDesk));
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
-        new SetupSystemTiles().setup();
+        setups.push(new SetupSystemTiles());
     } else if (actionName === ACTION.TABLE_DECKS) {
-        new SetupTableDecks().setup();
+        setups.push(new SetupTableDecks());
     } else if (actionName === ACTION.TABLE_TOKENS) {
-        new SetupTableTokens().setup();
+        setups.push(new SetupTableTokens());
     } else if (actionName === ACTION.STRATEGY_CARDS) {
-        new SetupStrategyCards().setup();
+        setups.push(new SetupStrategyCards());
     } else if (actionName === ACTION.DEMO_MAP) {
         MapStringLoad.load(
-            "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 1 46 79 2 27 45 3 24 29 4 62 37 5 41 38 6 43 40"
+            "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 0 46 79 0 27 45 0 24 29 0 62 37 0 41 38 0 43 40"
         );
     } else if (actionName === ACTION.DEMO_FACTION) {
         const factions = [
@@ -102,26 +103,25 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             "vuilraith",
             "winnu",
         ];
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             new SetupFaction(playerDesk, factions.shift()).setup();
         }
-    } else if (actionName === ACTION.CLEAN_PROMISSORY) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new CleanGenericPromissory(playerDesk).clean();
+    }
+
+    console.log(`_isSetupMode = ${_isSetupMode}`);
+    for (const setup of setups) {
+        if (_isSetupMode) {
+            setup.setup();
+        } else {
+            setup.clean();
         }
-    } else if (actionName === ACTION.CLEAN_FACTIONS) {
-        const factions = [
-            "ul",
-            "arborec",
-            "creuss",
-            "muaat",
-            "nekro",
-            "argent",
-            "vuilraith",
-            "winnu",
-        ];
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            new CleanFaction(playerDesk, factions.shift()).clean();
-        }
+    }
+});
+
+globalEvents.onScriptButtonPressed.add((player, index) => {
+    console.log(`onScriptButtonPressed: ${index}`);
+    if (index === 10) {
+        _isSetupMode = !_isSetupMode;
+        console.log(`toggling _isSetupMode to ${_isSetupMode}`);
     }
 });

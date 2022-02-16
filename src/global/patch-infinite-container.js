@@ -19,7 +19,7 @@
  */
 
 const assert = require("../wrapper/assert-wrapper");
-const { Container, globalEvents, world } = require("@tabletop-playground/api");
+const { Container, globalEvents, world } = require("../wrapper/api");
 
 function isInfiniteContainer(obj) {
     const infiniteTypes = [1, 3];

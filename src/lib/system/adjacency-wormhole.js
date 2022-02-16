@@ -6,7 +6,6 @@ const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("./system");
 const { GameObject, world } = require("../../wrapper/api");
-const { PlayerDesk } = require("../player-desk");
 
 /**
  * Get adjacent-via-wormhole hexes.
@@ -133,7 +132,7 @@ class AdjacencyWormhole {
 
     _updateHexToWormholeFlagship() {
         let flagshipPlayerSlot = -1;
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const deskPlayerSlot = playerDesk.playerSlot;
             const faction = Faction.getByPlayerSlot(deskPlayerSlot);
             if (faction && faction.raw.units.includes("hil_colish")) {

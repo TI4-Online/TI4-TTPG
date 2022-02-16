@@ -1,4 +1,5 @@
 const { AbstractSetup } = require("./abstract-setup");
+const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
@@ -48,6 +49,44 @@ class SetupTableTokens extends AbstractSetup {
         GENERIC_TOKENS.forEach((tokenData) => {
             this._setupGenericToken(tokenData);
         });
+    }
+
+    clean() {
+        const destroyNsids = new Set();
+        for (const genericToken of GENERIC_TOKENS) {
+            destroyNsids.add(genericToken.tokenNsid);
+            if (genericToken.bagNsid) {
+                destroyNsids.add(genericToken.bagNsid);
+            }
+        }
+        const tokenNsidPrefixes = [];
+        for (const tokenData of EXPLORATION_TOKENS.tokens) {
+            tokenNsidPrefixes.push(tokenData.nsidPrefix);
+        }
+
+        for (const obj of world.getAllObjects()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            let needsDestroy = destroyNsids.has(nsid);
+            if (!needsDestroy) {
+                for (const tokenNsidPrefix of tokenNsidPrefixes) {
+                    if (nsid.startsWith(tokenNsidPrefix)) {
+                        needsDestroy = true;
+                        break;
+                    }
+                }
+            }
+            if (needsDestroy) {
+                const container = obj.getContainer();
+                if (container) {
+                    const above = container.getPosition().add([0, 0, 10]);
+                    if (container.take(obj, above)) {
+                        obj.destroy();
+                    }
+                } else {
+                    obj.destroy();
+                }
+            }
+        }
     }
 
     _setupExplorationTokens() {

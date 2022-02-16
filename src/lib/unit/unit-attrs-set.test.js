@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 const { UnitAttrs } = require("./unit-attrs");

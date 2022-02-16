@@ -1,9 +1,9 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const locale = require("../../lib/locale");
 const { Faction } = require("./faction");
 const { FactionSchema } = require("./faction.schema");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const { UnitAttrs } = require("../unit/unit-attrs");
 const { FACTION_DATA } = require("./faction.data");
 const {
@@ -63,7 +63,7 @@ it("static getByNsidName", () => {
 
 it("static getByPlayerSlot", () => {
     world.__clear();
-    const desk = PlayerDesk.getPlayerDesks()[0];
+    const desk = world.TI4.getAllPlayerDesks()[0];
     const sheet = new MockGameObject({
         templateMetadata: "sheet.faction:base/arborec",
         position: desk.center,

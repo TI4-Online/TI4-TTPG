@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const PositionToPlanet = require("./position-to-planet");
 const { MockGameObject, MockVector, world } = require("../../wrapper/api");

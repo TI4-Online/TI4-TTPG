@@ -16,11 +16,20 @@ class SetupSystemTiles extends AbstractSetup {
         const bag = Spawn.spawnGenericContainer(pos, rot);
 
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            return (
-                parsedNsid.type.startsWith("tile.system") &&
-                !parsedNsid.source.startsWith("homebrew")
-            );
+            if (!nsid.startsWith("tile.system")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            if (parsed.source.startsWith("homebrew")) {
+                return false;
+            }
+            // Ignore home systems.
+            const tile = Number.parseInt(parsed.name);
+            const system = System.getByTileNumber(tile);
+            if (system && system.raw.home) {
+                return false;
+            }
+            return true;
         });
         for (const nsid of nsids) {
             const above = pos.add([0, 0, 20]);
@@ -31,8 +40,32 @@ class SetupSystemTiles extends AbstractSetup {
             assert(parsed);
             const system = System.getByTileNumber(parsed.tile);
             assert(system);
+            assert(!system.raw.home);
 
             bag.addObjects([obj]);
+        }
+    }
+
+    clean() {
+        for (const obj of world.getAllObjects()) {
+            // Look inside containers too.
+            if (!ObjectNamespace.isSystemTile(obj)) {
+                continue;
+            }
+            const parsed = ObjectNamespace.parseSystemTile(obj);
+            const system = System.getByTileNumber(parsed.tile);
+            if (system && system.raw.home) {
+                continue;
+            }
+            const container = obj.getContainer();
+            if (container) {
+                const above = container.getPosition().add([0, 0, 10]);
+                if (container.take(obj, above)) {
+                    obj.destroy();
+                }
+            } else {
+                obj.destroy();
+            }
         }
     }
 }

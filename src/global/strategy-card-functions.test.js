@@ -1,9 +1,9 @@
+require("../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { globalEvents, MockGameObject } = require("../mock/mock-api");
 const { setupStrategyCard } = require("./strategy-card-functions");
 const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 const locale = require("../lib/locale");
-const { doesNotMatch } = require("assert");
 
 // mock global.js event registration
 globalEvents.TI4 = {

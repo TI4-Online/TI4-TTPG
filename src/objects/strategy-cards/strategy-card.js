@@ -11,7 +11,6 @@ const {
     world,
 } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
-const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");
 let openSelections = {};
 
@@ -39,7 +38,7 @@ function createStrategyCardUi(card, widgetFactory, height, color) {
 
     openSelections[cardId] = [];
 
-    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
         let ui = new UIElement();
         let border = new StrategyCardBorder({
             card: card,

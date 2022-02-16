@@ -6,7 +6,7 @@
  * when the active player drops a command token on a system tile.
  */
 
-const { globalEvents, world } = require("@tabletop-playground/api");
+const { globalEvents, world } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { System } = require("../lib/system/system");

@@ -12,7 +12,6 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
-const { PlayerDesk } = require("../../lib/player-desk");
 const locale = require("../../lib/locale");
 
 const onPrimaryClicked = (button, player) => {
@@ -59,7 +58,7 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
             .setFontSize(10)
     );
 
-    PlayerDesk.getPlayerDesks().forEach((playerDesk) => {
+    world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
         // no button for the player itself
         if (playerDesk === owningPlayerDesk) return;
 
@@ -115,7 +114,7 @@ const widgetFactory = (playerDesk) => {
 };
 
 const calculateHeight = () => {
-    return 166 + (PlayerDesk.getPlayerCount() - 1) * 25;
+    return 166 + (world.TI4.getPlayerCount() - 1) * 25;
 };
 
 new RegisterStrategyCardUI()

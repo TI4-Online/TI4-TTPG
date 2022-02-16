@@ -1,15 +1,13 @@
 const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const { PlayerDeskUI } = require("./player-desk-ui");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
 } = require("./global-saved-data");
 const {
-    Button,
     Color,
     Player,
     Rotator,
-    UIElement,
     Vector,
     globalEvents,
     world,
@@ -112,10 +110,6 @@ const PLAYER_DESKS = [
     },
 ];
 
-const TAKE_SEAT_BUTTON = {
-    pos: { x: 25, y: -6, z: 10 },
-};
-
 const SEAT_CAMERA = {
     pos: { x: -90, y: -6, z: 100 },
 };
@@ -123,48 +117,8 @@ const SEAT_CAMERA = {
 const DEFAULT_PLAYER_COUNT = 6;
 let _playerCount = false;
 let _playerDesks = false;
-let _claimSeatUIs = [];
 
 // ----------------------------------------------------------------------------
-
-/**
- * Clear and reset "claim seat" buttons on available player desks.
- */
-function resetUnusedSeats() {
-    // Remove old UI.
-    for (const ui of _claimSeatUIs) {
-        world.removeUIElement(ui);
-    }
-    _claimSeatUIs = [];
-
-    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-        if (world.getPlayerBySlot(playerDesk.playerSlot)) {
-            continue; // player in seat
-        }
-
-        const color = playerDesk.color;
-        const buttonText = locale("ui.button.take_seat");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(50)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            playerDesk.seatPlayer(player);
-            resetUnusedSeats();
-        });
-
-        const pos = playerDesk.localPositionToWorld(TAKE_SEAT_BUTTON.pos);
-        pos.z = 10;
-
-        const ui = new UIElement();
-        ui.position = pos;
-        ui.rotation = playerDesk.rot;
-        ui.widget = button;
-
-        _claimSeatUIs.push(ui);
-        world.addUI(ui);
-    }
-}
 
 /**
  * Move newly joined players to a non-seat player slot.
@@ -176,7 +130,7 @@ function moveNewPlayerToNonSeatSlot(player) {
     assert(player instanceof Player);
 
     const reservedSlots = new Set();
-    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+    for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
         reservedSlots.add(playerDesk.playerSlot);
     }
     for (const otherPlayer of world.getAllPlayers()) {
@@ -206,11 +160,11 @@ globalEvents.onPlayerJoined.add((player) => {
 
 // Release seat when someone leaves.
 globalEvents.onPlayerLeft.add((player) => {
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 });
 
 globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 });
 
 // Unseat host when first loading game.
@@ -226,7 +180,7 @@ const runOnce = () => {
     }
 
     // Reset "take a seat" UI.
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 };
 globalEvents.onTick.add(runOnce);
 
@@ -269,7 +223,7 @@ class PlayerDesk {
         _playerDesks = false;
 
         // Reset "claim seat" buttons.
-        resetUnusedSeats();
+        PlayerDesk.resetUIs();
     }
 
     /**
@@ -278,7 +232,7 @@ class PlayerDesk {
      *
      * @returns {Array.{PlayerDesk}}
      */
-    static getPlayerDesks() {
+    static getAllPlayerDesks() {
         if (_playerDesks) {
             return _playerDesks;
         }
@@ -300,7 +254,7 @@ class PlayerDesk {
      * @returns {PlayerDesk|undefined}
      */
     static getByPlayerSlot(playerSlot) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             if (playerDesk.playerSlot === playerSlot) {
                 return playerDesk;
             }
@@ -320,7 +274,7 @@ class PlayerDesk {
         let closest = false;
 
         // This might be called a lot, find without creating new objects.
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             const dx = position.x - playerDesk._center.x;
             const dy = position.y - playerDesk._center.y;
             const dSq = dx * dx + dy * dy;
@@ -346,7 +300,7 @@ class PlayerDesk {
         const sizePoint = thicknessLine * 3;
 
         let i = 0;
-        for (const { _center, rot } of PlayerDesk.getPlayerDesks()) {
+        for (const { _center, rot } of PlayerDesk.getAllPlayerDesks()) {
             const dir = _center.add(
                 rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
             );
@@ -363,6 +317,21 @@ class PlayerDesk {
         }
     }
 
+    static resetUIs() {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            playerDesk.resetUI();
+        }
+    }
+
+    resetUI() {
+        if (this._ui) {
+            world.removeUIElement(this._ui);
+            this._ui = false;
+        }
+        this._ui = new PlayerDeskUI(this).create();
+        world.addUI(this._ui);
+    }
+
     constructor(attrs) {
         assert(attrs.minPlayerCount <= PlayerDesk.getPlayerCount());
         this._colorName = attrs.colorName;
@@ -373,6 +342,7 @@ class PlayerDesk {
         );
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
+        this._ui = false;
 
         if (attrs.hexColor) {
             const m = attrs.hexColor.match(/^#([0-9a-f]{6})$/i)[1];
@@ -388,6 +358,7 @@ class PlayerDesk {
         // Pos is a bit to the right of the visual center of the main desk
         // area.  Compute that visual center as well for "nearest" checks.
         this._center = this.localPositionToWorld(new Vector(0, -6, 0));
+        this._center.z = this._pos.z;
     }
 
     get color() {
@@ -443,6 +414,8 @@ class PlayerDesk {
         const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
         const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
         player.setPositionAndRotation(pos, rot);
+
+        this.resetUI();
     }
 }
 

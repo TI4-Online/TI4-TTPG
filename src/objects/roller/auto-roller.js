@@ -28,6 +28,7 @@ class AutoRoller {
         this._activeSystem = false;
         this._activeHex = false;
         this._activatingPlayerSlot = false;
+        this._firstBombardmentPlanet = false;
 
         this._ui = new AutoRollerUI(this._obj, (rollType, planet, player) => {
             assert(this instanceof AutoRoller);
@@ -72,6 +73,7 @@ class AutoRoller {
         this._activeSystem = System.getBySystemTileObject(systemTile);
         this._activeHex = Hex.fromPosition(systemTile.getPosition());
         this._activatingPlayerSlot = player.getSlot();
+        this._firstBombardmentPlanet = false;
         assert(this._activeSystem);
         assert(this._activeHex);
         assert(this._activatingPlayerSlot >= 0);
@@ -98,6 +100,16 @@ class AutoRoller {
             rollType = "spaceCannon";
         }
 
+        if (
+            rollType === "bombardment" &&
+            planet &&
+            !this._firstBombardmentPlanet
+        ) {
+            this._firstBombardmentPlanet = planet;
+        }
+        const isFirstBombardmentPlanet =
+            this._firstBombardmentPlanet === planet;
+
         // Build self.
         let faction = Faction.getByPlayerSlot(player.getSlot());
         const aux1 = new AuxDataBuilder()
@@ -108,6 +120,7 @@ class AutoRoller {
             .setActiveSystem(this._activeSystem)
             .setActivePlanet(planet)
             .setRollType(rollType)
+            .setIsFirstBombardmentPlanet(isFirstBombardmentPlanet)
             .build();
 
         // Build opponent.

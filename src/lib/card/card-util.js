@@ -1,6 +1,12 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
-const { Card, GameObject, world } = require("../../wrapper/api");
+const {
+    Card,
+    CardHolder,
+    GameObject,
+    Rotator,
+    world,
+} = require("../../wrapper/api");
 
 class CardUtil {
     /**
@@ -121,6 +127,83 @@ class CardUtil {
             deck.addCards(card);
         }
         return deck;
+    }
+
+    /**
+     * Split a deck ("Card" with multiple cards) into indivudual card objects.
+     *
+     * @param {Card} deck
+     * @returns {Array.{Card}}
+     */
+    static separateDeck(deck) {
+        assert(deck instanceof Card);
+
+        if (deck.isInHolder()) {
+            deck.removeFromHolder();
+        }
+
+        const result = [];
+        while (deck.getStackSize() > 1) {
+            result.push(deck.takeCards(1, true, 1));
+        }
+        result.push(deck);
+        return result;
+    }
+
+    /**
+     * Get card holder for player slot.
+     *
+     * @param {number} playerSlot
+     * @returns {CardHolder}
+     */
+    static getCardHolder(playerSlot) {
+        assert(typeof playerSlot === "number");
+
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside container
+            }
+            if (!(obj instanceof CardHolder)) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue;
+            }
+            return obj;
+        }
+    }
+
+    /**
+     * Move one or more cards to a card holder.
+     *
+     * If the card is a deck, separate cards.
+     * Orient cards facing up.
+     *
+     * @param {Card} card - single card, or deck
+     * @param {number} playerSlot
+     * @returns {boolean} true if moved to holder
+     */
+    static moveCardsToCardHolder(card, playerSlot) {
+        assert(card instanceof Card);
+        assert(typeof playerSlot === "number");
+
+        const cardHolder = CardUtil.getCardHolder(playerSlot);
+        if (!cardHolder) {
+            return false;
+        }
+
+        const cards = CardUtil.separateDeck(card);
+        for (const card of cards) {
+            if (!card.isFaceUp()) {
+                const rot = new Rotator(0, 0, 180).compose(card.getRotation());
+                card.setRotation(rot);
+            }
+
+            const index = cardHolder.getNumCards();
+            cardHolder.insert(card, index);
+        }
+
+        return true;
     }
 }
 

@@ -1,3 +1,4 @@
+require("../global"); // create globalEvents.TI4
 const { REJECT_REASON, getRejectReason } = require("./patch-exclusive-bags");
 const { MockGameObject } = require("../mock/mock-api");
 const assert = require("assert");

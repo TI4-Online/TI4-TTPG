@@ -1,4 +1,5 @@
 const { AbstractSetup } = require("./abstract-setup");
+const { CardUtil } = require("../lib/card/card-util");
 const { ObjectType, world } = require("../wrapper/api");
 
 const HAND_LOCAL_OFFSET = {
@@ -7,10 +8,9 @@ const HAND_LOCAL_OFFSET = {
     z: 5,
 };
 
-class SetupHands extends AbstractSetup {
+class SetupCardHolders extends AbstractSetup {
     constructor(playerDesk) {
-        super();
-        this.setPlayerDesk(playerDesk);
+        super(playerDesk);
     }
 
     setup() {
@@ -36,6 +36,14 @@ class SetupHands extends AbstractSetup {
         obj.setOwningPlayerSlot(playerSlot);
         obj.setObjectType(ObjectType.Ground);
     }
+
+    clean() {
+        const playerSlot = this.playerDesk.playerSlot;
+        const cardHolder = CardUtil.getCardHolder(playerSlot);
+        if (cardHolder) {
+            cardHolder.destroy();
+        }
+    }
 }
 
-module.exports = { SetupHands };
+module.exports = { SetupCardHolders };
