@@ -90,7 +90,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupStrategyCards());
     } else if (actionName === ACTION.DEMO_MAP) {
         MapStringLoad.load(
-            "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 1 46 79 2 27 45 3 24 29 4 62 37 5 41 38 6 43 40"
+            "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 0 46 79 0 27 45 0 24 29 0 62 37 0 41 38 0 43 40"
         );
     } else if (actionName === ACTION.DEMO_FACTION) {
         const factions = [
