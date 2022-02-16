@@ -75,6 +75,15 @@ it("card", () => {
     assert.equal(result.deck, "action");
 });
 
+it("command sheet", () => {
+    const id = "sheet:base/command";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const not = new MockGameObject({ templateMetadata: "not:not/not" });
+
+    assert(ObjectNamespace.isCommandSheet(obj));
+    assert(!ObjectNamespace.isCommandSheet(not));
+});
+
 it("command token", () => {
     const id = "token.command:base/arborec";
     const obj = new MockGameObject({ templateMetadata: id });

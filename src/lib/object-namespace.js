@@ -114,6 +114,11 @@ class ObjectNamespace {
         return result;
     }
 
+    static isCommandSheet(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid === "sheet:base/command";
+    }
+
     static isCommandToken(obj) {
         const nsid = ObjectNamespace.getNsid(obj);
         return nsid.startsWith("token.command");
