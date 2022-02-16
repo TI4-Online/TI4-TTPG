@@ -1,11 +1,11 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { FindTurnOrder } = require("./find-turn-order");
-const { PlayerDesk } = require("../player-desk");
 const { MockGameObject, world } = require("../../wrapper/api");
 
 it("order", () => {
     world.__clear();
-    const playerDesks = PlayerDesk.getPlayerDesks();
+    const playerDesks = world.TI4.getAllPlayerDesks();
     assert(playerDesks.length > 2);
     world.__addObject(
         new MockGameObject({

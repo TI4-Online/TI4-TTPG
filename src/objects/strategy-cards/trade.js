@@ -59,7 +59,7 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
             .setFontSize(10)
     );
 
-    PlayerDesk.getPlayerDesks().forEach((playerDesk) => {
+    world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
         // no button for the player itself
         if (playerDesk === owningPlayerDesk) return;
 

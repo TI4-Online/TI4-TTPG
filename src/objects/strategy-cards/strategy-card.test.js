@@ -110,8 +110,8 @@ describe("when a strategy card UI is created", () => {
         };
 
         PlayerDesk.setPlayerCount(2);
-        PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
-        PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
+        world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
+        world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
     });
 
     afterEach(() => {
@@ -158,8 +158,8 @@ describe("when the close button is clicked in a players selection", () => {
         ];
 
         PlayerDesk.setPlayerCount(2);
-        PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
-        PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
+        world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
+        world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
     });
 
     afterEach(() => {

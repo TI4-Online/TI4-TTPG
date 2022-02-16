@@ -2,7 +2,6 @@ require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { AdjacencyWormhole } = require("./adjacency-wormhole");
 const { Hex } = require("../hex");
-const { PlayerDesk } = require("../player-desk");
 const {
     MockCard,
     MockCardDetails,
@@ -73,7 +72,7 @@ it("token wormholes", () => {
 
 it("flagship wormholes", () => {
     world.__clear();
-    const desk = PlayerDesk.getPlayerDesks()[0];
+    const desk = world.TI4.getAllPlayerDesks()[0];
     world.__addObject(
         new MockGameObject({
             templateMetadata: "sheet.faction:base/creuss",

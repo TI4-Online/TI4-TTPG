@@ -130,7 +130,7 @@ function resetUnusedSeats() {
     }
     _claimSeatUIs = [];
 
-    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+    for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
         if (world.getPlayerBySlot(playerDesk.playerSlot)) {
             continue; // player in seat
         }
@@ -150,7 +150,7 @@ function moveNewPlayerToNonSeatSlot(player) {
     assert(player instanceof Player);
 
     const reservedSlots = new Set();
-    for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+    for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
         reservedSlots.add(playerDesk.playerSlot);
     }
     for (const otherPlayer of world.getAllPlayers()) {
@@ -252,7 +252,7 @@ class PlayerDesk {
      *
      * @returns {Array.{PlayerDesk}}
      */
-    static getPlayerDesks() {
+    static getAllPlayerDesks() {
         if (_playerDesks) {
             return _playerDesks;
         }
@@ -274,7 +274,7 @@ class PlayerDesk {
      * @returns {PlayerDesk|undefined}
      */
     static getByPlayerSlot(playerSlot) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             if (playerDesk.playerSlot === playerSlot) {
                 return playerDesk;
             }
@@ -294,7 +294,7 @@ class PlayerDesk {
         let closest = false;
 
         // This might be called a lot, find without creating new objects.
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             const dx = position.x - playerDesk._center.x;
             const dy = position.y - playerDesk._center.y;
             const dSq = dx * dx + dy * dy;
@@ -320,7 +320,7 @@ class PlayerDesk {
         const sizePoint = thicknessLine * 3;
 
         let i = 0;
-        for (const { _center, rot } of PlayerDesk.getPlayerDesks()) {
+        for (const { _center, rot } of PlayerDesk.getAllPlayerDesks()) {
             const dir = _center.add(
                 rot.getForwardVector().multiply(sizePoint * 5 + i * 3)
             );

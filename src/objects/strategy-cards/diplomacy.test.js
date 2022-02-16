@@ -16,8 +16,8 @@ world.__setPlayers([player1, player2]);
 require("./diplomacy");
 
 PlayerDesk.setPlayerCount(2);
-PlayerDesk.getPlayerDesks()[0].seatPlayer(player1);
-PlayerDesk.getPlayerDesks()[1].seatPlayer(player2);
+world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
+world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
 
 describe("when a strategy card is played", () => {
     afterEach(() => {

@@ -1,6 +1,6 @@
-const { CardUtil } = require("../lib/card/card-util");
-const { PlayerDesk } = require("../lib/player-desk");
 const { AbstractSetup } = require("./abstract-setup");
+const { CardUtil } = require("../lib/card/card-util");
+const { world } = require("../wrapper/api");
 
 const TECH_DECK_LOCAL_OFFSET = { x: 11, y: -24, z: 7 };
 
@@ -29,7 +29,7 @@ class SetupGenericTechDeck extends AbstractSetup {
                 return false;
             }
             const pos = cardOrDeck.getPosition();
-            const closestDesk = PlayerDesk.getClosest(pos);
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             return closestDesk === this.playerDesk;
         });
         for (const card of cards) {

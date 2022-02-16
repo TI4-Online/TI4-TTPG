@@ -1,7 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { PlayerDesk } = require("../lib/player-desk");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
 const { Card, ObjectType, world } = require("../wrapper/api");
@@ -19,7 +18,6 @@ class AbstractSetup {
      * @param {Faction} optional faction
      */
     constructor(playerDesk, faction) {
-        assert(!playerDesk || playerDesk instanceof PlayerDesk);
         this._playerDesk = playerDesk;
         this._faction = faction;
     }

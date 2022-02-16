@@ -2,7 +2,6 @@ const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { Layout } = require("../lib/layout");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, world } = require("../wrapper/api");
 
@@ -59,7 +58,7 @@ class SetupSupplyBoxes extends AbstractSetup {
                 continue;
             }
             const pos = obj.getPosition();
-            const closestDesk = PlayerDesk.getClosest(pos);
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             if (closestDesk !== this.playerDesk) {
                 continue;
             }

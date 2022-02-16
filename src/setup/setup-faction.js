@@ -3,7 +3,6 @@ const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("./spawn/spawn");
 const { System } = require("../lib/system/system");
 const {
@@ -81,10 +80,8 @@ const EXTRA_OFFSET = [0, 5, 0];
 
 class SetupFaction extends AbstractSetup {
     constructor(playerDesk, factionNsidName) {
-        assert(playerDesk instanceof PlayerDesk);
         assert(typeof factionNsidName === "string");
-        super();
-        this.setPlayerDesk(playerDesk);
+        super(playerDesk);
 
         this._faction = Faction.getByNsidName(factionNsidName);
         assert(this._faction);
@@ -258,7 +255,7 @@ class SetupFaction extends AbstractSetup {
                 return false;
             }
             const pos = cardOrDeckObj.getPosition();
-            const closestDesk = PlayerDesk.getClosest(pos);
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             return closestDesk === this.playerDesk;
         });
         const deck = CardUtil.makeDeck(cards);
