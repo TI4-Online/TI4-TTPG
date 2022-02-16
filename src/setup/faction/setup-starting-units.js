@@ -2,8 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
-const { world } = require("../../wrapper/api");
-const { Vector } = require("@tabletop-playground/api");
+const { Vector, world } = require("../../wrapper/api");
 
 class SetupStartingUnits extends AbstractSetup {
     constructor(playerDesk, faction) {
