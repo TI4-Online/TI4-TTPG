@@ -1,8 +1,6 @@
-const { PlayerDesk } = require("../lib/player-desk");
-const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
 const { SetupGenericTech } = require("./setup-generic-tech");
-const { SetupHands } = require("./setup-hands");
+const { SetupCardHolders } = require("./setup-card-holders");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
@@ -28,7 +26,6 @@ const ACTION = {
     TABLE_TOKENS: "*Table tokens",
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
-    DEMO_FACTION: "*Demo faction",
 };
 
 let _isSetupMode = true;
@@ -44,9 +41,9 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     const setups = [];
 
     if (actionName === ACTION.GIZMO_DESKS) {
-        console.log(player.getPosition());
-        console.log(player.getRotation());
-        PlayerDesk.drawDebug();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.drawDebug();
+        }
     } else if (actionName === ACTION.COUNT_OBJECTS) {
         console.log(`World #objects = ${world.getAllObjects().length}`);
     } else if (actionName === ACTION.CLEAN) {
@@ -70,7 +67,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         }
     } else if (actionName === ACTION.HANDS) {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            setups.push(new SetupHands(playerDesk));
+            setups.push(new SetupCardHolders(playerDesk));
         }
     } else if (actionName === ACTION.GENERIC_TECH) {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -92,20 +89,6 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         MapStringLoad.load(
             "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 0 46 79 0 27 45 0 24 29 0 62 37 0 41 38 0 43 40"
         );
-    } else if (actionName === ACTION.DEMO_FACTION) {
-        const factions = [
-            "ul",
-            "arborec",
-            "creuss",
-            "muaat",
-            "nekro",
-            "argent",
-            "vuilraith",
-            "winnu",
-        ];
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            new SetupFaction(playerDesk, factions.shift()).setup();
-        }
     }
 
     console.log(`_isSetupMode = ${_isSetupMode}`);
