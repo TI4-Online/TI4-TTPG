@@ -3,7 +3,6 @@ const { MapStringLoad } = require("../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { PlayerDesk } = require("../../lib/player-desk");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../../lib/system/system");
 const {
@@ -257,7 +256,7 @@ class MapTool {
     }
 
     placeHyperlanes() {
-        const playerCount = PlayerDesk.getPlayerCount();
+        const playerCount = world.TI4.getPlayerCount();
         console.log(`MapTool.placeHyperlanes for ${playerCount} player count`);
 
         // XXX TODO

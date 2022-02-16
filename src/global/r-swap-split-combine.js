@@ -4,7 +4,6 @@
  */
 const { Container, Rotator, globalEvents, world } = require("../wrapper/api");
 const { Facing } = require("../lib/facing");
-const { PlayerDesk } = require("../lib/player-desk");
 const { Spawn } = require("../setup/spawn/spawn");
 const locale = require("../lib/locale");
 const assert = require("../wrapper/assert-wrapper");
@@ -210,7 +209,14 @@ function onR(obj, player) {
     const playerSlot = player.getSlot();
 
     // Only seated players may use R.
-    if (!PlayerDesk.getByPlayerSlot(playerSlot)) {
+    let found = false;
+    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+        if (playerDesk.playerSlot === playerSlot) {
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
         const msg = locale("ui.error.only_seated_players_may_r");
         player.sendChatMessage(msg, [1, 0, 0]);
         return;
