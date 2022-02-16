@@ -1,3 +1,4 @@
+require("../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { MockGameObject, MockPlayer, MockRotator } = require("../mock/mock-api");
 const { isConsumable, applyRule, onR } = require("./r-swap-split-combine");

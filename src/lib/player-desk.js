@@ -1,4 +1,5 @@
 const assert = require("../wrapper/assert-wrapper");
+const { PlayerDeskUI } = require("./player-desk-ui");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,

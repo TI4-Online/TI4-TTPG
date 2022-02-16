@@ -1,3 +1,4 @@
+require("../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { PlayerDesk, DEFAULT_PLAYER_COUNT } = require("./player-desk");
 const { Color } = require("../wrapper/api");
