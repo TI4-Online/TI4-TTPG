@@ -38,3 +38,17 @@ it("color", () => {
     assert(typeof playerDesk.colorName === "string");
     assert(playerDesk.color instanceof Color);
 });
+it("getColorOptions", () => {
+    const options = PlayerDesk.getColorOptions();
+    assert(options.length > 0);
+});
+
+it("changeColor", () => {
+    const playerDesk1 = PlayerDesk.getAllPlayerDesks()[0];
+    const playerDesk2 = PlayerDesk.getAllPlayerDesks()[1];
+    const colorName1 = playerDesk1.colorName;
+    const colorName2 = playerDesk2.colorName;
+    playerDesk1.changeColor(colorName2, new Color(1, 1, 1, 1));
+    assert.equal(playerDesk1.colorName, colorName2);
+    assert.equal(playerDesk2.colorName, colorName1); // swapped
+});
