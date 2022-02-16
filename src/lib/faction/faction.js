@@ -87,6 +87,14 @@ class Faction {
     get raw() {
         return this._factionAttrs;
     }
+
+    get nsidName() {
+        return this._factionAttrs.faction;
+    }
+
+    get nsidSource() {
+        return this._factionAttrs.source;
+    }
 }
 
 module.exports = { Faction };
