@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { world } = require("../../wrapper/api");
 
 class SetupStartingUnits extends AbstractSetup {
@@ -20,6 +21,16 @@ class SetupStartingUnits extends AbstractSetup {
             if (ObjectNamespace.isUnitBag(obj)) {
                 const parsed = ObjectNamespace.parseUnitBag(obj);
                 unitToBag[parsed.unit] = obj;
+            }
+        }
+
+        // Make sure all bags exist before doing anything.
+        const units = UnitAttrs.getAllUnitTypes();
+        for (const unit of units) {
+            const bag = unitToBag[unit];
+            if (!bag) {
+                console.warn("SetupStartingUnits: missing unit bags");
+                return;
             }
         }
 

@@ -46,11 +46,26 @@ class Planet {
      */
     static getByPlanetCard(planetCard) {
         assert(planetCard instanceof Card);
+        const nsid = ObjectNamespace.getNsid(planetCard);
+        return Planet.getByPlanetCardNsid(nsid);
+    }
+
+    /**
+     * Retrieve the planet object by the card NSID.
+     *
+     * @param {string} planetCard
+     * @returns {Planet}
+     */
+    static getByPlanetCardNsid(planetCardNsid) {
+        assert(typeof planetCardNsid === "string");
         _maybeInit();
 
-        const parsedNsid = ObjectNamespace.parseCard(planetCard);
-        assert(parsedNsid.deck === "planet");
-        const localeName = "planet." + parsedNsid.name;
+        if (!planetCardNsid.startsWith("card.planet")) {
+            return undefined;
+        }
+
+        const parsed = ObjectNamespace.parseNsid(planetCardNsid);
+        const localeName = "planet." + parsed.name;
         return _planetLocaleNameToPlanet[localeName];
     }
 

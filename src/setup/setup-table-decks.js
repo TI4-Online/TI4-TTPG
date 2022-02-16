@@ -1,6 +1,7 @@
 const { AbstractSetup } = require("./abstract-setup");
-const { Card, Rotator, Vector, world } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { Planet } = require("../lib/system/system");
+const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
 let _nextX = -40;
 function nextPosition() {
@@ -136,6 +137,13 @@ class SetupTableDecks extends AbstractSetup {
 
         // Spawn the decks, combine into one.
         this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
+            if (nsid.startsWith("card.planet")) {
+                // Ignore home system cards.
+                const planet = Planet.getByPlanetCardNsid(nsid);
+                if (planet) {
+                    return !planet.system.raw.home;
+                }
+            }
             return true; // no need to filter anything
         });
     }

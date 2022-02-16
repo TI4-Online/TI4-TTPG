@@ -22,6 +22,10 @@ class SetupStartingTech extends AbstractSetup {
             const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             return closestDesk === this.playerDesk;
         });
+        if (cards.length === 0) {
+            console.warn("SetupStartingTech: missing tech cards");
+            return;
+        }
         const deck = CardUtil.makeDeck(cards);
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
