@@ -14,7 +14,7 @@ const {
     Vector,
     world,
 } = require("../wrapper/api");
-const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech-deck");
+const { TECH_DECK_LOCAL_OFFSET } = require("./setup-generic-tech");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("./setup-generic-promissory");
 
 const FACTION_SHEET = {

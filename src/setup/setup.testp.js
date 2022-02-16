@@ -1,7 +1,7 @@
 const { PlayerDesk } = require("../lib/player-desk");
 const { SetupFaction } = require("./setup-faction");
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
-const { SetupGenericTechDeck } = require("./setup-generic-tech-deck");
+const { SetupGenericTech } = require("./setup-generic-tech");
 const { SetupHands } = require("./setup-hands");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
@@ -57,27 +57,27 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             obj.destroy();
         }
     } else if (actionName === ACTION.UNITS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             setups.push(new SetupUnits(playerDesk));
         }
     } else if (actionName === ACTION.SUPPLY) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             setups.push(new SetupSupplyBoxes(playerDesk));
         }
     } else if (actionName === ACTION.SHEETS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             setups.push(new SetupSheets(playerDesk));
         }
     } else if (actionName === ACTION.HANDS) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             setups.push(new SetupHands(playerDesk));
         }
     } else if (actionName === ACTION.GENERIC_TECH) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
-            setups.push(new SetupGenericTechDeck(playerDesk));
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            setups.push(new SetupGenericTech(playerDesk));
         }
     } else if (actionName === ACTION.GENERIC_PROMISSORY) {
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             setups.push(new SetupGenericPromissory(playerDesk));
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
@@ -103,7 +103,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             "vuilraith",
             "winnu",
         ];
-        for (const playerDesk of PlayerDesk.getPlayerDesks()) {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             new SetupFaction(playerDesk, factions.shift()).setup();
         }
     }
