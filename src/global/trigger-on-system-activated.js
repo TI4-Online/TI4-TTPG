@@ -9,13 +9,12 @@
 const { globalEvents, world } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { System } = require("../lib/system/system");
 const { Turns } = require("../lib/turns");
 const locale = require("../lib/locale");
 
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
-    const system = System.getBySystemTileObject(obj);
+    const system = world.TI4.getSystemBySystemTileObject(obj);
     const message = locale("ui.message.system_activated", {
         playerName: player.getName(),
         systemTile: system.tile,
@@ -43,7 +42,7 @@ function onCommandTokenReleased(
     }
 
     const pos = obj.getPosition();
-    const systemTile = System.getSystemTileObjectByPosition(pos);
+    const systemTile = world.TI4.getSystemTileObjectByPosition(pos);
     if (systemTile) {
         globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
     }

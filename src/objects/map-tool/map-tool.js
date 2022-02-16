@@ -4,7 +4,6 @@ const { MapStringSave } = require("../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
-const { System } = require("../../lib/system/system");
 const {
     Card,
     GameObject,
@@ -85,8 +84,8 @@ class MapTool {
     clear() {
         console.log("MapTool.clear");
         const bag = MapTool.getMapTilesContainer();
-        for (const obj of System.getAllSystemTileObjects()) {
-            const system = System.getBySystemTileObject(obj);
+        for (const obj of world.TI4.getAllSystemTileObjects()) {
+            const system = world.TI4.getSystemBySystemTileObject(obj);
             if (system.raw.offMap) {
                 continue; // only clear main-map systems.
             }
@@ -114,8 +113,8 @@ class MapTool {
 
         // Build wanted cards.
         const nsidTypeAndNameToPos = {};
-        for (const obj of System.getAllSystemTileObjects()) {
-            const system = System.getBySystemTileObject(obj);
+        for (const obj of world.TI4.getAllSystemTileObjects()) {
+            const system = world.TI4.getSystemBySystemTileObject(obj);
             let pos = obj.getPosition().subtract([1, 1, 0]);
             for (const planet of system.planets) {
                 const planetNsidName = planet.getPlanetNsidName();
@@ -227,8 +226,8 @@ class MapTool {
     placeFrontierTokens() {
         console.log("MapTool.placeFrontierTokens");
         const emptyPositions = [];
-        for (const obj of System.getAllSystemTileObjects()) {
-            const system = System.getBySystemTileObject(obj);
+        for (const obj of world.TI4.getAllSystemTileObjects()) {
+            const system = world.TI4.getSystemBySystemTileObject(obj);
             if (system.planets.length === 0) {
                 emptyPositions.push(obj.getPosition().add([0, 0, 1]));
             }

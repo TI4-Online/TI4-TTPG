@@ -1,6 +1,6 @@
-const { refObject, Rotator, Vector } = require("../../wrapper/api");
-const { System, Planet } = require("../../lib/system/system");
+const { refObject, world, Rotator, Vector } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
+const { Planet } = require("../../lib/system/system");
 const assert = require("../../wrapper/assert-wrapper");
 
 const MIRAGE_ATTRS = {
@@ -19,7 +19,7 @@ let _mirageSystemTileNumber = 0;
 
 function detachMirage() {
     if (_mirageSystemTileNumber) {
-        const prevMirageSystem = System.getByTileNumber(
+        const prevMirageSystem = world.TI4.getSystemByTileNumber(
             _mirageSystemTileNumber
         );
 
@@ -33,13 +33,13 @@ function detachMirage() {
 
 function attachMirage(obj) {
     const pos = obj.getPosition();
-    const systemObj = System.getSystemTileObjectByPosition(pos);
+    const systemObj = world.TI4.getSystemTileObjectByPosition(pos);
     if (systemObj) {
         // if mirage was already attached somewhere else, detach it first
         // before attaching to the new system
         detachMirage();
 
-        const system = System.getBySystemTileObject(systemObj);
+        const system = world.TI4.getSystemBySystemTileObject(systemObj);
 
         // check that the system is a valid target for mirage
         if (system.planets.length > 0) {

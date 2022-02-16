@@ -1,6 +1,5 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { Planet } = require("../lib/system/system");
 const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
 let _nextX = -40;
@@ -139,7 +138,7 @@ class SetupTableDecks extends AbstractSetup {
         this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
             if (nsid.startsWith("card.planet")) {
                 // Ignore home system cards.
-                const planet = Planet.getByPlanetCardNsid(nsid);
+                const planet = world.TI4.getPlanetByCardNsid(nsid);
                 if (planet) {
                     return !planet.system.raw.home;
                 }

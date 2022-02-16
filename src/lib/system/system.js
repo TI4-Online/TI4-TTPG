@@ -42,21 +42,21 @@ class Planet {
      * because attachements, etc, modify the shared instance.
      *
      * @param {Card} planetCard
-     * @returns {Planet}
+     * @returns {Planet|undefined}
      */
-    static getByPlanetCard(planetCard) {
+    static getByCard(planetCard) {
         assert(planetCard instanceof Card);
         const nsid = ObjectNamespace.getNsid(planetCard);
-        return Planet.getByPlanetCardNsid(nsid);
+        return Planet.getByCardNsid(nsid);
     }
 
     /**
      * Retrieve the planet object by the card NSID.
      *
-     * @param {string} planetCard
-     * @returns {Planet}
+     * @param {string} planetCardNsid
+     * @returns {Planet|undefined}
      */
-    static getByPlanetCardNsid(planetCardNsid) {
+    static getByCardNsid(planetCardNsid) {
         assert(typeof planetCardNsid === "string");
         _maybeInit();
 
@@ -126,13 +126,13 @@ class System {
      * Retrieve the system object.  Do not use the contructor directly,
      * because attachements, etc, modify the shared instance.
      *
-     * @param {number} tile
+     * @param {number} tileNumber
      * @returns {System}
      */
-    static getByTileNumber(tile) {
-        assert(typeof tile === "number");
+    static getByTileNumber(tileNumber) {
+        assert(typeof tileNumber === "number");
         _maybeInit();
-        return _tileToSystem[tile];
+        return _tileToSystem[tileNumber];
     }
 
     /**

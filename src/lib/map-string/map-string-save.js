@@ -4,7 +4,7 @@ const { Hex } = require("../hex");
 const MapStringHex = require("./map-string-hex");
 const MapStringParser = require("./map-string-parser");
 const { ObjectNamespace } = require("../object-namespace");
-const { System } = require("../system/system");
+const { world } = require("../../wrapper/api");
 
 /**
  * Save the map string based on current table state.
@@ -12,12 +12,12 @@ const { System } = require("../system/system");
 class MapStringSave {
     static save() {
         // Take note of rotation and side for hyperlanes.
-        const systemTileObjs = System.getAllSystemTileObjects();
+        const systemTileObjs = world.TI4.getAllSystemTileObjects();
         const mapTiles = [];
         for (const obj of systemTileObjs) {
             assert(ObjectNamespace.isSystemTile(obj));
             const tile = ObjectNamespace.parseSystemTile(obj).tile;
-            const system = System.getByTileNumber(tile);
+            const system = world.TI4.getSystemByTileNumber(tile);
 
             // Ignore if not part of the main map.
             if (system.raw.offMap) {
