@@ -1,7 +1,9 @@
-const { globalEvents } = require("@tabletop-playground/api");
+const { globalEvents, world } = require("./wrapper/api");
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 
-console.log("Welcome to Twilight Imperium IV");
+if (!world.__isMock) {
+    console.log("Welcome to Twilight Imperium IV");
+}
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
@@ -39,4 +41,15 @@ require("./global/strategy-card-functions");
 require("./global/trigger-on-system-activated");
 
 // Player desk is naughty and wants to register global event listeners.
-require("./lib/player-desk");
+const { PlayerDesk } = require("./lib/player-desk");
+
+// Register some functions in world to reduce require dependencies.
+world.TI4 = {
+    getAllPlayerDesks: () => {
+        return PlayerDesk.getAllPlayerDesks();
+    },
+
+    getClosestPlayerDesk: (pos) => {
+        return PlayerDesk.getClosest(pos);
+    },
+};

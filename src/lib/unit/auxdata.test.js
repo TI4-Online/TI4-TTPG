@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { AuxDataBuilder, AuxData } = require("./auxdata");
 const { Faction } = require("../faction/faction");

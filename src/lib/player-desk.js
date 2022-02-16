@@ -1,5 +1,4 @@
 const assert = require("../wrapper/assert-wrapper");
-const { PlayerDeskUI } = require("./player-desk-ui");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
@@ -135,9 +134,9 @@ function resetUnusedSeats() {
         if (world.getPlayerBySlot(playerDesk.playerSlot)) {
             continue; // player in seat
         }
-        const ui = new PlayerDeskUI(playerDesk).create();
-        _claimSeatUIs.push(ui);
-        world.addUI(ui);
+        //const ui = new PlayerDeskUI(playerDesk).create();
+        //_claimSeatUIs.push(ui);
+        //world.addUI(ui);
     }
 }
 

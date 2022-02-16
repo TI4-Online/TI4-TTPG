@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { UnitPlastic, _getUnitPlastic } = require("./unit-plastic");
 const { MockGameObject, MockVector, world } = require("../../wrapper/api");

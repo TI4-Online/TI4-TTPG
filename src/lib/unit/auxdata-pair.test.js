@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { AuxDataPair } = require("./auxdata-pair");
 const {

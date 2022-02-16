@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { Hex } = require("../hex");
 const { MapStringSave } = require("./map-string-save");

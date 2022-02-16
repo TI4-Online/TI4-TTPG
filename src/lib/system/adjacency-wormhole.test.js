@@ -1,3 +1,4 @@
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { AdjacencyWormhole } = require("./adjacency-wormhole");
 const { Hex } = require("../hex");

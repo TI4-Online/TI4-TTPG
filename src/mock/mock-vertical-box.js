@@ -9,10 +9,15 @@ class VerticalBox extends Widget {
     addChild(widget) {
         this._children.push(widget);
         widget._parent = this;
+        return this;
     }
 
     getChildren() {
         return this._children;
+    }
+
+    setChildDistance() {
+        return this;
     }
 }
 

@@ -1,6 +1,5 @@
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDesk } = require("../player-desk");
 const { UnitAttrs } = require("./unit-attrs");
 const { world } = require("../../wrapper/api");
 
@@ -392,7 +391,7 @@ module.exports = [
                 if (!nsid.includes("_relic_fragment")) {
                     continue;
                 }
-                const owner = PlayerDesk.getClosest(obj.getPosition());
+                const owner = world.TI4.getClosestPlayerDesk(obj.getPosition());
                 if (owner === auxData.playerSlot) {
                     return true;
                 }
@@ -514,7 +513,7 @@ module.exports = [
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid.startsWith("token.nekro:base/valefar_assimilator")) {
                     const tokenPos = obj.getPosition();
-                    const closest = PlayerDesk.getClosest(tokenPos);
+                    const closest = world.TI4.getClosestPlayerDesk(tokenPos);
                     if (closest.playerSlot == auxData.opponent.playerSlot) {
                         return true;
                     }
