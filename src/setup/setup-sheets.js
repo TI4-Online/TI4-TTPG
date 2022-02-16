@@ -1,7 +1,7 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectType } = require("../wrapper/api");
 const { Spawn } = require("./spawn/spawn");
-const { FACTION_SHEET } = require("./setup-faction");
+const { FACTION_SHEET } = require("./faction/setup-faction-sheet");
 
 const SHEET_DATA = [
     {

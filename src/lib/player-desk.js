@@ -117,29 +117,8 @@ const SEAT_CAMERA = {
 const DEFAULT_PLAYER_COUNT = 6;
 let _playerCount = false;
 let _playerDesks = false;
-let _claimSeatUIs = [];
 
 // ----------------------------------------------------------------------------
-
-/**
- * Clear and reset "claim seat" buttons on available player desks.
- */
-function resetUnusedSeats() {
-    // Remove old UI.
-    for (const ui of _claimSeatUIs) {
-        world.removeUIElement(ui);
-    }
-    _claimSeatUIs = [];
-
-    for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
-        if (world.getPlayerBySlot(playerDesk.playerSlot)) {
-            continue; // player in seat
-        }
-        const ui = new PlayerDeskUI(playerDesk).create();
-        _claimSeatUIs.push(ui);
-        world.addUI(ui);
-    }
-}
 
 /**
  * Move newly joined players to a non-seat player slot.
@@ -181,11 +160,11 @@ globalEvents.onPlayerJoined.add((player) => {
 
 // Release seat when someone leaves.
 globalEvents.onPlayerLeft.add((player) => {
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 });
 
 globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 });
 
 // Unseat host when first loading game.
@@ -201,7 +180,7 @@ const runOnce = () => {
     }
 
     // Reset "take a seat" UI.
-    resetUnusedSeats();
+    PlayerDesk.resetUIs();
 };
 globalEvents.onTick.add(runOnce);
 
@@ -244,7 +223,7 @@ class PlayerDesk {
         _playerDesks = false;
 
         // Reset "claim seat" buttons.
-        resetUnusedSeats();
+        PlayerDesk.resetUIs();
     }
 
     /**
@@ -338,6 +317,21 @@ class PlayerDesk {
         }
     }
 
+    static resetUIs() {
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            playerDesk.resetUI();
+        }
+    }
+
+    resetUI() {
+        if (this._ui) {
+            world.removeUIElement(this._ui);
+            this._ui = false;
+        }
+        this._ui = new PlayerDeskUI(this).create();
+        world.addUI(this._ui);
+    }
+
     constructor(attrs) {
         assert(attrs.minPlayerCount <= PlayerDesk.getPlayerCount());
         this._colorName = attrs.colorName;
@@ -348,6 +342,7 @@ class PlayerDesk {
         );
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
+        this._ui = false;
 
         if (attrs.hexColor) {
             const m = attrs.hexColor.match(/^#([0-9a-f]{6})$/i)[1];
@@ -419,7 +414,7 @@ class PlayerDesk {
         const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
         player.setPositionAndRotation(pos, rot);
 
-        resetUnusedSeats();
+        this.resetUI();
     }
 }
 

@@ -40,4 +40,4 @@ class SetupFactionSheet extends AbstractSetup {
     }
 }
 
-module.exports = { SetupFactionSheet };
+module.exports = { SetupFactionSheet, FACTION_SHEET };

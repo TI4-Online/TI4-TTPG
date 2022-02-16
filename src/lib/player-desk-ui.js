@@ -29,8 +29,10 @@ const {
     Button,
     UIElement,
     VerticalBox,
+    globalEvents,
     world,
 } = require("../wrapper/api");
+const { ObjectNamespace } = require("./object-namespace");
 
 const DESK_UI_POSITION = {
     pos: { x: 25, y: -6, z: 5 },
@@ -46,13 +48,39 @@ class PlayerDeskUI {
     }
 
     create() {
-        const panel = new VerticalBox()
-            .setChildDistance(5)
-            .addChild(this._createTakeSeatButton())
-            .addChild(this._createSetupButton())
-            .addChild(this._createCleanButton())
-            .addChild(this._createSetupFactionButton())
-            .addChild(this._createCleanFactionButton());
+        const playerSlot = this._playerDesk.playerSlot;
+
+        const panel = new VerticalBox().setChildDistance(5);
+
+        if (!world.getPlayerBySlot(playerSlot)) {
+            panel.addChild(this._createTakeSeatButton());
+        }
+
+        let isSetup = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "sheet:base/command") {
+                isSetup = true;
+                break;
+            }
+        }
+        if (isSetup) {
+            panel.addChild(this._createCleanButton());
+        } else {
+            panel.addChild(this._createSetupButton());
+        }
+
+        if (Faction.getByPlayerSlot(playerSlot)) {
+            panel.addChild(this._createCleanFactionButton());
+        } else {
+            panel.addChild(this._createSetupFactionButton());
+        }
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI_POSITION.pos);
         pos.z = world.getTableHeight() + 0.5;
@@ -88,6 +116,7 @@ class PlayerDeskUI {
         button.onClicked.add((button, player) => {
             const setups = this._getGenericSetups();
             setups.forEach((setup) => setup.setup());
+            this._playerDesk.resetUI();
         });
         return button;
     }
@@ -102,6 +131,7 @@ class PlayerDeskUI {
         button.onClicked.add((button, player) => {
             const setups = this._getGenericSetups();
             setups.forEach((setup) => setup.clean());
+            this._playerDesk.resetUI();
         });
         return button;
     }
@@ -116,6 +146,9 @@ class PlayerDeskUI {
         button.onClicked.add((button, player) => {
             const setups = this._getFactionSetups();
             setups.forEach((setup) => setup.setup());
+            const playerSlot = this._playerDesk.playerSlot;
+            this._playerDesk.resetUI();
+            globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
         });
         return button;
     }
@@ -130,6 +163,9 @@ class PlayerDeskUI {
         button.onClicked.add((button, player) => {
             const setups = this._getFactionSetups();
             setups.forEach((setup) => setup.clean());
+            const playerSlot = this._playerDesk.playerSlot;
+            this._playerDesk.resetUI();
+            globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
         });
         return button;
     }
