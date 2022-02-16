@@ -39,7 +39,8 @@ it("color", () => {
     assert(playerDesk.color instanceof Color);
 });
 it("getColorOptions", () => {
-    const options = PlayerDesk.getColorOptions();
+    const playerDesk = PlayerDesk.getAllPlayerDesks()[0];
+    const options = playerDesk.getColorOptions();
     assert(options.length > 0);
 });
 
