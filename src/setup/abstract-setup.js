@@ -1,9 +1,8 @@
 const assert = require("../wrapper/assert-wrapper");
-const { Faction } = require("../lib/faction/faction");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
-const { Card, ObjectType, world } = require("../wrapper/api");
+const { Card, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
