@@ -27,12 +27,14 @@ class StrategyCardBorder extends Border {
      * @param data.card {GameObject} The strategy card containing the border
      * @param data.desk {PlayerDesk} The player desk where the border will be placed
      * @param data.height {Integer} The height of the UI
+     * @param data.width {Integer} The width of the UI
      * @param data.ui {UIElement} The UIElement containing the border
      */
     constructor(data) {
         assert(data.card instanceof GameObject);
         assert(data.desk instanceof PlayerDesk);
         assert(Number.isInteger(data.height));
+        assert(Number.isInteger(data.width));
         assert(data.ui instanceof UIElement);
 
         super(data);
@@ -40,6 +42,7 @@ class StrategyCardBorder extends Border {
         this._card = data.card;
         this._desk = data.desk;
         this._height = data.height;
+        this._width = data.width;
         this._ui = data.ui;
     }
 
@@ -65,6 +68,13 @@ class StrategyCardBorder extends Border {
     }
 
     /**
+     * @returns {Integer} The width of the UI
+     */
+    get width() {
+        return this._width;
+    }
+
+    /**
      * @returns {UIElement} The playerDesk card associated with the border
      */
     get ui() {
@@ -78,8 +88,8 @@ class StrategyCardBorder extends Border {
     spawnUi() {
         this._ui.useWidgetSize = false;
         this._ui.widget = this;
-        this._ui.width = 350;
         this._ui.height = this.height;
+        this._ui.width = this.width;
         this._ui.scale = 0.75;
         this._ui.position = this._desk.localPositionToWorld({
             x: 30,
