@@ -9,7 +9,7 @@
 		"playerTeams": [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 		"globalScriptPackage": "DEE44C689452447E8ED6FDDBEB19BB23",
 		"globalScriptName": "global.js",
-		"persistentData": "{\"playerCount\":3}",
+		"persistentData": "{\"playerCount\":6}",
 		"backgroundTexture":
 		{
 			"resourceName": "",
