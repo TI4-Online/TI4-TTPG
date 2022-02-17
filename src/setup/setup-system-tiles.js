@@ -25,7 +25,10 @@ class SetupSystemTiles extends AbstractSetup {
             // Ignore home systems.
             const tile = Number.parseInt(parsed.name);
             const system = world.TI4.getSystemByTileNumber(tile);
-            if (system && system.raw.home) {
+            if (!system) {
+                return false; // "0" reserved for home sytem marking
+            }
+            if (system.raw.home) {
                 return false;
             }
             return true;
