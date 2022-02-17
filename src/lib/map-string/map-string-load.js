@@ -60,6 +60,24 @@ class MapStringLoad {
             }
             obj.setObjectType(ObjectType.Ground);
         }
+
+        // Add Mallice
+        const obj = tileToSystemObj[82];
+        assert(obj);
+        const pos = Hex.toPosition("<-4,5,-1>");
+        pos.z = world.getTableHeight() + 10;
+        const rot = new Rotator(0, 0, 0);
+        //console.log(`placing ${entry.tile} at ${pos} / ${rot}`);
+        const animSpeed = 1;
+        obj.setObjectType(ObjectType.Regular);
+        if (obj.getContainer()) {
+            obj.getContainer().take(obj, pos, animSpeed > 0);
+            obj.setRotation(rot, animSpeed);
+        } else {
+            obj.setPosition(pos, animSpeed);
+            obj.setRotation(rot, animSpeed);
+        }
+        obj.setObjectType(ObjectType.Ground);
     }
 }
 
