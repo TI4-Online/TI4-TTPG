@@ -33,6 +33,7 @@
     "ui.button.clean_faction": "Clear faction",
 
     "ui.message.color_in_use": "Color already in use",
+    "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",
