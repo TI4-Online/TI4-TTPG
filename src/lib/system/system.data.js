@@ -2,11 +2,13 @@ module.exports = [
     // base systems
     {
         tile: 1,
+        source: "base",
         home: true,
         planets: [{ localeName: "planet.jord", resources: 4, influence: 2 }],
     },
     {
         tile: 2,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.moll_primus", resources: 4, influence: 1 },
@@ -14,16 +16,19 @@ module.exports = [
     },
     {
         tile: 3,
+        source: "base",
         home: true,
         planets: [{ localeName: "planet.darien", resources: 4, influence: 4 }],
     },
     {
         tile: 4,
+        source: "base",
         home: true,
         planets: [{ localeName: "planet.muaat", resources: 4, influence: 1 }],
     },
     {
         tile: 5,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.nestphar", resources: 3, influence: 2 },
@@ -31,16 +36,19 @@ module.exports = [
     },
     {
         tile: 6,
+        source: "base",
         home: true,
         planets: [{ localeName: "planet.000", resources: 5, influence: 0 }],
     },
     {
         tile: 7,
+        source: "base",
         home: true,
         planets: [{ localeName: "planet.winnu", resources: 3, influence: 4 }],
     },
     {
         tile: 8,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.mordai_ii", resources: 4, influence: 0 },
@@ -48,6 +56,7 @@ module.exports = [
     },
     {
         tile: 9,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.maaluuk", resources: 0, influence: 2 },
@@ -56,6 +65,7 @@ module.exports = [
     },
     {
         tile: 10,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.arc_prime", resources: 4, influence: 0 },
@@ -64,6 +74,7 @@ module.exports = [
     },
     {
         tile: 11,
+        source: "base",
         home: true,
         planets: [
             {
@@ -83,6 +94,7 @@ module.exports = [
     },
     {
         tile: 12,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.nar", resources: 2, influence: 3 },
@@ -91,6 +103,7 @@ module.exports = [
     },
     {
         tile: 13,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.trenlak", resources: 1, influence: 0 },
@@ -99,6 +112,7 @@ module.exports = [
     },
     {
         tile: 14,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.archon_ren", resources: 2, influence: 3 },
@@ -107,6 +121,7 @@ module.exports = [
     },
     {
         tile: 15,
+        source: "base",
         home: true,
         planets: [
             { localeName: "planet.retillion", resources: 2, influence: 3 },
@@ -115,6 +130,7 @@ module.exports = [
     },
     {
         tile: 16,
+        source: "base",
         home: true,
         planets: [
             {
@@ -140,11 +156,13 @@ module.exports = [
     {
         // not precisely a home, but tied to a faction
         tile: 17,
+        source: "base",
         home: true,
         wormholes: ["delta"],
     },
     {
         tile: 18,
+        source: "base",
         planets: [
             {
                 localeName: "planet.mecatol_rex",
@@ -156,6 +174,7 @@ module.exports = [
     },
     {
         tile: 19,
+        source: "base",
         planets: [
             {
                 localeName: "planet.wellon",
@@ -168,6 +187,7 @@ module.exports = [
     },
     {
         tile: 20,
+        source: "base",
         planets: [
             {
                 localeName: "planet.vefut_ii",
@@ -179,6 +199,7 @@ module.exports = [
     },
     {
         tile: 21,
+        source: "base",
         planets: [
             {
                 localeName: "planet.thibah",
@@ -191,6 +212,7 @@ module.exports = [
     },
     {
         tile: 22,
+        source: "base",
         planets: [
             {
                 localeName: "planet.tarmann",
@@ -203,6 +225,7 @@ module.exports = [
     },
     {
         tile: 23,
+        source: "base",
         planets: [
             {
                 localeName: "planet.saudor",
@@ -214,6 +237,7 @@ module.exports = [
     },
     {
         tile: 24,
+        source: "base",
         planets: [
             {
                 localeName: "planet.mehar_xull",
@@ -226,6 +250,7 @@ module.exports = [
     },
     {
         tile: 25,
+        source: "base",
         wormholes: ["beta"],
         planets: [
             {
@@ -239,6 +264,7 @@ module.exports = [
     },
     {
         tile: 26,
+        source: "base",
         wormholes: ["alpha"],
         planets: [
             {
@@ -252,6 +278,7 @@ module.exports = [
     },
     {
         tile: 27,
+        source: "base",
         planets: [
             {
                 localeName: "planet.new_albion",
@@ -270,6 +297,7 @@ module.exports = [
     },
     {
         tile: 28,
+        source: "base",
         planets: [
             {
                 localeName: "planet.tequran",
@@ -287,6 +315,7 @@ module.exports = [
     },
     {
         tile: 29,
+        source: "base",
         planets: [
             {
                 localeName: "planet.qucenn",
@@ -304,6 +333,7 @@ module.exports = [
     },
     {
         tile: 30,
+        source: "base",
         planets: [
             {
                 localeName: "planet.mellon",
@@ -321,6 +351,7 @@ module.exports = [
     },
     {
         tile: 31,
+        source: "base",
         planets: [
             {
                 localeName: "planet.lazar",
@@ -339,6 +370,7 @@ module.exports = [
     },
     {
         tile: 32,
+        source: "base",
         planets: [
             {
                 localeName: "planet.dal_bootha",
@@ -356,6 +388,7 @@ module.exports = [
     },
     {
         tile: 33,
+        source: "base",
         planets: [
             {
                 localeName: "planet.corneeq",
@@ -373,6 +406,7 @@ module.exports = [
     },
     {
         tile: 34,
+        source: "base",
         planets: [
             {
                 localeName: "planet.centauri",
@@ -391,6 +425,7 @@ module.exports = [
     },
     {
         tile: 35,
+        source: "base",
         planets: [
             {
                 localeName: "planet.bereg",
@@ -408,6 +443,7 @@ module.exports = [
     },
     {
         tile: 36,
+        source: "base",
         planets: [
             {
                 localeName: "planet.arnor",
@@ -425,6 +461,7 @@ module.exports = [
     },
     {
         tile: 37,
+        source: "base",
         planets: [
             {
                 localeName: "planet.arinam",
@@ -443,6 +480,7 @@ module.exports = [
     },
     {
         tile: 38,
+        source: "base",
         planets: [
             {
                 localeName: "planet.abyz",
@@ -460,49 +498,62 @@ module.exports = [
     },
     {
         tile: 39,
+        source: "base",
         wormholes: ["alpha"],
     },
     {
         tile: 40,
+        source: "base",
         wormholes: ["beta"],
     },
     {
         tile: 41,
+        source: "base",
         anomalies: ["gravity rift"],
     },
     {
         tile: 42,
+        source: "base",
         anomalies: ["nebula"],
     },
     {
         tile: 43,
+        source: "base",
         anomalies: ["supernova"],
     },
     {
         tile: 44,
+        source: "base",
         anomalies: ["asteroid field"],
     },
     {
         tile: 45,
+        source: "base",
         anomalies: ["asteroid field"],
     },
     {
         tile: 46,
+        source: "base",
     },
     {
         tile: 47,
+        source: "base",
     },
     {
         tile: 48,
+        source: "base",
     },
     {
         tile: 49,
+        source: "base",
     },
     {
         tile: 50,
+        source: "base",
     },
     {
         tile: 51,
+        source: "base",
         home: true,
         wormholes: ["delta"],
         offMap: true,
@@ -519,11 +570,13 @@ module.exports = [
     // pok systems
     {
         tile: 52,
+        source: "pok",
         home: true,
         planets: [{ localeName: "planet.ixth", resources: 3, influence: 5 }],
     },
     {
         tile: 53,
+        source: "pok",
         home: true,
         planets: [
             { localeName: "planet.arcturus", resources: 4, influence: 4 },
@@ -531,11 +584,13 @@ module.exports = [
     },
     {
         tile: 54,
+        source: "pok",
         home: true,
         planets: [{ localeName: "planet.acheron", resources: 4, influence: 0 }],
     },
     {
         tile: 55,
+        source: "pok",
         home: true,
         planets: [
             {
@@ -549,6 +604,7 @@ module.exports = [
     },
     {
         tile: 56,
+        source: "pok",
         home: true,
         anomalies: ["nebula"],
         planets: [
@@ -557,6 +613,7 @@ module.exports = [
     },
     {
         tile: 57,
+        source: "pok",
         home: true,
         planets: [
             { localeName: "planet.naazir", resources: 2, influence: 1 },
@@ -565,6 +622,7 @@ module.exports = [
     },
     {
         tile: 58,
+        source: "pok",
         home: true,
         planets: [
             {
@@ -589,6 +647,7 @@ module.exports = [
     },
     {
         tile: 59,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.archon_vail",
@@ -601,6 +660,7 @@ module.exports = [
     },
     {
         tile: 60,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.perimeter",
@@ -612,6 +672,7 @@ module.exports = [
     },
     {
         tile: 61,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.ang",
@@ -624,6 +685,7 @@ module.exports = [
     },
     {
         tile: 62,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.semlore",
@@ -636,6 +698,7 @@ module.exports = [
     },
     {
         tile: 63,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.vorhal",
@@ -648,6 +711,7 @@ module.exports = [
     },
     {
         tile: 64,
+        source: "pok",
         wormholes: ["beta"],
         planets: [
             {
@@ -661,6 +725,7 @@ module.exports = [
     },
     {
         tile: 65,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.primor",
@@ -675,6 +740,7 @@ module.exports = [
     },
     {
         tile: 66,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.hopes_end",
@@ -689,6 +755,7 @@ module.exports = [
     },
     {
         tile: 67,
+        source: "pok",
         anomalies: ["gravity rift"],
         planets: [
             {
@@ -702,6 +769,7 @@ module.exports = [
     },
     {
         tile: 68,
+        source: "pok",
         anomalies: ["nebula"],
         planets: [
             {
@@ -715,6 +783,7 @@ module.exports = [
     },
     {
         tile: 69,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.accoen",
@@ -732,6 +801,7 @@ module.exports = [
     },
     {
         tile: 70,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.kraag",
@@ -749,6 +819,7 @@ module.exports = [
     },
     {
         tile: 71,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.bakal",
@@ -766,6 +837,7 @@ module.exports = [
     },
     {
         tile: 72,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.lisis",
@@ -784,6 +856,7 @@ module.exports = [
     },
     {
         tile: 73,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.cealdri",
@@ -802,6 +875,7 @@ module.exports = [
     },
     {
         tile: 74,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.vega_major",
@@ -820,6 +894,7 @@ module.exports = [
     },
     {
         tile: 75,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.loki",
@@ -843,6 +918,7 @@ module.exports = [
     },
     {
         tile: 76,
+        source: "pok",
         planets: [
             {
                 localeName: "planet.rigel_iii",
@@ -867,25 +943,31 @@ module.exports = [
     },
     {
         tile: 77,
+        source: "pok",
     },
     {
         tile: 78,
+        source: "pok",
     },
     {
         tile: 79,
+        source: "pok",
         anomalies: ["asteroid field"],
         wormholes: ["alpha"],
     },
     {
         tile: 80,
+        source: "pok",
         anomalies: ["supernova"],
     },
     {
         tile: 81,
+        source: "pok",
         anomalies: ["supernova"], // muaat hero supernova tile
     },
     {
         tile: 82,
+        source: "pok",
         wormholes: ["alpha", "beta", "gamma"],
         wormholesFaceDown: ["gamma"],
         offMap: true,
@@ -904,54 +986,63 @@ module.exports = [
     },
     {
         tile: 83,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[3], [], [], [0], [], []],
         hyperlaneFaceDown: [[], [5], [4, 5], [], [2], [1, 2]],
     },
     {
         tile: 84,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[], [4], [], [], [1], []],
         hyperlaneFaceDown: [[2], [], [0, 5], [5], [], [2, 3]],
     },
     {
         tile: 85,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[], [3], [], [1], [], []],
         hyperlaneFaceDown: [[], [5], [4, 5], [], [2], [1, 2]],
     },
     {
         tile: 86,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[], [3], [], [1], [], []],
         hyperlaneFaceDown: [[2], [], [0, 5], [5], [], [2, 3]],
     },
     {
         tile: 87,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[4], [4], [4], [], [0, 1, 2], []],
         hyperlaneFaceDown: [[], [], [4, 5], [], [2], [2]],
     },
     {
         tile: 88,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[2, 3, 4], [], [0], [0], [0], []],
         hyperlaneFaceDown: [[], [5], [4, 5], [], [2], [1, 2]],
     },
     {
         tile: 89,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[2, 4], [], [0, 4], [], [0, 2], []],
         hyperlaneFaceDown: [[2], [], [0, 5], [], [], [2]],
     },
     {
         tile: 90,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[4], [3], [], [1], [0], []],
         hyperlaneFaceDown: [[2], [], [0, 5], [], [], [2]],
     },
     {
         tile: 91,
+        source: "pok",
         hyperlane: true,
         hyperlaneFaceUp: [[2], [], [0, 5], [5], [], [2, 3]],
         hyperlaneFaceDown: [[], [], [4, 5], [], [2], [2]],

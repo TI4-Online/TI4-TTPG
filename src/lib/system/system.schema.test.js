@@ -5,6 +5,7 @@ const { SystemSchema } = require("./system.schema");
 it("validate good planet", () => {
     const jord = {
         tile: 1,
+        source: "base",
         home: true,
         planets: [
             {
@@ -19,6 +20,7 @@ it("validate good planet", () => {
 
 it("validate system missing tile #", () => {
     const badJord = {
+        source: "base",
         home: true,
         planets: [
             {
@@ -33,6 +35,8 @@ it("validate system missing tile #", () => {
 
 it("validate system with malformed planet", () => {
     const badJord = {
+        tile: 1,
+        source: "base",
         localeName: true,
         planets: [
             {
@@ -48,6 +52,7 @@ it("validate system with malformed planet", () => {
 it("validate multiplanet system", () => {
     const maaluukDruaa = {
         tile: 9,
+        source: "base",
         localeName: true,
         planets: [
             { localeName: "Maaluuk", resources: 0, influence: 2 },

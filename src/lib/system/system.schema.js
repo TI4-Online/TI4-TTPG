@@ -51,6 +51,7 @@ const SYSTEM_SCHEMA = {
     type: "object",
     properties: {
         tile: { type: "integer" },
+        source: { type: "string" },
         home: { type: "boolean" },
         planets: { type: "array", items: PLANET_SCHEMA },
         wormholes: WORMHOLE_SCHEMA,
@@ -66,7 +67,7 @@ const SYSTEM_SCHEMA = {
         hyperlaneFaceUp: HYPERLANE_SCHEMA,
         hyperlaneFaceDown: HYPERLANE_SCHEMA,
     },
-    required: ["tile"],
+    required: ["tile", "source"],
 };
 
 // Lazy instantiate on first use.
