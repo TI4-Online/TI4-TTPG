@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { Hyperlane } = require("../../lib/map-string/hyperlane");
 const { MapStringLoad } = require("../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
@@ -83,13 +84,16 @@ class MapTool {
 
     clear() {
         console.log("MapTool.clear");
+        const clearedSet = new Set();
         const bag = MapTool.getMapTilesContainer();
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
-            if (system.raw.offMap) {
-                continue; // only clear main-map systems.
+            if (!bag || clearedSet.has(system.tile)) {
+                obj.destroy();
+            } else {
+                clearedSet.add(system.tile);
+                bag.addObjects([obj]);
             }
-            bag.addObjects([obj]);
         }
     }
 
@@ -258,7 +262,10 @@ class MapTool {
         const playerCount = world.TI4.getPlayerCount();
         console.log(`MapTool.placeHyperlanes for ${playerCount} player count`);
 
-        // XXX TODO
+        const mapString = Hyperlane.getMapString(playerCount);
+        if (mapString) {
+            MapStringLoad.load(mapString);
+        }
     }
 }
 
