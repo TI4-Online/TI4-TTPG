@@ -15,25 +15,40 @@ const {
 // closer to the center of the table but pushed out (north and south).  The
 // idea is to leave the long ends clear for other use.
 const HEX = {
-    N: "<3,0,-3>",
-    N_: "<5,-1,-4>",
-    NE: "<0,3,-3>",
-    NE_: "<2,3,-5>",
-    SE: "<-3,3,0",
-    SE_: "<-5,3,2>",
-    S: "<-3,0,3>",
-    S_: "<-5,1,4>",
-    SW: "<0,-3,3>",
-    SW_: "<-2,-3,5>",
-    NW: "<3,-3,0>",
-    NW_: "<5,-3,-2>",
+    N: { onMap: "<3,0,-3>", offMap: "<5,-1,-4>" },
+    NE: { onMap: "<0,3,-3>", offMap: "<2,3,-5>" },
+    SE: { onMap: "<-3,3,0>", offMap: "<-5,3,2>" },
+    S: { onMap: "<-3,0,3>", offMap: "<-5,1,4>" },
+    SW: { onMap: "<0,-3,3>", offMap: "<-2,-3,5>" },
+    NW: { onMap: "<3,-3,0>", offMap: "<5,-3,-2>" },
 };
 
 const HOME_SYSTEM_POSITIONS = {
-    2: {
-        onMap: [HEX.S, HEX.N],
-        offMap: [HEX.S_, HEX.N_],
-    },
+    1: [HEX.S],
+    2: [HEX.S, HEX.N],
+    3: [HEX.SE, HEX.NW, HEX.NE],
+    4: [HEX.SE, HEX.SW, HEX.NW, HEX.NE],
+    5: [HEX.SE, HEX.SW, HEX.NW, HEX.N, HEX.NE],
+    6: [HEX.SE, HEX.S, HEX.SW, HEX.NW, HEX.N, HEX.NE],
+    7: [
+        HEX.SE,
+        { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
+        { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
+        { onMap: "<-2,4,2>", offMap: "<-2,-4,6>" },
+        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
+        { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
+        HEX.NE,
+    ],
+    8: [
+        { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
+        { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
+        { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
+        { onMap: "<-2,4,2>", offMap: "<-2,-4,6>" },
+        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
+        { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
+        { onMap: "<1,3,-4>", offMap: "<3,3,-6>" },
+        { onMap: "<2,4,-2>", offMap: "<2,4,-6>" },
+    ],
 };
 
 class SetupGenericHomeSystems extends AbstractSetup {
@@ -41,9 +56,23 @@ class SetupGenericHomeSystems extends AbstractSetup {
         super(playerDesk);
     }
 
+    static getHomeSystemPosition(playerDesk, offMap = false) {
+        const playerCount = world.TI4.getPlayerCount();
+        const deskIndex = playerDesk.index;
+        const hexArray = HOME_SYSTEM_POSITIONS[playerCount];
+        const hexData = hexArray[deskIndex];
+        const hex = offMap ? hexData.offMap : hexData.onMap;
+        console.log(hex);
+        const pos = Hex.toPosition(hex);
+        pos.z = world.getTableHeight();
+        return pos;
+    }
+
     setup() {
         const nsid = "tile.system:base/0";
-        const pos = new Vector(0, 0, world.getTableHeight() + 5);
+        const pos = SetupGenericHomeSystems.getHomeSystemPosition(
+            this.playerDesk
+        );
         const rot = new Rotator(0, 0, 0);
         const obj = Spawn.spawn(nsid, pos, rot);
 
