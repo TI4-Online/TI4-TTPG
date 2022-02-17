@@ -124,6 +124,7 @@ class SetupUnits extends AbstractSetup {
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
             unit.setScale([UNIT_SCALE, UNIT_SCALE, UNIT_SCALE]);
+            unit.setSnappingAllowed(false);
             bag.addObjects([unit]);
         }
     }

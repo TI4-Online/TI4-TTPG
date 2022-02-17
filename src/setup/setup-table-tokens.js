@@ -116,6 +116,7 @@ class SetupTableTokens extends AbstractSetup {
             }
             for (let i = 0; i < count; i++) {
                 const token = Spawn.spawn(nsid, above, rot);
+                token.setSnappingAllowed(false);
                 bag.addObjects([token]);
             }
         });
@@ -147,6 +148,7 @@ class SetupTableTokens extends AbstractSetup {
 
         const tokenPos = bag ? pos.add([0, 0, 10]) : pos;
         const token = Spawn.spawn(tokenData.tokenNsid, tokenPos, rot);
+        token.setSnappingAllowed(false);
         if (bag) {
             bag.addObjects([token]);
         }
