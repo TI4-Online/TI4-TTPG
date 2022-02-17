@@ -1,6 +1,9 @@
 const locale = require("../lib/locale");
 const { Faction } = require("./faction/faction");
 
+const {
+    SetupGenericHomeSystems,
+} = require("../setup/setup-generic-home-systems");
 const { SetupGenericPromissory } = require("../setup/setup-generic-promissory");
 const { SetupGenericTech } = require("../setup/setup-generic-tech");
 const { SetupSheets } = require("../setup/setup-sheets");
@@ -197,6 +200,7 @@ class PlayerDeskUI {
             new SetupUnits(this._playerDesk),
             new SetupSupplyBoxes(this._playerDesk),
             new SetupSheets(this._playerDesk),
+            new SetupGenericHomeSystems(this._playerDesk),
         ];
     }
 

@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Facing } = require("../facing");
 const { ObjectNamespace } = require("../object-namespace");
 const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
@@ -143,10 +144,23 @@ class System {
      */
     static getBySystemTileObject(obj) {
         assert(obj instanceof GameObject);
-        if (ObjectNamespace.isSystemTile(obj)) {
-            const parsed = ObjectNamespace.parseSystemTile(obj);
-            return this.getByTileNumber(parsed.tile);
+        if (!ObjectNamespace.isSystemTile(obj)) {
+            return undefined;
         }
+
+        const parsed = ObjectNamespace.parseSystemTile(obj);
+        const system = this.getByTileNumber(parsed.tile);
+
+        // Reset inherent wormholes based on object!
+        if (system.raw.wormholesFaceDown) {
+            if (Facing.isFaceDown(obj)) {
+                system._wormholes = [...system.raw.wormholesFaceDown];
+            } else {
+                system._wormholes = [...system.raw.wormholes];
+            }
+        }
+
+        return system;
     }
 
     /**
@@ -179,9 +193,14 @@ class System {
             if (obj.getContainer()) {
                 continue; // ignore inside container
             }
-            if (ObjectNamespace.isSystemTile(obj)) {
-                result.push(obj);
+            if (!ObjectNamespace.isSystemTile(obj)) {
+                continue;
             }
+            const parsed = ObjectNamespace.parseSystemTile(obj);
+            if (parsed.tile === 0) {
+                continue;
+            }
+            result.push(obj);
         }
         return result;
     }

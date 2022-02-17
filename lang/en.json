@@ -19,13 +19,21 @@
     "ui.error.no_active_system": "No active system",
     "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
 
-    "ui.button.take_seat": "TAKE SEAT",
-
     "ui.button.strategy_card_play": "Play",
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
     "ui.message.strategy_card_play": "{playerName} played {cardName} strategy card",
 
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
+
+    "ui.button.take_seat": "TAKE SEAT",
+    "ui.label.change_color": "Change color",
+    "ui.button.setup_desk": "Setup desk",
+    "ui.button.setup_faction": "Setup faction",
+    "ui.button.clean_desk": "Clear desk",
+    "ui.button.clean_faction": "Clear faction",
+
+    "ui.message.color_in_use": "Color already in use",
+    "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",

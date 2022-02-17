@@ -46,21 +46,23 @@ const PLAYER_SLOT_COLORS = [
  * First is "right", the counterclockwise about the table.
  */
 const PLAYER_DESKS = [
+    // East
     {
         colorName: "pink",
         hexColor: "#F46FCD",
         pos: { x: 6.0544, y: 149.218, z: 3 },
         yaw: 180.0,
         defaultPlayerSlot: 5,
-        minPlayerCount: 7,
+        playerCounts: [7, 8],
     },
+    // North (right to left)
     {
         colorName: "green",
         hexColor: "#007306",
         pos: { x: 96.9075, y: 99.7789, z: 3 },
         yaw: 117.5,
         defaultPlayerSlot: 1,
-        minPlayerCount: 2,
+        playerCounts: [3, 4, 5, 6, 7, 8],
     },
     {
         colorName: "red",
@@ -68,7 +70,7 @@ const PLAYER_DESKS = [
         pos: { x: 119.842, y: -6.0544, z: 3 },
         yaw: 90.0,
         defaultPlayerSlot: 16,
-        minPlayerCount: 6,
+        playerCounts: [2, 5, 6, 7, 8],
     },
     {
         colorName: "yellow",
@@ -76,23 +78,25 @@ const PLAYER_DESKS = [
         pos: { x: 91.3162, y: -110.52, z: 3 },
         yaw: 62.5,
         defaultPlayerSlot: 9,
-        minPlayerCount: 4,
+        playerCounts: [3, 4, 5, 6, 7, 8],
     },
+    // West
     {
         colorName: "orange",
         hexColor: "#F3631C",
         pos: { x: -6.05441, y: -150.691, z: 3 },
         yaw: 0,
         defaultPlayerSlot: 6,
-        minPlayerCount: 8,
+        playerCounts: [8],
     },
+    // South (left to right)
     {
         colorName: "purple",
         hexColor: "#7400B7",
         pos: { x: -96.29, y: -99.7789, z: 3 },
         yaw: -62.5,
         defaultPlayerSlot: 4,
-        minPlayerCount: 3,
+        playerCounts: [4, 5, 6, 7, 8],
     },
     {
         colorName: "blue",
@@ -100,7 +104,7 @@ const PLAYER_DESKS = [
         pos: { x: -119.224, y: 6.05442, z: 3 },
         yaw: -90.0,
         defaultPlayerSlot: 15,
-        minPlayerCount: 5,
+        playerCounts: [1, 2, 3, 6, 7, 8],
     },
     {
         colorName: "white",
@@ -108,7 +112,7 @@ const PLAYER_DESKS = [
         pos: { x: -90.6987, y: 110.52, z: 3 },
         yaw: -117.5,
         defaultPlayerSlot: 18,
-        minPlayerCount: 1,
+        playerCounts: [4, 5, 6, 7, 8],
     },
 ];
 
@@ -238,13 +242,15 @@ class PlayerDesk {
         if (_playerDesks) {
             return _playerDesks;
         }
+        const playerCount = PlayerDesk.getPlayerCount();
         _playerDesks = [];
-        for (let i = 0; i < PLAYER_DESKS.length; i++) {
+        // Walk backwards so "south-east" is index 0 then clockwise.
+        for (let i = PLAYER_DESKS.length - 1; i >= 0; i--) {
             const attrs = PLAYER_DESKS[i];
-            if (attrs.minPlayerCount > PlayerDesk.getPlayerCount()) {
+            if (!attrs.playerCounts.includes(playerCount)) {
                 continue;
             }
-            _playerDesks.push(new PlayerDesk(attrs));
+            _playerDesks.push(new PlayerDesk(attrs, _playerDesks.length));
         }
         return _playerDesks;
     }
@@ -306,7 +312,8 @@ class PlayerDesk {
         world.addUI(this._ui);
     }
 
-    constructor(attrs) {
+    constructor(attrs, index) {
+        this._index = index;
         this._colorName = attrs.colorName;
         this._color = ColorUtil.colorFromHex(attrs.hexColor);
         this._pos = new Vector(
@@ -324,23 +331,26 @@ class PlayerDesk {
         this._center.z = this._pos.z;
     }
 
+    get center() {
+        return this._center;
+    }
     get color() {
         return this._color;
     }
     get colorName() {
         return this._colorName;
     }
-    get pos() {
-        return this._pos;
-    }
-    get center() {
-        return this._center;
-    }
-    get rot() {
-        return this._rot;
+    get index() {
+        return this._index;
     }
     get playerSlot() {
         return this._playerSlot;
+    }
+    get pos() {
+        return this._pos;
+    }
+    get rot() {
+        return this._rot;
     }
 
     /**
