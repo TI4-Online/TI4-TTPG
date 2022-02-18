@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { ObjectType, world } = require("../wrapper/api");
@@ -10,6 +11,7 @@ const HAND_LOCAL_OFFSET = {
 
 class SetupCardHolders extends AbstractSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         super(playerDesk);
     }
 

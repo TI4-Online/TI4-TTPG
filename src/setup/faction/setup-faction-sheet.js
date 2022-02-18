@@ -14,6 +14,7 @@ const FACTION_SHEET = {
 
 class SetupFactionSheet extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

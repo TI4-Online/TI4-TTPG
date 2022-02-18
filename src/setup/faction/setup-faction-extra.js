@@ -1,3 +1,4 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
@@ -8,6 +9,7 @@ const EXTRA_OFFSET = [0, 5, 0];
 
 class SetupFactionExtra extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

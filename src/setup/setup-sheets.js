@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectType } = require("../wrapper/api");
 const { Spawn } = require("./spawn/spawn");
@@ -18,6 +19,7 @@ const SHEET_SCALE_Z = 0.16;
 
 class SetupSheets extends AbstractSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         super(playerDesk);
     }
 
