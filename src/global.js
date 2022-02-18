@@ -44,12 +44,16 @@ require("./global/trigger-on-system-activated");
 const { PlayerDesk } = require("./lib/player-desk");
 
 // Register some functions in world to reduce require dependencies.
+const { Faction } = require("./lib/faction/faction");
 const { System, Planet } = require("./lib/system/system");
 world.TI4 = {
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();
     },
 
+    getAllFactions: () => {
+        return Faction.getAllFactions();
+    },
     getAllPlayerDesks: () => {
         return PlayerDesk.getAllPlayerDesks();
     },
@@ -61,6 +65,12 @@ world.TI4 = {
         return PlayerDesk.getClosest(pos);
     },
 
+    getFactionByNsidName: (nsidName) => {
+        return Faction.getByNsidName(nsidName);
+    },
+    getFactionByPlayerSlot: (playerSlot) => {
+        return Faction.getByPlayerSlot(playerSlot);
+    },
     getPlanetByCard: (card) => {
         return Planet.getByCard(card);
     },

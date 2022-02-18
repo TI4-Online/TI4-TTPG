@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { CardUtil } = require("../card/card-util");
-const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
 const { world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
@@ -152,7 +151,6 @@ class UnitModifier {
      * @returns {Array.<unitModifier>} modifiers
      */
     static getFactionUnitModifiers(faction, withOwner) {
-        assert(faction instanceof Faction);
         assert(typeof withOwner === "string");
         assert(OWNER[withOwner]);
 

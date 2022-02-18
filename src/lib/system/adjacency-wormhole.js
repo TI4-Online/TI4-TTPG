@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { CardUtil } = require("../card/card-util");
 const { Facing } = require("../facing");
-const { Faction } = require("../faction/faction");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { GameObject, world } = require("../../wrapper/api");
@@ -34,7 +33,7 @@ class AdjacencyWormhole {
     }
 
     _updateConnectedForFaction() {
-        const faction = Faction.getByPlayerSlot(this._playerSlot);
+        const faction = world.TI4.getFactionByPlayerSlot(this._playerSlot);
         if (faction) {
             for (const ability of faction.raw.abilities) {
                 if (ability === "quantum_entanglement") {
@@ -133,7 +132,7 @@ class AdjacencyWormhole {
         let flagshipPlayerSlot = -1;
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const deskPlayerSlot = playerDesk.playerSlot;
-            const faction = Faction.getByPlayerSlot(deskPlayerSlot);
+            const faction = world.TI4.getFactionByPlayerSlot(deskPlayerSlot);
             if (faction && faction.raw.units.includes("hil_colish")) {
                 flagshipPlayerSlot = deskPlayerSlot;
                 break;
