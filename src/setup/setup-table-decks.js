@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Card, Rotator, Vector, world } = require("../wrapper/api");
@@ -16,73 +17,109 @@ function nextPosition() {
 const TABLE_DECKS = [
     {
         nsidPrefix: "card.action",
-        parent: false,
+        parent: {
+            nsid: "mat:base/decks",
+            snapPoint: 3,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.agenda",
-        parent: false,
+        parent: {
+            nsid: "mat:base/decks",
+            snapPoint: 4,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.objective.secret",
-        parent: false,
+        parent: {
+            nsid: "mat:base/decks",
+            snapPoint: 5,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.objective.public_1",
-        parent: false,
+        parent: {
+            nsid: "mat:base/objectives_1",
+            snapPoint: 0,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.objective.public_2",
-        parent: false,
+        parent: {
+            nsid: "mat:base/objectives_2",
+            snapPoint: 0,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.planet",
-        parent: false,
+        parent: {
+            nsid: "mat:base/decks",
+            snapPoint: 2,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.relic",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 9,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.cultural",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 8,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.hazardous",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 7,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.industrial",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 6,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.frontier",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 5,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
     {
         nsidPrefix: "card.legendary_planet",
-        parent: false,
+        parent: {
+            nsid: "mat:pok/exploration",
+            snapPoint: 4,
+        },
         pos: nextPosition(),
         yaw: -90,
     },
@@ -106,8 +143,25 @@ class SetupTableDecks extends AbstractSetup {
     }
 
     setup() {
+        const nsidToMat = {};
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsid.startsWith("mat:")) {
+                continue;
+            }
+            console.log("found " + nsid);
+            assert(!nsidToMat[nsid]);
+            nsidToMat[nsid] = obj;
+        }
+
         for (const deckData of TABLE_DECKS) {
-            this._setupDeck(deckData);
+            const mat = deckData.parent
+                ? nsidToMat[deckData.parent.nsid]
+                : false;
+            this._setupDeck(deckData, mat);
         }
     }
 
@@ -130,9 +184,20 @@ class SetupTableDecks extends AbstractSetup {
         }
     }
 
-    _setupDeck(deckData) {
-        const pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
-        const rot = new Rotator(0, deckData.yaw, 0);
+    _setupDeck(deckData, mat) {
+        let pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
+        let rot = new Rotator(0, deckData.yaw, 0);
+
+        // If have a mat, use a snap point.
+        if (mat) {
+            const snapPoints = mat.getAllSnapPoints();
+            const snapPoint = snapPoints[deckData.parent.snapPoint];
+            if (snapPoint) {
+                pos = snapPoint.getGlobalPosition();
+                const yaw = mat.getRotation().yaw + snapPoint.getSnapRotation();
+                rot = new Rotator(0, yaw, 0);
+            }
+        }
 
         // Spawn the decks, combine into one.
         this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
