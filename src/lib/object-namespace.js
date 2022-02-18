@@ -155,6 +155,16 @@ class ObjectNamespace {
         return nsid.startsWith("sheet.faction");
     }
 
+    static isFactionReference(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid.startsWith("card.faction_reference");
+    }
+
+    static isFactionToken(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid.startsWith("card.faction_token");
+    }
+
     static parseFactionSheet(obj) {
         const result = ObjectNamespace.parseGeneric(obj);
         if (result) {
