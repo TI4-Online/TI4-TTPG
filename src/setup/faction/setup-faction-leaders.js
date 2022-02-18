@@ -27,6 +27,7 @@ const EXTRA_LEADER_OFFSET_Y = -2;
 
 class SetupFactionLeaders extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

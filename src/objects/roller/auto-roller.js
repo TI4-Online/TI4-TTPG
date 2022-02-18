@@ -6,7 +6,7 @@ const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
 const { CombatRoller } = require("../../lib/combat/combat-roller");
 const { Hex } = require("../../lib/hex");
-const { System, Planet } = require("../../lib/system/system");
+const { Planet } = require("../../lib/system/system");
 
 const {
     GameObject,
@@ -16,7 +16,6 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
-const { Faction } = require("../../lib/faction/faction");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.
@@ -70,7 +69,7 @@ class AutoRoller {
             return;
         }
 
-        this._activeSystem = System.getBySystemTileObject(systemTile);
+        this._activeSystem = world.TI4.getSystemBySystemTileObject(systemTile);
         this._activeHex = Hex.fromPosition(systemTile.getPosition());
         this._activatingPlayerSlot = player.getSlot();
         this._firstBombardmentPlanet = false;
@@ -111,7 +110,7 @@ class AutoRoller {
             this._firstBombardmentPlanet === planet;
 
         // Build self.
-        let faction = Faction.getByPlayerSlot(player.getSlot());
+        let faction = world.TI4.getFactionByPlayerSlot(player.getSlot());
         const aux1 = new AuxDataBuilder()
             .setPlayerSlot(player.getSlot())
             .setFaction(faction)
@@ -132,7 +131,7 @@ class AutoRoller {
             // Not-active player clicked, opponent is always active player.
             opponentPlayerSlot = this._activatingPlayerSlot;
         }
-        faction = Faction.getByPlayerSlot(opponentPlayerSlot);
+        faction = world.TI4.getFactionByPlayerSlot(opponentPlayerSlot);
         const aux2 = new AuxDataBuilder()
             .setPlayerSlot(opponentPlayerSlot)
             .setFaction(faction)

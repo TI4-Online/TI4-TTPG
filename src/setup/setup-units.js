@@ -65,6 +65,7 @@ const UNIT_SCALE = 0.9;
 
 class SetupUnits extends AbstractSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         super(playerDesk);
     }
 

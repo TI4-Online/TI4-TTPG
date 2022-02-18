@@ -1,3 +1,4 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
@@ -5,6 +6,7 @@ const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
 
 class SetupFactionPromissory extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

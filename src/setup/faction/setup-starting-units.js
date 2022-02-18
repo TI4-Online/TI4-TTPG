@@ -6,6 +6,7 @@ const { Vector, world } = require("../../wrapper/api");
 
 class SetupStartingUnits extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

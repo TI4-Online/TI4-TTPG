@@ -31,6 +31,7 @@ const DISTANCE_BETWEEN_SUPPLY_BOXES = 12;
 
 class SetupSupplyBoxes extends AbstractSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         super(playerDesk);
     }
 

@@ -54,9 +54,6 @@ function _maybeInit() {
         // Translate sheet to faction, make sure to share same Faction objects!
         for (const [slot, sheet] of Object.entries(slotToSheet)) {
             const nsidName = ObjectNamespace.parseFactionSheet(sheet).faction;
-            if (nsidName === "???") {
-                continue; // ignore placeholder faction sheet
-            }
             const faction = Faction.getByNsidName(nsidName);
             if (!faction) {
                 const nsid = ObjectNamespace.getNsid(sheet);
@@ -68,6 +65,11 @@ function _maybeInit() {
 }
 
 class Faction {
+    static getAllFactions() {
+        _maybeInit();
+        return [...Object.values(_nsidNameToFaction)];
+    }
+
     static getByPlayerSlot(playerSlot) {
         assert(typeof playerSlot === "number");
         _maybeInit();

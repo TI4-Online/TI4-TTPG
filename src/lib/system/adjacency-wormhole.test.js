@@ -10,7 +10,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Faction } = require("../faction/faction");
 
 it("none", () => {
     const hex = "<0,0,0>";
@@ -103,7 +102,7 @@ it("flagship wormholes", () => {
     const adjList = [...adjSet].sort();
     world.__clear();
     assert.equal(
-        Faction.getByPlayerSlot(desk.playerSlot).raw.faction,
+        world.TI4.getFactionByPlayerSlot(desk.playerSlot).raw.faction,
         "creuss"
     );
     assert.deepEqual(adjList, ["<2,0,-2>"]);

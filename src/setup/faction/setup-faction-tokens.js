@@ -37,6 +37,7 @@ const CONTROL_TOKENS = {
 
 class SetupFactionTokens extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 

@@ -1,8 +1,7 @@
 require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { AuxDataBuilder, AuxData } = require("./auxdata");
-const { Faction } = require("../faction/faction");
-const { System } = require("../system/system");
+const { world } = require("../../wrapper/api");
 
 it("constructor", () => {
     const auxData = new AuxDataBuilder().build();
@@ -11,10 +10,10 @@ it("constructor", () => {
 
 it("rich constructor", () => {
     const playerSlot = 7;
-    const faction = Faction.getByNsidName("arborec");
+    const faction = world.TI4.getFactionByNsidName("arborec");
     const hex = "<0,0,0>";
     const activatingPlayerSlot = 8;
-    const activeSystem = System.getByTileNumber(18);
+    const activeSystem = world.TI4.getSystemByTileNumber(18);
     const activePlanet = activeSystem.planets[0];
 
     const auxData = new AuxDataBuilder()
