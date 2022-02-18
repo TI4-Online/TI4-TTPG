@@ -1,3 +1,4 @@
+const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { world } = require("../../wrapper/api");
 
@@ -16,6 +17,9 @@ class FactionToken {
         let bestDSq = Number.MAX_VALUE;
         const center = playerDesk.center;
         for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj)) {
+                continue;
+            }
             if (
                 ObjectNamespace.isFactionReference(obj) ||
                 ObjectNamespace.isFactionToken(obj)
@@ -32,7 +36,8 @@ class FactionToken {
 
         // Make sure it isn't closer to a different desk!
         if (best) {
-            const closestDesk = world.getClosestPlayerDesk(best.getPosition());
+            const pos = best.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             if (closestDesk !== playerDesk) {
                 best = undefined;
             }

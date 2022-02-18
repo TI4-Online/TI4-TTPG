@@ -1,32 +1,5 @@
 const locale = require("../lib/locale");
-const { Faction } = require("./faction/faction");
-
-const {
-    SetupGenericHomeSystems,
-} = require("../setup/setup-generic-home-systems");
-const { SetupGenericPromissory } = require("../setup/setup-generic-promissory");
-const { SetupGenericTech } = require("../setup/setup-generic-tech");
-const { SetupSheets } = require("../setup/setup-sheets");
-const { SetupSupplyBoxes } = require("../setup/setup-supply-boxes");
-const { SetupUnits } = require("../setup/setup-units");
-
-const {
-    SetupFactionAlliance,
-} = require("../setup/faction/setup-faction-alliance");
-const { SetupFactionExtra } = require("../setup/faction/setup-faction-extra");
-const {
-    SetupFactionLeaders,
-} = require("../setup/faction/setup-faction-leaders");
-const {
-    SetupFactionPromissory,
-} = require("../setup/faction/setup-faction-promissory");
-const { SetupFactionSheet } = require("../setup/faction/setup-faction-sheet");
-const { SetupFactionTech } = require("../setup/faction/setup-faction-tech");
-const { SetupFactionTokens } = require("../setup/faction/setup-faction-tokens");
-const { SetupHomeSystem } = require("../setup/faction/setup-home-system");
-const { SetupStartingTech } = require("../setup/faction/setup-starting-tech");
-const { SetupStartingUnits } = require("../setup/faction/setup-starting-units");
-
+const { PlayerDeskSetup } = require("./player-desk-setup");
 const {
     Border,
     Button,
@@ -37,7 +10,6 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { SetupCardHolders } = require("../setup/setup-card-holders");
 
 const DESK_UI_POSITION = {
     pos: { x: 25, y: -6, z: 5 },
@@ -69,7 +41,7 @@ class PlayerDeskUI {
             panel.addChild(this._createSetupButton());
         }
 
-        if (Faction.getByPlayerSlot(playerSlot)) {
+        if (world.TI4.getFactionByPlayerSlot(playerSlot)) {
             panel.addChild(this._createCleanFactionButton());
         } else {
             panel.addChild(this._createSetupFactionButton());
@@ -136,8 +108,7 @@ class PlayerDeskUI {
             .setFontSize(LARGE_FONT_SIZE)
             .setText(buttonText);
         button.onClicked.add((button, player) => {
-            const setups = this._getGenericSetups();
-            setups.forEach((setup) => setup.setup());
+            new PlayerDeskSetup(this._playerDesk).setupGeneric();
             this._playerDesk.resetUI();
         });
         return button;
@@ -151,8 +122,7 @@ class PlayerDeskUI {
             .setFontSize(LARGE_FONT_SIZE)
             .setText(buttonText);
         button.onClicked.add((button, player) => {
-            const setups = this._getGenericSetups();
-            setups.forEach((setup) => setup.clean());
+            new PlayerDeskSetup(this._playerDesk).cleanGeneric();
             this._playerDesk.resetUI();
         });
         return button;
@@ -166,8 +136,7 @@ class PlayerDeskUI {
             .setFontSize(LARGE_FONT_SIZE)
             .setText(buttonText);
         button.onClicked.add((button, player) => {
-            const setups = this._getFactionSetups();
-            setups.forEach((setup) => setup.setup());
+            new PlayerDeskSetup(this._playerDesk).setupFaction();
             const playerSlot = this._playerDesk.playerSlot;
             globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
             this._playerDesk.resetUI();
@@ -183,41 +152,12 @@ class PlayerDeskUI {
             .setFontSize(LARGE_FONT_SIZE)
             .setText(buttonText);
         button.onClicked.add((button, player) => {
-            const setups = this._getFactionSetups();
-            setups.forEach((setup) => setup.clean());
+            new PlayerDeskSetup(this._playerDesk).cleanFaction();
             const playerSlot = this._playerDesk.playerSlot;
             globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
             this._playerDesk.resetUI();
         });
         return button;
-    }
-
-    _getGenericSetups() {
-        return [
-            new SetupCardHolders(this._playerDesk),
-            new SetupGenericPromissory(this._playerDesk),
-            new SetupGenericTech(this._playerDesk),
-            new SetupUnits(this._playerDesk),
-            new SetupSupplyBoxes(this._playerDesk),
-            new SetupSheets(this._playerDesk),
-            new SetupGenericHomeSystems(this._playerDesk),
-        ];
-    }
-
-    _getFactionSetups() {
-        const faction = Faction.getByNsidName("ul");
-        return [
-            new SetupFactionAlliance(this._playerDesk, faction),
-            new SetupFactionExtra(this._playerDesk, faction),
-            new SetupFactionLeaders(this._playerDesk, faction),
-            new SetupFactionPromissory(this._playerDesk, faction),
-            new SetupFactionSheet(this._playerDesk, faction),
-            new SetupFactionTech(this._playerDesk, faction),
-            new SetupFactionTokens(this._playerDesk, faction),
-            new SetupHomeSystem(this._playerDesk, faction),
-            new SetupStartingTech(this._playerDesk, faction),
-            new SetupStartingUnits(this._playerDesk, faction),
-        ];
     }
 }
 

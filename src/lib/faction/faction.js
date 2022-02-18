@@ -67,7 +67,7 @@ function _maybeInit() {
 class Faction {
     static getAllFactions() {
         _maybeInit();
-        return Object.values(_playerSlotToFaction);
+        return [...Object.values(_nsidNameToFaction)];
     }
 
     static getByPlayerSlot(playerSlot) {
