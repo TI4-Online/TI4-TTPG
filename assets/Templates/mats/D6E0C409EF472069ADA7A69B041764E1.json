@@ -1,0 +1,518 @@
+{
+	"Type": "Generic",
+	"GUID": "D6E0C409EF472069ADA7A69B041764E1",
+	"Name": "Secrets",
+	"Metadata": "",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "mats/secrets_mat.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 2,
+				"Y": 2,
+				"Z": 0.625
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/mats/secrets_mat.jpg",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [
+		{
+			"X": -17.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": -21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": -14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": -7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": 0,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": 7,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": 14,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -17.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -12.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -2.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 2.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 12.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 17.5,
+			"Y": 21,
+			"Z": 0.25,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		}
+	],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	}
+}

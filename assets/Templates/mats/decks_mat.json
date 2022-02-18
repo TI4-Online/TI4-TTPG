@@ -1,0 +1,118 @@
+{
+	"Type": "Generic",
+	"GUID": "65BEEB440F4811EF98ACB2A0FFA28DD1",
+	"Name": "Decks",
+	"Metadata": "",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "mats/decks_mat.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 2.00059,
+				"Y": 2,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "locale/mats/decks_mat.jpg",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [
+		{
+			"X": -5.62,
+			"Y": -4.96,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 4.76837e-07,
+			"Y": -4.96,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 5.62,
+			"Y": -4.96,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -5.62,
+			"Y": 3.76,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 4.76837e-07,
+			"Y": 3.76,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 5.62,
+			"Y": 3.76,
+			"Z": 0.13,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		}
+	],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	}
+}
