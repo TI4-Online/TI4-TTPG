@@ -88,7 +88,7 @@ it("getPairSync", () => {
         .setHex("<0,0,0>")
         .build();
     const aux2 = new AuxDataBuilder().build();
-    new AuxDataPair(aux1, aux2).fillPairSync();
+    new AuxDataPair(aux1, aux2).disableModifierFiltering().fillPairSync();
     world.__clear();
 
     // Identified opponent?
@@ -169,4 +169,56 @@ it("too many opponents", () => {
     // Cannot identify opponent when more than one to choose from.
     assert.equal(aux1.playerSlot, selfPlayerSlot);
     assert.equal(aux2.playerSlot, -1);
+});
+
+it("filtering", () => {
+    world.__clear();
+
+    const selfPlayerSlot = 7;
+
+    // Place a few units and tokens.
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/fighter",
+            owningPlayerSlot: selfPlayerSlot,
+        })
+    );
+
+    // Morale boost!
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: "card.action:base/morale_boost.3",
+            }),
+            owningPlayerSlot: selfPlayerSlot,
+        })
+    );
+
+    // Verify finds modifier when filtering disabled.
+    let aux1 = new AuxDataBuilder().setPlayerSlot(selfPlayerSlot).build();
+    let aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).disableModifierFiltering().fillPairSync();
+    let modifierNames = aux1.unitModifiers.map((x) => x.raw.localeName);
+    assert.equal(modifierNames.length, 1);
+    assert(modifierNames.includes("unit_modifier.name.morale_boost"));
+
+    // Enable filtering, without specifying rollType (needed to apply).
+    aux1 = new AuxDataBuilder().setPlayerSlot(selfPlayerSlot).build();
+    aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).fillPairSync();
+    modifierNames = aux1.unitModifiers.map((x) => x.raw.localeName);
+    assert.equal(modifierNames.length, 0);
+
+    // Enable filtering, specify spaceCombat.
+    aux1 = new AuxDataBuilder()
+        .setPlayerSlot(selfPlayerSlot)
+        .setRollType("spaceCombat")
+        .build();
+    aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).fillPairSync();
+    modifierNames = aux1.unitModifiers.map((x) => x.raw.localeName);
+    assert.equal(modifierNames.length, 1);
+    assert(modifierNames.includes("unit_modifier.name.morale_boost"));
+
+    world.__clear();
 });
