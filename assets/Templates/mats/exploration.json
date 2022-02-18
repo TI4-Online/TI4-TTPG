@@ -98,7 +98,7 @@
 			"Z": 0.25,
 			"Range": 3,
 			"SnapRotation": true,
-			"RotationOffset": 90
+			"RotationOffset": 0
 		},
 		{
 			"X": -10,

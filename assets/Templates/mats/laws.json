@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1.56518,
+				"Y": 1.56519,
 				"Z": 0.625
 			},
 			"Rotation":
@@ -61,82 +61,82 @@
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
-			"X": -13.5,
-			"Y": -4.875,
+			"X": -14.0867,
+			"Y": -5.08685,
 			"Z": 0.25,
-			"Range": 2.5,
+			"Range": 2.57243,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": -6.75,
-			"Y": -4.875,
+			"X": -7.04333,
+			"Y": -5.08685,
 			"Z": 0.25,
-			"Range": 2.5,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 0,
-			"Y": -4.875,
-			"Z": 0.25,
-			"Range": 2.5,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 6.75,
-			"Y": -4.875,
-			"Z": 0.25,
-			"Range": 2.5,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 13.5,
-			"Y": -4.875,
-			"Z": 0.25,
-			"Range": 2.5,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": -13.5,
-			"Y": 4.875,
-			"Z": 0.25,
-			"Range": 2.5,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": -6.75,
-			"Y": 4.875,
-			"Z": 0.25,
-			"Range": 2.5,
+			"Range": 2.57243,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
 			"X": 0,
-			"Y": 4.875,
+			"Y": -5.08685,
 			"Z": 0.25,
-			"Range": 2.5,
+			"Range": 2.57243,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": 6.75,
-			"Y": 4.875,
+			"X": 7.04333,
+			"Y": -5.08685,
 			"Z": 0.25,
-			"Range": 2.5,
+			"Range": 2.57243,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": 13.5,
-			"Y": 4.875,
+			"X": 14.0867,
+			"Y": -5.08685,
 			"Z": 0.25,
-			"Range": 2.5,
+			"Range": 2.57243,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -14.0867,
+			"Y": 5.08685,
+			"Z": 0.25,
+			"Range": 2.57243,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -7.04333,
+			"Y": 5.08685,
+			"Z": 0.25,
+			"Range": 2.57243,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 0,
+			"Y": 5.08685,
+			"Z": 0.25,
+			"Range": 2.57243,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 7.04333,
+			"Y": 5.08685,
+			"Z": 0.25,
+			"Range": 2.57243,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 14.0867,
+			"Y": 5.08685,
+			"Z": 0.25,
+			"Range": 2.57243,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		}
