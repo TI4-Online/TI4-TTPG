@@ -28,7 +28,7 @@ const { SetupHomeSystem } = require("../setup/faction/setup-home-system");
 const { SetupStartingTech } = require("../setup/faction/setup-starting-tech");
 const { SetupStartingUnits } = require("../setup/faction/setup-starting-units");
 
-const { world } = require("../wrapper/api");
+const { globalEvents, world } = require("../wrapper/api");
 
 class PlayerDeskSetup {
     constructor(playerDesk) {
@@ -83,6 +83,10 @@ class PlayerDeskSetup {
 
         const setups = this._getFactionSetups(faction);
         setups.forEach((setup) => setup.setup());
+
+        const playerSlot = this._playerDesk.playerSlot;
+        const player = world.getPlayerBySlot(playerSlot);
+        globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
     }
 
     cleanFaction() {
@@ -90,6 +94,9 @@ class PlayerDeskSetup {
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         const setups = this._getFactionSetups(faction);
         setups.forEach((setup) => setup.clean());
+
+        const player = world.getPlayerBySlot(playerSlot);
+        globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
     }
 
     _getGenericSetups() {

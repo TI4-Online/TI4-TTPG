@@ -25,15 +25,26 @@
 
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
 
-    "ui.button.take_seat": "TAKE SEAT",
-    "ui.label.change_color": "Change color",
-    "ui.button.setup_desk": "Setup desk",
-    "ui.button.setup_faction": "Setup faction",
-    "ui.button.clean_desk": "Clear desk",
-    "ui.button.clean_faction": "Clear faction",
+    "ui.desk.take_seat": "TAKE SEAT",
+    "ui.desk.leave_seat": "LEAVE SEAT",
+    "ui.desk.change_color": "Change color",
+    "ui.desk.setup_desk": "Setup desk",
+    "ui.desk.clean_desk": "Clear desk",
+    "ui.desk.setup_faction": "Setup faction",
+    "ui.desk.clean_faction": "Clear faction",
+    "ui.desk.done": "READY",
+    "ui.desk.color_in_use": "Color already in use",
 
-    "ui.message.color_in_use": "Color already in use",
     "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
+
+    "ui.maptool.clean": "Clear",
+    "ui.maptool.save": "Save Map",
+    "ui.maptool.load": "Load Map",
+    "ui.maptool.place_cards": "Place Planet Cards",
+    "ui.maptool.clear_cards": "Clear Planet Cards",
+    "ui.maptool.place_frontier_tokens": "Place Frontier Tokens",
+    "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
+    "ui.maptool.place_hyperlanes": "Place Hyperlanes",
 
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",

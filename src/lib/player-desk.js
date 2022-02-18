@@ -14,6 +14,7 @@ const {
     world,
 } = require("../wrapper/api");
 const { ColorUtil } = require("./color/color-util");
+const { PlayerDeskSetup } = require("./player-desk-setup");
 
 /**
  * Color values corresponding to TTPG player slots.
@@ -252,6 +253,21 @@ class PlayerDesk {
             }
             _playerDesks.push(new PlayerDesk(attrs, _playerDesks.length));
         }
+
+        // Apply any saved desk state.
+        //GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, []);
+        const deskState = GlobalSavedData.get(
+            GLOBAL_SAVED_DATA_KEY.DESK_STATE,
+            []
+        );
+        if (deskState.length === _playerDesks.length) {
+            for (let i = 0; i < _playerDesks.length; i++) {
+                _playerDesks[i]._color = ColorUtil.colorFromHex(deskState[i].c);
+                _playerDesks[i]._colorName = deskState[i].cn;
+                _playerDesks[i]._playerSlot = deskState[i].s;
+            }
+        }
+
         return _playerDesks;
     }
 
@@ -310,6 +326,7 @@ class PlayerDesk {
         }
         this._ui = new PlayerDeskUI(this).create();
         world.addUI(this._ui);
+        world.updateUI(this._ui);
     }
 
     constructor(attrs, index) {
@@ -397,6 +414,16 @@ class PlayerDesk {
     }
 
     /**
+     * Remove the player at the desk from the seat.
+     */
+    unseatPlayer() {
+        const player = world.getPlayerBySlot(this.playerSlot);
+        if (player) {
+            moveNewPlayerToNonSeatSlot(player);
+        }
+    }
+
+    /**
      * Get changeColor options.
      *
      * @returns {Array.{colorName:string,color:Color}}
@@ -438,9 +465,13 @@ class PlayerDesk {
         const srcColorName = this.colorName;
         const srcColorTint = this.color;
         const srcPlayerSlot = this.playerSlot;
+        const srcSetup = this.isSetup();
+        const srcFaction = world.TI4.getFactionByPlayerSlot(srcPlayerSlot);
         const dstColorName = colorName;
         const dstColorTint = colorTint;
         let dstPlayerSlot = -1;
+        let dstSetup = false;
+        let dstFaction = false;
 
         // This another desk is already using this color name, swap the two.
         let swapWith = false;
@@ -452,6 +483,8 @@ class PlayerDesk {
         }
         if (swapWith) {
             dstPlayerSlot = swapWith.playerSlot;
+            dstSetup = swapWith.isSetup();
+            dstFaction = world.TI4.getFactionByPlayerSlot(dstPlayerSlot);
         } else {
             // Not swapping with an active seat.  Lookup from unused seats.
             for (const deskAttrs of PLAYER_DESKS) {
@@ -462,9 +495,23 @@ class PlayerDesk {
             }
         }
 
-        // Do not change color of an active seat!
-        if (this.isSetup() || (swapWith && swapWith.isSetup())) {
+        // Reject change request if swap-with is seated.
+        if (dstPlayerSlot >= 0 && world.getPlayerBySlot(dstPlayerSlot)) {
             return false;
+        }
+
+        // Take care changing colors with an active seat!
+        if (srcFaction) {
+            new PlayerDeskSetup(this).cleanFaction();
+        }
+        if (srcSetup) {
+            new PlayerDeskSetup(this).cleanGeneric();
+        }
+        if (dstFaction) {
+            new PlayerDeskSetup(swapWith).cleanFaction();
+        }
+        if (dstSetup) {
+            new PlayerDeskSetup(swapWith).cleanGeneric();
         }
 
         // At this point all src/dst values are known.  Remove any players from
@@ -489,6 +536,7 @@ class PlayerDesk {
         this._color = dstColorTint;
         this._playerSlot = dstPlayerSlot;
 
+        // Desks are reset.  Move players to desks.
         if (srcPlayer) {
             srcPlayer.switchSlot(dstPlayerSlot);
         }
@@ -496,8 +544,35 @@ class PlayerDesk {
             dstPlayer.switchSlot(srcPlayerSlot);
         }
 
+        // Recreate initial setup/faction state.
+        if (srcSetup) {
+            new PlayerDeskSetup(this).setupGeneric();
+        }
+        if (srcFaction) {
+            new PlayerDeskSetup(this).setupFaction();
+        }
+        if (dstSetup) {
+            new PlayerDeskSetup(swapWith).setupGeneric();
+        }
+        if (dstFaction) {
+            new PlayerDeskSetup(swapWith).setupFaction();
+        }
+
         this.resetUI();
-        swapWith.resetUI();
+        if (swapWith) {
+            swapWith.resetUI();
+        }
+
+        // Save slots and tint colors for reload.
+        const deskState = [];
+        for (let i = 0; i < _playerDesks.length; i++) {
+            deskState.push({
+                c: ColorUtil.colorToHex(_playerDesks[i].color),
+                cn: _playerDesks[i].colorName,
+                s: _playerDesks[i]._playerSlot,
+            });
+        }
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, deskState);
 
         return true;
     }

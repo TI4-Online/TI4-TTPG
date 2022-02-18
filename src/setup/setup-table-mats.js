@@ -1,7 +1,7 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
+const { ObjectType, Rotator, world } = require("../wrapper/api");
 
 const MATS = [
     {
@@ -52,7 +52,8 @@ class SetupTableMats extends AbstractSetup {
             const pos = matData.pos;
             pos.z = world.getTableHeight() + 3;
             const rot = new Rotator(0, matData.yaw, 0);
-            Spawn.spawn(nsid, pos, rot);
+            const obj = Spawn.spawn(nsid, pos, rot);
+            obj.setObjectType(ObjectType.Ground);
         });
     }
 
