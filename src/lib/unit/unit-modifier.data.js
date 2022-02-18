@@ -119,7 +119,7 @@ module.exports = [
         priority: "mutate",
         triggerNsid: "card.agenda:pok/articles_of_war",
         filter: (auxData) => {
-            return auxData.has("mech");
+            return auxData.self.has("mech");
         },
         applyAll: (unitAttrsSet, auxData) => {
             const mechAttrs = unitAttrsSet.get("mech");
@@ -192,7 +192,10 @@ module.exports = [
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.cmorran_norr",
         filter: (auxData) => {
-            return auxData.rollType === "spaceCombat";
+            return (
+                auxData.rollType === "spaceCombat" &&
+                auxData.self.has("flagship")
+            );
         },
         applyEach: (unitAttrs, auxData) => {
             if (
@@ -205,6 +208,27 @@ module.exports = [
         },
     },
     {
+        // Players cannot use BOMBARDMENT against units that are on cultural planets
+        isCombat: true,
+        localeName: "unit_modifier.name.conventions_of_war",
+        localeDescription: "unit_modifier.desc.conventions_of_war",
+        owner: "any",
+        priority: "mutate",
+        triggerNsid: "card.agenda:base/conventions_of_war",
+        filter: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            const planet = auxData.self.planet;
+            return planet && planet.traits.includes("cultural");
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.bombardment) {
+                delete unitAttrs.raw.bombardment;
+            }
+        },
+    },
+    {
         // "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
         isCombat: true,
         localeName: "unit_modifier.name.disable",
@@ -212,6 +236,17 @@ module.exports = [
         owner: "opponent",
         priority: "mutate",
         triggerNsid: "card.action:base/disable",
+        filter: (auxData) => {
+            if (!auxData.self.has("pds")) {
+                return false;
+            }
+            if (auxData.rollType === "bombardment") {
+                return true;
+            }
+            if (auxData.rollType === "spaceCannon" && auxData.planet) {
+                return true; // planet means space cannon defense
+            }
+        },
         applyAll: (unitAttrsSet, auxData) => {
             const pdsAttrs = unitAttrsSet.get("pds");
             delete pdsAttrs.raw.planetaryShield;
@@ -261,6 +296,14 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.action:base/experimental_battlestation",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCannon" &&
+                !auxData.planet &&
+                (auxData.self.has("space_dock") ||
+                    auxData.hasAdjacent("space_dock"))
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             if (auxData.self.has("space_dock")) {
                 unitAttrsSet.addSpecialUnit(
@@ -284,6 +327,9 @@ module.exports = [
         priority: "choose",
         toggleActive: true,
         triggerNsid: "card.leader.agent.sol:pok/evelyn_delouis",
+        filter: (auxData) => {
+            return auxData.rollType === "groundCombat";
+        },
         applyAll: (unitAttrsSet, auxData) => {
             let best = false;
             for (const unitAttrs of unitAttrsSet.values()) {
@@ -314,6 +360,14 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         triggerNsid: "card.action:base/fighter_prototype",
+        filter: (auxData) => {
+            const fighterAttrs = auxData.self.unitAttrsSet.get("fighter");
+            if (auxData.rollType === "groundCombat") {
+                return fighterAttrs.raw.groundCombat;
+            } else if (auxData.rollType === "spaceCombat") {
+                return fighterAttrs.raw.spaceCombat;
+            }
+        },
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
@@ -482,6 +536,12 @@ module.exports = [
             "card.action:base/morale_boost.3",
             "card.action:base/morale_boost.4",
         ],
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
+        },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
@@ -1011,6 +1071,12 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsid: "card.promissory.nomad:pok/the_cavalry",
+        filter: (auxData) => {
+            return (
+                auxData.rollType === "antiFighterBarrage" ||
+                auxData.rollType === "spaceCombat"
+            );
+        },
         applyAll: (unitAttrsSet, auxData) => {
             let rawCavalryAttrs = {
                 unit: "the_cavalry",

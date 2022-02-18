@@ -215,6 +215,8 @@
     "unit_modifier.desc.brother_omar": "Produce an additional Infantry for their cost; it doesn't count towards production limits.",
     "unit_modifier.name.bunker": "Bunker",
     "unit_modifier.desc.bunker": "-4 to all BOMBARDMENT rolls",
+    "unit_modifier.name.conventions_of_war": "Conventions of War",
+    "unit_modifier.desc.conventions_of_war": "Players cannot use BOMBARDMENT against units that are on cultural planets",
     "unit_modifier.name.disable": "Disable",
     "unit_modifier.desc.disable": "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
     "unit_modifier.name.dume_tathu": "Dume Tathu",
