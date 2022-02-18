@@ -33,18 +33,24 @@ class PlayerDeskUI {
             panel.addChild(this._createTakeSeatButton());
         }
 
-        let isSetup = this._playerDesk.isSetup();
-        if (isSetup) {
-            panel.addChild(this._createCleanButton());
-        } else {
-            panel.addChild(this._createChangeColorButton());
-            panel.addChild(this._createSetupButton());
+        const isSetup = this._playerDesk.isSetup();
+        const isFaction = world.TI4.getFactionByPlayerSlot(playerSlot);
+
+        if (!isFaction) {
+            if (isSetup) {
+                panel.addChild(this._createCleanButton());
+            } else {
+                panel.addChild(this._createChangeColorButton());
+                panel.addChild(this._createSetupButton());
+            }
         }
 
-        if (world.TI4.getFactionByPlayerSlot(playerSlot)) {
-            panel.addChild(this._createCleanFactionButton());
-        } else {
-            panel.addChild(this._createSetupFactionButton());
+        if (isSetup) {
+            if (isFaction) {
+                panel.addChild(this._createCleanFactionButton());
+            } else {
+                panel.addChild(this._createSetupFactionButton());
+            }
         }
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI_POSITION.pos);

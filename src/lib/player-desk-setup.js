@@ -51,7 +51,8 @@ class PlayerDeskSetup {
 
         if (factionToken) {
             // Found a faction token / reference card, use that.
-            factionToken.setPosition([0, 0, world.getTableHeight() + 15]);
+            const above = factionToken.getPosition().add([0, 0, 15]);
+            factionToken.setPosition(above);
             const parsed = ObjectNamespace.parseGeneric(factionToken);
             faction = world.TI4.getFactionByNsidName(parsed.name);
         } else {
