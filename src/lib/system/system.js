@@ -237,6 +237,11 @@ class System {
         if (systemAttrs.anomalies) {
             this._anomalies.push(...systemAttrs.anomalies);
         }
+
+        this._traits = [];
+        if (systemAttrs.traits) {
+            this._traits.push(...systemAttrs.traits);
+        }
     }
 
     get tile() {
@@ -260,6 +265,10 @@ class System {
 
     get anomalies() {
         return this._anomalies;
+    }
+
+    get traits() {
+        return this._traits;
     }
 
     get raw() {

@@ -205,6 +205,27 @@ module.exports = [
         },
     },
     {
+        // Players cannot use BOMBARDMENT against units that are on cultural planets
+        isCombat: true,
+        localeName: "unit_modifier.name.conventions_of_war",
+        localeDescription: "unit_modifier.desc.conventions_of_war",
+        owner: "any",
+        priority: "mutate",
+        triggerNsid: "card.agenda:base/conventions_of_war",
+        filter: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            const planet = auxData.self.planet;
+            return planet && planet.traits.includes("cultural");
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.bombardment) {
+                delete unitAttrs.raw.bombardment;
+            }
+        },
+    },
+    {
         // "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
         isCombat: true,
         localeName: "unit_modifier.name.disable",
