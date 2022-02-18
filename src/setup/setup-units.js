@@ -61,7 +61,7 @@ const SHELF_CENTER_LOCAL_OFFSET = { x: 6.3, y: -57.44, z: 0 };
 const ARC_ORIGIN_LOCAL_OFFSET = { x: -9.82, y: -12.65, z: 0 };
 const DISTANCE_BETWEEN_UNITS = 5.5;
 
-const UNIT_SCALE = 0.9;
+const UNIT_SCALE = 0.8;
 
 class SetupUnits extends AbstractSetup {
     constructor(playerDesk) {
@@ -125,7 +125,6 @@ class SetupUnits extends AbstractSetup {
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
             unit.setScale([UNIT_SCALE, UNIT_SCALE, UNIT_SCALE]);
-            unit.setSnappingAllowed(false);
             bag.addObjects([unit]);
         }
     }
