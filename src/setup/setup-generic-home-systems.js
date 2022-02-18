@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { Hex } = require("../lib/hex");
@@ -53,6 +54,7 @@ const HOME_SYSTEM_POSITIONS = {
 
 class SetupGenericHomeSystems extends AbstractSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         super(playerDesk);
     }
 
@@ -62,17 +64,16 @@ class SetupGenericHomeSystems extends AbstractSetup {
         const hexArray = HOME_SYSTEM_POSITIONS[playerCount];
         const hexData = hexArray[deskIndex];
         const hex = offMap ? hexData.offMap : hexData.onMap;
-        console.log(hex);
         const pos = Hex.toPosition(hex);
         pos.z = world.getTableHeight();
         return pos;
     }
 
-    setup() {
+    setup(overridePos) {
         const nsid = "tile.system:base/0";
-        const pos = SetupGenericHomeSystems.getHomeSystemPosition(
-            this.playerDesk
-        );
+        const pos =
+            overridePos ||
+            SetupGenericHomeSystems.getHomeSystemPosition(this.playerDesk);
         const rot = new Rotator(0, 0, 0);
         const obj = Spawn.spawn(nsid, pos, rot);
 

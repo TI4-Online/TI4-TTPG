@@ -1,11 +1,14 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { Spawn } = require("../spawn/spawn");
-const { ObjectType, world } = require("../../wrapper/api");
+const { ObjectType, Rotator, world } = require("../../wrapper/api");
 
 class SetupHomeSystem extends AbstractSetup {
     constructor(playerDesk, faction) {
+        assert(playerDesk && faction);
         super(playerDesk, faction);
     }
 
@@ -20,38 +23,70 @@ class SetupHomeSystem extends AbstractSetup {
     }
 
     _setupHomeSystemTile() {
-        const nsids = new Set();
-        nsids.add(
-            `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`
+        let onMapPos = SetupGenericHomeSystems.getHomeSystemPosition(
+            this.playerDesk,
+            false
         );
+        const offMapPos = SetupGenericHomeSystems.getHomeSystemPosition(
+            this.playerDesk,
+            true
+        );
+
+        // Relace placeholder if present.
+        const playerSlot = this.playerDesk.playerSlot;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot() != playerSlot) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "tile.system:base/0") {
+                continue;
+            }
+            onMapPos = obj.getPosition();
+            obj.destroy();
+            break;
+        }
+
+        const nsidToPosition = {};
+        const homeNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
+        let surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
         if (this._faction.raw.homeSurrogate) {
-            nsids.add(
-                `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`
-            );
+            surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
+            nsidToPosition[homeNsid] = offMapPos;
+            nsidToPosition[surrogateNsid] = onMapPos;
+        } else {
+            nsidToPosition[homeNsid] = onMapPos;
         }
 
         // Spawn ("oops ALL X")
-        let pos = this.playerDesk.center.add([0, 0, 5]);
-        const rot = this.playerDesk.rot;
-        const playerSlot = this.playerDesk.playerSlot;
-        for (const nsid of nsids) {
+        const rot = new Rotator(0, 0, 0);
+        for (const [nsid, pos] of Object.entries(nsidToPosition)) {
             const obj = Spawn.spawn(nsid, pos, rot);
             obj.setObjectType(ObjectType.Regular);
             obj.setOwningPlayerSlot(playerSlot);
-            pos = pos.add([0, 0, 2]);
         }
     }
 
     _cleanHomeSystemTile() {
+        let replacePos = false;
+
+        const homeNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
+        let surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
+
         const deleSet = new Set();
-        deleSet.add(
-            `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`
-        );
+        let replaceNsid;
         if (this._faction.raw.homeSurrogate) {
-            deleSet.add(
-                `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`
-            );
+            deleSet.add(homeNsid);
+            deleSet.add(surrogateNsid);
+            replaceNsid = surrogateNsid;
+        } else {
+            deleSet.add(homeNsid);
+            replaceNsid = homeNsid;
         }
+
         const playerSlot = this.playerDesk.playerSlot;
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
@@ -61,10 +96,18 @@ class SetupHomeSystem extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (deleSet.has(nsid)) {
-                obj.destroy();
+            if (!deleSet.has(nsid)) {
+                continue;
             }
+
+            if (nsid === replaceNsid) {
+                replacePos = obj.getPosition();
+            }
+            obj.destroy();
         }
+
+        // Restore placeholder.
+        new SetupGenericHomeSystems(this.playerDesk).setup(replacePos);
     }
 
     _setupPlanetCards() {
