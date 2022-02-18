@@ -8,6 +8,7 @@ const MAX_JSON_LENGTH = 1023;
  */
 const GLOBAL_SAVED_DATA_KEY = Object.freeze({
     PLAYER_COUNT: "playerCount",
+    DESK_STATE: "desks",
 });
 
 /**
@@ -55,6 +56,7 @@ class GlobalSavedData {
         json = JSON.stringify(parsed);
         assert(json.length <= MAX_JSON_LENGTH);
         world.setSavedData(json);
+        //console.log(`GlobalSavedData.set(${key}): |SUM(v)|=${json.length}`);
     }
 }
 

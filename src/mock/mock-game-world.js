@@ -124,6 +124,10 @@ class GameWorld {
         assert(value.length < 1024);
         this._savedData = value;
     }
+
+    updateUI(uiElement) {
+        assert(uiElement instanceof UIElement);
+    }
 }
 
 module.exports = GameWorld;

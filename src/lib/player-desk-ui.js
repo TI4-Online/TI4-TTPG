@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const {
@@ -7,7 +8,6 @@ const {
     Text,
     UIElement,
     VerticalBox,
-    globalEvents,
     world,
 } = require("../wrapper/api");
 
@@ -26,31 +26,93 @@ class PlayerDeskUI {
 
     create() {
         const playerSlot = this._playerDesk.playerSlot;
-
-        const panel = new VerticalBox().setChildDistance(5);
-
-        if (!world.getPlayerBySlot(playerSlot)) {
-            panel.addChild(this._createTakeSeatButton());
-        }
-
         const isSetup = this._playerDesk.isSetup();
         const isFaction = world.TI4.getFactionByPlayerSlot(playerSlot);
 
+        const panel = new VerticalBox().setChildDistance(5);
+
+        // Take/leave seat.
+        if (!world.getPlayerBySlot(playerSlot)) {
+            panel.addChild(
+                this._createButton("ui.desk.take_seat", (button, player) => {
+                    this._playerDesk.seatPlayer(player);
+                })
+            );
+        } else {
+            panel.addChild(
+                this._createButton("ui.desk.leave_seat", (button, player) => {
+                    this._playerDesk.unseatPlayer();
+                })
+            );
+        }
+
+        // Change color.
+        panel.addChild(this._createChangeColorButton());
+
+        // Setup/clean desk.
         if (!isFaction) {
             if (isSetup) {
-                panel.addChild(this._createCleanButton());
+                panel.addChild(
+                    this._createButton(
+                        "ui.desk.clean_desk",
+                        (button, player) => {
+                            new PlayerDeskSetup(
+                                this._playerDesk
+                            ).cleanGeneric();
+                            this._playerDesk.resetUI();
+                        }
+                    )
+                );
             } else {
-                panel.addChild(this._createChangeColorButton());
-                panel.addChild(this._createSetupButton());
+                panel.addChild(
+                    this._createButton(
+                        "ui.desk.setup_desk",
+                        (button, player) => {
+                            new PlayerDeskSetup(
+                                this._playerDesk
+                            ).setupGeneric();
+                            this._playerDesk.resetUI();
+                        }
+                    )
+                );
             }
         }
 
+        // If setup main desk, setup/clean faction.
         if (isSetup) {
             if (isFaction) {
-                panel.addChild(this._createCleanFactionButton());
+                panel.addChild(
+                    this._createButton(
+                        "ui.desk.clean_faction",
+                        (button, player) => {
+                            new PlayerDeskSetup(
+                                this._playerDesk
+                            ).cleanFaction();
+                            this._playerDesk.resetUI();
+                        }
+                    )
+                );
             } else {
-                panel.addChild(this._createSetupFactionButton());
+                panel.addChild(
+                    this._createButton(
+                        "ui.desk.setup_faction",
+                        (button, player) => {
+                            new PlayerDeskSetup(
+                                this._playerDesk
+                            ).setupFaction();
+                            this._playerDesk.resetUI();
+                        }
+                    )
+                );
             }
+        }
+
+        if (isSetup && isFaction) {
+            panel.addChild(
+                this._createButton("ui.desk.done", (button, player) => {
+                    // XXX TODO
+                })
+            );
         }
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI_POSITION.pos);
@@ -64,23 +126,24 @@ class PlayerDeskUI {
         return ui;
     }
 
-    _createTakeSeatButton() {
+    _createButton(localeLabel, onClicked) {
+        assert(typeof localeLabel === "string");
+        assert(typeof onClicked === "function");
+
         const color = this._playerDesk.color;
-        const buttonText = locale("ui.button.take_seat");
+        const labelText = locale(localeLabel);
         const button = new Button()
             .setTextColor(color)
             .setFontSize(LARGE_FONT_SIZE)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            this._playerDesk.seatPlayer(player);
-        });
+            .setText(labelText);
+        button.onClicked.add(onClicked);
         return button;
     }
 
     _createChangeColorButton() {
         // Create a swatch with not-setup peer colors.
         const color = this._playerDesk.color;
-        const labelText = locale("ui.label.change_color");
+        const labelText = locale("ui.desk.change_color");
         const text = new Text()
             .setTextColor(color)
             .setFontSize(LARGE_FONT_SIZE)
@@ -98,72 +161,12 @@ class PlayerDeskUI {
                     colorOption.color
                 );
                 if (!success) {
-                    player.showMessage(locale("ui.message.color_in_use"));
+                    player.showMessage(locale("ui.desk.color_in_use"));
                 }
             });
             colorChoices.addChild(button);
         }
         return new VerticalBox().addChild(text).addChild(colorChoices);
-    }
-
-    _createSetupButton() {
-        const color = this._playerDesk.color;
-        const buttonText = locale("ui.button.setup_desk");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(LARGE_FONT_SIZE)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            new PlayerDeskSetup(this._playerDesk).setupGeneric();
-            this._playerDesk.resetUI();
-        });
-        return button;
-    }
-
-    _createCleanButton() {
-        const color = this._playerDesk.color;
-        const buttonText = locale("ui.button.clean_desk");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(LARGE_FONT_SIZE)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            new PlayerDeskSetup(this._playerDesk).cleanGeneric();
-            this._playerDesk.resetUI();
-        });
-        return button;
-    }
-
-    _createSetupFactionButton() {
-        const color = this._playerDesk.color;
-        const buttonText = locale("ui.button.setup_faction");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(LARGE_FONT_SIZE)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            new PlayerDeskSetup(this._playerDesk).setupFaction();
-            const playerSlot = this._playerDesk.playerSlot;
-            globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
-            this._playerDesk.resetUI();
-        });
-        return button;
-    }
-
-    _createCleanFactionButton() {
-        const color = this._playerDesk.color;
-        const buttonText = locale("ui.button.clean_faction");
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(LARGE_FONT_SIZE)
-            .setText(buttonText);
-        button.onClicked.add((button, player) => {
-            new PlayerDeskSetup(this._playerDesk).cleanFaction();
-            const playerSlot = this._playerDesk.playerSlot;
-            globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
-            this._playerDesk.resetUI();
-        });
-        return button;
     }
 }
 
