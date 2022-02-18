@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "26BFFAB8774028D270D7D4A5C9CD2983",
 	"Name": "Objectives2",
-	"Metadata": "",
+	"Metadata": "mat:base/objectives_2",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

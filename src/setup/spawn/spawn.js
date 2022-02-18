@@ -8,6 +8,7 @@ const NSID_TO_TEMPLATE = {};
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-unit.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-card.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-mat.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-sheet.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-strategy.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-system.json"));

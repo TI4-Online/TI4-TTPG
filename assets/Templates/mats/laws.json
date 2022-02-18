@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "855C0A0C3A4928ACAC6D0E8CC1F8AFA9",
-	"Name": "Exploration",
-	"Metadata": "",
+	"GUID": "AE4D927E6142DCD10AD066B6FB7E0834",
+	"Name": "Laws",
+	"Metadata": "mat:base/laws",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "mats/exploration_mat.obj",
+			"Model": "mats/laws_mat.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 2,
-				"Y": 2,
+				"X": 1.5,
+				"Y": 1.5,
 				"Z": 0.625
 			},
 			"Rotation":
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/mats/exploration_mat.jpg",
+			"Texture": "locale/mats/decks_mat.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,
@@ -61,82 +61,82 @@
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
-			"X": -10,
-			"Y": -3.5,
+			"X": -13.5,
+			"Y": -4.875,
 			"Z": 0.25,
-			"Range": 3,
+			"Range": 2.5,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": -5,
-			"Y": -3.5,
+			"X": -6.75,
+			"Y": -4.875,
 			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 0,
-			"Y": -3.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 5,
-			"Y": -3.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": 10,
-			"Y": -3.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": -10,
-			"Y": 3.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
-		},
-		{
-			"X": -5,
-			"Y": 3.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Range": 2.5,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
 			"X": 0,
-			"Y": 3.5,
+			"Y": -4.875,
 			"Z": 0.25,
-			"Range": 3,
+			"Range": 2.5,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": 5,
-			"Y": 3.5,
+			"X": 6.75,
+			"Y": -4.875,
 			"Z": 0.25,
-			"Range": 3,
+			"Range": 2.5,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		},
 		{
-			"X": 10,
-			"Y": 3.5,
+			"X": 13.5,
+			"Y": -4.875,
 			"Z": 0.25,
-			"Range": 3,
+			"Range": 2.5,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -13.5,
+			"Y": 4.875,
+			"Z": 0.25,
+			"Range": 2.5,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": -6.75,
+			"Y": 4.875,
+			"Z": 0.25,
+			"Range": 2.5,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 0,
+			"Y": 4.875,
+			"Z": 0.25,
+			"Range": 2.5,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 6.75,
+			"Y": 4.875,
+			"Z": 0.25,
+			"Range": 2.5,
+			"SnapRotation": true,
+			"RotationOffset": 90
+		},
+		{
+			"X": 13.5,
+			"Y": 4.875,
+			"Z": 0.25,
+			"Range": 2.5,
 			"SnapRotation": true,
 			"RotationOffset": 90
 		}

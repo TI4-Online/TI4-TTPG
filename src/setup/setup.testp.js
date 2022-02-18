@@ -6,6 +6,7 @@ const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
 const { SetupTableDecks } = require("./setup-table-decks");
+const { SetupTableMats } = require("./setup-table-mats");
 const { SetupTableTokens } = require("./setup-table-tokens");
 const { SetupUnits } = require("./setup-units");
 const { MapStringLoad } = require("../lib/map-string/map-string-load");
@@ -22,6 +23,7 @@ const ACTION = {
     GENERIC_TECH: "*Generic tech",
     GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
+    TABLE_MATS: "*Table mats",
     TABLE_DECKS: "*Table decks",
     TABLE_TOKENS: "*Table tokens",
     STRATEGY_CARDS: "*Strategy cards",
@@ -79,6 +81,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         }
     } else if (actionName === ACTION.SYSTEM_TILES) {
         setups.push(new SetupSystemTiles());
+    } else if (actionName === ACTION.TABLE_MATS) {
+        setups.push(new SetupTableMats());
     } else if (actionName === ACTION.TABLE_DECKS) {
         setups.push(new SetupTableDecks());
     } else if (actionName === ACTION.TABLE_TOKENS) {

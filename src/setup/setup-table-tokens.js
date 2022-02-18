@@ -29,14 +29,7 @@ const GENERIC_TOKENS = [
         pos: { x: -10, y: -75, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
-    // SCOREBOARD AWAITING TEMPLATE
-    // {
-    //     tokenNsid: "token:base/scoreboard",
-    //     bagNsid: false,
-    //     bagType: false,
-    //     pos: { x: 5, y: -75, z: world.getTableHeight() + 5, },
-    //     yaw: 0,
-    // },
+    // scoreboard is in setup-table-mats
 ];
 
 class SetupTableTokens extends AbstractSetup {
