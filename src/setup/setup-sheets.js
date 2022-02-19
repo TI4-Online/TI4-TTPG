@@ -7,11 +7,11 @@ const { FACTION_SHEET } = require("./faction/setup-faction-sheet");
 const SHEET_DATA = [
     {
         nsid: "sheet:base/command",
-        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y + 20.8, z: 0 },
+        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y + 20.8, z: 1 },
     },
     {
         nsid: "sheet:pok/leader",
-        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y - 19, z: 0 },
+        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y - 19, z: 1 },
     },
 ];
 

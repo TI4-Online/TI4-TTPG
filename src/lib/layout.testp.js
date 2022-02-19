@@ -21,15 +21,15 @@ let _layoutMode = false;
 
 const LAYOUT = {
     units: {
-        count: 11,
+        count: 12,
         distance: 5.5,
     },
     supplyLeft: {
-        count: 4,
+        count: 5,
         distance: 12,
     },
     supplyRight: {
-        count: 2,
+        count: 3,
         distance: 12,
     },
     tokensRight: {
@@ -69,15 +69,15 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         const arcOrigin = obj.getPosition();
         _layout = new Layout()
             .setCenter(marker.getPosition())
-            .setCount(LAYOUT.tokensRight.count)
-            .setDistanceBetween(LAYOUT.tokensRight.distance)
+            .setCount(LAYOUT.units.count)
+            .setDistanceBetween(LAYOUT.units.distance)
             .layoutArc(arcOrigin)
             .drawDebug();
         _layoutMode = actionName;
     } else if (actionName === ACTION.STOP_LAYOUT) {
         console.log(_layout.getPoints());
         for (const point of _layout.getPoints()) {
-            console.log(point.pos.subtract([-119.224, 6.05442, 0]));
+            console.log(point.pos.subtract([-129.4, 0, 0]));
         }
 
         _layout = false;
@@ -86,8 +86,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         const shelfCenter = world
             .getObjectById(MARKER_GUID)
             .getPosition()
-            .subtract([-119.224, 6.05442, 0]);
-        const arcOrigin = obj.getPosition().subtract([-119.224, 6.05442, 0]);
+            .subtract([-129.4, 0, 0]);
+        const arcOrigin = obj.getPosition().subtract([-129.4, 0, 0]);
         console.log(`shelfCenter: ${shelfCenter} arcOrigin: ${arcOrigin}`);
     }
 });

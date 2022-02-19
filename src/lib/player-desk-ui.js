@@ -12,7 +12,7 @@ const {
 } = require("../wrapper/api");
 
 const DESK_UI_POSITION = {
-    pos: { x: 25, y: -6, z: 5 },
+    pos: { x: 30, y: 0, z: 2 },
 };
 const LARGE_FONT_SIZE = 30;
 
@@ -110,13 +110,13 @@ class PlayerDeskUI {
         if (isSetup && isFaction) {
             panel.addChild(
                 this._createButton("ui.desk.done", (button, player) => {
-                    // XXX TODO
+                    this._playerDesk.setReady(true);
+                    this._playerDesk.resetUI();
                 })
             );
         }
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI_POSITION.pos);
-        pos.z = world.getTableHeight() + 0.5;
 
         const ui = new UIElement();
         ui.position = pos;
