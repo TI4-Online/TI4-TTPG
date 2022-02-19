@@ -1,21 +1,23 @@
 require("../global"); // create globalEvents.TI4
 const assert = require("assert");
-const { PlayerDesk, DEFAULT_PLAYER_COUNT } = require("./player-desk");
-const { Color } = require("../wrapper/api");
+const { PlayerDesk } = require("./player-desk");
+const { Color, MockPlayer, world } = require("../wrapper/api");
 
 it("static getPlayerDesks", () => {
+    const player = new MockPlayer();
+    const defaultPlayerCount = world.TI4.getPlayerCount();
     try {
         let playerDesks = PlayerDesk.getAllPlayerDesks();
-        assert.equal(playerDesks.length, DEFAULT_PLAYER_COUNT);
+        assert.equal(playerDesks.length, defaultPlayerCount);
         assert(playerDesks[0] instanceof PlayerDesk);
 
         for (let i = 2; i < 8; i++) {
-            PlayerDesk.setPlayerCount(i);
+            world.TI4.setPlayerCount(i, player);
             playerDesks = PlayerDesk.getAllPlayerDesks();
             assert.equal(playerDesks.length, i);
         }
     } finally {
-        PlayerDesk.setPlayerCount(DEFAULT_PLAYER_COUNT);
+        world.TI4.setPlayerCount(defaultPlayerCount, player);
     }
 });
 

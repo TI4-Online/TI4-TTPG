@@ -11,7 +11,7 @@ const {
     world,
 } = require("../wrapper/api");
 
-const DESK_UI_POSITION = {
+const DESK_UI = {
     pos: { x: 30, y: 0, z: 2 },
 };
 const LARGE_FONT_SIZE = 30;
@@ -26,8 +26,9 @@ class PlayerDeskUI {
 
     create() {
         const playerSlot = this._playerDesk.playerSlot;
-        const isSetup = this._playerDesk.isSetup();
+        const isDeskSetup = this._playerDesk.isDeskSetup();
         const isFaction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        const isReady = this._playerDesk.isDeskReady();
 
         const panel = new VerticalBox().setChildDistance(5);
 
@@ -47,11 +48,13 @@ class PlayerDeskUI {
         }
 
         // Change color.
-        panel.addChild(this._createChangeColorButton());
+        if (!isReady) {
+            panel.addChild(this._createChangeColorButton());
+        }
 
         // Setup/clean desk.
-        if (!isFaction) {
-            if (isSetup) {
+        if (!isReady && !isFaction) {
+            if (isDeskSetup) {
                 panel.addChild(
                     this._createButton(
                         "ui.desk.clean_desk",
@@ -79,7 +82,7 @@ class PlayerDeskUI {
         }
 
         // If setup main desk, setup/clean faction.
-        if (isSetup) {
+        if (!isReady && isDeskSetup) {
             if (isFaction) {
                 panel.addChild(
                     this._createButton(
@@ -107,7 +110,7 @@ class PlayerDeskUI {
             }
         }
 
-        if (isSetup && isFaction) {
+        if (!isReady && isDeskSetup && isFaction) {
             panel.addChild(
                 this._createButton("ui.desk.done", (button, player) => {
                     this._playerDesk.setReady(true);
@@ -116,7 +119,7 @@ class PlayerDeskUI {
             );
         }
 
-        const pos = this._playerDesk.localPositionToWorld(DESK_UI_POSITION.pos);
+        const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
 
         const ui = new UIElement();
         ui.position = pos;

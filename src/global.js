@@ -1,9 +1,5 @@
-const { globalEvents, world } = require("./wrapper/api");
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
-
-if (!world.__isMock) {
-    console.log("Welcome to Twilight Imperium IV");
-}
+const { globalEvents, world } = require("./wrapper/api");
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
@@ -18,6 +14,14 @@ globalEvents.TI4 = {
     // might not be seated at the given desk.
     // <(deskPlayerSlot: number, player: Player|undefined) => void>
     onFactionChanged: new TriggerableMulticastDelegate(),
+
+    // Called after a player clicks the initial game "setup" button.
+    // <(state: object, player: Player) => void>
+    onGameSetup: new TriggerableMulticastDelegate(),
+
+    // Called after the player count changes (setup not finished).
+    // <(playerCount: number, player: Player|undefined) => void>
+    onPlayerCountChanged: new TriggerableMulticastDelegate(),
 
     // Called when the active player dropped a command token on a system.
     // <(systemTile: GameObject, player: Player) => void>
@@ -43,9 +47,23 @@ require("./global/trigger-on-system-activated");
 // Player desk is naughty and wants to register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk");
 
-// Register some functions in world to reduce require dependencies.
+// Show setup ui.
+if (!world.__isMock) {
+    require("./global/game-setup");
+    console.log("Welcome to Twilight Imperium IV");
+}
+
+const DEFAULT_PLAYER_COUNT = 6;
+
+const assert = require("./wrapper/assert-wrapper");
 const { Faction } = require("./lib/faction/faction");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./lib/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
+
+// Register some functions in world to reduce require dependencies.
 world.TI4 = {
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();
@@ -78,7 +96,14 @@ world.TI4 = {
         return Planet.getByCardNsid(nsid);
     },
     getPlayerCount: () => {
-        return PlayerDesk.getPlayerCount();
+        return GlobalSavedData.get(
+            GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
+            DEFAULT_PLAYER_COUNT
+        );
+    },
+    getSetupTimestamp: () => {
+        const state = GlobalSavedData.get(GLOBAL_SAVED_DATA_KEY.SETUP_STATE);
+        return state ? state.timestamp : 0;
     },
     getSystemBySystemTileObject: (gameObject) => {
         return System.getBySystemTileObject(gameObject);
@@ -90,7 +115,15 @@ world.TI4 = {
         return System.getSystemTileObjectByPosition(pos);
     },
 
-    setPlayerCount: (count) => {
-        return PlayerDesk.setPlayerCount(count);
+    reset: () => {
+        GlobalSavedData.clear();
+        world.resetScripting();
+    },
+
+    setPlayerCount: (value, player) => {
+        assert(typeof value === "number");
+        assert(1 <= value && value <= 8);
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, value);
+        globalEvents.TI4.onPlayerCountChanged.trigger(value, player);
     },
 };
