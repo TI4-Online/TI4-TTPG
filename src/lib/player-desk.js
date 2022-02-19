@@ -2,10 +2,6 @@ const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("./object-namespace");
 const { PlayerDeskUI } = require("./player-desk-ui");
 const {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
-} = require("./global-saved-data");
-const {
     Color,
     Player,
     Rotator,
@@ -15,6 +11,10 @@ const {
 } = require("../wrapper/api");
 const { ColorUtil } = require("./color/color-util");
 const { PlayerDeskSetup } = require("./player-desk-setup");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./global-saved-data");
 
 /**
  * Color values corresponding to TTPG player slots.
@@ -121,8 +121,6 @@ const SEAT_CAMERA = {
     pos: { x: -90, y: -6, z: 100 },
 };
 
-const DEFAULT_PLAYER_COUNT = 6;
-let _playerCount = false;
 let _playerDesks = false;
 
 // ----------------------------------------------------------------------------
@@ -174,6 +172,23 @@ globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
     PlayerDesk.resetUIs();
 });
 
+globalEvents.TI4.onGameSetup.add((state, player) => {
+    PlayerDesk.resetUIs();
+});
+
+globalEvents.TI4.onPlayerCountChanged.add((state, player) => {
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            if (playerDesk._ui) {
+                world.removeUIElement(playerDesk._ui);
+                playerDesk._ui = false;
+            }
+        }
+        _playerDesks = false;
+    }
+    PlayerDesk.resetUIs();
+});
+
 // Unseat host when first loading game.
 const isRescriptReload = world.getExecutionReason() === "ScriptReload";
 const runOnce = () => {
@@ -198,42 +213,6 @@ globalEvents.onTick.add(runOnce);
  */
 class PlayerDesk {
     /**
-     * Current player count (available seats, not currently joined players).
-     *
-     * @returns {number}
-     */
-    static getPlayerCount() {
-        if (!_playerCount) {
-            _playerCount = GlobalSavedData.get(
-                GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
-                DEFAULT_PLAYER_COUNT
-            );
-        }
-        return _playerCount;
-    }
-
-    /**
-     * Reset number of usable seats at the table.
-     * (Desk spaces may remain, but fewer are used.)
-     *
-     * @param {number} value
-     */
-    static setPlayerCount(value) {
-        assert(typeof value === "number");
-        assert(1 <= value && value <= 8);
-
-        // Keep locally, as well as persist across save/load.
-        _playerCount = value;
-        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, _playerCount);
-
-        // Clear precomputed availabled desks, recompute on next get.
-        _playerDesks = false;
-
-        // Reset "claim seat" buttons.
-        PlayerDesk.resetUIs();
-    }
-
-    /**
      * Get all player desks, accounting for current player count.
      * Player desks are read-only and shared, DO NOT MUTATE!
      *
@@ -243,7 +222,7 @@ class PlayerDesk {
         if (_playerDesks) {
             return _playerDesks;
         }
-        const playerCount = PlayerDesk.getPlayerCount();
+        const playerCount = world.TI4.getPlayerCount();
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
         for (let i = PLAYER_DESKS.length - 1; i >= 0; i--) {
@@ -265,6 +244,7 @@ class PlayerDesk {
                 _playerDesks[i]._color = ColorUtil.colorFromHex(deskState[i].c);
                 _playerDesks[i]._colorName = deskState[i].cn;
                 _playerDesks[i]._playerSlot = deskState[i].s;
+                _playerDesks[i]._ready = deskState[i].r;
             }
         }
 
@@ -467,7 +447,7 @@ class PlayerDesk {
         const srcColorName = this.colorName;
         const srcColorTint = this.color;
         const srcPlayerSlot = this.playerSlot;
-        const srcSetup = this.isSetup();
+        const srcSetup = this.isDeskSetup();
         const srcFaction = world.TI4.getFactionByPlayerSlot(srcPlayerSlot);
         const dstColorName = colorName;
         const dstColorTint = colorTint;
@@ -485,7 +465,7 @@ class PlayerDesk {
         }
         if (swapWith) {
             dstPlayerSlot = swapWith.playerSlot;
-            dstSetup = swapWith.isSetup();
+            dstSetup = swapWith.isDeskSetup();
             dstFaction = world.TI4.getFactionByPlayerSlot(dstPlayerSlot);
         } else {
             // Not swapping with an active seat.  Lookup from unused seats.
@@ -565,6 +545,17 @@ class PlayerDesk {
             swapWith.resetUI();
         }
 
+        this.saveDesksState();
+
+        return true;
+    }
+
+    setReady(value) {
+        this._ready = value;
+        this.saveDesksState();
+    }
+
+    saveDesksState() {
         // Save slots and tint colors for reload.
         const deskState = [];
         for (let i = 0; i < _playerDesks.length; i++) {
@@ -572,15 +563,19 @@ class PlayerDesk {
                 c: ColorUtil.colorToHex(_playerDesks[i].color),
                 cn: _playerDesks[i].colorName,
                 s: _playerDesks[i]._playerSlot,
+                r: _playerDesks[i]._ready,
             });
         }
         GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, deskState);
-
-        return true;
     }
 
-    setReady(value) {
-        this._ready = value;
+    /**
+     * Has the player marked the desk as ready?
+     *
+     * @returns {boolean}
+     */
+    isDeskReady() {
+        return this._ready;
     }
 
     /**
@@ -588,7 +583,7 @@ class PlayerDesk {
      *
      * @returns {boolean}
      */
-    isSetup() {
+    isDeskSetup() {
         const playerSlot = this.playerSlot;
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
@@ -628,4 +623,4 @@ class PlayerDesk {
     }
 }
 
-module.exports = { PlayerDesk, DEFAULT_PLAYER_COUNT, PLAYER_SLOT_COLORS };
+module.exports = { PlayerDesk, PLAYER_SLOT_COLORS };

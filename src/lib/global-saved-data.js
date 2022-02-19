@@ -9,6 +9,7 @@ const MAX_JSON_LENGTH = 1023;
 const GLOBAL_SAVED_DATA_KEY = Object.freeze({
     PLAYER_COUNT: "playerCount",
     DESK_STATE: "desks",
+    SETUP_STATE: "setup",
 });
 
 /**
@@ -23,7 +24,7 @@ class GlobalSavedData {
      * @param {*} defaultValue - anything JSON can stringify
      * @returns {*} defaultValue, if given
      */
-    static get(key, defaultValue) {
+    static get(key, defaultValue = undefined) {
         assert(typeof key === "string");
 
         const json = world.getSavedData();
@@ -56,7 +57,16 @@ class GlobalSavedData {
         json = JSON.stringify(parsed);
         assert(json.length <= MAX_JSON_LENGTH);
         world.setSavedData(json);
-        //console.log(`GlobalSavedData.set(${key}): |SUM(v)|=${json.length}`);
+        if (!world.__isMock) {
+            console.log(`GlobalSavedData.set(${key}): |SUM(v)|=${json.length}`);
+        }
+    }
+
+    /**
+     * Reset all persistent state to defaults.
+     */
+    static clear() {
+        world.setSavedData("");
     }
 }
 
