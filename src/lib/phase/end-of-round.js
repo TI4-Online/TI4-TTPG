@@ -1,13 +1,7 @@
 const { FindTurnOrder } = require("./find-turn-order");
 const { ObjectNamespace } = require("../object-namespace");
 const { Faction } = require("../faction/faction");
-const {
-    world,
-    Vector,
-    Rotator,
-    Card,
-    refObject,
-} = require("../../wrapper/api");
+const { world, Vector, Rotator, Card } = require("../../wrapper/api");
 const { System } = require("../system/system");
 const assert = require("../../wrapper/assert-wrapper");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
@@ -350,19 +344,4 @@ class EndStatusPhase {
     }
 }
 
-refObject.addCustomAction("Deal Action Cards");
-refObject.addCustomAction("End Status Phase");
-
-refObject.onCustomAction.add((obj, player, actionName) => {
-    if (actionName === "Deal Action Cards") {
-        DealActionCards.dealToAll();
-    } else if (actionName === "End Status Phase") {
-        EndStatusPhase.returnCommandTokens();
-        EndStatusPhase.repairShips();
-        EndStatusPhase.returnStrategyCards();
-        EndStatusPhase.refreshCards();
-        EndStatusPhase.distributeCommandTokens();
-    }
-});
-
-// module.exports = { dealActionCards, endStatusPhase };
+module.exports = { DealActionCards, EndStatusPhase };

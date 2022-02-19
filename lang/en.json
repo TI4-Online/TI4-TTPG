@@ -40,6 +40,10 @@
     "ui.desk.done": "READY",
     "ui.desk.color_in_use": "Color already in use",
 
+    "ui.phase.deal_action_cards": "Deal Action Cards",
+    "ui.phase.end_strategy_phase": "Place Trade Goods and Set Turns",
+    "ui.phase.end_status_phase": "Return Strategy Cards and End Status Phase",
+
     "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 
     "ui.maptool.clean": "Clear",
