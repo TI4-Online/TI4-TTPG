@@ -5,7 +5,7 @@ const { ObjectType, world } = require("../wrapper/api");
 
 const HAND_LOCAL_OFFSET = {
     x: -29.7,
-    y: -6,
+    y: 0,
     z: 5,
 };
 

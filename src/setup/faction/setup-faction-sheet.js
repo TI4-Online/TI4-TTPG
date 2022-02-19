@@ -7,8 +7,8 @@ const { ObjectType, Rotator, world } = require("../../wrapper/api");
 const FACTION_SHEET = {
     pos: {
         x: -8,
-        y: -6,
-        z: 0,
+        y: 0,
+        z: 2,
     },
 };
 

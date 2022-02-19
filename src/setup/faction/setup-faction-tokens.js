@@ -8,8 +8,7 @@ const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
-    //bagPos: { x: -12, y: 24, z: 0 },
-    bagPos: { x: -13.71, y: 35.79, z: 0 },
+    bagPos: { x: -10.34, y: 39, z: 0 },
     bagType: 2, // regular
     commandSheetLocalOffsets: [
         // Tactic
@@ -31,8 +30,7 @@ const CONTROL_TOKENS = {
     tokenCount: 1,
     bagNsid: "bag.token.control:base/*",
     bagType: 1, // infinite
-    //bagPos: { x: -18, y: 23, z: 0 },
-    bagPos: { x: -7.55, y: 35.32, z: 0 },
+    bagPos: { x: -4.94, y: 40, z: 0 },
 };
 
 class SetupFactionTokens extends AbstractSetup {
@@ -98,8 +96,8 @@ class SetupFactionTokens extends AbstractSetup {
         let bag = Spawn.spawn(bagNsid, pos, rot);
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
-        bag.setPrimaryColor(color);
         bag.setOwningPlayerSlot(playerSlot);
+        bag.setPrimaryColor(color);
 
         // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
         if (bag.getType() !== tokenData.bagType) {
@@ -114,8 +112,8 @@ class SetupFactionTokens extends AbstractSetup {
         const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.tokenCount; i++) {
             const token = Spawn.spawn(tokenNsid, above, rot);
-            token.setPrimaryColor(color);
             token.setOwningPlayerSlot(playerSlot);
+            token.setPrimaryColor(color);
             bag.addObjects([token]);
         }
 

@@ -51,7 +51,7 @@ const PLAYER_DESKS = [
     {
         colorName: "pink",
         hexColor: "#F46FCD",
-        pos: { x: 6.0544, y: 149.218, z: 3 },
+        pos: { x: 0, y: 160 },
         yaw: 180.0,
         defaultPlayerSlot: 5,
         playerCounts: [7, 8],
@@ -60,15 +60,15 @@ const PLAYER_DESKS = [
     {
         colorName: "green",
         hexColor: "#007306",
-        pos: { x: 96.9075, y: 99.7789, z: 3 },
-        yaw: 117.5,
+        pos: { x: 102.4, y: 100.8 },
+        yaw: 120,
         defaultPlayerSlot: 1,
         playerCounts: [3, 4, 5, 6, 7, 8],
     },
     {
         colorName: "red",
         hexColor: "#CB0000",
-        pos: { x: 119.842, y: -6.0544, z: 3 },
+        pos: { x: 129.4, y: 0 },
         yaw: 90.0,
         defaultPlayerSlot: 16,
         playerCounts: [2, 5, 6, 7, 8],
@@ -76,8 +76,8 @@ const PLAYER_DESKS = [
     {
         colorName: "yellow",
         hexColor: "#D6B700",
-        pos: { x: 91.3162, y: -110.52, z: 3 },
-        yaw: 62.5,
+        pos: { x: 102.4, y: -100.8 },
+        yaw: 60,
         defaultPlayerSlot: 9,
         playerCounts: [3, 4, 5, 6, 7, 8],
     },
@@ -85,7 +85,7 @@ const PLAYER_DESKS = [
     {
         colorName: "orange",
         hexColor: "#F3631C",
-        pos: { x: -6.05441, y: -150.691, z: 3 },
+        pos: { x: 0, y: -160 },
         yaw: 0,
         defaultPlayerSlot: 6,
         playerCounts: [8],
@@ -94,15 +94,15 @@ const PLAYER_DESKS = [
     {
         colorName: "purple",
         hexColor: "#7400B7",
-        pos: { x: -96.29, y: -99.7789, z: 3 },
-        yaw: -62.5,
+        pos: { x: -102.4, y: -100.8 },
+        yaw: -60,
         defaultPlayerSlot: 4,
         playerCounts: [4, 5, 6, 7, 8],
     },
     {
         colorName: "blue",
         hexColor: "#07B2FF",
-        pos: { x: -119.224, y: 6.05442, z: 3 },
+        pos: { x: -129.4, y: 0 },
         yaw: -90.0,
         defaultPlayerSlot: 15,
         playerCounts: [1, 2, 3, 6, 7, 8],
@@ -110,7 +110,7 @@ const PLAYER_DESKS = [
     {
         colorName: "white",
         hexColor: "#8B8B8B",
-        pos: { x: -90.6987, y: 110.52, z: 3 },
+        pos: { x: -102.4, y: 100.8 },
         yaw: -117.5,
         defaultPlayerSlot: 18,
         playerCounts: [4, 5, 6, 7, 8],
@@ -324,9 +324,11 @@ class PlayerDesk {
             world.removeUIElement(this._ui);
             this._ui = false;
         }
-        this._ui = new PlayerDeskUI(this).create();
-        world.addUI(this._ui);
-        world.updateUI(this._ui);
+        if (!this._ready) {
+            this._ui = new PlayerDeskUI(this).create();
+            world.addUI(this._ui);
+            world.updateUI(this._ui);
+        }
     }
 
     constructor(attrs, index) {
@@ -342,10 +344,10 @@ class PlayerDesk {
         this._playerSlot = attrs.defaultPlayerSlot;
         this._ui = false;
 
-        // Pos is a bit to the right of the visual center of the main desk
-        // area.  Compute that visual center as well for "nearest" checks.
-        this._center = this.localPositionToWorld(new Vector(0, -6, 0));
-        this._center.z = this._pos.z;
+        // Pos is center, but allow for non-center pos.
+        this._center = this._pos.clone();
+
+        this._ready = false;
     }
 
     get center() {
@@ -575,6 +577,10 @@ class PlayerDesk {
         GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, deskState);
 
         return true;
+    }
+
+    setReady(value) {
+        this._ready = value;
     }
 
     /**

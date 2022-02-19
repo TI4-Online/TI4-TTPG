@@ -53,13 +53,9 @@ const UNIT_DATA = [
     },
 ];
 
-// OLD: thinner shelf.
-//const SHELF_CENTER_LOCAL_OFFSET = { x: 5.783, y: -55.639, z: 0 };
-//const ARC_ORIGIN_LOCAL_OFFSET = { x: -8.845, y: -15.017, z: 0 };
-// NEW: wider shelf (2/8/2022)
-const SHELF_CENTER_LOCAL_OFFSET = { x: 6.3, y: -57.44, z: 0 };
-const ARC_ORIGIN_LOCAL_OFFSET = { x: -9.82, y: -12.65, z: 0 };
-const DISTANCE_BETWEEN_UNITS = 5.5;
+const SHELF_CENTER_LOCAL_OFFSET = { x: 0.03, y: -49, z: 5 };
+const ARC_ORIGIN_LOCAL_OFFSET = { x: 0, y: 0, z: 5 };
+const DISTANCE_BETWEEN_UNITS = 5.7;
 
 const UNIT_SCALE = 0.8;
 
