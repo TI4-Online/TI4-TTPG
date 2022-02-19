@@ -78,7 +78,7 @@ class DealActionCards {
         const faction = Faction.getByPlayerSlot(playerSlot);
 
         if (!faction) {
-            throw `${playerSlot} does not have a faction!`;
+            throw new Error(`${playerSlot} does not have a faction!`);
         }
 
         let dealNCards = 1;
@@ -96,7 +96,7 @@ class DealActionCards {
     static dealToAll() {
         const actionCards = DealActionCards.getActionCardDeckAndDiscard();
         if (!actionCards) {
-            throw "could not find action card mat.";
+            throw new Error("could not find action card mat.");
         }
 
         // get the color names for each slot for better broadcast messages
@@ -155,7 +155,7 @@ class EndStatusPhase {
         const faction = Faction.getByPlayerSlot(playerSlot);
 
         if (!faction) {
-            throw `${playerSlot} does not have a faction.`;
+            throw new Error(`${playerSlot} does not have a faction.`);
         }
 
         if (faction.nsidName === "sol") {
@@ -203,7 +203,7 @@ class EndStatusPhase {
                 return obj;
             }
         }
-        throw `${playerSlot} does not have a command token bag.`;
+        throw new Error(`${playerSlot} does not have a command token bag.`);
     }
     /**
      * Places all command tokens that are on system tiles back in their proper
