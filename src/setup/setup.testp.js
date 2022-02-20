@@ -10,6 +10,7 @@ const { SetupTableMats } = require("./setup-table-mats");
 const { SetupTableTokens } = require("./setup-table-tokens");
 const { SetupUnits } = require("./setup-units");
 const { MapStringLoad } = require("../lib/map-string/map-string-load");
+const { PhaseUI } = require("../lib/phase/phase-ui");
 const { globalEvents, refObject, world } = require("@tabletop-playground/api");
 
 const ACTION = {
@@ -28,6 +29,7 @@ const ACTION = {
     TABLE_TOKENS: "*Table tokens",
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
+    PHASE_UI: "*Phase UI",
 };
 
 let _isSetupMode = true;
@@ -95,6 +97,9 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         MapStringLoad.load(
             "70 32 50 47 42 73 74 65 48 69 71 64 78 36 26 66 77 72 0 46 79 0 27 45 0 24 29 0 62 37 0 41 38 0 43 40"
         );
+    } else if (actionName === ACTION.PHASE_UI) {
+        const ui = new PhaseUI().create();
+        world.addUI(ui);
     }
 
     console.log(`_isSetupMode = ${_isSetupMode}`);

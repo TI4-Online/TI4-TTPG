@@ -5,6 +5,11 @@
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
 
+    "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
+    "ui.message.shuffle_action_cards": "Shuffling action card discard pile",
+    "ui.message.distribute_command_tokens": "Distributing {count} command tokens to {playerColor}.",
+    "ui.message.not_enough_command_tokens": "{playerColor} does not have enough command tokens in supply.",
+
     "ui.message.player_rolling_for": "{playerName} rolling for {rollType}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
     "ui.message.none": "none",
@@ -34,6 +39,10 @@
     "ui.desk.clean_faction": "Clear faction",
     "ui.desk.done": "READY",
     "ui.desk.color_in_use": "Color already in use",
+
+    "ui.phase.deal_action_cards": "Deal Action Cards",
+    "ui.phase.end_strategy_phase": "Place Trade Goods and Set Turns",
+    "ui.phase.end_status_phase": "Return Strategy Cards and End Status Phase",
 
     "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 

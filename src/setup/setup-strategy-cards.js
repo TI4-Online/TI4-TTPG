@@ -95,4 +95,6 @@ class SetupStrategyCards extends AbstractSetup {
     }
 }
 
-module.exports = { SetupStrategyCards };
+// TODO: STRATEGY_CARDS exported for end of round cleanup remove it once
+// strategy cards have a better defined home/mat.
+module.exports = { SetupStrategyCards, STRATEGY_CARDS };
