@@ -12,6 +12,7 @@ class GameObject {
         this._id = (data && data.id) || "abcd" + _nextId++;
         this._isValid = true;
         this._name = (data && data.name) || "";
+        this._objectType = (data && data.objectType) || 1;
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
         this._position = (data && data.position) || new Vector(0, 0, 0);
         this._primaryColor = data && data.primaryColor;
@@ -41,6 +42,11 @@ class GameObject {
         this._customActions.push(customAction);
     }
 
+    addUI(ui) {
+        this._uis.push(ui);
+        ui._owningObject = this;
+    }
+
     destroy() {
         this._isValid = false;
         this.onDestroyed.trigger(this);
@@ -56,6 +62,10 @@ class GameObject {
 
     getName() {
         return this._name;
+    }
+
+    getObjectType() {
+        return this._objectType;
     }
 
     getOwningPlayerSlot() {
@@ -90,11 +100,6 @@ class GameObject {
         return this._templateMetadata;
     }
 
-    addUI(ui) {
-        this._uis.push(ui);
-        ui._owningObject = this;
-    }
-
     getUIs() {
         return this._uis;
     }
@@ -115,6 +120,10 @@ class GameObject {
         this._name = value;
     }
 
+    setObjectType(value) {
+        this._objectType = value;
+    }
+
     setOwningPlayerSlot(value) {
         this._owningPlayerSlot = value;
     }
@@ -123,8 +132,16 @@ class GameObject {
         this._position = position;
     }
 
+    setRotation(rotation) {
+        this._rotation = rotation;
+    }
+
     setSavedData(value) {
         this._savedData = value;
+    }
+
+    toJSONString() {
+        return "{}";
     }
 
     worldPositionToLocal(position) {
