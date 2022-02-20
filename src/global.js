@@ -48,8 +48,8 @@ require("./global/trigger-on-system-activated");
 const { PlayerDesk } = require("./lib/player-desk");
 
 // Show setup ui.
+require("./setup/game-setup/game-setup");
 if (!world.__isMock) {
-    require("./global/game-setup");
     console.log("Welcome to Twilight Imperium IV");
 }
 
