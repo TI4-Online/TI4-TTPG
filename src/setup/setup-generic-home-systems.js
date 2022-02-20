@@ -35,7 +35,7 @@ const HOME_SYSTEM_POSITIONS = {
         HEX.SE,
         { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
         { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-        { onMap: "<-2,4,2>", offMap: "<-2,-4,6>" },
+        { onMap: "<2,-4,2>", offMap: "<-2,-4,6>" },
         { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
         { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
         HEX.NE,
@@ -44,11 +44,11 @@ const HOME_SYSTEM_POSITIONS = {
         { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
         { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
         { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-        { onMap: "<-2,4,2>", offMap: "<-2,-4,6>" },
+        { onMap: "<2,-4,2>", offMap: "<-2,-4,6>" },
         { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
         { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
         { onMap: "<1,3,-4>", offMap: "<3,3,-6>" },
-        { onMap: "<2,4,-2>", offMap: "<2,4,-6>" },
+        { onMap: "<-2,4,-2>", offMap: "<2,4,-6>" },
     ],
 };
 
