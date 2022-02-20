@@ -1,6 +1,5 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
-const { PlayerDeskSetup } = require("./player-desk-setup");
 const {
     Border,
     Button,
@@ -8,7 +7,6 @@ const {
     Text,
     UIElement,
     VerticalBox,
-    world,
 } = require("../wrapper/api");
 
 const DESK_UI = {
@@ -16,106 +14,62 @@ const DESK_UI = {
 };
 const LARGE_FONT_SIZE = 30;
 
-/**
- * Do not require this in player-desk.js,
- */
 class PlayerDeskUI {
-    constructor(playerDesk) {
+    constructor(playerDesk, colorOptions, callbacks) {
         this._playerDesk = playerDesk;
+        this._colorOptions = colorOptions;
+        this._callbacks = callbacks;
     }
 
-    create() {
-        const playerSlot = this._playerDesk.playerSlot;
-        const isDeskSetup = this._playerDesk.isDeskSetup();
-        const isFaction = world.TI4.getFactionByPlayerSlot(playerSlot);
-        const isReady = this._playerDesk.isDeskReady();
-
+    create(config) {
         const panel = new VerticalBox().setChildDistance(5);
 
-        // Take/leave seat.
-        if (!world.getPlayerBySlot(playerSlot)) {
+        // ALWAYS: take/leave seat.
+        if (config.isOccupied) {
             panel.addChild(
-                this._createButton("ui.desk.take_seat", (button, player) => {
-                    this._playerDesk.seatPlayer(player);
-                })
+                this._createButton(
+                    "ui.desk.leave_seat",
+                    this._callbacks.onLeaveSeat
+                )
             );
         } else {
             panel.addChild(
-                this._createButton("ui.desk.leave_seat", (button, player) => {
-                    this._playerDesk.unseatPlayer();
-                })
+                this._createButton(
+                    "ui.desk.take_seat",
+                    this._callbacks.onTakeSeat
+                )
             );
         }
 
-        // Change color.
-        if (!isReady) {
-            panel.addChild(this._createChangeColorButton());
+        // BEFORE READY: change color.
+        if (!config.isReady) {
+            panel.addChild(
+                this._createChangeColorButton(this._callbacks.onChangeColor)
+            );
         }
 
-        // Setup/clean desk.
-        if (!isReady && !isFaction) {
-            if (isDeskSetup) {
-                panel.addChild(
-                    this._createButton(
-                        "ui.desk.clean_desk",
-                        (button, player) => {
-                            new PlayerDeskSetup(
-                                this._playerDesk
-                            ).cleanGeneric();
-                            this._playerDesk.resetUI();
-                        }
-                    )
-                );
-            } else {
-                panel.addChild(
-                    this._createButton(
-                        "ui.desk.setup_desk",
-                        (button, player) => {
-                            new PlayerDeskSetup(
-                                this._playerDesk
-                            ).setupGeneric();
-                            this._playerDesk.resetUI();
-                        }
-                    )
-                );
-            }
-        }
-
-        // If setup main desk, setup/clean faction.
-        if (!isReady && isDeskSetup) {
-            if (isFaction) {
+        // AFTER SETUP + BEFORE READY: add/remove faction
+        if (config.canFaction && !config.isReady) {
+            if (config.hasFaction) {
                 panel.addChild(
                     this._createButton(
                         "ui.desk.clean_faction",
-                        (button, player) => {
-                            new PlayerDeskSetup(
-                                this._playerDesk
-                            ).cleanFaction();
-                            this._playerDesk.resetUI();
-                        }
+                        this._callbacks.onCleanFaction
                     )
                 );
             } else {
                 panel.addChild(
                     this._createButton(
                         "ui.desk.setup_faction",
-                        (button, player) => {
-                            new PlayerDeskSetup(
-                                this._playerDesk
-                            ).setupFaction();
-                            this._playerDesk.resetUI();
-                        }
+                        this._callbacks.onSetupFaction
                     )
                 );
             }
         }
 
-        if (!isReady && isDeskSetup && isFaction) {
+        if (!config.isReady && config.hasFaction) {
             panel.addChild(
-                this._createButton("ui.desk.done", (button, player) => {
-                    this._playerDesk.setReady(true);
-                    this._playerDesk.resetUI();
-                })
+                this._createButton("ui.desk.done", this._callbacks.onReady)
             );
         }
 
@@ -143,7 +97,9 @@ class PlayerDeskUI {
         return button;
     }
 
-    _createChangeColorButton() {
+    _createChangeColorButton(onClicked) {
+        assert(typeof onClicked === "function");
+
         // Create a swatch with not-setup peer colors.
         const color = this._playerDesk.color;
         const labelText = locale("ui.desk.change_color");
@@ -153,20 +109,14 @@ class PlayerDeskUI {
             .setText(labelText);
 
         const colorChoices = new HorizontalBox();
-        for (const colorOption of this._playerDesk.getColorOptions()) {
+        for (const colorOption of this._colorOptions) {
             const button = new Button()
-                .setTextColor(colorOption.color)
+                .setTextColor(colorOption.colorTint)
                 .setFontSize(LARGE_FONT_SIZE)
                 .setText("[X]");
-            button.onClicked.add((button, player) => {
-                const success = this._playerDesk.changeColor(
-                    colorOption.colorName,
-                    colorOption.color
-                );
-                if (!success) {
-                    player.showMessage(locale("ui.desk.color_in_use"));
-                }
-            });
+            button._colorName = colorOption.colorName;
+            button._colorTint = colorOption.colorTint;
+            button.onClicked.add(onClicked);
             colorChoices.addChild(button);
         }
         return new VerticalBox().addChild(text).addChild(colorChoices);
