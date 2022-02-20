@@ -207,8 +207,8 @@ const FACTIONS = {
         argent: {
             name: "Argent Flight",
         },
-        empyrian: {
-            name: "Empyrian",
+        empyrean: {
+            name: "Empyrean",
         },
         mahact: {
             name: "Mahact",
