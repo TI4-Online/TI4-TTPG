@@ -8,12 +8,12 @@ const {
     Rotator,
     Slider,
     Text,
+    TextJustification,
     UIElement,
     Vector,
     VerticalBox,
     world,
 } = require("../../wrapper/api");
-const { TextJustification } = require("@tabletop-playground/api");
 
 const GAME_SETUP_UI = {
     pos: { x: 0, y: 0, z: world.getTableHeight() + 5 },
