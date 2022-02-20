@@ -82,7 +82,7 @@ class DealActionCards {
         }
 
         let dealNCards = 1;
-        if (faction.nsidName === "yssaril") {
+        if (faction.raw.abilities.includes("scheming")) {
             dealNCards++;
         }
 
@@ -149,6 +149,7 @@ class EndStatusPhase {
      */
     static getNumberOfCommandTokensToDistribute(playerSlot) {
         // TODO: does the player have hypermetabolism?
+        // TODO: does the player have cybernetic enhancements?
         assert(typeof playerSlot === "number");
 
         let dealNTokens = 2;
@@ -158,7 +159,7 @@ class EndStatusPhase {
             throw new Error(`${playerSlot} does not have a faction.`);
         }
 
-        if (faction.nsidName === "sol") {
+        if (faction.raw.abilities.includes("versatile")) {
             dealNTokens++;
         }
 
