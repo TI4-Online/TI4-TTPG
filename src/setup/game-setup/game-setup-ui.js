@@ -1,5 +1,5 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 
 const {
     Border,
@@ -12,7 +12,7 @@ const {
     Vector,
     VerticalBox,
     world,
-} = require("../wrapper/api");
+} = require("../../wrapper/api");
 
 const GAME_SETUP_UI = {
     pos: { x: 0, y: 0, z: world.getTableHeight() + 5 },

@@ -1,10 +1,11 @@
+const assert = require("../../wrapper/assert-wrapper");
+const { ApplyScoreboard } = require("./apply-scoreboard");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
-} = require("../lib/global-saved-data");
+} = require("../../lib/global-saved-data");
 const { GameSetupUI } = require("./game-setup-ui");
-const { globalEvents, world } = require("../wrapper/api");
-const assert = require("assert");
+const { globalEvents, world } = require("../../wrapper/api");
 
 const _state = {
     gamePoints: 10,
@@ -20,7 +21,8 @@ function onPlayerCountChanged(slider, player, value) {
 }
 
 function onGamePointsChanged(slider, player, value) {
-    this._state.gamePoints = value;
+    _state.gamePoints = value;
+    new ApplyScoreboard().apply(value);
 }
 
 function onUsePokChanged(checkBox, player, isChecked) {
@@ -52,17 +54,19 @@ function onSetupClicked(button, player) {
     _ui = false;
 }
 
-process.nextTick(() => {
-    if (world.TI4.getSetupTimestamp() > 0) {
-        return;
-    }
-    _ui = new GameSetupUI(_state, {
-        onPlayerCountChanged,
-        onGamePointsChanged,
-        onUsePokChanged,
-        onUseCodex1Changed,
-        onUseCodex2Changed,
-        onSetupClicked,
-    }).create();
-    world.addUI(_ui);
-});
+if (!world.__isMock) {
+    process.nextTick(() => {
+        if (world.TI4.getSetupTimestamp() > 0) {
+            return;
+        }
+        _ui = new GameSetupUI(_state, {
+            onPlayerCountChanged,
+            onGamePointsChanged,
+            onUsePokChanged,
+            onUseCodex1Changed,
+            onUseCodex2Changed,
+            onSetupClicked,
+        }).create();
+        world.addUI(_ui);
+    });
+}
