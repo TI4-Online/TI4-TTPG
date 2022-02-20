@@ -169,19 +169,13 @@ class EndStatusPhase {
     static repairShips() {
         for (const obj of world.getAllObjects()) {
             if (ObjectNamespace.isUnit(obj)) {
-                const pos = obj.getPosition();
-                const systemObj = System.getSystemTileObjectByPosition(pos);
-
-                // only repair ships that are on a system tile
-                if (systemObj) {
-                    const objRotation = obj.getRotation();
-                    const repairedRotation = new Rotator(
-                        objRotation.pitch,
-                        objRotation.yaw,
-                        0
-                    );
-                    obj.setRotation(repairedRotation, ANIMATION_SPEED);
-                }
+                const objRotation = obj.getRotation();
+                const repairedRotation = new Rotator(
+                    objRotation.pitch,
+                    objRotation.yaw,
+                    0
+                );
+                obj.setRotation(repairedRotation, ANIMATION_SPEED);
             }
         }
     }
