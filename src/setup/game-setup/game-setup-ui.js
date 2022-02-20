@@ -13,12 +13,16 @@ const {
     VerticalBox,
     world,
 } = require("../../wrapper/api");
+const { TextJustification } = require("@tabletop-playground/api");
 
 const GAME_SETUP_UI = {
     pos: { x: 0, y: 0, z: world.getTableHeight() + 5 },
     rot: { pitch: 0, yaw: 0, roll: 0 },
 };
-const LARGE_FONT_SIZE = 30;
+
+// Large font size affects text but checkboxes don't scale with it.
+const UI_SCALE = 1.5;
+const UI_FONT_SIZE = 24 / UI_SCALE;
 
 class GameSetupUI {
     constructor(state, callbacks) {
@@ -29,7 +33,20 @@ class GameSetupUI {
     create() {
         const panel = new VerticalBox().setChildDistance(5);
 
-        panel.addChild(this._createText("ui.setup.banner"));
+        const randomTemplateId = "B67A7E0A478E39D9CE13CDA81BC1A9EF";
+        const packageId = world.getTemplatePackageId(randomTemplateId);
+        const title = new Text()
+            .setFontSize(UI_FONT_SIZE * 1.2)
+            .setText(locale("ui.setup.title"))
+            .setJustification(TextJustification.Center)
+            .setFont("ambroise_firmin_bold.otf", packageId);
+        panel.addChild(title);
+
+        const subtitle = new Text()
+            .setFontSize(UI_FONT_SIZE * 0.6)
+            .setText(locale("ui.setup.subtitle"))
+            .setJustification(TextJustification.Center);
+        panel.addChild(subtitle);
 
         panel.addChild(
             this._createSlider(
@@ -84,6 +101,7 @@ class GameSetupUI {
         const ui = new UIElement();
         ui.position = new Vector(pos.x, pos.y, pos.z);
         ui.rotation = new Rotator(rot.pitch, rot.yaw, rot.roll);
+        ui.scale = UI_SCALE;
         ui.widget = new Border().setChild(panel);
         return ui;
     }
@@ -92,7 +110,7 @@ class GameSetupUI {
         assert(typeof localeText === "string");
 
         const labelText = locale(localeText);
-        const text = new Text().setFontSize(LARGE_FONT_SIZE).setText(labelText);
+        const text = new Text().setFontSize(UI_FONT_SIZE).setText(labelText);
         return text;
     }
 
@@ -102,7 +120,7 @@ class GameSetupUI {
 
         const labelText = locale(localeLabel);
         const button = new Button()
-            .setFontSize(LARGE_FONT_SIZE)
+            .setFontSize(UI_FONT_SIZE)
             .setText(labelText);
         button.onClicked.add(onClicked);
         return button;
@@ -115,7 +133,7 @@ class GameSetupUI {
 
         const labelText = locale(localeLabel);
         const checkBox = new CheckBox()
-            .setFontSize(LARGE_FONT_SIZE)
+            .setFontSize(UI_FONT_SIZE)
             .setText(labelText)
             .setIsChecked(isChecked);
         checkBox.onCheckStateChanged.add(onCheckStateChanged);
@@ -130,12 +148,10 @@ class GameSetupUI {
         assert(typeof onValueChanged === "function");
 
         const labelText = locale(localeLabel);
-        const label = new Text()
-            .setFontSize(LARGE_FONT_SIZE)
-            .setText(labelText);
+        const label = new Text().setFontSize(UI_FONT_SIZE).setText(labelText);
 
         const slider = new Slider()
-            .setFontSize(LARGE_FONT_SIZE)
+            .setFontSize(UI_FONT_SIZE)
             .setMinValue(minValue)
             .setMaxValue(maxValue)
             .setStepSize(1)
