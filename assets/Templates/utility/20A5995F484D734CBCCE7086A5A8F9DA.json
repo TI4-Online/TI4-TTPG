@@ -24,7 +24,7 @@
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
@@ -40,7 +40,7 @@
 			{
 				"X": 1,
 				"Y": 1,
-				"Z": 1
+				"Z": 0.15748
 			},
 			"Rotation":
 			{
@@ -59,7 +59,40 @@
 	],
 	"Collision": [],
 	"SnapPointsGlobal": false,
-	"SnapPoints": [],
+	"SnapPoints": [
+		{
+			"X": -6.75,
+			"Y": -0.1,
+			"Z": 0.0472441,
+			"Range": 2.15748,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.25,
+			"Y": -0.1,
+			"Z": 0.0472441,
+			"Range": 2.15748,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 2.25,
+			"Y": -0.1,
+			"Z": 0.0472441,
+			"Range": 2.15748,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 6.75,
+			"Y": -0.1,
+			"Z": 0.0472441,
+			"Range": 2.15748,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		}
+	],
 	"ZoomViewDirection":
 	{
 		"X": 0,

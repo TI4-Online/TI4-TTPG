@@ -24,7 +24,7 @@
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
@@ -86,7 +86,7 @@
 			},
 			"Rotation":
 			{
-				"X": 180,
+				"X": -180,
 				"Y": 0,
 				"Z": 0
 			},
