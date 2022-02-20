@@ -48,6 +48,11 @@ class GameWorld {
         this._uis.push(uiElement);
     }
 
+    createObjectFromJSON(json, position) {
+        const result = new GameObject();
+        return result;
+    }
+
     createObjectFromTemplate(templateId, position) {
         let result;
         if (templateId === "9065AC5141F87F8ADE1F5AB6390BBEE4") {

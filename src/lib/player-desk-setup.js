@@ -29,9 +29,11 @@ const { SetupStartingTech } = require("../setup/faction/setup-starting-tech");
 const { SetupStartingUnits } = require("../setup/faction/setup-starting-units");
 
 const { globalEvents, world } = require("../wrapper/api");
+const assert = require("../wrapper/assert-wrapper");
 
 class PlayerDeskSetup {
     constructor(playerDesk) {
+        assert(playerDesk);
         this._playerDesk = playerDesk;
     }
 
