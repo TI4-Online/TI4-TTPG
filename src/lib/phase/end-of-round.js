@@ -18,9 +18,6 @@ class DealActionCards {
 
     static getActionCardDeckAndDiscard() {
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "mat:base/decks") {
                 const snapPoints = obj.getAllSnapPoints();
@@ -194,9 +191,6 @@ class EndStatusPhase {
      */
     static getCommandTokenBag(playerSlot) {
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
             if (obj.getOwningPlayerSlot() !== playerSlot) {
                 continue; // must be owned by player
             }
@@ -221,9 +215,6 @@ class EndStatusPhase {
         );
 
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
             if (ObjectNamespace.isCommandToken(obj)) {
                 // only return command tokens that are on system tiles
                 if (System.getSystemTileObjectByPosition(obj.getPosition())) {
@@ -305,10 +296,6 @@ class EndStatusPhase {
      */
     static refreshCards() {
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore objects in containers
-            }
-
             if (ObjectNamespace.isCard(obj)) {
                 if (obj.getStackSize() > 1) {
                     continue; // don't care about stacks/decks
