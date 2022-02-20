@@ -42,6 +42,16 @@ class GameSetupUI {
         );
 
         panel.addChild(
+            this._createSlider(
+                "ui.setup.game_points",
+                10,
+                14,
+                this._state.gamePoints,
+                this._callbacks.onGamePointsChanged
+            )
+        );
+
+        panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_pok",
                 this._state.usePoK,

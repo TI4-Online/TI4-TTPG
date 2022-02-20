@@ -7,15 +7,20 @@ const { globalEvents, world } = require("../wrapper/api");
 const assert = require("assert");
 
 const _state = {
-    timestamp: 0,
+    gamePoints: 10,
     usePoK: true,
     useCodex1: true,
     useCodex2: true,
+    timestamp: 0,
 };
 let _ui = false;
 
 function onPlayerCountChanged(slider, player, value) {
     world.TI4.setPlayerCount(value, player);
+}
+
+function onGamePointsChanged(slider, player, value) {
+    this._state.gamePoints = value;
 }
 
 function onUsePokChanged(checkBox, player, isChecked) {
@@ -53,6 +58,7 @@ process.nextTick(() => {
     }
     _ui = new GameSetupUI(_state, {
         onPlayerCountChanged,
+        onGamePointsChanged,
         onUsePokChanged,
         onUseCodex1Changed,
         onUseCodex2Changed,

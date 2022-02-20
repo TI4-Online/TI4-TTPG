@@ -1,8 +1,8 @@
 {
 	"Type": "Card",
-	"GUID": "8F05B61CED95A78D3143ADEA74FC0DBD",
-	"Name": "Faction Sheet (Yssaril)",
-	"Metadata": "sheet.faction:base/yssaril",
+	"GUID": "30D50423D6E4B1D13E5856513FA3EC97",
+	"Name": "Faction Sheet (Empyrean)",
+	"Metadata": "sheet.faction:pok/empyrean",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -115,8 +115,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/factionsheets/base/yssaril.face.jpg",
-	"BackTexture": "locale/factionsheets/base/yssaril.back.jpg",
+	"FrontTexture": "locale/factionsheets/pok/empyrean.face.jpg",
+	"BackTexture": "locale/factionsheets/pok/empyrean.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": 0,
 	"HiddenIndex": -1,
@@ -138,6 +138,6 @@
 	],
 	"CardNames": {},
 	"CardMetadata": {
-		"0": "sheet.faction:base/yssaril"
+		"0": "sheet.faction:pok/empyrean"
 	}
 }
