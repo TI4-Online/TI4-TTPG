@@ -23,59 +23,10 @@ const RADIUS_BUFFER = 0.0;
  * @returns {[{position: {x: number, y: number}, radius: number}]}
  */
 function getPlanetHelper(system) {
-    const planetCount = system.planets.length;
-    const home = system.raw.home;
-    if (home && planetCount === 1) {
-        return [
-            {
-                position: system.planets[0].position || { x: 0.65, y: 0 },
-                radius: system.planets[0].radius || 2,
-            },
-        ];
-    } else if (!home && planetCount === 1) {
-        return [
-            {
-                position: system.planets[0].position || { x: 0, y: 0 },
-                radius: system.planets[0].radius || 2,
-            },
-        ];
-    } else if (home && planetCount === 2) {
-        return [
-            {
-                position: system.planets[0].position || { x: 2, y: -1.25 },
-                radius: system.planets[0].radius || 2,
-            },
-            {
-                position: system.planets[1].position || { x: -1.8, y: 1.9 },
-                radius: system.planets[1].radius || 2,
-            },
-        ];
-    } else if (!home && planetCount === 2) {
-        return [
-            {
-                position: system.planets[0].position || { x: 2, y: -1.25 },
-                radius: system.planets[0].radius || 2,
-            },
-            {
-                position: system.planets[1].position || { x: -2, y: 1 },
-                radius: system.planets[1].radius || 2,
-            },
-        ];
-    } else if (planetCount === 3) {
-        return [
-            {
-                position: system.planets[0].position || { x: 0.5, y: -3 },
-                radius: system.planets[0].radius || 2,
-            },
-            {
-                position: system.planets[1].position || { x: 2, y: 1.5 },
-                radius: system.planets[1].radius || 2,
-            },
-            {
-                position: system.planets[2].position || { x: -2.7, y: 1.65 },
-                radius: system.planets[2].radius || 2,
-            },
-        ];
+    if (system.planets) {
+        return system.planets.map((planet) => {
+            return { position: planet.position, radius: planet.radius };
+        });
     } else {
         return [];
     }
@@ -209,6 +160,12 @@ function getClosestPlanet(pos, systemObject, debug) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);
         const planets = system.system.planets;
+
+        // catch the edge case were the only planet in a one planet
+        // system gets detroyed by stellar convertor etc.
+        if (planets.length === 1 && planets[0].destroyed) {
+            return;
+        }
 
         const distances = planetPositions.map((element, index) => {
             if (!planets[index].destroyed) {
