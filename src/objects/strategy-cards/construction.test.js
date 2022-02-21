@@ -14,7 +14,7 @@ world.__setPlayers([player1, player2]);
 
 require("./construction");
 
-world.TI4.setPlayerCount(2);
+world.TI4.config.setPlayerCount(2);
 world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
 world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
 

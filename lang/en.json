@@ -35,6 +35,7 @@
     "ui.setup.player_count": "Player count",
     "ui.setup.game_points": "Game points",
     "ui.setup.use_pok": "Prophecy of Kings",
+    "ui.setup.use_omega": "Omega replacements",
     "ui.setup.use_codex1": "Codex 1: Ordinian",
     "ui.setup.use_codex2": "Codex 2: Affinity",
     "ui.setup.do_setup": "SETUP GAME",

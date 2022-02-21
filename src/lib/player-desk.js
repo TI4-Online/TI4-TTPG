@@ -205,7 +205,7 @@ class PlayerDesk {
         if (_playerDesks) {
             return _playerDesks;
         }
-        const playerCount = world.TI4.getPlayerCount();
+        const playerCount = world.TI4.config.playerCount;
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
         for (let i = PLAYER_DESKS.length - 1; i >= 0; i--) {
@@ -323,7 +323,7 @@ class PlayerDesk {
         const config = {
             isReady: this.isDeskReady(),
             isOccupied: world.getPlayerBySlot(playerSlot),
-            canFaction: world.TI4.getSetupTimestamp() > 0,
+            canFaction: world.TI4.config.timestamp > 0,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
         };
         this._ui = new PlayerDeskUI(this, colorOptions, {

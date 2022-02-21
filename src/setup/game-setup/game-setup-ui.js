@@ -25,8 +25,7 @@ const UI_SCALE = 1.5;
 const UI_FONT_SIZE = 24 / UI_SCALE;
 
 class GameSetupUI {
-    constructor(state, callbacks) {
-        this._state = state;
+    constructor(callbacks) {
         this._callbacks = callbacks;
     }
 
@@ -53,7 +52,7 @@ class GameSetupUI {
                 "ui.setup.player_count",
                 2,
                 8,
-                world.TI4.getPlayerCount(),
+                world.TI4.config.playerCount,
                 this._callbacks.onPlayerCountChanged
             )
         );
@@ -63,7 +62,7 @@ class GameSetupUI {
                 "ui.setup.game_points",
                 10,
                 14,
-                this._state.gamePoints,
+                world.TI4.config.gamePoints,
                 this._callbacks.onGamePointsChanged
             )
         );
@@ -71,21 +70,28 @@ class GameSetupUI {
         panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_pok",
-                this._state.usePoK,
+                world.TI4.config.pok,
                 this._callbacks.onUsePokChanged
             )
         );
         panel.addChild(
             this._createCheckbox(
+                "ui.setup.use_omega",
+                world.TI4.config.omega,
+                this._callbacks.onUseOmegaChanged
+            )
+        );
+        panel.addChild(
+            this._createCheckbox(
                 "ui.setup.use_codex1",
-                this._state.useCodex1,
+                world.TI4.config.codex1,
                 this._callbacks.onUseCodex1Changed
             )
         );
         panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_codex2",
-                this._state.useCodex2,
+                world.TI4.config.codex2,
                 this._callbacks.onUseCodex2Changed
             )
         );
