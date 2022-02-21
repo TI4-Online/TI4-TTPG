@@ -14,7 +14,6 @@ function unStellarConvertPlanet() {
         );
 
         for (const planet of prevSystem.planets) {
-            console.log(planet.localeName);
             if (planet.localeName === _stellarConvertorPlanet) {
                 planet.destroyed = false;
                 break;
@@ -33,7 +32,7 @@ function stellarConvertPlanet(obj) {
     if (planet) {
         unStellarConvertPlanet();
 
-        const message = locale("ui.message.stellar_convertor", {
+        const message = locale("ui.message.stellar_converter", {
             planetName: planet.getNameStr(),
         });
         Broadcast.chatAll(message);
