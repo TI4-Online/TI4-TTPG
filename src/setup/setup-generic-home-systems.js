@@ -59,7 +59,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
     }
 
     static getHomeSystemPosition(playerDesk, offMap = false) {
-        const playerCount = world.TI4.getPlayerCount();
+        const playerCount = world.TI4.config.playerCount;
         const deskIndex = playerDesk.index;
         const hexArray = HOME_SYSTEM_POSITIONS[playerCount];
         const hexData = hexArray[deskIndex];

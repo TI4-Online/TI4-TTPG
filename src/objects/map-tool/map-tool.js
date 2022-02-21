@@ -259,7 +259,7 @@ class MapTool {
     }
 
     placeHyperlanes() {
-        const playerCount = world.TI4.getPlayerCount();
+        const playerCount = world.TI4.config.playerCount;
         console.log(`MapTool.placeHyperlanes for ${playerCount} player count`);
 
         const mapString = Hyperlane.getMapString(playerCount);
