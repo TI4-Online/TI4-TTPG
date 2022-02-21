@@ -1,6 +1,5 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
-const { GlobalSavedData } = require("../../lib/global-saved-data");
 const { GameSetupConfig } = require("./game-setup-config");
 
 it("playerCount", () => {
