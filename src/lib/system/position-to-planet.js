@@ -161,6 +161,12 @@ function getClosestPlanet(pos, systemObject, debug) {
         const planetPositions = getPlanetHelper(system.system);
         const planets = system.system.planets;
 
+        // catch the edge case were the only planet in a one planet
+        // system gets detroyed by stellar convertor etc.
+        if (planets.length === 1 && planets[0].destroyed) {
+            return;
+        }
+
         const distances = planetPositions.map((element, index) => {
             if (!planets[index].destroyed) {
                 return distance(element.position, localPos);
