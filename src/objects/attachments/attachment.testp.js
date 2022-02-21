@@ -30,6 +30,7 @@ refObject.onCustomAction.add((obj, _player, actionName) => {
                     system.planets.map((element) => element.localeName)
                 )}`
             );
+            console.log(`anomalies: ${JSON.stringify(system.anomalies)}`);
         }
     }
 });
