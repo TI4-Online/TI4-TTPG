@@ -53,18 +53,15 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
-const DEFAULT_PLAYER_COUNT = 6;
-
-const assert = require("./wrapper/assert-wrapper");
 const { Faction } = require("./lib/faction/faction");
-const {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
-} = require("./lib/global-saved-data");
+const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
+const { GlobalSavedData } = require("./lib/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    config: new GameSetupConfig(),
+
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();
     },
@@ -95,16 +92,6 @@ world.TI4 = {
     getPlanetByCardNsid: (nsid) => {
         return Planet.getByCardNsid(nsid);
     },
-    getPlayerCount: () => {
-        return GlobalSavedData.get(
-            GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT,
-            DEFAULT_PLAYER_COUNT
-        );
-    },
-    getSetupTimestamp: () => {
-        const state = GlobalSavedData.get(GLOBAL_SAVED_DATA_KEY.SETUP_STATE);
-        return state ? state.timestamp : 0;
-    },
     getSystemBySystemTileObject: (gameObject) => {
         return System.getBySystemTileObject(gameObject);
     },
@@ -118,12 +105,5 @@ world.TI4 = {
     reset: () => {
         GlobalSavedData.clear();
         world.resetScripting();
-    },
-
-    setPlayerCount: (value, player) => {
-        assert(typeof value === "number");
-        assert(1 <= value && value <= 8);
-        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.PLAYER_COUNT, value);
-        globalEvents.TI4.onPlayerCountChanged.trigger(value, player);
     },
 };

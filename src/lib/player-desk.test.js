@@ -5,19 +5,19 @@ const { Color, MockPlayer, world } = require("../wrapper/api");
 
 it("static getPlayerDesks", () => {
     const player = new MockPlayer();
-    const defaultPlayerCount = world.TI4.getPlayerCount();
+    const defaultPlayerCount = world.TI4.config.playerCount;
     try {
         let playerDesks = PlayerDesk.getAllPlayerDesks();
         assert.equal(playerDesks.length, defaultPlayerCount);
         assert(playerDesks[0] instanceof PlayerDesk);
 
         for (let i = 2; i < 8; i++) {
-            world.TI4.setPlayerCount(i, player);
+            world.TI4.config.setPlayerCount(i, player);
             playerDesks = PlayerDesk.getAllPlayerDesks();
             assert.equal(playerDesks.length, i);
         }
     } finally {
-        world.TI4.setPlayerCount(defaultPlayerCount, player);
+        world.TI4.config.setPlayerCount(defaultPlayerCount, player);
     }
 });
 

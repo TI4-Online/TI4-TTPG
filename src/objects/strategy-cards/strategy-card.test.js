@@ -108,7 +108,7 @@ describe("when a strategy card UI is created", () => {
             return widget;
         };
 
-        world.TI4.setPlayerCount(2);
+        world.TI4.config.setPlayerCount(2);
         world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
         world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
     });
@@ -156,7 +156,7 @@ describe("when the close button is clicked in a players selection", () => {
             new MockButton({ text: "button 1" }),
         ];
 
-        world.TI4.setPlayerCount(2);
+        world.TI4.config.setPlayerCount(2);
         world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
         world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
     });

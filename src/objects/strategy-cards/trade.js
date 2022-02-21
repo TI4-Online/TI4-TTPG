@@ -114,7 +114,7 @@ const widgetFactory = (playerDesk) => {
 };
 
 const calculateHeight = () => {
-    return 166 + (world.TI4.getPlayerCount() - 1) * 25;
+    return 166 + (world.TI4.config.playerCount - 1) * 25;
 };
 
 new RegisterStrategyCardUI()
