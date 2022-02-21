@@ -1,7 +1,4 @@
-const {
-    getClosestPlanet,
-    getExactPlanet,
-} = require("./position-to-planet-translation");
+const { getClosestPlanet, getExactPlanet } = require("./position-to-planet");
 const { refObject } = require("@tabletop-playground/api");
 
 refObject.addCustomAction("Closest Planet");
@@ -10,14 +7,14 @@ refObject.addCustomAction("Destroy Planet");
 
 refObject.onCustomAction.add((obj, player, actionName) => {
     if (actionName === "Closest Planet") {
-        const closestPlanet = getClosestPlanet(obj.getPosition(), true);
+        const closestPlanet = getClosestPlanet(obj.getPosition(), null, true);
         if (closestPlanet) {
             console.log(closestPlanet.raw.localeName);
         } else {
             console.log("No Closest Planet.");
         }
     } else if (actionName === "Exact Planet") {
-        const exactPlanet = getExactPlanet(obj.getPosition(), true);
+        const exactPlanet = getExactPlanet(obj.getPosition(), null, true);
         if (exactPlanet) {
             console.log(exactPlanet.raw.localeName);
         } else {

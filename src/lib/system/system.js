@@ -16,6 +16,27 @@ globalEvents.TI4.onSystemActivated.add((systemTile, player) => {
     _activeSystemGameObject = systemTile;
 });
 
+const ONE_PLANET_HOME_POSITION = { x: 0.65, y: 0 };
+const ONE_PLANET_HOME_RADIUS = 2;
+const TWO_PLANET_HOME_POSITION = [
+    { x: 2, y: -1.25 },
+    { x: -1.8, y: 1.9 },
+];
+const TWO_PLANET_HOME_RADIUS = [2, 2];
+const ONE_PLANET_POSITION = { x: 0, y: 0 };
+const ONE_PLANET_RADIUS = 2;
+const TWO_PLANET_POSITION = [
+    { x: 2, y: -1.25 },
+    { x: -2, y: 1 },
+];
+const TWO_PLANET_RADIUS = [2, 2];
+const THREE_PLANET_POSITION = [
+    { x: 0.5, y: -3 },
+    { x: 2, y: 1.5 },
+    { x: -2.7, y: 1.65 },
+];
+const THREE_PLANET_RADIUS = [2, 2, 2];
+
 function _maybeInit(tile) {
     if (!_tileToSystem) {
         _tileToSystem = {};
@@ -70,9 +91,19 @@ class Planet {
         return _planetLocaleNameToPlanet[localeName];
     }
 
-    constructor(attrs, system) {
+    constructor(attrs, system, standardPosition, standardRadius) {
         this._attrs = attrs;
         this._system = system;
+
+        // if the given system attributes does not contain radius
+        // or position information set position and radius with standard
+        if (!this._attrs.position) {
+            this._attrs.position = standardPosition;
+        }
+
+        if (!this._attrs.radius) {
+            this._attrs.radius = standardRadius;
+        }
     }
 
     get raw() {
@@ -222,9 +253,46 @@ class System {
         this._planets = [];
         if (systemAttrs.planets) {
             this._planets.push(
-                ...systemAttrs.planets.map(
-                    (planeAttrs) => new Planet(planeAttrs, this)
-                )
+                ...systemAttrs.planets.map((planetAttrs, index, arr) => {
+                    if (systemAttrs.home && arr.length === 1) {
+                        return new Planet(
+                            planetAttrs,
+                            this,
+                            ONE_PLANET_HOME_POSITION,
+                            ONE_PLANET_HOME_RADIUS
+                        );
+                    } else if (systemAttrs.home && arr.length === 2) {
+                        return new Planet(
+                            planetAttrs,
+                            this,
+                            TWO_PLANET_HOME_POSITION[index],
+                            TWO_PLANET_HOME_RADIUS[index]
+                        );
+                    } else if (!systemAttrs.home && arr.length === 1) {
+                        return new Planet(
+                            planetAttrs,
+                            this,
+                            ONE_PLANET_POSITION,
+                            ONE_PLANET_RADIUS
+                        );
+                    } else if (!systemAttrs.home && arr.length === 2) {
+                        return new Planet(
+                            planetAttrs,
+                            this,
+                            TWO_PLANET_POSITION[index],
+                            TWO_PLANET_RADIUS[index]
+                        );
+                    } else if (arr.length === 3) {
+                        return new Planet(
+                            planetAttrs,
+                            this,
+                            THREE_PLANET_POSITION[index],
+                            THREE_PLANET_RADIUS[index]
+                        );
+                    } else {
+                        return new Planet(planetAttrs, this);
+                    }
+                })
             );
         }
 
