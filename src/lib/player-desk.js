@@ -86,7 +86,7 @@ const PLAYER_DESKS = [
         colorName: "white",
         hexColor: "#8B8B8B",
         pos: { x: -102.4, y: 100.8 },
-        yaw: -117.5,
+        yaw: -120,
         defaultPlayerSlot: 18,
         playerCounts: [4, 5, 6, 7, 8],
     },
