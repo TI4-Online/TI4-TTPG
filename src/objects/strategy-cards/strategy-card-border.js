@@ -94,10 +94,10 @@ class StrategyCardBorder extends Border {
         this._ui.position = this._desk.localPositionToWorld({
             x: 30,
             y: -10,
-            z: 10,
+            z: 15,
         });
         this._ui.rotation = this._desk.localRotationToWorld(
-            new Rotator(30, 0, 0)
+            new Rotator(25, 0, 0)
         );
         world.addUI(this._ui);
     }

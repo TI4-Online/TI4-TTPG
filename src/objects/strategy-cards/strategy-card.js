@@ -51,7 +51,7 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
                 : width,
             ui: ui,
         }).setColor(color);
-        border.setChild(widgetFactory(playerDesk));
+        border.setChild(widgetFactory(playerDesk, card.getPackageId()));
         border.spawnUi();
 
         openSelections[cardId].push(border);
