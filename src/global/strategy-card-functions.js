@@ -67,5 +67,3 @@ if (world.getExecutionReason() === "ScriptReload") {
 module.exports = {
     setupStrategyCard,
 };
-
-world.startDebugMode();
