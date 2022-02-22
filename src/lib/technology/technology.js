@@ -1,7 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { world } = require("../../wrapper/api");
 const technologyData = require("./technology.data");
+const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
+const { PlayerDesk } = require("../player-desk");
 const locale = require("../locale");
 
 technologyData.forEach((tech) => {
@@ -57,6 +60,8 @@ const getTechnologies = (factionName) => {
 
 class Technology {
     static getOwnedPlayerTechnologies(playerSlot) {
+        assert(Number.isInteger(playerSlot));
+
         let playerTechnologiesNsid = [];
 
         for (const obj of world.getAllObjects()) {
@@ -64,7 +69,7 @@ class Technology {
                 continue; // not a lone, faceup card on the table
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (!nsid.startsWidth("card.technology")) {
+            if (!nsid.startsWith("card.technology")) {
                 continue;
             }
             const ownerPlayerSlot = PlayerDesk.getClosest(
@@ -74,14 +79,14 @@ class Technology {
             if (ownerPlayerSlot === playerSlot) {
                 playerTechnologiesNsid.push(nsid);
             }
-
-            return technologyData.filter((tech) => {
-                return playerTechnologiesNsid.some((nsid) =>
-                    // startsWith is used to support omega cards
-                    nsid.startsWith(tech.cardNsid)
-                );
-            });
         }
+
+        return technologyData.filter((tech) => {
+            return playerTechnologiesNsid.some((nsid) =>
+                // startsWith is used to support omega cards
+                nsid.startsWith(tech.cardNsid)
+            );
+        });
     }
 
     static getTechnologies(playerSlot) {
