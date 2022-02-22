@@ -376,6 +376,11 @@
     "technology.name.redacted": "????_REDACTED_????",
     "technology.name.exception_no_id": "???_EXCEPTION_NO_ID_???",
 
+    "technology.type.Blue": "propulsion",
+    "technology.type.Red": "warfare",
+    "technology.type.Yeklow": "cybernetic",
+    "technology.type.Green": "biotic",
+
     "bag.unit": "{unit} Reinforcements",
 
     "sheet.command": "Command Sheet",
@@ -600,6 +605,8 @@
     "strategy_card.warfare.message.pass": "{playerName} passes on Warfare.",
 
     "strategy_card.technology.text": "Technology",
+    "strategy_card.technology.message.researched": "{playerName} researches {technologyName}.",
+    "strategy_card.technology.message.researched_and_skips": "{playerName} researches {technologyName}, skipping {skips}.",
 
     "strategy_card.imperial.text": "Imperial",
     "strategy_card.imperial.message.primary": "{playerName} uses the primary ability of Imperial.",
