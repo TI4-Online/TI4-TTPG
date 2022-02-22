@@ -273,7 +273,7 @@ module.exports = [
         faction: "arborec",
     },
     {
-        localeName: "bioplasmosis",
+        localeName: "technology.name.bioplasmosis",
         type: "Green",
         requirements: {
             Green: 2,
@@ -282,7 +282,7 @@ module.exports = [
         faction: "arborec",
     },
     {
-        localeName: "l4_disruptors",
+        localeName: "technology.name.l4_disruptors",
         type: "Yellow",
         requirements: {
             Yellow: 1,
@@ -291,7 +291,7 @@ module.exports = [
         faction: "letnev",
     },
     {
-        localeName: "non_euclidean_shielding",
+        localeName: "technology.name.non_euclidean_shielding",
         type: "Red",
         requirements: {
             Red: 2,
@@ -300,7 +300,7 @@ module.exports = [
         faction: "letnev",
     },
     {
-        localeName: "chaos_mapping",
+        localeName: "technology.name.chaos_mapping",
         type: "Blue",
         requirements: {
             Blue: 1,
@@ -328,7 +328,7 @@ module.exports = [
         faction: "muaat",
     },
     {
-        localeName: "magmus_reactor",
+        localeName: "technology.name.magmus_reactor",
         type: "Red",
         requirements: {
             Red: 2,
@@ -337,7 +337,7 @@ module.exports = [
         faction: "muaat",
     },
     {
-        localeName: "quantum_datahub_node",
+        localeName: "technology.name.quantum_datahub_node",
         type: "Yellow",
         requirements: {
             Yellow: 3,
@@ -346,7 +346,7 @@ module.exports = [
         faction: "hacan",
     },
     {
-        localeName: "production_biomes",
+        localeName: "technology.name.production_biomes",
         type: "Green",
         requirements: {
             Green: 2,
@@ -373,7 +373,7 @@ module.exports = [
         faction: "sol",
     },
     {
-        localeName: "wormhole_generator",
+        localeName: "technology.name.wormhole_generator",
         type: "Blue",
         requirements: {
             Blue: 2,
@@ -382,7 +382,7 @@ module.exports = [
         faction: "creuss",
     },
     {
-        localeName: "dimensional_splicer",
+        localeName: "technology.name.dimensional_splicer",
         type: "Red",
         requirements: {
             Red: 1,
@@ -401,7 +401,7 @@ module.exports = [
         faction: "l1z1x",
     },
     {
-        localeName: "inheritance_systems",
+        localeName: "technology.name.inheritance_systems",
         type: "Yellow",
         requirements: {
             Yellow: 1,
@@ -410,7 +410,7 @@ module.exports = [
         faction: "l1z1x",
     },
     {
-        localeName: "mirror_computing",
+        localeName: "technology.name.mirror_computing",
         type: "Yellow",
         requirements: {
             Yellow: 3,
@@ -419,7 +419,7 @@ module.exports = [
         faction: "mentak",
     },
     {
-        localeName: "salvage_operations",
+        localeName: "technology.name.salvage_operations",
         type: "Yellow",
         requirements: {
             Yellow: 2,
