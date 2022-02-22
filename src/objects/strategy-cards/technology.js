@@ -16,7 +16,34 @@ const locale = require("../../lib/locale");
 
 const imageSize = 30;
 
-const techIcons = {
+const factionIcons = {
+    arborec: "../../Textures/global/factions/arborec_icon.jpg",
+    argent: "../../Textures/global/factions/argent_icon.jpg",
+    cressus: "../../Textures/global/factions/cressus_icon.jpg",
+    empyrean: "../../Textures/global/factions/empyrean_icon.jpg",
+    hacan: "../../Textures/global/factions/hacan_icon.jpg",
+    jolnar: "../../Textures/global/factions/jolnar_icon.jpg",
+    l1z1x: "../../Textures/global/factions/l1z1x_icon.jpg",
+    letnev: "../../Textures/global/factions/letnev_icon.jpg",
+    mahact: "../../Textures/global/factions/mahact_icon.jpg",
+    mentak: "../../Textures/global/factions/mentak_icon.jpg",
+    muaat: "../../Textures/global/factions/arborec_icon.jpg",
+    naalu: "../../Textures/global/factions/naalu_icon.jpg",
+    naazrokha: "../../Textures/global/factions/naazrokha_icon.jpg",
+    nekro: "../../Textures/global/factions/nekro_icon.jpg",
+    nomad: "../../Textures/global/factions/nomad_icon.jpg",
+    norr: "../../Textures/global/factions/norr_icon.jpg",
+    saar: "../../Textures/global/factions/saar_icon.jpg",
+    sol: "../../Textures/global/factions/sol_icon.jpg",
+    ui: "../../Textures/global/factions/ul_icon.jpg",
+    vuilraith: "../../Textures/global/factions/vuilraith_icon.jpg",
+    winnu: "../../Textures/global/factions/winnu_icon.jpg",
+    xxcha: "../../Textures/global/factions/xxcha_icon.jpg",
+    yin: "../../Textures/global/factions/yin_icon.jpg",
+    yssaril: "../../Textures/global/factions/yssaril_icon.jpg",
+};
+
+const TechIcons = {
     unitUpgrade: {
         color: new Color(1, 1, 1),
     },
@@ -82,8 +109,6 @@ function drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, pack
 }
 
 const countPlayerTechsByType = (playerSlot) => {
-    const ownedTechnologies = Technology.getOwnedPlayerTechnologies(playerSlot);
-
     const playerTechnologies = {
         Blue: 0,
         Red: 0,
@@ -91,11 +116,13 @@ const countPlayerTechsByType = (playerSlot) => {
         Green: 0,
     };
 
-    ownedTechnologies.forEach((tech) => {
-        if (["Blue", "Red", "Yellow", "Green"].includes(tech.type)) {
+    Technology.getOwnedPlayerTechnologies(playerSlot)
+        .filter((tech) =>
+            ["Blue", "Red", "Yellow", "Green"].includes(tech.type)
+        )
+        .forEach((tech) => {
             playerTechnologies[tech.type]++;
-        }
-    });
+        });
 
     return playerTechnologies;
 };
@@ -175,6 +202,13 @@ function widgetFactory(playerDesk, packageId) {
                 .setEnabled(!ownedTechnologies.includes(tech))
                 .onClicked.add(onTechResearched);
             canvas.addChild(techButton, xOffset, yOffset, 200, 35);
+
+            if (tech.faction) {
+                let factionIcon = new ImageWidget().setImage(
+                    factionIcons[tech.faction]
+                );
+                canvas.addChild(factionIcon, xOffset + 170, yOffset, 20, 20);
+            }
 
             if (Object.keys(tech.requirements).length > 0) {
                 yOffset += 15;
