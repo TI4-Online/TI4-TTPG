@@ -136,10 +136,10 @@ class AbstractSetup {
             }
         }
 
-        // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
-            replacedObj.destroy();
-        });
+        // Apply replacement rules ("x.omega") AFTER game is set up.
+        if (world.TI4.config.timestamp > 0) {
+            ReplaceObjects.removeReplacedObjects([deck]);
+        }
 
         // Add to existing generic tech deck.
         if (existingDeck) {

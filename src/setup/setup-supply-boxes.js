@@ -6,7 +6,7 @@ const { Spawn } = require("./spawn/spawn");
 const { ObjectType, world } = require("../wrapper/api");
 
 const SUPPLY_BOXES_LEFT = {
-    shelfCenter: { x: 2, y: -39, z: 0 },
+    shelfCenter: { x: 2, y: -39.3, z: 0 },
     arcOrigin: { x: 0, y: 0, z: 0 },
     tokenNsids: [
         "token:base/infantry_1", // "bottom"

@@ -1,3 +1,4 @@
+require("../../global"); // setup world.TI4
 const assert = require("assert");
 const { ReplaceObjects } = require("./replace-objects");
 const {
@@ -12,8 +13,8 @@ it("static getReplacedObjects", () => {
     world.__clear();
 
     const addNsids = [
-        "tile.strategy:base/construction", // replaced by :pok
-        "tile.strategy:pok/construction", // replaces :base
+        "tile.strategy:base/construction", // replaced by errata (technically pok)
+        "tile.strategy:base/construction.errata", // replaces :base
         "tile.strategy:base/leadership", // inert
     ];
     for (const addNsid of addNsids) {

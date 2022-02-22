@@ -9,6 +9,6 @@
     "card.promissory.arborec:base/stymie": "card.promissory.arborec:base/stymie.omega",
     "card.promissory.winnu:base/acquiescence": "card.promissory.winnu:base/acquiescence.omega",
 
-    "tile.strategy:base/construction": "tile.strategy:pok/construction",
+    "tile.strategy:base/construction": "tile.strategy:base/construction.errata",
     "tile.strategy:base/diplomacy": "tile.strategy:base/diplomacy.errata"
 }

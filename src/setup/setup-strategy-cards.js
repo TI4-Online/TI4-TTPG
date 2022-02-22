@@ -34,7 +34,7 @@ const STRATEGY_CARDS = [
         yaw: -90,
     },
     {
-        nsid: "tile.strategy:pok/construction",
+        nsid: "tile.strategy:base/construction.errata",
         parent: false,
         pos: nextPosition(),
         yaw: -90,
