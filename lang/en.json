@@ -378,7 +378,7 @@
 
     "technology.type.Blue": "propulsion",
     "technology.type.Red": "warfare",
-    "technology.type.Yeklow": "cybernetic",
+    "technology.type.Yellow": "cybernetic",
     "technology.type.Green": "biotic",
 
     "bag.unit": "{unit} Reinforcements",
