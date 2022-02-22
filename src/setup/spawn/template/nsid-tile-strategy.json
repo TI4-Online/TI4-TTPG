@@ -1,12 +1,12 @@
 {
     "tile.strategy:base/construction": "AE7D6A5C4EEDAAE2B2FEB5AFBA3AC6A1",
+    "tile.strategy:base/construction.errata": "E7F3582546442EE1CC419DB71BFC1467",
     "tile.strategy:base/diplomacy": "2A40632D4704B3D7EE37C2AF646EE5BB",
+    "tile.strategy:base/diplomacy.errata": "09FA74F649473D09799D5799F2394D91",
     "tile.strategy:base/imperial": "F445F5F54ADFDDDE0E4C0190717A93BA",
     "tile.strategy:base/leadership": "851C062745CD8B4CEEB4BEB3F1057152",
     "tile.strategy:base/politics": "0CF3E7D54F1223EFDFF0D98185010D06",
     "tile.strategy:base/technology": "B67A7E0A478E39D9CE13CDA81BC1A9EF",
     "tile.strategy:base/trade": "C3C0BA3F4E3444C39C5E17ADF8D3D25E",
-    "tile.strategy:base/warfare": "224262F740D5D252D33B149E08D17FC8",
-    "tile.strategy:base/diplomacy.errata": "09FA74F649473D09799D5799F2394D91",
-    "tile.strategy:pok/construction": "E7F3582546442EE1CC419DB71BFC1467"
+    "tile.strategy:base/warfare": "224262F740D5D252D33B149E08D17FC8"
 }
