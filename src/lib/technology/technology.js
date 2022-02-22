@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const technologyData = require("./technology.data");
+const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const locale = require("../locale");
 
@@ -55,6 +56,34 @@ const getTechnologies = (factionName) => {
 };
 
 class Technology {
+    static getOwnedPlayerTechnologies(playerSlot) {
+        let playerTechnologiesNsid = [];
+
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj)) {
+                continue; // not a lone, faceup card on the table
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsid.startsWidth("card.technology")) {
+                continue;
+            }
+            const ownerPlayerSlot = PlayerDesk.getClosest(
+                obj.getPosition()
+            ).playerSlot;
+
+            if (ownerPlayerSlot === playerSlot) {
+                playerTechnologiesNsid.push(nsid);
+            }
+
+            return technologyData.filter((tech) => {
+                return playerTechnologiesNsid.some((nsid) =>
+                    // startsWith is used to support omega cards
+                    nsid.startsWith(tech.cardNsid)
+                );
+            });
+        }
+    }
+
     static getTechnologies(playerSlot) {
         if (!playerSlot) {
             return getTechnologies().all;
