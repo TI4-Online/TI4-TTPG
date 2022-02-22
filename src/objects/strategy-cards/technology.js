@@ -1,4 +1,5 @@
 const {
+    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -80,7 +81,73 @@ function drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, pack
     }
 }
 
+const countPlayerTechsByType = (playerSlot) => {
+    const ownedTechnologies = Technology.getOwnedPlayerTechnologies(playerSlot);
+
+    const playerTechnologies = {
+        Blue: 0,
+        Red: 0,
+        Yellow: 0,
+        Green: 0,
+    };
+
+    ownedTechnologies.forEach((tech) => {
+        if (["Blue", "Red", "Yellow", "Green"].includes(tech.type)) {
+            playerTechnologies[tech.type]++;
+        }
+    });
+
+    return playerTechnologies;
+};
+
+const onTechResearched = (button, player) => {
+    const technologyName = button.getText();
+    const playerSlot = player.getSlot();
+    const technology = Technology.getTechnologies(playerSlot).find(
+        (tech) => tech.name === technologyName
+    );
+    const ownedTechnologies = countPlayerTechsByType(playerSlot);
+    const skippedTechs = {};
+
+    for (let requirement in technology.requirements) {
+        const required = technology[requirement];
+        const owned = ownedTechnologies[requirement];
+        if (required > owned) {
+            skippedTechs[requirement] = required - owned;
+        }
+    }
+
+    let messageKey = "strategy_card.technology.message.researched";
+    let messageParameters = {
+        playerName: player.getName(),
+        technologyName: technologyName,
+    };
+
+    if (Object.keys(skippedTechs).length) {
+        messageKey = "strategy_card.technology.message.researched_and_skips";
+        messageParameters.skips = "";
+        for (let requirement in skippedTechs) {
+            if (messageParameters.skips) {
+                messageParameters.skips += ", ";
+            }
+
+            const techType = locale(`technology.type.${requirement}`);
+
+            messageParameters.skip += `${skippedTechs[requirement]} ${techType}`;
+        }
+    }
+
+    broadcastMessage(messageKey, messageParameters, player);
+};
+
 function widgetFactory(playerDesk, packageId) {
+    const playerSlot = playerDesk.playerSlot;
+    const technologies = Technology.getTechnologiesByType(playerSlot);
+    const ownedTechnologies = Technology.getOwnedPlayerTechnologies(playerSlot);
+    const playerTechnologies = countPlayerTechsByType(playerSlot);
+    let xOffset = 0;
+    let yOffsetMax = 0;
+
     let canvas = new Canvas();
 
     let headerText = new Text()
@@ -99,23 +166,45 @@ function widgetFactory(playerDesk, packageId) {
         playerDesk.playerSlot
     );
 
-    let canvasX = 0;
-    let maxY = 0;
     ["Blue", "Red", "Yellow", "Green"].forEach((type) => {
-        let canvasY = 50;
-
+        let yOffset = 50;
         technologies[type].forEach((tech) => {
-            drawTechButton(canvas, canvasX, canvasY, tech, playerTechnologies, packageId);
-            canvasY += Object.keys(tech.requirements).length > 0 ? 55 : 40;
+            let techButton = new Button()
+                .setText(tech.name)
+                .setTextColor(TechIcons[type].color)
+                .setEnabled(!ownedTechnologies.includes(tech))
+                .onClicked.add(onTechResearched);
+            canvas.addChild(techButton, xOffset, yOffset, 200, 35);
+
+            if (Object.keys(tech.requirements).length > 0) {
+                yOffset += 15;
+                for (let requirement in tech.requirements) {
+                    for (let i = 0; i < tech.requirements[requirement]; i++) {
+                        const image =
+                            playerTechnologies[requirement] > i
+                                ? TechIcons[requirement].activeIcon
+                                : TechIcons[requirement].disabledIcon;
+                        let techIcon = new ImageWidget().setImage(image);
+                        canvas.addChild(
+                            techIcon,
+                            xOffset + 15 * i,
+                            yOffset + 12,
+                            200,
+                            35
+                        );
+                    }
+                }
+            }
+            yOffset += 40;
         });
-        maxY = Math.max(canvasY, maxY);
-        canvasX += 210;
+        yOffsetMax = Math.max(yOffset, yOffsetMax);
+        xOffset += 210;
     });
 
     technologies.unitUpgrade.forEach((tech, index) => {
         let techButton = new Button().setText(tech.name);
         const xOffset = (index % 4) * 210;
-        const yOffset = maxY + 30 + Math.floor(index / 4) * 55;
+        const yOffset = yOffsetMax + 20 + Math.floor(index / 4) * 60;
         canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
         drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, packageId);
