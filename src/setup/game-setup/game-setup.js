@@ -2,6 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ApplyScoreboard } = require("./apply-scoreboard");
 const { GameSetupUI } = require("./game-setup-ui");
 const { globalEvents, world } = require("../../wrapper/api");
+const { ReplaceObjects } = require("../spawn/replace-objects");
+const { RestrictObjects } = require("../spawn/restrict-objects");
 
 let _ui = false;
 
@@ -38,6 +40,16 @@ function onSetupClicked(button, player) {
     // Record setup timestamp for gamedata.
     const timestamp = Date.now() / 1000;
     world.TI4.config.setTimestamp(timestamp);
+
+    let removedCount = 0;
+
+    // Apply omega.  This one verifies replacement exists.
+    removedCount += ReplaceObjects.removeReplacedObjects();
+
+    // Apply other restrictions.
+    removedCount += RestrictObjects.removeRestrictObjects();
+
+    console.log(`GameSetup: removed ${removedCount} objects`);
 
     // Tell world setup happened.
     globalEvents.TI4.onGameSetup.trigger(this._state, player);

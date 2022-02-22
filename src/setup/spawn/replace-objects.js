@@ -12,10 +12,28 @@ class ReplaceObjects {
      *
      * @returns {Array.{GameObject}}
      */
-    static getReplacedObjects(objs) {
+    static getReplacedObjects(objs = false) {
         if (!objs) {
             objs = world.getAllObjects();
         }
+
+        const newNsidToOldNsid = new Set();
+        for (const [oldNsid, newNsid] of Object.entries(REPLACE_DATA)) {
+            if (newNsid.endsWith(".omega")) {
+                if (world.TI4.config.timestamp <= 0) {
+                    // Do not process omega until setup / config is done.
+                    continue;
+                }
+                if (world.TI4.config.omega) {
+                    // Using omega, replace old versions.
+                    newNsidToOldNsid[newNsid] = oldNsid;
+                } else {
+                    // NOT USING OMEGA, replace omega versions.
+                    newNsidToOldNsid[oldNsid] = newNsid;
+                }
+            }
+        }
+
         const newNsidSet = new Set(Object.values(REPLACE_DATA));
 
         // Get nsids for replacements (not the things getting replaced).
@@ -66,6 +84,15 @@ class ReplaceObjects {
         }
 
         return result;
+    }
+
+    static removeReplacedObjects(objs = false) {
+        const removeObjs = ReplaceObjects.getReplacedObjects(objs);
+        const removedCount = removeObjs.length;
+        for (const obj of removeObjs) {
+            obj.destroy();
+        }
+        return removedCount;
     }
 }
 

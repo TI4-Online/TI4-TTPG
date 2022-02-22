@@ -137,9 +137,7 @@ class AbstractSetup {
         }
 
         // Apply replacement rules ("x.omega")
-        ReplaceObjects.getReplacedObjects([deck]).forEach((replacedObj) => {
-            replacedObj.destroy();
-        });
+        ReplaceObjects.removeReplacedObjects([deck]);
 
         // Add to existing generic tech deck.
         if (existingDeck) {
