@@ -346,9 +346,13 @@ class System {
     getSummaryStr() {
         const summary = [];
         summary.push(
-            ...this.planets.map((planet) => {
-                return locale(planet.raw.localeName);
-            })
+            ...this.planets
+                .filter((planet) => {
+                    return !planet.destroyed;
+                })
+                .map((planet) => {
+                    return locale(planet.raw.localeName);
+                })
         );
         summary.push(
             ...this.wormholes.map((wormhole) => {
