@@ -1,5 +1,6 @@
 require("../../global");
 let technologyData = require("./technology.data");
+const { Faction } = require("../faction/faction");
 
 const {
     MockCard,
@@ -35,6 +36,9 @@ describe("getTechnologies", () => {
     });
 
     it("with a playerSlot", () => {
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
         const technologies = Technology.getTechnologies(playerSlot);
         expect(technologies.length).toBe(37);
     });
@@ -51,6 +55,10 @@ describe("getTechnologiesByType", () => {
     });
 
     it("with a playerSlot", () => {
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
+
         const technologies = Technology.getTechnologiesByType(playerSlot);
         expect(technologies.Blue.length).toBe(6);
         expect(technologies.Red.length).toBe(6);
@@ -77,6 +85,9 @@ describe("getTechnologiesOfType", () => {
     });
 
     it("with a playerSlot", () => {
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
         const getLength = (type) =>
             Technology.getTechnologiesOfType(type, playerSlot).length;
 
