@@ -57,10 +57,12 @@ const { Faction } = require("./lib/faction/faction");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
+const { GameData } = require("./lib/game-data/game-data");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     config: new GameSetupConfig(),
+    gameData: new GameData(),
 
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();
@@ -104,6 +106,8 @@ world.TI4 = {
 
     reset: () => {
         GlobalSavedData.clear();
-        world.resetScripting();
+        if (!world.__isMock) {
+            world.resetScripting();
+        }
     },
 };
