@@ -18,30 +18,30 @@ const imageSize = 30;
 const factionImageSize = 40;
 
 const factionIcons = {
-    arborec: "global/factions/arborec_icon.jpg",
-    argent: "global/factions/argent_icon.jpg",
-    creuss: "global/factions/creuss_icon.jpg",
-    empyrean: "global/factions/empyrean_icon.jpg",
-    hacan: "global/factions/hacan_icon.jpg",
-    jolnar: "global/factions/jolnar_icon.jpg",
-    l1z1x: "global/factions/l1z1x_icon.jpg",
-    letnev: "global/factions/letnev_icon.jpg",
-    mahact: "global/factions/mahact_icon.jpg",
-    mentak: "global/factions/mentak_icon.jpg",
-    muaat: "global/factions/muaat_icon.jpg",
-    naalu: "global/factions/naalu_icon.jpg",
-    naazrokha: "global/factions/naazrokha_icon.jpg",
-    nekro: "global/factions/nekro_icon.jpg",
-    nomad: "global/factions/nomad_icon.jpg",
-    norr: "global/factions/norr_icon.jpg",
-    saar: "global/factions/saar_icon.jpg",
-    sol: "global/factions/sol_icon.jpg",
-    ui: "global/factions/ul_icon.jpg",
-    vuilraith: "global/factions/vuilraith_icon.jpg",
-    winnu: "global/factions/winnu_icon.jpg",
-    xxcha: "global/factions/xxcha_icon.jpg",
-    yin: "global/factions/yin_icon.jpg",
-    yssaril: "global/factions/yssaril_icon.jpg",
+    arborec: "global/factions/arborec_icon.png",
+    argent: "global/factions/argent_icon.png",
+    creuss: "global/factions/creuss_icon.png",
+    empyrean: "global/factions/empyrean_icon.png",
+    hacan: "global/factions/hacan_icon.png",
+    jolnar: "global/factions/jolnar_icon.png",
+    l1z1x: "global/factions/l1z1x_icon.png",
+    letnev: "global/factions/letnev_icon.png",
+    mahact: "global/factions/mahact_icon.png",
+    mentak: "global/factions/mentak_icon.png",
+    muaat: "global/factions/muaat_icon.png",
+    naalu: "global/factions/naalu_icon.png",
+    naazrokha: "global/factions/naazrokha_icon.png",
+    nekro: "global/factions/nekro_icon.png",
+    nomad: "global/factions/nomad_icon.png",
+    norr: "global/factions/norr_icon.png",
+    saar: "global/factions/saar_icon.png",
+    sol: "global/factions/sol_icon.png",
+    ui: "global/factions/ul_icon.png",
+    vuilraith: "global/factions/vuilraith_icon.png",
+    winnu: "global/factions/winnu_icon.png",
+    xxcha: "global/factions/xxcha_icon.png",
+    yin: "global/factions/yin_icon.png",
+    yssaril: "global/factions/yssaril_icon.png",
 };
 
 const techIcons = {
@@ -50,51 +50,57 @@ const techIcons = {
     },
     Red: {
         color: new Color(1, 0, 0),
-        activeIcon:
-            "global/technology/warfare_tech_icon.png",
-        disabledIcon:
-            "global/technology/warfare_tech_disabled_icon.png",
+        activeIcon: "global/technology/warfare_tech_icon.png",
+        disabledIcon: "global/technology/warfare_tech_disabled_icon.png",
     },
     Yellow: {
         color: new Color(1, 1, 0),
-        activeIcon:
-            "global/technology/cybernetic_tech_icon.png",
-        disabledIcon:
-            "global/technology/cybernetic_tech_disabled_icon.png",
+        activeIcon: "global/technology/cybernetic_tech_icon.png",
+        disabledIcon: "global/technology/cybernetic_tech_disabled_icon.png",
     },
     Green: {
         color: new Color(0, 1, 0),
-        activeIcon:
-            "global/technology/biotic_tech_icon.png",
-        disabledIcon:
-            "global/technology/biotic_tech_disabled_icon.png",
+        activeIcon: "global/technology/biotic_tech_icon.png",
+        disabledIcon: "global/technology/biotic_tech_disabled_icon.png",
     },
     Blue: {
         color: new Color(0, 0, 1),
-        activeIcon:
-            "global/technology/propulsion_tech_icon.png",
-        disabledIcon:
-            "global/technology/propulsion_tech_disabled_icon.png",
+        activeIcon: "global/technology/propulsion_tech_icon.png",
+        disabledIcon: "global/technology/propulsion_tech_disabled_icon.png",
     },
 };
 
-function drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, ownedTechnologies, packageId) {
+function drawTechButton(
+    canvas,
+    xOffset,
+    yOffset,
+    tech,
+    playerTechnologies,
+    ownedTechnologies,
+    packageId
+) {
     let techButton = new Button()
         .setText(tech.name)
         .setTextColor(techIcons[tech.type].color)
         .setEnabled(!ownedTechnologies.includes(tech));
     techButton.onClicked.add(onTechResearched);
     canvas.addChild(techButton, xOffset, yOffset, 200, 35);
-    
+
     if (tech.faction) {
         let factionIcon = new ImageWidget()
-        .setImage(factionIcons[tech.faction], packageId)
-        .setImageSize(imageSize, imageSize);
-        canvas.addChild(factionIcon, xOffset + 160, yOffset + 23, imageSize, imageSize);
+            .setImage(factionIcons[tech.faction], packageId)
+            .setImageSize(imageSize, imageSize);
+        canvas.addChild(
+            factionIcon,
+            xOffset + 160,
+            yOffset + 23,
+            imageSize,
+            imageSize
+        );
     }
 
     let numOfIcons = 0;
-    
+
     if (Object.keys(tech.requirements).length > 0) {
         for (let requirement in tech.requirements) {
             for (let i = 0; i < tech.requirements[requirement]; i++) {
@@ -159,7 +165,7 @@ const onTechResearched = (button, player) => {
     let messageParameters = {
         playerName: player.getName(),
         technologyName: technologyName,
-        skips: ""
+        skips: "",
     };
 
     if (Object.keys(skippedTechs).length) {
@@ -173,7 +179,11 @@ const onTechResearched = (button, player) => {
 
             messageParameters.skips += `${skippedTechs[requirement]} ${techType}`;
         }
-        console.log(`skippedTechs: ${JSON.stringify(skippedTechs)} - skips: ${messageParameters.skips}`);
+        console.log(
+            `skippedTechs: ${JSON.stringify(skippedTechs)} - skips: ${
+                messageParameters.skips
+            }`
+        );
     }
 
     broadcastMessage(messageKey, messageParameters, player);
@@ -181,7 +191,9 @@ const onTechResearched = (button, player) => {
 
 function widgetFactory(playerDesk, packageId) {
     const playerSlot = playerDesk.playerSlot;
-    const technologies = Technology.getTechnologiesByType(playerDesk.playerSlot);
+    const technologies = Technology.getTechnologiesByType(
+        playerDesk.playerSlot
+    );
     const ownedTechnologies = Technology.getOwnedPlayerTechnologies(playerSlot);
     const playerTechnologies = countPlayerTechsByType(playerSlot);
     let xOffset = 0;
@@ -197,12 +209,20 @@ function widgetFactory(playerDesk, packageId) {
     ["Blue", "Red", "Yellow", "Green"].forEach((type) => {
         let yOffset = 50;
         technologies[type].forEach((tech) => {
-            drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, ownedTechnologies, packageId);
+            drawTechButton(
+                canvas,
+                xOffset,
+                yOffset,
+                tech,
+                playerTechnologies,
+                ownedTechnologies,
+                packageId
+            );
 
             if (Object.keys(tech.requirements).length > 0) {
                 yOffset += 15;
             }
-/*
+            /*
             let techButton = new Button()
                 .setText(tech.name)
                 .setTextColor(techIcons[type].color)
@@ -248,14 +268,28 @@ function widgetFactory(playerDesk, packageId) {
         const yOffset = yOffsetMax + 20 + Math.floor(index / 4) * 60;
         canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
-        drawTechButton(canvas, xOffset, yOffset, tech, playerTechnologies, ownedTechnologies, packageId);
+        drawTechButton(
+            canvas,
+            xOffset,
+            yOffset,
+            tech,
+            playerTechnologies,
+            ownedTechnologies,
+            packageId
+        );
     });
 
     let closeButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.close"));
     closeButton.onClicked.add(onUiClosedClicked);
-    canvas.addChild(closeButton, 0, calculateHeight(playerDesk.playerSlot) - 45, 830, 48);
+    canvas.addChild(
+        closeButton,
+        0,
+        calculateHeight(playerDesk.playerSlot) - 45,
+        830,
+        48
+    );
 
     return canvas;
 }
