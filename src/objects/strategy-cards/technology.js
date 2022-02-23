@@ -15,7 +15,6 @@ const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
 
 const imageSize = 30;
-const factionImageSize = 40;
 
 const factionIcons = {
     arborec: "global/factions/arborec_icon.png",
@@ -222,40 +221,7 @@ function widgetFactory(playerDesk, packageId) {
             if (Object.keys(tech.requirements).length > 0) {
                 yOffset += 15;
             }
-            /*
-            let techButton = new Button()
-                .setText(tech.name)
-                .setTextColor(techIcons[type].color)
-                .setEnabled(!ownedTechnologies.includes(tech))
-                .onClicked.add(onTechResearched);
-            canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
-            if (tech.faction) {
-                let factionIcon = new ImageWidget().setImage(
-                    factionIcons[tech.faction]
-                );
-                canvas.addChild(factionIcon, xOffset + 170, yOffset, 20, 20);
-            }
-
-            if (Object.keys(tech.requirements).length > 0) {
-                yOffset += 15;
-                for (let requirement in tech.requirements) {
-                    for (let i = 0; i < tech.requirements[requirement]; i++) {
-                        const image =
-                            playerTechnologies[requirement] > i
-                                ? techIcons[requirement].activeIcon
-                                : techIcons[requirement].disabledIcon;
-                        let techIcon = new ImageWidget().setImage(image);
-                        canvas.addChild(
-                            techIcon,
-                            xOffset + 15 * i,
-                            yOffset + 12,
-                            200,
-                            35
-                        );
-                    }
-                }
-            }*/
             yOffset += 40;
         });
         yOffsetMax = Math.max(yOffset, yOffsetMax);
