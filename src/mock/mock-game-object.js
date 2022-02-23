@@ -14,6 +14,7 @@ class GameObject {
         this._name = (data && data.name) || "";
         this._objectType = (data && data.objectType) || 1;
         this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
+        this._packageId = (data && data.packageId) || "TI4";
         this._position = (data && data.position) || new Vector(0, 0, 0);
         this._primaryColor = data && data.primaryColor;
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
@@ -70,6 +71,10 @@ class GameObject {
 
     getOwningPlayerSlot() {
         return this._owningPlayerSlot;
+    }
+
+    getPackageId() {
+        return this._packageId;
     }
 
     getPosition() {
