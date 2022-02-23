@@ -35,7 +35,7 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
             world.removeUIElement(border.ui);
         });
     }
-    
+
     openSelections[cardId] = [];
 
     for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -43,12 +43,14 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
         let border = new StrategyCardBorder({
             card: card,
             desk: playerDesk,
-            height: typeof height === "function"
-                ? height(playerDesk.playerSlot)
-                : height,
-            width: typeof width === "function"
-                ? height(playerDesk.playerSlot)
-                : width,
+            height:
+                typeof height === "function"
+                    ? height(playerDesk.playerSlot)
+                    : height,
+            width:
+                typeof width === "function"
+                    ? height(playerDesk.playerSlot)
+                    : width,
             ui: ui,
         }).setColor(color);
         border.setChild(widgetFactory(playerDesk, card.getPackageId()));
