@@ -144,11 +144,11 @@ describe("getOwnedPlayerTechnologies", () => {
             Technology.getOwnedPlayerTechnologies(playerSlot);
 
         expect(ownedTechnologies.length).toBe(2);
-        expect(ownedTechnologies[0].name).toBe(
-            "technology.name.x_89_bacterial_weapon"
+        expect(ownedTechnologies[0].cardNsid).toBe(
+            "card.technology.green:base/x89_bacterial_weapon"
         );
-        expect(ownedTechnologies[1].name).toBe(
-            "technology.name.dark_energy_tap"
+        expect(ownedTechnologies[1].cardNsid).toBe(
+            "card.technology.blue:pok/dark_energy_tap"
         );
     });
 });
