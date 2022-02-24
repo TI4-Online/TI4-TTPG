@@ -53,24 +53,24 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
             ui: ui,
         }).setColor(color);
         border.setChild(widgetFactory(playerDesk, card.getPackageId()));
-        border.spawnUi(openSelections[cardId].length);
-
-        openSelections[cardId].push(border);
         const playerSlot = playerDesk.playerSlot;
         playerUis[playerSlot] = playerUis[playerSlot] || [];
-        playerUis[playerDesk.playerSlot].push(border);
+        border.spawnUi(playerUis[playerSlot].length);
+
+        openSelections[cardId].push(border);
+        playerUis[playerSlot].push(border);
     }
 }
 
 function removeUi(border) {
     const cardId = border.card.getId();
     const playerSlot = border.desk.playerSlot;
-    world.removeUIElement(border.ui);
     openSelections[cardId].splice(openSelections[cardId].indexOf(border), 1);
     playerUis[playerSlot].splice(playerUis[playerSlot].indexOf(border), 1);
     playerUis[playerSlot].forEach((ui, index) => {
-        ui.setIndex(index);
+        ui.positionUi(index);
     });
+    world.removeUIElement(border.ui);
 }
 
 /**
