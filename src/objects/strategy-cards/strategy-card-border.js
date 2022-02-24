@@ -85,7 +85,7 @@ class StrategyCardBorder extends Border {
      * Spawns the UI by setting the required associations, calculating the
      * position & rotation and adding the UI to the world.
      */
-    spawnUi() {
+    spawnUi(index) {
         this._ui.useWidgetSize = false;
         this._ui.widget = this;
         this._ui.height = this.height;
@@ -94,12 +94,20 @@ class StrategyCardBorder extends Border {
         this._ui.position = this._desk.localPositionToWorld({
             x: 30,
             y: -10,
-            z: 15,
+            z: 15 + index * -0.1,
         });
         this._ui.rotation = this._desk.localRotationToWorld(
             new Rotator(25, 0, 0)
         );
         world.addUI(this._ui);
+    }
+
+    setIndex(index) {
+        this._ui.position = this._desk.localPositionToWorld({
+            x: 30,
+            y: -10,
+            z: 15 + index * -0.1,
+        });
     }
 }
 
