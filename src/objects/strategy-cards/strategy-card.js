@@ -13,6 +13,7 @@ const {
 const { StrategyCardBorder } = require("./strategy-card-border");
 const locale = require("../../lib/locale");
 let openSelections = {};
+let playerUis = {};
 
 function broadcastMessage(messageKey, localeArgs = {}, player) {
     const message = locale(messageKey, localeArgs);
@@ -30,13 +31,11 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
     const cardId = card.getId();
 
     // clear existing UIs from the card instance
-    if (openSelections[cardId]) {
-        openSelections[cardId].forEach((border) => {
-            world.removeUIElement(border.ui);
-        });
-    }
 
-    openSelections[cardId] = [];
+    openSelections[cardId] = openSelections[cardId] || [];
+    openSelections[cardId].forEach((border) => {
+        removeUi(border);
+    });
 
     for (const playerDesk of world.TI4.getAllPlayerDesks()) {
         let ui = new UIElement();
@@ -54,10 +53,24 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
             ui: ui,
         }).setColor(color);
         border.setChild(widgetFactory(playerDesk, card.getPackageId()));
-        border.spawnUi();
+        const playerSlot = playerDesk.playerSlot;
+        playerUis[playerSlot] = playerUis[playerSlot] || [];
+        border.spawnUi(playerUis[playerSlot].length);
 
         openSelections[cardId].push(border);
+        playerUis[playerSlot].push(border);
     }
+}
+
+function removeUi(border) {
+    const cardId = border.card.getId();
+    const playerSlot = border.desk.playerSlot;
+    openSelections[cardId].splice(openSelections[cardId].indexOf(border), 1);
+    playerUis[playerSlot].splice(playerUis[playerSlot].indexOf(border), 1);
+    playerUis[playerSlot].forEach((ui, index) => {
+        ui.positionUi(index);
+    });
+    world.removeUIElement(border.ui);
 }
 
 /**
@@ -219,12 +232,11 @@ function onUiClosedClicked(button, player) {
     globalEvents.TI4.onStrategyCardSelectionDone.trigger(border.card, player);
 
     // clear internal data and remove the UI
-    let selections = openSelections[border.card.getId()];
-    world.removeUIElement(border.ui);
-    selections.splice(selections.indexOf(border), 1);
+    const cardId = border.card.getId();
+    removeUi(border);
 
     // send notifications in case all have responded
-    if (selections.length === 0) {
+    if (openSelections[cardId].length === 0) {
         delete openSelections[border.card.getId()];
         broadcastMessage(locale("strategy_card.message.all_resolved"));
     }
