@@ -41,3 +41,72 @@ Dependencies added with `yarn add -D {module}` (devDependenices) will **_not_** 
 # Transpiling
 
 as of right now, transpiling is off. Ecma6 syntax is good to go, but Ecma2020 (null coalesce, optional chaining, etc) is a no go for now. This may change.
+
+
+# Homebrew Content & Expansions
+
+## Strategy Cards
+
+To add new strategy cards, the following code can be used within the object script attached to the strategy card:
+```javascript
+const {
+    onUiClosedClicked,
+    RegisterStrategyCardUI,
+} = require("/objects/strategy-cards/strategy-card");
+
+const locale = require("../../lib/locale");
+const {
+    Button,
+    Color,
+} = require("../../wrapper/api");
+
+// ...
+
+const widgetFactory = (playerDesk /* of the UI owning player */, packageId /* of the card object */) => {
+    let button = new Button().setText("Done!");
+    button.onClicked.add(/* callback of your strategy card logic */);
+    button.onClicked.add(onUiClosedClicked); // callback closing the UI and handling the "all players resolved" and stacking UIs
+}
+
+new RegisterStrategyCardUI()
+    .setCard(refObject)
+    .setWidgetFactory(widgetFactory)
+    .setHeight(/* height in px */)
+    .setWidth(/* width in px, optional, default 350 px */)
+    .setColor(new Color(1, 0, 0) /* ttpg-Color of the background */)
+    .register();
+```
+To send messages in the chat and color code the message in the players color a helper is available:
+```javascript
+const {
+    broadcastMessage,
+} = require("/objects/strategy-cards/strategy-card");
+
+/...
+
+broadcastMessage(
+    "messageKey", // found in the <lang>.json
+    {},           // messageParameters for string replacement in the message
+    player,       // triggering the event. i.e. pressing a button
+);
+```
+
+For using a plain UI with only a "primary", "secondary" and "pass" button, the registration can be narrowed down to:
+```javascript
+const { refObject, Color } = require("../../wrapper/api");
+require("./register-standard-card")(
+    refObject,
+    "<myStrategyCard>", // text key section for locale (see below)
+    new Color(1, 0, 0)  // ttpg-color of the background
+);
+```
+The text key is used for the header label as well as for sending notifications when a button was clicked.
+On messages in addition the clicking `player` is passed as a text property.
+```json
+{
+    "strategy_card.<myStrategyCard>.text": "MY CARD",
+    "strategy_card.<myStrategyCard>.message.primary": "{player} is using the primary ability of MY CARD.",
+    "strategy_card.<myStrategyCard>.message.secondary": "{player} is using the primary ability of MY CARD.",
+    "strategy_card.<myStrategyCard>.message.pass": "{player} says 'Nah. I dont wanna use MY CARD.'",
+}
+```
