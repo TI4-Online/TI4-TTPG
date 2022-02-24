@@ -14,16 +14,36 @@ technologyData.forEach((tech) => {
 
 let _technologies;
 let _technologiesByFaction = {};
+let _settings = {
+    pok: world.TI4.config.pok,
+};
 const types = ["Red", "Yellow", "Green", "Blue", "unitUpgrade"];
+
+const isSourceEnabled = (source) => {
+    return (
+        source === undefined || // base technology
+        (source === "PoK" && world.TI4.config.pok)
+    ); // PoK technology
+};
 
 const getTechnologiesRawArray = (factionName) => {
     return technologyData.filter((tech) => {
         return (
-            !factionName || // no filtering for factions
-            !tech.faction || // not a faction technology
-            tech.faction === factionName // matching faction
+            isSourceEnabled(tech.source) &&
+            (!factionName || // no filtering for factions
+                !tech.faction || // not a faction technology
+                tech.faction === factionName) // matching faction
         );
     });
+};
+
+const checkCache = () => {
+    const pok = world.TI4.config.pok;
+    if (_settings.pok !== pok) {
+        _technologies = undefined;
+        _technologiesByFaction = {};
+    }
+    _settings.pok = pok;
 };
 
 const getTechnologiesMap = (factionName) => {
@@ -42,19 +62,15 @@ const getTechnologiesMap = (factionName) => {
 };
 
 const getTechnologies = (factionName) => {
+    checkCache();
+
     if (!factionName) {
-        if (!_technologies) {
-            _technologies = getTechnologiesMap();
-        }
+        _technologies = _technologies || getTechnologiesMap();
         return _technologies;
     }
 
-    assert(factionName); // a faction was identified
-
-    if (!_technologiesByFaction[factionName]) {
-        _technologiesByFaction[factionName] = getTechnologiesMap(factionName);
-    }
-
+    _technologiesByFaction[factionName] =
+        _technologiesByFaction[factionName] || getTechnologiesMap(factionName);
     return _technologiesByFaction[factionName];
 };
 

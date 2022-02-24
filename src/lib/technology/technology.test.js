@@ -30,17 +30,56 @@ const sheet = new MockGameObject({
 world.__addObject(sheet);
 
 describe("getTechnologies", () => {
-    it("without parameters", () => {
-        const technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(technologyData.length);
+    afterEach(() => {
+        world.TI4.config.setPoK(true);
     });
 
-    it("with a playerSlot", () => {
+    it("without parameters and enabled PoK", () => {
+        const technologies = Technology.getTechnologies();
+        expect(technologies.length).toBe(81);
+    });
+
+    it("with a playerSlot and enabled PoK", () => {
         jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
             raw: { faction: "arborec" },
         });
         const technologies = Technology.getTechnologies(playerSlot);
-        expect(technologies.length).toBe(37);
+        expect(technologies.length).toBe(35);
+    });
+
+    it("without parameters and disabled PoK", () => {
+        world.TI4.config.setPoK(false);
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
+        const technologies = Technology.getTechnologies();
+        expect(technologies.length).toBe(59);
+    });
+
+    it("with a playerSlot and disabled PoK", () => {
+        world.TI4.config.setPoK(false);
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
+        const technologies = Technology.getTechnologies(playerSlot);
+        expect(technologies.length).toBe(27);
+    });
+
+    it("without parameters and switching PoK on, off and on again", () => {
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
+
+        let technologies = Technology.getTechnologies();
+        expect(technologies.length).toBe(81);
+
+        world.TI4.config.setPoK(false);
+        technologies = Technology.getTechnologies();
+        expect(technologies.length).toBe(59);
+
+        world.TI4.config.setPoK(true);
+        technologies = Technology.getTechnologies();
+        expect(technologies.length).toBe(81);
     });
 });
 
