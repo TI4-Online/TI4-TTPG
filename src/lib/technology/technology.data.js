@@ -647,7 +647,7 @@ module.exports = [
         },
         abbrev: "Temp Cmd Suite",
         faction: "nomad",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.flagship.memoria_ii",
@@ -660,7 +660,7 @@ module.exports = [
         },
         abbrev: "Memoria II",
         faction: "nomad",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.vortex",
@@ -671,7 +671,7 @@ module.exports = [
         },
         abbrev: "Vortex",
         faction: "vuilraith",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.space_dock.dimensional_tear_2",
@@ -683,7 +683,7 @@ module.exports = [
         },
         abbrev: "Dim Tear II",
         faction: "vuilraith",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.aerie_hololattice",
@@ -694,7 +694,7 @@ module.exports = [
         },
         abbrev: "Aerie Holo",
         faction: "argent",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.destroyer.strike_wing_alpha_2",
@@ -705,7 +705,7 @@ module.exports = [
         },
         abbrev: "String Wing II",
         faction: "argent",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.cruiser.saturn_engine_2",
@@ -718,7 +718,7 @@ module.exports = [
         },
         abbrev: "Sat Eng II",
         faction: "ul",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.pds.hel_titan_2",
@@ -730,7 +730,7 @@ module.exports = [
         },
         abbrev: "Hel-Titan II",
         faction: "ul",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.aetherstream",
@@ -741,7 +741,7 @@ module.exports = [
         },
         abbrev: "Aetherstream",
         faction: "empyrean",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.voidwatch",
@@ -752,7 +752,7 @@ module.exports = [
         },
         abbrev: "Voidwatch",
         faction: "empyrean",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "unit.infantry.crimson_legionnaire_2",
@@ -765,7 +765,7 @@ module.exports = [
         },
         abbrev: "Crimson Legin II",
         faction: "mahact",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.genetic_recombination",
@@ -776,7 +776,7 @@ module.exports = [
         },
         abbrev: "Gene Recomb",
         faction: "mahact",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.supercharge",
@@ -787,7 +787,7 @@ module.exports = [
         },
         abbrev: "Supercharge",
         faction: "naazrokha",
-        source: " PoK",
+        source: "PoK",
     },
     {
         localeName: "technology.name.pre_fab_arcologies",
@@ -798,7 +798,7 @@ module.exports = [
         },
         abbrev: "Pre-Fab Arc",
         faction: "naazrokha",
-        source: " PoK",
+        source: "PoK",
     },
 
     {
@@ -808,7 +808,7 @@ module.exports = [
             Red: 2,
         },
         abbrev: "Scenario Destroyer",
-        source: " Codex 1",
+        source: "Codex 1",
     },
     {
         localeName: "technology.name.exception_no_id",
@@ -818,6 +818,6 @@ module.exports = [
             Yellow: 1,
         },
         abbrev: "Scenario Tech",
-        source: " Codex 1",
+        source: "Codex 1",
     },
 ];
