@@ -59,6 +59,25 @@
     "ui.phase.end_strategy_phase": "Place Trade Goods and Set Turns",
     "ui.phase.end_status_phase": "Return Strategy Cards and End Status Phase",
 
+    "ui.phase.strategy.label": "Strategy",
+
+    "ui.phase.action.label": "Action",
+    "ui.phase.action.activation": "Activation",
+    "ui.phase.action.movement": "Movement",
+    "ui.phase.action.space_cannon_offsense": "Space Cannon Offsense",
+    "ui.phase.action.anti_fighter_barrage": "Anti-fighter Barrage",
+    "ui.phase.action.announce_retreat": "Announce Retreat",
+    "ui.phase.action.space_combat": "Space Combat",
+    "ui.phase.action.retreat": "Retreat",
+    "ui.phase.action.bombardment": "Bombardment",
+    "ui.phase.action.space_cannon_defense": "Space Cannon Defense",
+    "ui.phase.action.ground_combat": "Ground Combat",
+    "ui.phase.action.explore": "Explore",
+    "ui.phase.action.production": "Production",
+
+    "ui.phase.status.label": "Status",
+    "ui.phase.agenda.label": "Agenda",
+
     "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 
     "ui.maptool.clean": "Clear",

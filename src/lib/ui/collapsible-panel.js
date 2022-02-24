@@ -8,8 +8,7 @@ const {
 } = require("../../wrapper/api");
 
 /**
- * Wrap a Widget inside a panet with a "collapse/expand" toggle.
- * Even though this extends VertialBox owners should only use setChild.
+ * Wrap a Widget inside a panel with a "collapse/expand" toggle.
  */
 class CollapsiblePanel extends Border {
     /**
@@ -45,10 +44,11 @@ class CollapsiblePanel extends Border {
         const text = this.isExpanded() ? "^" : "v";
         this._toggleButton.setText(text);
 
+        if (this._verticalBox.getChildAt(1)) {
+            this._verticalBox.removeChildAt(1);
+        }
         if (this.isExpanded()) {
             this._verticalBox.addChild(this._toggleChild);
-        } else {
-            this._verticalBox.removeChildAt(1);
         }
     }
 
