@@ -25,7 +25,8 @@ const PLAYER_DESKS = [
     // East
     {
         colorName: "pink",
-        hexColor: "#F46FCD",
+        hexColor: "#FF84D6",
+        plasticHexColor: "#F46FCD",
         pos: { x: 0, y: 160 },
         yaw: 180.0,
         defaultPlayerSlot: 5,
@@ -34,7 +35,8 @@ const PLAYER_DESKS = [
     // North (right to left)
     {
         colorName: "green",
-        hexColor: "#007306",
+        hexColor: "#5AE35A",
+        plasticHexColor: "#00A306",
         pos: { x: 102.4, y: 100.8 },
         yaw: 120,
         defaultPlayerSlot: 1,
@@ -42,7 +44,8 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "red",
-        hexColor: "#CB0000",
+        hexColor: "#FF2417",
+        plasticHexColor: "#CB0000",
         pos: { x: 129.4, y: 0 },
         yaw: 90.0,
         defaultPlayerSlot: 16,
@@ -50,7 +53,8 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "yellow",
-        hexColor: "#D6B700",
+        hexColor: "#FFDA00",
+        plasticHexColor: "#FFDA00",
         pos: { x: 102.4, y: -100.8 },
         yaw: 60,
         defaultPlayerSlot: 9,
@@ -59,7 +63,8 @@ const PLAYER_DESKS = [
     // West
     {
         colorName: "orange",
-        hexColor: "#FF932B", // "#F3631C",
+        hexColor: "#FF932B",
+        plasticHexColor: "#FF7603",
         pos: { x: 0, y: -160 },
         yaw: 0,
         defaultPlayerSlot: 6,
@@ -68,7 +73,8 @@ const PLAYER_DESKS = [
     // South (left to right)
     {
         colorName: "purple",
-        hexColor: "#7400B7",
+        hexColor: "#C800FF",
+        plasticHexColor: "#5E219C",
         pos: { x: -102.4, y: -100.8 },
         yaw: -60,
         defaultPlayerSlot: 4,
@@ -77,6 +83,7 @@ const PLAYER_DESKS = [
     {
         colorName: "blue",
         hexColor: "#07B2FF",
+        plasticHexColor: "#07B2FF",
         pos: { x: -129.4, y: 0 },
         yaw: -90.0,
         defaultPlayerSlot: 15,
@@ -84,7 +91,8 @@ const PLAYER_DESKS = [
     },
     {
         colorName: "white",
-        hexColor: "#8B8B8B",
+        hexColor: "#BABABA",
+        plasticHexColor: "#C1C1C1",
         pos: { x: -102.4, y: 100.8 },
         yaw: -120,
         defaultPlayerSlot: 18,
@@ -271,6 +279,7 @@ class PlayerDesk {
         this._index = index;
         this._colorName = attrs.colorName;
         this._color = ColorUtil.colorFromHex(attrs.hexColor);
+        this._plasticColor = ColorUtil.colorFromHex(attrs.plasticHexColor);
         this._pos = new Vector(
             attrs.pos.x,
             attrs.pos.y,
@@ -291,6 +300,9 @@ class PlayerDesk {
     }
     get color() {
         return this._color;
+    }
+    get plasticColor() {
+        return this._plasticColor;
     }
     get colorName() {
         return this._colorName;
@@ -338,9 +350,11 @@ class PlayerDesk {
             onChangeColor: (button, player) => {
                 const colorName = button._colorName;
                 const colorTint = button._colorTint;
+                const plasticColorTint = button._plasticColorTint;
                 assert(colorName);
                 assert(colorTint);
-                if (!this.changeColor(colorName, colorTint)) {
+                assert(plasticColorTint);
+                if (!this.changeColor(colorName, colorTint, plasticColorTint)) {
                     player.showMessage(locale("ui.desk.color_not_available"));
                 }
                 this.resetUI();
@@ -411,7 +425,7 @@ class PlayerDesk {
     /**
      * Get changeColor options.
      *
-     * @returns {Array.{colorName:string,color:Color}}
+     * @returns {Array.{colorName:string,color:Color,plasticColor:Color}}
      */
     getColorOptions() {
         const result = [];
@@ -420,6 +434,7 @@ class PlayerDesk {
             result.push({
                 colorName: attrs.colorName,
                 colorTint: ColorUtil.colorFromHex(attrs.hexColor),
+                plasticColorTint: ColorUtil.colorFromHex(attrs.plasticHexColor),
             });
         }
         return result;
@@ -434,9 +449,10 @@ class PlayerDesk {
      * @param {string} colorName - for promissory notes ("Ceasefile (Blue)")
      * @param {Color} colorTint
      */
-    changeColor(colorName, colorTint) {
+    changeColor(colorName, colorTint, plasticColorTint) {
         assert(typeof colorName === "string");
         assert(colorTint instanceof Color);
+        assert(plasticColorTint instanceof Color);
 
         let legalColorName = false;
         for (const deskAttrs of PLAYER_DESKS) {
@@ -449,11 +465,13 @@ class PlayerDesk {
 
         const srcColorName = this.colorName;
         const srcColorTint = this.color;
+        const srcPlasticColorTint = this.plasticColor;
         const srcPlayerSlot = this.playerSlot;
         const srcSetup = this.isDeskSetup();
         const srcFaction = world.TI4.getFactionByPlayerSlot(srcPlayerSlot);
         const dstColorName = colorName;
         const dstColorTint = colorTint;
+        const dstPlasticColorTint = plasticColorTint;
         let dstPlayerSlot = -1;
         let dstSetup = false;
         let dstFaction = false;
@@ -514,11 +532,13 @@ class PlayerDesk {
         if (swapWith) {
             swapWith._colorName = srcColorName;
             swapWith._color = srcColorTint;
+            swapWith._plasticColor = srcPlasticColorTint;
             swapWith._playerSlot = srcPlayerSlot;
         }
 
         this._colorName = dstColorName;
         this._color = dstColorTint;
+        this._plasticColor = dstPlasticColorTint;
         this._playerSlot = dstPlayerSlot;
 
         // Desks are reset.  Move players to desks.
