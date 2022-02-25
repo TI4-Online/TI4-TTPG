@@ -2,7 +2,7 @@
 	"Type": "Card Holder",
 	"GUID": "2E3F63984DBE5B704482D3A732F28BF5",
 	"Name": "Card Holder",
-	"Metadata": "",
+	"Metadata": "cardholder:base/large",
 	"CollisionType": "Ground",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -73,6 +73,6 @@
 		"Z": 1.5
 	},
 	"CardsWidth": 20,
-	"MaxCards": 10,
+	"MaxCards": 100,
 	"MaxCardHeight": 10
 }
