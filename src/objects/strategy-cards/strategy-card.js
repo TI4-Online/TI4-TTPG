@@ -11,16 +11,10 @@ const {
     world,
 } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 let openSelections = {};
 let playerUis = {};
-
-function broadcastMessage(messageKey, localeArgs = {}, player) {
-    const message = locale(messageKey, localeArgs);
-    for (const p of world.getAllPlayers()) {
-        p.sendChatMessage(message, player && player.getPlayerColor());
-    }
-}
 
 function getTopLevelWidget(element) {
     const parent = element.getParent();
@@ -238,12 +232,11 @@ function onUiClosedClicked(button, player) {
     // send notifications in case all have responded
     if (openSelections[cardId].length === 0) {
         delete openSelections[border.card.getId()];
-        broadcastMessage(locale("strategy_card.message.all_resolved"));
+        Broadcast.broadcastAll(locale("strategy_card.message.all_resolved"));
     }
 }
 
 module.exports = {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 };

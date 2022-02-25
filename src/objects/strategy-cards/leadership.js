@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -12,6 +11,7 @@ const {
     VerticalBox,
     refObject,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 
 let selections = {};
@@ -72,7 +72,7 @@ const onStrategyCardSelectionDone = (card, player) => {
         playerName: player.getName(),
         commandTokenCount: commandTokenCount,
     });
-    broadcastMessage(message, {}, player);
+    Broadcast.chatAll(message, player.getPlayerColor());
 };
 
 new RegisterStrategyCardUI()

@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -11,6 +10,7 @@ const {
     Text,
     refObject,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
 
@@ -185,7 +185,10 @@ const onTechResearched = (button, player) => {
         );
     }
 
-    broadcastMessage(messageKey, messageParameters, player);
+    Broadcast.chatAll(
+        locale(messageKey, messageParameters),
+        player.getPlayerColor()
+    );
 };
 
 function widgetFactory(playerDesk, packageId) {

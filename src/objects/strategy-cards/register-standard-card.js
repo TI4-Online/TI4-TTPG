@@ -1,9 +1,9 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
 const { Button, Color, Text, VerticalBox } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 
 module.exports = function registerStandardCard(
@@ -12,24 +12,27 @@ module.exports = function registerStandardCard(
     color
 ) {
     const onPrimaryClicked = (button, player) => {
-        broadcastMessage(
-            `strategy_card.${name}.message.primary`,
-            { playerName: player.getName() },
-            player
+        Broadcast.chatAll(
+            locale(`strategy_card.${name}.message.primary`, {
+                playerName: player.getName(),
+            }),
+            player.getPlayerColor()
         );
     };
     const onSecondaryClicked = (button, player) => {
-        broadcastMessage(
-            `strategy_card.${name}.message.secondary`,
-            { playerName: player.getName() },
-            player
+        Broadcast.chatAll(
+            locale(`strategy_card.${name}.message.secondary`, {
+                playerName: player.getName(),
+            }),
+            player.getPlayerColor()
         );
     };
     const onPassClicked = (button, player) => {
-        broadcastMessage(
-            `strategy_card.${name}.message.pass`,
-            { playerName: player.getName() },
-            player
+        Broadcast.chatAll(
+            locale(`strategy_card.${name}.message.pass`, {
+                playerName: player.getName(),
+            }),
+            player.getPlayerColor()
         );
     };
 

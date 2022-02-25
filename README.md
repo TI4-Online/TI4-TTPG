@@ -52,10 +52,10 @@ To add new strategy cards, the following code can be used within the object scri
 const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
-} = require("/objects/strategy-cards/strategy-card");
+} = require("<..>/objects/strategy-cards/strategy-card");
 
-const locale = require("../../lib/locale");
-const { Button, Color } = require("../../wrapper/api");
+const locale = require("<..>/lib/locale");
+const { Button, Color } = require("<..>/wrapper/api");
 
 // ...
 
@@ -80,24 +80,22 @@ new RegisterStrategyCardUI()
 To send messages in the chat and color code the message in the players color a helper is available:
 
 ```javascript
-const {
-    broadcastMessage,
-} = require("/objects/strategy-cards/strategy-card");
+const { Broadcast } = require("<..>/lib/broadcast");
+const locale = require("<..>/lib/locale");
 
-/...
+//...
 
-broadcastMessage(
-    "messageKey", // found in the <lang>.json
-    {},           // messageParameters for string replacement in the message
-    player,       // triggering the event. i.e. pressing a button
+Broadcast.chatAll(
+    locale("messageKey"),
+    player.getPlayerColor() // coloring the text message in a players color
 );
 ```
 
 For using a plain UI with only a "primary", "secondary" and "pass" button, the registration can be narrowed down to:
 
 ```javascript
-const { refObject, Color } = require("../../wrapper/api");
-require("./register-standard-card")(
+const { refObject, Color } = require("<..>/wrapper/api");
+require("<..>/objects/strategy-cards/register-standard-card")(
     refObject,
     "<myStrategyCard>", // text key section for locale (see below)
     new Color(1, 0, 0) // ttpg-color of the background
