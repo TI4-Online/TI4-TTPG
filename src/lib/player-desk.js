@@ -59,7 +59,7 @@ const PLAYER_DESKS = [
     // West
     {
         colorName: "orange",
-        hexColor: "#F3631C",
+        hexColor: "#FF932B", // "#F3631C",
         pos: { x: 0, y: -160 },
         yaw: 0,
         defaultPlayerSlot: 6,
