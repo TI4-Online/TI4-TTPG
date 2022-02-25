@@ -106,7 +106,7 @@ class SetupUnits extends AbstractSetup {
         const unitNsid = unitData.unitNsid;
         const bagNsid = "bag." + unitNsid;
 
-        const color = this.playerDesk.color;
+        const color = this.playerDesk.plasticColor;
         const playerSlot = this.playerDesk.playerSlot;
 
         const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
