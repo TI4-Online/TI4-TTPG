@@ -3,7 +3,7 @@
 	"GUID": "641BDC9E4734D244C7E76BA7D1B3E470",
 	"Name": "FactionSheet - Arborec",
 	"Metadata": "",
-	"CollisionType": "Regular",
+	"CollisionType": "Ground",
 	"Friction": 0.7,
 	"Restitution": 0.3,
 	"Density": 1,
@@ -86,7 +86,7 @@
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
