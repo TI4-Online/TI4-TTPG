@@ -87,7 +87,7 @@ class PlayerDeskUI {
         assert(typeof localeLabel === "string");
         assert(typeof onClicked === "function");
 
-        const color = this._playerDesk.color;
+        const color = this._playerDesk.plasticColor;
         const labelText = locale(localeLabel);
         const button = new Button()
             .setTextColor(color)
@@ -101,7 +101,7 @@ class PlayerDeskUI {
         assert(typeof onClicked === "function");
 
         // Create a swatch with not-setup peer colors.
-        const color = this._playerDesk.color;
+        const color = this._playerDesk.plasticColor;
         const labelText = locale("ui.desk.change_color");
         const text = new Text()
             .setTextColor(color)
@@ -111,11 +111,12 @@ class PlayerDeskUI {
         const colorChoices = new HorizontalBox();
         for (const colorOption of this._colorOptions) {
             const button = new Button()
-                .setTextColor(colorOption.colorTint)
+                .setTextColor(colorOption.plasticColorTint)
                 .setFontSize(LARGE_FONT_SIZE)
                 .setText("[X]");
             button._colorName = colorOption.colorName;
             button._colorTint = colorOption.colorTint;
+            button._plasticColorTint = colorOption.plasticColorTint;
             button.onClicked.add(onClicked);
             colorChoices.addChild(button);
         }
