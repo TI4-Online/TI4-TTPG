@@ -9,7 +9,7 @@
 		"playerTeams": [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 		"globalScriptPackage": "DEE44C689452447E8ED6FDDBEB19BB23",
 		"globalScriptName": "global.js",
-		"persistentData": "{\"playerCount\":6,\"desks\":[{\"c\":\"#8b8b8b\",\"cn\":\"white\",\"s\":18,\"r\":false},{\"c\":\"#07b2ff\",\"cn\":\"blue\",\"s\":15,\"r\":false},{\"c\":\"#7400b7\",\"cn\":\"purple\",\"s\":4,\"r\":false},{\"c\":\"#d6b700\",\"cn\":\"yellow\",\"s\":9,\"r\":false},{\"c\":\"#cb0000\",\"cn\":\"red\",\"s\":16,\"r\":false},{\"c\":\"#007306\",\"cn\":\"green\",\"s\":1,\"r\":false}],\"config\":{\"playerCount\":6,\"gamePoints\":10,\"pok\":true,\"omega\":true,\"codex1\":true,\"codex2\":true,\"franken\":false,\"timestamp\":0}}",
+		"persistentData": "{\"playerCount\":6,\"desks\":[{\"c\":\"#BABABA\",\"pc\":\"#C1C1C1\",\"cn\":\"white\",\"s\":18,\"r\":false},{\"c\":\"#07B2FF\",\"pc\":\"#07B2FF\",\"cn\":\"blue\",\"s\":15,\"r\":false},{\"c\":\"#C800FF\",\"pc\":\"#5E219C\",\"cn\":\"purple\",\"s\":4,\"r\":false},{\"c\":\"#FFDA00\",\"pc\":\"#FFDA00\",\"cn\":\"yellow\",\"s\":9,\"r\":false},{\"c\":\"#FF2417\",\"pc\":\"#CB0000\",\"cn\":\"red\",\"s\":16,\"r\":false},{\"c\":\"#5AE35A\",\"pc\":\"#00A306\",\"cn\":\"green\",\"s\":1,\"r\":false}],\"config\":{\"playerCount\":6,\"gamePoints\":10,\"pok\":true,\"omega\":true,\"codex1\":true,\"codex2\":true,\"franken\":false,\"timestamp\":0}}",
 		"backgroundTexture":
 		{
 			"resourceName": "",

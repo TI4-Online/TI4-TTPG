@@ -232,6 +232,7 @@ class PlayerDesk {
         if (deskState.length === _playerDesks.length) {
             for (let i = 0; i < _playerDesks.length; i++) {
                 _playerDesks[i]._color = ColorUtil.colorFromHex(deskState[i].c);
+                _playerDesks[i]._plasticColor = ColorUtil.colorFromHex(deskState[i].pc);
                 _playerDesks[i]._colorName = deskState[i].cn;
                 _playerDesks[i]._playerSlot = deskState[i].s;
                 _playerDesks[i]._ready = deskState[i].r;
@@ -584,6 +585,7 @@ class PlayerDesk {
         for (let i = 0; i < _playerDesks.length; i++) {
             deskState.push({
                 c: ColorUtil.colorToHex(_playerDesks[i].color),
+                pc: ColorUtil.colorToHex(_playerDesks[i].plasticColor),
                 cn: _playerDesks[i].colorName,
                 s: _playerDesks[i]._playerSlot,
                 r: _playerDesks[i]._ready,
