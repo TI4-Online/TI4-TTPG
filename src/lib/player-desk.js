@@ -350,10 +350,8 @@ class PlayerDesk {
                 moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
-            onChangeColor: (button, player) => {
-                const colorName = button._colorName;
-                const colorTint = button._colorTint;
-                const plasticColorTint = button._plasticColorTint;
+            onChangeColor: (colorOption, player) => {
+                const { colorName, colorTint, plasticColorTint } = colorOption;
                 assert(colorName);
                 assert(colorTint);
                 assert(plasticColorTint);

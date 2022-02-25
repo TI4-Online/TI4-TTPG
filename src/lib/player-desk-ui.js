@@ -114,10 +114,10 @@ class PlayerDeskUI {
                 .setTextColor(colorOption.plasticColorTint)
                 .setFontSize(LARGE_FONT_SIZE)
                 .setText("[X]");
-            button._colorName = colorOption.colorName;
-            button._colorTint = colorOption.colorTint;
-            button._plasticColorTint = colorOption.plasticColorTint;
-            button.onClicked.add(onClicked);
+            button._colorOption = colorOption;
+            button.onClicked.add((button, player) => {
+                onClicked(colorOption, player);
+            });
             colorChoices.addChild(button);
         }
         return new VerticalBox().addChild(text).addChild(colorChoices);
