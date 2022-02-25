@@ -65,7 +65,7 @@ class SetupHomeSystem extends AbstractSetup {
         const rot = new Rotator(0, 0, 0);
         for (const [nsid, pos] of Object.entries(nsidToPosition)) {
             const obj = Spawn.spawn(nsid, pos, rot);
-            obj.setObjectType(ObjectType.Regular);
+            obj.setObjectType(ObjectType.Ground);
             obj.setOwningPlayerSlot(playerSlot);
         }
     }
