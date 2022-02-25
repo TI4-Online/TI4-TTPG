@@ -46,7 +46,7 @@ const TABLE_DECKS = [
         nsidPrefix: "card.objective.public_1",
         parent: {
             nsid: "mat:base/objectives_1",
-            snapPoint: 0,
+            snapPoint: 5,
         },
         pos: nextPosition(),
         yaw: -90,
@@ -55,7 +55,7 @@ const TABLE_DECKS = [
         nsidPrefix: "card.objective.public_2",
         parent: {
             nsid: "mat:base/objectives_2",
-            snapPoint: 0,
+            snapPoint: 5,
         },
         pos: nextPosition(),
         yaw: -90,
