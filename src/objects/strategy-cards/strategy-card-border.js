@@ -82,20 +82,31 @@ class StrategyCardBorder extends Border {
     }
 
     /**
+     * (Re)position the UI on the players desk. The <code>index</code> is used for
+     * the z-offset in case of multiple strategy card UIs on the same desk.
+     *
+     * @param {Integer} index Position of the UI on the stack on the players desk
+     */
+    positionUi(index) {
+        this._ui.position = this._desk.localPositionToWorld({
+            x: 30,
+            y: 0,
+            z: 20 + index * -1,
+        });
+        world.updateUI(this._ui);
+    }
+
+    /**
      * Spawns the UI by setting the required associations, calculating the
      * position & rotation and adding the UI to the world.
      */
-    spawnUi() {
+    spawnUi(index) {
         this._ui.useWidgetSize = false;
         this._ui.widget = this;
         this._ui.height = this.height;
         this._ui.width = this.width;
         this._ui.scale = 0.75;
-        this._ui.position = this._desk.localPositionToWorld({
-            x: 30,
-            y: -10,
-            z: 15,
-        });
+        this.positionUi(index);
         this._ui.rotation = this._desk.localRotationToWorld(
             new Rotator(25, 0, 0)
         );
