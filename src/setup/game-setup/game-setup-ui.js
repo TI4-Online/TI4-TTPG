@@ -21,7 +21,7 @@ const GAME_SETUP_UI = {
 };
 
 // Large font size affects text but checkboxes don't scale with it.
-const UI_SCALE = 1.5;
+const UI_SCALE = 1.5; //1.5;
 const UI_FONT_SIZE = 24 / UI_SCALE;
 
 class GameSetupUI {
