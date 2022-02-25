@@ -44,7 +44,9 @@ it("changeColor", () => {
     const playerDesk2 = PlayerDesk.getAllPlayerDesks()[1];
     const colorName1 = playerDesk1.colorName;
     const colorName2 = playerDesk2.colorName;
-    playerDesk1.changeColor(colorName2, new Color(1, 1, 1, 1));
+    const colorTint = new Color(1, 1, 1, 1);
+    const plasticColorTint = new Color(1, 1, 1, 1);
+    playerDesk1.changeColor(colorName2, colorTint, plasticColorTint);
     assert.equal(playerDesk1.colorName, colorName2);
     assert.equal(playerDesk2.colorName, colorName1); // swapped
 });

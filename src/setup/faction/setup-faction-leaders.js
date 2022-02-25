@@ -7,19 +7,19 @@ const { Card, Rotator, Vector } = require("../../wrapper/api");
 
 const LEADERS = {
     agent: {
-        sheetLocalOffset: { x: 6.88, y: -0.11, z: 1 },
+        sheetLocalOffset: { x: 6.88, y: -0.11, z: 5 },
         roll: 180,
     },
     commander: {
-        sheetLocalOffset: { x: 2.28, y: -0.1, z: 1 },
+        sheetLocalOffset: { x: 2.28, y: -0.1, z: 5 },
         roll: 0,
     },
     hero: {
-        sheetLocalOffset: { x: -2.28, y: -0.11, z: 1 },
+        sheetLocalOffset: { x: -2.28, y: -0.11, z: 5 },
         roll: 0,
     },
     mech: {
-        sheetLocalOffset: { x: -6.88, y: -0.11, z: 1 },
+        sheetLocalOffset: { x: -6.88, y: -0.11, z: 5 },
         roll: 180,
     },
 };
