@@ -11,7 +11,7 @@ const {
 } = require("../../wrapper/api");
 
 const { Technology } = require("./technology");
-const { PlayerDesk } = require("../player-desk");
+const { PlayerDesk } = require("../player-desk/player-desk");
 
 const player1 = new MockPlayer({ name: "one" });
 const player2 = new MockPlayer({ name: "two" });
@@ -22,7 +22,7 @@ world.TI4.getAllPlayerDesks()[0].seatPlayer(player1);
 world.TI4.getAllPlayerDesks()[1].seatPlayer(player2);
 
 const playerSlot = 1;
-const desk = PlayerDesk.getAllPlayerDesks()[0];
+const desk = world.TI4.getAllPlayerDesks()[0];
 const sheet = new MockGameObject({
     templateMetadata: "sheet.faction:base/arborec",
     position: desk.center,

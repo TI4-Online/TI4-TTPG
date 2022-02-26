@@ -1,5 +1,5 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const {
     Border,
     Button,
@@ -7,7 +7,7 @@ const {
     Text,
     UIElement,
     VerticalBox,
-} = require("../wrapper/api");
+} = require("../../wrapper/api");
 
 const DESK_UI = {
     pos: { x: 30, y: 0, z: 2 },

@@ -49,7 +49,7 @@ require("./global/strategy-card-functions");
 require("./global/trigger-on-system-activated");
 
 // Player desk is naughty and wants to register global event listeners.
-const { PlayerDesk } = require("./lib/player-desk");
+const { PlayerDesk } = require("./lib/player-desk/player-desk");
 
 // Show setup ui.
 require("./setup/game-setup/game-setup");
