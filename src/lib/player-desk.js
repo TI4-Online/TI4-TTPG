@@ -5,6 +5,10 @@ const { ObjectNamespace } = require("./object-namespace");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskUI } = require("./player-desk-ui");
 const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./saved-data/global-saved-data");
+const {
     Color,
     Player,
     Rotator,
@@ -12,10 +16,6 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
-} = require("./global-saved-data");
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.

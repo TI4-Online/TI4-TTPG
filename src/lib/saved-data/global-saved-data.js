@@ -1,5 +1,5 @@
-const { world } = require("../wrapper/api");
-const assert = require("../wrapper/assert-wrapper");
+const { world } = require("../../wrapper/api");
+const assert = require("../../wrapper/assert-wrapper");
 
 const MAX_JSON_LENGTH = 1023;
 

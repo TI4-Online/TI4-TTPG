@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
-} = require("../../lib/global-saved-data");
+} = require("../../lib/saved-data/global-saved-data");
 const { globalEvents } = require("../../wrapper/api");
 
 const KEY = GLOBAL_SAVED_DATA_KEY.GAME_SETUP_CONFIG;

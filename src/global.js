@@ -59,7 +59,7 @@ if (!world.__isMock) {
 
 const { Faction } = require("./lib/faction/faction");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
-const { GlobalSavedData } = require("./lib/global-saved-data");
+const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
 const { GameData } = require("./lib/game-data/game-data");
 
