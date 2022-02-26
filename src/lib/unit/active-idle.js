@@ -1,7 +1,13 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
-const { Button, GameObject, UIElement } = require("../../wrapper/api");
+const {
+    Button,
+    GameObject,
+    Rotator,
+    Vector,
+    UIElement,
+} = require("../../wrapper/api");
 
 const IS_ACTIVE_KEY = "isActive";
 
@@ -21,7 +27,7 @@ class ActiveIdle {
     static addToggleActiveButton(obj) {
         assert(obj instanceof GameObject);
 
-        const button = new Button();
+        const button = new Button().setFontSize(10).setText("<???>");
 
         // Apply current state.
         const updateButton = (button) => {
@@ -33,7 +39,7 @@ class ActiveIdle {
         updateButton(button);
 
         // Click to toggle and update state.
-        button.onClicked((button, player) => {
+        button.onClicked.add((button, player) => {
             const toggled = !ActiveIdle.isActive(obj);
             ActiveIdle.setActive(obj, toggled);
             updateButton(button);
@@ -41,6 +47,11 @@ class ActiveIdle {
 
         const ui = new UIElement();
         ui.widget = button;
+
+        const extent = obj.getExtent();
+        ui.position = new Vector(-extent.x, 0, -extent.z - 0.1);
+        ui.rotation = new Rotator(180, 180, 0);
+
         obj.addUI(ui);
     }
 

@@ -5,7 +5,7 @@ const { ActiveIdle } = require("../lib/unit/active-idle");
 const { UnitModifier } = require("../lib/unit/unit-modifier");
 const { globalEvents, world } = require("../wrapper/api");
 
-globalEvents.onObjectCreated((obj) => {
+globalEvents.onObjectCreated.add((obj) => {
     if (UnitModifier.isToggleActiveObject(obj)) {
         ActiveIdle.addToggleActiveButton(obj);
     }

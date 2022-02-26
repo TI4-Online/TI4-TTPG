@@ -40,6 +40,7 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
+require("./global/active-idle-unit-modifiers");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/patch-infinite-container");
