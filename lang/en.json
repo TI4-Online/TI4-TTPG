@@ -33,6 +33,9 @@
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
     "ui.message.strategy_card_play": "{playerName} played {cardName} strategy card",
 
+    "ui.button.active": "Active",
+    "ui.button.idle": "Idle",
+
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
