@@ -1,9 +1,13 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("./locale");
-const { ColorUtil } = require("./color/color-util");
-const { ObjectNamespace } = require("./object-namespace");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const { ColorUtil } = require("../color/color-util");
+const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskUI } = require("./player-desk-ui");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("../saved-data/global-saved-data");
 const {
     Color,
     Player,
@@ -11,11 +15,7 @@ const {
     Vector,
     globalEvents,
     world,
-} = require("../wrapper/api");
-const {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
-} = require("./global-saved-data");
+} = require("../../wrapper/api");
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.
@@ -341,6 +341,7 @@ class PlayerDesk {
             canFaction: world.TI4.config.timestamp > 0,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
         };
+        assert(!this._ui);
         this._ui = new PlayerDeskUI(this, colorOptions, {
             onTakeSeat: (button, player) => {
                 this.seatPlayer(player);
@@ -570,6 +571,14 @@ class PlayerDesk {
         }
 
         this.saveDesksState();
+
+        globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
+        if (swapWith) {
+            globalEvents.TI4.onPlayerColorChanged.trigger(
+                swapWith.color,
+                swapWith.index
+            );
+        }
 
         return true;
     }

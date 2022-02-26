@@ -12,8 +12,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
-PHASE_UI_POS = { x: 0, y: -100, z: world.getTableHeight() + 5 };
-PHASE_UI_ROT = { pitch: 0, roll: -90, yaw: 0 };
+const PHASE_UI_POS = { x: 0, y: -100, z: world.getTableHeight() + 5 };
+const PHASE_UI_ROT = { pitch: 0, roll: -90, yaw: 0 };
 
 class PhaseUI {
     constructor() {}

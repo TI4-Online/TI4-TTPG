@@ -1,7 +1,7 @@
-require("../global"); // create globalEvents.TI4
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { PlayerDesk } = require("./player-desk");
-const { Color, MockPlayer, world } = require("../wrapper/api");
+const { Color, MockPlayer, world } = require("../../wrapper/api");
 
 it("static getPlayerDesks", () => {
     const player = new MockPlayer();

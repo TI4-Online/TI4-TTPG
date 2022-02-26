@@ -1,11 +1,13 @@
 require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const locale = require("../locale");
+const { ActiveIdle } = require("./active-idle");
+const { AuxDataBuilder } = require("./auxdata");
+const { ObjectNamespace } = require("../object-namespace");
 const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { UnitModifier, PRIORITY, OWNER } = require("./unit-modifier");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
-const { AuxDataBuilder } = require("./auxdata");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 const { world, MockCard, MockCardDetails } = require("../../mock/mock-api");
 
@@ -107,6 +109,41 @@ it("static getPlayerUnitModifiers", () => {
 it("static getFactionAbilityUnitModifier", () => {
     const result = UnitModifier.getFactionAbilityUnitModifier("fragile");
     assert.equal(result.raw.localeName, "unit_modifier.name.fragile");
+});
+
+it("active/idle", () => {
+    const CARD_NSID = "card.leader.agent.sol:pok/evelyn_delouis";
+    const MODIFIER_NAME = "unit_modifier.name.evelyn_delouis";
+    world.__clear();
+    const myPlayerSlot = 7;
+    const toggleActiveCard = new MockCard({
+        cardDetails: new MockCardDetails({
+            metadata: CARD_NSID,
+        }),
+        owningPlayerSlot: myPlayerSlot,
+    });
+    world.__addObject(toggleActiveCard);
+
+    const nsid = ObjectNamespace.getNsid(toggleActiveCard);
+    assert(UnitModifier.getNsidUnitModifier(nsid));
+    assert(UnitModifier.isToggleActiveObject(toggleActiveCard));
+
+    ActiveIdle.setActive(toggleActiveCard, false);
+    const resultIdle = UnitModifier.getPlayerUnitModifiers(
+        myPlayerSlot,
+        "self"
+    );
+
+    ActiveIdle.setActive(toggleActiveCard, true);
+    const resultActive = UnitModifier.getPlayerUnitModifiers(
+        myPlayerSlot,
+        "self"
+    );
+
+    world.__clear();
+    assert.equal(resultIdle.length, 0);
+    assert.equal(resultActive.length, 1);
+    assert.equal(resultActive[0].raw.localeName, MODIFIER_NAME);
 });
 
 it("name/desc", () => {

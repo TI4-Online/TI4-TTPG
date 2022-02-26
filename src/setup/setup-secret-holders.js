@@ -1,4 +1,3 @@
-console.log(require("ajv"));
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
@@ -9,6 +8,7 @@ const {
     Rotator,
     Vector,
     globalEvents,
+    refPackageId,
     world,
 } = require("../wrapper/api");
 
@@ -54,6 +54,12 @@ class SetupSecretHolders extends AbstractSetup {
             obj.setScale([0.73, 0.35, 0.5]);
             obj.setPrimaryColor(playerDesk.color);
             obj.setHiddenCardsType(HiddenCardsType.Front);
+            obj.setSavedData(
+                JSON.stringify({
+                    deskIndex: playerDesk.index,
+                })
+            );
+            obj.setScript("objects/secret-holder.js", refPackageId);
         }
     }
 
