@@ -341,6 +341,7 @@ class PlayerDesk {
             canFaction: world.TI4.config.timestamp > 0,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
         };
+        assert(!this._ui);
         this._ui = new PlayerDeskUI(this, colorOptions, {
             onTakeSeat: (button, player) => {
                 this.seatPlayer(player);

@@ -1,14 +1,13 @@
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
+const { CardUtil } = require("../card/card-util");
+const { Faction } = require("../faction/faction");
 const { FindTurnOrder } = require("./find-turn-order");
 const { ObjectNamespace } = require("../object-namespace");
-const { Faction } = require("../faction/faction");
-const { world, Vector, Rotator, Card } = require("../../wrapper/api");
 const { System } = require("../system/system");
-const assert = require("../../wrapper/assert-wrapper");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const { Broadcast } = require("../broadcast");
-const { PlayerDesk } = require("../player-desk");
-const { CardUtil } = require("../card/card-util");
-const locale = require("../locale");
+const { world, Vector, Rotator, Card } = require("../../wrapper/api");
 
 const ANIMATION_SPEED = 1;
 
@@ -99,7 +98,7 @@ class DealActionCards {
 
         // get the color names for each slot for better broadcast messages
         const colorNames = Object.fromEntries(
-            PlayerDesk.getAllPlayerDesks().map((element) => [
+            world.TI4.getAllPlayerDesks().map((element) => [
                 element.playerSlot,
                 element.colorName,
             ])
