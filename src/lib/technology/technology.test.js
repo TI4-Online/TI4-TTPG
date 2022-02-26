@@ -1,5 +1,4 @@
 require("../../global");
-let technologyData = require("./technology.data");
 const { Faction } = require("../faction/faction");
 
 const {
