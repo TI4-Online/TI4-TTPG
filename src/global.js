@@ -19,6 +19,10 @@ globalEvents.TI4 = {
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(),
 
+    // Called after a player color changes (setup not finished).
+    // <(playerColor: Color, deskIndex: number) => void>
+    onPlayerColorChanged: new TriggerableMulticastDelegate(),
+
     // Called after the player count changes (setup not finished).
     // <(playerCount: number, player: Player|undefined) => void>
     onPlayerCountChanged: new TriggerableMulticastDelegate(),

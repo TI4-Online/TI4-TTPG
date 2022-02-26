@@ -571,6 +571,14 @@ class PlayerDesk {
 
         this.saveDesksState();
 
+        globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
+        if (swapWith) {
+            globalEvents.TI4.onPlayerColorChanged.trigger(
+                swapWith.color,
+                swapWith.index
+            );
+        }
+
         return true;
     }
 
