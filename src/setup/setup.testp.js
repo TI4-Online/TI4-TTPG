@@ -1,6 +1,7 @@
 const { SetupGenericPromissory } = require("./setup-generic-promissory");
 const { SetupGenericTech } = require("./setup-generic-tech");
 const { SetupCardHolders } = require("./setup-card-holders");
+const { SetupSecretHolders } = require("./setup-secret-holders");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
@@ -25,6 +26,7 @@ const ACTION = {
     GENERIC_PROMISSORY: "*Generic promissory",
     SYSTEM_TILES: "*System tiles",
     TABLE_MATS: "*Table mats",
+    SECRET_HOLDERS: "*Secret holders",
     TABLE_DECKS: "*Table decks",
     TABLE_TOKENS: "*Table tokens",
     STRATEGY_CARDS: "*Strategy cards",
@@ -87,6 +89,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupSystemTiles());
     } else if (actionName === ACTION.TABLE_MATS) {
         setups.push(new SetupTableMats());
+    } else if (actionName === ACTION.SECRET_HOLDERS) {
+        setups.push(new SetupSecretHolders());
     } else if (actionName === ACTION.TABLE_DECKS) {
         setups.push(new SetupTableDecks());
     } else if (actionName === ACTION.TABLE_TOKENS) {
