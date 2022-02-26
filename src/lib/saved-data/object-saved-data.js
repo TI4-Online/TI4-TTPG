@@ -1,22 +1,13 @@
-const { world } = require("../../wrapper/api");
 const assert = require("../../wrapper/assert-wrapper");
+const { GameObject } = require("../../wrapper/api");
 
 const MAX_JSON_LENGTH = 1023;
 
 /**
- * Register names here to avoid collisions.
- */
-const GLOBAL_SAVED_DATA_KEY = Object.freeze({
-    PLAYER_COUNT: "playerCount",
-    DESK_STATE: "desks",
-    GAME_SETUP_CONFIG: "config",
-});
-
-/**
- * Store a key/value in the world saved data.
+ * Store a key/value in the object's saved data.
  * Encoded JSON is limited to 1023 bytes!
  */
-class GlobalSavedData {
+class ObjectSavedData {
     constructor() {
         throw new Error("static only");
     }
@@ -24,14 +15,16 @@ class GlobalSavedData {
     /**
      * Read persistent data.
      *
+     * @param {GameObject} obj
      * @param {string} key
      * @param {*} defaultValue - anything JSON can stringify
      * @returns {*} defaultValue, if given
      */
-    static get(key, defaultValue = undefined) {
+    static get(obj, key, defaultValue = undefined) {
+        assert(obj instanceof GameObject);
         assert(typeof key === "string");
 
-        const json = world.getSavedData();
+        const json = obj.getSavedData();
         if (json.length > 0) {
             const parsed = JSON.parse(json);
             if (key in parsed) {
@@ -44,13 +37,15 @@ class GlobalSavedData {
     /**
      * Write persistent data.
      *
+     * @param {GameObject} obj
      * @param {string} key
      * @param {*} value
      */
-    static set(key, value) {
+    static set(obj, key, value) {
+        assert(obj instanceof GameObject);
         assert(typeof key === "string");
 
-        let json = world.getSavedData();
+        let json = obj.getSavedData();
         let parsed;
         if (json.length > 0) {
             parsed = JSON.parse(json);
@@ -60,21 +55,18 @@ class GlobalSavedData {
         parsed[key] = value;
         json = JSON.stringify(parsed);
         assert(json.length <= MAX_JSON_LENGTH);
-        world.setSavedData(json);
-        if (!world.__isMock) {
-            console.log(`GlobalSavedData.set(${key}): |SUM(v)|=${json.length}`);
-        }
+        obj.setSavedData(json);
     }
 
     /**
      * Reset all persistent state to defaults.
      */
-    static clear() {
-        world.setSavedData("");
+    static clear(obj) {
+        assert(obj instanceof GameObject);
+        obj.setSavedData("");
     }
 }
 
 module.exports = {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
+    ObjectSavedData,
 };
