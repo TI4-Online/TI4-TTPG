@@ -1,6 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const { Spawn } = require("./spawn/spawn");
 const {
     CardHolder,
@@ -8,7 +9,6 @@ const {
     Rotator,
     Vector,
     globalEvents,
-    refPackageId,
     world,
 } = require("../wrapper/api");
 
@@ -16,6 +16,7 @@ const X0 = -29;
 const Y0 = -66;
 const DY = -10;
 const YAW = 90;
+const DESK_INDEX_KEY = "deskIndex";
 
 class SetupSecretHolders extends AbstractSetup {
     constructor() {
@@ -46,20 +47,15 @@ class SetupSecretHolders extends AbstractSetup {
             }
         }
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const nsid = "cardholder:base/large";
+            const nsid = "cardholder:base/small";
             const pos = positions[playerDesk.index];
             const rot = rotations[playerDesk.index];
             assert(pos && rot);
             const obj = Spawn.spawn(nsid, pos, rot);
-            obj.setScale([0.73, 0.35, 0.5]);
             obj.setPrimaryColor(playerDesk.color);
             obj.setHiddenCardsType(HiddenCardsType.Front);
-            obj.setSavedData(
-                JSON.stringify({
-                    deskIndex: playerDesk.index,
-                })
-            );
-            obj.setScript("objects/secret-holder.js", refPackageId);
+            obj.setOnlyOwnerTakesCards(false);
+            ObjectSavedData.set(obj, DESK_INDEX_KEY, playerDesk.index);
         }
     }
 
