@@ -9,8 +9,12 @@ class Reporter {
         this._container = container;
 
         // arrow functions necessary to get proper "this" value
-        this._container.onInserted.add(() => this.countInserted());
-        this._container.onRemoved.add(() => this.countRemoved());
+        this._container.onInserted.add((container, objects, player) =>
+            this.countInserted(container, objects, player)
+        );
+        this._container.onRemoved.add((container, objects, player) =>
+            this.countRemoved(container, objects, player)
+        );
 
         this._insertedCounter = 0;
         this._firstInserted = false;
@@ -19,11 +23,10 @@ class Reporter {
         this._firstRemoved = false;
     }
 
-    countInserted() {
-        this._insertedCounter++;
+    countInserted(_container, objects, _player) {
+        this._insertedCounter += objects.length;
         if (!this._firstInserted) {
             this._firstInserted = true;
-            console.log("STARTING INSERT DELAY");
             setTimeout(() => {
                 console.log(`${this._insertedCounter} tokens returned`);
                 this._insertedCounter = 0;
@@ -32,11 +35,10 @@ class Reporter {
         }
     }
 
-    countRemoved() {
+    countRemoved(_container, _object, _player) {
         this._removedCounter++;
         if (!this._firstRemoved) {
             this._firstRemoved = true;
-            console.log("STARTING REMOVE DELAY");
             setTimeout(() => {
                 console.log(`${this._removedCounter} tokens taken`);
                 this._removedCounter = 0;
