@@ -24,6 +24,9 @@
     "ui.message.roll.hit": "HIT",
     "ui.message.roll.crit": "CRIT",
 
+    "ui.message.command_tokens_removed": "{factionName} withdrew {count} command {#count|token|tokens}",
+    "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
+
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
