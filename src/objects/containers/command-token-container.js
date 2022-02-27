@@ -11,13 +11,20 @@ const locale = require("../../lib/locale");
 const DELAY = 3000; // delay in milliseconds before reporting
 
 function holdsObject(container, object) {
-    const containerName = ObjectNamespace.parseGeneric(container).name;
     const rejectReason = getRejectReason(container, object);
 
-    // command token bags have name "*"
-    // not sure if this is a bug from when they get spawned or caused by this script
-    if (rejectReason === REJECT_REASON.MISMATCH_NAME && containerName === "*") {
-        return true;
+    // command token bags have name "*", but command tokens have the name of the
+    // faction, therefore getRejectReason will always return MISMATCH_NAME error
+    // ignore the error if the container and object are the proper type and are
+    // owned by the same player
+    if (rejectReason === REJECT_REASON.MISMATCH_NAME) {
+        const isCommandTokenBag = ObjectNamespace.isCommandTokenBag(container);
+        const isCommandToken = ObjectNamespace.isCommandToken(object);
+        const sameOwner =
+            object.getOwningPlayerSlot() === container.getOwningPlayerSlot();
+        if (isCommandTokenBag && isCommandToken && sameOwner) {
+            return true;
+        }
     }
     return !rejectReason;
 }
