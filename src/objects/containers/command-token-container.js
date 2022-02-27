@@ -8,7 +8,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 
-const DELAY = 3000; // delay in milliseconds before reporting
+const DELAY = 5000; // delay in milliseconds before reporting
 
 function holdsObject(container, object) {
     const rejectReason = getRejectReason(container, object);
