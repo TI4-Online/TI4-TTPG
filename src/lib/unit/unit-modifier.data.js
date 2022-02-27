@@ -1209,10 +1209,13 @@ module.exports = [
         localeDescription: "unit_modifier.desc.ul_the_progenitor",
         owner: "self",
         priority: "mutate",
-        toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
         filter: (auxData) => {
-            return auxData.rollType === "spaceCannon";
+            if (auxData.rollType !== "spaceCannon") {
+                return false;
+            }
+            // Only applies to Elysium.
+            return auxData.system && auxData.system.tile === 55;
         },
         applyAll: (unitAttrsSet, auxData) => {
             if (auxData.self.has("space_dock")) {
