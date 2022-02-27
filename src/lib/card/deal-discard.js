@@ -126,14 +126,29 @@ class DealDiscard {
             ? deckData.discardSnapPointIndex
             : deckData.deckSnapPointIndex;
         const snapPoint = snapPoints[index];
-        const obj = snapPoint.getSnappedObject();
-        if (!obj) {
-            return;
+
+        // getSnappedObject isn't reliable.  Try, then fallback to cast.
+        let deck = snapPoint.getSnappedObject();
+        if (deck && deck.isInHolder()) {
+            deck = false; // already dealt, but not moved yet
         }
-        if (!(obj instanceof Card)) {
-            return;
+        if (!deck || !(deck instanceof Card)) {
+            const pos = snapPoint.getGlobalPosition();
+            const src = pos.subtract([0, 0, 50]);
+            const dst = pos.add([0, 0, 50]);
+            const hits = world.lineTrace(src, dst);
+            for (const hit of hits) {
+                if (!(hit.object instanceof Card)) {
+                    continue; // not a card
+                }
+                if (hit.object.isInHolder()) {
+                    continue; // already dealt, but not moved yet
+                }
+                deck = hit.object;
+                break;
+            }
         }
-        return obj;
+        return deck;
     }
 
     /**
@@ -175,13 +190,14 @@ class DealDiscard {
                 const snapPoints = parent.getAllSnapPoints();
                 const snapPoint = snapPoints[deckData.deckSnapPointIndex];
                 assert(snapPoint);
-                const pos = snapPoint.getGlobalPosition();
+                const pos = snapPoint.getGlobalPosition().add([0, 0, 10]);
                 const yaw = snapPoint.getSnapRotation();
                 const rot = new Rotator(0, yaw, 0).compose(
                     parent.getRotation()
                 );
                 discard.setPosition(pos, 1);
                 discard.setRotation(rot, 1);
+                discard.snap();
                 deck = discard;
             }
         }
@@ -213,12 +229,23 @@ class DealDiscard {
         assert(typeof playerSlot === "number");
 
         const deck = DealDiscard.getDeckWithReshuffle(nsidPrefix, count);
-        if (!deck || deck.getStackSize() < count) {
+        if (!deck) {
+            console.log(`deal(${nsidPrefix}, ${count}): missing deck`);
             return false;
         }
+        if (deck.getStackSize() < count) {
+            console.log(
+                `deal(${nsidPrefix}, ${count}): too few cards in deck (${deck.getStackSize()})`
+            );
+            return false;
+        }
+
+        // Move the card elsewhere before dealing so future linecasts trying to
+        // find the deck don't find it by accident.
         const faceDown = false; // false = card will be face up in hand
-        const dealToAllHolders = false; // false = only deal to primary card holder
+        const dealToAllHolders = true; // needs to be true to deal to other players?
         deck.deal(count, [playerSlot], faceDown, dealToAllHolders);
+        return true;
     }
 
     /**

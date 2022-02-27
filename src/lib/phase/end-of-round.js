@@ -8,57 +8,13 @@ const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
 const { world, Vector, Rotator, Card } = require("../../wrapper/api");
+const { DealDiscard } = require("../card/deal-discard");
 
 const ANIMATION_SPEED = 1;
 
 class DealActionCards {
     constructor() {
         throw new Error("static only");
-    }
-
-    static getActionCardDeckAndDiscard() {
-        for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "mat:base/decks") {
-                const snapPoints = obj.getAllSnapPoints();
-
-                // TODO: find another way to do this as the docs reads:
-                // "[getSnappedObject] is not guaranteed to work correctly"
-                const deck = snapPoints[3].getSnappedObject();
-                const discard = snapPoints[0].getSnappedObject();
-
-                if (!deck && !discard) {
-                    Broadcast.chatAll(
-                        "Missing both action card deck and pile!"
-                    );
-                    return;
-                }
-
-                if (deck) {
-                    assert(deck instanceof Card);
-                } else {
-                    Broadcast.chatAll("Shuffling Action Card Discard Pile");
-                    assert(discard instanceof Card);
-                    discard.shuffle();
-                    discard.setPosition(
-                        snapPoints[3].getGlobalPosition(),
-                        ANIMATION_SPEED
-                    );
-                    discard.snap();
-                    discard.setRotation(
-                        discard.getRotation().compose([-180, 0, 0]),
-                        ANIMATION_SPEED
-                    );
-                    return { deck: discard, discard: null };
-                }
-
-                if (discard) {
-                    assert(discard instanceof Card);
-                }
-
-                return { deck, discard };
-            }
-        }
     }
 
     /**
@@ -91,11 +47,6 @@ class DealActionCards {
      * if necessary.
      */
     static dealToAll() {
-        const actionCards = DealActionCards.getActionCardDeckAndDiscard();
-        if (!actionCards) {
-            throw new Error("could not find action card mat.");
-        }
-
         // get the color names for each slot for better broadcast messages
         const colorNames = Object.fromEntries(
             world.TI4.getAllPlayerDesks().map((element) => [
@@ -105,28 +56,17 @@ class DealActionCards {
         );
 
         for (const playerSlot of FindTurnOrder.order()) {
-            // TODO: why does FindTurnOrder.order() return strings?
-            const slot = parseInt(playerSlot);
-
-            const count = DealActionCards.getNumberActionCardsToDeal(slot);
+            const count =
+                DealActionCards.getNumberActionCardsToDeal(playerSlot);
             const message = locale("ui.message.deal_action_cards", {
-                playerColor: colorNames[slot],
+                playerColor: colorNames[playerSlot],
                 count: count,
             });
-
-            // trigger reshuffle before the deck is empty otherwise we wont be able
-            // to add cards to the original deck
-            if (actionCards.deck.getStackSize() > count) {
-                Broadcast.chatAll(message);
-                actionCards.deck.deal(count, [slot], false, true);
-            } else {
-                // shuffle discard and add to the back of the deck
-                Broadcast.chatAll(locale("ui.message.shuffle_action_cards"));
-                actionCards.discard.shuffle();
-                actionCards.deck.addCards(actionCards.discard, true);
-
-                Broadcast.chatAll(message);
-                actionCards.deck.deal(count, [slot], false, true);
+            Broadcast.chatAll(message);
+            const success = DealDiscard.deal("card.action", count, playerSlot);
+            if (!success) {
+                // What should happen here?
+                console.warn("dealToAll: deal failed");
             }
         }
     }
