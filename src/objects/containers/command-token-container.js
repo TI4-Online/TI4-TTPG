@@ -1,5 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { world, refObject, Container } = require("../../wrapper/api");
+const { refContainer, Container } = require("../../wrapper/api");
 const {
     getRejectReason,
     REJECT_REASON,
@@ -14,7 +14,7 @@ function holdsObject(container, object) {
 
     // command token bags have name "*"
     // not sure if this is a bug from when they get spawned or caused by
-    // using refObject
+    // using refContainer
     if (rejectReason === REJECT_REASON.MISMATCH_NAME && containerName === "*") {
         return true;
     }
@@ -80,4 +80,4 @@ class Reporter {
     }
 }
 
-new Reporter(refObject);
+new Reporter(refContainer);
