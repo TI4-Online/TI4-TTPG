@@ -115,3 +115,19 @@ On messages in addition the clicking `player` is passed as a text property.
     "strategy_card.<myStrategyCard>.message.pass": "{player} says 'Nah. I dont wanna use MY CARD.'"
 }
 ```
+
+# Credits
+
+The TTS mod: inspiration, some framework concepts.
+
+11quats: attachments, planet positions, system tables, unit + system schema, command token take/put reporting
+Darrell: scripting
+Dotlogix: map string parsing, formatting
+Lonwyr: strategy card infrastructure, ui, technology helper
+Lucretiel: github continuous ingtegration, prettier
+Raptor: scanning
+Secrest: image denoising, in-progress card generation
+Somberlord: map string index to map hex translation
+TenjouUtena: strategy card buttons
+ThatRobHuman: modeling, art, tooling
+Wekker: cleanup art assets, ui

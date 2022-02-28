@@ -39,6 +39,11 @@
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
 
+    "ui.action.system.activate": "Activate System",
+    "ui.action.system.diplomacy": "Dipolmacy System",
+    "ui.action.system.control": "Control Token",
+    "ui.action.system.explore": "Explore {planetName}",
+
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",

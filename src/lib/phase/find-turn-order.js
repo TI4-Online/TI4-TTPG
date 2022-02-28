@@ -81,9 +81,12 @@ class FindTurnOrder {
 
         // Seed initiatives.
         const playerSlotToInitiative = {};
+        const playerSlotToSlotNumber = {};
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerSlotToInitiative[playerDesk.playerSlot] =
                 Number.MAX_SAFE_INTEGER;
+            playerSlotToSlotNumber[playerDesk.playerSlot] =
+                playerDesk.playerSlot;
         }
 
         // Player initiative is lowest of any initiative object.
@@ -103,7 +106,10 @@ class FindTurnOrder {
         order.sort(
             (a, b) => playerSlotToInitiative[a] - playerSlotToInitiative[b]
         );
-        return order;
+        // Boo, javascript makes these strings when used as keys.  Get numbers.
+        return order.map((slotStr) => {
+            return playerSlotToSlotNumber[slotStr];
+        });
     }
 }
 

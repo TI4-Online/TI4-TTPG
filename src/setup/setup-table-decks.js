@@ -200,16 +200,23 @@ class SetupTableDecks extends AbstractSetup {
         }
 
         // Spawn the decks, combine into one.
-        this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
-            if (nsid.startsWith("card.planet")) {
-                // Ignore home system cards.
-                const planet = world.TI4.getPlanetByCardNsid(nsid);
-                if (planet) {
-                    return !planet.system.raw.home;
+        const deck = this.spawnDecksThenFilter(
+            pos,
+            rot,
+            deckData.nsidPrefix,
+            (nsid) => {
+                if (nsid.startsWith("card.planet")) {
+                    // Ignore home system cards.
+                    const planet = world.TI4.getPlanetByCardNsid(nsid);
+                    if (planet) {
+                        return !planet.system.raw.home;
+                    }
                 }
+                return true; // no need to filter anything
             }
-            return true; // no need to filter anything
-        });
+        );
+
+        deck.snap();
     }
 }
 

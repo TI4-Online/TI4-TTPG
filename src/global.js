@@ -40,15 +40,6 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-require("./global/active-idle-unit-modifiers");
-require("./global/numpad-actions");
-require("./global/on-container-rejected");
-require("./global/patch-infinite-container");
-require("./global/patch-exclusive-bags");
-require("./global/r-swap-split-combine");
-require("./global/strategy-card-functions");
-require("./global/trigger-on-system-activated");
-
 // Player desk is naughty and wants to register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 
@@ -116,3 +107,13 @@ world.TI4 = {
         }
     },
 };
+
+require("./global/active-idle-unit-modifiers");
+require("./global/numpad-actions");
+require("./global/on-container-rejected");
+require("./global/patch-infinite-container");
+require("./global/patch-exclusive-bags");
+require("./global/r-swap-split-combine");
+require("./global/right-click-system");
+require("./global/strategy-card-functions");
+require("./global/trigger-on-system-activated");

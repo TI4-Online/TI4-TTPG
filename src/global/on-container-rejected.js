@@ -1,5 +1,7 @@
+const { CardUtil } = require("../lib/card/card-util");
+const { DealDiscard } = require("../lib/card/deal-discard");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { Container, globalEvents, world } = require("../wrapper/api");
+const { Card, Container, globalEvents, world } = require("../wrapper/api");
 
 /**
  * Handler for globalEvents.TI4.onContainerRejected
@@ -9,6 +11,26 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
     for (const rejectedObj of rejectedObjs) {
         if (rejectedObj.getContainer() != container) {
             continue; // object no longer in the container?  skip.
+        }
+
+        // If this is a card or deck attempt to discard each.
+        if (rejectedObj instanceof Card) {
+            const pos = container.getPosition().add([10, 0, 10]);
+            container.take(rejectedObj, pos, false);
+            const cards = CardUtil.separateDeck(rejectedObj);
+            const bad = [];
+            for (const card of cards) {
+                if (!DealDiscard.discard(card)) {
+                    console.log(
+                        `onContainerRejected: unknown card ${ObjectNamespace.getNsid(
+                            card
+                        )}`
+                    );
+                    bad.push(card);
+                }
+            }
+            CardUtil.makeDeck(bad);
+            continue;
         }
 
         // Try to find a home (bag with NSID bag.$type and $name).
