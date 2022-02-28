@@ -114,9 +114,11 @@ class Explore {
 
         // Is there an attachment?
         const nsid = ObjectNamespace.getNsid(card);
+        let attachmentData = false;
         let tokenNsid = false;
         for (const attachment of ATTACHMENTS) {
             if (attachment.cardNsid == nsid) {
+                attachmentData = attachment;
                 tokenNsid = attachment.tokenNsid;
                 break;
             }
@@ -127,16 +129,18 @@ class Explore {
 
         // Find token, might be in a bag.
         let tokenObj = false;
-        for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === tokenNsid) {
-                const container = obj.getContainer();
-                if (container) {
-                    const above = container.getPosition().add([0, 0, 10]);
-                    container.take(obj, above);
+        if (!attachmentData.spawn) {
+            for (const obj of world.getAllObjects()) {
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (nsid === tokenNsid) {
+                    const container = obj.getContainer();
+                    if (container) {
+                        const above = container.getPosition().add([0, 0, 10]);
+                        container.take(obj, above);
+                    }
+                    tokenObj = obj;
+                    break;
                 }
-                tokenObj = obj;
-                break;
             }
         }
 

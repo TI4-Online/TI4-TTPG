@@ -11,6 +11,7 @@ class Attachment {
         assert(gameObject instanceof GameObject);
 
         this._obj = gameObject;
+        this._attributes = attributes;
         this._localeName = locale(attributes.localeName);
         this._faceUp = attributes.faceUp;
         this._faceDown = attributes.faceDown;
@@ -36,6 +37,10 @@ class Attachment {
 
         // Expose attach function for external attach (e.g. explore).
         this._obj.__attachment = this;
+    }
+
+    get attributes() {
+        return this._attributes;
     }
 
     attach(planet = false, systemTileObj = false) {
@@ -77,16 +82,20 @@ class Attachment {
 
         // TODO: add the attachment icon to the planet card
 
-        // move and lock the attachment object to the proper location
+        // Move and lock the attachment object to the proper location
+        // Currently fits 3 comfortably.
+        const numAttachments = planet.attachments.length;
+        const phi = ((numAttachments - 1) * 120 * Math.PI) / 180;
+        const r = 1.05;
         const attachmentPosition = new Vector(
-            planet.position.x - 0.5,
-            planet.position.y - 0.5,
-            systemTileObj.getSize().z
+            planet.position.x - Math.sin(phi) * r,
+            planet.position.y - Math.cos(phi) * r,
+            systemTileObj.getSize().z + (numAttachments % 2) * 0.01
         );
         const worldPosition =
             systemTileObj.localPositionToWorld(attachmentPosition);
         this._obj.setPosition(worldPosition);
-        this._obj.setScale(systemTileObj.getScale());
+        //this._obj.setScale(systemTileObj.getScale());
         this._obj.setObjectType(ObjectType.Ground);
 
         return this;
@@ -120,6 +129,7 @@ class Attachment {
             }
             attrs.tech.forEach((element) => planet.raw.tech.push(element));
         }
+        planet.attachments.push(this);
     }
 
     detach() {
@@ -176,6 +186,10 @@ class Attachment {
                 const index = planet.raw.tech.indexOf(element);
                 planet.raw.tech.splice(index, 1);
             });
+        }
+        const index = planet.attachments.indexOf(this);
+        if (index >= 0) {
+            planet.attachments.splice(index, 1);
         }
     }
 }

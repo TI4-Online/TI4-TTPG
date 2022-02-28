@@ -31,6 +31,9 @@ class TabbedPanel extends Border {
 
         const tabButton = new Button().setText(label);
         tabButton.onClicked.add((button, player) => {
+            // TODO XXX disable tab for new content, enable others.
+
+            // Show tab content.
             if (this._verticalBox.getChildAt(1)) {
                 this._verticalBox.removeChildAt(1);
             }
