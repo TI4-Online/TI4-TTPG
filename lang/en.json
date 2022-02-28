@@ -31,6 +31,8 @@
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
     "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
+    "ui.error.no_tactic_token": "No tactic token",
+    "ui.error.diplomacy_no_token": "{name} does not have a command token in reinforcements",
 
     "ui.button.strategy_card_play": "Play",
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
@@ -38,6 +40,7 @@
 
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
+    "ui.button.cancel": "CANCEL",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Dipolmacy System",
