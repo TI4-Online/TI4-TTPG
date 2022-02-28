@@ -4,6 +4,7 @@
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
+    "ui.message.shuffling_all_decks": "Shuffling all decks",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
     "ui.message.shuffle_action_cards": "Shuffling action card discard pile",

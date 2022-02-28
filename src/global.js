@@ -115,5 +115,6 @@ require("./global/patch-infinite-container");
 require("./global/patch-exclusive-bags");
 require("./global/r-swap-split-combine");
 require("./global/right-click-system");
+require("./global/shuffle-decks-on-load");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-system-activated");
