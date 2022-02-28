@@ -90,10 +90,11 @@ class Attachment {
         const attachmentPosition = new Vector(
             planet.position.x - Math.sin(phi) * r,
             planet.position.y - Math.cos(phi) * r,
-            systemTileObj.getSize().z + (numAttachments % 2) * 0.01
+            0
         );
-        const worldPosition =
-            systemTileObj.localPositionToWorld(attachmentPosition);
+        const worldPosition = systemTileObj
+            .localPositionToWorld(attachmentPosition)
+            .add([0, 0, systemTileObj.getSize().z]);
         this._obj.setPosition(worldPosition);
         //this._obj.setScale(systemTileObj.getScale());
         this._obj.setObjectType(ObjectType.Ground);

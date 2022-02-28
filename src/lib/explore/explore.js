@@ -21,46 +21,52 @@ const {
  * 3. trigger attach.
  */
 class Explore {
-    /**
-     * Add right-click explore custom actions.
-     *
-     * @param {GameObject} systemTileObj
-     */
-    static addCustomActions(systemTileObj) {
+    static getExploreActionNamesAndActions(systemTileObj) {
         assert(systemTileObj instanceof GameObject);
 
         const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
         assert(system);
 
-        const actionNameToPlanet = {};
-        for (const planet of system.planets) {
-            if (!planet.firstTrait) {
-                continue;
+        const namesAndActions = [];
+        if (system.planets.length > 0) {
+            for (const planet of system.planets) {
+                if (!planet.firstTrait) {
+                    continue;
+                }
+                namesAndActions.push({
+                    name: locale("ui.action.system.explore", {
+                        planetName: planet.getNameStr(),
+                    }),
+                    action: (player) => {
+                        assert(player instanceof Player);
+                        const overrideTrait = false;
+                        Explore.onExplorePlanetAction(
+                            systemTileObj,
+                            planet,
+                            overrideTrait,
+                            player
+                        );
+                    },
+                });
             }
-            const actionName = locale("ui.action.system.explore", {
-                planetName: planet.getNameStr(),
+        } else {
+            namesAndActions.push({
+                name: locale("ui.action.system.explore", {
+                    planetName: locale("token.frontier"),
+                }),
+                action: (player) => {
+                    const planet = false;
+                    const overrideTrait = "frontier";
+                    Explore.onExplorePlanetAction(
+                        systemTileObj,
+                        planet,
+                        overrideTrait,
+                        player
+                    );
+                },
             });
-            actionNameToPlanet[actionName] = planet;
-            systemTileObj.addCustomAction(actionName);
         }
-        if (Object.keys(actionNameToPlanet).length === 0) {
-            return; // no explorable planets
-        }
-
-        systemTileObj.onCustomAction.add((obj, player, actionName) => {
-            assert(obj instanceof GameObject);
-            assert(player instanceof Player);
-            assert(typeof actionName === "string");
-
-            const planet = actionNameToPlanet[actionName];
-            if (!planet) {
-                return; // meant for a different handler
-            }
-            console.log(actionName);
-
-            const overrideTrait = false;
-            Explore.onExplorePlanetAction(obj, planet, overrideTrait, player);
-        });
+        return namesAndActions;
     }
 
     /**
@@ -73,7 +79,6 @@ class Explore {
      */
     static onExplorePlanetAction(systemTileObj, planet, overrideTrait, player) {
         assert(systemTileObj instanceof GameObject);
-        assert(planet); // don't require type to prevent dependency loops
         assert(!overrideTrait || typeof overrideTrait === "string");
         assert(player instanceof Player);
 
@@ -100,12 +105,11 @@ class Explore {
 
         // Draw the card.
         const count = 1;
-        pos = pos.add([0, 0, 10]);
         const rot = new Rotator(0, 0, 180);
         const card = DealDiscard.dealToPosition(
             deckNsidPrefix,
             count,
-            pos,
+            pos.add([0, 0, 10]),
             rot
         );
         if (!card) {
@@ -125,6 +129,12 @@ class Explore {
         }
         if (!tokenNsid) {
             return;
+        }
+
+        // Flip if planet has a tech.
+        const tokenRot = new Rotator(rot.pitch, rot.yaw, 0);
+        if (planet && planet.firstTech) {
+            tokenRot.roll = 180;
         }
 
         // Find token, might be in a bag.
@@ -151,10 +161,11 @@ class Explore {
             tokenObj = Spawn.spawn(tokenNsid, pos, rot);
             assert(tokenObj);
         }
+        tokenObj.setRotation(tokenRot, 0);
 
         // Move to location.
-        tokenObj.setPosition(pos, 1);
-        tokenObj.setRotation(rot, 1);
+        tokenObj.setPosition(pos, 0);
+        tokenObj.setRotation(tokenRot, 0);
         if (tokenObj.__attachment) {
             // Script on object onCreated called during spawn
             tokenObj.__attachment.attach(planet, systemTileObj);

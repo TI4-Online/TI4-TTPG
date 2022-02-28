@@ -123,6 +123,10 @@ class Planet {
         this.raw.destroyed = value;
     }
 
+    get firstTech() {
+        return this.raw.tech ? this.raw.tech[0] : undefined;
+    }
+
     get firstTrait() {
         return this.raw.trait ? this.raw.trait[0] : undefined;
     }

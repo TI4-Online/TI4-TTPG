@@ -29,13 +29,13 @@ const ATTACHMENTS = [
     {
         localeName: "token.wormhole.gamma",
         cardNsid: "card.exploration.frontier:pok/gamma_relay",
-        tokenNsid: "token.wormhole.gamma",
+        tokenNsid: "token.wormhole.exploration:pok/gamma",
         spawn: true, // do not move one on map!
     },
     {
         localeName: "token.wormhole.gamma",
         cardNsid: "card.exploration.cultural:pok/gamma_wormhole",
-        tokenNsid: "token.wormhole.gamma",
+        tokenNsid: "token.wormhole.exploration:pok/gamma",
         spawn: true, // do not move one on map!
     },
     {
@@ -55,7 +55,7 @@ const ATTACHMENTS = [
     {
         localeName: "token.exploration.ion_storm",
         cardNsid: "card.exploration.frontier:pok/ion_storm",
-        tokenNsid: "token.exploration.ion_storm",
+        tokenNsid: "token.exploration:pok/ion_storm",
     },
     {
         localeName: "token.attachment.lazax_survivors",
@@ -74,12 +74,12 @@ const ATTACHMENTS = [
     {
         localeName: "token.exploration.mirage",
         cardNsid: "card.exploration.frontier:pok/mirage",
-        tokenNsid: "token.exploration.mirage",
+        tokenNsid: "token.exploration:pok/mirage",
     },
     {
         localeName: "token.attachment.nano_forge",
         cardNsid: "card.relic:codex.affinity/nanoforge", // RELIC!
-        tokenNsid: "",
+        tokenNsid: "token.attachment.exploration:pok/nano_forge",
         faceUp: { resources: 2, influence: 2, legendary: true },
         faceDown: { resources: 2, influence: 2, legendary: true },
     },
@@ -108,7 +108,7 @@ const ATTACHMENTS = [
     {
         localeName: "token.exploration.stellar_converter",
         cardNsid: "card.relic:pok/stellar_converter", // RELIC!
-        tokenNsid: "token.exploration.stellar_converter",
+        tokenNsid: "token.exploration:pok/stellar_converter",
     },
     {
         localeName: "token.attachment.terraform",
