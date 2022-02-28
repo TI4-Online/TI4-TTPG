@@ -249,6 +249,45 @@ class DealDiscard {
     }
 
     /**
+     * Deal card(s) from deck to position/rotation.
+     *
+     * @param {string} nsidPrefix
+     * @param {number} count
+     * @param {Vector} position
+     * @param {Rotator} rotation
+     * @returns {Card} Card if dealt
+     */
+    static dealToPosition(nsidPrefix, count, position, rotation) {
+        assert(typeof nsidPrefix === "string");
+        assert(typeof count === "number" && count >= 0);
+        assert(typeof position.x === "number");
+        assert(typeof rotation.yaw === "number");
+
+        const deck = DealDiscard.getDeckWithReshuffle(nsidPrefix, count);
+        if (!deck) {
+            console.log(
+                `dealToPosition(${nsidPrefix}, ${count}): missing deck`
+            );
+            return false;
+        }
+        if (deck.getStackSize() < count) {
+            console.log(
+                `dealToPosition(${nsidPrefix}, ${count}): too few cards in deck (${deck.getStackSize()})`
+            );
+            return false;
+        }
+
+        const fromFront = false; // "front" is bottom
+        const offset = 0;
+        const keep = false;
+        const card = deck.takeCards(count, fromFront, offset, keep);
+        card.setPosition(position, 1);
+        card.setRotation(rotation, 1);
+
+        return card;
+    }
+
+    /**
      * Discard a card.
      *
      * @param {Card} obj
