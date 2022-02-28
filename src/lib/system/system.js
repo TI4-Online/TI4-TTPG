@@ -134,6 +134,10 @@ class Planet {
         return this._system;
     }
 
+    get firstTrait() {
+        return this.raw.trait ? this.raw.trait[0] : undefined;
+    }
+
     getNameStr() {
         return locale(this.localeName);
     }
