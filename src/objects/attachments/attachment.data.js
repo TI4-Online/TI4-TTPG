@@ -27,6 +27,18 @@ const ATTACHMENTS = [
         faceDown: { resources: 2, influence: 1 },
     },
     {
+        localeName: "token.wormhole.gamma",
+        cardNsid: "card.exploration.frontier:pok/gamma_relay",
+        tokenNsid: "token.wormhole.exploration:pok/gamma",
+        spawn: true, // do not move one on map!
+    },
+    {
+        localeName: "token.wormhole.gamma",
+        cardNsid: "card.exploration.cultural:pok/gamma_wormhole",
+        tokenNsid: "token.wormhole.exploration:pok/gamma",
+        spawn: true, // do not move one on map!
+    },
+    {
         // Unit modifier handles space cannon.
         localeName: "token.attachment.geoform",
         cardNsid: "card.leader.hero.ul:pok/ul_the_progenitor", // LEADER/HERO!
@@ -40,7 +52,11 @@ const ATTACHMENTS = [
             influence: 3,
         },
     },
-    // ion storm
+    {
+        localeName: "token.exploration.ion_storm",
+        cardNsid: "card.exploration.frontier:pok/ion_storm",
+        tokenNsid: "token.exploration:pok/ion_storm",
+    },
     {
         localeName: "token.attachment.lazax_survivors",
         cardNsid: "card.exploration.hazardous:pok/lazax_survivors",
@@ -55,11 +71,15 @@ const ATTACHMENTS = [
         faceUp: { resources: 2 },
         faceDown: { resources: 2 },
     },
-    // mirage
+    {
+        localeName: "token.exploration.mirage",
+        cardNsid: "card.exploration.frontier:pok/mirage",
+        tokenNsid: "token.exploration:pok/mirage",
+    },
     {
         localeName: "token.attachment.nano_forge",
         cardNsid: "card.relic:codex.affinity/nanoforge", // RELIC!
-        tokenNsid: "",
+        tokenNsid: "token.attachment.exploration:pok/nano_forge",
         faceUp: { resources: 2, influence: 2, legendary: true },
         faceDown: { resources: 2, influence: 2, legendary: true },
     },
@@ -85,7 +105,11 @@ const ATTACHMENTS = [
         faceUp: { resources: 1 },
         faceDown: { resources: 1 },
     },
-    // stellar converter
+    {
+        localeName: "token.exploration.stellar_converter",
+        cardNsid: "card.relic:pok/stellar_converter", // RELIC!
+        tokenNsid: "token.exploration:pok/stellar_converter",
+    },
     {
         localeName: "token.attachment.terraform",
         cardNsid: "card.promissory.ul:pok/terraform", // PROMISSORY!

@@ -94,6 +94,7 @@ class Planet {
     constructor(attrs, system, standardPosition, standardRadius) {
         this._attrs = attrs;
         this._system = system;
+        this._attachments = [];
 
         // if the given system attributes does not contain radius
         // or position information set position and radius with standard
@@ -110,8 +111,8 @@ class Planet {
         return this._attrs;
     }
 
-    get localeName() {
-        return this.raw.localeName;
+    get attachments() {
+        return this._attachments;
     }
 
     get destroyed() {
@@ -122,20 +123,28 @@ class Planet {
         this.raw.destroyed = value;
     }
 
-    get radius() {
-        return this.raw.radius;
+    get firstTech() {
+        return this.raw.tech ? this.raw.tech[0] : undefined;
+    }
+
+    get firstTrait() {
+        return this.raw.trait ? this.raw.trait[0] : undefined;
+    }
+
+    get localeName() {
+        return this.raw.localeName;
     }
 
     get position() {
         return this.raw.position;
     }
 
-    get system() {
-        return this._system;
+    get radius() {
+        return this.raw.radius;
     }
 
-    get firstTrait() {
-        return this.raw.trait ? this.raw.trait[0] : undefined;
+    get system() {
+        return this._system;
     }
 
     getNameStr() {
