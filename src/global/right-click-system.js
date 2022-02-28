@@ -1,11 +1,17 @@
 const { Explore } = require("../lib/explore/explore");
 const {
+    Button,
     ImageButton,
+    Rotator,
     UIElement,
     Vector,
+    VerticalBox,
     globalEvents,
     world,
 } = require("../wrapper/api");
+
+let _openPopupObj = false;
+let _openPopupUi = false;
 
 function addRightClickOptions(systemTileObj) {
     const getNamesAndActions = () => {
@@ -35,15 +41,33 @@ function addRightClickOptions(systemTileObj) {
     const button = new ImageButton()
         .setImage("global/technology/warfare_tech_icon.png")
         .setImageSize(5, 0);
-    button.onClicked.add((button, player) => {
-        // XXX TODO
-        console.log("clicked");
-    });
 
     const ui = new UIElement();
     ui.widget = button;
     ui.position = new Vector(0, 4.7, 0.2);
     systemTileObj.addUI(ui);
+
+    button.onClicked.add((button, player) => {
+        if (_openPopupObj) {
+            _openPopupObj.removeUIElement(_openPopupUi);
+        }
+
+        const popupPanel = new VerticalBox();
+        const popupUi = new UIElement();
+        popupUi.widget = popupPanel;
+        popupUi.rotation = systemTileObj.worldRotationToLocal(
+            new Rotator(0, 0, 0)
+        );
+        popupUi.position = ui.position.add([0, 0, 2]);
+
+        const closeButton = new Button().setText("<close>");
+        closeButton.onClicked.add(systemTileObj.removeUIElement(popupUi));
+        popupPanel.addChild(closeButton);
+
+        systemTileObj.addUI(popupUi);
+        _openPopupObj = systemTileObj;
+        _openPopupUi = popupUi;
+    });
 }
 
 globalEvents.onObjectCreated.add((obj) => {
