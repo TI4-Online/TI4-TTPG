@@ -1,10 +1,10 @@
-const { world, Vector, GameObject } = require("../../wrapper/api");
 const { getClosestPlanet } = require("../../lib/system/position-to-planet");
 const { Facing } = require("../../lib/facing");
 const { Broadcast } = require("../../lib/broadcast");
 const { Planet } = require("../../lib/system/system");
 const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert-wrapper");
+const { world, GameObject, ObjectType, Vector } = require("../../wrapper/api");
 
 class Attachment {
     constructor(gameObject, attributes) {
@@ -33,20 +33,30 @@ class Attachment {
         if (world.getExecutionReason() === "ScriptReload") {
             this.attach();
         }
+
+        // Expose attach function for external attach (e.g. explore).
+        this._obj.__attachment = this;
     }
 
-    attach(inputPlanet) {
-        // attach to the given Planet or if no planet is given attach to the
-        // nearest planet
-        if (inputPlanet) {
-            assert(inputPlanet instanceof Planet);
+    attach(planet = false, systemTileObj = false) {
+        this.detach();
+
+        // is the attachment on a system tile?
+        if (!systemTileObj) {
+            systemTileObj = world.TI4.getSystemTileObjectByPosition(
+                this._obj.getPosition()
+            );
         }
-        const planet = inputPlanet || getClosestPlanet(this._obj.getPosition());
-        if (!planet) {
+        if (!systemTileObj) {
             return;
         }
 
-        this.detach();
+        // attach to the given Planet or if no planet is given attach to the
+        // nearest planet
+        if (!planet) {
+            planet = getClosestPlanet(this._obj.getPosition());
+        }
+        assert(planet instanceof Planet);
 
         this._systemTile = planet.system.tile;
         this._planetName = planet.localeName;
@@ -68,19 +78,16 @@ class Attachment {
         // TODO: add the attachment icon to the planet card
 
         // move and lock the attachment object to the proper location
-        const systemObject = world.TI4.getSystemTileObjectByPosition(
-            this._obj.getPosition()
-        );
         const attachmentPosition = new Vector(
             planet.position.x - 0.5,
             planet.position.y - 0.5,
-            systemObject.getSize().z
+            systemTileObj.getSize().z
         );
         const worldPosition =
-            systemObject.localPositionToWorld(attachmentPosition);
+            systemTileObj.localPositionToWorld(attachmentPosition);
         this._obj.setPosition(worldPosition);
-        this._obj.setScale(systemObject.getScale());
-        this._obj.setObjectType(1); // ground i.e. locked
+        this._obj.setScale(systemTileObj.getScale());
+        this._obj.setObjectType(ObjectType.Ground);
 
         return this;
     }
