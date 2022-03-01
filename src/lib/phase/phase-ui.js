@@ -22,19 +22,20 @@ class PhaseUI {
         const panel = new HorizontalBox().setChildDistance(5);
 
         panel.addChild(
-            this._createButton("ui.phase.end_strategy_phase", () =>
-                PlaceTradegoodUnpicked.placeAll()
+            this._createButton(
+                "ui.button.place_trade_goods_and_set_turns",
+                () => PlaceTradegoodUnpicked.placeAll()
             )
         );
 
         panel.addChild(
-            this._createButton("ui.phase.deal_action_cards", () =>
+            this._createButton("ui.button.deal_action_cards", () =>
                 DealActionCards.dealToAll()
             )
         );
 
         panel.addChild(
-            this._createButton("ui.phase.end_status_phase", () => {
+            this._createButton("ui.button.end_status_phase", () => {
                 EndStatusPhase.returnCommandTokens();
                 EndStatusPhase.repairShips();
                 EndStatusPhase.refreshCards();
