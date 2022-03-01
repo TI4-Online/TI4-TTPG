@@ -1,5 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { ActiveIdle } = require("./active-idle");
+const { ActiveIdle } = require("../unit/active-idle");
 const { CardUtil } = require("../card/card-util");
 const { Facing } = require("../facing");
 const { Hex } = require("../hex");
