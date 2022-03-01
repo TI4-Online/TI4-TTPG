@@ -12,6 +12,7 @@ const {
     Vector,
     VerticalBox,
     globalEvents,
+    refPackageId,
     world,
 } = require("../wrapper/api");
 
@@ -77,7 +78,7 @@ function addRightClickOptions(systemTileObj) {
     // Also offer via a button.  Image buttons are quite blurry especially
     // when small.  Make a big one and scale it down.
     const button = new ImageButton()
-        .setImage("global/tiles/base/hazard/tile_044.jpg")
+        .setImage("global/tiles/base/hazard/tile_044.jpg", refPackageId)
         .setImageSize(100, 150);
 
     // Mallice needs to be flipped to see button, that's ok.
