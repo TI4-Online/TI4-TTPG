@@ -1,7 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
-const { TabStrategyUI } = require("./tab-strategy-ui");
+const { TabStatus } = require("./tab-status");
+const { TabStrategy } = require("./tab-strategy");
 const {
     GameObject,
     LayoutBox,
@@ -19,16 +20,15 @@ class Phases {
         assert(gameObject instanceof GameObject);
 
         const mapTool = new MapTool();
+        const tabStrategy = new TabStrategy();
         const autoRoller = new AutoRoller();
+        const tabStatus = new TabStatus();
 
         const tabbedPanel = new TabbedPanel()
             .addTab(locale("ui.tab.map_tool"), mapTool.getUI())
-            .addTab(locale("ui.tab.strategy_phase"), new TabStrategyUI())
+            .addTab(locale("ui.tab.strategy_phase"), tabStrategy.getUI())
             .addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
-            .addTab(
-                locale("ui.tab.status_phase"),
-                new Text().setText("status here")
-            )
+            .addTab(locale("ui.tab.status_phase"), tabStatus.getUI())
             .addTab(
                 locale("ui.tab.agenda_phase"),
                 new Text().setText("agenda here")
