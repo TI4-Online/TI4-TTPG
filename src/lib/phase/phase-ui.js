@@ -12,8 +12,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
-PHASE_UI_POS = { x: 0, y: -100, z: world.getTableHeight() + 5 };
-PHASE_UI_ROT = { pitch: 0, roll: -90, yaw: 0 };
+const PHASE_UI_POS = { x: 0, y: -100, z: world.getTableHeight() + 5 };
+const PHASE_UI_ROT = { pitch: 0, roll: -90, yaw: 0 };
 
 class PhaseUI {
     constructor() {}
@@ -22,19 +22,20 @@ class PhaseUI {
         const panel = new HorizontalBox().setChildDistance(5);
 
         panel.addChild(
-            this._createButton("ui.phase.end_strategy_phase", () =>
-                PlaceTradegoodUnpicked.placeAll()
+            this._createButton(
+                "ui.button.place_trade_goods_and_set_turns",
+                () => PlaceTradegoodUnpicked.placeAll()
             )
         );
 
         panel.addChild(
-            this._createButton("ui.phase.deal_action_cards", () =>
+            this._createButton("ui.button.deal_action_cards", () =>
                 DealActionCards.dealToAll()
             )
         );
 
         panel.addChild(
-            this._createButton("ui.phase.end_status_phase", () => {
+            this._createButton("ui.button.end_status_phase", () => {
                 EndStatusPhase.returnCommandTokens();
                 EndStatusPhase.repairShips();
                 EndStatusPhase.refreshCards();

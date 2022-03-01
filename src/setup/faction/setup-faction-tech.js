@@ -39,6 +39,11 @@ class SetupFactionTech extends AbstractSetup {
             }
             return true;
         });
+
+        // Remove generic unit upgrades if faction tech has overrides?
+        // Need to be sure clean restores them (or a higher level reset happens).
+        // The counter-argument could be made a player wants to look at it
+        // without tipping off other players.
     }
 
     clean() {

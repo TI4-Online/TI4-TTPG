@@ -65,12 +65,14 @@ class CollapsiblePanel extends Border {
      * Set or reset the collapsible widget.
      *
      * @param {Widget} widget
+     * @returns {Widget} self, for chaining
      */
     setChild(widget) {
         assert(widget instanceof Widget);
         this._toggleChild = widget;
         this._verticalBox.removeChildAt(1);
         this._verticalBox.addChild(this._toggleChild);
+        return this;
     }
 }
 

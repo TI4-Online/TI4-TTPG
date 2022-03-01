@@ -1,0 +1,157 @@
+{
+	"Type": "Generic",
+	"GUID": "4C0919205F49EA482B06719B3330CF77",
+	"Name": "Strategy Card Mat",
+	"Metadata": "mat:base/strategy_card",
+	"CollisionType": "Ground",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "mats/stratey_card_mat.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.9802,
+				"Y": 1.9803,
+				"Z": 1.23762
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "locale/mats/decks_mat.jpg",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [
+		{
+			"Model": "mats/stratey_card_mat_collider.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.9802,
+				"Y": 1.9803,
+				"Z": 1.23762
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [
+		{
+			"X": 16.92,
+			"Y": -10.4,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 15.2
+		},
+		{
+			"X": 13.52,
+			"Y": -4.79,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 36.2
+		},
+		{
+			"X": 8.41,
+			"Y": -0.73,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 56.8
+		},
+		{
+			"X": 2.21,
+			"Y": 1.24,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 77.1
+		},
+		{
+			"X": -4.26,
+			"Y": 0.91,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 97.4
+		},
+		{
+			"X": -10.24,
+			"Y": -1.67,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 117.8
+		},
+		{
+			"X": -14.96,
+			"Y": -6.2,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 138.7
+		},
+		{
+			"X": -17.7,
+			"Y": -12.1,
+			"Z": 0,
+			"Range": 3,
+			"SnapRotation": true,
+			"RotationOffset": 160.1
+		}
+	],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	}
+}

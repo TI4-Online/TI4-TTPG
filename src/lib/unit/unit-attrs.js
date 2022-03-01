@@ -123,7 +123,7 @@ class UnitAttrs {
                 continue; // not a candidate
             }
 
-            if (!CardUtil.isLooseCard(obj)) {
+            if (!CardUtil.isLooseCard(obj, false)) {
                 continue; // not a lone, faceup card on the table
             }
 

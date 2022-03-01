@@ -4,6 +4,7 @@
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
+    "ui.message.shuffling_all_decks": "Shuffling all decks",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
     "ui.message.shuffle_action_cards": "Shuffling action card discard pile",
@@ -24,14 +25,30 @@
     "ui.message.roll.hit": "HIT",
     "ui.message.roll.crit": "CRIT",
 
+    "ui.message.command_tokens_removed": "{factionName} withdrew {count} command {#count|token|tokens}",
+    "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
+
+    "ui.message.turn_order": "Turn order: {turnOrder}",
+
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
     "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
+    "ui.error.no_tactic_token": "No tactic token",
+    "ui.error.diplomacy_no_token": "{name} does not have a command token in reinforcements",
 
     "ui.button.strategy_card_play": "Play",
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
     "ui.message.strategy_card_play": "{playerName} played {cardName} strategy card",
+
+    "ui.button.active": "Active",
+    "ui.button.idle": "Idle",
+    "ui.button.cancel": "CANCEL",
+
+    "ui.action.system.activate": "Activate System",
+    "ui.action.system.diplomacy": "Dipolmacy System",
+    "ui.action.system.control": "Control Token",
+    "ui.action.system.explore": "Explore {planetName}",
 
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
 
@@ -55,34 +72,33 @@
     "ui.desk.done": "READY",
     "ui.desk.color_in_use": "Color already in use",
 
-    "ui.phase.deal_action_cards": "Deal Action Cards",
-    "ui.phase.end_strategy_phase": "Place Trade Goods and Set Turns",
-    "ui.phase.end_status_phase": "Return Strategy Cards and End Status Phase",
+    "ui.button.deal_action_cards": "Deal Action Cards",
+    "ui.button.place_trade_goods_and_set_turns": "Place Trade Goods and Set Turns",
+    "ui.button.end_status_phase": "Return Strategy Cards and End Status Phase",
 
-    "ui.phase.strategy.label": "Strategy",
+    "ui.tab.map_tool": "Map",
+    "ui.tab.strategy_phase": "Strategy",
+    "ui.tab.auto_roller": "Combat",
+    "ui.tab.status_phase": "Status",
+    "ui.tab.agenda_phase": "Agenda",
 
-    "ui.phase.action.label": "Action",
-    "ui.phase.action.activation": "Activation",
-    "ui.phase.action.movement": "Movement",
-    "ui.phase.action.space_cannon_offsense": "Space Cannon Offsense",
-    "ui.phase.action.anti_fighter_barrage": "Anti-fighter Barrage",
-    "ui.phase.action.announce_retreat": "Announce Retreat",
-    "ui.phase.action.space_combat": "Space Combat",
-    "ui.phase.action.retreat": "Retreat",
-    "ui.phase.action.bombardment": "Bombardment",
-    "ui.phase.action.space_cannon_defense": "Space Cannon Defense",
-    "ui.phase.action.ground_combat": "Ground Combat",
-    "ui.phase.action.explore": "Explore",
-    "ui.phase.action.production": "Production",
+    "ui.roller.space_cannon_offense": "Space Cannon Offsense",
+    "ui.roller.anti_fighter_barrage": "Anti-fighter Barrage",
+    "ui.roller.announce_retreat": "Announce Retreat",
+    "ui.roller.space_combat": "Space Combat",
+    "ui.roller.retreat": "Retreat",
+    "ui.roller.bombardment": "Bombardment",
+    "ui.roller.space_cannon_defense": "Space Cannon Defense",
+    "ui.roller.ground_combat": "Ground Combat",
 
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",
 
     "ui.label.home_system_tile": "IT IS\nYOUR HOME\nSYSTEM",
 
-    "ui.maptool.clean": "Clear",
-    "ui.maptool.save": "Save Map",
-    "ui.maptool.load": "Load Map",
+    "ui.maptool.clear": "Clear",
+    "ui.maptool.save": "Save Map String",
+    "ui.maptool.load": "Load Map From String",
     "ui.maptool.place_cards": "Place Planet Cards",
     "ui.maptool.clear_cards": "Clear Planet Cards",
     "ui.maptool.place_frontier_tokens": "Place Frontier Tokens",
@@ -419,6 +435,7 @@
     "token.tradegood_commodity_1": "Tradegoods/Commodities x1",
     "token.tradegood_commodity_3": "Tradegoods/Commodities x3",
     "bag.token": "{token} Supply",
+    "bag.garbage": "Garbage",
 
     "token.dimensional_tear": "Dimensional Tear",
     "token.frontier": "Frontier",

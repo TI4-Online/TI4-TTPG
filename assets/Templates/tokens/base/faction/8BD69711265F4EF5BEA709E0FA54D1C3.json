@@ -10,35 +10,40 @@
 	"SurfaceType": "Plastic",
 	"Roughness": 1,
 	"Metallic": 0,
-	"PrimaryColor": {
+	"PrimaryColor":
+	{
 		"R": 255,
 		"G": 255,
 		"B": 255
 	},
-	"SecondaryColor": {
+	"SecondaryColor":
+	{
 		"R": 0,
 		"G": 0,
 		"B": 0
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
 			"Model": "tokens/player-command.obj",
-			"Offset": {
+			"Offset":
+			{
 				"X": 0,
 				"Y": 0,
 				"Z": 0
 			},
-			"Scale": {
+			"Scale":
+			{
 				"X": 1,
 				"Y": 1,
 				"Z": 1
 			},
-			"Rotation": {
+			"Rotation":
+			{
 				"X": 0,
 				"Y": 0,
 				"Z": 0
@@ -55,17 +60,20 @@
 	"Collision": [
 		{
 			"Model": "tokens/player-command.obj",
-			"Offset": {
+			"Offset":
+			{
 				"X": 0,
 				"Y": 0,
 				"Z": 0
 			},
-			"Scale": {
+			"Scale":
+			{
 				"X": 1,
 				"Y": 1,
 				"Z": 1
 			},
-			"Rotation": {
+			"Rotation":
+			{
 				"X": 0,
 				"Y": 0,
 				"Z": 0
@@ -75,7 +83,8 @@
 	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
-	"ZoomViewDirection": {
+	"ZoomViewDirection":
+	{
 		"X": 0,
 		"Y": 0,
 		"Z": 0

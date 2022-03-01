@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { ActiveIdle } = require("../unit/active-idle");
 const { CardUtil } = require("../card/card-util");
 const { Facing } = require("../facing");
 const { Hex } = require("../hex");
@@ -45,16 +46,24 @@ class AdjacencyWormhole {
     }
 
     _updateConnectedForCards() {
+        const nsidSet = new Set([
+            "card.agenda:base/wormhole_reconstruction",
+            "card.action:base/lost_star_chart",
+            "card.leader.agent.creuss:pok/emissary_taivra",
+        ]);
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsidSet.has(nsid)) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, true)) {
                 continue; // not a lone, faceup card on the table
             }
-            const nsid = ObjectNamespace.getNsid(obj);
-            this._updateConnectedForCardNsid(nsid);
+            this._updateConnectedForCardNsid(nsid, obj);
         }
     }
 
-    _updateConnectedForCardNsid(nsid) {
+    _updateConnectedForCardNsid(nsid, obj) {
         if (nsid === "card.agenda:base/wormhole_reconstruction") {
             this._connected.alpha.add("beta");
             this._connected.beta.add("alpha");
@@ -87,8 +96,9 @@ class AdjacencyWormhole {
                 return;
             }
 
-            // TODO XXX ACTIVE/IDLE
-            // if ()
+            if (!ActiveIdle.isActive(obj)) {
+                return; // not active
+            }
 
             this._connected.alpha.add("beta");
             this._connected.alpha.add("gamma");

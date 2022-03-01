@@ -12,9 +12,9 @@
 	"Metallic": 1,
 	"PrimaryColor":
 	{
-		"R": 180,
-		"G": 189,
-		"B": 206
+		"R": 137,
+		"G": 61,
+		"B": 178
 	},
 	"SecondaryColor":
 	{
@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/graveyard-bag.js",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -58,8 +58,8 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
+				"R": 32,
+				"G": 14,
 				"B": 51
 			},
 			"SecondaryColor":
@@ -100,8 +100,8 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
+				"R": 32,
+				"G": 14,
 				"B": 51
 			},
 			"SecondaryColor":
