@@ -7,6 +7,7 @@ const { SetupStrategyCards } = require("./setup-strategy-cards");
 const { SetupSupplyBoxes } = require("./setup-supply-boxes");
 const { SetupSystemTiles } = require("./setup-system-tiles");
 const { SetupTableDecks } = require("./setup-table-decks");
+const { SetupTableGraveyards } = require("./setup-table-graveyards");
 const { SetupTableMats } = require("./setup-table-mats");
 const { SetupTableTokens } = require("./setup-table-tokens");
 const { SetupUnits } = require("./setup-units");
@@ -29,6 +30,7 @@ const ACTION = {
     SECRET_HOLDERS: "*Secret holders",
     TABLE_DECKS: "*Table decks",
     TABLE_TOKENS: "*Table tokens",
+    TABLE_GRAVEYARDS: "*Table graveyards",
     STRATEGY_CARDS: "*Strategy cards",
     DEMO_MAP: "*Demo map",
     PHASE_UI: "*Phase UI",
@@ -93,6 +95,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupSecretHolders());
     } else if (actionName === ACTION.TABLE_DECKS) {
         setups.push(new SetupTableDecks());
+    } else if (actionName === ACTION.TABLE_GRAVEYARDS) {
+        setups.push(new SetupTableGraveyards());
     } else if (actionName === ACTION.TABLE_TOKENS) {
         setups.push(new SetupTableTokens());
     } else if (actionName === ACTION.STRATEGY_CARDS) {
