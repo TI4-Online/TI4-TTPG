@@ -9,13 +9,7 @@ const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const {
-    world,
-    Container,
-    Vector,
-    Rotator,
-    Card,
-} = require("../../wrapper/api");
+const { world, Vector, Rotator, Card } = require("../../wrapper/api");
 const { CommandToken } = require("../command-token/command-token");
 
 const ANIMATION_SPEED = 1;
