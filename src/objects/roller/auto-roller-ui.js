@@ -97,8 +97,10 @@ class AutoRollerUI extends Border {
             "antiFighterBarrage",
             false
         );
-        addText("ui.roller.announce_retreats");
+
+        addText("ui.roller.announce_retreat");
         addButton("ui.roller.space_combat", "spaceCombat", false);
+        addText("ui.roller.retreat");
 
         addText("ui.roller.bombardment");
         addHorizontalSubPanel();

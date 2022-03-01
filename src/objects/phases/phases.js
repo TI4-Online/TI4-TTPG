@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const { TabStrategyUI } = require("./tab-strategy-ui");
-const { TabActionUI } = require("./tab-action-ui");
 const {
     GameObject,
     LayoutBox,
@@ -23,15 +22,15 @@ class Phases {
         const autoRoller = new AutoRoller();
 
         const tabbedPanel = new TabbedPanel()
-            .addTab("ui.tab.map_tool", mapTool.getUI())
-            .addTab(locale("ui.phase.strategy.label"), new TabStrategyUI())
+            .addTab(locale("ui.tab.map_tool"), mapTool.getUI())
+            .addTab(locale("ui.tab.strategy_phase"), new TabStrategyUI())
             .addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
             .addTab(
-                locale("ui.phase.status.label"),
+                locale("ui.tab.status_phase"),
                 new Text().setText("status here")
             )
             .addTab(
-                locale("ui.phase.agenda.label"),
+                locale("ui.tab.agenda_phase"),
                 new Text().setText("agenda here")
             );
 
@@ -39,7 +38,8 @@ class Phases {
         const layoutBox = new LayoutBox()
             .setChild(tabbedPanel)
             .setMaximumWidth(w)
-            .setMinimumWidth(w);
+            .setMinimumWidth(w)
+            .setMinimumHeight(200);
 
         const uiElement = new UIElement();
         uiElement.anchorY = 0;
