@@ -1,11 +1,12 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
-const { Color, globalEvents, refObject, world } = require("../wrapper/api");
+const { ColorUtil } = require("../lib/color/color-util");
+const { globalEvents, refObject, world } = require("../wrapper/api");
 
 const DESK_INDEX_KEY = "deskIndex";
 
 globalEvents.TI4.onPlayerColorChanged.add((playerColor, deskIndex) => {
-    assert(playerColor instanceof Color);
+    assert(ColorUtil.isColor(playerColor));
     assert(typeof deskIndex === "number");
 
     const myDeskIndex = ObjectSavedData.get(refObject, DESK_INDEX_KEY, -1);

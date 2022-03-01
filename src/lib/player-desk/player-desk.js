@@ -468,8 +468,8 @@ class PlayerDesk {
      */
     changeColor(colorName, colorTint, plasticColorTint) {
         assert(typeof colorName === "string");
-        assert(colorTint instanceof Color);
-        assert(plasticColorTint instanceof Color);
+        assert(ColorUtil.isColor(colorTint));
+        assert(ColorUtil.isColor(plasticColorTint));
 
         let legalColorName = false;
         for (const deskAttrs of PLAYER_DESKS) {
