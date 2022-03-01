@@ -45,11 +45,19 @@ class AdjacencyWormhole {
     }
 
     _updateConnectedForCards() {
+        const nsidSet = new Set([
+            "card.agenda:base/wormhole_reconstruction",
+            "card.action:base/lost_star_chart",
+            "card.leader.agent.creuss:pok/emissary_taivra",
+        ]);
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsidSet.has(nsid)) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, true)) {
                 continue; // not a lone, faceup card on the table
             }
-            const nsid = ObjectNamespace.getNsid(obj);
             this._updateConnectedForCardNsid(nsid);
         }
     }

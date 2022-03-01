@@ -127,7 +127,7 @@ class UnitModifier {
                 continue;
             }
 
-            if (!CardUtil.isLooseCard(obj)) {
+            if (!CardUtil.isLooseCard(obj, true)) {
                 continue; // not a lone, faceup card on the table
             }
 
