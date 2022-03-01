@@ -435,14 +435,14 @@ module.exports = [
                 return false; // no mech
             }
             for (const obj of world.getAllObjects()) {
-                if (!CardUtil.isLooseCard(obj)) {
-                    continue;
-                }
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (!nsid.startsWith("card.exploration")) {
                     continue;
                 }
                 if (!nsid.includes("_relic_fragment")) {
+                    continue;
+                }
+                if (!CardUtil.isLooseCard(obj, true)) {
                     continue;
                 }
                 const owner = world.TI4.getClosestPlayerDesk(obj.getPosition());

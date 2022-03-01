@@ -7,6 +7,7 @@ const {
     Rotator,
     world,
 } = require("../../wrapper/api");
+const { DealDiscard } = require("./deal-discard");
 
 class CardUtil {
     /**
@@ -30,7 +31,7 @@ class CardUtil {
      * @param {GameObject} card
      * @return {boolean} true if a loose card.
      */
-    static isLooseCard(card) {
+    static isLooseCard(card, checkIsDiscardPile = false) {
         assert(card instanceof GameObject);
 
         return (
@@ -40,7 +41,7 @@ class CardUtil {
             !card.getContainer() &&
             !card.isHeld() &&
             !card.isInHolder() &&
-            !CardUtil.isLoneCardInDiscardPile(card)
+            (!checkIsDiscardPile || !CardUtil.isLoneCardInDiscardPile(card)) // do this last, expensive
         );
     }
 
@@ -52,8 +53,36 @@ class CardUtil {
      */
     static isLoneCardInDiscardPile(card) {
         assert(card instanceof Card);
-        // TODO XXX
-        return false;
+        const nsid = ObjectNamespace.getNsid(card);
+        const discard = DealDiscard.getDiscard(nsid);
+        discard === card;
+    }
+
+    /**
+     * Does the player have the given card?
+     *
+     * @param {number} playerSlot
+     * @param {string} cardNsid
+     * @returns {boolean}
+     */
+    static hasCard(playerSlot, cardNsid) {
+        assert(typeof playerSlot === "number");
+        assert(typeof cardNsid === "string");
+        for (const obj of world.getAllObjects()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== cardNsid) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj)) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk.playerSlot !== playerSlot) {
+                continue;
+            }
+            return true;
+        }
     }
 
     /**

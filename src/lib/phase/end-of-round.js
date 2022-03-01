@@ -2,13 +2,21 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
+const { DealDiscard } = require("../card/deal-discard");
 const { Faction } = require("../faction/faction");
 const { FindTurnOrder } = require("./find-turn-order");
+const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const { world, Vector, Rotator, Card } = require("../../wrapper/api");
-const { DealDiscard } = require("../card/deal-discard");
+const {
+    world,
+    Container,
+    Vector,
+    Rotator,
+    Card,
+} = require("../../wrapper/api");
+const { CommandToken } = require("../command-token/command-token");
 
 const ANIMATION_SPEED = 1;
 
@@ -25,18 +33,22 @@ class DealActionCards {
      * @returns {number}
      */
     static getNumberActionCardsToDeal(playerSlot) {
-        // TODO: does the player have neural motivator?
         assert(typeof playerSlot === "number");
 
-        const faction = Faction.getByPlayerSlot(playerSlot);
+        let dealNCards = 1;
 
-        if (!faction) {
-            throw new Error(`${playerSlot} does not have a faction!`);
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction && faction.raw.abilities.includes("scheming")) {
+            dealNCards += 1;
         }
 
-        let dealNCards = 1;
-        if (faction.raw.abilities.includes("scheming")) {
-            dealNCards++;
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.technology.green:base/neural_motivator"
+            )
+        ) {
+            dealNCards += 1;
         }
 
         return dealNCards;
@@ -90,20 +102,42 @@ class EndStatusPhase {
         assert(typeof playerSlot === "number");
 
         let dealNTokens = 2;
-        const faction = Faction.getByPlayerSlot(playerSlot);
 
-        if (!faction) {
-            throw new Error(`${playerSlot} does not have a faction.`);
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction && faction.raw.abilities.includes("versatile")) {
+            dealNTokens += 1;
         }
 
-        if (faction.raw.abilities.includes("versatile")) {
-            dealNTokens++;
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.technology.green:base/hyper_metabolism"
+            )
+        ) {
+            dealNTokens += 1;
+        }
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.promissory.l1z1x:base/cybernetic_enhancements"
+            )
+        ) {
+            dealNTokens += 1;
+        }
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.promissory.l1z1x:base/cybernetic_enhancements.omega"
+            )
+        ) {
+            dealNTokens += 1;
         }
 
         return dealNTokens;
     }
+
     /**
-     * Repairs all ships that are on system tiles
+     * Repairs all ships.
      */
     static repairShips() {
         for (const obj of world.getAllObjects()) {
@@ -118,54 +152,60 @@ class EndStatusPhase {
             }
         }
     }
-    /**
-     * Returns an object that maps player slots to their command token bags.
-     *
-     * @returns {{number: Container}}
-     */
-    static getCommandTokenBag(playerSlot) {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getOwningPlayerSlot() !== playerSlot) {
-                continue; // must be owned by player
-            }
-            if (ObjectNamespace.isCommandTokenBag(obj)) {
-                return obj;
-            }
-        }
-        throw new Error(`${playerSlot} does not have a command token bag.`);
-    }
+
     /**
      * Places all command tokens that are on system tiles back in their proper
      * containers.
      */
     static returnCommandTokens() {
-        // get all command token bags upfront so we don't have to refind them
-        // with each command token we return
-        const commandTokenBags = Object.fromEntries(
-            world.TI4.getAllPlayerDesks().map((element) => [
-                element.playerSlot,
-                EndStatusPhase.getCommandTokenBag(element.playerSlot),
-            ])
-        );
+        const playerSlotToCommandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag();
+
+        // Get all hexes with a system tile (much cheaper than getSystemTileObjectByPosition).
+        const hexSet = new Set();
+        for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+            const pos = systemTileObj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            hexSet.add(hex);
+        }
 
         for (const obj of world.getAllObjects()) {
-            if (ObjectNamespace.isCommandToken(obj)) {
-                // only return command tokens that are on system tiles
-                if (System.getSystemTileObjectByPosition(obj.getPosition())) {
-                    const owningPlayerSlot = obj.getOwningPlayerSlot();
-                    commandTokenBags[owningPlayerSlot].addObjects([obj]);
-                }
+            if (obj.getContainer()) {
+                continue;
             }
+            if (!ObjectNamespace.isCommandToken(obj)) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            if (!hexSet.has(hex)) {
+                continue; // not on a system tile
+            }
+            const playerSlot = obj.getOwningPlayerSlot();
+            if (playerSlot < 0) {
+                continue;
+            }
+            const bag = playerSlotToCommandTokenBag[playerSlot];
+            if (!bag) {
+                continue;
+            }
+            bag.addObjects([obj]);
         }
     }
+
     /**
      * Distributes command tokens to all players.
      */
     static distributeCommandTokens() {
+        const playerSlotToCommandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag();
+
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const playerSlot = playerDesk.playerSlot;
-            const commandTokenBag =
-                EndStatusPhase.getCommandTokenBag(playerSlot);
+            const commandTokenBag = playerSlotToCommandTokenBag[playerSlot];
+            if (!commandTokenBag) {
+                continue;
+            }
             const count =
                 EndStatusPhase.getNumberOfCommandTokensToDistribute(playerSlot);
 
@@ -187,13 +227,14 @@ class EndStatusPhase {
                     break;
                 } else {
                     const dropPosition = playerDesk.localPositionToWorld(
-                        new Vector(3, 20 + i * 1, 0)
+                        new Vector(5, 20 + i * 1, 0)
                     );
                     commandTokenBag.takeAt(0, dropPosition, true);
                 }
             }
         }
     }
+
     /**
      * Returns all strategy cards to their proper position and rotation.
      */
@@ -230,7 +271,7 @@ class EndStatusPhase {
      */
     static refreshCards() {
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
+            if (!CardUtil.isLooseCard(obj, false)) {
                 continue; // we only want to refresh solo cards
             }
 

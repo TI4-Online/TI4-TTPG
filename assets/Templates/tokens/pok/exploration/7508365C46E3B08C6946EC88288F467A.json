@@ -24,7 +24,7 @@
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "objects/attachments/biotic-facility.js",
 	"Blueprint": "",
 	"Models": [

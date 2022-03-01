@@ -1,4 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
+const { DealDiscard } = require("../../lib/card/deal-discard");
 const { Hyperlane } = require("../../lib/map-string/hyperlane");
 const { MapStringLoad } = require("../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../lib/map-string/map-string-save");
@@ -9,7 +11,8 @@ const {
     Card,
     GameObject,
     Rotator,
-    refObject,
+    UIElement,
+    Vector,
     world,
 } = require("../../wrapper/api");
 
@@ -28,29 +31,8 @@ class MapTool {
         throw new Error("MapTool.getMapTilesContainer: no container");
     }
 
-    static getDeck(cardNsidPrefix) {
-        // TODO XXX For now just look for a deck with a planet card in it.
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
-            if (!(obj instanceof Card)) {
-                continue;
-            }
-            if (obj.getStackSize() <= 1) {
-                continue;
-            }
-            const nsids = ObjectNamespace.getDeckNsids(obj);
-            if (nsids[0].startsWith(cardNsidPrefix)) {
-                return obj;
-            }
-        }
-        throw new Error(`MapTool.getDeck: no deck "${cardNsidPrefix}"`);
-    }
-
     constructor(gameObject) {
-        assert(gameObject instanceof GameObject);
-        this._obj = gameObject;
+        assert(!gameObject || gameObject instanceof GameObject);
 
         // Pass wrapped functions that call with "this" correctly.
         const onButtonCallbacks = {
@@ -79,7 +61,20 @@ class MapTool {
                 this.placeHyperlanes();
             },
         };
-        this._ui = new MapToolUI(this._obj, onButtonCallbacks);
+        this._ui = new MapToolUI(onButtonCallbacks);
+
+        if (gameObject) {
+            const uiElement = new UIElement();
+            uiElement.position = new Vector(0, 0, 5);
+            uiElement.widget = new CollapsiblePanel().setChild(this._ui);
+            uiElement.anchorY = 0;
+            gameObject.addUI(uiElement);
+            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
+        }
+    }
+
+    getUI() {
+        return this._ui;
     }
 
     clear() {
@@ -209,20 +204,14 @@ class MapTool {
             }
         }
 
-        const toFront = false;
-        const offset = 0;
-        const animate = true;
-        const flipped = false;
         if (loosePlanetCards.length > 0) {
-            const deck = MapTool.getDeck("card.planet");
             for (const cardObj of loosePlanetCards) {
-                deck.addCards(cardObj, toFront, offset, animate, flipped);
+                DealDiscard.discard(cardObj);
             }
         }
         if (looseLegendaryPlanetCards.length > 0) {
-            const deck = MapTool.getDeck("card.legendary_planet");
             for (const cardObj of looseLegendaryPlanetCards) {
-                deck.addCards(cardObj, toFront, offset, animate, flipped);
+                DealDiscard.discard(cardObj);
             }
         }
     }
@@ -269,10 +258,4 @@ class MapTool {
     }
 }
 
-refObject.onCreated.add((obj) => {
-    new MapTool(obj);
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    new MapTool(refObject);
-}
+module.exports = { MapTool };

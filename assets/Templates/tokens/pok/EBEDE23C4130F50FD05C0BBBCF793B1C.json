@@ -24,7 +24,7 @@
 	},
 	"Flippable": false,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "objects/tokens/mirage.js",
 	"Blueprint": "",
 	"Models": [

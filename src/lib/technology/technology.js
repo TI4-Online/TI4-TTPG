@@ -80,12 +80,12 @@ class Technology {
         let playerTechnologiesNsid = [];
 
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
-                continue; // not a lone, faceup card on the table
-            }
             const nsid = ObjectNamespace.getNsid(obj);
             if (!nsid.startsWith("card.technology")) {
                 continue;
+            }
+            if (!CardUtil.isLooseCard(obj, false)) {
+                continue; // not a lone, faceup card on the table
             }
             const ownerPlayerSlot = world.TI4.getClosestPlayerDesk(
                 obj.getPosition()

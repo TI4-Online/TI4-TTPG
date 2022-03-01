@@ -1,6 +1,11 @@
+const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { CommandToken } = require("../lib/command-token/command-token");
 const { Explore } = require("../lib/explore/explore");
 const {
+    Border,
     Button,
+    GameObject,
     ImageButton,
     Rotator,
     UIElement,
@@ -13,12 +18,44 @@ const {
 let _openPopupObj = false;
 let _openPopupUi = false;
 
+function _closePopup() {
+    if (_openPopupObj) {
+        _openPopupObj.removeUIElement(_openPopupUi);
+        _openPopupObj = false;
+        _openPopupUi = false;
+    }
+}
+
 function addRightClickOptions(systemTileObj) {
+    assert(systemTileObj instanceof GameObject);
     const getNamesAndActions = () => {
-        const namesAndActions = [];
-        namesAndActions.push(
-            ...Explore.getExploreActionNamesAndActions(systemTileObj)
-        );
+        const namesAndActions = [
+            {
+                name: locale("ui.action.system.activate"),
+                action: (player) => {
+                    _closePopup();
+                    CommandToken.activateSystem(systemTileObj, player);
+                },
+            },
+            {
+                name: locale("ui.action.system.diplomacy"),
+                action: (player) => {
+                    _closePopup();
+                    CommandToken.diplomacySystem(systemTileObj, player);
+                },
+            },
+        ];
+        const exploreNamesAndActions =
+            Explore.getExploreActionNamesAndActions(systemTileObj);
+        for (const nameAndAction of exploreNamesAndActions) {
+            namesAndActions.push({
+                name: nameAndAction.name,
+                action: (player) => {
+                    _closePopup();
+                    nameAndAction.action(player);
+                },
+            });
+        }
         return namesAndActions;
     };
 
@@ -26,42 +63,54 @@ function addRightClickOptions(systemTileObj) {
     // Might want to reset after adding mirage?
     const namesAndActions = getNamesAndActions();
     for (const nameAndAction of namesAndActions) {
-        systemTileObj.addCustomAction(nameAndAction.name);
+        systemTileObj.addCustomAction("*" + nameAndAction.name);
     }
     systemTileObj.onCustomAction.add((obj, player, actionName) => {
         for (const nameAndAction of namesAndActions) {
-            if (nameAndAction.name === actionName) {
+            if ("*" + nameAndAction.name === actionName) {
                 nameAndAction.action(player);
                 break;
             }
         }
     });
 
-    // Also offer via a button.
+    // Also offer via a button.  Image buttons are quite blurry especially
+    // when small.  Make a big one and scale it down.
     const button = new ImageButton()
-        .setImage("global/technology/warfare_tech_icon.png")
-        .setImageSize(5, 0);
+        .setImage("global/tiles/base/hazard/tile_044.jpg")
+        .setImageSize(100, 150);
 
+    // Mallice needs to be flipped to see button, that's ok.
     const ui = new UIElement();
     ui.widget = button;
     ui.position = new Vector(0, 4.7, 0.2);
+    ui.scale = 0.1;
     systemTileObj.addUI(ui);
 
     button.onClicked.add((button, player) => {
-        if (_openPopupObj) {
-            _openPopupObj.removeUIElement(_openPopupUi);
-        }
-
+        _closePopup();
         const popupPanel = new VerticalBox();
         const popupUi = new UIElement();
-        popupUi.widget = popupPanel;
+        popupUi.widget = new Border().setChild(popupPanel);
         popupUi.rotation = systemTileObj.worldRotationToLocal(
             new Rotator(0, 0, 0)
         );
-        popupUi.position = ui.position.add([0, 0, 2]);
+        popupUi.position = ui.position.add([0, 0, 3]);
 
-        const closeButton = new Button().setText("<close>");
-        closeButton.onClicked.add(systemTileObj.removeUIElement(popupUi));
+        const namesAndActions = getNamesAndActions();
+        for (const nameAndAction of namesAndActions) {
+            const button = new Button().setText(nameAndAction.name);
+            button.onClicked.add((button, player) => {
+                _closePopup();
+                nameAndAction.action(player);
+            });
+            popupPanel.addChild(button);
+        }
+
+        const closeButton = new Button().setText(locale("ui.button.cancel"));
+        closeButton.onClicked.add((button, player) => {
+            _closePopup();
+        });
         popupPanel.addChild(closeButton);
 
         systemTileObj.addUI(popupUi);
