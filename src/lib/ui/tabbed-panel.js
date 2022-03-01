@@ -58,7 +58,7 @@ class TabbedPanel extends Border {
         this._verticalBox.addChild(tab.widget);
     }
 
-    addTab(label, widget) {
+    addTab(label, widget, selectThisTab) {
         assert(typeof label === "string" && label.length > 0);
         assert(widget instanceof Widget);
 
@@ -79,8 +79,7 @@ class TabbedPanel extends Border {
             widget,
         };
 
-        // If this is the first tab, set it visible.
-        if (!this._verticalBox.getChildAt(1)) {
+        if (selectThisTab) {
             this._selectTab(label);
         }
 
