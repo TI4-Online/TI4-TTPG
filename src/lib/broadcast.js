@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
-const { Color, world } = require("../wrapper/api");
+const { ColorUtil } = require("./color/color-util");
+const { world } = require("../wrapper/api");
 
 class Broadcast {
     /**
@@ -9,7 +10,7 @@ class Broadcast {
      */
     static broadcastAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
-        assert(Array.isArray(color) || color instanceof Color);
+        assert(Array.isArray(color) || ColorUtil.isColor(color));
 
         for (const player of world.getAllPlayers()) {
             player.showMessage(message);
@@ -22,7 +23,7 @@ class Broadcast {
      */
     static chatAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
-        assert(Array.isArray(color) || assert(typeof color.r === 'number'));
+        assert(Array.isArray(color) || ColorUtil.isColor(color));
 
         for (const player of world.getAllPlayers()) {
             player.sendChatMessage(message, color);
