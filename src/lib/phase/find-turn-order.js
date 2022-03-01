@@ -48,7 +48,9 @@ class FindTurnOrder {
                 }
             }
         }
-        assert(_strategyCardMat);
+        if (!_strategyCardMat) {
+            return true;
+        }
 
         const center = _strategyCardMat.getExtentCenter();
         const extent = _strategyCardMat.getExtent(true);
