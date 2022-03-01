@@ -28,8 +28,9 @@ class AutoRoller {
         this._activeHex = false;
         this._activatingPlayerSlot = false;
         this._firstBombardmentPlanet = false;
+        this._playerSlotToDice = {};
 
-        this._ui = new AutoRollerUI(this._obj, (rollType, planet, player) => {
+        this._ui = new AutoRollerUI((rollType, planet, player) => {
             assert(this instanceof AutoRoller);
             assert(typeof rollType === "string");
             assert(!planet || planet instanceof Planet);
@@ -155,10 +156,25 @@ class AutoRoller {
 
         new AuxDataPair(aux1, aux2).fillPairSync();
 
+        const playerSlot = player.getSlot();
+        let dicePos = new Vector(20, -60, world.getTableHeight());
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            dicePos = playerDesk.center.add([0, 0, 10]);
+        }
+
+        // Destroy any old dice.
+        let dice = this._playerSlotToDice[playerSlot];
+        if (dice) {
+            for (const die of dice) {
+                die.destroy();
+            }
+        }
+
         // COMBAT TIME!!
         const combatRoller = new CombatRoller(aux1, rollType, player);
-        const dicePos = new Vector(20, -60, world.getTableHeight());
-        combatRoller.roll(dicePos);
+        dice = combatRoller.roll(dicePos);
+        this._playerSlotToDice[playerSlot] = dice;
     }
 }
 
