@@ -46,7 +46,7 @@
     "ui.button.cancel": "CANCEL",
 
     "ui.action.system.activate": "Activate System",
-    "ui.action.system.diplomacy": "Dipolmacy System",
+    "ui.action.system.diplomacy": "Diplomacy System",
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
 
