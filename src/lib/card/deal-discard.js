@@ -297,7 +297,33 @@ class DealDiscard {
         assert(obj instanceof Card);
 
         const nsid = ObjectNamespace.getNsid(obj);
+
+        // Return promissory to player.
+        if (nsid.startsWith("card.promissory")) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const parts = parsed.type.split(".");
+            const dst = parts[2];
+            // dst is either a color or faction
+            const ownerFaction = world.TI4.getFactionByNsidName(dst);
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const deskSlot = playerDesk.playerSlot;
+                const deskFaction = world.TI4.getFactionByPlayerSlot(deskSlot);
+                if (
+                    (deskFaction && deskFaction === ownerFaction) ||
+                    dst === playerDesk.colorName
+                ) {
+                    const count = 1;
+                    const slots = [deskSlot];
+                    const faceDown = false;
+                    const dealToAllHolders = true;
+                    obj.deal(count, slots, faceDown, dealToAllHolders);
+                    return true;
+                }
+            }
+        }
+
         if (!DealDiscard.isKnownDeck(nsid)) {
+            // Otherwise discard to a known deck.
             return false;
         }
 
