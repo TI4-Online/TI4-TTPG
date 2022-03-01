@@ -6091,9 +6091,9 @@
 			],
 			"primaryColor":
 			{
-				"b": 178,
-				"g": 61,
-				"r": 137,
+				"b": 0,
+				"g": 12,
+				"r": 255,
 				"a": 255
 			},
 			"secondaryColor":
@@ -6109,7 +6109,7 @@
 			"restitution": 0.30000001192092896,
 			"density": 1,
 			"surfaceType": "SurfaceType1",
-			"objectName": "Garbage",
+			"objectName": "Explore Tokens",
 			"objectDescription": "",
 			"collisionType": "CB_Regular",
 			"templateId": "D66C554E4ECBACD3647B69975FE4F5A3",
