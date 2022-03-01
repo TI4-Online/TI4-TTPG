@@ -2,6 +2,10 @@ const assert = require("../../wrapper/assert-wrapper");
 const { Color } = require("../../wrapper/api");
 
 class ColorUtil {
+    static isColor(color) {
+        return typeof color.r === "number";
+    }
+
     static colorFromHex(hexColor) {
         assert(typeof hexColor === "string");
         assert(hexColor.startsWith("#"));
@@ -15,6 +19,8 @@ class ColorUtil {
     }
 
     static colorToHex(color) {
+        assert(ColorUtil.isColor(color));
+
         const f2h = (f) => {
             return Math.round(f * 255)
                 .toString(16)
