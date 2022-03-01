@@ -9,6 +9,7 @@ const {
     SetupGenericPromissory,
 } = require("../../setup/setup-generic-promissory");
 const { SetupGenericTech } = require("../../setup/setup-generic-tech");
+const { SetupPlayerMats } = require("../../setup/setup-player-mats");
 const { SetupSheets } = require("../../setup/setup-sheets");
 const { SetupSupplyBoxes } = require("../../setup/setup-supply-boxes");
 const { SetupUnits } = require("../../setup/setup-units");
@@ -122,6 +123,7 @@ class PlayerDeskSetup {
             new SetupSupplyBoxes(this._playerDesk),
             new SetupSheets(this._playerDesk),
             new SetupGenericHomeSystems(this._playerDesk),
+            new SetupPlayerMats(this._playerDesk),
         ];
     }
 

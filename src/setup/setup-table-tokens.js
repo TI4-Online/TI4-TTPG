@@ -10,7 +10,7 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.wormhole.exploration" },
         { nsidPrefix: "token.exploration" },
     ],
-    pos: { x: -40, y: -75, z: world.getTableHeight() + 5 },
+    pos: { x: -38, y: 98, z: world.getTableHeight() + 5 },
     yaw: 0,
 };
 
@@ -128,6 +128,8 @@ class SetupTableTokens extends AbstractSetup {
             bag = Spawn.spawn(tokenData.bagNsid, pos, rot);
             bag.clear(); // paranoia
             bag.setObjectType(ObjectType.Regular);
+            bag.setScript("");
+            bag.setName("tokens");
 
             // Bag needs to have the correct type at create time.
             if (bag.getType() !== tokenData.bagType) {

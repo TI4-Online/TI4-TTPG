@@ -6,14 +6,14 @@ const { ObjectType, Rotator, world } = require("../wrapper/api");
 const MATS = [
     {
         nsid: "mat:base/decks",
-        pos: { x: -28, y: 94 },
+        pos: { x: -34, y: 83 },
         yaw: 0,
     },
-    {
-        nsid: "mat:base/laws",
-        pos: { x: 0, y: 94 },
-        yaw: 0,
-    },
+    //{
+    //    nsid: "mat:base/laws",
+    //    pos: { x: 0, y: 94 },
+    //    yaw: 0,
+    //},
     {
         nsid: "mat:base/objectives_1",
         pos: { x: 0, y: -86 },
@@ -36,8 +36,13 @@ const MATS = [
     // },
     {
         nsid: "mat:pok/exploration",
-        pos: { x: 27, y: 94 },
+        pos: { x: 33, y: 87 },
         yaw: 90,
+    },
+    {
+        nsid: "mat:base/strategy_card",
+        pos: { x: 0, y: 90 },
+        yaw: 0,
     },
 ];
 

@@ -143,6 +143,13 @@ class SetupTableDecks extends AbstractSetup {
     }
 
     setup() {
+        const nsidSet = new Set();
+        for (const deckData of TABLE_DECKS) {
+            if (deckData.parent) {
+                nsidSet.add(deckData.parent.nsid);
+            }
+        }
+
         const nsidToMat = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
@@ -152,7 +159,9 @@ class SetupTableDecks extends AbstractSetup {
             if (!nsid.startsWith("mat:")) {
                 continue;
             }
-            console.log("found " + nsid);
+            if (!nsidSet.has(nsid)) {
+                continue;
+            }
             assert(!nsidToMat[nsid]);
             nsidToMat[nsid] = obj;
         }

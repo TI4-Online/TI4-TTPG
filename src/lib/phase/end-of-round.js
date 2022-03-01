@@ -231,16 +231,39 @@ class EndStatusPhase {
      * Returns all strategy cards to their proper position and rotation.
      */
     static returnStrategyCards() {
+        const strategyCards = [];
+        let strategyCardMat = false;
         for (const obj of world.getAllObjects()) {
-            if (ObjectNamespace.isStrategyCard(obj)) {
-                const strategyCard = ObjectNamespace.parseStrategyCard(obj);
-                const strategyCardHome = STRATEGY_CARDS.filter((element) =>
-                    element.nsid.includes(strategyCard.card)
-                )[0].pos;
-                const strategyCardRotation = new Rotator(0, -90, 0);
-                obj.setPosition(strategyCardHome, ANIMATION_SPEED);
-                obj.setRotation(strategyCardRotation, ANIMATION_SPEED);
+            if (obj.getContainer()) {
+                continue;
             }
+            if (ObjectNamespace.isStrategyCard(obj)) {
+                strategyCards.push(obj);
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "mat:base/strategy_card") {
+                strategyCardMat = obj;
+            }
+        }
+        assert(strategyCardMat);
+
+        const snapPoints = strategyCardMat.getAllSnapPoints();
+        const nsidToSnapPoint = {};
+        for (const cardData of STRATEGY_CARDS) {
+            const snapPoint = snapPoints[cardData.snapPointIndex];
+            assert(snapPoint);
+            nsidToSnapPoint[cardData.nsid] = snapPoint;
+        }
+
+        for (const obj of strategyCards) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            const snapPoint = nsidToSnapPoint[nsid];
+            assert(snapPoint);
+            const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
+            const yaw = snapPoint.getSnapRotation();
+            const rot = new Rotator(0, yaw, 0);
+            obj.setPosition(pos, ANIMATION_SPEED);
+            obj.setRotation(rot, ANIMATION_SPEED);
         }
     }
 

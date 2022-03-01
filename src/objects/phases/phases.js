@@ -14,6 +14,8 @@ const {
 } = require("../../wrapper/api");
 const { MapTool } = require("../map-tool/map-tool");
 const { AutoRoller } = require("../roller/auto-roller");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Rotator } = require("@tabletop-playground/api");
 
 class Phases {
     constructor(gameObject) {
@@ -45,6 +47,11 @@ class Phases {
         uiElement.anchorY = 0;
         uiElement.position = new Vector(0, 0, 5);
         uiElement.widget = layoutBox;
+
+        if (ObjectNamespace.getNsid(gameObject) === "mat:base/strategy_card") {
+            uiElement.position = new Vector(0, 15, 2);
+            uiElement.rotation = new Rotator(0, 90, 0);
+        }
 
         gameObject.addUI(uiElement);
 
