@@ -119,14 +119,8 @@ class CommandToken {
         return sheetAndTokens.tactic[0];
     }
 
-    /**
-     * Get a reinforcements token from the bag.
-     *
-     * @param {number} playerSlot
-     * @returns {GameObject|undefined} reinforcements token, if present
-     */
-    static getReinforcementsToken(playerSlot) {
-        let commandTokenBag = false;
+    static getPlayerSlotToCommandTokenBag() {
+        const playerSlotToCommandTokenBag = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
@@ -134,15 +128,27 @@ class CommandToken {
             if (!(obj instanceof Container)) {
                 continue;
             }
-            if (obj.getOwningPlayerSlot() !== playerSlot) {
-                continue;
-            }
             if (!ObjectNamespace.isCommandTokenBag(obj)) {
                 continue;
             }
-            commandTokenBag = obj;
-            break;
+            const playerSlot = obj.getOwningPlayerSlot();
+            if (playerSlot < 0) {
+                continue;
+            }
+            playerSlotToCommandTokenBag[playerSlot] = obj;
         }
+        return playerSlotToCommandTokenBag;
+    }
+
+    /**
+     * Get a reinforcements token from the bag.
+     *
+     * @param {number} playerSlot
+     * @returns {GameObject|undefined} reinforcements token, if present
+     */
+    static getReinforcementsToken(playerSlot) {
+        let commandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag()[playerSlot];
         if (!commandTokenBag) {
             return;
         }
