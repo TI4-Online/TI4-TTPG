@@ -29,6 +29,14 @@ const GENERIC_TOKENS = [
         pos: { x: -10, y: -75, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
+    {
+        tokenNsid: "token:base/custodians",
+        bagNsid: false,
+        bagType: false,
+        pos: { x: 0, y: -75, z: world.getTableHeight() + 5 },
+        yaw: 0,
+    },
+
     // scoreboard is in setup-table-mats
 ];
 
