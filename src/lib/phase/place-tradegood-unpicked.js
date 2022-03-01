@@ -4,7 +4,7 @@ const { Spawn } = require("../../setup/spawn/spawn");
 const { ObjectNamespace } = require("../object-namespace");
 const { GameObject, Rotator, Vector, world } = require("../../wrapper/api");
 
-const TRADEGOOD_NSID = "token:base/tradegood_1";
+const TRADEGOOD_NSID = "token:base/tradegood_commodity_1";
 const TRADEGOOD_ROLL = 180;
 
 /**
@@ -19,7 +19,7 @@ class PlaceTradegoodUnpicked {
         assert(strategyCard instanceof GameObject);
         assert(ObjectNamespace.isStrategyCard(strategyCard));
 
-        const noiseD = 2;
+        const noiseD = 1;
         const noise = new Vector(
             Math.random() * noiseD * 2 - noiseD,
             Math.random() * noiseD * 2 - noiseD,

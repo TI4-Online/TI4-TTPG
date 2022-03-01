@@ -39,6 +39,11 @@ const MATS = [
         pos: { x: 27, y: 94 },
         yaw: 90,
     },
+    {
+        nsid: "mat:base/strategy_card",
+        pos: { x: 9.6, y: 67 },
+        yaw: 0,
+    },
 ];
 
 class SetupTableMats extends AbstractSetup {
