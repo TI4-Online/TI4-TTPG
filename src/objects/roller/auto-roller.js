@@ -4,6 +4,7 @@ const { AutoRollerUI } = require("./auto-roller-ui");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
 const { CombatRoller } = require("../../lib/combat/combat-roller");
 const { Hex } = require("../../lib/hex");
 const { Planet } = require("../../lib/system/system");
@@ -11,9 +12,9 @@ const { Planet } = require("../../lib/system/system");
 const {
     GameObject,
     Player,
+    UIElement,
     Vector,
     globalEvents,
-    refObject,
     world,
 } = require("../../wrapper/api");
 
@@ -22,8 +23,7 @@ const {
  */
 class AutoRoller {
     constructor(gameObject) {
-        assert(gameObject instanceof GameObject);
-        this._obj = gameObject;
+        assert(!gameObject || gameObject instanceof GameObject);
         this._activeSystem = false;
         this._activeHex = false;
         this._activatingPlayerSlot = false;
@@ -48,9 +48,25 @@ class AutoRoller {
             this.onSystemActivated(systemTile, player);
         };
         globalEvents.TI4.onSystemActivated.add(handler);
-        this._obj.onDestroyed.add((obj) => {
-            globalEvents.TI4.onSystemActivated.remove(handler);
-        });
+        if (gameObject) {
+            gameObject.onDestroyed.add((obj) => {
+                globalEvents.TI4.onSystemActivated.remove(handler);
+            });
+        }
+
+        // Attach UI if given an object.
+        if (gameObject) {
+            const uiElement = new UIElement();
+            uiElement.position = new Vector(0, 0, 5);
+            uiElement.widget = new CollapsiblePanel().setChild(this._ui);
+            uiElement.anchorY = 0;
+            gameObject.addUI(uiElement);
+            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
+        }
+    }
+
+    getUI() {
+        return this._ui;
     }
 
     /**
@@ -63,11 +79,6 @@ class AutoRoller {
         assert(this instanceof AutoRoller);
         assert(systemTile instanceof GameObject);
         assert(player instanceof Player);
-
-        // Reject events if associated object destroyed.
-        if (!this._obj.isValid()) {
-            return;
-        }
 
         this._activeSystem = world.TI4.getSystemBySystemTileObject(systemTile);
         this._activeHex = Hex.fromPosition(systemTile.getPosition());
@@ -151,10 +162,4 @@ class AutoRoller {
     }
 }
 
-refObject.onCreated.add((obj) => {
-    new AutoRoller(obj);
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    new AutoRoller(refObject);
-}
+module.exports = { AutoRoller };
