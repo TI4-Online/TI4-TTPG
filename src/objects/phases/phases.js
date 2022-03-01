@@ -24,7 +24,7 @@ class Phases {
         const autoRoller = new AutoRoller();
         const tabStatus = new TabStatus();
 
-        const tabbedPanel = new TabbedPanel()
+        const tabbedPanel = new TabbedPanel(true)
             .addTab(locale("ui.tab.map_tool"), mapTool.getUI())
             .addTab(locale("ui.tab.strategy_phase"), tabStrategy.getUI())
             .addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
@@ -39,12 +39,13 @@ class Phases {
             .setChild(tabbedPanel)
             .setMaximumWidth(w)
             .setMinimumWidth(w)
-            .setMinimumHeight(200);
+            .setMinimumHeight(60);
 
         const uiElement = new UIElement();
         uiElement.anchorY = 0;
         uiElement.position = new Vector(0, 0, 5);
         uiElement.widget = layoutBox;
+
         gameObject.addUI(uiElement);
 
         mapTool.getUI().setOwningObjectForUpdate(gameObject, uiElement);
