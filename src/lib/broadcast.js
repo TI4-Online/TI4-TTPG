@@ -22,7 +22,7 @@ class Broadcast {
      */
     static chatAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
-        assert(Array.isArray(color) || color instanceof Color);
+        assert(Array.isArray(color) || assert(typeof color.r === 'number'));
 
         for (const player of world.getAllPlayers()) {
             player.sendChatMessage(message, color);
