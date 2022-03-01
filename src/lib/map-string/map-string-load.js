@@ -75,7 +75,9 @@ class MapStringLoad {
         }
 
         // Add Mallice
-        placeTile({ tile: 82 }, "<-4,5,-1>");
+        if (world.TI4.config.pok) {
+            placeTile({ tile: 82 }, "<-4,5,-1>");
+        }
     }
 }
 
