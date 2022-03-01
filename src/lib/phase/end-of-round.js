@@ -91,8 +91,6 @@ class EndStatusPhase {
      * @returns {number}
      */
     static getNumberOfCommandTokensToDistribute(playerSlot) {
-        // TODO: does the player have hypermetabolism?
-        // TODO: does the player have cybernetic enhancements?
         assert(typeof playerSlot === "number");
 
         let dealNTokens = 2;
