@@ -193,12 +193,12 @@ class System {
         }
 
         const parsed = ObjectNamespace.parseSystemTile(obj);
-        const system = this.getByTileNumber(parsed.tile);
+        const system = System.getByTileNumber(parsed.tile);
 
         // Reset inherent wormholes based on object!
         // This does not play well with attach tokens.
         // That's ok, wormhole adjacency looks for tokens.
-        if (system.raw.wormholesFaceDown) {
+        if (system && system.raw.wormholesFaceDown) {
             if (Facing.isFaceDown(obj)) {
                 system._wormholes = [...system.raw.wormholesFaceDown];
             } else {
