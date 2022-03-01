@@ -10,7 +10,6 @@ const {
     TextJustification,
     UIElement,
     VerticalBox,
-    world,
 } = require("../../wrapper/api");
 
 /**
@@ -23,16 +22,13 @@ class AutoRollerUI extends Border {
      * @param {function} onButton - called with (rollType: string, planet: Planet or false, player: Player)
      */
     constructor(onButton) {
+        assert(onButton);
         super();
         this._gameObject = false;
         this._uiElement = false;
-
         this._onButton = onButton;
 
-        //this.resetAwaitingSystemActivation();
-
-        const system = world.TI4.getSystemByTileNumber(69);
-        this.resetAfterSystemActivation(system);
+        this.resetAwaitingSystemActivation();
     }
 
     setOwningObjectForUpdate(gameObject, uiElement) {
@@ -98,9 +94,9 @@ class AutoRollerUI extends Border {
             false
         );
 
-        addText("ui.roller.announce_retreat");
+        //addText("ui.roller.announce_retreat");
         addButton("ui.roller.space_combat", "spaceCombat", false);
-        addText("ui.roller.retreat");
+        //addText("ui.roller.retreat");
 
         addText("ui.roller.bombardment");
         addHorizontalSubPanel();

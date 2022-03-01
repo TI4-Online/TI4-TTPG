@@ -272,6 +272,21 @@ class PlayerDesk {
         return closest;
     }
 
+    /**
+     * Get player desk associated with player slot.
+     *
+     * @param {number} playerSlot
+     * @returns {PlayerDesk|undefined}
+     */
+    static getByPlayerSlot(playerSlot) {
+        assert(typeof playerSlot === "number");
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            if (playerDesk.playerSlot === playerSlot) {
+                return playerDesk;
+            }
+        }
+    }
+
     static resetUIs() {
         for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             playerDesk.resetUI();

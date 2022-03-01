@@ -164,11 +164,11 @@ class CombatRoller {
     spawnDice(dicePos) {
         assert(typeof dicePos.x === "number");
 
+        let spawnPos = dicePos;
         const unitToDiceCount = this.getUnitToDiceCount();
         const unitToDice = {};
         for (const [unit, diceCount] of Object.entries(unitToDiceCount)) {
             const unitAttrs = this._auxData.unitAttrsSet.get(unit);
-            const spawnPos = dicePos; // XXX TODO
             const unitDieBuilder = new UnitDieBuilder(
                 unitAttrs,
                 this._rollType
@@ -180,6 +180,7 @@ class CombatRoller {
                         .setSpawnPosition(spawnPos)
                         .build(this._player)
                 );
+                spawnPos = spawnPos.add([0, 3, 0]);
             }
         }
         return unitToDice;
@@ -206,7 +207,7 @@ class CombatRoller {
         Broadcast.broadcastAll(
             locale("ui.message.player_rolling_for", {
                 playerName: this._player.getName(),
-                rollType: this._rollType, // XXX TODO
+                rollType: this._rollType,
             })
         );
         const report = this.getModifiersReport(true);

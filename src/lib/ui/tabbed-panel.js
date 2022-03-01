@@ -14,7 +14,7 @@ class TabbedPanel extends Border {
     /**
      * Constructor.
      */
-    constructor() {
+    constructor(includeCollapseButton) {
         super();
 
         this._verticalBox = new VerticalBox();
@@ -25,6 +25,19 @@ class TabbedPanel extends Border {
         this._verticalBox.addChild(this._tabButtons);
 
         this._labelToTabData = {};
+
+        if (includeCollapseButton) {
+            const collapseButton = new Button().setText("X");
+            collapseButton.onClicked.add((button, player) => {
+                if (this._verticalBox.getChildAt(1)) {
+                    this._verticalBox.removeChildAt(1);
+                }
+                for (const tabData of Object.values(this._labelToTabData)) {
+                    tabData.tabButton.setEnabled(true);
+                }
+            });
+            this._tabButtons.addChild(collapseButton);
+        }
     }
 
     _selectTab(label) {

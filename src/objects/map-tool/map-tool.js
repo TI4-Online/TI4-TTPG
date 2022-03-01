@@ -6,6 +6,7 @@ const { MapStringLoad } = require("../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const PositionToPlanet = require("../../lib/system/position-to-planet");
 const { Spawn } = require("../../setup/spawn/spawn");
 const {
     Card,
@@ -114,22 +115,23 @@ class MapTool {
         const nsidTypeAndNameToPos = {};
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
-            let pos = obj.getPosition().subtract([1, 1, 0]);
             for (const planet of system.planets) {
                 const planetNsidName = planet.getPlanetNsidName();
 
                 let key = `card.planet/${planetNsidName}`;
-                nsidTypeAndNameToPos[key] = pos.add([0, 0, 1]);
+                const pos = PositionToPlanet.getWorldPosition(
+                    obj,
+                    planet.position
+                );
+                nsidTypeAndNameToPos[key] = pos.add([0, 0, 2]);
 
                 if (planet.raw.legendary) {
                     const nsid = planet.raw.legendaryCard;
                     const parsed = ObjectNamespace.parseNsid(nsid);
                     assert(parsed.type === "card.legendary_planet");
                     key = `${parsed.type}/${parsed.name}`;
-                    nsidTypeAndNameToPos[key] = pos;
+                    nsidTypeAndNameToPos[key] = pos.add([0, 0, 1]);
                 }
-
-                pos = pos.add([2, 2, 0]);
             }
         }
 

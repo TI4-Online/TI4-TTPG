@@ -90,6 +90,9 @@ world.TI4 = {
     getPlanetByCardNsid: (nsid) => {
         return Planet.getByCardNsid(nsid);
     },
+    getPlayerDeskByPlayerSlot: (playerSlot) => {
+        return PlayerDesk.getByPlayerSlot(playerSlot);
+    },
     getSystemBySystemTileObject: (gameObject) => {
         return System.getBySystemTileObject(gameObject);
     },
