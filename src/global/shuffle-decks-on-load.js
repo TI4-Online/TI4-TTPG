@@ -4,12 +4,11 @@ const { DealDiscard } = require("../lib/card/deal-discard");
 const locale = require("../lib/locale");
 const { world } = require("../wrapper/api");
 
-process.nextTick(() => {
+function shuffleAllDecks() {
     if (world.TI4.config.timestamp > 0) {
         console.log("shuffle: game in progress, aborting");
         return; // game in progress
     }
-    console.log("shuffling all decks");
     Broadcast.chatAll(locale("ui.message.shuffling_all_decks"));
 
     const deckNsidPrefixes = [
@@ -29,11 +28,15 @@ process.nextTick(() => {
         if (!deckNsidPrefix) {
             return;
         }
-        console.log(`shuffling ${deckNsidPrefix}`);
+        //console.log(`shuffling ${deckNsidPrefix}`);
         const deck = DealDiscard.getDeckWithReshuffle(deckNsidPrefix);
         assert(deck);
         deck.shuffle();
         process.nextTick(shuffleNext);
     };
     shuffleNext();
-});
+}
+
+if (!world.__isMock) {
+    process.nextTick(shuffleAllDecks);
+}
