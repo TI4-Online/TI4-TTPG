@@ -10,7 +10,7 @@ class SetupSystemTiles extends AbstractSetup {
     }
 
     setup() {
-        const pos = new Vector(0, 100, world.getTableHeight() + 5);
+        const pos = new Vector(-28, 99, world.getTableHeight() + 5);
         const rot = new Rotator(0, 0, 0);
         const bag = Spawn.spawnGenericContainer(pos, rot);
 

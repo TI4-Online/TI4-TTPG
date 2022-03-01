@@ -1,6 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../color/color-util");
 const {
-    Color,
     Dice,
     GameObject,
     Player,
@@ -60,7 +60,7 @@ class SimpleDieBuilder {
      * @returns {SimpleDie} self for chaining
      */
     setColor(color) {
-        assert(color instanceof Color);
+        assert(ColorUtil.isColor(color));
         this._color = color;
         return this;
     }

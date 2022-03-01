@@ -1,4 +1,5 @@
 require("../../global"); // create globalEvents.TI4
+const { Color } = require("../../wrapper/api");
 const {
     MockGameObject,
     MockPlayer,
@@ -6,8 +7,8 @@ const {
     world,
 } = require("../../mock/mock-api");
 
-const red = { r: 1, g: 0, b: 0 };
-const green = { r: 0, g: 1, b: 0 };
+const red = new Color(1, 0, 0);
+const green = new Color(0, 1, 0);
 const player1 = new MockPlayer({ name: "one", playerColor: red });
 const player2 = new MockPlayer({ name: "two", playerColor: green });
 world.__setPlayers([player1, player2]);

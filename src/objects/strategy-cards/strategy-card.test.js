@@ -9,21 +9,12 @@ const {
     MockVerticalBox,
 } = require("../../mock/mock-api");
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
 
-const red = {
-    r: 1,
-    g: 0,
-    b: 0,
-};
-const green = {
-    r: 0,
-    g: 1,
-    b: 0,
-};
+const red = new Color({ r: 1, g: 0, b: 0 });
+const green = new Color({ r: 0, g: 1, b: 0 });
 
 const player1 = new MockPlayer({
     name: "player1",
@@ -38,55 +29,6 @@ const player2 = new MockPlayer({
 });
 
 world.__setPlayers([player1, player2]);
-
-describe("broadcaseMessage", () => {
-    let player1MessageSpy, player2MessageSpy;
-    const testMessage = "test";
-
-    beforeEach(() => {
-        player1MessageSpy = jest.spyOn(player1, "sendChatMessage");
-        player2MessageSpy = jest.spyOn(player2, "sendChatMessage");
-    });
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
-    it("with only text", () => {
-        broadcastMessage(testMessage);
-
-        expect(player1MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player1MessageSpy).toHaveBeenCalledWith(testMessage, undefined);
-        expect(player2MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player2MessageSpy).toHaveBeenCalledWith(testMessage, undefined);
-    });
-
-    it("with text arguments", () => {
-        broadcastMessage(testMessage, {});
-
-        expect(player1MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player1MessageSpy).toHaveBeenCalledWith(testMessage, undefined);
-        expect(player2MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player2MessageSpy).toHaveBeenCalledWith(testMessage, undefined);
-    });
-
-    it("with a player", () => {
-        broadcastMessage(testMessage, undefined, player2);
-
-        expect(player1MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player1MessageSpy).toHaveBeenCalledWith(testMessage, green);
-        expect(player2MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player2MessageSpy).toHaveBeenCalledWith(testMessage, green);
-    });
-
-    it("with text arguments and a player", () => {
-        broadcastMessage(testMessage, {}, player2);
-
-        expect(player1MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player1MessageSpy).toHaveBeenCalledWith(testMessage, green);
-        expect(player2MessageSpy).toHaveBeenCalledTimes(1);
-        expect(player2MessageSpy).toHaveBeenCalledWith(testMessage, green);
-    });
-});
 
 describe("when a strategy card UI is created", () => {
     var buttons, card, index, widgetFactory;

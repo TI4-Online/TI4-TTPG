@@ -90,3 +90,10 @@ refObject.onCreated.add(attachMirage);
 if (world.getExecutionReason() === "ScriptReload") {
     attachMirage(refObject);
 }
+
+// Outsiders can call obj.__attachment.attach()
+refObject.__attachment = {
+    attach: () => {
+        attachMirage(refObject);
+    },
+};

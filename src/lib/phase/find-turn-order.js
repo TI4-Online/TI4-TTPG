@@ -15,6 +15,8 @@ const STRATEGY_CARD_INITIATIVE = {
     imperial: 8,
 };
 
+let _strategyCardMat = false;
+
 /**
  * Determine turn order based on strategy cards (and Naalu zero token).
  */
@@ -33,8 +35,42 @@ class FindTurnOrder {
         assert(strategyCard instanceof GameObject);
         assert(ObjectNamespace.isStrategyCard(strategyCard));
 
-        // XXX TODO check if on strategy card mat?
-        return true;
+        if (!_strategyCardMat || !_strategyCardMat.isValid()) {
+            _strategyCardMat = false;
+            for (const obj of world.getAllObjects()) {
+                if (obj.getContainer()) {
+                    continue;
+                }
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (nsid === "mat:base/strategy_card") {
+                    _strategyCardMat = obj;
+                    break;
+                }
+            }
+        }
+        if (!_strategyCardMat) {
+            return true;
+        }
+
+        const center = _strategyCardMat.getExtentCenter();
+        const extent = _strategyCardMat.getExtent(true);
+        const bb = {
+            min: {
+                x: center.x - extent.x,
+                y: center.y - extent.y,
+            },
+            max: {
+                x: center.x + extent.x,
+                y: center.y + extent.y,
+            },
+        };
+        const pos = strategyCard.getPosition();
+        return (
+            pos.x < bb.min.x ||
+            pos.x > bb.max.x ||
+            pos.y < bb.min.y ||
+            pos.y > bb.max.y
+        );
     }
 
     /**
@@ -81,9 +117,12 @@ class FindTurnOrder {
 
         // Seed initiatives.
         const playerSlotToInitiative = {};
+        const playerSlotToSlotNumber = {};
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerSlotToInitiative[playerDesk.playerSlot] =
                 Number.MAX_SAFE_INTEGER;
+            playerSlotToSlotNumber[playerDesk.playerSlot] =
+                playerDesk.playerSlot;
         }
 
         // Player initiative is lowest of any initiative object.
@@ -103,7 +142,10 @@ class FindTurnOrder {
         order.sort(
             (a, b) => playerSlotToInitiative[a] - playerSlotToInitiative[b]
         );
-        return order;
+        // Boo, javascript makes these strings when used as keys.  Get numbers.
+        return order.map((slotStr) => {
+            return playerSlotToSlotNumber[slotStr];
+        });
     }
 }
 

@@ -1,7 +1,8 @@
-require("../global"); // create globalEvents.TI4
+require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
+const { ColorUtil } = require("../color/color-util");
 const { PlayerDesk } = require("./player-desk");
-const { Color, MockPlayer, world } = require("../wrapper/api");
+const { Color, MockPlayer, world } = require("../../wrapper/api");
 
 it("static getPlayerDesks", () => {
     const player = new MockPlayer();
@@ -31,7 +32,7 @@ it("static getClosest", () => {
 it("color", () => {
     const playerDesk = PlayerDesk.getAllPlayerDesks()[0];
     assert(typeof playerDesk.colorName === "string");
-    assert(playerDesk.color instanceof Color);
+    assert(ColorUtil.isColor(playerDesk.color));
 });
 it("getColorOptions", () => {
     const playerDesk = PlayerDesk.getAllPlayerDesks()[0];

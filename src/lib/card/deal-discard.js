@@ -1,0 +1,373 @@
+const assert = require("../../wrapper/assert-wrapper");
+const { ObjectNamespace } = require("../object-namespace");
+const { Card, Rotator, world } = require("../../wrapper/api");
+
+const DECKS = [
+    {
+        nsidPrefix: "card.objective.public_1",
+        parentNsid: "mat:base/objectives_1",
+        deckSnapPointIndex: 5,
+        discardSnapPointIndex: -1,
+    },
+    {
+        nsidPrefix: "card.objective.public_2",
+        parentNsid: "mat:base/objectives_2",
+        deckSnapPointIndex: 5,
+        discardSnapPointIndex: -1,
+    },
+
+    {
+        nsidPrefix: "card.action",
+        parentNsid: "mat:base/decks",
+        deckSnapPointIndex: 3,
+        discardSnapPointIndex: 0,
+    },
+    {
+        nsidPrefix: "card.agenda",
+        parentNsid: "mat:base/decks",
+        deckSnapPointIndex: 4,
+        discardSnapPointIndex: 1,
+    },
+    {
+        nsidPrefix: "card.objective.secret",
+        parentNsid: "mat:base/decks",
+        deckSnapPointIndex: 5,
+        discardSnapPointIndex: -1,
+    },
+    {
+        nsidPrefix: "card.planet",
+        parentNsid: "mat:base/decks",
+        deckSnapPointIndex: 2,
+        discardSnapPointIndex: -1,
+    },
+
+    {
+        nsidPrefix: "card.exploration.cultural",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 8,
+        discardSnapPointIndex: 3,
+    },
+    {
+        nsidPrefix: "card.exploration.hazardous",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 7,
+        discardSnapPointIndex: 2,
+    },
+    {
+        nsidPrefix: "card.exploration.industrial",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 6,
+        discardSnapPointIndex: 1,
+    },
+    {
+        nsidPrefix: "card.exploration.frontier",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 5,
+        discardSnapPointIndex: 0,
+    },
+    {
+        nsidPrefix: "card.relic",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 9,
+        discardSnapPointIndex: -1,
+    },
+    {
+        nsidPrefix: "card.legendary_planet",
+        parentNsid: "mat:pok/exploration",
+        deckSnapPointIndex: 4,
+        discardSnapPointIndex: -1,
+    },
+];
+
+// Cache NSID to object lookup.  Maybe this should be a world.TI4 function?
+const _nsidToParent = {};
+
+/**
+ * Find TI4 deck or discard piles.
+ */
+class DealDiscard {
+    static _getDeckData(nsidOrPrefix) {
+        assert(typeof nsidOrPrefix === "string");
+        for (const deckData of DECKS) {
+            if (nsidOrPrefix.startsWith(deckData.nsidPrefix)) {
+                return deckData;
+            }
+        }
+    }
+    static _getParent(deckData) {
+        const obj = _nsidToParent[deckData.parentNsid];
+        if (obj && obj.isValid()) {
+            return obj;
+        }
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== deckData.parentNsid) {
+                continue;
+            }
+            _nsidToParent[deckData.parentNsid] = obj;
+            return obj;
+        }
+    }
+    static _getDeck(nsidOrPrefix, getDiscard) {
+        assert(typeof nsidOrPrefix === "string");
+        const deckData = DealDiscard._getDeckData(nsidOrPrefix);
+        if (!deckData) {
+            return;
+        }
+        const parent = DealDiscard._getParent(deckData);
+        if (!parent) {
+            return;
+        }
+        const snapPoints = parent.getAllSnapPoints();
+        const index = getDiscard
+            ? deckData.discardSnapPointIndex
+            : deckData.deckSnapPointIndex;
+        const snapPoint = snapPoints[index];
+
+        // getSnappedObject isn't reliable.  Try, then fallback to cast.
+        let deck = snapPoint.getSnappedObject();
+        if (deck && deck.isInHolder()) {
+            deck = false; // already dealt, but not moved yet
+        }
+        if (!deck || !(deck instanceof Card)) {
+            const pos = snapPoint.getGlobalPosition();
+            const src = pos.subtract([0, 0, 50]);
+            const dst = pos.add([0, 0, 50]);
+            const hits = world.lineTrace(src, dst);
+            for (const hit of hits) {
+                if (!(hit.object instanceof Card)) {
+                    continue; // not a card
+                }
+                if (hit.object.isInHolder()) {
+                    continue; // already dealt, but not moved yet
+                }
+                deck = hit.object;
+                break;
+            }
+        }
+        return deck;
+    }
+
+    /**
+     * Does this object know about the related deck?
+     *
+     * @param {string} nsidOrPrefix
+     * @returns {boolean} true if known
+     */
+    static isKnownDeck(nsidOrPrefix) {
+        assert(typeof nsidOrPrefix === "string");
+        return DealDiscard._getDeckData(nsidOrPrefix) ? true : false;
+    }
+
+    /**
+     * Get the deck.  Optionally shuffle and merge in the discard pile if
+     * too few cards (prior to dealing).
+     *
+     * @param {string} nsidOrPrefix
+     * @param {number|undefined} requireCapacity - need at least N cards
+     * @returns {Card|undefined} card, deck, or undefined if missing
+     */
+    static getDeckWithReshuffle(nsidOrPrefix, requireCapacity = 0) {
+        assert(typeof nsidOrPrefix === "string");
+        let deck = DealDiscard._getDeck(nsidOrPrefix, false);
+        if (deck && deck.getStackSize() >= requireCapacity) {
+            return deck;
+        }
+        // Deck needs more cards.  Shuffle discard, place on bottom.
+        const discard = DealDiscard._getDeck(nsidOrPrefix, true);
+        if (discard) {
+            discard.shuffle();
+            if (deck) {
+                // Add to existing deck.
+                deck.addCards(discard, true);
+            } else {
+                // Move to deck position.  We know deck data and parent exist.
+                const deckData = DealDiscard._getDeckData(nsidOrPrefix);
+                const parent = DealDiscard._getParent(deckData);
+                const snapPoints = parent.getAllSnapPoints();
+                const snapPoint = snapPoints[deckData.deckSnapPointIndex];
+                assert(snapPoint);
+                const pos = snapPoint.getGlobalPosition().add([0, 0, 10]);
+                const yaw = snapPoint.getSnapRotation();
+                const rot = new Rotator(0, yaw, 0).compose(
+                    parent.getRotation()
+                );
+                discard.setPosition(pos, 1);
+                discard.setRotation(rot, 1);
+                discard.snap();
+                deck = discard;
+            }
+        }
+        return deck;
+    }
+
+    /**
+     * Get the discard deck.
+     *
+     * @param {string} nsidOrPrefix
+     * @returns {Card|undefined} card, deck, or undefined if missing
+     */
+    static getDiscard(nsidOrPrefix) {
+        assert(typeof nsidOrPrefix === "string");
+        return DealDiscard._getDeck(nsidOrPrefix, true);
+    }
+
+    /**
+     * Deal card(s) from deck to player slot.
+     *
+     * @param {string} nsidPrefix
+     * @param {number} count
+     * @param {number} playerSlot
+     * @returns {boolean} true if dealt
+     */
+    static deal(nsidPrefix, count, playerSlot) {
+        assert(typeof nsidPrefix === "string");
+        assert(typeof count === "number" && count >= 0);
+        assert(typeof playerSlot === "number");
+
+        const deck = DealDiscard.getDeckWithReshuffle(nsidPrefix, count);
+        if (!deck) {
+            console.log(`deal(${nsidPrefix}, ${count}): missing deck`);
+            return false;
+        }
+        if (deck.getStackSize() < count) {
+            console.log(
+                `deal(${nsidPrefix}, ${count}): too few cards in deck (${deck.getStackSize()})`
+            );
+            return false;
+        }
+
+        // Move the card elsewhere before dealing so future linecasts trying to
+        // find the deck don't find it by accident.
+        const faceDown = false; // false = card will be face up in hand
+        const dealToAllHolders = true; // needs to be true to deal to other players?
+        deck.deal(count, [playerSlot], faceDown, dealToAllHolders);
+        return true;
+    }
+
+    /**
+     * Deal card(s) from deck to position/rotation.
+     *
+     * @param {string} nsidPrefix
+     * @param {number} count
+     * @param {Vector} position
+     * @param {Rotator} rotation
+     * @returns {Card} Card if dealt
+     */
+    static dealToPosition(nsidPrefix, count, position, rotation) {
+        assert(typeof nsidPrefix === "string");
+        assert(typeof count === "number" && count >= 0);
+        assert(typeof position.x === "number");
+        assert(typeof rotation.yaw === "number");
+
+        const deck = DealDiscard.getDeckWithReshuffle(nsidPrefix, count);
+        if (!deck) {
+            console.log(
+                `dealToPosition(${nsidPrefix}, ${count}): missing deck`
+            );
+            return false;
+        }
+        if (deck.getStackSize() < count) {
+            console.log(
+                `dealToPosition(${nsidPrefix}, ${count}): too few cards in deck (${deck.getStackSize()})`
+            );
+            return false;
+        }
+
+        const fromFront = false; // "front" is bottom
+        const offset = 0;
+        const keep = false;
+        const card = deck.takeCards(count, fromFront, offset, keep);
+        card.setPosition(position, 1);
+        card.setRotation(rotation, 1);
+
+        return card;
+    }
+
+    /**
+     * Discard a card.
+     *
+     * @param {Card} obj
+     * @returns {boolean} true if discarded
+     */
+    static discard(obj) {
+        assert(obj instanceof Card);
+
+        const nsid = ObjectNamespace.getNsid(obj);
+
+        // Return promissory to player.
+        if (nsid.startsWith("card.promissory")) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const parts = parsed.type.split(".");
+            const dst = parts[2];
+            // dst is either a color or faction
+            const ownerFaction = world.TI4.getFactionByNsidName(dst);
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const deskSlot = playerDesk.playerSlot;
+                const deskFaction = world.TI4.getFactionByPlayerSlot(deskSlot);
+                if (
+                    (deskFaction && deskFaction === ownerFaction) ||
+                    dst === playerDesk.colorName
+                ) {
+                    const count = 1;
+                    const slots = [deskSlot];
+                    const faceDown = false;
+                    const dealToAllHolders = true;
+                    obj.deal(count, slots, faceDown, dealToAllHolders);
+                    return true;
+                }
+            }
+        }
+
+        if (!DealDiscard.isKnownDeck(nsid)) {
+            // Otherwise discard to a known deck.
+            return false;
+        }
+
+        const deckData = DealDiscard._getDeckData(nsid);
+        const getDiscard = deckData.discardSnapPointIndex >= 0;
+        let deck = DealDiscard._getDeck(nsid, getDiscard);
+        if (deck) {
+            // Add to existing discard pile.
+            const toFront = false;
+            const offset = 0;
+            const animate = true;
+            const flipped = false;
+            deck.addCards(obj, toFront, offset, animate, flipped);
+        } else {
+            // Start a new discard pile.
+            deck = obj;
+
+            // Move to deck position.  We know deck data and parent exist.
+            // Careful if discarding to main deck vs discard pile.
+            const parent = DealDiscard._getParent(deckData);
+            const snapPoints = parent.getAllSnapPoints();
+            let index = deckData.discardSnapPointIndex;
+            let roll = 180;
+            if (index == -1) {
+                index = deckData.deckSnapPointIndex;
+                roll = 0;
+            }
+            const snapPoint = snapPoints[index];
+            assert(snapPoint);
+            const pos = snapPoint.getGlobalPosition();
+            const yaw = snapPoint.getSnapRotation();
+            const rot = new Rotator(0, yaw, roll).compose(parent.getRotation());
+            deck.setPosition(pos, 1);
+            deck.setRotation(rot, 1);
+            deck.snap();
+        }
+
+        // If discards go to the main deck, shuffle after discarding.
+        if (!getDiscard) {
+            deck.shuffle();
+        }
+
+        return true;
+    }
+}
+
+module.exports = { DealDiscard };

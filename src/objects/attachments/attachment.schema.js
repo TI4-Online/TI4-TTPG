@@ -21,6 +21,7 @@ const ATTACHMENT_SCHEMA = {
     type: "object",
     properties: {
         localeName: { type: "string" },
+        cardNsid: { type: "string" },
         faceUp: ATTACHMENT_HELPER_SCHEMA,
         faceDown: ATTACHMENT_HELPER_SCHEMA,
     },
