@@ -9,49 +9,47 @@ const {
     Text,
     TextJustification,
     UIElement,
-    Vector,
     VerticalBox,
-    world,
 } = require("../../wrapper/api");
 
 /**
  * Manage the UI on an AutoRoller object.
  */
-class AutoRollerUI {
+class AutoRollerUI extends Border {
     /**
      * Constructor.
      *
-     * @param {GameObject} gameObject
      * @param {function} onButton - called with (rollType: string, planet: Planet or false, player: Player)
      */
-    constructor(gameObject, onButton) {
-        assert(gameObject instanceof GameObject);
-        this._obj = gameObject;
+    constructor(onButton) {
+        assert(onButton);
+        super();
+        this._gameObject = false;
+        this._uiElement = false;
         this._onButton = onButton;
 
-        this._uiElement = new UIElement();
-        this._uiElement.position = new Vector(0, 0, 5);
+        this.resetAwaitingSystemActivation();
+    }
 
-        this._uiElement.widget = new Border();
-        this._obj.addUI(this._uiElement);
+    setOwningObjectForUpdate(gameObject, uiElement) {
+        assert(gameObject instanceof GameObject);
+        assert(uiElement instanceof UIElement);
+        this._gameObject = gameObject;
+        this._uiElement = uiElement;
+    }
 
-        //this.resetAwaitingSystemActivation();
-
-        const system = world.TI4.getSystemByTileNumber(69);
-        this.resetAfterSystemActivation(system);
+    _update() {
+        if (this._gameObject && this._uiElement) {
+            this._gameObject.updateUI(this._uiElement);
+        }
     }
 
     /**
      * Reset for "no system activated".
      */
     resetAwaitingSystemActivation() {
-        this._uiElement.widget = new Border().setChild(
-            new Text().setText("no system activated")
-        );
-
-        // GameObject.updateUI does NOT update if you change the widget.
-        this._obj.removeUIElement(this._uiElement);
-        this._obj.addUI(this._uiElement);
+        this.setChild(new Text().setText("no system activated"));
+        this._update();
     }
 
     /**
@@ -95,8 +93,10 @@ class AutoRollerUI {
             "antiFighterBarrage",
             false
         );
-        addText("ui.roller.announce_retreats");
+
+        //addText("ui.roller.announce_retreat");
         addButton("ui.roller.space_combat", "spaceCombat", false);
+        //addText("ui.roller.retreat");
 
         addText("ui.roller.bombardment");
         addHorizontalSubPanel();
@@ -119,10 +119,8 @@ class AutoRollerUI {
         });
         panels.pop();
 
-        // GameObject.updateUI does NOT update if you change the widget.
-        this._obj.removeUIElement(this._uiElement);
-        this._uiElement.widget = new Border().setChild(panels[0]);
-        this._obj.addUI(this._uiElement);
+        this.setChild(panels[0]);
+        this._update();
     }
 }
 

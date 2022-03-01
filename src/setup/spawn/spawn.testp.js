@@ -134,7 +134,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         bag.addObjects([Gather.gatherDeck("relic")]);
         bag.addObjects(Gather.gatherTableTokenAndTokenBags());
         bag.addObjects(Gather.gatherStrategyCards());
-        bag.addObjects(Gather.gatherSystemTiles()); // TODO XXX FACTION TILES!
+        bag.addObjects(Gather.gatherSystemTiles());
 
         // These are per-color, but group them for the table collection.
         const colors = [

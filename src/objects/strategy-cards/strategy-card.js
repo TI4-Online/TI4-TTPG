@@ -11,16 +11,10 @@ const {
     world,
 } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 let openSelections = {};
 let playerUis = {};
-
-function broadcastMessage(messageKey, localeArgs = {}, player) {
-    const message = locale(messageKey, localeArgs);
-    for (const p of world.getAllPlayers()) {
-        p.sendChatMessage(message, player && player.getPlayerColor());
-    }
-}
 
 function getTopLevelWidget(element) {
     const parent = element.getParent();
@@ -94,14 +88,13 @@ class RegisterStrategyCardUI {
      * @param {function} [data.onStrategyCardSelectionDone] Event handler for the closing event.
      */
     constructor(data) {
-        this._card = data && data.card;
-        this._widgetFactory = data && data.widgetFactory;
-        this._height = data && data.height;
-        this._width = (data && data.width) || 350;
-        this._color = data && data.color;
-        this._onStrategyCardPlayed = data && data.onStrategyCardPlayed;
-        this._onStrategyCardSelectionDone =
-            data && data.onStrategyCardSelectionDone;
+        this._card = data?.card;
+        this._widgetFactory = data?.widgetFactory;
+        this._height = data?.height;
+        this._width = data?.width || 350;
+        this._color = data?.color;
+        this._onStrategyCardPlayed = data?.onStrategyCardPlayed;
+        this._onStrategyCardSelectionDone = data?.onStrategyCardSelectionDone;
     }
 
     setCard(value) {
@@ -238,12 +231,11 @@ function onUiClosedClicked(button, player) {
     // send notifications in case all have responded
     if (openSelections[cardId].length === 0) {
         delete openSelections[border.card.getId()];
-        broadcastMessage(locale("strategy_card.message.all_resolved"));
+        Broadcast.broadcastAll(locale("strategy_card.message.all_resolved"));
     }
 }
 
 module.exports = {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 };

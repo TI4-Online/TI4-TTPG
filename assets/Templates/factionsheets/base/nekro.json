@@ -1,12 +1,12 @@
 {
-	"Type": "Card",
+	"Type": "Generic",
 	"GUID": "89BC9E8E897EF873A7F94387A086D351",
 	"Name": "Faction Sheet (Nekro)",
 	"Metadata": "sheet.faction:base/nekro",
-	"CollisionType": "Regular",
+	"CollisionType": "Ground",
 	"Friction": 0.7,
-	"Restitution": 0,
-	"Density": 0.5,
+	"Restitution": 0.3,
+	"Density": 1,
 	"SurfaceType": "Cardboard",
 	"Roughness": 1,
 	"Metallic": 0,
@@ -25,87 +25,170 @@
 	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
-	"Models": [],
+	"Models": [
+		{
+			"Model": "utility/factionsheet.obj",
+			"Offset": {
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale": {
+				"X": 1,
+				"Y": 1,
+				"Z": 0.399984
+			},
+			"Rotation": {
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "locale/factionsheets/base/nekro.face.jpg",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor": {
+				"R": 255,
+				"G": 255,
+				"B": 255
+			},
+			"SecondaryColor": {
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
+			"SurfaceType": "Cardboard"
+		},
+		{
+			"Model": "utility/factionsheet.obj",
+			"Offset": {
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale": {
+				"X": 1,
+				"Y": 1,
+				"Z": 0.399984
+			},
+			"Rotation": {
+				"X": 180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "locale/factionsheets/base/nekro.back.jpg",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor": {
+				"R": 255,
+				"G": 255,
+				"B": 255
+			},
+			"SecondaryColor": {
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
+			"SurfaceType": "Cardboard"
+		}
+	],
 	"Collision": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
 			"X": -7.05,
 			"Y": -10.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": -7.05,
 			"Y": -3.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": -2.35,
 			"Y": -3.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": -7.05,
 			"Y": 3.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": -2.35,
 			"Y": 3.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": 2.35,
-			"Y": 3.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": -7.05,
 			"Y": 10.5,
-			"Z": 0.25,
-			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": -2.35,
-			"Y": 10.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": 2.35,
-			"Y": 10.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
 			"X": 7.05,
-			"Y": 10.5,
-			"Z": 0.25,
-			"Range": 3,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 2.35,
+			"Y": -3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		}
@@ -114,30 +197,5 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	},
-	"FrontTexture": "locale/factionsheets/base/nekro.face.jpg",
-	"BackTexture": "locale/factionsheets/base/nekro.back.jpg",
-	"HiddenTexture": "",
-	"BackIndex": 0,
-	"HiddenIndex": -1,
-	"NumHorizontal": 1,
-	"NumVertical": 1,
-	"Width": 28,
-	"Height": 19,
-	"Thickness": 0.1,
-	"HiddenInHand": false,
-	"UsedWithCardHolders": false,
-	"CanStack": false,
-	"UsePrimaryColorForSide": false,
-	"FrontTextureOverrideExposed": false,
-	"AllowFlippedInStack": false,
-	"MirrorBack": true,
-	"Model": "Square",
-	"Indices": [
-		0
-	],
-	"CardNames": {},
-	"CardMetadata": {
-		"0": "sheet.faction:base/nekro"
 	}
 }

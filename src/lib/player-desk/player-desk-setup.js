@@ -1,35 +1,48 @@
-const { FactionToken } = require("./faction/faction-token");
-const { ObjectNamespace } = require("./object-namespace");
+const { FactionToken } = require("../faction/faction-token");
+const { ObjectNamespace } = require("../object-namespace");
 
-const { SetupCardHolders } = require("../setup/setup-card-holders");
+const { SetupCardHolders } = require("../../setup/setup-card-holders");
 const {
     SetupGenericHomeSystems,
-} = require("../setup/setup-generic-home-systems");
-const { SetupGenericPromissory } = require("../setup/setup-generic-promissory");
-const { SetupGenericTech } = require("../setup/setup-generic-tech");
-const { SetupSheets } = require("../setup/setup-sheets");
-const { SetupSupplyBoxes } = require("../setup/setup-supply-boxes");
-const { SetupUnits } = require("../setup/setup-units");
+} = require("../../setup/setup-generic-home-systems");
+const {
+    SetupGenericPromissory,
+} = require("../../setup/setup-generic-promissory");
+const { SetupGenericTech } = require("../../setup/setup-generic-tech");
+const { SetupPlayerMats } = require("../../setup/setup-player-mats");
+const { SetupSheets } = require("../../setup/setup-sheets");
+const { SetupSupplyBoxes } = require("../../setup/setup-supply-boxes");
+const { SetupUnits } = require("../../setup/setup-units");
 
 const {
     SetupFactionAlliance,
-} = require("../setup/faction/setup-faction-alliance");
-const { SetupFactionExtra } = require("../setup/faction/setup-faction-extra");
+} = require("../../setup/faction/setup-faction-alliance");
+const {
+    SetupFactionExtra,
+} = require("../../setup/faction/setup-faction-extra");
 const {
     SetupFactionLeaders,
-} = require("../setup/faction/setup-faction-leaders");
+} = require("../../setup/faction/setup-faction-leaders");
 const {
     SetupFactionPromissory,
-} = require("../setup/faction/setup-faction-promissory");
-const { SetupFactionSheet } = require("../setup/faction/setup-faction-sheet");
-const { SetupFactionTech } = require("../setup/faction/setup-faction-tech");
-const { SetupFactionTokens } = require("../setup/faction/setup-faction-tokens");
-const { SetupHomeSystem } = require("../setup/faction/setup-home-system");
-const { SetupStartingTech } = require("../setup/faction/setup-starting-tech");
-const { SetupStartingUnits } = require("../setup/faction/setup-starting-units");
+} = require("../../setup/faction/setup-faction-promissory");
+const {
+    SetupFactionSheet,
+} = require("../../setup/faction/setup-faction-sheet");
+const { SetupFactionTech } = require("../../setup/faction/setup-faction-tech");
+const {
+    SetupFactionTokens,
+} = require("../../setup/faction/setup-faction-tokens");
+const { SetupHomeSystem } = require("../../setup/faction/setup-home-system");
+const {
+    SetupStartingTech,
+} = require("../../setup/faction/setup-starting-tech");
+const {
+    SetupStartingUnits,
+} = require("../../setup/faction/setup-starting-units");
 
-const { globalEvents, world } = require("../wrapper/api");
-const assert = require("../wrapper/assert-wrapper");
+const { globalEvents, world } = require("../../wrapper/api");
+const assert = require("../../wrapper/assert-wrapper");
 
 class PlayerDeskSetup {
     constructor(playerDesk) {
@@ -110,6 +123,7 @@ class PlayerDeskSetup {
             new SetupSupplyBoxes(this._playerDesk),
             new SetupSheets(this._playerDesk),
             new SetupGenericHomeSystems(this._playerDesk),
+            new SetupPlayerMats(this._playerDesk),
         ];
     }
 

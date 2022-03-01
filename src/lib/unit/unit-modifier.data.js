@@ -435,14 +435,14 @@ module.exports = [
                 return false; // no mech
             }
             for (const obj of world.getAllObjects()) {
-                if (!CardUtil.isLooseCard(obj)) {
-                    continue;
-                }
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (!nsid.startsWith("card.exploration")) {
                     continue;
                 }
                 if (!nsid.includes("_relic_fragment")) {
+                    continue;
+                }
+                if (!CardUtil.isLooseCard(obj, true)) {
                     continue;
                 }
                 const owner = world.TI4.getClosestPlayerDesk(obj.getPosition());
@@ -1209,10 +1209,13 @@ module.exports = [
         localeDescription: "unit_modifier.desc.ul_the_progenitor",
         owner: "self",
         priority: "mutate",
-        toggleActive: true,
         triggerNsid: "card.leader.hero.ul:pok/ul_the_progenitor",
         filter: (auxData) => {
-            return auxData.rollType === "spaceCannon";
+            if (auxData.rollType !== "spaceCannon") {
+                return false;
+            }
+            // Only applies to Elysium.
+            return auxData.system && auxData.system.tile === 55;
         },
         applyAll: (unitAttrsSet, auxData) => {
             if (auxData.self.has("space_dock")) {

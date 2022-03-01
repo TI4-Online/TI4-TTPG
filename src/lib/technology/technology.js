@@ -1,13 +1,12 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { world } = require("../../wrapper/api");
-const technologyData = require("./technology.data");
+const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
-const { PlayerDesk } = require("../player-desk");
-const locale = require("../locale");
+const TECHNOLOGY_DATA = require("./technology.data");
+const { world } = require("../../wrapper/api");
 
-technologyData.forEach((tech) => {
+TECHNOLOGY_DATA.forEach((tech) => {
     tech.name = locale(tech.localeName);
     // TODO: translate also abbrevs (if needed; requires also text extractions from .data)
 });
@@ -27,7 +26,7 @@ const isSourceEnabled = (source) => {
 };
 
 const getTechnologiesRawArray = (factionName) => {
-    return technologyData.filter((tech) => {
+    return TECHNOLOGY_DATA.filter((tech) => {
         return (
             isSourceEnabled(tech.source) &&
             (!factionName || // no filtering for factions
@@ -81,14 +80,14 @@ class Technology {
         let playerTechnologiesNsid = [];
 
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
-                continue; // not a lone, faceup card on the table
-            }
             const nsid = ObjectNamespace.getNsid(obj);
             if (!nsid.startsWith("card.technology")) {
                 continue;
             }
-            const ownerPlayerSlot = PlayerDesk.getClosest(
+            if (!CardUtil.isLooseCard(obj, false)) {
+                continue; // not a lone, faceup card on the table
+            }
+            const ownerPlayerSlot = world.TI4.getClosestPlayerDesk(
                 obj.getPosition()
             ).playerSlot;
 
@@ -97,7 +96,7 @@ class Technology {
             }
         }
 
-        return technologyData.filter((tech) => {
+        return TECHNOLOGY_DATA.filter((tech) => {
             return playerTechnologiesNsid.some((nsid) =>
                 // startsWith is used to support omega cards
                 nsid.startsWith(tech.cardNsid)

@@ -6,7 +6,7 @@ const {
     UIElement,
     world,
 } = require("../../wrapper/api");
-const { PlayerDesk } = require("../../lib/player-desk");
+const { PlayerDesk } = require("../../lib/player-desk/player-desk");
 
 /**
  * A border holding the UI elements for the strategy card popups.

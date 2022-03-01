@@ -1,8 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { ActiveIdle } = require("./active-idle");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
-const { world } = require("../../wrapper/api");
+const { GameObject, world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
 const PRIORITY = {
@@ -93,6 +94,19 @@ class UnitModifier {
     }
 
     /**
+     * Is the object a toggle-active unit modifier?
+     *
+     * @param {GameObject} obj
+     * @returns {boolean} true if a toggle-active unit modifier
+     */
+    static isToggleActiveObject(obj) {
+        assert(obj instanceof GameObject);
+        const nsid = ObjectNamespace.getNsid(obj);
+        const unitModifier = UnitModifier.getNsidUnitModifier(nsid);
+        return unitModifier && unitModifier.raw.toggleActive;
+    }
+
+    /**
      * Find player's unit modifiers, EXCLUDES FACTION MODIFIERS!
      *
      * @param {number} playerSlot
@@ -113,8 +127,15 @@ class UnitModifier {
                 continue;
             }
 
-            if (!CardUtil.isLooseCard(obj)) {
+            if (!CardUtil.isLooseCard(obj, true)) {
                 continue; // not a lone, faceup card on the table
+            }
+
+            if (
+                UnitModifier.isToggleActiveObject(obj) &&
+                !ActiveIdle.isActive(obj)
+            ) {
+                continue; // not active
             }
 
             // Enfoce modifier type (self, opponent, any).

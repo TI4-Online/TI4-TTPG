@@ -1,67 +1,41 @@
+const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { Spawn } = require("./spawn/spawn");
-const { Rotator, Vector, world } = require("../wrapper/api");
+const { Rotator, world } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
-
-let _nextX = -40;
-function nextPosition() {
-    const result = {
-        x: _nextX,
-        y: -90,
-        z: world.getTableHeight() + 5,
-    };
-    _nextX += 10;
-    return result;
-}
 
 const STRATEGY_CARDS = [
     {
         nsid: "tile.strategy:base/leadership",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 0,
     },
     {
         nsid: "tile.strategy:base/diplomacy.errata",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 1,
     },
     {
         nsid: "tile.strategy:base/politics",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 2,
     },
     {
         nsid: "tile.strategy:base/construction.errata",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 3,
     },
     {
         nsid: "tile.strategy:base/trade",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 4,
     },
     {
         nsid: "tile.strategy:base/warfare",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 5,
     },
     {
         nsid: "tile.strategy:base/technology",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 6,
     },
     {
         nsid: "tile.strategy:base/imperial",
-        parent: false,
-        pos: nextPosition(),
-        yaw: -90,
+        snapPointIndex: 7,
     },
 ];
 
@@ -71,8 +45,29 @@ class SetupStrategyCards extends AbstractSetup {
     }
 
     setup() {
+        let mat = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "mat:base/strategy_card") {
+                continue;
+            }
+            mat = obj;
+            break;
+        }
+        assert(mat);
+        const snapPoints = mat.getAllSnapPoints();
+
         for (const strategyCard of STRATEGY_CARDS) {
-            this._setupStrategyCard(strategyCard);
+            const snapPoint = snapPoints[strategyCard.snapPointIndex];
+            assert(snapPoint);
+            const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
+            const yaw = snapPoint.getSnapRotation();
+            const rot = new Rotator(0, yaw, 0);
+            const obj = Spawn.spawn(strategyCard.nsid, pos, rot);
+            obj.snap();
         }
     }
 
@@ -83,18 +78,6 @@ class SetupStrategyCards extends AbstractSetup {
             }
         }
     }
-
-    _setupStrategyCard(strategyCard) {
-        const pos = new Vector(
-            strategyCard.pos.x,
-            strategyCard.pos.y,
-            strategyCard.pos.z
-        );
-        const rot = new Rotator(0, strategyCard.yaw, 0);
-        Spawn.spawn(strategyCard.nsid, pos, rot);
-    }
 }
 
-// TODO: STRATEGY_CARDS exported for end of round cleanup remove it once
-// strategy cards have a better defined home/mat.
 module.exports = { SetupStrategyCards, STRATEGY_CARDS };

@@ -2,7 +2,6 @@ const { Hex } = require("../hex");
 const { Facing } = require("../facing");
 const { Color, Vector, world } = require("../../wrapper/api");
 
-// TODO: mirage
 // TODO: better Clan of Saar home system
 
 // constants used to draw debug spheres
@@ -229,4 +228,4 @@ function getExactPlanet(pos, systemObject, debug) {
     }
 }
 
-module.exports = { getClosestPlanet, getExactPlanet };
+module.exports = { getClosestPlanet, getExactPlanet, getWorldPosition };

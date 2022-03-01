@@ -1,65 +1,22 @@
-const { FindTurnOrder } = require("./find-turn-order");
-const { ObjectNamespace } = require("../object-namespace");
-const { Faction } = require("../faction/faction");
-const { world, Vector, Rotator, Card } = require("../../wrapper/api");
-const { System } = require("../system/system");
 const assert = require("../../wrapper/assert-wrapper");
-const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const { Broadcast } = require("../broadcast");
-const { PlayerDesk } = require("../player-desk");
-const { CardUtil } = require("../card/card-util");
 const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
+const { CardUtil } = require("../card/card-util");
+const { DealDiscard } = require("../card/deal-discard");
+const { Faction } = require("../faction/faction");
+const { FindTurnOrder } = require("./find-turn-order");
+const { Hex } = require("../hex");
+const { ObjectNamespace } = require("../object-namespace");
+const { System } = require("../system/system");
+const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
+const { world, Vector, Rotator, Card } = require("../../wrapper/api");
+const { CommandToken } = require("../command-token/command-token");
 
 const ANIMATION_SPEED = 1;
 
 class DealActionCards {
     constructor() {
         throw new Error("static only");
-    }
-
-    static getActionCardDeckAndDiscard() {
-        for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "mat:base/decks") {
-                const snapPoints = obj.getAllSnapPoints();
-
-                // TODO: find another way to do this as the docs reads:
-                // "[getSnappedObject] is not guaranteed to work correctly"
-                const deck = snapPoints[3].getSnappedObject();
-                const discard = snapPoints[0].getSnappedObject();
-
-                if (!deck && !discard) {
-                    Broadcast.chatAll(
-                        "Missing both action card deck and pile!"
-                    );
-                    return;
-                }
-
-                if (deck) {
-                    assert(deck instanceof Card);
-                } else {
-                    Broadcast.chatAll("Shuffling Action Card Discard Pile");
-                    assert(discard instanceof Card);
-                    discard.shuffle();
-                    discard.setPosition(
-                        snapPoints[3].getGlobalPosition(),
-                        ANIMATION_SPEED
-                    );
-                    discard.snap();
-                    discard.setRotation(
-                        discard.getRotation().compose([-180, 0, 0]),
-                        ANIMATION_SPEED
-                    );
-                    return { deck: discard, discard: null };
-                }
-
-                if (discard) {
-                    assert(discard instanceof Card);
-                }
-
-                return { deck, discard };
-            }
-        }
     }
 
     /**
@@ -70,18 +27,22 @@ class DealActionCards {
      * @returns {number}
      */
     static getNumberActionCardsToDeal(playerSlot) {
-        // TODO: does the player have neural motivator?
         assert(typeof playerSlot === "number");
 
-        const faction = Faction.getByPlayerSlot(playerSlot);
+        let dealNCards = 1;
 
-        if (!faction) {
-            throw new Error(`${playerSlot} does not have a faction!`);
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction && faction.raw.abilities.includes("scheming")) {
+            dealNCards += 1;
         }
 
-        let dealNCards = 1;
-        if (faction.raw.abilities.includes("scheming")) {
-            dealNCards++;
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.technology.green:base/neural_motivator"
+            )
+        ) {
+            dealNCards += 1;
         }
 
         return dealNCards;
@@ -92,42 +53,26 @@ class DealActionCards {
      * if necessary.
      */
     static dealToAll() {
-        const actionCards = DealActionCards.getActionCardDeckAndDiscard();
-        if (!actionCards) {
-            throw new Error("could not find action card mat.");
-        }
-
         // get the color names for each slot for better broadcast messages
         const colorNames = Object.fromEntries(
-            PlayerDesk.getAllPlayerDesks().map((element) => [
+            world.TI4.getAllPlayerDesks().map((element) => [
                 element.playerSlot,
                 element.colorName,
             ])
         );
 
         for (const playerSlot of FindTurnOrder.order()) {
-            // TODO: why does FindTurnOrder.order() return strings?
-            const slot = parseInt(playerSlot);
-
-            const count = DealActionCards.getNumberActionCardsToDeal(slot);
+            const count =
+                DealActionCards.getNumberActionCardsToDeal(playerSlot);
             const message = locale("ui.message.deal_action_cards", {
-                playerColor: colorNames[slot],
+                playerColor: colorNames[playerSlot],
                 count: count,
             });
-
-            // trigger reshuffle before the deck is empty otherwise we wont be able
-            // to add cards to the original deck
-            if (actionCards.deck.getStackSize() > count) {
-                Broadcast.chatAll(message);
-                actionCards.deck.deal(count, [slot], false, true);
-            } else {
-                // shuffle discard and add to the back of the deck
-                Broadcast.chatAll(locale("ui.message.shuffle_action_cards"));
-                actionCards.discard.shuffle();
-                actionCards.deck.addCards(actionCards.discard, true);
-
-                Broadcast.chatAll(message);
-                actionCards.deck.deal(count, [slot], false, true);
+            Broadcast.chatAll(message);
+            const success = DealDiscard.deal("card.action", count, playerSlot);
+            if (!success) {
+                // What should happen here?
+                console.warn("dealToAll: deal failed");
             }
         }
     }
@@ -146,25 +91,45 @@ class EndStatusPhase {
      * @returns {number}
      */
     static getNumberOfCommandTokensToDistribute(playerSlot) {
-        // TODO: does the player have hypermetabolism?
-        // TODO: does the player have cybernetic enhancements?
         assert(typeof playerSlot === "number");
 
         let dealNTokens = 2;
-        const faction = Faction.getByPlayerSlot(playerSlot);
 
-        if (!faction) {
-            throw new Error(`${playerSlot} does not have a faction.`);
+        const faction = Faction.getByPlayerSlot(playerSlot);
+        if (faction && faction.raw.abilities.includes("versatile")) {
+            dealNTokens += 1;
         }
 
-        if (faction.raw.abilities.includes("versatile")) {
-            dealNTokens++;
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.technology.green:base/hyper_metabolism"
+            )
+        ) {
+            dealNTokens += 1;
+        }
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.promissory.l1z1x:base/cybernetic_enhancements"
+            )
+        ) {
+            dealNTokens += 1;
+        }
+        if (
+            CardUtil.hasCard(
+                playerSlot,
+                "card.promissory.l1z1x:base/cybernetic_enhancements.omega"
+            )
+        ) {
+            dealNTokens += 1;
         }
 
         return dealNTokens;
     }
+
     /**
-     * Repairs all ships that are on system tiles
+     * Repairs all ships.
      */
     static repairShips() {
         for (const obj of world.getAllObjects()) {
@@ -179,54 +144,60 @@ class EndStatusPhase {
             }
         }
     }
-    /**
-     * Returns an object that maps player slots to their command token bags.
-     *
-     * @returns {{number: Container}}
-     */
-    static getCommandTokenBag(playerSlot) {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getOwningPlayerSlot() !== playerSlot) {
-                continue; // must be owned by player
-            }
-            if (ObjectNamespace.isCommandTokenBag(obj)) {
-                return obj;
-            }
-        }
-        throw new Error(`${playerSlot} does not have a command token bag.`);
-    }
+
     /**
      * Places all command tokens that are on system tiles back in their proper
      * containers.
      */
     static returnCommandTokens() {
-        // get all command token bags upfront so we don't have to refind them
-        // with each command token we return
-        const commandTokenBags = Object.fromEntries(
-            world.TI4.getAllPlayerDesks().map((element) => [
-                element.playerSlot,
-                EndStatusPhase.getCommandTokenBag(element.playerSlot),
-            ])
-        );
+        const playerSlotToCommandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag();
+
+        // Get all hexes with a system tile (much cheaper than getSystemTileObjectByPosition).
+        const hexSet = new Set();
+        for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+            const pos = systemTileObj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            hexSet.add(hex);
+        }
 
         for (const obj of world.getAllObjects()) {
-            if (ObjectNamespace.isCommandToken(obj)) {
-                // only return command tokens that are on system tiles
-                if (System.getSystemTileObjectByPosition(obj.getPosition())) {
-                    const owningPlayerSlot = obj.getOwningPlayerSlot();
-                    commandTokenBags[owningPlayerSlot].addObjects([obj]);
-                }
+            if (obj.getContainer()) {
+                continue;
             }
+            if (!ObjectNamespace.isCommandToken(obj)) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            if (!hexSet.has(hex)) {
+                continue; // not on a system tile
+            }
+            const playerSlot = obj.getOwningPlayerSlot();
+            if (playerSlot < 0) {
+                continue;
+            }
+            const bag = playerSlotToCommandTokenBag[playerSlot];
+            if (!bag) {
+                continue;
+            }
+            bag.addObjects([obj]);
         }
     }
+
     /**
      * Distributes command tokens to all players.
      */
     static distributeCommandTokens() {
+        const playerSlotToCommandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag();
+
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const playerSlot = playerDesk.playerSlot;
-            const commandTokenBag =
-                EndStatusPhase.getCommandTokenBag(playerSlot);
+            const commandTokenBag = playerSlotToCommandTokenBag[playerSlot];
+            if (!commandTokenBag) {
+                continue;
+            }
             const count =
                 EndStatusPhase.getNumberOfCommandTokensToDistribute(playerSlot);
 
@@ -248,27 +219,51 @@ class EndStatusPhase {
                     break;
                 } else {
                     const dropPosition = playerDesk.localPositionToWorld(
-                        new Vector(3, 20 + i * 1, 0)
+                        new Vector(5, 20 + i * 1, 0)
                     );
                     commandTokenBag.takeAt(0, dropPosition, true);
                 }
             }
         }
     }
+
     /**
      * Returns all strategy cards to their proper position and rotation.
      */
     static returnStrategyCards() {
+        const strategyCards = [];
+        let strategyCardMat = false;
         for (const obj of world.getAllObjects()) {
-            if (ObjectNamespace.isStrategyCard(obj)) {
-                const strategyCard = ObjectNamespace.parseStrategyCard(obj);
-                const strategyCardHome = STRATEGY_CARDS.filter((element) =>
-                    element.nsid.includes(strategyCard.card)
-                )[0].pos;
-                const strategyCardRotation = new Rotator(0, -90, 0);
-                obj.setPosition(strategyCardHome, ANIMATION_SPEED);
-                obj.setRotation(strategyCardRotation, ANIMATION_SPEED);
+            if (obj.getContainer()) {
+                continue;
             }
+            if (ObjectNamespace.isStrategyCard(obj)) {
+                strategyCards.push(obj);
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "mat:base/strategy_card") {
+                strategyCardMat = obj;
+            }
+        }
+        assert(strategyCardMat);
+
+        const snapPoints = strategyCardMat.getAllSnapPoints();
+        const nsidToSnapPoint = {};
+        for (const cardData of STRATEGY_CARDS) {
+            const snapPoint = snapPoints[cardData.snapPointIndex];
+            assert(snapPoint);
+            nsidToSnapPoint[cardData.nsid] = snapPoint;
+        }
+
+        for (const obj of strategyCards) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            const snapPoint = nsidToSnapPoint[nsid];
+            assert(snapPoint);
+            const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
+            const yaw = snapPoint.getSnapRotation();
+            const rot = new Rotator(0, yaw, 0);
+            obj.setPosition(pos, ANIMATION_SPEED);
+            obj.setRotation(rot, ANIMATION_SPEED);
         }
     }
 
@@ -291,7 +286,7 @@ class EndStatusPhase {
      */
     static refreshCards() {
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj)) {
+            if (!CardUtil.isLooseCard(obj, false)) {
                 continue; // we only want to refresh solo cards
             }
 

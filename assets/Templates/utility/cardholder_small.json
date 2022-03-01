@@ -1,0 +1,78 @@
+{
+	"Type": "Card Holder",
+	"GUID": "BFC565AE79373881585937D70241A1DF",
+	"Name": "Card Holder (small)",
+	"Metadata": "cardholder:base/small",
+	"CollisionType": "Ground",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Plastic",
+	"Roughness": 1,
+	"Metallic": 0.6,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "objects/secret-holder.js",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "utility/cardholder.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 0.73,
+				"Y": 0.35,
+				"Z": 0.5
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/utility/cardholder_c.png",
+			"NormalMap": "",
+			"ExtraMap": "global/utility/cardholder_x.png",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"CardsCenter":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0.7
+	},
+	"CardsWidth": 16,
+	"MaxCards": 10,
+	"MaxCardHeight": 10
+}

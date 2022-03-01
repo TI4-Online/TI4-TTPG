@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { ObjectType, Rotator, world } = require("../../wrapper/api");
+const { ObjectType, world } = require("../../wrapper/api");
 
 const FACTION_SHEET = {
     pos: {
@@ -21,7 +21,7 @@ class SetupFactionSheet extends AbstractSetup {
     setup() {
         const sheetNsid = `sheet.faction:${this.faction.nsidSource}/${this.faction.nsidName}`;
         const pos = this.playerDesk.localPositionToWorld(FACTION_SHEET.pos);
-        const rot = new Rotator(0, 0, 180).compose(this.playerDesk.rot);
+        const rot = this.playerDesk.rot;
         const sheet = Spawn.spawn(sheetNsid, pos, rot);
         sheet.setObjectType(ObjectType.Ground);
         assert(ObjectNamespace.getNsid(sheet) === sheetNsid);

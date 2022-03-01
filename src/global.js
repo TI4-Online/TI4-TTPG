@@ -19,6 +19,10 @@ globalEvents.TI4 = {
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(),
 
+    // Called after a player color changes (setup not finished).
+    // <(playerColor: Color, deskIndex: number) => void>
+    onPlayerColorChanged: new TriggerableMulticastDelegate(),
+
     // Called after the player count changes (setup not finished).
     // <(playerCount: number, player: Player|undefined) => void>
     onPlayerCountChanged: new TriggerableMulticastDelegate(),
@@ -36,16 +40,8 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-require("./global/numpad-actions");
-require("./global/on-container-rejected");
-require("./global/patch-infinite-container");
-require("./global/patch-exclusive-bags");
-require("./global/r-swap-split-combine");
-require("./global/strategy-card-functions");
-require("./global/trigger-on-system-activated");
-
 // Player desk is naughty and wants to register global event listeners.
-const { PlayerDesk } = require("./lib/player-desk");
+const { PlayerDesk } = require("./lib/player-desk/player-desk");
 
 // Show setup ui.
 require("./setup/game-setup/game-setup");
@@ -55,7 +51,7 @@ if (!world.__isMock) {
 
 const { Faction } = require("./lib/faction/faction");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
-const { GlobalSavedData } = require("./lib/global-saved-data");
+const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
 const { GameData } = require("./lib/game-data/game-data");
 
@@ -94,6 +90,9 @@ world.TI4 = {
     getPlanetByCardNsid: (nsid) => {
         return Planet.getByCardNsid(nsid);
     },
+    getPlayerDeskByPlayerSlot: (playerSlot) => {
+        return PlayerDesk.getByPlayerSlot(playerSlot);
+    },
     getSystemBySystemTileObject: (gameObject) => {
         return System.getBySystemTileObject(gameObject);
     },
@@ -111,3 +110,14 @@ world.TI4 = {
         }
     },
 };
+
+require("./global/active-idle-unit-modifiers");
+require("./global/numpad-actions");
+require("./global/on-container-rejected");
+require("./global/patch-infinite-container");
+require("./global/patch-exclusive-bags");
+require("./global/r-swap-split-combine");
+require("./global/right-click-system");
+require("./global/shuffle-decks-on-load");
+require("./global/strategy-card-functions");
+require("./global/trigger-on-system-activated");

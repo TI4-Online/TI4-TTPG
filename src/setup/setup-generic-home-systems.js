@@ -77,7 +77,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
         const rot = new Rotator(0, 0, 0);
         const obj = Spawn.spawn(nsid, pos, rot);
 
-        const color = this.playerDesk.color;
+        const color = this.playerDesk.plasticColor;
         const playerSlot = this.playerDesk.playerSlot;
         obj.setPrimaryColor(color);
         obj.setOwningPlayerSlot(playerSlot);
@@ -91,21 +91,22 @@ class SetupGenericHomeSystems extends AbstractSetup {
         ui.widget = text;
         obj.addUI(ui);
 
-        obj.onSnapped.add(
-            (object, player, snapPoint, grabPosition, grabRotation) => {
-                //const pos = snapPoint.getGlobalPosition();
-                const pos = object.getPosition();
-                const hex = Hex.fromPosition(pos);
-                text.setText(hex);
-                obj.updateUI(ui);
-            }
-        );
-        obj.onReleased.add((object) => {
-            const pos = object.getPosition();
-            const hex = Hex.fromPosition(pos);
-            text.setText(hex);
-            obj.updateUI(ui);
-        });
+        // Report hex coordinates when dropped.
+        // obj.onSnapped.add(
+        //     (object, player, snapPoint, grabPosition, grabRotation) => {
+        //         //const pos = snapPoint.getGlobalPosition();
+        //         const pos = object.getPosition();
+        //         const hex = Hex.fromPosition(pos);
+        //         text.setText(hex);
+        //         obj.updateUI(ui);
+        //     }
+        // );
+        // obj.onReleased.add((object) => {
+        //     const pos = object.getPosition();
+        //     const hex = Hex.fromPosition(pos);
+        //     text.setText(hex);
+        //     obj.updateUI(ui);
+        // });
     }
 
     clean() {

@@ -46,7 +46,7 @@ const TABLE_DECKS = [
         nsidPrefix: "card.objective.public_1",
         parent: {
             nsid: "mat:base/objectives_1",
-            snapPoint: 0,
+            snapPoint: 5,
         },
         pos: nextPosition(),
         yaw: -90,
@@ -55,7 +55,7 @@ const TABLE_DECKS = [
         nsidPrefix: "card.objective.public_2",
         parent: {
             nsid: "mat:base/objectives_2",
-            snapPoint: 0,
+            snapPoint: 5,
         },
         pos: nextPosition(),
         yaw: -90,
@@ -143,6 +143,13 @@ class SetupTableDecks extends AbstractSetup {
     }
 
     setup() {
+        const nsidSet = new Set();
+        for (const deckData of TABLE_DECKS) {
+            if (deckData.parent) {
+                nsidSet.add(deckData.parent.nsid);
+            }
+        }
+
         const nsidToMat = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
@@ -152,7 +159,9 @@ class SetupTableDecks extends AbstractSetup {
             if (!nsid.startsWith("mat:")) {
                 continue;
             }
-            console.log("found " + nsid);
+            if (!nsidSet.has(nsid)) {
+                continue;
+            }
             assert(!nsidToMat[nsid]);
             nsidToMat[nsid] = obj;
         }
@@ -200,16 +209,23 @@ class SetupTableDecks extends AbstractSetup {
         }
 
         // Spawn the decks, combine into one.
-        this.spawnDecksThenFilter(pos, rot, deckData.nsidPrefix, (nsid) => {
-            if (nsid.startsWith("card.planet")) {
-                // Ignore home system cards.
-                const planet = world.TI4.getPlanetByCardNsid(nsid);
-                if (planet) {
-                    return !planet.system.raw.home;
+        const deck = this.spawnDecksThenFilter(
+            pos,
+            rot,
+            deckData.nsidPrefix,
+            (nsid) => {
+                if (nsid.startsWith("card.planet")) {
+                    // Ignore home system cards.
+                    const planet = world.TI4.getPlanetByCardNsid(nsid);
+                    if (planet) {
+                        return !planet.system.raw.home;
+                    }
                 }
+                return true; // no need to filter anything
             }
-            return true; // no need to filter anything
-        });
+        );
+
+        deck.snap();
     }
 }
 

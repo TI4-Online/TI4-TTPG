@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -10,41 +9,47 @@ const {
     VerticalBox,
     refObject,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 
 const onPrimary1Dock1PdsClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.construction.message.primary_1dock_1pds",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.construction.message.primary_1dock_1pds", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onPrimary2PdsClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.construction.message.primary_2pds",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.construction.message.primary_2pds", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onSecondary1DockClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.construction.message.secondary_1dock",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.construction.message.secondary_1dock", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onSecondary1PdsClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.construction.message.secondary_1pds",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.construction.message.secondary_1pds", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onPassClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.construction.message.pass",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.construction.message.pass", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 

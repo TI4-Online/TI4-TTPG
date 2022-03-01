@@ -4,6 +4,7 @@ const { AutoRollerUI } = require("./auto-roller-ui");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
 const { CombatRoller } = require("../../lib/combat/combat-roller");
 const { Hex } = require("../../lib/hex");
 const { Planet } = require("../../lib/system/system");
@@ -11,9 +12,9 @@ const { Planet } = require("../../lib/system/system");
 const {
     GameObject,
     Player,
+    UIElement,
     Vector,
     globalEvents,
-    refObject,
     world,
 } = require("../../wrapper/api");
 
@@ -22,14 +23,14 @@ const {
  */
 class AutoRoller {
     constructor(gameObject) {
-        assert(gameObject instanceof GameObject);
-        this._obj = gameObject;
+        assert(!gameObject || gameObject instanceof GameObject);
         this._activeSystem = false;
         this._activeHex = false;
         this._activatingPlayerSlot = false;
         this._firstBombardmentPlanet = false;
+        this._playerSlotToDice = {};
 
-        this._ui = new AutoRollerUI(this._obj, (rollType, planet, player) => {
+        this._ui = new AutoRollerUI((rollType, planet, player) => {
             assert(this instanceof AutoRoller);
             assert(typeof rollType === "string");
             assert(!planet || planet instanceof Planet);
@@ -48,9 +49,25 @@ class AutoRoller {
             this.onSystemActivated(systemTile, player);
         };
         globalEvents.TI4.onSystemActivated.add(handler);
-        this._obj.onDestroyed.add((obj) => {
-            globalEvents.TI4.onSystemActivated.remove(handler);
-        });
+        if (gameObject) {
+            gameObject.onDestroyed.add((obj) => {
+                globalEvents.TI4.onSystemActivated.remove(handler);
+            });
+        }
+
+        // Attach UI if given an object.
+        if (gameObject) {
+            const uiElement = new UIElement();
+            uiElement.position = new Vector(0, 0, 5);
+            uiElement.widget = new CollapsiblePanel().setChild(this._ui);
+            uiElement.anchorY = 0;
+            gameObject.addUI(uiElement);
+            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
+        }
+    }
+
+    getUI() {
+        return this._ui;
     }
 
     /**
@@ -63,11 +80,6 @@ class AutoRoller {
         assert(this instanceof AutoRoller);
         assert(systemTile instanceof GameObject);
         assert(player instanceof Player);
-
-        // Reject events if associated object destroyed.
-        if (!this._obj.isValid()) {
-            return;
-        }
 
         this._activeSystem = world.TI4.getSystemBySystemTileObject(systemTile);
         this._activeHex = Hex.fromPosition(systemTile.getPosition());
@@ -144,17 +156,26 @@ class AutoRoller {
 
         new AuxDataPair(aux1, aux2).fillPairSync();
 
+        const playerSlot = player.getSlot();
+        let dicePos = new Vector(20, -60, world.getTableHeight());
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            dicePos = playerDesk.center.add([0, 0, 10]);
+        }
+
+        // Destroy any old dice.
+        let dice = this._playerSlotToDice[playerSlot];
+        if (dice) {
+            for (const die of dice) {
+                die.destroy();
+            }
+        }
+
         // COMBAT TIME!!
         const combatRoller = new CombatRoller(aux1, rollType, player);
-        const dicePos = new Vector(20, -60, world.getTableHeight());
-        combatRoller.roll(dicePos);
+        dice = combatRoller.roll(dicePos);
+        this._playerSlotToDice[playerSlot] = dice;
     }
 }
 
-refObject.onCreated.add((obj) => {
-    new AutoRoller(obj);
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    new AutoRoller(refObject);
-}
+module.exports = { AutoRoller };

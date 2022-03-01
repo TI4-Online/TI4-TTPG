@@ -1,9 +1,13 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("./locale");
-const { ColorUtil } = require("./color/color-util");
-const { ObjectNamespace } = require("./object-namespace");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const { ColorUtil } = require("../color/color-util");
+const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskUI } = require("./player-desk-ui");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("../saved-data/global-saved-data");
 const {
     Color,
     Player,
@@ -11,11 +15,7 @@ const {
     Vector,
     globalEvents,
     world,
-} = require("../wrapper/api");
-const {
-    GlobalSavedData,
-    GLOBAL_SAVED_DATA_KEY,
-} = require("./global-saved-data");
+} = require("../../wrapper/api");
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.
@@ -272,6 +272,21 @@ class PlayerDesk {
         return closest;
     }
 
+    /**
+     * Get player desk associated with player slot.
+     *
+     * @param {number} playerSlot
+     * @returns {PlayerDesk|undefined}
+     */
+    static getByPlayerSlot(playerSlot) {
+        assert(typeof playerSlot === "number");
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            if (playerDesk.playerSlot === playerSlot) {
+                return playerDesk;
+            }
+        }
+    }
+
     static resetUIs() {
         for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
             playerDesk.resetUI();
@@ -341,6 +356,7 @@ class PlayerDesk {
             canFaction: world.TI4.config.timestamp > 0,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
         };
+        assert(!this._ui);
         this._ui = new PlayerDeskUI(this, colorOptions, {
             onTakeSeat: (button, player) => {
                 this.seatPlayer(player);
@@ -350,10 +366,8 @@ class PlayerDesk {
                 moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
-            onChangeColor: (button, player) => {
-                const colorName = button._colorName;
-                const colorTint = button._colorTint;
-                const plasticColorTint = button._plasticColorTint;
+            onChangeColor: (colorOption, player) => {
+                const { colorName, colorTint, plasticColorTint } = colorOption;
                 assert(colorName);
                 assert(colorTint);
                 assert(plasticColorTint);
@@ -454,8 +468,8 @@ class PlayerDesk {
      */
     changeColor(colorName, colorTint, plasticColorTint) {
         assert(typeof colorName === "string");
-        assert(colorTint instanceof Color);
-        assert(plasticColorTint instanceof Color);
+        assert(ColorUtil.isColor(colorTint));
+        assert(ColorUtil.isColor(plasticColorTint));
 
         let legalColorName = false;
         for (const deskAttrs of PLAYER_DESKS) {
@@ -572,6 +586,14 @@ class PlayerDesk {
         }
 
         this.saveDesksState();
+
+        globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
+        if (swapWith) {
+            globalEvents.TI4.onPlayerColorChanged.trigger(
+                swapWith.color,
+                swapWith.index
+            );
+        }
 
         return true;
     }

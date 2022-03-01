@@ -1,16 +1,17 @@
-const { world, Vector, GameObject } = require("../../wrapper/api");
 const { getClosestPlanet } = require("../../lib/system/position-to-planet");
 const { Facing } = require("../../lib/facing");
 const { Broadcast } = require("../../lib/broadcast");
 const { Planet } = require("../../lib/system/system");
 const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert-wrapper");
+const { world, GameObject, ObjectType, Vector } = require("../../wrapper/api");
 
 class Attachment {
     constructor(gameObject, attributes) {
         assert(gameObject instanceof GameObject);
 
         this._obj = gameObject;
+        this._attributes = attributes;
         this._localeName = locale(attributes.localeName);
         this._faceUp = attributes.faceUp;
         this._faceDown = attributes.faceDown;
@@ -33,20 +34,34 @@ class Attachment {
         if (world.getExecutionReason() === "ScriptReload") {
             this.attach();
         }
+
+        // Expose attach function for external attach (e.g. explore).
+        this._obj.__attachment = this;
     }
 
-    attach(inputPlanet) {
-        // attach to the given Planet or if no planet is given attach to the
-        // nearest planet
-        if (inputPlanet) {
-            assert(inputPlanet instanceof Planet);
+    get attributes() {
+        return this._attributes;
+    }
+
+    attach(planet = false, systemTileObj = false) {
+        this.detach();
+
+        // is the attachment on a system tile?
+        if (!systemTileObj) {
+            systemTileObj = world.TI4.getSystemTileObjectByPosition(
+                this._obj.getPosition()
+            );
         }
-        const planet = inputPlanet || getClosestPlanet(this._obj.getPosition());
-        if (!planet) {
+        if (!systemTileObj) {
             return;
         }
 
-        this.detach();
+        // attach to the given Planet or if no planet is given attach to the
+        // nearest planet
+        if (!planet) {
+            planet = getClosestPlanet(this._obj.getPosition());
+        }
+        assert(planet instanceof Planet);
 
         this._systemTile = planet.system.tile;
         this._planetName = planet.localeName;
@@ -67,20 +82,22 @@ class Attachment {
 
         // TODO: add the attachment icon to the planet card
 
-        // move and lock the attachment object to the proper location
-        const systemObject = world.TI4.getSystemTileObjectByPosition(
-            this._obj.getPosition()
-        );
+        // Move and lock the attachment object to the proper location
+        // Currently fits 3 comfortably.
+        const numAttachments = planet.attachments.length;
+        const phi = ((numAttachments - 1) * 120 * Math.PI) / 180;
+        const r = 1.05;
         const attachmentPosition = new Vector(
-            planet.position.x - 0.5,
-            planet.position.y - 0.5,
-            systemObject.getSize().z
+            planet.position.x - Math.sin(phi) * r,
+            planet.position.y - Math.cos(phi) * r,
+            0
         );
-        const worldPosition =
-            systemObject.localPositionToWorld(attachmentPosition);
+        const worldPosition = systemTileObj
+            .localPositionToWorld(attachmentPosition)
+            .add([0, 0, systemTileObj.getSize().z]);
         this._obj.setPosition(worldPosition);
-        this._obj.setScale(systemObject.getScale());
-        this._obj.setObjectType(1); // ground i.e. locked
+        //this._obj.setScale(systemTileObj.getScale());
+        this._obj.setObjectType(ObjectType.Ground);
 
         return this;
     }
@@ -113,6 +130,7 @@ class Attachment {
             }
             attrs.tech.forEach((element) => planet.raw.tech.push(element));
         }
+        planet.attachments.push(this);
     }
 
     detach() {
@@ -169,6 +187,10 @@ class Attachment {
                 const index = planet.raw.tech.indexOf(element);
                 planet.raw.tech.splice(index, 1);
             });
+        }
+        const index = planet.attachments.indexOf(this);
+        if (index >= 0) {
+            planet.attachments.splice(index, 1);
         }
     }
 }

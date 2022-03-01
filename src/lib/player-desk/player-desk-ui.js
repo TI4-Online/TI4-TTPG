@@ -1,5 +1,5 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const {
     Border,
     Button,
@@ -7,7 +7,7 @@ const {
     Text,
     UIElement,
     VerticalBox,
-} = require("../wrapper/api");
+} = require("../../wrapper/api");
 
 const DESK_UI = {
     pos: { x: 30, y: 0, z: 2 },
@@ -114,10 +114,10 @@ class PlayerDeskUI {
                 .setTextColor(colorOption.plasticColorTint)
                 .setFontSize(LARGE_FONT_SIZE)
                 .setText("[X]");
-            button._colorName = colorOption.colorName;
-            button._colorTint = colorOption.colorTint;
-            button._plasticColorTint = colorOption.plasticColorTint;
-            button.onClicked.add(onClicked);
+            button._colorOption = colorOption;
+            button.onClicked.add((button, player) => {
+                onClicked(colorOption, player);
+            });
             colorChoices.addChild(button);
         }
         return new VerticalBox().addChild(text).addChild(colorChoices);
