@@ -48,8 +48,8 @@ class PlayerDeskUI {
             );
         }
 
-        // AFTER SETUP + BEFORE READY: add/remove faction
-        if (config.canFaction && !config.isReady) {
+        // BEFORE READY + AFTER SETUP: add/remove faction
+        if (!config.isReady && config.canFaction) {
             if (config.hasFaction) {
                 panel.addChild(
                     this._createButton(
@@ -67,7 +67,8 @@ class PlayerDeskUI {
             }
         }
 
-        if (!config.isReady && config.hasFaction) {
+        // ALWAYS: ready
+        if (config.hasFaction) {
             panel.addChild(
                 this._createButton("ui.desk.done", this._callbacks.onReady)
             );

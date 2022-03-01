@@ -178,6 +178,7 @@ globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
         }
         playerDesk.addUI();
     }
+    PlayerDesk.resetUIs();
 });
 
 // Unseat host when first loading game.
@@ -344,17 +345,21 @@ class PlayerDesk {
     }
 
     addUI() {
-        // Do not apply UI once "ready".
-        if (this._ready) {
+        const playerSlot = this.playerSlot;
+        const isOccupied = world.getPlayerBySlot(playerSlot);
+        const isReady = this.isDeskReady();
+        // No UI once "ready" (unless not seated, show for "take seat")
+        if (isOccupied && isReady) {
             return;
         }
         const colorOptions = this.getColorOptions();
-        const playerSlot = this.playerSlot;
         const config = {
-            isReady: this.isDeskReady(),
-            isOccupied: world.getPlayerBySlot(playerSlot),
+            isReady,
+            isOccupied,
             canFaction: world.TI4.config.timestamp > 0,
-            hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
+            hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot)
+                ? true
+                : false,
         };
         assert(!this._ui);
         this._ui = new PlayerDeskUI(this, colorOptions, {
