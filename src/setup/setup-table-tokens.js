@@ -1,3 +1,4 @@
+const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
@@ -98,7 +99,9 @@ class SetupTableTokens extends AbstractSetup {
         );
         const rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
 
-        const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
+        //const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
+        const bag = Spawn.spawnGenericContainer(pos, rot);
+        bag.setName(locale("bag.exploration_tokens"));
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Regular);
 
