@@ -31,7 +31,7 @@ class Phases {
             .addTab(locale("ui.tab.status_phase"), tabStatus.getUI())
             .addTab(
                 locale("ui.tab.agenda_phase"),
-                new Text().setText("agenda here")
+                new Text().setText("< work in progress >")
             );
 
         const w = 450;
