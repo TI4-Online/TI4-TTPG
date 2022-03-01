@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -11,6 +10,7 @@ const {
     Text,
     refObject,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
 
@@ -35,7 +35,7 @@ const factionIcons = {
     norr: "global/factions/norr_icon.png",
     saar: "global/factions/saar_icon.png",
     sol: "global/factions/sol_icon.png",
-    ui: "global/factions/ul_icon.png",
+    ul: "global/factions/ul_icon.png",
     vuilraith: "global/factions/vuilraith_icon.png",
     winnu: "global/factions/winnu_icon.png",
     xxcha: "global/factions/xxcha_icon.png",
@@ -185,7 +185,10 @@ const onTechResearched = (button, player) => {
         );
     }
 
-    broadcastMessage(messageKey, messageParameters, player);
+    Broadcast.chatAll(
+        locale(messageKey, messageParameters),
+        player.getPlayerColor()
+    );
 };
 
 function widgetFactory(playerDesk, packageId) {

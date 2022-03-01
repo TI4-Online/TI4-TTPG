@@ -1,5 +1,4 @@
 const {
-    broadcastMessage,
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
@@ -12,37 +11,40 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
 
 const onPrimaryClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.trade.message.primary",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.trade.message.primary", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onAllowReplenishClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.trade.message.allow_replenish",
-        {
+    Broadcast.chatAll(
+        locale("strategy_card.trade.message.allow_replenish", {
             playerName: player.getName(),
             targetPlayerName: button.getText(),
-        },
-        player
+        }),
+        player.getPlayerColor()
     );
 };
 const onSecondaryClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.trade.message.secondary",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.trade.message.secondary", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 const onPassClicked = (button, player) => {
-    broadcastMessage(
-        "strategy_card.trade.message.pass",
-        { playerName: player.getName() },
-        player
+    Broadcast.chatAll(
+        locale("strategy_card.trade.message.pass", {
+            playerName: player.getName(),
+        }),
+        player.getPlayerColor()
     );
 };
 
