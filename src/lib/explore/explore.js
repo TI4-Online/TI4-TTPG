@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const PositionToPlanet = require("../system/position-to-planet");
+const { CardUtil } = require("../card/card-util");
 const { DealDiscard } = require("../card/deal-discard");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -169,6 +170,18 @@ class Explore {
         if (tokenObj.__attachment) {
             // Script on object onCreated called during spawn
             tokenObj.__attachment.attach(planet, systemTileObj);
+        }
+
+        // Extra cards? (Mirage)
+        if (attachmentData.extraCardNsids) {
+            const cards = CardUtil.gatherCards((nsid) => {
+                return attachmentData.extraCardNsids.includes(nsid);
+            });
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                card.setPosition(pos.add([0, 0, 1 + i]));
+                card.setRotation(rot);
+            }
         }
     }
 }
