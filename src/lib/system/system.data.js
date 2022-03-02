@@ -813,7 +813,7 @@ module.exports = [
                 localeName: "planet.siig",
                 resources: 0,
                 influence: 2,
-                trait: ["cultural"],
+                trait: ["hazardous"],
             },
         ],
     },
