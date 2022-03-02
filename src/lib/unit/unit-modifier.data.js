@@ -272,18 +272,21 @@ module.exports = [
             let spaceCount = 0;
             let groundCount = 0;
             for (const unitPlastic of auxData.self.plastic) {
+                if (unitPlastic.unit !== "mech") {
+                    continue;
+                }
                 if (unitPlastic.exactPlanet) {
                     groundCount += 1;
                 } else {
                     spaceCount += 1;
                 }
             }
-            if (auxData.rollType === "spaceCombat" && spaceCount > 0) {
+            if (auxData.rollType === "spaceCombat") {
                 const mechAttrs = unitAttrsSet.get("mech");
                 mechAttrs.raw.ship = true;
                 auxData.self.overrideCount("mech", spaceCount);
             }
-            if (auxData.rollType === "groundCombat" && spaceCount > 0) {
+            if (auxData.rollType === "groundCombat") {
                 auxData.self.overrideCount("mech", groundCount);
             }
         },
