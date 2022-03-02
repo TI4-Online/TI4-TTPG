@@ -407,8 +407,10 @@ module.exports = [
         priority: "adjust",
         triggerFactionAbility: "fragile",
         filter: (auxData) => {
-            auxData.rollType === "spaceCombat" &&
-                auxData.rollType === "groundCombat";
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
