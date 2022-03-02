@@ -1,8 +1,8 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const { DealDiscard } = require("../../lib/card/deal-discard");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Card, globalEvents, world } = require("../wrapper/api");
+const { Card, globalEvents, world } = require("../../wrapper/api");
 
 function _placeAgenda(agendaCard, onTop) {
     assert(agendaCard instanceof Card);

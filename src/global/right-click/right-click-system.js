@@ -1,7 +1,7 @@
-const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
-const { CommandToken } = require("../lib/command-token/command-token");
-const { Explore } = require("../lib/explore/explore");
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
+const { CommandToken } = require("../../lib/command-token/command-token");
+const { Explore } = require("../../lib/explore/explore");
 const {
     Border,
     Button,
@@ -14,7 +14,7 @@ const {
     globalEvents,
     refPackageId,
     world,
-} = require("../wrapper/api");
+} = require("../../wrapper/api");
 
 let _openPopupObj = false;
 let _openPopupUi = false;
