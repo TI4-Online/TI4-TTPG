@@ -2,6 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
+const { CloneReplace } = require("../clone-replace");
+const { CommandToken } = require("../command-token/command-token");
 const { DealDiscard } = require("../card/deal-discard");
 const { Faction } = require("../faction/faction");
 const { FindTurnOrder } = require("./find-turn-order");
@@ -10,7 +12,6 @@ const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
 const { world, Vector, Rotator, Card } = require("../../wrapper/api");
-const { CommandToken } = require("../command-token/command-token");
 
 const ANIMATION_SPEED = 1;
 
@@ -221,7 +222,8 @@ class EndStatusPhase {
                     const dropPosition = playerDesk.localPositionToWorld(
                         new Vector(5, 20 + i * 1, 0)
                     );
-                    commandTokenBag.takeAt(0, dropPosition, true);
+                    let obj = commandTokenBag.takeAt(0, dropPosition, true);
+                    obj = CloneReplace.cloneReplace(obj);
                 }
             }
         }

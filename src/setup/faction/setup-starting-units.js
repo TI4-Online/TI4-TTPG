@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { CloneReplace } = require("../../lib/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { Vector, world } = require("../../wrapper/api");
@@ -63,7 +64,8 @@ class SetupStartingUnits extends AbstractSetup {
             assert(bag.getNumItems() >= count);
             for (let i = 0; i < count; i++) {
                 const pos = homeSystemObj.localPositionToWorld(localPos);
-                bag.takeAt(0, pos, true);
+                let unitObj = bag.takeAt(0, pos, true);
+                unitObj = CloneReplace.cloneReplace(unitObj);
                 localPos = localPos.rotateAngleAxis(rotate, [0, 0, 1]);
             }
         }

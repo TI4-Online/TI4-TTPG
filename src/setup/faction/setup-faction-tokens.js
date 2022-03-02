@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { CloneReplace } = require("../../lib/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
 const { Container, ObjectType, world } = require("../../wrapper/api");
@@ -147,6 +148,9 @@ class SetupFactionTokens extends AbstractSetup {
             ]);
             const token = commandTokensBag.takeAt(0, pos, true);
             token.setRotation(rot);
+
+            // Workaround for TTPG bug.
+            CloneReplace.cloneReplace(token);
         });
     }
 }
