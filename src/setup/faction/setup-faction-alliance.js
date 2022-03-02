@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { world } = require("../../wrapper/api");
 
 class SetupFactionAlliance extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -28,6 +29,11 @@ class SetupFactionAlliance extends AbstractSetup {
     clean() {
         const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
             if (!nsid.startsWith("card.alliance")) {
+                return false;
+            }
+            const pos = cardOrDeck.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
                 return false;
             }
             const parsed = ObjectNamespace.parseNsid(nsid);

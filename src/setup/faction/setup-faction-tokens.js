@@ -67,9 +67,15 @@ class SetupFactionTokens extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (deleSet.has(nsid)) {
-                obj.destroy();
+            if (!deleSet.has(nsid)) {
+                continue;
             }
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
+                continue;
+            }
+            obj.destroy();
         }
     }
 
