@@ -791,7 +791,7 @@ module.exports = [
         localeDescription: "unit_modifier.desc.rickar_rickani",
         owner: "self",
         priority: "adjust",
-        triggerNsid: [
+        triggerNsids: [
             "card.leader.commander.winnu:pok/rickar_rickani",
             "card.alliance:pok/winnu",
         ],
