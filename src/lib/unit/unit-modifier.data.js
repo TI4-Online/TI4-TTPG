@@ -12,7 +12,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.2ram",
         owner: "self",
         priority: "mutate",
-        triggerNsid: "card.leader.commander.l1z1x:base/2ram",
+        triggerNsids: [
+            "card.leader.commander.l1z1x:base/2ram",
+            "card.alliance:pok/l1z1x",
+        ],
         filter: (auxData) => {
             auxData.rollType === "bombardment";
         },
@@ -158,7 +161,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.brother_omar",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.yin:pok/brother_omar",
+        triggerNsids: [
+            "card.leader.commander.yin:pok/brother_omar",
+            "card.alliance:pok/yin",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const infantryAttrs = unitAttrsSet.get("infantry");
             infantryAttrs.raw.produce += 1;
@@ -473,7 +479,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.maban",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.naalu:pok/maban",
+        triggerNsids: [
+            "card.leader.commander.naalu:pok/maban",
+            "card.alliance:pok/naalu",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             fighterAttrs.raw.produce += 1;
@@ -602,7 +611,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.navarch_feng",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.nomad:pok/navarch_feng",
+        triggerNsids: [
+            "card.leader.commander.nomad:pok/navarch_feng",
+            "card.alliance:pok/nomad",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const flagshipAttrs = unitAttrsSet.get("flagship");
             flagshipAttrs.raw.cost = 0;
@@ -779,7 +791,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.rickar_rickani",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
+        triggerNsid: [
+            "card.leader.commander.winnu:pok/rickar_rickani",
+            "card.alliance:pok/winnu",
+        ],
         filter: (auxData) => {
             const system = auxData.self.activeSystem;
             if (system) {
@@ -988,7 +1003,10 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         toggleActive: true,
-        triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
+        triggerNsids: [
+            "card.leader.commander.jolnar:pok/ta_zern",
+            "card.alliance:pok/jolnar",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCannon" ||
@@ -1033,8 +1051,10 @@ module.exports = [
         localeName: "unit_modifier.name.that_which_molds_flesh",
         owner: "self",
         priority: "adjust",
-        triggerNsid:
+        triggerNsids: [
             "card.leader.commander.vuilraith:pok/that_which_molds_flesh",
+            "card.alliance:pok/vuilraith",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const infantryAttrs = unitAttrsSet.get("infantry");
             const fighterAttrs = unitAttrsSet.get("fighter");
@@ -1135,7 +1155,10 @@ module.exports = [
         owner: "self",
         priority: "choose",
         toggleActive: true,
-        triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
+        triggerNsids: [
+            "card.leader.commander.argent:pok/trrakan_aun_zulok",
+            "card.alliance:pok/argent",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCannon" ||
