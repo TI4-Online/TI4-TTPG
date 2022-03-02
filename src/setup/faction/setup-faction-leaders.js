@@ -1,8 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { ActiveIdle } = require("../../lib/unit/active-idle");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
+const { UnitModifier } = require("../../lib/unit/unit-modifier");
 const { Card, Rotator, Vector, world } = require("../../wrapper/api");
 
 const LEADERS = {
@@ -152,6 +154,11 @@ class SetupFactionLeaders extends AbstractSetup {
             );
             card.setPosition(pos);
             card.setRotation(rot);
+
+            // globalEvents.onObjectCreated not always called for these??
+            if (UnitModifier.isToggleActiveObject(card)) {
+                ActiveIdle.addToggleActiveButton(card);
+            }
         });
     }
 }

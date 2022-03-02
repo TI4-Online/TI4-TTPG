@@ -1,10 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { ActiveIdle } = require("../../lib/unit/active-idle");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { world } = require("../../wrapper/api");
 const { UnitModifier } = require("../../lib/unit/unit-modifier");
-const { ActiveIdle } = require("../../lib/unit/active-idle");
+const { world } = require("../../wrapper/api");
 
 class SetupFactionAlliance extends AbstractSetup {
     constructor(playerDesk, faction) {

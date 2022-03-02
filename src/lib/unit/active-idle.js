@@ -8,7 +8,6 @@ const {
     Vector,
     UIElement,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../object-namespace");
 
 const IS_ACTIVE_KEY = "isActive";
 
