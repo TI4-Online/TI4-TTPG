@@ -8,6 +8,7 @@ const {
     Vector,
     UIElement,
 } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../object-namespace");
 
 const IS_ACTIVE_KEY = "isActive";
 
@@ -26,6 +27,11 @@ class ActiveIdle {
      */
     static addToggleActiveButton(obj) {
         assert(obj instanceof GameObject);
+
+        // Strip off existing ui.
+        for (const ui of obj.getUIs()) {
+            obj.removeUIElement(ui);
+        }
 
         const button = new Button().setFontSize(10).setText("<???>");
 

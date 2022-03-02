@@ -3,6 +3,8 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
+const { UnitModifier } = require("../../lib/unit/unit-modifier");
+const { ActiveIdle } = require("../../lib/unit/active-idle");
 
 class SetupFactionAlliance extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -24,6 +26,11 @@ class SetupFactionAlliance extends AbstractSetup {
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(card, playerSlot);
+
+        // globalEvents.onObjectCreated not always called for these??
+        if (UnitModifier.isToggleActiveObject(card)) {
+            ActiveIdle.addToggleActiveButton(card);
+        }
     }
 
     clean() {
