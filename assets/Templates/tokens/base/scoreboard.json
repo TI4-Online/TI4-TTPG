@@ -9,7 +9,7 @@
 	"Density": 1,
 	"SurfaceType": "Cardboard",
 	"Roughness": 1,
-	"Metallic": 0,
+	"Metallic": 1,
 	"PrimaryColor":
 	{
 		"R": 255,
@@ -22,7 +22,7 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
 	"ScriptName": "",
