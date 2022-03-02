@@ -46,8 +46,6 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
     console.log(`isDown: ${player.isScriptKeyDown(10)}`);
 
-    console.log(`zone: ${world.getZoneById("yiv")}`);
-
     const setups = [];
 
     if (actionName === ACTION.GIZMO_DESKS) {
