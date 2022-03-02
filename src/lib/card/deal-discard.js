@@ -286,10 +286,15 @@ class DealDiscard {
             return false;
         }
 
-        const fromFront = false; // "front" is bottom
-        const offset = 0;
-        const keep = false;
-        const card = deck.takeCards(count, fromFront, offset, keep);
+        let card;
+        if (deck.getStackSize() == 1) {
+            card = deck;
+        } else {
+            const fromFront = false; // "front" is bottom
+            const offset = 0;
+            const keep = false;
+            card = deck.takeCards(count, fromFront, offset, keep);
+        }
         card.setPosition(position, 1);
         card.setRotation(rotation, 1);
 
