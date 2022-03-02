@@ -3,17 +3,6 @@ const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
-let _nextX = -40;
-function nextPosition() {
-    const result = {
-        x: _nextX,
-        y: -100,
-        z: world.getTableHeight() + 5,
-    };
-    _nextX += 6;
-    return result;
-}
-
 const TABLE_DECKS = [
     {
         nsidPrefix: "card.action",
@@ -21,8 +10,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/decks",
             snapPoint: 3,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.agenda",
@@ -30,8 +17,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/decks",
             snapPoint: 4,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.objective.secret",
@@ -39,8 +24,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/decks",
             snapPoint: 5,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.objective.public_1",
@@ -48,8 +31,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/objectives_1",
             snapPoint: 5,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.objective.public_2",
@@ -57,8 +38,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/objectives_2",
             snapPoint: 5,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.planet",
@@ -66,8 +45,6 @@ const TABLE_DECKS = [
             nsid: "mat:base/decks",
             snapPoint: 2,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.relic",
@@ -75,8 +52,6 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 9,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.cultural",
@@ -84,8 +59,6 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 8,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.hazardous",
@@ -93,8 +66,6 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 7,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.industrial",
@@ -102,8 +73,6 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 6,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.exploration.frontier",
@@ -111,8 +80,6 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 5,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.legendary_planet",
@@ -120,19 +87,17 @@ const TABLE_DECKS = [
             nsid: "mat:pok/exploration",
             snapPoint: 4,
         },
-        pos: nextPosition(),
-        yaw: -90,
     },
     {
         nsidPrefix: "card.faction_token",
         parent: false,
-        pos: nextPosition(),
+        pos: { x: -6.1, y: 75.9, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
     {
         nsidPrefix: "card.faction_reference",
         parent: false,
-        pos: nextPosition(),
+        pos: { x: 3.6, y: 76.9, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
 ];
@@ -194,18 +159,21 @@ class SetupTableDecks extends AbstractSetup {
     }
 
     _setupDeck(deckData, mat) {
-        let pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
-        let rot = new Rotator(0, deckData.yaw, 0);
+        let pos;
+        let rot;
 
         // If have a mat, use a snap point.
         if (mat) {
             const snapPoints = mat.getAllSnapPoints();
             const snapPoint = snapPoints[deckData.parent.snapPoint];
             if (snapPoint) {
-                pos = snapPoint.getGlobalPosition();
+                pos = snapPoint.getGlobalPosition().add([0, 0, 10]);
                 const yaw = mat.getRotation().yaw + snapPoint.getSnapRotation();
                 rot = new Rotator(0, yaw, 0);
             }
+        } else {
+            pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
+            rot = new Rotator(0, deckData.yaw, 0);
         }
 
         // Spawn the decks, combine into one.
@@ -225,7 +193,9 @@ class SetupTableDecks extends AbstractSetup {
             }
         );
 
-        deck.snap();
+        if (mat) {
+            deck.snap();
+        }
     }
 }
 
