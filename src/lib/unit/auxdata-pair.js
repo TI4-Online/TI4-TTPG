@@ -47,6 +47,7 @@ class AuxDataPair {
         this._aux2 = auxData2;
 
         this._aux1.setOpponent(this._aux2);
+        this._aux2.setOpponent(this._aux1);
 
         this._hex = this._aux1.hex;
         this._planet = this._aux1.planet;
@@ -193,9 +194,11 @@ class AuxDataPair {
         UnitPlastic.assignTokens(this._hexPlastic);
         UnitPlastic.assignTokens(this._adjPlastic);
 
+        // Always assign planets (e.g. mech that may or may not be in space).
+        UnitPlastic.assignPlanets(this._hexPlastic);
+
+        // If using a planet, get units on and ships above planet.
         if (this._planet) {
-            // If using a planet, get units on and ships above planet.
-            UnitPlastic.assignPlanets(this._hexPlastic);
             this._hexPlastic = this._hexPlastic.filter(
                 (plastic) =>
                     plastic.planet &&

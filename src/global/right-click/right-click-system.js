@@ -29,7 +29,6 @@ function _closePopup() {
 
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
-    const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
     const getNamesAndActions = () => {
         const namesAndActions = [
             {
@@ -39,16 +38,16 @@ function addRightClickOptions(systemTileObj) {
                     CommandToken.activateSystem(systemTileObj, player);
                 },
             },
-        ];
-        if (system.tile !== 18 && system.planets.length > 0) {
-            namesAndActions.push({
+            {
+                // This could be disabled for empty systems (diplomcay rider
+                // makes it legal for Mecatol).
                 name: locale("ui.action.system.diplomacy"),
                 action: (player) => {
                     _closePopup();
                     CommandToken.diplomacySystem(systemTileObj, player);
                 },
-            });
-        }
+            },
+        ];
 
         const exploreNamesAndActions =
             Explore.getExploreActionNamesAndActions(systemTileObj);

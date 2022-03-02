@@ -104,6 +104,7 @@ class Explore {
         } else {
             pos = systemTileObj.getPosition();
         }
+        pos.z += systemTileObj.getSize().z;
 
         // Draw the card.
         const count = 1;
@@ -135,7 +136,7 @@ class Explore {
 
         // Flip if planet has a tech.
         const tokenRot = new Rotator(rot.pitch, rot.yaw, 0);
-        if (planet && planet.firstTech) {
+        if (planet && !planet.firstTech) {
             tokenRot.roll = 180;
         }
 
@@ -164,12 +165,13 @@ class Explore {
             tokenObj = Spawn.spawn(tokenNsid, pos, rot);
             assert(tokenObj);
         }
+
+        // Set rotation before moving, so in correct orientation before arriving.
         tokenObj.setRotation(tokenRot, 0);
 
         // Move to location.  THIS TRIGGERS tokenObj.onMovementStopped,
         // which Attachment uses to attach.
         tokenObj.setPosition(pos, 0);
-        tokenObj.setRotation(tokenRot, 0);
 
         // Extra cards? (Mirage)
         if (attachmentData.extraCardNsids) {

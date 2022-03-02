@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { ActiveIdle } = require("../../lib/unit/active-idle");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { UnitModifier } = require("../../lib/unit/unit-modifier");
 const { world } = require("../../wrapper/api");
 
 class SetupFactionAlliance extends AbstractSetup {
@@ -24,6 +26,11 @@ class SetupFactionAlliance extends AbstractSetup {
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(card, playerSlot);
+
+        // globalEvents.onObjectCreated not always called for these??
+        if (UnitModifier.isToggleActiveObject(card)) {
+            ActiveIdle.addToggleActiveButton(card);
+        }
     }
 
     clean() {

@@ -12,7 +12,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.2ram",
         owner: "self",
         priority: "mutate",
-        triggerNsid: "card.leader.commander.l1z1x:base/2ram",
+        triggerNsids: [
+            "card.leader.commander.l1z1x:base/2ram",
+            "card.alliance:pok/l1z1x",
+        ],
         filter: (auxData) => {
             auxData.rollType === "bombardment";
         },
@@ -158,7 +161,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.brother_omar",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.yin:pok/brother_omar",
+        triggerNsids: [
+            "card.leader.commander.yin:pok/brother_omar",
+            "card.alliance:pok/yin",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const infantryAttrs = unitAttrsSet.get("infantry");
             infantryAttrs.raw.produce += 1;
@@ -272,18 +278,21 @@ module.exports = [
             let spaceCount = 0;
             let groundCount = 0;
             for (const unitPlastic of auxData.self.plastic) {
+                if (unitPlastic.unit !== "mech") {
+                    continue;
+                }
                 if (unitPlastic.exactPlanet) {
                     groundCount += 1;
                 } else {
                     spaceCount += 1;
                 }
             }
-            if (auxData.rollType === "spaceCombat" && spaceCount > 0) {
+            if (auxData.rollType === "spaceCombat") {
                 const mechAttrs = unitAttrsSet.get("mech");
                 mechAttrs.raw.ship = true;
                 auxData.self.overrideCount("mech", spaceCount);
             }
-            if (auxData.rollType === "groundCombat" && spaceCount > 0) {
+            if (auxData.rollType === "groundCombat") {
                 auxData.self.overrideCount("mech", groundCount);
             }
         },
@@ -404,8 +413,10 @@ module.exports = [
         priority: "adjust",
         triggerFactionAbility: "fragile",
         filter: (auxData) => {
-            auxData.rollType === "spaceCombat" &&
-                auxData.rollType === "groundCombat";
+            return (
+                auxData.rollType === "spaceCombat" ||
+                auxData.rollType === "groundCombat"
+            );
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
@@ -468,7 +479,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.maban",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.naalu:pok/maban",
+        triggerNsids: [
+            "card.leader.commander.naalu:pok/maban",
+            "card.alliance:pok/naalu",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             fighterAttrs.raw.produce += 1;
@@ -597,7 +611,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.navarch_feng",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.nomad:pok/navarch_feng",
+        triggerNsids: [
+            "card.leader.commander.nomad:pok/navarch_feng",
+            "card.alliance:pok/nomad",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const flagshipAttrs = unitAttrsSet.get("flagship");
             flagshipAttrs.raw.cost = 0;
@@ -774,7 +791,10 @@ module.exports = [
         localeDescription: "unit_modifier.desc.rickar_rickani",
         owner: "self",
         priority: "adjust",
-        triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
+        triggerNsids: [
+            "card.leader.commander.winnu:pok/rickar_rickani",
+            "card.alliance:pok/winnu",
+        ],
         filter: (auxData) => {
             const system = auxData.self.activeSystem;
             if (system) {
@@ -983,7 +1003,10 @@ module.exports = [
         owner: "self",
         priority: "adjust",
         toggleActive: true,
-        triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
+        triggerNsids: [
+            "card.leader.commander.jolnar:pok/ta_zern",
+            "card.alliance:pok/jolnar",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCannon" ||
@@ -1028,8 +1051,10 @@ module.exports = [
         localeName: "unit_modifier.name.that_which_molds_flesh",
         owner: "self",
         priority: "adjust",
-        triggerNsid:
+        triggerNsids: [
             "card.leader.commander.vuilraith:pok/that_which_molds_flesh",
+            "card.alliance:pok/vuilraith",
+        ],
         applyAll: (unitAttrsSet, auxData) => {
             const infantryAttrs = unitAttrsSet.get("infantry");
             const fighterAttrs = unitAttrsSet.get("fighter");
@@ -1130,7 +1155,10 @@ module.exports = [
         owner: "self",
         priority: "choose",
         toggleActive: true,
-        triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
+        triggerNsids: [
+            "card.leader.commander.argent:pok/trrakan_aun_zulok",
+            "card.alliance:pok/argent",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCannon" ||
@@ -1184,6 +1212,7 @@ module.exports = [
                 let has = auxData.self.has(unitAttrs.raw.unit);
                 if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
                     has =
+                        unitAttrs.raw.spaceCannon &&
                         unitAttrs.raw.spaceCannon.range &&
                         unitAttrs.raw.spaceCannon.range > 0;
                 }
@@ -1203,7 +1232,7 @@ module.exports = [
         },
     },
     {
-        // "SPACE CANNON 5(x3)",
+        // "SPACE CANNON 5(x3), +3 res/inf",
         isCombat: true,
         localeName: "unit_modifier.name.ul_the_progenitor",
         localeDescription: "unit_modifier.desc.ul_the_progenitor",
@@ -1215,19 +1244,17 @@ module.exports = [
                 return false;
             }
             // Only applies to Elysium.
-            return auxData.system && auxData.system.tile === 55;
+            return auxData.activeSystem && auxData.activeSystem.tile === 55;
         },
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has("space_dock")) {
-                unitAttrsSet.addSpecialUnit(
-                    new UnitAttrs({
-                        unit: "ul_the_progenitor",
-                        localeName: "unit_modifier.name.ul_the_progenitor",
-                        spaceCannon: { hit: 5, dice: 3 },
-                    })
-                );
-                auxData.self.count("ul_the_progenitor", 1);
-            }
+            unitAttrsSet.addSpecialUnit(
+                new UnitAttrs({
+                    unit: "ul_the_progenitor",
+                    localeName: "unit_modifier.name.ul_the_progenitor",
+                    spaceCannon: { hit: 5, dice: 3 },
+                })
+            );
+            auxData.self.overrideCount("ul_the_progenitor", 1);
         },
     },
     {

@@ -53,8 +53,6 @@
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
 
-    "ui.button.space_cannon_offsense": "Space Cannon Offense",
-
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
     "ui.setup.player_count": "Player count",
@@ -85,7 +83,13 @@
     "ui.tab.status_phase": "Status",
     "ui.tab.agenda_phase": "Agenda",
 
-    "ui.roller.space_cannon_offense": "Space Cannon Offsense",
+    "rollType.spaceCannon": "Space Cannon",
+    "rollType.antiFighterBarrage": "Anti-fighter Barrage",
+    "rollType.spaceCombat": "Space Combat",
+    "rollType.bombardment": "Bombardment",
+    "rollType.groundCombat": "Ground Combat",
+
+    "ui.roller.space_cannon_offense": "Space Cannon Offense",
     "ui.roller.anti_fighter_barrage": "Anti-fighter Barrage",
     "ui.roller.announce_retreat": "Announce Retreat",
     "ui.roller.space_combat": "Space Combat",
