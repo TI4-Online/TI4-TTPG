@@ -3,7 +3,10 @@ const ATTACHMENTS = [
         localeName: "token.attachment.biotic_facility",
         cardNsid: "card.exploration.industrial:pok/biotic_research_facility",
         tokenNsid: "token.attachment.exploration:pok/biotic_facility",
-        faceUp: { resources: 1, influence: 1 },
+        faceUp: {
+            resources: 1,
+            influence: 1,
+        },
         faceDown: { tech: ["green"] },
     },
     {
@@ -24,7 +27,6 @@ const ATTACHMENTS = [
         cardNsid: "card.exploration.cultural:pok/dyson_sphere",
         tokenNsid: "token.attachment.exploration:pok/dyson_sphere",
         faceUp: { resources: 2, influence: 1 },
-        faceDown: { resources: 2, influence: 1 },
     },
     {
         localeName: "token.wormhole.gamma",
@@ -47,10 +49,6 @@ const ATTACHMENTS = [
             resources: 3,
             influence: 3,
         },
-        faceDown: {
-            resources: 3,
-            influence: 3,
-        },
     },
     {
         localeName: "token.exploration.ion_storm",
@@ -62,14 +60,12 @@ const ATTACHMENTS = [
         cardNsid: "card.exploration.hazardous:pok/lazax_survivors",
         tokenNsid: "token.attachment.exploration:pok/lazax_survivors",
         faceUp: { resources: 1, influence: 2 },
-        faceDown: { resources: 1, influence: 2 },
     },
     {
         localeName: "token.attachment.mining_world",
         cardNsid: "card.exploration.hazardous:pok/mining_world",
         tokenNsid: "token.attachment.exploration:pok/mining_world",
         faceUp: { resources: 2 },
-        faceDown: { resources: 2 },
     },
     {
         localeName: "token.exploration.mirage",
@@ -85,14 +81,12 @@ const ATTACHMENTS = [
         cardNsid: "card.relic:codex.affinity/nanoforge", // RELIC!
         tokenNsid: "token.attachment.exploration:pok/nano_forge",
         faceUp: { resources: 2, influence: 2, legendary: true },
-        faceDown: { resources: 2, influence: 2, legendary: true },
     },
     {
         localeName: "token.attachment.paradise_world",
         cardNsid: "card.exploration.cultural:pok/paradise_world",
         tokenNsid: "token.attachment.exploration:pok/paradise_world",
         faceUp: { influence: 2 },
-        faceDown: { influence: 2 },
     },
     {
         localeName: "token.attachment.propulsion_facility",
@@ -107,7 +101,6 @@ const ATTACHMENTS = [
         cardNsid: "card.exploration.hazardous:pok/rich_world",
         tokenNsid: "token.attachment.exploration:pok/rich_world",
         faceUp: { resources: 1 },
-        faceDown: { resources: 1 },
     },
     {
         localeName: "token.exploration.stellar_converter",
@@ -123,18 +116,15 @@ const ATTACHMENTS = [
             influence: 1,
             traits: ["industrial", "hazardous", "cultural"],
         },
-        faceDown: {
-            resources: 1,
-            influence: 1,
-            traits: ["industrial", "hazardous", "cultural"],
-        },
     },
     {
         localeName: "token.attachment.tomb_of_emphidia",
         cardNsid: "card.exploration.cultural:pok/tomb_of_emphidia",
         tokenNsid: "token.attachment.exploration:pok/tomb_of_emphidia",
-        faceUp: { influence: 1 },
-        faceDown: { influence: 1 },
+        faceUp: {
+            influence: 1,
+            image: "global/tokens/pok/exploration//exploration_1-1_c.png",
+        },
     },
 
     {

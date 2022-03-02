@@ -84,7 +84,7 @@ class Attachment {
         Broadcast.chatAll(message);
 
         // update the planet attributes based on the attachment
-        if (Facing.isFaceUp(this._obj)) {
+        if (Facing.isFaceUp(this._obj) || !this._faceDown) {
             this._attachedFaceUp = true;
             this._attach(planet, this._faceUp);
         } else {
