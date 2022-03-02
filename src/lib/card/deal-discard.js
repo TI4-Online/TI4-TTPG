@@ -127,6 +127,15 @@ class DealDiscard {
             : deckData.deckSnapPointIndex;
         const snapPoint = snapPoints[index];
 
+        if (index == -1) {
+            return; // asked for the discard pile when there is no discard pile
+        }
+        if (!snapPoint) {
+            throw new Error(
+                `_getDeck: no snap point [${index}] on "${nsidOrPrefix}"`
+            );
+        }
+
         // getSnappedObject isn't reliable.  Try, then fallback to cast.
         let deck = snapPoint.getSnappedObject();
         if (deck && deck.isInHolder()) {
@@ -332,7 +341,7 @@ class DealDiscard {
         let deck = DealDiscard._getDeck(nsid, getDiscard);
         if (deck) {
             // Add to existing discard pile.
-            const toFront = false;
+            const toFront = true;
             const offset = 0;
             const animate = true;
             const flipped = false;
@@ -353,7 +362,7 @@ class DealDiscard {
             }
             const snapPoint = snapPoints[index];
             assert(snapPoint);
-            const pos = snapPoint.getGlobalPosition();
+            const pos = snapPoint.getGlobalPosition().add([0, 0, 5]);
             const yaw = snapPoint.getSnapRotation();
             const rot = new Rotator(0, yaw, roll).compose(parent.getRotation());
             deck.setPosition(pos, 1);
