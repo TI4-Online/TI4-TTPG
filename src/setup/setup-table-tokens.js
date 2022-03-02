@@ -139,8 +139,6 @@ class SetupTableTokens extends AbstractSetup {
             bag = Spawn.spawn(tokenData.bagNsid, pos, rot);
             bag.clear(); // paranoia
             bag.setObjectType(ObjectType.Regular);
-            bag.setScript("");
-            bag.setName("tokens");
 
             // Bag needs to have the correct type at create time.
             if (bag.getType() !== tokenData.bagType) {
