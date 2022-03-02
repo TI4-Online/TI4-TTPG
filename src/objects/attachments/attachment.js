@@ -125,8 +125,8 @@ class Attachment {
 
         // Add the attachment icon to the planet card
         const imagePath = this._attachedFaceUp
-            ? this._faceUp.image
-            : this._faceDown.image;
+            ? this._faceUp?.image
+            : this._faceDown?.image;
         for (const obj of world.getAllObjects()) {
             if (!(obj instanceof Card)) {
                 continue;
