@@ -17,7 +17,8 @@ class CloneReplace {
         const pos = obj.getPosition();
         const json = obj.toJSONString();
         obj.destroy();
-        return world.createObjectFromJSON(json, pos);
+        const clone = world.createObjectFromJSON(json, pos);
+        return clone;
     }
 }
 
