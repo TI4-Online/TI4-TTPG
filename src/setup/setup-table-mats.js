@@ -80,4 +80,4 @@ class SetupTableMats extends AbstractSetup {
     }
 }
 
-module.exports = { SetupTableMats };
+module.exports = { SetupTableMats, MATS };
