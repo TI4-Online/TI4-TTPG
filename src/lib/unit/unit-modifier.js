@@ -139,7 +139,7 @@ class UnitModifier {
             }
 
             // Enfoce modifier type (self, opponent, any).
-            if (unitModifier.raw !== "any") {
+            if (unitModifier.raw.owner !== "any") {
                 // Not an "any", require it be of "withType".
                 if (unitModifier.raw.owner !== withOwner) {
                     continue;
