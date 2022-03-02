@@ -40,8 +40,9 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 };
 
-// Player desk is naughty and wants to register global event listeners.
+// Some naughty scripts register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
+require("./setup/setup-secret-holders");
 
 // Show setup ui.
 require("./setup/game-setup/game-setup");
