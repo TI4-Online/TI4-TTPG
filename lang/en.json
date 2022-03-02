@@ -50,6 +50,9 @@
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
 
+    "ui.menu.place_agenda_top": "Place agenda top",
+    "ui.menu.place_agenda_bottom": "Place agenda bottom",
+
     "ui.button.space_cannon_offsense": "Space Cannon Offense",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
