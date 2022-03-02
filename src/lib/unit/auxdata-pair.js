@@ -47,6 +47,7 @@ class AuxDataPair {
         this._aux2 = auxData2;
 
         this._aux1.setOpponent(this._aux2);
+        this._aux2.setOpponent(this._aux1);
 
         this._hex = this._aux1.hex;
         this._planet = this._aux1.planet;
