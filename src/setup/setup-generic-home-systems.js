@@ -11,6 +11,7 @@ const {
     Vector,
     world,
 } = require("../wrapper/api");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 // "Standard" home system locations, and suggested off-map positions keeping
 // closer to the center of the table but pushed out (north and south).  The
@@ -52,6 +53,8 @@ const HOME_SYSTEM_POSITIONS = {
     ],
 };
 
+const SPAWN_OFF_MAP_ALSO = false;
+
 class SetupGenericHomeSystems extends AbstractSetup {
     constructor(playerDesk) {
         assert(playerDesk);
@@ -91,6 +94,18 @@ class SetupGenericHomeSystems extends AbstractSetup {
         ui.widget = text;
         obj.addUI(ui);
 
+        // Also spawn one at off-map for visualizing.
+        if (SPAWN_OFF_MAP_ALSO) {
+            const pos = SetupGenericHomeSystems.getHomeSystemPosition(
+                this.playerDesk,
+                true
+            );
+            const rot = new Rotator(0, 0, 0);
+            const obj = Spawn.spawn(nsid, pos, rot);
+            obj.setPrimaryColor(color);
+            obj.setOwningPlayerSlot(playerSlot);
+        }
+
         // Report hex coordinates when dropped.
         // obj.onSnapped.add(
         //     (object, player, snapPoint, grabPosition, grabRotation) => {
@@ -116,6 +131,10 @@ class SetupGenericHomeSystems extends AbstractSetup {
                 continue;
             }
             if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "tile.system:base/0") {
                 continue;
             }
             obj.destroy();

@@ -91,13 +91,13 @@ const TABLE_DECKS = [
     {
         nsidPrefix: "card.faction_token",
         parent: false,
-        pos: { x: -6.1, y: 75.9, z: world.getTableHeight() + 5 },
+        pos: { x: -6.1, y: 77.9, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
     {
         nsidPrefix: "card.faction_reference",
         parent: false,
-        pos: { x: 3.6, y: 76.9, z: world.getTableHeight() + 5 },
+        pos: { x: 3.6, y: 78.9, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
 ];
