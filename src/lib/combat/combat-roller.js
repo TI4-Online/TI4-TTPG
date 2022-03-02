@@ -1,10 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { AuxData } = require("../unit/auxdata");
+const { Broadcast } = require("../broadcast");
 const { RollGroup } = require("../dice/roll-group");
 const { UnitDieBuilder } = require("../dice/unit-die");
 const { Player } = require("../../wrapper/api");
-const { Broadcast } = require("../broadcast");
+const { world } = require("../../wrapper/api");
 
 /**
  * Let players manually enter unit counts.
@@ -18,6 +19,11 @@ class CombatRoller {
         this._auxData = auxData;
         this._rollType = rollType;
         this._player = player;
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+            player.getSlot()
+        );
+        this._color = playerDesk ? playerDesk.color : player.getPlayerColor();
     }
 
     /**
@@ -204,21 +210,24 @@ class CombatRoller {
             dice.push(...unitDice);
         }
 
+        let rollTypeLocalized = locale(`rollType.${this._rollType}`);
         Broadcast.broadcastAll(
             locale("ui.message.player_rolling_for", {
                 playerName: this._player.getName(),
-                rollType: this._rollType,
-            })
+                rollType: rollTypeLocalized,
+            }),
+            this._color
         );
+
         const report = this.getModifiersReport(true);
-        Broadcast.chatAll(report);
+        Broadcast.chatAll(report, this._color);
 
         if (dice.length === 0) {
-            Broadcast.broadcastAll(locale("ui.message.no_units"));
+            Broadcast.broadcastAll(locale("ui.message.no_units"), this._color);
         } else {
             RollGroup.roll(dice, () => {
                 const report = this.getRollReport(unitToDice);
-                Broadcast.broadcastAll(report);
+                Broadcast.broadcastAll(report, this._color);
             });
         }
 

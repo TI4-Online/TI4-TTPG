@@ -83,6 +83,12 @@
     "ui.tab.status_phase": "Status",
     "ui.tab.agenda_phase": "Agenda",
 
+    "rollType.spaceCannon": "Space Cannon",
+    "rollType.antiFighterBarrage": "Anti-fighter Barrage",
+    "rollType.spaceCombat": "Space Combat",
+    "rollType.bombardment": "Bombardment",
+    "rollType.groundCombat": "Ground Combat",
+
     "ui.roller.space_cannon_offense": "Space Cannon Offense",
     "ui.roller.anti_fighter_barrage": "Anti-fighter Barrage",
     "ui.roller.announce_retreat": "Announce Retreat",
