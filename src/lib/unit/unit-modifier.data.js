@@ -1232,7 +1232,7 @@ module.exports = [
         },
     },
     {
-        // "SPACE CANNON 5(x3)",
+        // "SPACE CANNON 5(x3), +3 res/inf",
         isCombat: true,
         localeName: "unit_modifier.name.ul_the_progenitor",
         localeDescription: "unit_modifier.desc.ul_the_progenitor",
@@ -1244,19 +1244,17 @@ module.exports = [
                 return false;
             }
             // Only applies to Elysium.
-            return auxData.system && auxData.system.tile === 55;
+            return auxData.activeSystem && auxData.activeSystem.tile === 55;
         },
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has("space_dock")) {
-                unitAttrsSet.addSpecialUnit(
-                    new UnitAttrs({
-                        unit: "ul_the_progenitor",
-                        localeName: "unit_modifier.name.ul_the_progenitor",
-                        spaceCannon: { hit: 5, dice: 3 },
-                    })
-                );
-                auxData.self.count("ul_the_progenitor", 1);
-            }
+            unitAttrsSet.addSpecialUnit(
+                new UnitAttrs({
+                    unit: "ul_the_progenitor",
+                    localeName: "unit_modifier.name.ul_the_progenitor",
+                    spaceCannon: { hit: 5, dice: 3 },
+                })
+            );
+            auxData.self.overrideCount("ul_the_progenitor", 1);
         },
     },
     {
