@@ -166,13 +166,10 @@ class Explore {
         }
         tokenObj.setRotation(tokenRot, 0);
 
-        // Move to location.
+        // Move to location.  THIS TRIGGERS tokenObj.onMovementStopped,
+        // which Attachment uses to attach.
         tokenObj.setPosition(pos, 0);
         tokenObj.setRotation(tokenRot, 0);
-        if (tokenObj.__attachment) {
-            // Script on object onCreated called during spawn
-            tokenObj.__attachment.attach(planet, systemTileObj);
-        }
 
         // Extra cards? (Mirage)
         if (attachmentData.extraCardNsids) {
@@ -181,7 +178,7 @@ class Explore {
             });
             for (let i = 0; i < cards.length; i++) {
                 const card = cards[i];
-                card.setPosition(pos.add([0, 0, 1 + i]));
+                card.setPosition(pos.add([0, 0, 10 + i]));
                 card.setRotation(rot);
             }
         }

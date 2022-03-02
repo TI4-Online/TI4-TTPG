@@ -1,5 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
+const { CloneReplace } = require("../clone-replace");
+const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const {
     Container,
@@ -9,8 +12,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../broadcast");
-const { CloneReplace } = require("../clone-replace");
 
 // 15 is somewhat generous but nowhere near map area.
 const ON_SHEET_DISTANCE_SQ = 225;
@@ -204,10 +205,33 @@ class CommandToken {
         assert(player instanceof Player);
         const playerSlot = player.getSlot();
 
+        // Who already has tokens on the tile?
+        const alreadyPresentPlayerSlots = new Set();
+        const pos = systemTileObj.getPosition();
+        const systemTileHex = Hex.fromPosition(pos);
+        const playerSlotToSheetAndTokens =
+            CommandToken._getAllCommandSheetsAndTokens();
+        for (let [playerSlot, { commandTokens }] of Object.entries(
+            playerSlotToSheetAndTokens
+        )) {
+            for (const commandToken of commandTokens) {
+                const pos = commandToken.getPosition();
+                const hex = Hex.fromPosition(pos);
+                if (hex === systemTileHex) {
+                    playerSlot = Number.parseInt(playerSlot); // object key become string
+                    alreadyPresentPlayerSlots.add(playerSlot);
+                    break;
+                }
+            }
+        }
+
         let extraZ = 0;
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const deskSlot = playerDesk.playerSlot;
             if (deskSlot === playerSlot) {
+                continue;
+            }
+            if (alreadyPresentPlayerSlots.has(deskSlot)) {
                 continue;
             }
             const commandToken = CommandToken.getReinforcementsToken(deskSlot);
