@@ -108,9 +108,7 @@ class Technology {
         let factionNsidName = false;
         if (playerSlot) {
             const faction = Faction.getByPlayerSlot(playerSlot);
-            if (faction) {
-                factionNsidName = faction.raw.faction;
-            }
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
         return getTechnologies(factionNsidName).all;
     }
@@ -119,9 +117,7 @@ class Technology {
         let factionNsidName = false;
         if (playerSlot) {
             const faction = Faction.getByPlayerSlot(playerSlot);
-            if (faction) {
-                factionNsidName = faction.raw.faction;
-            }
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
         return getTechnologies(factionNsidName).byType;
     }
