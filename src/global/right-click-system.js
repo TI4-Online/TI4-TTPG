@@ -29,6 +29,7 @@ function _closePopup() {
 
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
+    const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
     const getNamesAndActions = () => {
         const namesAndActions = [
             {
@@ -38,14 +39,17 @@ function addRightClickOptions(systemTileObj) {
                     CommandToken.activateSystem(systemTileObj, player);
                 },
             },
-            {
+        ];
+        if (system.tile !== 18 && system.planets.length > 0) {
+            namesAndActions.push({
                 name: locale("ui.action.system.diplomacy"),
                 action: (player) => {
                     _closePopup();
                     CommandToken.diplomacySystem(systemTileObj, player);
                 },
-            },
-        ];
+            });
+        }
+
         const exploreNamesAndActions =
             Explore.getExploreActionNamesAndActions(systemTileObj);
         for (const nameAndAction of exploreNamesAndActions) {

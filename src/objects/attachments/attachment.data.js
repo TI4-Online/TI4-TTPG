@@ -75,6 +75,10 @@ const ATTACHMENTS = [
         localeName: "token.exploration.mirage",
         cardNsid: "card.exploration.frontier:pok/mirage",
         tokenNsid: "token.exploration:pok/mirage",
+        extraCardNsids: [
+            "card.planet:pok/mirage",
+            "card.legendary_planet:pok/mirage_flight_academy",
+        ],
     },
     {
         localeName: "token.attachment.nano_forge",

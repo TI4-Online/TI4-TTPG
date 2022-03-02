@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "09DF69524B6B7064D2CD6D8A0F7ADA59",
 	"Name": "Custodian token",
-	"Metadata": "token.naalu:base/zero",
+	"Metadata": "token:base/custodians",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

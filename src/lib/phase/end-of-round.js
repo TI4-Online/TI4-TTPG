@@ -256,6 +256,9 @@ class EndStatusPhase {
         }
 
         for (const obj of strategyCards) {
+            if (!FindTurnOrder.isStrategyCardPicked(obj)) {
+                continue; // already on (a) home spot, leave it alone
+            }
             const nsid = ObjectNamespace.getNsid(obj);
             const snapPoint = nsidToSnapPoint[nsid];
             assert(snapPoint);

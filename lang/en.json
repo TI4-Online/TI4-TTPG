@@ -427,6 +427,7 @@
     "bag.token.control": "Control Tokens",
 
     "token.speaker": "Speaker",
+    "token.custodians": "Custodians",
 
     "token.fighter_1": "Fighter x1",
     "token.fighter_3": "Fighter x3",
@@ -436,6 +437,7 @@
     "token.tradegood_commodity_3": "Tradegoods/Commodities x3",
     "bag.token": "{token} Supply",
     "bag.garbage": "Garbage",
+    "bag.exploration_tokens": "Exploration Tokens",
 
     "token.dimensional_tear": "Dimensional Tear",
     "token.frontier": "Frontier",

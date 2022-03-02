@@ -82,5 +82,6 @@
     "token:base/speaker": "81F04C6F435D849CF50424B59E7E2F42",
     "token:base/tradegood_commodity_1": "2DB5DA894C75645C65F9CD86BFAEA211",
     "token:base/tradegood_commodity_3": "7E9C62F84C1DB934463888A52B748DF5",
-    "token:pok/frontier": "AB1E6E5C4A860EDEEC83FDA1991A1EC7"
+    "token:pok/frontier": "AB1E6E5C4A860EDEEC83FDA1991A1EC7",
+    "token:base/custodians": "09DF69524B6B7064D2CD6D8A0F7ADA59"
 }

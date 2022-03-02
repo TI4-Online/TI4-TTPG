@@ -1,3 +1,4 @@
+const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
@@ -29,6 +30,14 @@ const GENERIC_TOKENS = [
         pos: { x: -10, y: -75, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
+    {
+        tokenNsid: "token:base/custodians",
+        bagNsid: false,
+        bagType: false,
+        pos: { x: 0, y: -75, z: world.getTableHeight() + 5 },
+        yaw: 0,
+    },
+
     // scoreboard is in setup-table-mats
 ];
 
@@ -90,7 +99,9 @@ class SetupTableTokens extends AbstractSetup {
         );
         const rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
 
-        const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
+        //const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
+        const bag = Spawn.spawnGenericContainer(pos, rot);
+        bag.setName(locale("bag.exploration_tokens"));
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Regular);
 
@@ -128,8 +139,6 @@ class SetupTableTokens extends AbstractSetup {
             bag = Spawn.spawn(tokenData.bagNsid, pos, rot);
             bag.clear(); // paranoia
             bag.setObjectType(ObjectType.Regular);
-            bag.setScript("");
-            bag.setName("tokens");
 
             // Bag needs to have the correct type at create time.
             if (bag.getType() !== tokenData.bagType) {
