@@ -4,6 +4,7 @@ const { CloneReplace } = require("../../lib/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
 const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
+const { Facing } = require("../../lib/facing");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
@@ -141,10 +142,14 @@ class SetupFactionTokens extends AbstractSetup {
         }
 
         const tokenNsid = `token.control:${this.faction.nsidSource}/${this.faction.nsidName}`;
+        let x = 16;
+        if (Facing.isFaceDown(scoreboard)) {
+            x = -x;
+        }
         const y =
             -2 +
             (4 * this.playerDesk.index) / (world.TI4.config.playerCount - 1);
-        const pos = scoreboard.localPositionToWorld([16, y, 0]).add([0, 0, 5]);
+        const pos = scoreboard.localPositionToWorld([x, y, 0]).add([0, 0, 5]);
         const rot = new Rotator(0, 0, 0);
         const token = Spawn.spawn(tokenNsid, pos, rot);
 
