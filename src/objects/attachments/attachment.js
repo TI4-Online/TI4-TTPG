@@ -4,7 +4,17 @@ const { Broadcast } = require("../../lib/broadcast");
 const { Planet } = require("../../lib/system/system");
 const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert-wrapper");
-const { world, GameObject, ObjectType, Vector } = require("../../wrapper/api");
+const {
+    refPackageId,
+    world,
+    Card,
+    GameObject,
+    ImageWidget,
+    ObjectType,
+    Vector,
+    UIElement,
+} = require("../../wrapper/api");
+const { Rotator } = require("@tabletop-playground/api");
 
 class Attachment {
     constructor(gameObject, attributes) {
@@ -92,8 +102,6 @@ class Attachment {
             this._attach(planet, this._faceDown);
         }
 
-        // TODO: add the attachment icon to the planet card
-
         // Move and lock the attachment object to the proper location
         // Currently fits 3 comfortably.
         let numAttachments = planet.attachments.length;
@@ -114,6 +122,23 @@ class Attachment {
             .add([0, 0, systemTileObj.getSize().z + extraZ]);
         this._obj.setPosition(worldPosition);
         this._obj.setObjectType(ObjectType.Ground);
+
+        // Add the attachment icon to the planet card
+        const imagePath = this._attachedFaceUp
+            ? this._faceUp.image
+            : this._faceDown.image;
+        for (const obj of world.getAllObjects()) {
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            const cardPlanet = world.TI4.getPlanetByCard(obj);
+            if (cardPlanet !== planet) {
+                continue;
+            }
+            if (imagePath) {
+                this._attachImageToPlanetCard(obj, imagePath);
+            }
+        }
 
         return this;
     }
@@ -147,6 +172,22 @@ class Attachment {
             }
             attrs.tech.forEach((element) => planet.raw.tech.push(element));
         }
+    }
+
+    _attachImageToPlanetCard(card, imagePath) {
+        assert(card instanceof Card);
+        assert(typeof imagePath === "string");
+        console.log("XXX " + imagePath);
+
+        const ui = new UIElement();
+        ui.position = new Vector(0, 0, 0.1);
+        ui.rotation = new Rotator(0, 0, 0);
+        ui.scale = 0.3;
+        ui.widget = new ImageWidget()
+            .setImage(imagePath, refPackageId)
+            .setImageSize(60, 60);
+
+        card.addUI(ui);
     }
 
     detach() {

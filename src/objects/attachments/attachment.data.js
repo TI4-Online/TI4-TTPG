@@ -123,7 +123,7 @@ const ATTACHMENTS = [
         tokenNsid: "token.attachment.exploration:pok/tomb_of_emphidia",
         faceUp: {
             influence: 1,
-            image: "global/tokens/pok/exploration//exploration_1-1_c.png",
+            //image: "global/tokens/pok/exploration/exploration_1-1_c.png",
         },
     },
 
