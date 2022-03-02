@@ -1,4 +1,5 @@
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { Rotator, Vector, world } = require("../wrapper/api");
@@ -10,9 +11,10 @@ class SetupSystemTiles extends AbstractSetup {
     }
 
     setup() {
-        const pos = new Vector(-28, 99, world.getTableHeight() + 5);
+        const pos = new Vector(-28, 101, world.getTableHeight() + 5);
         const rot = new Rotator(0, 0, 0);
         const bag = Spawn.spawnGenericContainer(pos, rot);
+        bag.setName(locale("bag.system_tiles"));
 
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
             if (!nsid.startsWith("tile.system")) {

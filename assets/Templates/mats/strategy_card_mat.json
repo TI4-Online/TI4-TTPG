@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/phases/phases.js",
 	"Blueprint": "",
 	"Models": [
 		{

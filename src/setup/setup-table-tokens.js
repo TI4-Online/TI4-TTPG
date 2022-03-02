@@ -11,7 +11,7 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.wormhole.exploration" },
         { nsidPrefix: "token.exploration" },
     ],
-    pos: { x: -38, y: 98, z: world.getTableHeight() + 5 },
+    pos: { x: -38, y: 101, z: world.getTableHeight() + 5 },
     yaw: 0,
 };
 
@@ -20,21 +20,21 @@ const GENERIC_TOKENS = [
         tokenNsid: "token:pok/frontier",
         bagNsid: "bag.token:pok/frontier",
         bagType: 2,
-        pos: { x: -25, y: -75, z: world.getTableHeight() + 5 },
+        pos: { x: -36.4, y: 113.3, z: world.getTableHeight() + 5 },
         yaw: 0,
     },
     {
         tokenNsid: "token:base/speaker",
         bagNsid: false,
         bagType: false,
-        pos: { x: -10, y: -75, z: world.getTableHeight() + 5 },
+        pos: { x: -39, y: 72, z: world.getTableHeight() + 5 },
         yaw: -90,
     },
     {
         tokenNsid: "token:base/custodians",
         bagNsid: false,
         bagType: false,
-        pos: { x: 0, y: -75, z: world.getTableHeight() + 5 },
+        pos: { x: -39, y: 66, z: world.getTableHeight() + 5 },
         yaw: 0,
     },
 

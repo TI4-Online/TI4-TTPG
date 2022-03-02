@@ -1,8 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
+const { CloneReplace } = require("../../lib/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { Container, ObjectType, world } = require("../../wrapper/api");
+const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
+const { Facing } = require("../../lib/facing");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
@@ -40,7 +42,8 @@ class SetupFactionTokens extends AbstractSetup {
     }
 
     setup() {
-        this._spawnFactionTokensAndBag(CONTROL_TOKENS);
+        const controlTokensBag = this._spawnFactionTokensAndBag(CONTROL_TOKENS);
+        this._placeScoreboradControlToken(controlTokensBag);
         const commandTokensBag = this._spawnFactionTokensAndBag(COMMAND_TOKENS);
         this._placeInitialCommandTokens(commandTokensBag);
     }
@@ -66,9 +69,10 @@ class SetupFactionTokens extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (deleSet.has(nsid)) {
-                obj.destroy();
+            if (!deleSet.has(nsid)) {
+                continue;
             }
+            obj.destroy();
         }
     }
 
@@ -120,6 +124,41 @@ class SetupFactionTokens extends AbstractSetup {
         return bag;
     }
 
+    _placeScoreboradControlToken() {
+        let scoreboard = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "token:base/scoreboard") {
+                continue;
+            }
+            scoreboard = obj;
+            break;
+        }
+        if (!scoreboard) {
+            return;
+        }
+
+        const tokenNsid = `token.control:${this.faction.nsidSource}/${this.faction.nsidName}`;
+        let x = 16;
+        if (Facing.isFaceDown(scoreboard)) {
+            x = -x;
+        }
+        const y =
+            -2 +
+            (4 * this.playerDesk.index) / (world.TI4.config.playerCount - 1);
+        const pos = scoreboard.localPositionToWorld([x, y, 0]).add([0, 0, 5]);
+        const rot = new Rotator(0, 0, 0);
+        const token = Spawn.spawn(tokenNsid, pos, rot);
+
+        const playerSlot = this.playerDesk.playerSlot;
+        const color = this.playerDesk.color;
+        token.setOwningPlayerSlot(playerSlot);
+        token.setPrimaryColor(color);
+    }
+
     _placeInitialCommandTokens(commandTokensBag) {
         assert(commandTokensBag instanceof Container);
 
@@ -147,6 +186,9 @@ class SetupFactionTokens extends AbstractSetup {
             ]);
             const token = commandTokensBag.takeAt(0, pos, true);
             token.setRotation(rot);
+
+            // Workaround for TTPG bug.
+            CloneReplace.cloneReplace(token);
         });
     }
 }

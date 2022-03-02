@@ -3,6 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
+const { world } = require("../../wrapper/api");
 
 class SetupFactionPromissory extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -47,7 +48,15 @@ class SetupFactionPromissory extends AbstractSetup {
     clean() {
         const nsidPrefix = `card.promissory.${this.faction.nsidName}`;
         const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
-            return nsid.startsWith(nsidPrefix);
+            if (!nsid.startsWith(nsidPrefix)) {
+                return false;
+            }
+            const pos = cardOrDeck.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
+                return false;
+            }
+            return true;
         });
         for (const card of cards) {
             card.destroy();

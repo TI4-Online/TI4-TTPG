@@ -1,5 +1,6 @@
 const assert = require("assert");
 const Dice = require("./mock-dice");
+const CardHolder = require("./mock-card-holder");
 const GameObject = require("./mock-game-object");
 const Player = require("./mock-player");
 const UIElement = require("./mock-ui-element");
@@ -55,10 +56,16 @@ class GameWorld {
 
     createObjectFromTemplate(templateId, position) {
         let result;
-        if (templateId === "9065AC5141F87F8ADE1F5AB6390BBEE4") {
-            result = new Dice();
-        } else {
-            result = new GameObject();
+        switch (templateId) {
+            case "9065AC5141F87F8ADE1F5AB6390BBEE4":
+                result = new Dice();
+                break;
+            case "2E3F63984DBE5B704482D3A732F28BF5":
+            case "BFC565AE79373881585937D70241A1DF":
+                result = new CardHolder();
+                break;
+            default:
+                result = new GameObject();
         }
         result.setPosition(position);
         return result;

@@ -10,6 +10,7 @@ const {
     world,
 } = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
+const { CloneReplace } = require("../clone-replace");
 
 // 15 is somewhat generous but nowhere near map area.
 const ON_SHEET_DISTANCE_SQ = 225;
@@ -153,9 +154,10 @@ class CommandToken {
             return;
         }
         if (commandTokenBag.getNumItems() > 0) {
-            const token = commandTokenBag.getItems()[0];
+            let token = commandTokenBag.getItems()[0];
             const above = commandTokenBag.getPosition().add([0, 0, 10]);
             commandTokenBag.take(token, above, false);
+            token = CloneReplace.cloneReplace(token);
             return token;
         }
     }

@@ -34,9 +34,15 @@ class SetupFactionSheet extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === sheetNsid) {
-                obj.destroy();
+            if (nsid !== sheetNsid) {
+                continue;
             }
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
+                continue;
+            }
+            obj.destroy();
         }
     }
 }

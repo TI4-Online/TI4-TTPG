@@ -60,9 +60,15 @@ class SetupFactionExtra extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (extraNsids.has(nsid)) {
-                obj.destroy();
+            if (!extraNsids.has(nsid)) {
+                continue;
             }
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
+                continue;
+            }
+            obj.destroy();
         }
     }
 }

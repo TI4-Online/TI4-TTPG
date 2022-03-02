@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const PositionToPlanet = require("../system/position-to-planet");
 const { CardUtil } = require("../card/card-util");
+const { CloneReplace } = require("../clone-replace");
 const { DealDiscard } = require("../card/deal-discard");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -144,12 +145,13 @@ class Explore {
             for (const obj of world.getAllObjects()) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid === tokenNsid) {
-                    const container = obj.getContainer();
+                    tokenObj = obj;
+                    const container = tokenObj.getContainer();
                     if (container) {
                         const above = container.getPosition().add([0, 0, 10]);
-                        container.take(obj, above);
+                        container.take(tokenObj, above);
+                        tokenObj = CloneReplace.cloneReplace(tokenObj);
                     }
-                    tokenObj = obj;
                     break;
                 }
             }

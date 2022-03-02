@@ -3,7 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
-const { Card, Rotator, Vector } = require("../../wrapper/api");
+const { Card, Rotator, Vector, world } = require("../../wrapper/api");
 
 const LEADERS = {
     agent: {
@@ -61,8 +61,13 @@ class SetupFactionLeaders extends AbstractSetup {
 
     clean() {
         const acceptNames = this._getLeaderNsidNames();
-        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+        const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
             if (!nsid.startsWith("card.leader")) {
+                return false;
+            }
+            const pos = cardOrDeck.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
                 return false;
             }
             const parsed = ObjectNamespace.parseNsid(nsid);

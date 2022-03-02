@@ -4,10 +4,10 @@ const { Spawn } = require("./spawn/spawn");
 const { Rotator, Vector, world } = require("../wrapper/api");
 
 const GRAVEYARD_POSITIONS = [
-    { x: -52.5, y: 39 },
-    { x: 52.5, y: 39 },
-    { x: -52.5, y: -39 },
-    { x: 52.5, y: -39 },
+    { x: -54, y: 54 },
+    { x: 54, y: 54 },
+    { x: -54, y: -54 },
+    { x: 54, y: -54 },
 ];
 
 class SetupTableGraveyards extends AbstractSetup {

@@ -105,23 +105,21 @@ class Technology {
     }
 
     static getTechnologies(playerSlot) {
-        if (!playerSlot) {
-            return getTechnologies().all;
+        let factionNsidName = false;
+        if (playerSlot) {
+            const faction = Faction.getByPlayerSlot(playerSlot);
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
-
-        const factionName = Faction.getByPlayerSlot(playerSlot).raw.faction;
-        assert(factionName); // a faction was identified
-        return getTechnologies(factionName).all;
+        return getTechnologies(factionNsidName).all;
     }
 
     static getTechnologiesByType(playerSlot) {
-        if (!playerSlot) {
-            return getTechnologies().byType;
+        let factionNsidName = false;
+        if (playerSlot) {
+            const faction = Faction.getByPlayerSlot(playerSlot);
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
-
-        const factionName = Faction.getByPlayerSlot(playerSlot).raw.faction;
-        assert(factionName); // a faction was identified
-        return getTechnologies(factionName).byType;
+        return getTechnologies(factionNsidName).byType;
     }
 
     static getTechnologiesOfType(type, playerSlot) {
