@@ -155,7 +155,8 @@ class SetupFactionLeaders extends AbstractSetup {
             card.setPosition(pos);
             card.setRotation(rot);
 
-            // globalEvents.onObjectCreated not always called for these??
+            // globalEvents.onObjectCreated is called for the *deck*, but not again
+            // when only one card remains.  Add toggle directly.
             if (UnitModifier.isToggleActiveObject(card)) {
                 ActiveIdle.addToggleActiveButton(card);
             }

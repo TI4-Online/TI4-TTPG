@@ -27,7 +27,8 @@ class SetupFactionAlliance extends AbstractSetup {
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(card, playerSlot);
 
-        // globalEvents.onObjectCreated not always called for these??
+        // globalEvents.onObjectCreated is called for the *deck*, but not again
+        // when only one card remains.  Add toggle directly.
         if (UnitModifier.isToggleActiveObject(card)) {
             ActiveIdle.addToggleActiveButton(card);
         }
