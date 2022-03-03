@@ -13,6 +13,10 @@ class SetupFactionAlliance extends AbstractSetup {
     }
 
     setup() {
+        if (!world.TI4.config.pok) {
+            return;
+        }
+
         // Arbitrary, will move to leader sheet later.
         const pos = this.playerDesk.pos.add([-5, 0, 5]);
         const rot = this.playerDesk.rot;
