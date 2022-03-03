@@ -335,6 +335,10 @@ class System {
         return this._attrs.home;
     }
 
+    get hyperlane() {
+        return this.raw.hyperlane;
+    }
+
     get planets() {
         // Planets may be added (Mirage) and removed (Stellar Converter).
         return this._planets;
