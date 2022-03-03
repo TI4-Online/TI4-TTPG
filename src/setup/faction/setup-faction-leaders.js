@@ -34,6 +34,10 @@ class SetupFactionLeaders extends AbstractSetup {
     }
 
     setup() {
+        if (!world.TI4.config.pok) {
+            return;
+        }
+
         // Arbitrary, will move to leader sheet later.
         const pos = this.playerDesk.pos.add([0, 0, 5]);
         const rot = this.playerDesk.rot;
@@ -155,7 +159,8 @@ class SetupFactionLeaders extends AbstractSetup {
             card.setPosition(pos);
             card.setRotation(rot);
 
-            // globalEvents.onObjectCreated not always called for these??
+            // globalEvents.onObjectCreated is called for the *deck*, but not again
+            // when only one card remains.  Add toggle directly.
             if (UnitModifier.isToggleActiveObject(card)) {
                 ActiveIdle.addToggleActiveButton(card);
             }

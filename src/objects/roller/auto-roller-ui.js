@@ -48,7 +48,28 @@ class AutoRollerUI extends Border {
      * Reset for "no system activated".
      */
     resetAwaitingSystemActivation() {
-        this.setChild(new Text().setText("no system activated"));
+        const panels = [new VerticalBox().setChildDistance(5)];
+
+        const addButton = (localeText, combatType, planet) => {
+            const button = new Button().setText(locale(localeText));
+            button.onClicked.add((button, player) => {
+                this._onButton(combatType, planet, player);
+            });
+            panels[panels.length - 1].addChild(button);
+        };
+
+        const addText = (localeText) => {
+            const text = new Text()
+                .setText(locale(localeText))
+                .setJustification(TextJustification.Left);
+            panels[panels.length - 1].addChild(text);
+        };
+
+        addText("ui.message.no_system_activated");
+
+        addButton("ui.roller.report_modifiers", "reportModifiers", false);
+
+        this.setChild(panels[0]);
         this._update();
     }
 
@@ -118,6 +139,8 @@ class AutoRollerUI extends Border {
             addButton(planet.localeName, "groundCombat", planet);
         });
         panels.pop();
+
+        addButton("ui.roller.report_modifiers", "reportModifiers", false);
 
         this.setChild(panels[0]);
         this._update();

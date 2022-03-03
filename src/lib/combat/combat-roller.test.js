@@ -14,22 +14,16 @@ it("constructor", () => {
 
 it("getModifierReport empty", () => {
     const auxData = new AuxDataBuilder().build();
-    const rollType = "antiFighterBarrage";
-    const player = new MockPlayer();
-    const combatRoller = new CombatRoller(auxData, rollType, player);
-    const report = combatRoller.getModifiersReport(true);
+    const report = CombatRoller.getModifiersReport(auxData.unitModifiers, true);
     assert.equal(report, "Roll modifiers: none");
 });
 
 it("getModifierReport", () => {
     const auxData = new AuxDataBuilder().build();
-    const rollType = "antiFighterBarrage";
-    const player = new MockPlayer();
     auxData.unitModifiers.push(
         UnitModifier.getFactionAbilityUnitModifier("fragile")
     );
-    const combatRoller = new CombatRoller(auxData, rollType, player);
-    const report = combatRoller.getModifiersReport(true);
+    const report = CombatRoller.getModifiersReport(auxData.unitModifiers, true);
     assert.equal(report, "Roll modifier: Fragile (-1 to all COMBAT rolls)");
 });
 it("getRollReport", () => {

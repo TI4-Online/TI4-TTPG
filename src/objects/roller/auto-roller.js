@@ -26,7 +26,7 @@ class AutoRoller {
         assert(!gameObject || gameObject instanceof GameObject);
         this._activeSystem = false;
         this._activeHex = false;
-        this._activatingPlayerSlot = false;
+        this._activatingPlayerSlot = -1;
         this._firstBombardmentPlanet = false;
         this._playerSlotToDice = {};
 
@@ -97,7 +97,9 @@ class AutoRoller {
         assert(!planet || planet instanceof Planet);
         assert(player instanceof Player);
 
-        if (!this._activeHex) {
+        const isReportModifiers = rollType === "reportModifiers";
+
+        if (!this._activeHex && !isReportModifiers) {
             Broadcast.broadcastAll(locale("ui.error.no_active_system"));
             return;
         }
@@ -154,7 +156,18 @@ class AutoRoller {
             .setRollType(rollType)
             .build();
 
-        new AuxDataPair(aux1, aux2).fillPairSync();
+        const auxDataPair = new AuxDataPair(aux1, aux2);
+        if (isReportModifiers) {
+            auxDataPair.disableModifierFiltering();
+        }
+        auxDataPair.fillPairSync();
+
+        if (isReportModifiers) {
+            const unitModifiers = aux1.unitModifiers;
+            const report = CombatRoller.getModifiersReport(unitModifiers, true);
+            Broadcast.chatAll(report, this._color);
+            return;
+        }
 
         const playerSlot = player.getSlot();
         let dicePos = new Vector(20, -60, world.getTableHeight());

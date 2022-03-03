@@ -14,6 +14,7 @@ const {
     Vector,
     world,
 } = require("../../wrapper/api");
+const { Hex } = require("../hex");
 
 /**
  * Planet exploration.  Attachment tokens already know how to attach, this
@@ -59,6 +60,7 @@ class Explore {
                 action: (player) => {
                     const planet = false;
                     const overrideTrait = "frontier";
+                    Explore.removeFrontierToken(systemTileObj);
                     Explore.onExplorePlanetAction(
                         systemTileObj,
                         planet,
@@ -69,6 +71,30 @@ class Explore {
             });
         }
         return namesAndActions;
+    }
+
+    static removeFrontierToken(systemTileObj) {
+        assert(systemTileObj instanceof GameObject);
+
+        const systemPos = systemTileObj.getPosition();
+        const systemHex = Hex.fromPosition(systemPos);
+
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid != "token:pok/frontier") {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            if (hex !== systemHex) {
+                continue;
+            }
+            obj.destroy();
+            break;
+        }
     }
 
     /**

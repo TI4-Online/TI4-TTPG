@@ -52,7 +52,7 @@ class AuxDataBuilder {
      * @returns {AuxDataBuilder} self for chaining
      */
     setHex(hex) {
-        assert(typeof hex === "string");
+        assert(!hex || typeof hex === "string");
         this._hex = hex;
         return this;
     }
@@ -64,7 +64,9 @@ class AuxDataBuilder {
      * @returns {AuxDataBuilder} self for chaining
      */
     setActivatingPlayerSlot(activatingPlayerSlot) {
-        assert(typeof activatingPlayerSlot === "number");
+        assert(
+            !activatingPlayerSlot || typeof activatingPlayerSlot === "number"
+        );
         this._activatingPlayerSlot = activatingPlayerSlot;
         return this;
     }

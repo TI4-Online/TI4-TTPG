@@ -4,6 +4,7 @@
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
+    "ui.message.no_system_activated": "No system activated",
     "ui.message.shuffling_all_decks": "Shuffling all decks",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
@@ -97,6 +98,7 @@
     "ui.roller.bombardment": "Bombardment",
     "ui.roller.space_cannon_defense": "Space Cannon Defense",
     "ui.roller.ground_combat": "Ground Combat",
+    "ui.roller.report_modifiers": "Report Modifiers",
 
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",
@@ -318,6 +320,8 @@
     "unit_modifier.desc.navarch_feng": "You can produce your flagship without spending resources.",
     "unit_modifier.name.nebula_defense": "Nebula Defense",
     "unit_modifier.desc.nebula_defense": "+1 to defender SPACE COMBAT rolls",
+    "unit_modifier.name.planetary_shield": "Planetary Sheild",
+    "unit_modifier.desc.planetary_shield": "No BOMBARDMENT",
     "unit_modifier.name.plasma_scoring": "Plasma Scoring",
     "unit_modifier.desc.plasma_scoring": "+1 die to a single SPACE CANNON or BOMBARDMENT roll",
     "unit_modifier.name.prophecy_of_ixth": "Prophecy of Ixth",
@@ -347,7 +351,7 @@
     "unit_modifier.name.the_cavalry": "The Cavalry",
     "unit_modifier.desc.the_cavalry": "One non-fighter ship gains the SUSTAIN DAMAGE, combat value, and ANTI-FIGHTER BARRAGE of the Nomad flagship (this modifier adds a new unit for AFB/space combat, remove the affected unit from normal setup)",
     "unit_modifier.name.the_crown_of_thalnos": "The Crown of Thalnos",
-    "unit_modifier.desc.the_crown_of_thalnos": "Apply +1 to COMBAT rolls, player must destroy any units that do not produce at least one hit",
+    "unit_modifier.desc.the_crown_of_thalnos": "Apply +1 to COMBAT rolls, reroll misses but must destroy any units that do not produce at least one hit",
     "unit_modifier.name.trrakan_aun_zulok": "Trrakan Aun Zulok",
     "unit_modifier.desc.trrakan_aun_zulok": "+1 die to a unit ability (anti-fighter barrage, bombardment, space cannon)",
     "unit_modifier.name.ul_the_progenitor": "Ul the Progenitor",

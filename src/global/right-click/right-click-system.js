@@ -29,6 +29,13 @@ function _closePopup() {
 
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
+
+    // Skip hyperlanes.
+    const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+    if (system && system.hyperlane) {
+        return;
+    }
+
     const getNamesAndActions = () => {
         const namesAndActions = [
             {

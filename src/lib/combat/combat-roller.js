@@ -31,8 +31,9 @@ class CombatRoller {
      *
      * @returns {string}
      */
-    getModifiersReport(combatOnly) {
-        let unitModifiers = this._auxData.unitModifiers;
+    static getModifiersReport(unitModifiers, combatOnly) {
+        assert(Array.isArray(unitModifiers));
+        assert(typeof combatOnly === "boolean");
 
         if (combatOnly) {
             unitModifiers = unitModifiers.filter((unitModifier) => {
@@ -204,12 +205,6 @@ class CombatRoller {
     roll(dicePos) {
         assert(typeof dicePos.x === "number");
 
-        const unitToDice = this.spawnDice(dicePos);
-        const dice = [];
-        for (const unitDice of Object.values(unitToDice)) {
-            dice.push(...unitDice);
-        }
-
         let rollTypeLocalized = locale(`rollType.${this._rollType}`);
         Broadcast.broadcastAll(
             locale("ui.message.player_rolling_for", {
@@ -219,8 +214,15 @@ class CombatRoller {
             this._color
         );
 
-        const report = this.getModifiersReport(true);
+        const unitModifiers = this._auxData.unitModifiers;
+        const report = CombatRoller.getModifiersReport(unitModifiers, true);
         Broadcast.chatAll(report, this._color);
+
+        const unitToDice = this.spawnDice(dicePos);
+        const dice = [];
+        for (const unitDice of Object.values(unitToDice)) {
+            dice.push(...unitDice);
+        }
 
         if (dice.length === 0) {
             Broadcast.broadcastAll(locale("ui.message.no_units"), this._color);

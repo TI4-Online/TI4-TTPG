@@ -314,7 +314,10 @@ module.exports = [
             );
         },
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has("space_dock")) {
+            if (
+                auxData.self.has("space_dock") ||
+                auxData.self.hasAdjacent("space_dock")
+            ) {
                 unitAttrsSet.addSpecialUnit(
                     new UnitAttrs({
                         unit: "experimental_battlestation",
@@ -646,6 +649,73 @@ module.exports = [
         },
     },
     {
+        // Prevents BOMBARDMENT
+        isCombat: true,
+        localeName: "unit_modifier.name.planetary_shield",
+        localeDescription: "unit_modifier.desc.planetary_shield",
+        owner: "any",
+        priority: "mutate", // want "mutate-late"
+        triggerIf: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            return anyHas;
+        },
+        filter: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            return anyHas;
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            if (!anyHas) {
+                return;
+            }
+            if (unitAttrs.raw.bombardment) {
+                delete unitAttrs.raw.bombardment;
+            }
+        },
+    },
+    {
         // "+1 die to a single SPACE CANNON or BOMBARDMENT roll",
         isCombat: true,
         localeName: "unit_modifier.name.plasma_scoring",
@@ -727,10 +797,10 @@ module.exports = [
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
-                fighterAttrs.raw.spaceCombat.hit += 1;
+                fighterAttrs.raw.spaceCombat.hit -= 1;
             }
             if (fighterAttrs.raw.groundCombat) {
-                fighterAttrs.raw.groundCombat.hit += 1;
+                fighterAttrs.raw.groundCombat.hit -= 1;
             }
         },
     },
@@ -953,6 +1023,7 @@ module.exports = [
                 let has = auxData.self.has(unitAttrs.raw.unit);
                 if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
                     has =
+                        unitAttrs.raw.spaceCannon &&
                         unitAttrs.raw.spaceCannon.range &&
                         unitAttrs.raw.spaceCannon.range > 0;
                 }
@@ -1039,7 +1110,8 @@ module.exports = [
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.groundCombat) {
-                const bonus = auxData.self.faction == "norr" ? -1 : 1;
+                const faction = auxData.self.faction;
+                const bonus = faction && faction.nsidName == "norr" ? -1 : 1;
                 unitAttrs.raw.groundCombat.hit -= bonus;
             }
         },
@@ -1124,14 +1196,17 @@ module.exports = [
         },
     },
     {
-        // "Apply +1 to COMBAT rolls, player must destroy any units that do not produce at least one hit",
+        // "Apply +1 to COMBAT rolls, reroll misses but must destroy any units that do not produce at least one hit",
         isCombat: true,
         localeName: "unit_modifier.name.the_crown_of_thalnos",
         localeDescription: "unit_modifier.desc.the_crown_of_thalnos",
         owner: "self",
         priority: "adjust",
         toggleActive: true,
-        triggerNsid: "card.agenda:base.only/the_crown_of_thalnos",
+        triggerNsids: [
+            "card.agenda:base.only/the_crown_of_thalnos",
+            "card.relic:pok/the_crown_of_thalnos",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCombat" ||
@@ -1141,9 +1216,11 @@ module.exports = [
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
+                unitAttrs.raw.spaceCombat.rerollMisses = true;
             }
             if (unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.hit -= 1;
+                unitAttrs.raw.groundCombat.rerollMisses = true;
             }
         },
     },
