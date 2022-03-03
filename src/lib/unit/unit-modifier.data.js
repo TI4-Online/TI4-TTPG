@@ -649,6 +649,73 @@ module.exports = [
         },
     },
     {
+        // Prevents BOMBARDMENT
+        isCombat: true,
+        localeName: "unit_modifier.name.planetary_shield",
+        localeDescription: "unit_modifier.desc.planetary_shield",
+        owner: "any",
+        priority: "mutate", // want "mutate-late"
+        triggerIf: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            return anyHas;
+        },
+        filter: (auxData) => {
+            if (auxData.rollType !== "bombardment") {
+                return false;
+            }
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            return anyHas;
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyHas = false;
+            for (const unitAttrs of auxData.opponent.unitAttrsSet.values()) {
+                if (!auxData.opponent.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.planetaryShield) {
+                    anyHas = true;
+                    break;
+                }
+            }
+            if (!anyHas) {
+                return;
+            }
+            if (unitAttrs.raw.bombardment) {
+                delete unitAttrs.raw.bombardment;
+            }
+        },
+    },
+    {
         // "+1 die to a single SPACE CANNON or BOMBARDMENT roll",
         isCombat: true,
         localeName: "unit_modifier.name.plasma_scoring",

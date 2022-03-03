@@ -211,6 +211,10 @@ class UnitAttrs {
         return this._attrs;
     }
 
+    get unit() {
+        return this._attrs.unit;
+    }
+
     /**
      * Apply unit upgrade.
      *

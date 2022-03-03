@@ -204,12 +204,6 @@ class CombatRoller {
     roll(dicePos) {
         assert(typeof dicePos.x === "number");
 
-        const unitToDice = this.spawnDice(dicePos);
-        const dice = [];
-        for (const unitDice of Object.values(unitToDice)) {
-            dice.push(...unitDice);
-        }
-
         let rollTypeLocalized = locale(`rollType.${this._rollType}`);
         Broadcast.broadcastAll(
             locale("ui.message.player_rolling_for", {
@@ -221,6 +215,12 @@ class CombatRoller {
 
         const report = this.getModifiersReport(true);
         Broadcast.chatAll(report, this._color);
+
+        const unitToDice = this.spawnDice(dicePos);
+        const dice = [];
+        for (const unitDice of Object.values(unitToDice)) {
+            dice.push(...unitDice);
+        }
 
         if (dice.length === 0) {
             Broadcast.broadcastAll(locale("ui.message.no_units"), this._color);
