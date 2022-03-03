@@ -31,8 +31,9 @@ class CombatRoller {
      *
      * @returns {string}
      */
-    getModifiersReport(combatOnly) {
-        let unitModifiers = this._auxData.unitModifiers;
+    static getModifiersReport(unitModifiers, combatOnly) {
+        assert(Array.isArray(unitModifiers));
+        assert(typeof combatOnly === "boolean");
 
         if (combatOnly) {
             unitModifiers = unitModifiers.filter((unitModifier) => {
@@ -213,7 +214,8 @@ class CombatRoller {
             this._color
         );
 
-        const report = this.getModifiersReport(true);
+        const unitModifiers = this._auxData.unitModifiers;
+        const report = CombatRoller.getModifiersReport(unitModifiers, true);
         Broadcast.chatAll(report, this._color);
 
         const unitToDice = this.spawnDice(dicePos);

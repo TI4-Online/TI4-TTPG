@@ -4,6 +4,7 @@
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
+    "ui.message.no_system_activated": "No system activated",
     "ui.message.shuffling_all_decks": "Shuffling all decks",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
@@ -97,6 +98,7 @@
     "ui.roller.bombardment": "Bombardment",
     "ui.roller.space_cannon_defense": "Space Cannon Defense",
     "ui.roller.ground_combat": "Ground Combat",
+    "ui.roller.report_modifiers": "Report Modifiers",
 
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",
