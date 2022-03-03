@@ -314,7 +314,10 @@ module.exports = [
             );
         },
         applyAll: (unitAttrsSet, auxData) => {
-            if (auxData.self.has("space_dock")) {
+            if (
+                auxData.self.has("space_dock") ||
+                auxData.self.hasAdjacent("space_dock")
+            ) {
                 unitAttrsSet.addSpecialUnit(
                     new UnitAttrs({
                         unit: "experimental_battlestation",
@@ -727,10 +730,10 @@ module.exports = [
         applyAll: (unitAttrsSet, auxData) => {
             const fighterAttrs = unitAttrsSet.get("fighter");
             if (fighterAttrs.raw.spaceCombat) {
-                fighterAttrs.raw.spaceCombat.hit += 1;
+                fighterAttrs.raw.spaceCombat.hit -= 1;
             }
             if (fighterAttrs.raw.groundCombat) {
-                fighterAttrs.raw.groundCombat.hit += 1;
+                fighterAttrs.raw.groundCombat.hit -= 1;
             }
         },
     },
