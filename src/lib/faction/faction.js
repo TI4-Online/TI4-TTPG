@@ -90,6 +90,10 @@ class Faction {
         return this._factionAttrs;
     }
 
+    get home() {
+        return this._factionAttrs.home;
+    }
+
     get nsidName() {
         return this._factionAttrs.faction;
     }

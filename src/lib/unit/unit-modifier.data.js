@@ -953,6 +953,7 @@ module.exports = [
                 let has = auxData.self.has(unitAttrs.raw.unit);
                 if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
                     has =
+                        unitAttrs.raw.spaceCannon &&
                         unitAttrs.raw.spaceCannon.range &&
                         unitAttrs.raw.spaceCannon.range > 0;
                 }
@@ -1039,7 +1040,8 @@ module.exports = [
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.groundCombat) {
-                const bonus = auxData.self.faction == "norr" ? -1 : 1;
+                const faction = auxData.self.faction;
+                const bonus = faction && faction.nsidName == "norr" ? -1 : 1;
                 unitAttrs.raw.groundCombat.hit -= bonus;
             }
         },
