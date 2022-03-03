@@ -50,7 +50,7 @@ class AuxDataPair {
         this._aux2.setOpponent(this._aux1);
 
         this._hex = this._aux1.hex;
-        this._planet = this._aux1.planet;
+        this._planet = this._aux1.activePlanet;
         this._adjHexes = new Set();
         this._allPlastic = false;
         this._hexPlastic = false;
