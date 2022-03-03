@@ -1196,14 +1196,17 @@ module.exports = [
         },
     },
     {
-        // "Apply +1 to COMBAT rolls, player must destroy any units that do not produce at least one hit",
+        // "Apply +1 to COMBAT rolls, reroll misses but must destroy any units that do not produce at least one hit",
         isCombat: true,
         localeName: "unit_modifier.name.the_crown_of_thalnos",
         localeDescription: "unit_modifier.desc.the_crown_of_thalnos",
         owner: "self",
         priority: "adjust",
         toggleActive: true,
-        triggerNsid: "card.agenda:base.only/the_crown_of_thalnos",
+        triggerNsids: [
+            "card.agenda:base.only/the_crown_of_thalnos",
+            "card.relic:pok/the_crown_of_thalnos",
+        ],
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCombat" ||
@@ -1213,9 +1216,11 @@ module.exports = [
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.spaceCombat) {
                 unitAttrs.raw.spaceCombat.hit -= 1;
+                unitAttrs.raw.spaceCombat.rerollMisses = true;
             }
             if (unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.hit -= 1;
+                unitAttrs.raw.groundCombat.rerollMisses = true;
             }
         },
     },
