@@ -36,9 +36,14 @@ class SetupStartingUnits extends AbstractSetup {
         // Make sure all bags exist before doing anything.
         const units = UnitAttrs.getAllUnitTypes();
         for (const unit of units) {
+            if (unit == "mech" && !world.TI4.config.pok) {
+                continue;
+            }
             const bag = unitToBag[unit];
             if (!bag) {
-                console.warn("SetupStartingUnits: missing unit bags");
+                console.warn(
+                    `SetupStartingUnits: missing unit bag for ${unit}`
+                );
                 return;
             }
             if (bag.getNumItems() < (startingUnits[unit] || 0)) {
