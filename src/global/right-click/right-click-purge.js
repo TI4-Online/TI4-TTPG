@@ -12,7 +12,7 @@ const { Broadcast } = require("../../lib/broadcast");
 
 // create a container to hold the purged objects
 const PURGE_CONTAINER_TEMPLATE_ID = "A44BAA604E0ED034CD67FA9502214AA7";
-const PURGE_CONTAINER_POS = new Vector(-25, 113.3, 18);
+const PURGE_CONTAINER_POS = new Vector(32, 113.3, 18);
 const PURGE_CONTAINER_NAME = "bag.purge";
 
 /**
