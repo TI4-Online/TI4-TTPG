@@ -1,21 +1,23 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { AutoRoller } = require("../roller/auto-roller");
+const { MapTool } = require("../map-tool/map-tool");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const { TabStatus } = require("./tab-status");
 const { TabStrategy } = require("./tab-strategy");
+const { TurnOrderPanel } = require("../../lib/ui/turn-order-panel");
 const {
     GameObject,
     LayoutBox,
     Text,
     UIElement,
     Vector,
+    VerticalBox,
+    Rotator,
     refObject,
     world,
 } = require("../../wrapper/api");
-const { MapTool } = require("../map-tool/map-tool");
-const { AutoRoller } = require("../roller/auto-roller");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Rotator } = require("@tabletop-playground/api");
 
 class Phases {
     constructor(gameObject) {
@@ -25,6 +27,8 @@ class Phases {
         const tabStrategy = new TabStrategy();
         const autoRoller = new AutoRoller();
         const tabStatus = new TabStatus();
+
+        const turnOrderPanel = new TurnOrderPanel();
 
         const tabbedPanel = new TabbedPanel(true)
             .addTab(locale("ui.tab.map_tool"), mapTool.getUI())
@@ -36,9 +40,13 @@ class Phases {
                 new Text().setText("< work in progress >")
             );
 
+        const overall = new VerticalBox()
+            .addChild(turnOrderPanel)
+            .addChild(tabbedPanel);
+
         const w = 450;
         const layoutBox = new LayoutBox()
-            .setChild(tabbedPanel)
+            .setChild(overall)
             .setMaximumWidth(w)
             .setMinimumWidth(w)
             .setMinimumHeight(60);
