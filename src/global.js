@@ -38,6 +38,14 @@ globalEvents.TI4 = {
     // Called when a Strategy Card selection is done by a player
     // <(object: card, player:Player) => void>
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
+
+    // Called when turn changes.
+    // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player) => void>
+    onTurnChanged: new TriggerableMulticastDelegate(),
+
+    // Called when setting turn order.
+    // <playerDeskOrder: Array.{PlayerDesk}, player: Player) => void>
+    onTurnOrderChanged: new TriggerableMulticastDelegate(),
 };
 
 // Some naughty scripts register global event listeners.
@@ -55,11 +63,13 @@ const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
 const { GameData } = require("./lib/game-data/game-data");
+const { Turns } = require("./lib/turns");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     config: new GameSetupConfig(),
     gameData: new GameData(),
+    turns: new Turns(),
 
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();

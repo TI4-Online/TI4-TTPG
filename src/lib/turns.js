@@ -8,8 +8,8 @@ const { Player, globalEvents, world } = require("../wrapper/api");
  */
 class Turns {
     constructor() {
-        this._turnOrder = false;
-        this._currentTurn = false;
+        this._turnOrder = undefined;
+        this._currentTurn = undefined;
     }
 
     getTurnOrder() {
@@ -36,7 +36,19 @@ class Turns {
 
         // Tell any listeners, and set to be the first player's turn.
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
-        globalEvents.TI4.onTurnChanged.trigger(this._turnOrder[0], -1);
+    }
+
+    setCurrentTurn(playerDesk, player) {
+        // playerDesk may be undefined
+        assert(player instanceof Player);
+
+        const prevTurn = this._currentTurn;
+        this._currentTurn = playerDesk;
+        globalEvents.TI4.onTurnChanged.trigger(
+            this._currentTurn,
+            prevTurn,
+            player
+        );
     }
 
     /**
