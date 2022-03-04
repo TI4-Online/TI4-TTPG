@@ -15,6 +15,8 @@
     "ui.message.attach_token": "Attaching {attachmentName} to {planetName}",
     "ui.message.detach_token": "Detaching {attachmentName} from {planetName}",
 
+    "ui.message.purge": "Purging {objectName} card from the game.",
+
     "ui.message.stellar_converter": "Destroying {planetName} with Stellar Converter",
 
     "ui.message.player_rolling_for": "{playerName} rolling for {rollType}",
@@ -53,6 +55,8 @@
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
+    
+    "ui.menu.purge": "Purge",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
@@ -450,6 +454,7 @@
     "bag.garbage": "Garbage",
     "bag.exploration_tokens": "Exploration Tokens",
     "bag.system_tiles": "System Tiles",
+    "bag.purge": "Purged Items",
 
     "token.dimensional_tear": "Dimensional Tear",
     "token.frontier": "Frontier",
