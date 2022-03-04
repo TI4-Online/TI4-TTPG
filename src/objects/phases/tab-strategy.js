@@ -12,6 +12,7 @@ class TabStrategy {
                 PlaceTradegoodUnpicked.placeAll();
                 const playerDeskOrder = FindTurnOrder.order();
                 world.TI4.turns.setTurnOrder(playerDeskOrder, player);
+                world.TI4.turns.setCurrentTurn(playerDeskOrder[0], player);
             },
         };
 

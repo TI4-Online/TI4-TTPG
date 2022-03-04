@@ -4,6 +4,7 @@ const {
     GameObject,
     HorizontalBox,
     Text,
+    TextJustification,
     globalEvents,
     world,
 } = require("../../wrapper/api");
@@ -13,46 +14,54 @@ class TurnOrderPanel extends HorizontalBox {
         assert(!gameObject || gameObject instanceof GameObject);
         super();
 
-        const onTurnOrderChanged = (playerDeskOrder, player) => {
-            this._onTurnOrderChanged(playerDeskOrder);
-        };
-        const onTurnChanged = (currentPlayerDesk, previousPlayerDesk) => {
-            this._onTurnChanged(currentPlayerDesk);
+        const update = (playerDeskOrder, player) => {
+            this.update();
         };
 
         // Register listeners.
-        globalEvents.TI4.onTurnOrderChanged.add(onTurnOrderChanged);
-        globalEvents.TI4.onTurnChanged.add(onTurnChanged);
+        globalEvents.TI4.onTurnOrderChanged.add(update);
+        globalEvents.TI4.onTurnChanged.add(update);
+        globalEvents.TI4.onPlayerColorChanged.add(update);
+        globalEvents.TI4.onPlayerCountChanged.add(update);
+        globalEvents.onPlayerSwitchedSlots.add(update);
 
         // Unregister listeners when destroyed.
         if (gameObject) {
             gameObject.onDestroyed.add(() => {
-                globalEvents.TI4.onTurnOrderChanged.remove(onTurnOrderChanged);
-                globalEvents.TI4.onTurnChanged.remove(onTurnChanged);
+                globalEvents.TI4.onTurnOrderChanged.remove(update);
+                globalEvents.TI4.onTurnChanged.remove(update);
+                globalEvents.TI4.onPlayerColorChanged.remove(update);
+                globalEvents.TI4.onPlayerCountChanged.remove(update);
+                globalEvents.onPlayerSwitchedSlots.remove(update);
             });
         }
 
-        this._onTurnOrderChanged(world.TI4.turns.getTurnOrder());
+        this.update();
     }
 
-    _onTurnOrderChanged(playerDeskOrder) {
+    update() {
+        const playerDeskOrder = world.TI4.turns.getTurnOrder();
         assert(Array.isArray(playerDeskOrder));
 
         while (this.getChildAt(0)) {
             this.removeChildAt(0);
         }
         for (const playerDesk of playerDeskOrder) {
+            const player = world.getPlayerBySlot(playerDesk.playerSlot);
+            const name = player
+                ? player.getName()
+                : `<${playerDesk.colorName}>`;
+
             const label = new Text()
-                .setText(playerDesk.colorName)
-                .setTextColor([0, 0, 0, 1]);
+                .setText(name)
+                .setTextColor([0, 0, 0, 1])
+                .setJustification(TextJustification.Center);
             const border = new Border()
                 .setColor(playerDesk.color)
                 .setChild(label);
             this.addChild(border, 1);
         }
     }
-
-    _onTurnChanged(currentPlayerDesk) {}
 }
 
 module.exports = { TurnOrderPanel };

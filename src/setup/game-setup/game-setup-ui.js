@@ -5,6 +5,7 @@ const {
     Border,
     Button,
     CheckBox,
+    Color,
     Rotator,
     Slider,
     Text,
@@ -12,6 +13,7 @@ const {
     UIElement,
     Vector,
     VerticalBox,
+    refPackageId,
     world,
 } = require("../../wrapper/api");
 
@@ -32,13 +34,11 @@ class GameSetupUI {
     create() {
         const panel = new VerticalBox().setChildDistance(5);
 
-        const randomTemplateId = "B67A7E0A478E39D9CE13CDA81BC1A9EF";
-        const packageId = world.getTemplatePackageId(randomTemplateId);
         const title = new Text()
             .setFontSize(UI_FONT_SIZE * 1.2)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
-            .setFont("ambroise_firmin_bold.otf", packageId);
+            .setFont("ambroise_firmin_bold.otf", refPackageId);
         panel.addChild(title);
 
         const subtitle = new Text()
@@ -46,6 +46,14 @@ class GameSetupUI {
             .setText(locale("ui.setup.subtitle"))
             .setJustification(TextJustification.Center);
         panel.addChild(subtitle);
+
+        const wip = new Text()
+            .setFontSize(UI_FONT_SIZE)
+            .setText("ALPHA TEST") // temp, no need for locale
+            .setTextColor(new Color([0.8, 0.2, 0, 1]))
+            .setBold(true)
+            .setJustification(TextJustification.Center);
+        panel.addChild(wip);
 
         panel.addChild(
             this._createSlider(
