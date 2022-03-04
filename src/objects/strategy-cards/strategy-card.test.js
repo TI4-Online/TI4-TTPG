@@ -126,23 +126,24 @@ describe("when the close button is clicked in a players selection", () => {
         expect(globalEventTriggerSpy).toHaveBeenCalledTimes(1);
     });
 
-    it("in case the another player clicked the button, then the global event does not trigger", () => {
-        card = new MockGameObject();
-        const globalEventTriggerSpy = jest.spyOn(
-            globalEvents.TI4.onStrategyCardSelectionDone,
-            "trigger"
-        );
-        new RegisterStrategyCardUI()
-            .setCard(card)
-            .setWidgetFactory(widgetFactory)
-            .setHeight(100)
-            .register();
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+    // For the moment anyone can close a strategy card window.  Enable this test if that changes.
+    // it("in case the another player clicked the button, then the global event does not trigger", () => {
+    //     card = new MockGameObject();
+    //     const globalEventTriggerSpy = jest.spyOn(
+    //         globalEvents.TI4.onStrategyCardSelectionDone,
+    //         "trigger"
+    //     );
+    //     new RegisterStrategyCardUI()
+    //         .setCard(card)
+    //         .setWidgetFactory(widgetFactory)
+    //         .setHeight(100)
+    //         .register();
+    //     globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        onUiClosedClicked(buttons[0], player2);
+    //     onUiClosedClicked(buttons[0], player2);
 
-        expect(globalEventTriggerSpy).toHaveBeenCalledTimes(0);
-    });
+    //     expect(globalEventTriggerSpy).toHaveBeenCalledTimes(0);
+    // });
 
     it("in case all players have resolved the strategy card, a message is broadcast", () => {
         card = new MockGameObject();

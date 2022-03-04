@@ -13,11 +13,12 @@ const {
 } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
 
 let selections = {};
 
-function getPlayerSelectionBySlot(player) {
-    const slot = player.getSlot();
+function getPlayerSelectionBySlot(slot) {
+    assert(typeof slot === "number");
     selections[slot] = selections[slot] || {
         value: 0,
         primary: false,
@@ -26,7 +27,7 @@ function getPlayerSelectionBySlot(player) {
     return selections[slot];
 }
 
-function widgetFactory() {
+function widgetFactory(playerDesk, packageId) {
     let headerText = new Text()
         .setFontSize(20)
         .setText(locale("strategy_card.leadership.text"));
@@ -34,11 +35,11 @@ function widgetFactory() {
         .setFontSize(10)
         .setText(locale("strategy_card.leadership.text.primary"));
     primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
-        getPlayerSelectionBySlot(player).primary = isChecked;
+        getPlayerSelectionBySlot(playerDesk.playerSlot).primary = isChecked;
     });
     let slider = new Slider().setStepSize(1).setMaxValue(10);
     slider.onValueChanged.add((slider, player, value) => {
-        getPlayerSelectionBySlot(player).value = value;
+        getPlayerSelectionBySlot(playerDesk.playerSlot).value = value;
     });
     let closeButton = new Button()
         .setFontSize(10)
@@ -64,9 +65,11 @@ const onStrategyCardPlayed = (card, player) => {
     selections = {};
 };
 
-const onStrategyCardSelectionDone = (card, player) => {
-    let commandTokenCount = getPlayerSelectionBySlot(player).value;
-    if (getPlayerSelectionBySlot(player).primary) commandTokenCount += 3;
+const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
+    assert(typeof owningPlayerSlot === "number");
+    let commandTokenCount = getPlayerSelectionBySlot(owningPlayerSlot).value;
+    if (getPlayerSelectionBySlot(owningPlayerSlot).primary)
+        commandTokenCount += 3;
 
     const message = locale("strategy_card.leadership.message", {
         playerName: player.getName(),
