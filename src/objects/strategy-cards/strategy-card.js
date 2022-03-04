@@ -8,6 +8,7 @@ const {
     GameObject,
     UIElement,
     globalEvents,
+    refPackageId,
     world,
 } = require("../../wrapper/api");
 const { StrategyCardBorder } = require("./strategy-card-border");
@@ -46,7 +47,7 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
                     : width,
             ui: ui,
         }).setColor(color);
-        border.setChild(widgetFactory(playerDesk, card.getPackageId()));
+        border.setChild(widgetFactory(playerDesk, refPackageId));
         const playerSlot = playerDesk.playerSlot;
         playerUis[playerSlot] = playerUis[playerSlot] || [];
         border.spawnUi(playerUis[playerSlot].length);
@@ -171,7 +172,8 @@ class RegisterStrategyCardUI {
                 this._widgetFactory,
                 this._height,
                 this._width,
-                this._color
+                this._color,
+                refPackageId
             );
             if (!this._onStrategyCardPlayed) return;
             this._onStrategyCardPlayed(this._card, player);
@@ -190,11 +192,16 @@ class RegisterStrategyCardUI {
         if (this._onStrategyCardSelectionDone) {
             const onStrategyCardSelectionDoneGlobalEventHandler = (
                 card,
-                player
+                player,
+                owningPlayerSlot
             ) => {
                 // strategy card tests have a mocked object not matching the card
                 if (this._card !== card && !world.__isMock) return;
-                this._onStrategyCardSelectionDone(this._card, player);
+                this._onStrategyCardSelectionDone(
+                    this._card,
+                    player,
+                    owningPlayerSlot
+                );
             };
 
             globalEvents.TI4.onStrategyCardSelectionDone.add(
@@ -222,7 +229,11 @@ function onUiClosedClicked(button, player) {
     }
 
     // trigger event for the card itself
-    globalEvents.TI4.onStrategyCardSelectionDone.trigger(border.card, player);
+    globalEvents.TI4.onStrategyCardSelectionDone.trigger(
+        border.card,
+        player,
+        owningPlayerSlot
+    );
 
     // clear internal data and remove the UI
     const cardId = border.card.getId();
