@@ -81,7 +81,7 @@ class FindTurnOrder {
     /**
      * Find initiave order based on strategy cards and Naalu zero token.
      *
-     * @returns {Array.{number}} Turn order by player slot
+     * @returns {Array.{PlayerDesk}} Turn order by player desk
      */
     static order() {
         // Find initiative objects.
@@ -122,12 +122,11 @@ class FindTurnOrder {
 
         // Seed initiatives.
         const playerSlotToInitiative = {};
-        const playerSlotToSlotNumber = {};
+        const playerSlotToPlayerDesk = {};
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerSlotToInitiative[playerDesk.playerSlot] =
                 Number.MAX_SAFE_INTEGER;
-            playerSlotToSlotNumber[playerDesk.playerSlot] =
-                playerDesk.playerSlot;
+            playerSlotToPlayerDesk[playerDesk.playerSlot] = playerDesk;
         }
 
         // Player initiative is lowest of any initiative object.
@@ -149,7 +148,7 @@ class FindTurnOrder {
         );
         // Boo, javascript makes these strings when used as keys.  Get numbers.
         return order.map((slotStr) => {
-            return playerSlotToSlotNumber[slotStr];
+            return playerSlotToPlayerDesk[slotStr];
         });
     }
 }
