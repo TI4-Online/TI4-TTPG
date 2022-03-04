@@ -223,10 +223,11 @@ function onUiClosedClicked(button, player) {
     const border = getTopLevelWidget(button);
     const owningPlayerSlot = border.desk.playerSlot;
 
-    // only react on the correct player
-    if (owningPlayerSlot !== player.getSlot()) {
-        return;
-    }
+    // Only react on the correct player?  For now let anyone close them
+    // (much easier for testing).
+    //if (owningPlayerSlot !== player.getSlot()) {
+    //    return;
+    //}
 
     // trigger event for the card itself
     globalEvents.TI4.onStrategyCardSelectionDone.trigger(
