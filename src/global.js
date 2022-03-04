@@ -27,6 +27,15 @@ globalEvents.TI4 = {
     // <(playerCount: number, player: Player|undefined) => void>
     onPlayerCountChanged: new TriggerableMulticastDelegate(),
 
+    // Called when a singleton card is created, or when a deck is reduced to
+    // a single card it is called on the "deck" (now a single card).
+    // <(card: Card) => void>
+    onSingletonCardCreated: new TriggerableMulticastDelegate(),
+
+    // Called when a singleton card is converted into a deck.
+    // <(card: Card) => void>
+    onSingletonCardMadeDeck: new TriggerableMulticastDelegate(),
+
     // Called when the active player dropped a command token on a system.
     // <(systemTile: GameObject, player: Player) => void>
     onSystemActivated: new TriggerableMulticastDelegate(),
@@ -133,4 +142,5 @@ require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-purge");
 require("./global/shuffle-decks-on-load");
 require("./global/strategy-card-functions");
+require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
