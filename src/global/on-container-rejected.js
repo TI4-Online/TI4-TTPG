@@ -3,6 +3,7 @@ const { CloneReplace } = require("../lib/clone-replace");
 const { DealDiscard } = require("../lib/card/deal-discard");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Card, Container, globalEvents, world } = require("../wrapper/api");
+const { EndStatusPhase } = require("../lib/phase/end-of-round");
 
 /**
  * Handler for globalEvents.TI4.onContainerRejected
@@ -13,6 +14,9 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
         if (rejectedObj.getContainer() != container) {
             continue; // object no longer in the container?  skip.
         }
+        const nsid = ObjectNamespace.getNsid(rejectedObj);
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        //console.log(`onContainerRejected "${nsid}"`);
 
         // If this is a card or deck attempt to discard each.
         if (rejectedObj instanceof Card) {
@@ -38,9 +42,23 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             continue;
         }
 
+        // Strategy Card
+        if (ObjectNamespace.isStrategyCard(rejectedObj)) {
+            const pos = container.getPosition().add([10, 0, 10]);
+            container.take(rejectedObj, pos, false, false);
+
+            // Temporary workaround for TTPG bug.
+            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+
+            EndStatusPhase.returnStrategyCard(rejectedObj);
+            continue;
+        }
+
+        // TODO XXX Attachment token
+
+        // TODO XXX Faction Extra
+
         // Try to find a home (bag with NSID bag.$type and $name).
-        // Do not attempt to find discard piles for cards, etc (yet).
-        const parsed = ObjectNamespace.parseGeneric(rejectedObj);
         if (parsed.type == "token.command") {
             parsed.source = "base";
             parsed.name = "*";
