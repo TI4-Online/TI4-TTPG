@@ -11,7 +11,13 @@ const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const { world, Vector, Rotator, Card } = require("../../wrapper/api");
+const {
+    world,
+    Card,
+    GameObject,
+    Rotator,
+    Vector,
+} = require("../../wrapper/api");
 
 const ANIMATION_SPEED = 1;
 
@@ -229,24 +235,15 @@ class EndStatusPhase {
         }
     }
 
-    /**
-     * Returns all strategy cards to their proper position and rotation.
-     */
-    static returnStrategyCards() {
-        const strategyCards = [];
-        let strategyCardMat = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            if (ObjectNamespace.isStrategyCard(obj)) {
-                strategyCards.push(obj);
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "mat:base/strategy_card") {
-                strategyCardMat = obj;
-            }
+    static returnStrategyCard(strategyCardObj) {
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
+
+        if (!FindTurnOrder.isStrategyCardPicked(strategyCardObj)) {
+            return; // already on (a) home spot, leave it alone
         }
+
+        const strategyCardMat = FindTurnOrder.getStrategyCardMat();
         assert(strategyCardMat);
 
         const snapPoints = strategyCardMat.getAllSnapPoints();
@@ -257,18 +254,28 @@ class EndStatusPhase {
             nsidToSnapPoint[cardData.nsid] = snapPoint;
         }
 
-        for (const obj of strategyCards) {
-            if (!FindTurnOrder.isStrategyCardPicked(obj)) {
-                continue; // already on (a) home spot, leave it alone
+        const nsid = ObjectNamespace.getNsid(strategyCardObj);
+        const snapPoint = nsidToSnapPoint[nsid];
+        assert(snapPoint);
+        const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
+        const yaw = snapPoint.getSnapRotation();
+        const rot = new Rotator(0, yaw, 0);
+        strategyCardObj.setPosition(pos, ANIMATION_SPEED);
+        strategyCardObj.setRotation(rot, ANIMATION_SPEED);
+    }
+
+    /**
+     * Returns all strategy cards to their proper position and rotation.
+     */
+    static returnStrategyCards() {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
             }
-            const nsid = ObjectNamespace.getNsid(obj);
-            const snapPoint = nsidToSnapPoint[nsid];
-            assert(snapPoint);
-            const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
-            const yaw = snapPoint.getSnapRotation();
-            const rot = new Rotator(0, yaw, 0);
-            obj.setPosition(pos, ANIMATION_SPEED);
-            obj.setRotation(rot, ANIMATION_SPEED);
+            if (!ObjectNamespace.isStrategyCard(obj)) {
+                continue;
+            }
+            EndStatusPhase.returnStrategyCard(obj);
         }
     }
 

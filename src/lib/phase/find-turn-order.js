@@ -25,16 +25,7 @@ class FindTurnOrder {
         throw new Error("static only");
     }
 
-    /**
-     * Has this strategy card been picked?
-     *
-     * @param {GameObject} strategyCard
-     * @returns {boolean}
-     */
-    static isStrategyCardPicked(strategyCard) {
-        assert(strategyCard instanceof GameObject);
-        assert(ObjectNamespace.isStrategyCard(strategyCard));
-
+    static getStrategyCardMat() {
         if (!_strategyCardMat || !_strategyCardMat.isValid()) {
             _strategyCardMat = false;
             for (const obj of world.getAllObjects()) {
@@ -48,12 +39,26 @@ class FindTurnOrder {
                 }
             }
         }
-        if (!_strategyCardMat) {
+        return _strategyCardMat;
+    }
+
+    /**
+     * Has this strategy card been picked?
+     *
+     * @param {GameObject} strategyCard
+     * @returns {boolean}
+     */
+    static isStrategyCardPicked(strategyCard) {
+        assert(strategyCard instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCard));
+
+        const strategyCardMat = FindTurnOrder.getStrategyCardMat();
+        if (!strategyCardMat) {
             return true;
         }
 
-        const center = _strategyCardMat.getExtentCenter();
-        const extent = _strategyCardMat.getExtent(true);
+        const center = strategyCardMat.getExtentCenter();
+        const extent = strategyCardMat.getExtent(true);
         const bb = {
             min: {
                 x: center.x - extent.x,
