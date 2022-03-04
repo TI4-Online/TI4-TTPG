@@ -58,6 +58,21 @@ globalEvents.onObjectCreated.add((obj) => {
     }
 });
 
+// second to last card being drawn from a deck doesn't trigger onObjectCreated
+// for the last card in the deck
+for (const obj of world.getAllObjects()) {
+    if (obj instanceof Card && obj.getStackSize() > 1) {
+        obj.onRemoved.add((cardStack) => {
+            if (
+                cardStack.getStackSize() === 1 &&
+                ObjectNamespace.getNsid(cardStack).startsWith("card.agenda")
+            ) {
+                addRightClickOptions(obj);
+            }
+        });
+    }
+}
+
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
