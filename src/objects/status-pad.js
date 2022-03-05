@@ -33,8 +33,12 @@ let isPass = ObjectSavedData.get(obj, "isPass", false);
 const awayButton = new TP.Button().setText("Away").setFontSize(24);
 const passButton = new TP.Button().setText("Pass").setFontSize(24);
 
-const awayImage = new TP.ImageWidget().setImage("locale/ui/panel_away_off.png");
-const passImage = new TP.ImageWidget().setImage("locale/ui/panel_pass_off.png");
+const awayImage = new TP.ImageWidget().setImage(
+    isAway ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png"
+);
+const passImage = new TP.ImageWidget().setImage(
+    isPass ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png"
+);
 
 btnUI.widget.setChild(
     new TP.HorizontalBox()
