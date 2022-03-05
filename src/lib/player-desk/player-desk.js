@@ -16,6 +16,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { CardHolder } = require("@tabletop-playground/api");
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.
@@ -436,6 +437,23 @@ class PlayerDesk {
     seatPlayer(player) {
         assert(player instanceof Player);
         player.switchSlot(this.playerSlot);
+
+        // Link the hand.
+        let cardHolder = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot !== this.playerSlot) {
+                continue;
+            }
+            if (!(obj instanceof CardHolder)) {
+                continue;
+            }
+            cardHolder = obj;
+            break;
+        }
+        player.setHandHolder(cardHolder);
 
         // Careful, need to look at a position on the top surface of
         // the table or else the camera can bug out and fall below table.

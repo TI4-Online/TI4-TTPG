@@ -2,6 +2,7 @@
  * Quickly set up an empty table.
  */
 
+const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
@@ -30,6 +31,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
                 obj.destroy();
             }
         }
+        GlobalSavedData.clear();
     }
 
     if (actionName === ACTION.SETUP) {
