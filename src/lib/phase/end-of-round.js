@@ -67,7 +67,8 @@ class DealActionCards {
             ])
         );
 
-        for (const playerSlot of FindTurnOrder.order()) {
+        for (const playerDesk of FindTurnOrder.order()) {
+            const playerSlot = playerDesk.playerSlot;
             const count =
                 DealActionCards.getNumberActionCardsToDeal(playerSlot);
             const message = locale("ui.message.deal_action_cards", {
