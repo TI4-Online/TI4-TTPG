@@ -23,7 +23,6 @@ class SetupStatusPads extends AbstractSetup {
             this.playerDesk.rot
         );
         const playerSlot = this.playerDesk.playerSlot;
-        console.log(rot);
 
         const obj = Spawn.spawn(nsid, pos, rot);
         obj.setOwningPlayerSlot(playerSlot);
