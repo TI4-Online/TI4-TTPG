@@ -80,6 +80,9 @@ class Turns {
     endTurn(clickingPlayer) {
         assert(clickingPlayer instanceof Player);
 
+        if (!this.isActivePlayer(clickingPlayer)) {
+            return;
+        }
         if (!this._currentTurn) {
             return;
         }
