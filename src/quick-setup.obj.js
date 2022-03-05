@@ -7,6 +7,7 @@ const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
 const { SetupSystemTiles } = require("./setup/setup-system-tiles");
+const { SetupTableBoxes } = require("./setup/setup-table-boxes");
 const { SetupTableDecks } = require("./setup/setup-table-decks");
 const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
@@ -53,6 +54,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupSecretHolders());
         setups.push(new SetupStrategyCards());
         setups.push(new SetupSystemTiles());
+        setups.push(new SetupTableBoxes());
         setups.push(new SetupTableDecks());
         setups.push(new SetupTableGraveyards());
         setups.push(new SetupTableTokens());

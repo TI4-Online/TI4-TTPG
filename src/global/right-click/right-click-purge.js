@@ -1,18 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const {
-    Card,
-    GameObject,
-    Vector,
-    globalEvents,
-    world,
-} = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 
-// create a container to hold the purged objects
-const PURGE_CONTAINER_TEMPLATE_ID = "A44BAA604E0ED034CD67FA9502214AA7";
-const PURGE_CONTAINER_POS = new Vector(32, 113.3, 18);
 const PURGE_CONTAINER_NAME = "bag.purge";
 
 /**
@@ -27,12 +18,7 @@ function getPurgeContainer() {
             return obj;
         }
     }
-    const container = world.createObjectFromTemplate(
-        PURGE_CONTAINER_TEMPLATE_ID,
-        PURGE_CONTAINER_POS
-    );
-    container.setName(locale(PURGE_CONTAINER_NAME));
-    return container;
+    throw new Error("missing purge box");
 }
 
 const PURGE_CONTAINER = getPurgeContainer();
