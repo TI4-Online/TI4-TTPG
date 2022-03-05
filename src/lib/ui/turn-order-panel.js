@@ -46,7 +46,10 @@ class TurnOrderPanel extends HorizontalBox {
         while (this.getChildAt(0)) {
             this.removeChildAt(0);
         }
+
+        const currentDesk = world.TI4.turns.getCurrentTurn();
         for (const playerDesk of playerDeskOrder) {
+            const isTurn = playerDesk === currentDesk;
             const player = world.getPlayerBySlot(playerDesk.playerSlot);
             let name = player && player.getName();
             if (!name || name.length === 0) {
@@ -56,10 +59,18 @@ class TurnOrderPanel extends HorizontalBox {
                 .setText(name)
                 .setTextColor([0, 0, 0, 1])
                 .setJustification(TextJustification.Center);
-            const border = new Border()
+            const inner = new Border()
                 .setColor(playerDesk.color)
                 .setChild(label);
-            this.addChild(border, 1);
+
+            const frame = new Border().setChild(inner);
+
+            const outer = new Border().setChild(frame);
+            if (isTurn) {
+                outer.setColor([1, 0, 0, 1]);
+            }
+
+            this.addChild(outer, 1);
         }
     }
 }

@@ -39,6 +39,10 @@ class Turns {
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
     }
 
+    getCurrentTurn() {
+        return this._currentTurn;
+    }
+
     setCurrentTurn(playerDesk, clickingPlayer) {
         // playerDesk may be undefined
         assert(clickingPlayer instanceof Player);
