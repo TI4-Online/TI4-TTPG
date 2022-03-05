@@ -1,4 +1,4 @@
-const TP = require("@tabletop-playground/api");
+const TP = require("../wrapper/api");
 
 const btnUI = new TP.UIElement();
 const pnlUI = new TP.UIElement();
