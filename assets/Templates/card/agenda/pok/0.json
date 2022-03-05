@@ -64,7 +64,8 @@
 		8,
 		9,
 		10,
-		11
+		11,
+		12
 	],
 	"CardNames": {
 		"0": "Armed Forces Standardization",
@@ -77,8 +78,9 @@
 		"7": "Nexus Sovereignty",
 		"8": "Political Censure",
 		"9": "Rearmament Agreement",
-		"10": "Research Grant Reallocation",
-		"11": "Search Warrant"
+		"10": "Representative Government",
+		"11": "Research Grant Reallocation",
+		"12": "Search Warrant"
 	},
 	"CardMetadata": {
 		"0": "card.agenda:pok/armed_forces_standardization",
@@ -91,7 +93,8 @@
 		"7": "card.agenda:pok/nexus_sovereignty",
 		"8": "card.agenda:pok/political_censure",
 		"9": "card.agenda:pok/rearmament_agreement",
-		"10": "card.agenda:pok/research_grant_reallocation",
-		"11": "card.agenda:pok/search_warrant"
+		"10": "card.agenda:pok/representative_government",
+		"11": "card.agenda:pok/research_grant_reallocation",
+		"12": "card.agenda:pok/search_warrant"
 	}
 }

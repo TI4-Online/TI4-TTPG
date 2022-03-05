@@ -2,7 +2,7 @@
 	"Type": "Generic",
 	"GUID": "1C78FD3041A92C57AC10EBB7653904CC",
 	"Name": "Status Pad",
-	"Metadata": "",
+	"Metadata": "pad:base/status",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,

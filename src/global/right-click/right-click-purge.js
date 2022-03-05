@@ -1,19 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const {
-    Card,
-    GameObject,
-    Vector,
-    globalEvents,
-    world,
-} = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 
-// create a container to hold the purged objects
-const PURGE_CONTAINER_TEMPLATE_ID = "A44BAA604E0ED034CD67FA9502214AA7";
-const PURGE_CONTAINER_POS = new Vector(32, 113.3, 18);
 const PURGE_CONTAINER_NAME = "bag.purge";
+let _purgeContainer = false;
 
 /**
  * Creates a contianer to hold purged objects, if one doesn't already exist,
@@ -22,20 +14,17 @@ const PURGE_CONTAINER_NAME = "bag.purge";
  * @returns { Container }
  */
 function getPurgeContainer() {
+    if (_purgeContainer && _purgeContainer.isValid()) {
+        return _purgeContainer;
+    }
     for (const obj of world.getAllObjects()) {
         if (obj.getName() === locale(PURGE_CONTAINER_NAME)) {
-            return obj;
+            _purgeContainer = obj;
+            return _purgeContainer;
         }
     }
-    const container = world.createObjectFromTemplate(
-        PURGE_CONTAINER_TEMPLATE_ID,
-        PURGE_CONTAINER_POS
-    );
-    container.setName(locale(PURGE_CONTAINER_NAME));
-    return container;
+    throw new Error("missing purge box");
 }
-
-const PURGE_CONTAINER = getPurgeContainer();
 
 /**
  * Moves card to the purged object container and broadcasts a message
@@ -49,7 +38,8 @@ function purge(card) {
     Broadcast.broadcastAll(
         locale("ui.message.purge", { objectName: locale(objectName) })
     );
-    PURGE_CONTAINER.addObjects([card], true);
+    const purgeContainer = getPurgeContainer();
+    purgeContainer.addObjects([card], true);
 }
 
 /**
