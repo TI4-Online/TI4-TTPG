@@ -39,7 +39,7 @@ class Vector {
     }
 
     findLookAtRotation() {
-        return new Rotator();
+        return new Rotator(0, 0, 0);
     }
 }
 
