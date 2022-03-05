@@ -144,7 +144,10 @@ function moveNewPlayerToNonSeatSlot(player) {
 
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
-    moveNewPlayerToNonSeatSlot(player);
+    // Wait a tick to make sure player is fully set up.
+    process.nextTick(() => {
+        moveNewPlayerToNonSeatSlot(player);
+    });
 });
 
 // Release seat when someone leaves.
