@@ -9,6 +9,7 @@ const {
     GLOBAL_SAVED_DATA_KEY,
 } = require("../saved-data/global-saved-data");
 const {
+    CardHolder,
     Color,
     Player,
     Rotator,
@@ -437,11 +438,42 @@ class PlayerDesk {
         assert(player instanceof Player);
         player.switchSlot(this.playerSlot);
 
+        // Link the hand.
+        let cardHolder = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot !== this.playerSlot) {
+                continue;
+            }
+            if (!(obj instanceof CardHolder)) {
+                continue;
+            }
+            cardHolder = obj;
+            break;
+        }
+        player.setHandHolder(cardHolder);
+
         // Careful, need to look at a position on the top surface of
         // the table or else the camera can bug out and fall below table.
         const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
         const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
         player.setPositionAndRotation(pos, rot);
+
+        // HACK HACK HACK
+        // Player.getSlot() sometimes returns -1 (and Player.getName() is empty).
+        // Temporarily interpose so it returns the correct value.
+        if (!player.__origGetSlot) {
+            player.__origGetSlot = player.getSlot;
+        }
+        player.getSlot = () => {
+            let result = player.__origGetSlot();
+            if (result < 0) {
+                result = this.playerSlot;
+            }
+            return result;
+        };
     }
 
     /**

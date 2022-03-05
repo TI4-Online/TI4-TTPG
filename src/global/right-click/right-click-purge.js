@@ -1,13 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const { globalEvents, world, Card, Vector } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 
-// create a container to hold the purged objects
-const PURGE_CONTAINER_TEMPLATE_ID = "A44BAA604E0ED034CD67FA9502214AA7";
-const PURGE_CONTAINER_POS = new Vector(-25, 113.3, 18);
 const PURGE_CONTAINER_NAME = "bag.purge";
+let _purgeContainer = false;
 
 /**
  * Creates a contianer to hold purged objects, if one doesn't already exist,
@@ -16,20 +14,17 @@ const PURGE_CONTAINER_NAME = "bag.purge";
  * @returns { Container }
  */
 function getPurgeContainer() {
+    if (_purgeContainer && _purgeContainer.isValid()) {
+        return _purgeContainer;
+    }
     for (const obj of world.getAllObjects()) {
         if (obj.getName() === locale(PURGE_CONTAINER_NAME)) {
-            return obj;
+            _purgeContainer = obj;
+            return _purgeContainer;
         }
     }
-    const container = world.createObjectFromTemplate(
-        PURGE_CONTAINER_TEMPLATE_ID,
-        PURGE_CONTAINER_POS
-    );
-    container.setName(locale(PURGE_CONTAINER_NAME));
-    return container;
+    throw new Error("missing purge box");
 }
-
-const PURGE_CONTAINER = getPurgeContainer();
 
 /**
  * Moves card to the purged object container and broadcasts a message
@@ -43,7 +38,8 @@ function purge(card) {
     Broadcast.broadcastAll(
         locale("ui.message.purge", { objectName: locale(objectName) })
     );
-    PURGE_CONTAINER.addObjects([card], true);
+    const purgeContainer = getPurgeContainer();
+    purgeContainer.addObjects([card], true);
 }
 
 /**
@@ -53,12 +49,18 @@ function purge(card) {
  */
 function addRightClickOption(card) {
     assert(card instanceof Card);
-    card.addCustomAction("*" + locale("ui.menu.purge"));
+    const actionName = "*" + locale("ui.menu.purge");
+    card.addCustomAction(actionName);
     card.onCustomAction.add((card, _player, actionName) => {
-        if (actionName === "*" + locale("ui.menu.purge")) {
+        if (actionName === actionName) {
             purge(card);
         }
     });
+}
+
+function removeRightClickOption(card) {
+    const actionName = "*" + locale("ui.menu.purge");
+    card.removeCustomAction(actionName);
 }
 
 const PURGABLE_ATTACHMENTS = [
@@ -98,6 +100,10 @@ const PURGABLE_RELICS = [
 function canBePurged(obj) {
     assert(obj instanceof GameObject);
 
+    if (!(obj instanceof Card)) {
+        return false;
+    }
+
     if (!ObjectNamespace.isCard(obj)) {
         return false;
     }
@@ -135,28 +141,25 @@ function canBePurged(obj) {
     }
 }
 
-globalEvents.onObjectCreated.add((obj) => {
+globalEvents.TI4.onSingletonCardCreated.add((obj) => {
     if (canBePurged(obj)) {
         addRightClickOption(obj);
+        obj.__hasRightClickPurge = true;
     }
 });
 
-// second to last card being drawn from a deck doesn't trigger onObjectCreated
-// for the last card in the deck
-for (const obj of world.getAllObjects()) {
-    if (obj instanceof Card && obj.getStackSize() > 1) {
-        obj.onRemoved.add((cardStack) => {
-            if (cardStack.getStackSize() === 1 && canBePurged(cardStack)) {
-                addRightClickOption(obj);
-            }
-        });
+globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
+    if (obj.__hasRightClickPurge) {
+        removeRightClickOption(obj);
+        delete obj.__hasRightClickPurge;
     }
-}
+});
 
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
         if (canBePurged(obj)) {
             addRightClickOption(obj);
+            obj.__hasRightClickPurge = true;
         }
     }
 }

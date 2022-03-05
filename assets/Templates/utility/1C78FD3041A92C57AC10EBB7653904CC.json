@@ -1,8 +1,8 @@
 {
 	"Type": "Generic",
-	"GUID": "F445F5F54ADFDDDE0E4C0190717A93BA",
-	"Name": "Imperial",
-	"Metadata": "tile.strategy:base/imperial",
+	"GUID": "1C78FD3041A92C57AC10EBB7653904CC",
+	"Name": "Status Pad",
+	"Metadata": "pad:base/status",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -13,23 +13,23 @@
 	"PrimaryColor":
 	{
 		"R": 255,
-		"G": 255,
-		"B": 255
+		"G": 0,
+		"B": 19
 	},
 	"SecondaryColor":
 	{
-		"R": 0,
-		"G": 0,
-		"B": 0
+		"R": 51,
+		"G": 51,
+		"B": 51
 	},
-	"Flippable": true,
+	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "objects/strategy-cards/imperial.js",
+	"ScriptName": "objects/status-pad.js",
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/stratcard.obj",
+			"Model": "utility/statuspad.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -48,45 +48,22 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "locale/stratcards/base/strategy_08.png",
+			"Texture": "",
 			"NormalMap": "",
-			"ExtraMap": "",
+			"ExtraMap": "global/utility/statuspad_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [
-		{
-			"Model": "utility/stratcard.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Type": "Convex"
-		}
-	],
+	"Collision": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
 	{
 		"X": 0,
 		"Y": 0,
-		"Z": 1
+		"Z": 0
 	}
 }

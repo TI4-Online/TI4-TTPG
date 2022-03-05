@@ -41,7 +41,11 @@ describe("when a player has done the leadership selection", () => {
         const player2Spy = jest.spyOn(player2, "sendChatMessage");
 
         globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
-        globalEvents.TI4.onStrategyCardSelectionDone.trigger(card, player1);
+        globalEvents.TI4.onStrategyCardSelectionDone.trigger(
+            card,
+            player1,
+            player1.getSlot()
+        );
 
         expect(player1Spy).toBeCalledWith(
             "one gained 0 command tokens.",
