@@ -23,7 +23,7 @@
     "ui.message.finalize_movement": "{playerName} has finalized movement.",
     "ui.message.production": "{playerName} will be producing in System {systemTile}: {systemName}.",
     "ui.message.end_turn": "{playerName} ends their turn.",
-    "ui.message.newTurn" : "It is now {playerName}'s turn",
+    "ui.message.newTurn": "It is now {playerName}'s turn",
 
     "ui.message.player_rolling_for": "{playerName} rolling for {rollType}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
@@ -38,6 +38,7 @@
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
 
     "ui.message.turn_order": "Turn order: {turnOrder}",
+    "ui.message.all_players_have_passed": "All players have passed",
 
     "ui.movement.finish_movement": "Finalize Movement",
 
@@ -60,17 +61,17 @@
     "ui.action.system.diplomacy": "Diplomacy System",
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
-    "ui.action.end_turn" : "End Turn",
+    "ui.action.end_turn": "End Turn",
 
-    "ui.label.movement" : "Movement Step",
-    "ui.label.space_combat" : "Space Combat Step",
-    "ui.label.invasion" : "Invasion Step",
-    "ui.label.production" : "Production Step",
-    "ui.label.etc" : "ETC.",
+    "ui.label.movement": "Movement Step",
+    "ui.label.space_combat": "Space Combat Step",
+    "ui.label.invasion": "Invasion Step",
+    "ui.label.production": "Production Step",
+    "ui.label.etc": "ETC.",
 
-    "ui.strategy.instructions" : "Player uses their Strategy Card.\nClick the button on the back of the card.",
+    "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
 
-    "ui.component.instructions" : "Player uses the component action of \none their cards or abilities.\nFollow the instructions on that card/ability.",
+    "ui.component.instructions": "Player uses the component action of \none their cards or abilities.\nFollow the instructions on that card/ability.",
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
@@ -109,7 +110,6 @@
     "ui.tab.tactical_action": "Tactical",
     "ui.tab.strategic_action": "Strategic",
     "ui.tab.component_action": "Component",
-
 
     "rollType.spaceCannon": "Space Cannon",
     "rollType.antiFighterBarrage": "Anti-fighter Barrage",
