@@ -1,7 +1,7 @@
 {
 	"Type": "Table",
 	"GUID": "E4EF7CBD72418EF9B62E26B96219D6D4",
-	"Name": "Table 3",
+	"Name": "Table",
 	"Metadata": "",
 	"CollisionType": "Static",
 	"Friction": 0.7,
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/utility/table.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,
@@ -58,9 +58,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 255,
+				"G": 255,
+				"B": 255
 			},
 			"SecondaryColor":
 			{
