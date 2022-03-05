@@ -49,6 +49,49 @@ class Turns {
             prevTurn,
             player
         );
+
+        Broadcast.broadcastAll(
+            locale("ui.message.newTurn", {
+                playerName: world.getPlayerBySlot(playerDesk._playerSlot) ? world.getPlayerBySlot(playerDesk._playerSlot).getName() : "<No Player Found>",
+            }), playerDesk._color
+        );
+    }
+
+    endTurn(player){
+        assert(player instanceof Player);
+
+        if(!this._currentTurn || !(player.getSlot() == this._currentTurn._playerSlot)){
+            return;
+        }
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+            player.getSlot()
+        );
+        const color = playerDesk ? playerDesk.color : undefined;
+        Broadcast.broadcastAll(
+            locale("ui.message.end_turn", {
+                playerName: player.getName(),
+            }), color
+        );
+
+        var nextTurn = false;
+        var nextPlayer = undefined;
+
+        this._turnOrder.every((_playerDesk) => {
+            if(nextTurn){ 
+                nextPlayer = _playerDesk;
+                return false;
+            }
+            if(_playerDesk.colorName == this._currentTurn._colorName){
+                nextTurn = true;
+            }
+            return true;
+        });
+        if(!nextPlayer){
+            nextPlayer = this._turnOrder[0];
+        }
+
+        this.setCurrentTurn(nextPlayer, player);
     }
 
     /**

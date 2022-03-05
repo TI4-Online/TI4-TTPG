@@ -19,6 +19,12 @@
 
     "ui.message.stellar_converter": "Destroying {planetName} with Stellar Converter",
 
+    "ui.message.announce_retreat": "{playerName} announcing retreat.",
+    "ui.message.finalize_movement": "{playerName} has finalized movement.",
+    "ui.message.production": "{playerName} will be producing in System {systemTile}: {systemName}.",
+    "ui.message.end_turn": "{playerName} ends their turn.",
+    "ui.message.newTurn" : "It is now {playerName}'s turn",
+
     "ui.message.player_rolling_for": "{playerName} rolling for {rollType}",
     "ui.message.roll_modifiers": "Roll {#modifierCount|modifier|modifiers}: {modifierList}",
     "ui.message.none": "none",
@@ -32,6 +38,8 @@
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
 
     "ui.message.turn_order": "Turn order: {turnOrder}",
+
+    "ui.movement.finish_movement": "Finalize Movement",
 
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
@@ -52,6 +60,17 @@
     "ui.action.system.diplomacy": "Diplomacy System",
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
+    "ui.action.end_turn" : "End Turn",
+
+    "ui.label.movement" : "Movement Step",
+    "ui.label.space_combat" : "Space Combat Step",
+    "ui.label.invasion" : "Invasion Step",
+    "ui.label.production" : "Production Step",
+    "ui.label.etc" : "ETC.",
+
+    "ui.strategy.instructions" : "Player uses their Strategy Card.\nClick the button on the back of the card.",
+
+    "ui.component.instructions" : "Player uses the component action of \none their cards or abilities.\nFollow the instructions on that card/ability.",
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
@@ -84,9 +103,13 @@
 
     "ui.tab.map_tool": "Map",
     "ui.tab.strategy_phase": "Strategy",
-    "ui.tab.auto_roller": "Combat",
+    "ui.tab.auto_roller": "Action",
     "ui.tab.status_phase": "Status",
     "ui.tab.agenda_phase": "Agenda",
+    "ui.tab.tactical_action": "Tactical",
+    "ui.tab.strategic_action": "Strategic",
+    "ui.tab.component_action": "Component",
+
 
     "rollType.spaceCannon": "Space Cannon",
     "rollType.antiFighterBarrage": "Anti-fighter Barrage",

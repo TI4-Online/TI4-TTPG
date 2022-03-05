@@ -96,6 +96,59 @@ class AutoRoller {
         assert(typeof rollType === "string");
         assert(!planet || planet instanceof Planet);
         assert(player instanceof Player);
+        
+        const isEndTurn = rollType === "endTurn";
+        if (isEndTurn){
+            world.TI4.turns.endTurn(player);
+            return;
+        }
+
+        const isFinMove = rollType === "finishMove";
+        if (isFinMove){
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.finalize_movement", {
+                    playerName: player.getName(),
+                }), color
+            );
+            return;
+        }
+
+        const isAnnounceRetreat = rollType === "announceRetreat";
+        if (isAnnounceRetreat){
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.announce_retreat", {
+                    playerName: player.getName(),
+                }), color
+            );
+            return;
+        }
+
+        const isProduction = rollType === "production";
+        if (isProduction){
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.production", {
+                    playerName: player.getName(),
+                    systemTile: this._activeSystem.tile,
+                    systemName: this._activeSystem.getSummaryStr(),
+                }), color
+            );
+            return;
+        }
 
         const isReportModifiers = rollType === "reportModifiers";
 
