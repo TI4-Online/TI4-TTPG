@@ -55,7 +55,6 @@ class Turns {
                 playerName: world.getPlayerBySlot(playerDesk._playerSlot) ? world.getPlayerBySlot(playerDesk._playerSlot).getName() : "<No Player Found>",
             }), playerDesk._color
         );
-        console.log(world.getPlayerBySlot(playerDesk._playerSlot) ? world.getPlayerBySlot(playerDesk._playerSlot).getName() : "<No Player Found>");
     }
 
     endTurn(player){
@@ -78,14 +77,15 @@ class Turns {
         var nextTurn = false;
         var nextPlayer = undefined;
 
-        this._turnOrder.forEach((_playerDesk) => {
-            if(nextTurn){
-                console.log(_playerDesk.colorName)
+        this._turnOrder.every((_playerDesk) => {
+            if(nextTurn){ 
                 nextPlayer = _playerDesk;
+                return false;
             }
             if(_playerDesk.colorName == this._currentTurn._colorName){
                 nextTurn = true;
             }
+            return true;
         });
         if(!nextPlayer){
             nextPlayer = this._turnOrder[0];
