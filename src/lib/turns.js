@@ -73,7 +73,7 @@ class Turns {
     }
 
     /**
-     * End the active player's turn.
+     * End the active player's turn, start the next player's turn.
      *
      * @param {Player} clickingPlayer
      */
@@ -155,8 +155,9 @@ class Turns {
      * @returns {boolean}
      */
     isActivePlayer(player) {
-        // TODO XXX
-        return true;
+        const playerSlot = player.getSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        return this._currentTurn === playerDesk;
     }
 }
 
