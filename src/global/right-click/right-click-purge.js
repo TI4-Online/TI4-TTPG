@@ -5,6 +5,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 
 const PURGE_CONTAINER_NAME = "bag.purge";
+let _purgeContainer = false;
 
 /**
  * Creates a contianer to hold purged objects, if one doesn't already exist,
@@ -13,15 +14,17 @@ const PURGE_CONTAINER_NAME = "bag.purge";
  * @returns { Container }
  */
 function getPurgeContainer() {
+    if (_purgeContainer && _purgeContainer.isValid()) {
+        return _purgeContainer;
+    }
     for (const obj of world.getAllObjects()) {
         if (obj.getName() === locale(PURGE_CONTAINER_NAME)) {
-            return obj;
+            _purgeContainer = obj;
+            return _purgeContainer;
         }
     }
     throw new Error("missing purge box");
 }
-
-const PURGE_CONTAINER = getPurgeContainer();
 
 /**
  * Moves card to the purged object container and broadcasts a message
@@ -35,7 +38,8 @@ function purge(card) {
     Broadcast.broadcastAll(
         locale("ui.message.purge", { objectName: locale(objectName) })
     );
-    PURGE_CONTAINER.addObjects([card], true);
+    const purgeContainer = getPurgeContainer();
+    purgeContainer.addObjects([card], true);
 }
 
 /**
