@@ -9,6 +9,7 @@ const {
     GLOBAL_SAVED_DATA_KEY,
 } = require("../saved-data/global-saved-data");
 const {
+    CardHolder,
     Color,
     Player,
     Rotator,
@@ -16,7 +17,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { CardHolder } = require("@tabletop-playground/api");
 
 /**
  * Desk positions in cm and rotation in degrees.  Z ignored.
