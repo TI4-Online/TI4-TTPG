@@ -48,10 +48,10 @@ class TurnOrderPanel extends HorizontalBox {
         }
         for (const playerDesk of playerDeskOrder) {
             const player = world.getPlayerBySlot(playerDesk.playerSlot);
-            const name = player
-                ? player.getName()
-                : `<${playerDesk.colorName}>`;
-
+            let name = player && player.getName();
+            if (!name || name.length === 0) {
+                name = `<${playerDesk.colorName}>`;
+            }
             const label = new Text()
                 .setText(name)
                 .setTextColor([0, 0, 0, 1])
