@@ -790,7 +790,7 @@ async function writeDeckTemplate(
         BackTexture: backFilename,
         HiddenTexture: "",
         BackIndex: backIndex,
-        HiddenIndex: 0, // 0 = use back, -1 = blur, -2 = separate file
+        HiddenIndex: -3, // 0 = use front, -1 = blur, -2 = separate file, -3 = use back
         NumHorizontal: layout.numCols,
         NumVertical: layout.numRows,
         Width: cardSize.w,
