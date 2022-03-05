@@ -13,7 +13,7 @@ const { CloneReplace } = require("../clone-replace");
  * Try to find tiles on table or in a container, spawn if missing.
  */
 class MapStringLoad {
-    static load(mapString) {
+    static load(mapString, skipMallice = false) {
         assert(typeof mapString === "string");
 
         const parsedMapString = MapStringParser.parse(mapString);
@@ -78,7 +78,7 @@ class MapStringLoad {
         }
 
         // Add Mallice
-        if (world.TI4.config.pok) {
+        if (world.TI4.config.pok && !skipMallice) {
             placeTile({ tile: 82 }, "<-4,5,-1>");
         }
     }
