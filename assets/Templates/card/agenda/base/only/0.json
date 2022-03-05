@@ -64,34 +64,37 @@
 		8,
 		9,
 		10,
-		11
+		11,
+		12
 	],
 	"CardNames": {
 		"0": "Core Mining",
 		"1": "Demilitarized Zone",
 		"2": "Holy Planet of Ixth",
-		"3": "Research Team: Biotic",
-		"4": "Research Team: Cybernetic",
-		"5": "Research Team: Propulsion",
-		"6": "Research Team: Warfare",
-		"7": "Senate Sanctuary",
-		"8": "Shard of the Throne",
-		"9": "Terraforming Initiative",
-		"10": "The Crown of Emphidia",
-		"11": "The Crown of Thalnos"
+		"3": "Representative Government",
+		"4": "Research Team: Biotic",
+		"5": "Research Team: Cybernetic",
+		"6": "Research Team: Propulsion",
+		"7": "Research Team: Warfare",
+		"8": "Senate Sanctuary",
+		"9": "Shard of the Throne",
+		"10": "Terraforming Initiative",
+		"11": "The Crown of Emphidia",
+		"12": "The Crown of Thalnos"
 	},
 	"CardMetadata": {
 		"0": "card.agenda:base.only/core_mining",
 		"1": "card.agenda:base.only/demilitarized_zone",
 		"2": "card.agenda:base.only/holy_planet_of_ixth",
-		"3": "card.agenda:base.only/research_team_biotic",
-		"4": "card.agenda:base.only/research_team_cybernetic",
-		"5": "card.agenda:base.only/research_team_propulsion",
-		"6": "card.agenda:base.only/research_team_warfare",
-		"7": "card.agenda:base.only/senate_sanctuary",
-		"8": "card.agenda:base.only/shard_of_the_throne",
-		"9": "card.agenda:base.only/terraforming_initiative",
-		"10": "card.agenda:base.only/the_crown_of_emphidia",
-		"11": "card.agenda:base.only/the_crown_of_thalnos"
+		"3": "card.agenda:base.only/representative_government",
+		"4": "card.agenda:base.only/research_team_biotic",
+		"5": "card.agenda:base.only/research_team_cybernetic",
+		"6": "card.agenda:base.only/research_team_propulsion",
+		"7": "card.agenda:base.only/research_team_warfare",
+		"8": "card.agenda:base.only/senate_sanctuary",
+		"9": "card.agenda:base.only/shard_of_the_throne",
+		"10": "card.agenda:base.only/terraforming_initiative",
+		"11": "card.agenda:base.only/the_crown_of_emphidia",
+		"12": "card.agenda:base.only/the_crown_of_thalnos"
 	}
 }
