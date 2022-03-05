@@ -15,7 +15,8 @@ class Turns {
 
     getTurnOrder() {
         if (!this._turnOrder) {
-            this._turnOrder = world.TI4.getAllPlayerDesks();
+            this._turnOrder = world.TI4.getAllPlayerDesks(); // NOT in constructor, world.TI4 not ready
+            this._currentTurn = this._turnOrder[0];
         }
         return this._turnOrder;
     }
@@ -25,6 +26,7 @@ class Turns {
         assert(!player || player instanceof Player);
 
         this._turnOrder = playerDeskOrder;
+        this._currentTurn = this._turnOrder[0];
 
         // Tell world order changed.  First by message then by event.
         const colorOrder = this._turnOrder.map(
@@ -97,8 +99,8 @@ class Turns {
             color
         );
 
-        // Get active players.
-        const activePlayerSlots = new Set();
+        // Get passed players.  (Safter than getting active in case not using status pads)
+        const passedPlayerSlots = new Set();
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
@@ -107,21 +109,12 @@ class Turns {
             if (nsid !== "pad:base/status") {
                 continue;
             }
-            if (obj.__getPass()) {
-                continue;
+            if (!obj.__getPass()) {
+                continue; // active
             }
             const owningPlayerSlot = obj.getOwningPlayerSlot();
             assert(owningPlayerSlot >= 0);
-            activePlayerSlots.add(owningPlayerSlot);
-        }
-
-        // Filter to active.
-        const activeTurnOrder = this._turnOrder.filter((desk) => {
-            return activePlayerSlots.has(desk.playerSlot);
-        });
-        if (activeTurnOrder.length === 0) {
-            Broadcast.broadcastAll("ui.message.all_players_have_passed");
-            return;
+            passedPlayerSlots.add(owningPlayerSlot);
         }
 
         // Careful, the "current" player may have passed during their turn.
@@ -130,7 +123,7 @@ class Turns {
         let nextActive = undefined;
         for (const candidate of this._turnOrder) {
             const candidateSlot = candidate.playerSlot;
-            const isActive = activePlayerSlots.has(candidateSlot);
+            const isActive = !passedPlayerSlots.has(candidateSlot);
             if (!firstActive && isActive) {
                 firstActive = candidate;
             }
@@ -146,7 +139,13 @@ class Turns {
             nextActive = firstActive;
         }
 
-        this.setCurrentTurn(nextActive, clickingPlayer);
+        if (nextActive) {
+            this.setCurrentTurn(nextActive, clickingPlayer);
+        } else {
+            Broadcast.broadcastAll(
+                locale("ui.message.all_players_have_passed")
+            );
+        }
     }
 
     /**
@@ -155,7 +154,7 @@ class Turns {
      * @param {Player} player
      * @returns {boolean}
      */
-    static isActivePlayer(player) {
+    isActivePlayer(player) {
         // TODO XXX
         return true;
     }
