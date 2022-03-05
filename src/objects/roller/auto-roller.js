@@ -99,7 +99,9 @@ class AutoRoller {
 
         const isEndTurn = rollType === "endTurn";
         if (isEndTurn) {
-            world.TI4.turns.endTurn(player.getSlot(), player);
+            if (world.TI4.turns.isActivePlayer(player)) {
+                world.TI4.turns.endTurn(player);
+            }
             return;
         }
 

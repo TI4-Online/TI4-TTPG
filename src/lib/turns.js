@@ -70,18 +70,20 @@ class Turns {
         );
     }
 
-    endTurn(playerSlot, clickingPlayer) {
-        assert(typeof playerSlot === "number");
+    /**
+     * End the active player's turn.
+     *
+     * @param {Player} clickingPlayer
+     */
+    endTurn(clickingPlayer) {
         assert(clickingPlayer instanceof Player);
 
-        if (
-            !this._currentTurn ||
-            playerSlot !== this._currentTurn._playerSlot
-        ) {
+        if (!this._currentTurn) {
             return;
         }
 
-        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const playerDesk = this._currentTurn;
+        const playerSlot = playerDesk.playerSlot;
         const player = world.getPlayerBySlot(playerSlot);
         let name = player && player.getName();
         if (!name || name.length === 0) {
@@ -105,7 +107,7 @@ class Turns {
             if (nsid !== "pad:base/status") {
                 continue;
             }
-            if (obj.__isPass()) {
+            if (obj.__getPass()) {
                 continue;
             }
             const owningPlayerSlot = obj.getOwningPlayerSlot();
@@ -122,24 +124,29 @@ class Turns {
             return;
         }
 
-        var nextTurn = false;
-        var nextPlayer = undefined;
-
-        activeTurnOrder.every((_playerDesk) => {
-            if (nextTurn) {
-                nextPlayer = _playerDesk;
-                return false;
+        // Careful, the "current" player may have passed during their turn.
+        let firstActive = undefined;
+        let useNextActive = false;
+        let nextActive = undefined;
+        for (const candidate of this._turnOrder) {
+            const candidateSlot = candidate.playerSlot;
+            const isActive = activePlayerSlots.has(candidateSlot);
+            if (!firstActive && isActive) {
+                firstActive = candidate;
             }
-            if (_playerDesk.colorName == this._currentTurn._colorName) {
-                nextTurn = true;
+            if (useNextActive && isActive) {
+                useNextActive = false;
+                nextActive = candidate;
             }
-            return true;
-        });
-        if (!nextPlayer) {
-            nextPlayer = activeTurnOrder[0];
+            if (candidate === this._currentTurn) {
+                useNextActive = true;
+            }
+        }
+        if (!nextActive) {
+            nextActive = firstActive;
         }
 
-        this.setCurrentTurn(nextPlayer, clickingPlayer);
+        this.setCurrentTurn(nextActive, clickingPlayer);
     }
 
     /**
