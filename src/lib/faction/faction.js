@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { FACTION_DATA } = require("./faction.data");
 const { globalEvents, world } = require("../../wrapper/api");
+const locale = require("../locale");
 
 let _nsidNameToFaction = false;
 let _playerSlotToFaction = false;
@@ -100,6 +101,14 @@ class Faction {
 
     get nsidSource() {
         return this._factionAttrs.source;
+    }
+
+    get nameAbbr() {
+        return locale("faction.abbr." + this.nsidName);
+    }
+
+    get nameFull() {
+        return locale("faction.full." + this.nsidName);
     }
 }
 

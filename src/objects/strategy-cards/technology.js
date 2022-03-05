@@ -9,10 +9,12 @@ const {
     ImageWidget,
     Text,
     refObject,
+    world,
 } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
 
 const imageSize = 30;
 
@@ -74,15 +76,21 @@ function drawTechButton(
     xOffset,
     yOffset,
     tech,
+    playerSlot,
     playerTechnologies,
     ownedTechnologies,
     packageId
 ) {
+    assert(typeof packageId === "string");
+
     let techButton = new Button()
         .setText(tech.name)
         .setTextColor(techIcons[tech.type].color)
         .setEnabled(!ownedTechnologies.includes(tech));
-    techButton.onClicked.add(onTechResearched);
+    techButton.onClicked.add((button, player) => {
+        const techName = button.getText();
+        onTechResearched(techName, playerSlot);
+    });
     canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
     if (tech.faction) {
@@ -142,9 +150,10 @@ const countPlayerTechsByType = (playerSlot) => {
     return playerTechnologies;
 };
 
-const onTechResearched = (button, player) => {
-    const technologyName = button.getText();
-    const playerSlot = player.getSlot();
+const onTechResearched = (technologyName, playerSlot) => {
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    const player = world.getPlayerBySlot(playerSlot);
+
     const technology = Technology.getTechnologies(playerSlot).find(
         (tech) => tech.name === technologyName
     );
@@ -162,7 +171,7 @@ const onTechResearched = (button, player) => {
 
     let messageKey = "strategy_card.technology.message.researched";
     let messageParameters = {
-        playerName: player.getName(),
+        playerName: player ? player.getName() : playerDesk.colorName,
         technologyName: technologyName,
         skips: "",
     };
@@ -185,13 +194,12 @@ const onTechResearched = (button, player) => {
         );
     }
 
-    Broadcast.chatAll(
-        locale(messageKey, messageParameters),
-        player.getPlayerColor()
-    );
+    Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
 };
 
 function widgetFactory(playerDesk, packageId) {
+    assert(typeof packageId === "string");
+
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -216,6 +224,7 @@ function widgetFactory(playerDesk, packageId) {
                 xOffset,
                 yOffset,
                 tech,
+                playerSlot,
                 playerTechnologies,
                 ownedTechnologies,
                 packageId
@@ -242,6 +251,7 @@ function widgetFactory(playerDesk, packageId) {
             xOffset,
             yOffset,
             tech,
+            playerSlot,
             playerTechnologies,
             ownedTechnologies,
             packageId

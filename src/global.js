@@ -45,7 +45,7 @@ globalEvents.TI4 = {
     onStrategyCardPlayed: new TriggerableMulticastDelegate(),
 
     // Called when a Strategy Card selection is done by a player
-    // <(object: card, player:Player) => void>
+    // <(strategyCard: card, player:Player, owningPlayerSlot: number) => void>
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 
     // Called when turn changes.
