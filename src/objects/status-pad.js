@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const TP = require("../wrapper/api");
 
@@ -26,19 +27,13 @@ pnlUI.widget.setMinimumWidth(400);
 pnlUI.widget.setMinimumHeight(300);
 
 const obj = TP.refObject; // get reference now, cannot use later
-
-let isAway = ObjectSavedData.get(obj, "isAway", false);
-let isPass = ObjectSavedData.get(obj, "isPass", false);
+const packageId = TP.refPackageId;
 
 const awayButton = new TP.Button().setText("Away").setFontSize(24);
 const passButton = new TP.Button().setText("Pass").setFontSize(24);
 
-const awayImage = new TP.ImageWidget().setImage(
-    isAway ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png"
-);
-const passImage = new TP.ImageWidget().setImage(
-    isPass ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png"
-);
+const awayImage = new TP.ImageWidget();
+const passImage = new TP.ImageWidget();
 
 btnUI.widget.setChild(
     new TP.HorizontalBox()
@@ -51,29 +46,52 @@ pnlUI.widget.setChild(
     new TP.HorizontalBox().addChild(passImage).addChild(awayImage)
 );
 
-awayButton.onClicked = (btn, player) => {
-    isAway = !isAway;
-    ObjectSavedData.set(obj, "isAway", isAway);
-
-    awayImage.setImage(
-        isAway ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png",
-        btn.getOwningObject().getScriptPackageId()
-    );
-};
-
-passButton.onClicked = (btn, player) => {
-    isPass = !isPass;
-    ObjectSavedData.set(obj, "isPass", isPass);
-
-    passImage.setImage(
-        isPass ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png",
-        btn.getOwningObject().getScriptPackageId()
-    );
-};
-
 TP.refObject.addUI(btnUI);
 TP.refObject.addUI(pnlUI);
 
-TP.refObject.__isPass = () => {
-    return isPass;
+function getAway() {
+    return ObjectSavedData.get(obj, "isAway", false);
+}
+
+function setAway(value) {
+    assert(typeof value === "boolean");
+    ObjectSavedData.set(obj, "isAway", value);
+    awayImage.setImage(
+        value ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png",
+        packageId
+    );
+}
+
+function getPass() {
+    return ObjectSavedData.get(obj, "isPass", false);
+}
+
+function setPass(value) {
+    assert(typeof value === "boolean");
+    ObjectSavedData.set(obj, "isPass", value);
+    passImage.setImage(
+        value ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png",
+        packageId
+    );
+}
+
+awayButton.onClicked = (btn, player) => {
+    setAway(!getAway());
 };
+
+passButton.onClicked = (btn, player) => {
+    setPass(!getPass());
+};
+
+TP.refObject.__getPass = () => {
+    return getPass();
+};
+
+TP.refObject.__setPass = (value) => {
+    assert(typeof value === "boolean");
+    setPass(value);
+};
+
+// "Set" the current values to update UI.
+setPass(getPass());
+setAway(getAway());
