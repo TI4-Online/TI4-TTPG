@@ -206,7 +206,7 @@ class CombatRoller {
         assert(typeof dicePos.x === "number");
 
         let rollTypeLocalized = locale(`rollType.${this._rollType}`);
-        
+
         Broadcast.broadcastAll(
             locale("ui.message.player_rolling_for", {
                 playerName: this._player.getName(),

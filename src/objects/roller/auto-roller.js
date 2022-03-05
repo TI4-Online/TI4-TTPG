@@ -96,15 +96,15 @@ class AutoRoller {
         assert(typeof rollType === "string");
         assert(!planet || planet instanceof Planet);
         assert(player instanceof Player);
-        
+
         const isEndTurn = rollType === "endTurn";
-        if (isEndTurn){
+        if (isEndTurn) {
             world.TI4.turns.endTurn(player);
             return;
         }
 
         const isFinMove = rollType === "finishMove";
-        if (isFinMove){
+        if (isFinMove) {
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
                 player.getSlot()
             );
@@ -113,13 +113,14 @@ class AutoRoller {
             Broadcast.broadcastAll(
                 locale("ui.message.finalize_movement", {
                     playerName: player.getName(),
-                }), color
+                }),
+                color
             );
             return;
         }
 
         const isAnnounceRetreat = rollType === "announceRetreat";
-        if (isAnnounceRetreat){
+        if (isAnnounceRetreat) {
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
                 player.getSlot()
             );
@@ -128,13 +129,14 @@ class AutoRoller {
             Broadcast.broadcastAll(
                 locale("ui.message.announce_retreat", {
                     playerName: player.getName(),
-                }), color
+                }),
+                color
             );
             return;
         }
 
         const isProduction = rollType === "production";
-        if (isProduction){
+        if (isProduction) {
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
                 player.getSlot()
             );
@@ -145,7 +147,8 @@ class AutoRoller {
                     playerName: player.getName(),
                     systemTile: this._activeSystem.tile,
                     systemName: this._activeSystem.getSummaryStr(),
-                }), color
+                }),
+                color
             );
             return;
         }
