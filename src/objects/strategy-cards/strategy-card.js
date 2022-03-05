@@ -221,7 +221,9 @@ class RegisterStrategyCardUI {
 
 function onUiClosedClicked(button, player) {
     const border = getTopLevelWidget(button);
-    const owningPlayerSlot = border.desk.playerSlot;
+    const owningPlayerSlot = border.desk
+        ? border.desk.playerSlot
+        : player.getSlot();
 
     // Only react on the correct player?  For now let anyone close them
     // (much easier for testing).

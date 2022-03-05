@@ -9,7 +9,6 @@ const { Faction } = require("../faction/faction");
 const { FindTurnOrder } = require("./find-turn-order");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
-const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
 const {
     world,
@@ -297,35 +296,54 @@ class EndStatusPhase {
      * and relics.
      */
     static refreshCards() {
+        const systemHexes = new Set();
+        for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+            const pos = systemTileObj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            systemHexes.add(hex);
+        }
+
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj, false)) {
-                continue; // we only want to refresh solo cards
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            if (obj.getStackSize() > 1) {
+                continue;
+            }
+            if (obj.isHeld() || obj.isInHolder()) {
+                continue;
+            }
+            if (obj.isFaceUp()) {
+                continue; // already face up
             }
 
-            const card = ObjectNamespace.parseCard(obj);
+            const parsed = ObjectNamespace.parseCard(obj);
 
             // refresh planets and legendary planet cards
-            if (card.deck.includes("planet")) {
+            if (parsed.deck.includes("planet")) {
+                // Ignore cards on system tiles.
                 const pos = obj.getPosition();
-                const systemObj = System.getSystemTileObjectByPosition(pos);
-                // planet cards on map are unowned planets therefore don't refresh
-                if (!systemObj) {
+                const hex = Hex.fromPosition(pos);
+                if (!systemHexes.has(hex)) {
                     EndStatusPhase.makeFaceUp(obj);
                 }
             }
 
             // refresh technology
-            if (card.deck.includes("technology")) {
+            if (parsed.deck.includes("technology")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
 
             // refresh relics: crown of emphidia, maw of worlds etc.
-            if (card.deck.includes("relic")) {
+            if (parsed.deck.includes("relic")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
 
             // refresh agents
-            if (card.deck.includes("agent")) {
+            if (parsed.deck.includes("agent")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
         }
