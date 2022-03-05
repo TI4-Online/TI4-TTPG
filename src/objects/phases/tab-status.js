@@ -16,6 +16,7 @@ class TabStatus {
                 EndStatusPhase.refreshCards();
                 EndStatusPhase.distributeCommandTokens();
                 EndStatusPhase.returnStrategyCards();
+                EndStatusPhase.resetPassedFlags();
             },
         };
 
