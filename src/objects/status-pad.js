@@ -1,3 +1,4 @@
+const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const TP = require("../wrapper/api");
 
 const btnUI = new TP.UIElement();
@@ -24,14 +25,20 @@ pnlUI.widget.setHorizontalAlignment(0);
 pnlUI.widget.setMinimumWidth(400);
 pnlUI.widget.setMinimumHeight(300);
 
-let isAway = false;
-let isPass = false;
+const obj = TP.refObject; // get reference now, cannot use later
+
+let isAway = ObjectSavedData.get(obj, "isAway", false);
+let isPass = ObjectSavedData.get(obj, "isPass", false);
 
 const awayButton = new TP.Button().setText("Away").setFontSize(24);
 const passButton = new TP.Button().setText("Pass").setFontSize(24);
 
-const awayImage = new TP.ImageWidget().setImage("locale/ui/panel_away_off.png");
-const passImage = new TP.ImageWidget().setImage("locale/ui/panel_pass_off.png");
+const awayImage = new TP.ImageWidget().setImage(
+    isAway ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png"
+);
+const passImage = new TP.ImageWidget().setImage(
+    isPass ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png"
+);
 
 btnUI.widget.setChild(
     new TP.HorizontalBox()
@@ -46,6 +53,8 @@ pnlUI.widget.setChild(
 
 awayButton.onClicked = (btn, player) => {
     isAway = !isAway;
+    ObjectSavedData.set(obj, "isAway", isAway);
+
     awayImage.setImage(
         isAway ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png",
         btn.getOwningObject().getScriptPackageId()
@@ -54,6 +63,8 @@ awayButton.onClicked = (btn, player) => {
 
 passButton.onClicked = (btn, player) => {
     isPass = !isPass;
+    ObjectSavedData.set(obj, "isPass", isPass);
+
     passImage.setImage(
         isPass ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png",
         btn.getOwningObject().getScriptPackageId()
@@ -62,3 +73,7 @@ passButton.onClicked = (btn, player) => {
 
 TP.refObject.addUI(btnUI);
 TP.refObject.addUI(pnlUI);
+
+TP.refObject.__isPass = () => {
+    return isPass;
+};
