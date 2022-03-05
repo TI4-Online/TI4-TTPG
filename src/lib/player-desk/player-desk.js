@@ -460,6 +460,20 @@ class PlayerDesk {
         const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
         const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
         player.setPositionAndRotation(pos, rot);
+
+        // HACK HACK HACK
+        // Player.getSlot() sometimes returns -1 (and Player.getName() is empty).
+        // Temporarily interpose so it returns the correct value.
+        if (!player.__origGetSlot) {
+            player.__origGetSlot = player.getSlot;
+        }
+        player.getSlot = () => {
+            let result = player.__origGetSlot();
+            if (result < 0) {
+                result = this.playerSlot;
+            }
+            return result;
+        };
     }
 
     /**
