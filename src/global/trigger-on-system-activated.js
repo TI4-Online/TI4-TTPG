@@ -9,7 +9,6 @@
 const { globalEvents, world } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { Turns } = require("../lib/turns");
 const locale = require("../lib/locale");
 
 // Register a listener to report (as well as test) system activation.
@@ -31,7 +30,7 @@ function onCommandTokenReleased(
     grabPosition,
     grabRotation
 ) {
-    if (!Turns.isActivePlayer(player)) {
+    if (!world.TI4.turns.isActivePlayer(player)) {
         return; // not the active player
     }
     if (player.getSlot() !== obj.getOwningPlayerSlot()) {

@@ -20,58 +20,58 @@ function _placeAgenda(agendaCard, onTop) {
     deck.addCards(agendaCard, toFront, offset, animate, flipped);
 }
 
+const NAMES_AND_ACTIONS = [
+    {
+        localeName: "ui.menu.place_agenda_top",
+        placeTop: true,
+    },
+    {
+        localeName: "ui.menu.place_agenda_bottom",
+        placeTop: false,
+    },
+];
+
 function addRightClickOptions(agendaCard) {
     assert(agendaCard instanceof Card);
-    const namesAndActions = [
-        {
-            name: locale("ui.menu.place_agenda_top"),
-            action: (player) => {
-                _placeAgenda(agendaCard, true);
-            },
-        },
-        {
-            name: locale("ui.menu.place_agenda_bottom"),
-            action: (player) => {
-                _placeAgenda(agendaCard, false);
-            },
-        },
-    ];
 
     // Add as right-click options.
-    for (const nameAndAction of namesAndActions) {
-        agendaCard.addCustomAction("*" + nameAndAction.name);
+    for (const nameAndAction of NAMES_AND_ACTIONS) {
+        const actionName = "*" + locale(nameAndAction.localeName);
+        agendaCard.addCustomAction(actionName);
     }
-    agendaCard.onCustomAction.add((obj, player, actionName) => {
-        for (const nameAndAction of namesAndActions) {
-            if ("*" + nameAndAction.name === actionName) {
-                nameAndAction.action(player);
+    agendaCard.onCustomAction.add((obj, player, selectedActionName) => {
+        for (const nameAndAction of NAMES_AND_ACTIONS) {
+            const actionName = "*" + locale(nameAndAction.localeName);
+            if (selectedActionName === actionName) {
+                _placeAgenda(agendaCard, nameAndAction.placeTop);
                 break;
             }
         }
     });
 }
 
-globalEvents.onObjectCreated.add((obj) => {
-    const nsid = ObjectNamespace.getNsid(obj);
-    if (nsid.startsWith("card.agenda")) {
-        addRightClickOptions(obj);
-    }
-});
-
-// second to last card being drawn from a deck doesn't trigger onObjectCreated
-// for the last card in the deck
-for (const obj of world.getAllObjects()) {
-    if (obj instanceof Card && obj.getStackSize() > 1) {
-        obj.onRemoved.add((cardStack) => {
-            if (
-                cardStack.getStackSize() === 1 &&
-                ObjectNamespace.getNsid(cardStack).startsWith("card.agenda")
-            ) {
-                addRightClickOptions(obj);
-            }
-        });
+function removeRightClickOptions(agendaCard) {
+    for (const nameAndAction of NAMES_AND_ACTIONS) {
+        const actionName = "*" + locale(nameAndAction.localeName);
+        agendaCard.removeCustomAction(actionName);
     }
 }
+
+globalEvents.TI4.onSingletonCardCreated.add((card) => {
+    assert(card instanceof Card);
+    const nsid = ObjectNamespace.getNsid(card);
+    if (nsid.startsWith("card.agenda")) {
+        addRightClickOptions(card);
+        card.__hasRightClickAgendaOptions = true;
+    }
+});
+globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
+    assert(card instanceof Card);
+    if (card.__hasRightClickAgendaOptions) {
+        removeRightClickOptions(card);
+        card.__hasRightClickAgendaOptions = false;
+    }
+});
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {

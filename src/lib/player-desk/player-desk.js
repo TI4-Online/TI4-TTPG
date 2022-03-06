@@ -144,7 +144,10 @@ function moveNewPlayerToNonSeatSlot(player) {
 
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
-    moveNewPlayerToNonSeatSlot(player);
+    // Wait a tick to make sure player is fully set up.
+    process.nextTick(() => {
+        moveNewPlayerToNonSeatSlot(player);
+    });
 });
 
 // Release seat when someone leaves.
@@ -295,7 +298,26 @@ class PlayerDesk {
         }
     }
 
+    static createDummy(index, playerSlot) {
+        assert(typeof index === "number");
+        assert(typeof playerSlot === "number");
+
+        return new PlayerDesk(
+            {
+                colorName: "black",
+                hexColor: "#000000",
+                plasticHexColor: "#000000",
+                pos: { x: 0, y: 0 },
+                yaw: 0,
+                defaultPlayerSlot: playerSlot,
+            },
+            index
+        );
+    }
+
     constructor(attrs, index) {
+        assert(typeof index === "number");
+
         this._index = index;
         this._colorName = attrs.colorName;
         this._color = ColorUtil.colorFromHex(attrs.hexColor);

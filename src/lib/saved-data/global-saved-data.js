@@ -10,6 +10,7 @@ const GLOBAL_SAVED_DATA_KEY = Object.freeze({
     PLAYER_COUNT: "playerCount",
     DESK_STATE: "desks",
     GAME_SETUP_CONFIG: "config",
+    TURNS: "turns",
 });
 
 /**
