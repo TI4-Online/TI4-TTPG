@@ -38,7 +38,7 @@
 	"BackTexture": "locale/card/planet/base/1.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 5,
 	"Width": 4.2,

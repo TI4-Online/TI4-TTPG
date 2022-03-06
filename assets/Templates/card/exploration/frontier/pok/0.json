@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/exploration/frontier.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 2,
 	"Width": 4.2,

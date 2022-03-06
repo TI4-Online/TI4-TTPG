@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/technology/unknown.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 2,
 	"NumVertical": 1,
 	"Width": 6.3,

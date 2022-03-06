@@ -38,7 +38,7 @@
 	"BackTexture": "locale/card/leader/pok/0.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 5,
 	"NumVertical": 8,
 	"Width": 6.3,

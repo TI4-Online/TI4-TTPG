@@ -13,6 +13,7 @@
     "refresh": "git pull && yarn install && node tooling/clean.js && node tooling/setup.js && node tooling/builddev.js",
     "generate:playertokens": "node tooling/generators/playertokens.js",
     "generate:maptiles": "node tooling/generators/maptiles.js",
+    "generate:cardsheets": "node tooling/generators/cardsheets.js",
     "generate:langfile": "node tooling/lang.js",
     "check:prettier": "prettier --check .",
     "test": "jest"
