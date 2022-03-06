@@ -6,6 +6,7 @@ const { CloneReplace } = require("../clone-replace");
 const { DealDiscard } = require("../card/deal-discard");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
+const { UnitPlastic } = require("../unit/unit-plastic");
 const { ATTACHMENTS } = require("../../objects/attachments/attachment.data");
 const {
     GameObject,
@@ -26,11 +27,33 @@ const { Hex } = require("../hex");
  * 3. trigger attach.
  */
 class Explore {
-    static getExploreActionNamesAndActions(systemTileObj) {
+    static getExploreActionNamesAndActions(systemTileObj, player) {
         assert(systemTileObj instanceof GameObject);
+        assert(player instanceof Player);
 
         const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
         assert(system);
+
+        const slot = player.getSlot();
+        const faction = world.TI4.getFactionByPlayerSlot(slot);
+        let distantSunsPlanets = false;
+        if (faction.raw.abilities.includes("distant_suns")) {
+            const hex = Hex.fromPosition(systemTileObj.getPosition());
+            const allPlastic = UnitPlastic.getAll();
+            const hexPlastic = allPlastic.filter(
+                (plastic) => plastic.hex === hex
+            );
+            const mechPlastic = hexPlastic.filter((plastic) =>
+                plastic.unit.includes("mech")
+            );
+            const playersMechs = mechPlastic.filter(
+                (plastic) => plastic.owningPlayerSlot === slot
+            );
+            UnitPlastic.assignPlanets(playersMechs);
+            distantSunsPlanets = playersMechs.map(
+                (plastic) => plastic.planet.localeName
+            );
+        }
 
         const namesAndActions = [];
         if (system.planets.length > 0) {
@@ -53,6 +76,26 @@ class Explore {
                         );
                     },
                 });
+                if (
+                    distantSunsPlanets &&
+                    distantSunsPlanets.includes(planet.localeName)
+                ) {
+                    namesAndActions.push({
+                        name: locale("ui.action.system.distant_suns_explore", {
+                            planetName: planet.getNameStr(),
+                        }),
+                        action: (player) => {
+                            assert(player instanceof Player);
+                            const overrideTrait = false;
+                            Explore.doubleExplore(
+                                systemTileObj,
+                                planet,
+                                overrideTrait,
+                                player
+                            );
+                        },
+                    });
+                }
             }
         } else {
             namesAndActions.push({

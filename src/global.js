@@ -144,4 +144,3 @@ require("./global/shuffle-decks-on-load");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
-require("./global/register-faction-abilities");

@@ -12,9 +12,6 @@
     "ui.message.distribute_command_tokens": "Distributing {count} command tokens to {playerColor}.",
     "ui.message.not_enough_command_tokens": "{playerColor} does not have enough command tokens in supply.",
 
-    "ui.message.distant_suns_helper": "You can right click your mechs to explore planets using your distant suns ability.",
-    "ui.message.distant_suns_explore": "Exploring {planet} using Distant Suns.",
-
     "ui.message.attach_token": "Attaching {attachmentName} to {planetName}",
     "ui.message.detach_token": "Detaching {attachmentName} from {planetName}",
 
@@ -65,6 +62,7 @@
     "ui.action.system.diplomacy": "Diplomacy System",
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
+    "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
     "ui.action.end_turn": "End Turn",
 
     "ui.label.movement": "Movement Step",
@@ -81,7 +79,6 @@
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
 
     "ui.menu.purge": "Purge",
-    "ui.menu.distant_suns": "Explore with Distant Suns",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
