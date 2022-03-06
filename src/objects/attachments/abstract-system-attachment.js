@@ -44,7 +44,7 @@ class AbstractSystemAttachment {
         // Also applies when moved by script!
         this._obj.onMovementStopped.add(() => this._place());
 
-        // DO NOT PLACE IN CONSTRUCTOR!  Subclass might not be fully
+        // DO NOT CALL _PLACE IN CONSTRUCTOR!  Subclass might not be fully
         // set up yet, have them call `attachIfOnSystem` when ready.
     }
 
