@@ -30,15 +30,16 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         }
         return new AbstractPlanetAttachment(
             gameObject,
-            attrs
+            attrs,
+            attrs.localeName
         ).attachIfOnSystem();
     }
 
     /**
      * Constructor.
      *
-     * Attrs must include at least `_faceUp` and may optionally include
-     * `_faceDown` if different from up.
+     * Attrs should include `faceUp` for default adjustments and may
+     * include optional `faceDown` if different from up.
      *
      * @param {GameObject} gameObject - attachment token
      * @param {Object} attrs
@@ -59,7 +60,7 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
     place(system, planet, systemTileObj) {
         // Decide if face up or down.
         this._attachedFaceUp =
-            !this._attrs._faceDown || Facing.isFaceUp(this._obj);
+            !this._attrs.faceDown || Facing.isFaceUp(this._obj);
 
         this._positionOnPlanet(planet, systemTileObj);
         this._addPlanetAttrs(planet);
@@ -98,8 +99,8 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         planet.attachments.push(this);
 
         const attrs = this._attachedFaceUp
-            ? this._attrs._faceUp
-            : this._attrs._faceDown;
+            ? this._attrs.faceUp
+            : this._attrs.faceDown;
 
         // Some attachments have not attributes (e.g. "DMZ")
         if (!attrs) {
@@ -139,8 +140,8 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         }
 
         const attrs = this._attachedFaceUp
-            ? this._attrs._faceUp
-            : this._attrs._faceDown;
+            ? this._attrs.faceUp
+            : this._attrs.faceDown;
 
         // Some attachments have not attributes (e.g. "DMZ")
         if (!attrs) {
