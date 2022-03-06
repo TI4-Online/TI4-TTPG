@@ -257,7 +257,7 @@ class Explore {
 
         // Draw the card.
         const count = 1;
-        const rot = new Rotator(0, 0, 180);
+        const rot = new Rotator(0, player.getRotation().yaw, 180);
         const card = DealDiscard.dealToPosition(
             deckNsidPrefix,
             count,
@@ -353,7 +353,7 @@ class Explore {
 
         // draw the cards, drawing them separately so it is obvious that multiple
         // cards were drawn
-        const rot = new Rotator(0, 0, 180);
+        const rot = new Rotator(0, player.getRotation().yaw, 180);
         const card1 = DealDiscard.dealToPosition(
             deckNsidPrefix,
             1,
