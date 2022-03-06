@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "A75B7E1C20D5E18F73C8487CB34A614E",
+	"GUID": "97A3E804B69C84BA14E964014DCC26B8",
 	"Name": "Technology (Red) (pok)",
 	"Metadata": "card.technology.red:pok/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/red/pok/0.face.jpg",
-	"BackTexture": "global/card/technology/red.back.jpg",
+	"FrontTexture": "locale\\card\\technology\\red\\pok\\0.face.jpg",
+	"BackTexture": "global\\card\\technology\\red.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 1,
 	"Width": 6.3,

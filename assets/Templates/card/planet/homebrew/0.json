@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "F08EE692CC4397E98DA0FCC9D95250D8",
+	"GUID": "E17289311777D332F014791355CFAB11",
 	"Name": "Planets (homebrew)",
 	"Metadata": "card.planet:homebrew/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/planet/homebrew/0.face.jpg",
-	"BackTexture": "locale/card/planet/homebrew/0.back.jpg",
+	"FrontTexture": "locale\\card\\planet\\homebrew\\0.face.jpg",
+	"BackTexture": "locale\\card\\planet\\homebrew\\0.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 5,
 	"Width": 4.2,

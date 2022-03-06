@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "E9303542E08B36596012BEE5C9470BDF",
+	"GUID": "D04CD3C3727B91FFCED6BCDB2372D2BA",
 	"Name": "Actions (base 2/2)",
 	"Metadata": "card.action:base/1",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/action/base/1.face.jpg",
-	"BackTexture": "global/card/action.back.jpg",
+	"FrontTexture": "locale\\card\\action\\base\\1.face.jpg",
+	"BackTexture": "global\\card\\action.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 5,
 	"Width": 4.2,

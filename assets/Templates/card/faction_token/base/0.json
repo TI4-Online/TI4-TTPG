@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "D21187BE49F470B23C6E2E75BF964C46",
+	"GUID": "75D52CEBC93C62F3DB3CAAA1C7033076",
 	"Name": "Faction Tokens (base)",
 	"Metadata": "card.faction_token:base/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/faction_token/base/0.face.jpg",
-	"BackTexture": "global/card/faction_token.back.jpg",
+	"FrontTexture": "locale\\card\\faction_token\\base\\0.face.jpg",
+	"BackTexture": "global\\card\\faction_token.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 3,
 	"Width": 6.3,

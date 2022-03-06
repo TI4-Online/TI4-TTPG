@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "D39001C11EC2159CF88F5B13041D1333",
+	"GUID": "568A38E1889AA619BC9C42AA23FD4DAE",
 	"Name": "Leaders (pok 2/3)",
 	"Metadata": "card.leader:pok/1",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/leader/pok/1.face.jpg",
-	"BackTexture": "locale/card/leader/pok/1.back.jpg",
+	"FrontTexture": "locale\\card\\leader\\pok\\1.face.jpg",
+	"BackTexture": "locale\\card\\leader\\pok\\1.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 5,
 	"NumVertical": 8,
 	"Width": 6.3,

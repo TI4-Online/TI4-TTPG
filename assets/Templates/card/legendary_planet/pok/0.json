@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "6238F8C95669FB27918E0BC8DCA49852",
+	"GUID": "523B486F9393AF75B88784A1E000961D",
 	"Name": "Legendary Planets (pok)",
 	"Metadata": "card.legendary_planet:pok/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/legendary_planet/pok/0.face.jpg",
-	"BackTexture": "locale/card/legendary_planet/pok/0.back.jpg",
+	"FrontTexture": "locale\\card\\legendary_planet\\pok\\0.face.jpg",
+	"BackTexture": "locale\\card\\legendary_planet\\pok\\0.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 1,
 	"Width": 6.3,

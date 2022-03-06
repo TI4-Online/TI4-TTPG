@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "C3E4EB3B1DBCB14BECEBDFE6C8B457E3",
+	"GUID": "1A9C6D23C5E06C2043B9813E463AEDFF",
 	"Name": "Frontier Exploration (pok)",
 	"Metadata": "card.exploration.frontier:pok/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/exploration/frontier/pok/0.face.jpg",
-	"BackTexture": "global/card/exploration/frontier.back.jpg",
+	"FrontTexture": "locale\\card\\exploration\\frontier\\pok\\0.face.jpg",
+	"BackTexture": "global\\card\\exploration\\frontier.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 2,
 	"Width": 4.2,

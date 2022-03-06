@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "F0C1BC21B22900E9E93899A66D7FAA8A",
+	"GUID": "024556B153838044C356379E1A8503EB",
 	"Name": "Agenda (pok)",
 	"Metadata": "card.agenda:pok/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/agenda/pok/0.face.jpg",
-	"BackTexture": "global/card/agenda.back.jpg",
+	"FrontTexture": "locale\\card\\agenda\\pok\\0.face.jpg",
+	"BackTexture": "global\\card\\agenda.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 2,
 	"Width": 4.2,

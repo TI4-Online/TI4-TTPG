@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "FA60985C01871416E7304FA32F4E487E",
+	"GUID": "571351D02596AC45D9687109F42A7B7B",
 	"Name": "Technology (Unit Upgrade) (codex.ordinian)",
 	"Metadata": "card.technology.unit_upgrade:codex.ordinian/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/unit_upgrade/codex/ordinian/0.face.jpg",
-	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
+	"FrontTexture": "locale\\card\\technology\\unit_upgrade\\codex\\ordinian\\0.face.jpg",
+	"BackTexture": "global\\card\\technology\\unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 1,
 	"NumVertical": 1,
 	"Width": 6.3,

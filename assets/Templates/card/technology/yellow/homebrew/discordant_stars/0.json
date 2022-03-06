@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "79AE03AF50430FBF22765C6CBC33A2B7",
+	"GUID": "D76B964C70A6C2FC65219B72DC7ECA56",
 	"Name": "Technology (Yellow) (homebrew.discordant_stars)",
 	"Metadata": "card.technology.yellow:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/yellow/homebrew/discordant_stars/0.face.jpg",
-	"BackTexture": "global/card/technology/yellow.back.jpg",
+	"FrontTexture": "locale\\card\\technology\\yellow\\homebrew\\discordant_stars\\0.face.jpg",
+	"BackTexture": "global\\card\\technology\\yellow.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 5,
 	"NumVertical": 3,
 	"Width": 6.3,

@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "0532BDD145F871AF3EEEB1C19E3D3B98",
+	"GUID": "563708B037B80BCA249A2F05EBB283F6",
 	"Name": "Technology (Unknown) (base)",
 	"Metadata": "card.technology.unknown:base/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/unknown/base/0.face.jpg",
-	"BackTexture": "global/card/technology/unknown.back.jpg",
+	"FrontTexture": "locale\\card\\technology\\unknown\\base\\0.face.jpg",
+	"BackTexture": "global\\card\\technology\\unknown.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 2,
 	"NumVertical": 1,
 	"Width": 6.3,

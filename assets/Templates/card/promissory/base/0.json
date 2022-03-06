@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "0A502B8344108A1E87C734F3033E5B5C",
+	"GUID": "FA4FF1D6931BA00079C1D1A9E7815D5B",
 	"Name": "Promissory (base 1/2)",
 	"Metadata": "card.promissory:base/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/promissory/base/0.face.jpg",
-	"BackTexture": "global/card/promissory.back.jpg",
+	"FrontTexture": "locale\\card\\promissory\\base\\0.face.jpg",
+	"BackTexture": "global\\card\\promissory.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 8,
 	"NumVertical": 5,
 	"Width": 4.2,

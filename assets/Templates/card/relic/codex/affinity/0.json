@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "06286CDAAE348672730D25D1554C9E53",
+	"GUID": "64A307A883CF6C221BCBDFE7FC11C5BE",
 	"Name": "Relics (codex.affinity)",
 	"Metadata": "card.relic:codex.affinity/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/relic/codex/affinity/0.face.jpg",
-	"BackTexture": "global/card/relic.back.jpg",
+	"FrontTexture": "locale\\card\\relic\\codex\\affinity\\0.face.jpg",
+	"BackTexture": "global\\card\\relic.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 2,
 	"NumVertical": 2,
 	"Width": 4.2,

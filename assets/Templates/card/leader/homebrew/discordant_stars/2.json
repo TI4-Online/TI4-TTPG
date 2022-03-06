@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "2C41B3A2B62B4C4A2C36E06F2AE11CA4",
+	"GUID": "78408F1B13820E82173BACDE9F55B435",
 	"Name": "Leaders (homebrew.discordant_stars 3/4)",
 	"Metadata": "card.leader:homebrew.discordant_stars/2",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/2.face.jpg",
-	"BackTexture": "locale/card/leader/homebrew/discordant_stars/2.back.jpg",
+	"FrontTexture": "locale\\card\\leader\\homebrew\\discordant_stars\\2.face.jpg",
+	"BackTexture": "locale\\card\\leader\\homebrew\\discordant_stars\\2.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 5,
 	"NumVertical": 8,
 	"Width": 6.3,

@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "A9F2DEF424946156DC72649E7BEFB81B",
+	"GUID": "1F4F5E352E87D6C539C945ADE8EF310B",
 	"Name": "Public Objectives II (pok)",
 	"Metadata": "card.objective.public_2:pok/0",
 	"CollisionType": "Regular",
@@ -34,11 +34,11 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/objective/public_2/pok/0.face.jpg",
-	"BackTexture": "global/card/objective/public_2.back.jpg",
+	"FrontTexture": "locale\\card\\objective\\public_2\\pok\\0.face.jpg",
+	"BackTexture": "global\\card\\objective\\public_2.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 2,
 	"NumVertical": 5,
 	"Width": 4.2,
