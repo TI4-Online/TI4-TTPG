@@ -1,27 +1,86 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { Broadcast } = require("../lib/broadcast");
-const { Player, globalEvents, world } = require("../wrapper/api");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./saved-data/global-saved-data");
 const { ObjectNamespace } = require("./object-namespace");
+const { Player, globalEvents, world } = require("../wrapper/api");
 
 /**
  * Player turn manager.
  */
 class Turns {
-    constructor() {
-        this._turnOrder = undefined;
+    constructor(isPersistent) {
+        assert(!isPersistent || typeof isPersistent === "boolean");
+        this._turnOrder = [];
         this._currentTurn = undefined;
+        this._persistent = isPersistent ? true : false;
+        this._needsLoad = true;
+
+        // DO NOT LOAD SAVE STATE HERE.  Turns created before world.TI4 ready.
+    }
+
+    _save() {
+        if (!this._persistent) {
+            return;
+        }
+        const deskIndexArray = [];
+        let currentTurnDeskIndex = -1;
+        for (const playerDesk of this._turnOrder) {
+            deskIndexArray.push(playerDesk.index);
+            if (playerDesk === this._currentTurn) {
+                currentTurnDeskIndex = playerDesk.index;
+            }
+        }
+        const saveState = {
+            o: deskIndexArray,
+            c: currentTurnDeskIndex,
+        };
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.TURNS, saveState);
+    }
+
+    _load() {
+        // Load defaults.
+        this._turnOrder = world.TI4.getAllPlayerDesks();
+        this._currentTurn = this._turnOrder[0];
+
+        if (!this._persistent) {
+            return;
+        }
+
+        const saveState = GlobalSavedData.get(
+            GLOBAL_SAVED_DATA_KEY.TURNS,
+            false
+        );
+        if (!saveState) {
+            return; // keep defaults
+        }
+
+        const deskIndexArray = saveState.o;
+        const currentTurnDeskIndex = saveState.c;
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        this._turnOrder = deskIndexArray.map((index) => {
+            return playerDesks[index];
+        });
+        this._currentTurn = playerDesks[currentTurnDeskIndex]; // might be -1, fine
+    }
+
+    _maybeLoad() {
+        if (this._needsLoad) {
+            this._needsLoad = false;
+            this._load();
+        }
     }
 
     getTurnOrder() {
-        if (!this._turnOrder) {
-            this._turnOrder = world.TI4.getAllPlayerDesks(); // NOT in constructor, world.TI4 not ready
-            this._currentTurn = this._turnOrder[0];
-        }
+        this._maybeLoad();
         return this._turnOrder;
     }
 
     setTurnOrder(playerDeskOrder, player) {
+        this._maybeLoad();
         assert(Array.isArray(playerDeskOrder));
         assert(!player || player instanceof Player);
 
@@ -37,15 +96,22 @@ class Turns {
         });
         Broadcast.chatAll(msg);
 
+        // Update persistent state *before* event.
+        if (this._persistent) {
+            this._save();
+        }
+
         // Tell any listeners, and set to be the first player's turn.
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
     }
 
     getCurrentTurn() {
+        this._maybeLoad();
         return this._currentTurn;
     }
 
     setCurrentTurn(playerDesk, clickingPlayer) {
+        this._maybeLoad();
         // playerDesk may be undefined
         assert(clickingPlayer instanceof Player);
 
@@ -62,9 +128,16 @@ class Turns {
             playerDesk._color
         );
 
-        // Do this last, handlers may set turn! (active/passed)
+        // Update state.
         const prevTurn = this._currentTurn;
         this._currentTurn = playerDesk;
+
+        // Update persistent state *before* event.
+        if (this._persistent) {
+            this._save();
+        }
+
+        // Do this last, handlers may set turn! (active/passed)
         globalEvents.TI4.onTurnChanged.trigger(
             this._currentTurn,
             prevTurn,
@@ -79,6 +152,7 @@ class Turns {
      */
     endTurn(clickingPlayer) {
         assert(clickingPlayer instanceof Player);
+        this._maybeLoad();
 
         if (!this.isActivePlayer(clickingPlayer)) {
             return;
@@ -158,6 +232,7 @@ class Turns {
      * @returns {boolean}
      */
     isActivePlayer(player) {
+        this._maybeLoad();
         const playerSlot = player.getSlot();
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         return this._currentTurn === playerDesk;

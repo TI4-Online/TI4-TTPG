@@ -78,7 +78,7 @@ const { Turns } = require("./lib/turns");
 world.TI4 = {
     config: new GameSetupConfig(),
     gameData: new GameData(),
-    turns: new Turns(),
+    turns: new Turns(true),
 
     getActiveSystemTileObject: () => {
         return System.getActiveSystemTileObject();
