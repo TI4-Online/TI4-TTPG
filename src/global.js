@@ -40,6 +40,10 @@ globalEvents.TI4 = {
     // <(systemTile: GameObject, player: Player) => void>
     onSystemActivated: new TriggerableMulticastDelegate(),
 
+    // Called when an attachment mutates a system (probably a planet).
+    // <(systemTile: GameObject) => void>
+    onSystemChanged: new TriggerableMulticastDelegate(),
+
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(),

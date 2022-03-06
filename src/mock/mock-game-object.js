@@ -19,6 +19,7 @@ class GameObject {
         this._primaryColor = data && data.primaryColor;
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
         this._savedData = (data && data.savedData) || "";
+        this._size = (data && data.size) || new Vector(1, 1, 1);
         this._templateId = (data && data.templateId) || "";
         this._templateMetadata = (data && data.templateMetadata) || "";
         this._uis = (data && data.uis) || [];
@@ -97,6 +98,10 @@ class GameObject {
         return this._savedData;
     }
 
+    getSize() {
+        return this._size;
+    }
+
     getTemplateId() {
         return this._templateId;
     }
@@ -147,6 +152,10 @@ class GameObject {
 
     toJSONString() {
         return "{}";
+    }
+
+    localPositionToWorld(position) {
+        return position; // true if object at origin with no rotation...
     }
 
     worldPositionToLocal(position) {
