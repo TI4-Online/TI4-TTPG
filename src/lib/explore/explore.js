@@ -357,11 +357,10 @@ class Explore {
         } else {
             basePos = systemTileObj.getPosition();
         }
+        basePos.z += systemTileObj.getSize().z;
 
         const pos1 = basePos.add(new Vector(0, -1, 0));
         const pos2 = basePos.add(new Vector(0, 1, 0));
-        pos1.z += systemTileObj.getSize().z;
-        pos2.z += systemTileObj.getSize().z;
 
         // draw the cards, drawing them separately so it is obvious that multiple
         // cards were drawn
