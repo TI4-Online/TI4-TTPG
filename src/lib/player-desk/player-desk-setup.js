@@ -41,6 +41,9 @@ const {
 const {
     SetupStartingUnits,
 } = require("../../setup/faction/setup-starting-units");
+const {
+    SetupFactionAbilities,
+} = require("../../setup/faction/setup-faction-abilities");
 
 const { globalEvents, world } = require("../../wrapper/api");
 const assert = require("../../wrapper/assert-wrapper");
@@ -141,6 +144,7 @@ class PlayerDeskSetup {
             new SetupHomeSystem(this._playerDesk, faction),
             new SetupStartingTech(this._playerDesk, faction),
             new SetupStartingUnits(this._playerDesk, faction),
+            new SetupFactionAbilities(this._playerDesk, faction),
         ];
     }
 }
