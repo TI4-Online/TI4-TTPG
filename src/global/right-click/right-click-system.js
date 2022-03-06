@@ -94,9 +94,10 @@ function addRightClickOptions(systemTileObj) {
         const popupPanel = new VerticalBox();
         const popupUi = new UIElement();
         popupUi.widget = new Border().setChild(popupPanel);
-        popupUi.rotation = systemTileObj.worldRotationToLocal(
-            new Rotator(0, 0, 0)
-        );
+        popupUi.rotation = new Rotator(0, player.getRotation().yaw, 0);
+        // popupUi.rotation = systemTileObj.worldRotationToLocal(
+        //     new Rotator(0, 0, 0)
+        // );
         popupUi.position = ui.position.add([0, 0, 3]);
 
         const namesAndActions = getNamesAndActions(player, systemTileObj);
