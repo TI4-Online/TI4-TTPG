@@ -31,6 +31,9 @@ function addDistantSunsRightClick(obj) {
                     pos,
                     systemTileObj
                 );
+                if (!planet || !planet.firstTrait) {
+                    return;
+                }
                 Broadcast.chatAll(
                     locale("ui.message.distant_suns_explore", {
                         planet: planet.getNameStr(),
