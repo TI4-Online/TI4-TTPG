@@ -105,7 +105,7 @@
 				"Y": 20,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/units/pok/mech.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,
