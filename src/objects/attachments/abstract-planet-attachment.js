@@ -77,11 +77,11 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         assert(systemTileObj instanceof GameObject);
 
         let numAttachments = planet.attachments.length;
-        const steps = Math.floor((numAttachments - 1) / 3);
+        const steps = Math.floor(numAttachments / 3);
         if (steps % 2 === 1) {
             numAttachments += 0.5;
         }
-        const phi = ((numAttachments - 1) * 120 * Math.PI) / 180;
+        const phi = (numAttachments * 120 * Math.PI) / 180;
         const r = 1.05;
         const attachmentPosition = new Vector(
             planet.position.x - Math.sin(phi) * r,
