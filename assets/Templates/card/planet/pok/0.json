@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "FB0F05B5001A2012E242B6A8ED80B1D5",
+	"GUID": "1C53CD0AC723E7B3C72F808D012F658E",
 	"Name": "Planets (pok)",
 	"Metadata": "card.planet:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\planet\\pok\\0.face.jpg",
-	"BackTexture": "locale\\card\\planet\\pok\\0.back.jpg",
+	"FrontTexture": "locale/card/planet/pok/0.face.jpg",
+	"BackTexture": "locale/card/planet/pok/0.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
 	"HiddenIndex": -3,

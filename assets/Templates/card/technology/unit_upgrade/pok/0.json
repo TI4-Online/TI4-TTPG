@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "27D81EAC88A8A1EC9B509734CD35E1C0",
+	"GUID": "05919635AEE02AE821E23F137000C2BA",
 	"Name": "Technology (Unit Upgrade) (pok)",
 	"Metadata": "card.technology.unit_upgrade:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\unit_upgrade\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\unit_upgrade.back.jpg",
+	"FrontTexture": "locale/card/technology/unit_upgrade/pok/0.face.jpg",
+	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

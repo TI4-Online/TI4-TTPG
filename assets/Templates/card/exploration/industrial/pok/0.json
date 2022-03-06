@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "EFBC9B0AF99233250A28CD38D4499CB1",
+	"GUID": "D97ACA2CC8B6EB0E9A45A0ABE20D7D5D",
 	"Name": "Industrial Exploration (pok)",
 	"Metadata": "card.exploration.industrial:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\exploration\\industrial\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\exploration\\industrial.back.jpg",
+	"FrontTexture": "locale/card/exploration/industrial/pok/0.face.jpg",
+	"BackTexture": "global/card/exploration/industrial.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "8E194A4DB90F789B5AA858EB12420387",
+	"GUID": "0B45F8AA16065463C1A4CFF961B6529A",
 	"Name": "Faction References (base)",
 	"Metadata": "card.faction_reference:base/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\faction_reference\\base\\0.face.jpg",
-	"BackTexture": "global\\card\\faction_reference.back.jpg",
+	"FrontTexture": "locale/card/faction_reference/base/0.face.jpg",
+	"BackTexture": "global/card/faction_reference.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

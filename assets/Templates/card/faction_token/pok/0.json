@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "90EC561DFFEAFAA04A910CACA10AA384",
+	"GUID": "74BCC6AC5E8A2B1E86830A652C0D5C36",
 	"Name": "Faction Tokens (pok)",
 	"Metadata": "card.faction_token:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\faction_token\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\faction_token.back.jpg",
+	"FrontTexture": "locale/card/faction_token/pok/0.face.jpg",
+	"BackTexture": "global/card/faction_token.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

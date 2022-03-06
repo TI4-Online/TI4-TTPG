@@ -31,12 +31,16 @@ class CardUtil {
      * @param {GameObject} card
      * @return {boolean} true if a loose card.
      */
-    static isLooseCard(card, checkIsDiscardPile = false) {
+    static isLooseCard(
+        card,
+        checkIsDiscardPile = false,
+        allowFaceDown = false
+    ) {
         assert(card instanceof GameObject);
 
         return (
             card instanceof Card &&
-            card.isFaceUp() &&
+            (allowFaceDown || card.isFaceUp()) &&
             card.getStackSize() === 1 &&
             !card.getContainer() &&
             !card.isHeld() &&

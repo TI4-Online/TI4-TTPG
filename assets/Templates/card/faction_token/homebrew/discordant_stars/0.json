@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "6DC2E8335CE8B79C2751ED12A5F1B985",
+	"GUID": "D9E35207B1EAF430640BF624CFEE2FA0",
 	"Name": "Faction Tokens (homebrew.discordant_stars)",
 	"Metadata": "card.faction_token:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\faction_token\\homebrew\\discordant_stars\\0.face.jpg",
-	"BackTexture": "global\\card\\faction_token.back.jpg",
+	"FrontTexture": "locale/card/faction_token/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/faction_token.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

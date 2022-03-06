@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "05A24CB335CA0A919EA57710C890ED67",
+	"GUID": "8A1A369D814751CB4173B18300170079",
 	"Name": "Promissory (homebrew.discordant_stars)",
 	"Metadata": "card.promissory:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\promissory\\homebrew\\discordant_stars\\0.face.jpg",
-	"BackTexture": "global\\card\\promissory.back.jpg",
+	"FrontTexture": "locale/card/promissory/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

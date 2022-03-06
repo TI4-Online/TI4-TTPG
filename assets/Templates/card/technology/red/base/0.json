@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "459583639F0E7852FCC2B92FE73B51DA",
+	"GUID": "0F7343CD0021C7493EEEADC219EDE794",
 	"Name": "Technology (Red) (base)",
 	"Metadata": "card.technology.red:base/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\red\\base\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\red.back.jpg",
+	"FrontTexture": "locale/card/technology/red/base/0.face.jpg",
+	"BackTexture": "global/card/technology/red.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

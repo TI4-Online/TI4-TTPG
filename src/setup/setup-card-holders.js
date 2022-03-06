@@ -2,7 +2,7 @@ const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { Spawn } = require("./spawn/spawn");
-const { HiddenCardsType, ObjectType } = require("../wrapper/api");
+const { HiddenCardsType, ObjectType, world } = require("../wrapper/api");
 
 const HAND_LOCAL_OFFSET = {
     x: -29.7,
@@ -26,8 +26,14 @@ class SetupCardHolders extends AbstractSetup {
         obj.setHiddenCardsType(HiddenCardsType.Back);
         obj.setOwningPlayerSlot(playerSlot);
         obj.setObjectType(ObjectType.Ground);
+
+        // If player is in game, make this their primary card holder.
+        const player = world.getPlayerBySlot(playerSlot);
+        if (player) {
+            player.setHandHolder(obj);
+        }
     }
-    q;
+
     clean() {
         const playerSlot = this.playerDesk.playerSlot;
         const cardHolder = CardUtil.getCardHolder(playerSlot);
