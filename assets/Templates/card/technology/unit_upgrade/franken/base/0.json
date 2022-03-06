@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "2C6BF4973E05152DDFF755F60680A56A",
+	"GUID": "8FAC607B86C7FFB3285F5FF8B0CACF45",
 	"Name": "Technology (Unit Upgrade) (franken.base)",
 	"Metadata": "card.technology.unit_upgrade:franken.base/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\unit_upgrade\\franken\\base\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\unit_upgrade.back.jpg",
+	"FrontTexture": "locale/card/technology/unit_upgrade/franken/base/0.face.jpg",
+	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

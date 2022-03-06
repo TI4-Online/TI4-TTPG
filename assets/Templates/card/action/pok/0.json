@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "A85E0080795E6063D89027988FCD717F",
+	"GUID": "9E70361F961144FEE60E0B31F4FC7193",
 	"Name": "Actions (pok)",
 	"Metadata": "card.action:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\action\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\action.back.jpg",
+	"FrontTexture": "locale/card/action/pok/0.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

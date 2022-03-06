@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "170CE07C88B81B6AB40B9109242107ED",
+	"GUID": "3C38D0D8338E5285E93CF92C36054641",
 	"Name": "Technology (Yellow) (codex.ordinian)",
 	"Metadata": "card.technology.yellow:codex.ordinian/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\yellow\\codex\\ordinian\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\yellow.back.jpg",
+	"FrontTexture": "locale/card/technology/yellow/codex/ordinian/0.face.jpg",
+	"BackTexture": "global/card/technology/yellow.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

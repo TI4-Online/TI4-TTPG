@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "BA86E8C7F01BBB51628DCAF587FA3C55",
+	"GUID": "D420AA9CA4AE8125D4577C2C2B700C0C",
 	"Name": "Relics (pok)",
 	"Metadata": "card.relic:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\relic\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\relic.back.jpg",
+	"FrontTexture": "locale/card/relic/pok/0.face.jpg",
+	"BackTexture": "global/card/relic.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

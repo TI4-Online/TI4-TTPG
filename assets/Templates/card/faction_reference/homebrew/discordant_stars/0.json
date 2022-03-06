@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "5B822B5233DEF64C2972553D194FDA64",
+	"GUID": "4F22FB07F07E6459B4FCE6D78FC1CBC7",
 	"Name": "Faction References (homebrew.discordant_stars)",
 	"Metadata": "card.faction_reference:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\faction_reference\\homebrew\\discordant_stars\\0.face.jpg",
-	"BackTexture": "global\\card\\faction_reference.back.jpg",
+	"FrontTexture": "locale/card/faction_reference/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/faction_reference.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

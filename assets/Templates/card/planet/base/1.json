@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "AFB90D812B3A26847799FE7C72503F34",
+	"GUID": "D2E8586D220723D96474BF78EBFB43C2",
 	"Name": "Planets (base 2/2)",
 	"Metadata": "card.planet:base/1",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\planet\\base\\1.face.jpg",
-	"BackTexture": "locale\\card\\planet\\base\\1.back.jpg",
+	"FrontTexture": "locale/card/planet/base/1.face.jpg",
+	"BackTexture": "locale/card/planet/base/1.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
 	"HiddenIndex": -3,
