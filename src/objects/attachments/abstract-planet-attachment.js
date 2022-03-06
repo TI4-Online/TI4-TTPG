@@ -1,0 +1,175 @@
+const assert = require("../../wrapper/assert-wrapper");
+const { AbstractSystemAttachment } = require("./abstract-system-attachment");
+const { Facing } = require("../../lib/facing");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { ATTACHMENTS } = require("./attachment.data");
+const { GameObject, ObjectType, Vector } = require("../../wrapper/api");
+
+/**
+ * Mutate planet on attach/detach.
+ */
+class AbstractPlanetAttachment extends AbstractSystemAttachment {
+    /**
+     * Set up a known attachment token (registered in attachment.data).
+     *
+     * @param {GameObject} gameObject
+     * @returns {AbstractPlanetAttachment}
+     */
+    static createForKnownAttachmentToken(gameObject) {
+        assert(gameObject instanceof GameObject);
+        const nsid = ObjectNamespace.getNsid(gameObject);
+        let attrs = false;
+        for (const candidate of ATTACHMENTS) {
+            if (nsid === candidate.tokenNsid) {
+                attrs = candidate;
+                break;
+            }
+        }
+        if (!attrs) {
+            throw new Error(`KnownPlanetAttachment: no attrs for "${nsid}"`);
+        }
+        return new AbstractPlanetAttachment(
+            gameObject,
+            attrs
+        ).attachIfOnSystem();
+    }
+
+    /**
+     * Constructor.
+     *
+     * Attrs must include at least `_faceUp` and may optionally include
+     * `_faceDown` if different from up.
+     *
+     * @param {GameObject} gameObject - attachment token
+     * @param {Object} attrs
+     */
+    constructor(gameObject, attrs, localeName) {
+        assert(gameObject instanceof GameObject);
+        assert(attrs instanceof Object);
+        assert(typeof localeName === "string");
+        const isPlanetBased = true;
+        super(gameObject, isPlanetBased, localeName);
+
+        this._obj = gameObject;
+        this._attrs = attrs;
+        this._originallyLegendary = false;
+        this._attachedFaceUp = false;
+    }
+
+    place(system, planet, systemTileObj) {
+        // Decide if face up or down.
+        this._attachedFaceUp =
+            !this._attrs._faceDown || Facing.isFaceUp(this._obj);
+
+        this._positionOnPlanet(planet, systemTileObj);
+        this._addPlanetAttrs(planet);
+    }
+
+    remove(system, planet, systemTileObj) {
+        this._delPlanetAttrs(planet);
+    }
+
+    _positionOnPlanet(planet, systemTileObj) {
+        assert(systemTileObj instanceof GameObject);
+
+        let numAttachments = planet.attachments.length;
+        const steps = Math.floor((numAttachments - 1) / 3);
+        if (steps % 2 === 1) {
+            numAttachments += 0.5;
+        }
+        const phi = ((numAttachments - 1) * 120 * Math.PI) / 180;
+        const r = 1.05;
+        const attachmentPosition = new Vector(
+            planet.position.x - Math.sin(phi) * r,
+            planet.position.y - Math.cos(phi) * r,
+            0
+        );
+        const extraZ = steps * this._obj.getSize().z;
+        const worldPosition = systemTileObj
+            .localPositionToWorld(attachmentPosition)
+            .add([0, 0, systemTileObj.getSize().z + extraZ]);
+
+        this._obj.setObjectType(ObjectType.Regular);
+        this._obj.setPosition(worldPosition, 0);
+        this._obj.setObjectType(ObjectType.Ground);
+    }
+
+    _addPlanetAttrs(planet) {
+        planet.attachments.push(this);
+
+        const attrs = this._attachedFaceUp
+            ? this._attrs._faceUp
+            : this._attrs._faceDown;
+
+        // Some attachments have not attributes (e.g. "DMZ")
+        if (!attrs) {
+            return;
+        }
+
+        if (attrs.resources) {
+            planet.raw.resources += attrs.resources;
+        }
+        if (attrs.influence) {
+            planet.raw.influence += attrs.influence;
+        }
+        if (attrs.legendary) {
+            // Track if the planet was legendary to begin with, so when
+            // we detach we can set its legendary status properly
+            this._originallyLegendary = planet.raw.legendary;
+            planet.raw.legendary = true;
+        }
+        if (attrs.trait) {
+            if (!planet.raw.attrs) {
+                planet.raw.attrs = [];
+            }
+            attrs.trait.forEach((element) => planet.raw.attrs.push(element));
+        }
+        if (attrs.tech) {
+            if (!planet.raw.tech) {
+                planet.raw.tech = [];
+            }
+            attrs.tech.forEach((element) => planet.raw.tech.push(element));
+        }
+    }
+
+    _delPlanetAttrs(planet) {
+        const index = planet.attachments.indexOf(this);
+        if (index >= 0) {
+            planet.attachments.splice(index, 1);
+        }
+
+        const attrs = this._attachedFaceUp
+            ? this._attrs._faceUp
+            : this._attrs._faceDown;
+
+        // Some attachments have not attributes (e.g. "DMZ")
+        if (!attrs) {
+            return;
+        }
+
+        if (attrs.resources) {
+            planet.raw.resources -= attrs.resources;
+        }
+        if (attrs.influence) {
+            planet.raw.influence -= attrs.influence;
+        }
+        if (attrs.legendary) {
+            // Reset legendary status to initial state
+            planet.raw.legendary = this._originallyLegendary;
+        }
+        if (attrs.trait) {
+            attrs.trait.forEach((element) => {
+                const index = planet.raw.trait.indexOf(element);
+                planet.raw.trait.splice(index, 1);
+            });
+        }
+        if (attrs.tech) {
+            attrs.tech.forEach((element) => {
+                const index = planet.raw.tech.indexOf(element);
+                planet.raw.tech.splice(index, 1);
+            });
+        }
+    }
+}
+
+module.exports = { AbstractPlanetAttachment };
