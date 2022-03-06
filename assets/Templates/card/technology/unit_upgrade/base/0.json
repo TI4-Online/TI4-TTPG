@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "C097730A6E4F5E88A7DB15A8F1DBFB0D",
+	"GUID": "430CF90265794B8E1B8868D688ABFDDB",
 	"Name": "Technology (Unit Upgrade) (base)",
 	"Metadata": "card.technology.unit_upgrade:base/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\unit_upgrade\\base\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\unit_upgrade.back.jpg",
+	"FrontTexture": "locale/card/technology/unit_upgrade/base/0.face.jpg",
+	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

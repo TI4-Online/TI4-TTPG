@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "8FE2A1F9D13FD92E90BF6A62572A4044",
+	"GUID": "54FCAF2340958DA7E997ABB3DB43A2AF",
 	"Name": "Alliance (pok)",
 	"Metadata": "card.alliance:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\alliance\\pok\\0.face.jpg",
-	"BackTexture": "locale\\card\\alliance\\pok\\0.back.jpg",
+	"FrontTexture": "locale/card/alliance/pok/0.face.jpg",
+	"BackTexture": "locale/card/alliance/pok/0.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -3,
 	"HiddenIndex": -3,

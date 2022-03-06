@@ -84,8 +84,8 @@ class Technology {
             if (!nsid.startsWith("card.technology")) {
                 continue;
             }
-            if (!CardUtil.isLooseCard(obj, false)) {
-                continue; // not a lone, faceup card on the table
+            if (!CardUtil.isLooseCard(obj, false, true)) {
+                continue; // not a lone card on the table (it may be face down!)
             }
             const ownerPlayerSlot = world.TI4.getClosestPlayerDesk(
                 obj.getPosition()

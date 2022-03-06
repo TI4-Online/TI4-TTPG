@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "3338904E47EA80AFD73590A710D8CF2C",
+	"GUID": "974F8120879D85DBB32273622AC54DFC",
 	"Name": "Promissory (pok)",
 	"Metadata": "card.promissory:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\promissory\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\promissory.back.jpg",
+	"FrontTexture": "locale/card/promissory/pok/0.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

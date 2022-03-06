@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "D07C87DB87283B4BE778C3252F8D83DD",
+	"GUID": "B6C4E670C907202CFFF88A0AC0C34E3A",
 	"Name": "Actions (codex.ordinian)",
 	"Metadata": "card.action:codex.ordinian/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\action\\codex\\ordinian\\0.face.jpg",
-	"BackTexture": "global\\card\\action.back.jpg",
+	"FrontTexture": "locale/card/action/codex/ordinian/0.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

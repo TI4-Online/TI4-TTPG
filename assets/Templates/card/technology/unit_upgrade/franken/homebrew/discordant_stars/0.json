@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "751CBDDF093186EF46ACCCD9314FB8AE",
+	"GUID": "140FA0FD96E2B734D6D3F4489B3A3ADF",
 	"Name": "Technology (Unit Upgrade) (franken.homebrew.discordant_stars)",
 	"Metadata": "card.technology.unit_upgrade:franken.homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\unit_upgrade\\franken\\homebrew\\discordant_stars\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\unit_upgrade.back.jpg",
+	"FrontTexture": "locale/card/technology/unit_upgrade/franken/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

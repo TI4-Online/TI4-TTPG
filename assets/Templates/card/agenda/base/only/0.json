@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "4818800D9D922E45E71BFEF174FAE078",
+	"GUID": "B385840CC606B3EAAA0A28992CBE6BFA",
 	"Name": "Agenda (base.only)",
 	"Metadata": "card.agenda:base.only/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\agenda\\base\\only\\0.face.jpg",
-	"BackTexture": "global\\card\\agenda.back.jpg",
+	"FrontTexture": "locale/card/agenda/base/only/0.face.jpg",
+	"BackTexture": "global/card/agenda.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

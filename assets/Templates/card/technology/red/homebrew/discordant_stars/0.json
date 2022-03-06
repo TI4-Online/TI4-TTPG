@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "F3F5B8C74F2E5F6F5EB5D20A949918C6",
+	"GUID": "2712AC45E5CB3EEEE52260DB4A331251",
 	"Name": "Technology (Red) (homebrew.discordant_stars)",
 	"Metadata": "card.technology.red:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\red\\homebrew\\discordant_stars\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\red.back.jpg",
+	"FrontTexture": "locale/card/technology/red/homebrew/discordant_stars/0.face.jpg",
+	"BackTexture": "global/card/technology/red.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

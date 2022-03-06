@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "0063AD7E7B09B10D6DEEC9B7D365E105",
+	"GUID": "8E14B7555B0020B4E80F42887117427D",
 	"Name": "Public Objectives I (base)",
 	"Metadata": "card.objective.public_1:base/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\objective\\public_1\\base\\0.face.jpg",
-	"BackTexture": "global\\card\\objective\\public_1.back.jpg",
+	"FrontTexture": "locale/card/objective/public_1/base/0.face.jpg",
+	"BackTexture": "global/card/objective/public_1.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

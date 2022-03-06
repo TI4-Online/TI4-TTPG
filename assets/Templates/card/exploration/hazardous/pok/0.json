@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "7928EF86F150C2CB8884612B64CA9598",
+	"GUID": "DEBF184A62FB41C73F3EE1F30C198F9D",
 	"Name": "Hazardous Exploration (pok)",
 	"Metadata": "card.exploration.hazardous:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\exploration\\hazardous\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\exploration\\hazardous.back.jpg",
+	"FrontTexture": "locale/card/exploration/hazardous/pok/0.face.jpg",
+	"BackTexture": "global/card/exploration/hazardous.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,

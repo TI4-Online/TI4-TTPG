@@ -1,6 +1,6 @@
 {
 	"Type": "Card",
-	"GUID": "E02B19EDE0159002E16981E49B606346",
+	"GUID": "E009B2706DB6D3D39A0F745363573F34",
 	"Name": "Technology (Yellow) (pok)",
 	"Metadata": "card.technology.yellow:pok/0",
 	"CollisionType": "Regular",
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale\\card\\technology\\yellow\\pok\\0.face.jpg",
-	"BackTexture": "global\\card\\technology\\yellow.back.jpg",
+	"FrontTexture": "locale/card/technology/yellow/pok/0.face.jpg",
+	"BackTexture": "global/card/technology/yellow.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
