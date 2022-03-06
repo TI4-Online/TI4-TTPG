@@ -27,12 +27,11 @@ const { Hex } = require("../hex");
  * 3. trigger attach.
  */
 class Explore {
-    static getExploreActionNamesAndActions(systemTileObj, player) {
-        assert(systemTileObj instanceof GameObject);
+    static getDistantSunsPlanets(systemTileObj, player) {
+        if (!player) {
+            return;
+        }
         assert(player instanceof Player);
-
-        const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
-        assert(system);
 
         const slot = player.getSlot();
         const faction = world.TI4.getFactionByPlayerSlot(slot);
@@ -54,6 +53,19 @@ class Explore {
                 (plastic) => plastic.planet.localeName
             );
         }
+        return distantSunsPlanets;
+    }
+
+    static getExploreActionNamesAndActions(systemTileObj, player) {
+        assert(systemTileObj instanceof GameObject);
+
+        const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+        assert(system);
+
+        const distantSunsPlanets = Explore.getDistantSunsPlanets(
+            systemTileObj,
+            player
+        );
 
         const namesAndActions = [];
         if (system.planets.length > 0) {

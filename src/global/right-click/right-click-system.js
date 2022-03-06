@@ -72,8 +72,22 @@ function addRightClickOptions(systemTileObj) {
         return;
     }
 
-    // can't add distant suns ability through right click on the system because we need
-    // to know what all the options are before the player right clicks
+    // Add as right-click options.  Not ideal because ground mode.
+    // Might want to reset after adding mirage?
+    // distant suns ability through right-click is awkward because we need
+    // to know what all the options are before the player right-clicks
+    const namesAndActions = getNamesAndActions(null, systemTileObj);
+    for (const nameAndAction of namesAndActions) {
+        systemTileObj.addCustomAction("*" + nameAndAction.name);
+    }
+    systemTileObj.onCustomAction.add((obj, player, actionName) => {
+        for (const nameAndAction of namesAndActions) {
+            if ("*" + nameAndAction.name === actionName) {
+                nameAndAction.action(player);
+                break;
+            }
+        }
+    });
 
     // Also offer via a button.  Image buttons are quite blurry especially
     // when small.  Make a big one and scale it down.
@@ -95,9 +109,6 @@ function addRightClickOptions(systemTileObj) {
         const popupUi = new UIElement();
         popupUi.widget = new Border().setChild(popupPanel);
         popupUi.rotation = new Rotator(0, player.getRotation().yaw, 0);
-        // popupUi.rotation = systemTileObj.worldRotationToLocal(
-        //     new Rotator(0, 0, 0)
-        // );
         popupUi.position = ui.position.add([0, 0, 3]);
 
         const namesAndActions = getNamesAndActions(player, systemTileObj);
