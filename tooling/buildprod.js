@@ -67,6 +67,11 @@ const setupWorkspace = () => {
 
                 return Promise.all(
                     assetListing.map(({ from, to }) => {
+                        /*
+                        if (from.toLowerCase().endsWith(".ds_store")) {
+                            return Promise.resolve();
+                        }
+                        */
                         console.log(
                             `./assets/${from}`,
                             "->",
@@ -78,6 +83,24 @@ const setupWorkspace = () => {
                         );
                     })
                 );
+            })
+            .then(() => {
+                console.log("Copying Thumbnail");
+                return Promise.all([
+                    fs.pathExists(`./config/Thumbnail.png`),
+                    fs.pathExists(`./config/Thumbnail.jpg`),
+                ]).then(([png, jpg]) => {
+                    const ext = png ? "png" : jpg ? "jpg" : false;
+                    if (ext) {
+                        return fs.copy(
+                            `./config/Thumbnail.${ext}`,
+                            `./prd/${variantConfig.slug}/Thumbnail.${ext}`
+                        );
+                    } else {
+                        console.log("No thumbnail found. skipping");
+                        return Promise.resolve();
+                    }
+                });
             })
             .then(() => {
                 console.log("symlinking to Tabletop Playground");
