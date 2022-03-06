@@ -1,41 +1,26 @@
-const { refObject, world, GameObject } = require("../../wrapper/api");
 const assert = require("../../wrapper/assert-wrapper");
+const {
+    AbstractSystemAttachment,
+} = require("../attachments/abstract-system-attachment");
+const { refObject, GameObject } = require("../../wrapper/api");
 
-let _gammaTileNumber = 0;
-
-function removeGamma() {
-    if (_gammaTileNumber) {
-        const prevSystem = world.TI4.getSystemByTileNumber(_gammaTileNumber);
-
-        const index = prevSystem.wormholes.indexOf("gamma");
-        prevSystem.wormholes.splice(index, 1);
-
-        _gammaTileNumber = 0;
+class GammaWormhole extends AbstractSystemAttachment {
+    constructor(gameObject) {
+        assert(gameObject instanceof GameObject);
+        const isPlanetBased = false;
+        const localeName = "token.wormhole.gamma";
+        super(gameObject, isPlanetBased, localeName);
+        this.attachIfOnSystem();
     }
-}
 
-function placeGamma(obj) {
-    assert(obj instanceof GameObject);
-    const pos = obj.getPosition();
-    const systemObject = world.TI4.getSystemTileObjectByPosition(pos);
-    if (systemObject) {
-        removeGamma();
-
-        const system = world.TI4.getSystemBySystemTileObject(systemObject);
-
-        if (!system.wormholes) {
-            system.wormholes = [];
-        }
+    place(system, planet, systemTileObj) {
         system.wormholes.push("gamma");
+    }
 
-        _gammaTileNumber = system.tile;
+    remove(system, planet, systemTileObj) {
+        const index = system.wormholes.indexOf("gamma");
+        system.wormholes.splice(index, 1);
     }
 }
 
-refObject.onReleased.add(placeGamma);
-refObject.onGrab.add(removeGamma);
-refObject.onCreated.add(placeGamma);
-
-if (world.getExecutionReason() === "ScriptReload") {
-    placeGamma(refObject);
-}
+new GammaWormhole(refObject);
