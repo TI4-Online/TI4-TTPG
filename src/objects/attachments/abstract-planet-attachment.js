@@ -1,9 +1,17 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSystemAttachment } = require("./abstract-system-attachment");
-const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ATTACHMENTS } = require("./attachment.data");
-const { GameObject, ObjectType, Vector } = require("../../wrapper/api");
+const {
+    Card,
+    GameObject,
+    ImageWidget,
+    ObjectType,
+    Rotator,
+    UIElement,
+    Vector,
+    refPackageId,
+} = require("../../wrapper/api");
 
 /**
  * Mutate planet on attach/detach.
@@ -54,20 +62,15 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         this._obj = gameObject;
         this._attrs = attrs;
         this._originallyLegendary = false;
-        this._attachedFaceUp = false;
     }
 
-    place(system, planet, systemTileObj) {
-        // Decide if face up or down.
-        this._attachedFaceUp =
-            !this._attrs.faceDown || Facing.isFaceUp(this._obj);
-
+    place(system, planet, systemTileObj, faceUp) {
         this._positionOnPlanet(planet, systemTileObj);
-        this._addPlanetAttrs(planet);
+        this._addPlanetAttrs(planet, faceUp);
     }
 
-    remove(system, planet, systemTileObj) {
-        this._delPlanetAttrs(planet);
+    remove(system, planet, systemTileObj, faceUp) {
+        this._delPlanetAttrs(planet, faceUp);
     }
 
     _positionOnPlanet(planet, systemTileObj) {
@@ -95,14 +98,12 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         this._obj.setObjectType(ObjectType.Ground);
     }
 
-    _addPlanetAttrs(planet) {
+    _addPlanetAttrs(planet, faceUp) {
+        assert(typeof faceUp === "boolean");
         planet.attachments.push(this);
 
-        const attrs = this._attachedFaceUp
-            ? this._attrs.faceUp
-            : this._attrs.faceDown;
-
         // Some attachments have not attributes (e.g. "DMZ")
+        const attrs = faceUp ? this._attrs.faceUp : this._attrs.faceDown;
         if (!attrs) {
             return;
         }
@@ -133,17 +134,16 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         }
     }
 
-    _delPlanetAttrs(planet) {
+    _delPlanetAttrs(planet, faceUp) {
+        assert(typeof faceUp === "boolean");
+
         const index = planet.attachments.indexOf(this);
         if (index >= 0) {
             planet.attachments.splice(index, 1);
         }
 
-        const attrs = this._attachedFaceUp
-            ? this._attrs.faceUp
-            : this._attrs.faceDown;
-
         // Some attachments have not attributes (e.g. "DMZ")
+        const attrs = faceUp ? this._attrs.faceUp : this._attrs.faceDown;
         if (!attrs) {
             return;
         }
@@ -170,6 +170,23 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
                 planet.raw.tech.splice(index, 1);
             });
         }
+    }
+
+    // XXX TODO work in progress
+    _addImageToPlanetCard(card, imagePath) {
+        assert(card instanceof Card);
+        assert(typeof imagePath === "string");
+        console.log("XXX " + imagePath);
+
+        const ui = new UIElement();
+        ui.position = new Vector(0, 0, 0.1);
+        ui.rotation = new Rotator(0, 0, 0);
+        ui.scale = 0.3;
+        ui.widget = new ImageWidget()
+            .setImage(imagePath, refPackageId)
+            .setImageSize(60, 60);
+
+        card.addUI(ui);
     }
 }
 

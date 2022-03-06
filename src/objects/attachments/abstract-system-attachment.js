@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { getClosestPlanet } = require("../../lib/system/position-to-planet");
 const { Broadcast } = require("../../lib/broadcast");
+const { Facing } = require("../../lib/facing");
 const { System, Planet } = require("../../lib/system/system");
 const { GameObject, globalEvents, world } = require("../../wrapper/api");
 
@@ -27,6 +28,10 @@ class AbstractSystemAttachment {
         this._isPlanetBased = isPlanetBased;
         this._localeName = localeName;
 
+        this._attachLocaleMessage = "ui.message.attach_token";
+        this._detachLocaleMessage = "ui.message.detach_token";
+
+        this._attachedFaceUp = undefined;
         this._attachedToSystemObj = undefined;
         this._attachedToSystem = undefined;
         this._attachedToPlanet = undefined;
@@ -37,7 +42,7 @@ class AbstractSystemAttachment {
 
         // pressing f to flip does not trigger onReleased or onGrab
         // Also applies when moved by script!
-        this._obj.onMovementStopped.add(() => this.attach());
+        this._obj.onMovementStopped.add(() => this._place());
 
         // DO NOT PLACE IN CONSTRUCTOR!  Subclass might not be fully
         // set up yet, have them call `attachIfOnSystem` when ready.
@@ -54,14 +59,22 @@ class AbstractSystemAttachment {
         return this;
     }
 
+    getAttachTokenObj() {
+        return this._obj;
+    }
+
     /**
-     * Subclass should override this to mutate system.
+     * Subclass can override if they want to further control if attachable.
      *
      * @param {System} system
      * @param {Planet|undefined} planet - only if isPlanetBased
      * @param {GameObject} systemTileObj
+     * @param {boolean} faceUp - attached token is face up?
+     * @returns {boolean} true to allow attach
      */
-    place(system, planet, systemTileObj) {}
+    allow(system, planet, systemTileObj, faceUp) {
+        return true;
+    }
 
     /**
      * Subclass should override this to mutate system.
@@ -69,14 +82,26 @@ class AbstractSystemAttachment {
      * @param {System} system
      * @param {Planet|undefined} planet - only if isPlanetBased
      * @param {GameObject} systemTileObj
+     * @param {boolean} faceUp - attached token is face up?
      */
-    remove(system, planet, systemTileObj) {}
+    place(system, planet, systemTileObj, faceUp) {}
+
+    /**
+     * Subclass should override this to mutate system.
+     *
+     * @param {System} system
+     * @param {Planet|undefined} planet - only if isPlanetBased
+     * @param {GameObject} systemTileObj
+     * @param {boolean} faceUp - attached token is face up?
+     */
+    remove(system, planet, systemTileObj, faceUp) {}
 
     /**
      * Internal place support, calls `this.place(system, planet)`.
      */
     _place() {
         // Check where it would attach.
+        const faceUp = Facing.isFaceUp(this._obj);
         const pos = this._obj.getPosition();
         const systemTileObj = world.TI4.getSystemTileObjectByPosition(pos);
         let system = undefined;
@@ -95,10 +120,16 @@ class AbstractSystemAttachment {
             return;
         }
 
+        // Abort if subclass rejects.
+        if (!this.allow(system, planet, systemTileObj, faceUp)) {
+            return;
+        }
+
         // Abort if already attached there.  This can happen when an attachment
         // is moved to a system tile, GameObject.onMovementStopped can be
         // called multiple times.
         if (
+            this._attachedFaceUp === faceUp &&
             this._attachedToSystem === system &&
             this._attachedToPlanet === planet
         ) {
@@ -106,24 +137,30 @@ class AbstractSystemAttachment {
         }
 
         // Detach if attached.
-        if (this._attachedToSystemObj) {
+        if (this._attachedToSystemTileObj) {
             this._remove();
         }
 
         // Update state before calling subclass, it might trigger more updates.
+        this._attachedFaceUp = faceUp;
         this._attachedToSystemTileObj = systemTileObj;
         this._attachedToSystem = system;
         this._attachedToPlanet = planet;
 
         // Announce.
-        const message = locale("ui.message.attach_token", {
+        const message = locale(this._attachLocaleMessage, {
             attachmentName: locale(this._localeName),
-            planetName: planet ? planet.getNameStr() : undefined,
+            planetName: planet
+                ? planet.getNameStr()
+                : locale("ui.message.system_name", {
+                      systemTile: system.tile,
+                      systemName: system.getSummaryStr(),
+                  }),
         });
         Broadcast.chatAll(message);
 
         // Subclass time to work!
-        this.place(system, planet, systemTileObj);
+        this.place(system, planet, systemTileObj, faceUp);
 
         // Let outsiders know something changed.  DO THIS LAST.
         globalEvents.TI4.onSystemChanged.trigger(systemTileObj);
@@ -138,22 +175,29 @@ class AbstractSystemAttachment {
         }
 
         // Update state before calling subclass, it might trigger more updates.
+        const faceUp = this._attachedFaceUp;
         const systemTileObj = this._attachedToSystemTileObj;
         const system = this._attachedToSystem;
         const planet = this._attachedToPlanet;
+        this._attachedFaceUp = undefined;
         this._attachedToSystemTileObj = undefined;
         this._attachedToSystem = undefined;
         this._attachedToPlanet = undefined;
 
         // Announce.
-        const message = locale("ui.message.detach_token", {
+        const message = locale(this._detachLocaleMessage, {
             attachmentName: locale(this._localeName),
-            planetName: planet ? planet.getNameStr() : undefined,
+            planetName: planet
+                ? planet.getNameStr()
+                : locale("ui.message.system_name", {
+                      systemTile: system.tile,
+                      systemName: system.getSummaryStr(),
+                  }),
         });
         Broadcast.chatAll(message);
 
         // Subclass time to work!
-        this.remove(system, planet, systemTileObj);
+        this.remove(system, planet, systemTileObj, faceUp);
 
         // Let outsiders know something changed.  DO THIS LAST.
         globalEvents.TI4.onSystemChanged.trigger(systemTileObj);
