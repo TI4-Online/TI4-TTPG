@@ -404,7 +404,11 @@ const FACTION_DATA = [
         commodities: 4,
         home: 53,
         leaders: {
-            agents: ["the_thundarian"],
+            agents: [
+                "artuno_the_betrayer",
+                "field_marshal_mercer",
+                "the_thundarian",
+            ],
             commanders: ["navarch_feng"],
             heroes: ["ahksyl_siven"],
         },
