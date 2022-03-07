@@ -48,6 +48,7 @@ function addRightClickOptions(agendaCard) {
             }
         }
     });
+    agendaCard.__hasRightClickAgendaOptions = true;
 }
 
 function removeRightClickOptions(agendaCard) {
@@ -55,6 +56,7 @@ function removeRightClickOptions(agendaCard) {
         const actionName = "*" + locale(nameAndAction.localeName);
         agendaCard.removeCustomAction(actionName);
     }
+    agendaCard.__hasRightClickAgendaOptions = false;
 }
 
 globalEvents.TI4.onSingletonCardCreated.add((card) => {
@@ -62,14 +64,13 @@ globalEvents.TI4.onSingletonCardCreated.add((card) => {
     const nsid = ObjectNamespace.getNsid(card);
     if (nsid.startsWith("card.agenda")) {
         addRightClickOptions(card);
-        card.__hasRightClickAgendaOptions = true;
     }
 });
+
 globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     assert(card instanceof Card);
     if (card.__hasRightClickAgendaOptions) {
         removeRightClickOptions(card);
-        card.__hasRightClickAgendaOptions = false;
     }
 });
 

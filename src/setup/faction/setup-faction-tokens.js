@@ -11,6 +11,7 @@ const COMMAND_TOKENS = {
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
     bagPos: { x: -10.34, y: 39, z: 0 },
+    bagYaw: 45,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
         // Tactic
@@ -33,6 +34,7 @@ const CONTROL_TOKENS = {
     bagNsid: "bag.token.control:base/*",
     bagType: 1, // infinite
     bagPos: { x: -4.94, y: 40, z: 0 },
+    bagYaw: COMMAND_TOKENS.bagYaw,
 };
 
 class SetupFactionTokens extends AbstractSetup {
@@ -91,7 +93,9 @@ class SetupFactionTokens extends AbstractSetup {
      */
     _spawnFactionTokensAndBag(tokenData) {
         const pos = this.playerDesk.localPositionToWorld(tokenData.bagPos);
-        const rot = this.playerDesk.rot;
+        const rot = new Rotator(0, tokenData.bagYaw, 0).compose(
+            this.playerDesk.rot
+        );
         const playerSlot = this.playerDesk.playerSlot;
         const color = this.playerDesk.color;
 

@@ -294,6 +294,11 @@ const FACTION_DATA = [
             "prototype_war_sun_2",
             "ember_colossus",
         ],
+        unpackExtra: [
+            {
+                tokenNsid: "tile.system:pok/81",
+            },
+        ],
     },
     {
         faction: "naalu",
