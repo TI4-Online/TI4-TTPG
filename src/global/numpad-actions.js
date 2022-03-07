@@ -8,7 +8,7 @@ const { Player, Rotator, globalEvents } = require("../wrapper/api");
 globalEvents.onScriptButtonPressed.add((player, index) => {
     assert(player instanceof Player);
 
-    console.log(`onScriptButtonPressed: ${index}`);
+    //console.log(`onScriptButtonPressed: ${index}`);
 
     if (index == 1) {
         // Spawn TG.
