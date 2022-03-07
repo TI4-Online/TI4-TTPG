@@ -11,20 +11,29 @@ const { EndStatusPhase } = require("../lib/phase/end-of-round");
  */
 globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
     for (let rejectedObj of rejectedObjs) {
-        if (rejectedObj.getContainer() != container) {
+        // Can call this without a container to trash on-table objects.
+        if (container && rejectedObj.getContainer() != container) {
             continue; // object no longer in the container?  skip.
         }
+
+        // Held objects can be put into decks or containers, but not moved.
+        // Just break the hold before continuing.
+        if (!container && rejectedObj.isHeld()) {
+            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+        }
+
         const nsid = ObjectNamespace.getNsid(rejectedObj);
         const parsed = ObjectNamespace.parseNsid(nsid);
         //console.log(`onContainerRejected "${nsid}"`);
 
         // If this is a card or deck attempt to discard each.
         if (rejectedObj instanceof Card) {
-            const pos = container.getPosition().add([10, 0, 10]);
-            container.take(rejectedObj, pos, false, false);
-
-            // Temporary workaround for TTPG bug.
-            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            if (container) {
+                const pos = container.getPosition().add([10, 0, 10]);
+                container.take(rejectedObj, pos, false, false);
+                // Temporary workaround for TTPG bug.
+                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            }
 
             const cards = CardUtil.separateDeck(rejectedObj);
             const bad = [];
@@ -44,11 +53,12 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
 
         // Strategy Card
         if (ObjectNamespace.isStrategyCard(rejectedObj)) {
-            const pos = container.getPosition().add([10, 0, 10]);
-            container.take(rejectedObj, pos, false, false);
-
-            // Temporary workaround for TTPG bug.
-            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            if (container) {
+                const pos = container.getPosition().add([10, 0, 10]);
+                container.take(rejectedObj, pos, false, false);
+                // Temporary workaround for TTPG bug.
+                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            }
 
             EndStatusPhase.returnStrategyCard(rejectedObj);
             continue;
@@ -91,11 +101,12 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
 
         // Was not able to move it, just pop it out for now.
         if (!rehomed) {
-            const pos = container.getPosition().add([10, 0, 10]);
-            container.take(rejectedObj, pos, true, false);
-
-            // Temporary workaround for TTPG bug.
-            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            if (container) {
+                const pos = container.getPosition().add([10, 0, 10]);
+                container.take(rejectedObj, pos, true, false);
+                // Temporary workaround for TTPG bug.
+                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            }
         }
     }
 });
