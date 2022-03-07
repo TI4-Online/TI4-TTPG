@@ -28,6 +28,42 @@ function _closePopup() {
     }
 }
 
+function getNamesAndActions(player, systemTileObj) {
+    const namesAndActions = [
+        {
+            name: locale("ui.action.system.activate"),
+            action: (player) => {
+                _closePopup();
+                CommandToken.activateSystem(systemTileObj, player);
+            },
+        },
+        {
+            // This could be disabled for empty systems (diplomcay rider
+            // makes it legal for Mecatol).
+            name: locale("ui.action.system.diplomacy"),
+            action: (player) => {
+                _closePopup();
+                CommandToken.diplomacySystem(systemTileObj, player);
+            },
+        },
+    ];
+
+    const exploreNamesAndActions = Explore.getExploreActionNamesAndActions(
+        systemTileObj,
+        player
+    );
+    for (const nameAndAction of exploreNamesAndActions) {
+        namesAndActions.push({
+            name: nameAndAction.name,
+            action: (player) => {
+                _closePopup();
+                nameAndAction.action(player);
+            },
+        });
+    }
+    return namesAndActions;
+}
+
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
 
@@ -37,43 +73,11 @@ function addRightClickOptions(systemTileObj) {
         return;
     }
 
-    const getNamesAndActions = () => {
-        const namesAndActions = [
-            {
-                name: locale("ui.action.system.activate"),
-                action: (player) => {
-                    _closePopup();
-                    CommandToken.activateSystem(systemTileObj, player);
-                },
-            },
-            {
-                // This could be disabled for empty systems (diplomcay rider
-                // makes it legal for Mecatol).
-                name: locale("ui.action.system.diplomacy"),
-                action: (player) => {
-                    _closePopup();
-                    CommandToken.diplomacySystem(systemTileObj, player);
-                },
-            },
-        ];
-
-        const exploreNamesAndActions =
-            Explore.getExploreActionNamesAndActions(systemTileObj);
-        for (const nameAndAction of exploreNamesAndActions) {
-            namesAndActions.push({
-                name: nameAndAction.name,
-                action: (player) => {
-                    _closePopup();
-                    nameAndAction.action(player);
-                },
-            });
-        }
-        return namesAndActions;
-    };
-
     // Add as right-click options.  Not ideal because ground mode.
     // Might want to reset after adding mirage?
-    const namesAndActions = getNamesAndActions();
+    // distant suns ability through right-click is awkward because we need
+    // to know what all the options are before the player right-clicks
+    const namesAndActions = getNamesAndActions(null, systemTileObj);
     for (const nameAndAction of namesAndActions) {
         systemTileObj.addCustomAction("*" + nameAndAction.name);
     }
@@ -105,12 +109,10 @@ function addRightClickOptions(systemTileObj) {
         const popupPanel = new VerticalBox();
         const popupUi = new UIElement();
         popupUi.widget = new Border().setChild(popupPanel);
-        popupUi.rotation = systemTileObj.worldRotationToLocal(
-            new Rotator(0, 0, 0)
-        );
+        popupUi.rotation = new Rotator(0, player.getRotation().yaw, 0);
         popupUi.position = ui.position.add([0, 0, 3]);
 
-        const namesAndActions = getNamesAndActions();
+        const namesAndActions = getNamesAndActions(player, systemTileObj);
         for (const nameAndAction of namesAndActions) {
             const button = new Button().setText(nameAndAction.name);
             button.onClicked.add((button, player) => {

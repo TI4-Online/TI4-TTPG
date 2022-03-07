@@ -57,11 +57,13 @@
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
     "ui.button.cancel": "CANCEL",
+    "ui.button.resolve_explore": "Resolve",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Diplomacy System",
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
+    "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
     "ui.action.end_turn": "End Turn",
 
     "ui.label.movement": "Movement Step",
