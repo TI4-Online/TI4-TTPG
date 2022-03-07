@@ -35,24 +35,30 @@ class Explore {
 
         const slot = player.getSlot();
         const faction = world.TI4.getFactionByPlayerSlot(slot);
-        let distantSunsPlanets = false;
-        if (faction.raw.abilities.includes("distant_suns")) {
-            const hex = Hex.fromPosition(systemTileObj.getPosition());
-            const allPlastic = UnitPlastic.getAll();
-            const hexPlastic = allPlastic.filter(
-                (plastic) => plastic.hex === hex
-            );
-            const mechPlastic = hexPlastic.filter((plastic) =>
-                plastic.unit.includes("mech")
-            );
-            const playersMechs = mechPlastic.filter(
-                (plastic) => plastic.owningPlayerSlot === slot
-            );
-            UnitPlastic.assignPlanets(playersMechs);
-            distantSunsPlanets = playersMechs.map(
-                (plastic) => plastic.planet.localeName
-            );
+        if (!faction) {
+            return;
         }
+        if (!faction.raw.abilities.includes("distant_suns")) {
+            return;
+        }
+
+        const hex = Hex.fromPosition(systemTileObj.getPosition());
+        const allPlastic = UnitPlastic.getAll();
+        const hexPlastic = allPlastic.filter((plastic) => plastic.hex === hex);
+        const mechPlastic = hexPlastic.filter((plastic) =>
+            plastic.unit.includes("mech")
+        );
+        const playersMechs = mechPlastic.filter(
+            (plastic) => plastic.owningPlayerSlot === slot
+        );
+        UnitPlastic.assignPlanets(playersMechs);
+        let distantSunsPlanets = playersMechs.map(
+            (plastic) => plastic.planet.localeName
+        );
+        // Filter to unique.
+        distantSunsPlanets = distantSunsPlanets.filter(
+            (value, index, self) => self.indexOf(value) === index
+        );
         return distantSunsPlanets;
     }
 
