@@ -1,73 +1,191 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { Broadcast } = require("../../lib/broadcast");
+const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
 const { Spawn } = require("../../setup/spawn/spawn");
 const {
     Card,
     GameObject,
     Player,
+    Vector,
     globalEvents,
     world,
 } = require("../../wrapper/api");
 
-function score(scorableCard, player) {
-    assert(scorableCard instanceof Card);
-    assert(player instanceof Player);
+const OTHER_SCORABLE_NSIDS = new Set([
+    "card.action:base/imperial_rider",
+    "card.agenda:base.only/holy_planet_of_ixth",
+    "card.agenda:base.only/shard_of_the_throne",
+    "card.agenda:base.only/the_crown_of_emphidia",
+    "card.agenda:base/mutiny",
+    "card.agenda:base/seed_of_an_empire",
+    "card.agenda:pok/political_censure",
+    "card.relic:pok/shard_of_the_throne",
+    "card.relic:pok/the_crown_of_emphidia",
+    "token:base/custodians",
+]);
 
-    const playerSlot = player.getSlot();
+function isScorable(obj) {
+    assert(obj instanceof GameObject);
+    const nsid = ObjectNamespace.getNsid(obj);
+
+    if (OTHER_SCORABLE_NSIDS.has(nsid)) {
+        return true;
+    }
+    if (
+        nsid.startsWith("card.promissory") &&
+        nsid.endsWith("/support_for_the_throne")
+    ) {
+        return true;
+    }
+    return nsid.startsWith("card.objective");
+}
+
+function isSecretsHolderScorable(obj) {
+    const nsid = ObjectNamespace.getNsid(obj);
+    if (
+        nsid.startsWith("card.promissory") &&
+        nsid.endsWith("/support_for_the_throne")
+    ) {
+        return true;
+    }
+    return nsid.startsWith("card.objective.secret");
+}
+
+function addControlToken(scoreableObj, playerSlot) {
+    assert(scoreableObj instanceof GameObject);
+    assert(typeof playerSlot === "number");
+
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     if (!playerDesk) {
+        console.log("addControlToken: no desk");
         return;
     }
     const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
     if (!faction) {
+        console.log("addControlToken: no faction");
         return;
     }
 
-    // const localPos = playerDesk.center
-    //     .multiply(0.01)
-    //     .rotateAngleAxis(90, [0, 0, 1]);
-    // const pos = scorableCard.localPositionToWorld(localPos);
-    const pos = scorableCard.getPosition(); // TODO XXX BETTER PLACEMENT
-    pos.z = scorableCard.getPosition().z + 5;
+    const playerCount = world.TI4.config.playerCount;
+    let index = playerCount - playerDesk.index - 1;
+    let pos;
+    if (scoreableObj instanceof Card) {
+        const numLeft = Math.floor(playerCount / 2);
+        if (index >= numLeft) {
+            index = playerCount - (index - numLeft) - 1;
+        }
+        const col = index < numLeft ? 0 : 1;
+        const row = index - col * numLeft;
+        const x = (row - (numLeft - 1) / 2) * 2.3;
+        const y = (col - 0.5) * 3;
+        console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
+        pos = new Vector(x, y, -3 - index);
+    } else {
+        const extent = scoreableObj.getExtent();
+        const fuzz = Math.min(extent.x, extent.y);
+        const x = (Math.random() - 0.5) * 1.5 * fuzz;
+        const y = (Math.random() - 0.5) * 1.5 * fuzz;
+        pos = new Vector(x, y, 3 + index);
+    }
+    if (Facing.isFaceDown(scoreableObj)) {
+        pos.y = -pos.y;
+        pos.z = -pos.z;
+    }
+    pos = scoreableObj.localPositionToWorld(pos);
 
     const tokenNsid = `token.control:${faction.nsidSource}/${faction.nsidName}`;
-    const rot = scorableCard.getRotation();
+    const rot = scoreableObj.getRotation();
     const color = playerDesk.color;
     const token = Spawn.spawn(tokenNsid, pos, rot);
     token.setOwningPlayerSlot(playerSlot);
     token.setPrimaryColor(color);
 }
 
-function isScorable(obj) {
-    assert(obj instanceof GameObject);
-    // TODO XXX Custodians
-    if (!(obj instanceof Card)) {
-        return false;
+function moveToSecretsHolder(scoreableObj, playerSlot) {
+    assert(scoreableObj instanceof GameObject);
+    assert(typeof playerSlot === "number");
+
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    if (!playerDesk) {
+        console.log("moveToSecretsHolder: no desk");
+        return;
     }
-    const nsid = ObjectNamespace.getNsid(obj);
-    if (nsid.startsWith("card.objective")) {
-        return true;
+    const playerIndex = playerDesk.index;
+
+    let holder = false;
+    for (const obj of world.getAllObjects()) {
+        if (obj.getContainer()) {
+            continue;
+        }
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (nsid !== "cardholder:base/small") {
+            continue;
+        }
+        const deskIndex = ObjectSavedData.get(obj, "deskIndex", -1);
+        if (deskIndex !== playerIndex) {
+            continue;
+        }
+        holder = obj;
+        break;
+    }
+    if (!holder) {
+        console.log("moveToSecretsHolder: no holder");
+        return;
+    }
+    const yaw = holder.getRotation().yaw;
+    scoreableObj.setRotation([0, yaw, 180]);
+    holder.insert(scoreableObj);
+}
+
+function score(scoreableObj, player) {
+    assert(scoreableObj instanceof GameObject);
+    assert(player instanceof Player);
+
+    const playerSlot = player.getSlot();
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    if (!playerDesk) {
+        console.log("score: no desk");
+        return;
+    }
+
+    // Announce.
+    const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+    const playerName = faction ? faction.nameAbbr : playerDesk.colorName;
+    const scoredName =
+        scoreableObj instanceof Card
+            ? scoreableObj.getCardDetails().name
+            : scoreableObj.getName();
+    const msg = locale("ui.message.score", { playerName, scoredName });
+    Broadcast.chatAll(msg, playerDesk.color);
+
+    // Score.
+    if (isSecretsHolderScorable(scoreableObj)) {
+        moveToSecretsHolder(scoreableObj, playerSlot);
+    } else {
+        addControlToken(scoreableObj, playerSlot);
     }
 }
 
-function addRightClickOptions(scorableCard) {
-    assert(scorableCard instanceof Card);
+function addRightClickOptions(scoreableObj) {
+    assert(scoreableObj instanceof GameObject);
     const actionName = "*" + locale("ui.menu.score");
-    scorableCard.addCustomAction(actionName);
-    scorableCard.onCustomAction.add((obj, player, selectedActionName) => {
+    scoreableObj.addCustomAction(actionName);
+    scoreableObj.onCustomAction.add((obj, player, selectedActionName) => {
         if (selectedActionName === actionName) {
-            score(scorableCard, player);
+            score(scoreableObj, player);
         }
     });
-    scorableCard.__hasRightClickScoreOption = true;
+    scoreableObj.__hasRightClickScoreOption = true;
 }
 
-function removeRightClickOptions(scorableCard) {
-    assert(scorableCard instanceof Card);
+function removeRightClickOptions(scoreableObj) {
+    assert(scoreableObj instanceof GameObject);
     const actionName = "*" + locale("ui.menu.score");
-    scorableCard.removeCustomAction(actionName);
-    scorableCard.__hasRightClickScoreOption = false;
+    scoreableObj.removeCustomAction(actionName);
+    scoreableObj.__hasRightClickScoreOption = false;
 }
 
 globalEvents.TI4.onSingletonCardCreated.add((card) => {
