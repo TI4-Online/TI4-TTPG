@@ -4,10 +4,9 @@
  * on them, or when there isn't a snap point.  Snap system tiles in onRelease.
  * (If they do snap, then onSnap is called instead.)
  */
-const { Rotator } = require("@tabletop-playground/api");
 const { Hex } = require("../lib/hex");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { globalEvents, world } = require("../wrapper/api");
+const { Rotator, globalEvents, world } = require("../wrapper/api");
 
 const onSystemTileReleased = (
     obj,
