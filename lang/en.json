@@ -15,7 +15,7 @@
     "ui.message.system_name": "System {systemTile}: {systemName}",
     "ui.message.attach_token": "Attaching {attachmentName} to {planetName}",
     "ui.message.detach_token": "Detaching {attachmentName} from {planetName}",
-
+    "ui.message.score": "{playerName} scoring {scoredName}",
     "ui.message.purge": "Purging {objectName} card from the game.",
 
     "ui.message.stellar_converter": "Destroying {planetName} with Stellar Converter",

@@ -15,7 +15,7 @@ const {
 const X0 = -29;
 const Y0 = -66;
 const DY = -10;
-const YAW = 90;
+const YAW = -90;
 const DESK_INDEX_KEY = "deskIndex";
 
 class SetupSecretHolders extends AbstractSetup {
