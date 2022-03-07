@@ -144,6 +144,7 @@ require("./global/r-swap-split-combine");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-purge");
+require("./global/right-click/right-click-score");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
