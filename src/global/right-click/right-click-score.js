@@ -105,7 +105,7 @@ function addControlToken(scoreableObj, playerSlot) {
 }
 
 function moveToSecretsHolder(scoreableObj, playerSlot) {
-    assert(scoreableObj instanceof GameObject);
+    assert(scoreableObj instanceof Card);
     assert(typeof playerSlot === "number");
 
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
@@ -135,6 +135,16 @@ function moveToSecretsHolder(scoreableObj, playerSlot) {
         console.log("moveToSecretsHolder: no holder");
         return;
     }
+
+    const currentHolder = scoreableObj.getHolder();
+    if (currentHolder) {
+        if (currentHolder === holder) {
+            return; // already there
+        } else {
+            scoreableObj.removeFromHolder();
+        }
+    }
+
     const yaw = holder.getRotation().yaw;
     scoreableObj.setRotation([0, yaw, 180]);
     holder.insert(scoreableObj);
