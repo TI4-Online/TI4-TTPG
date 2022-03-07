@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/units/base/pds.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,

@@ -105,7 +105,7 @@
 				"Y": 20,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/units/base/cruiser.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,

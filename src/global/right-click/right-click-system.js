@@ -15,6 +15,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 
 let _openPopupObj = false;
 let _openPopupUi = false;
@@ -66,9 +67,9 @@ function getNamesAndActions(player, systemTileObj) {
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
 
-    // Skip hyperlanes.
+    // Skip home system placeholders and hyperlanes.
     const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
-    if (system && system.hyperlane) {
+    if (!system || system.hyperlane) {
         return;
     }
 
@@ -134,14 +135,16 @@ function addRightClickOptions(systemTileObj) {
 }
 
 globalEvents.onObjectCreated.add((obj) => {
-    if (world.TI4.getSystemBySystemTileObject(obj)) {
+    if (ObjectNamespace.isSystemTile(obj)) {
         addRightClickOptions(obj);
     }
 });
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.TI4.getAllSystemTileObjects()) {
-        addRightClickOptions(obj);
+    for (const obj of world.getAllObjects()) {
+        if (ObjectNamespace.isSystemTile(obj)) {
+            addRightClickOptions(obj);
+        }
     }
 }

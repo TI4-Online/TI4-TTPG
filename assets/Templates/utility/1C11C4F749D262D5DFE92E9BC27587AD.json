@@ -1,0 +1,68 @@
+{
+	"Type": "Card",
+	"GUID": "1C11C4F749D262D5DFE92E9BC27587AD",
+	"Name": "Milty Slice",
+	"Metadata": "",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "global/utility/milty-slice.png",
+	"BackTexture": "global/utility/milty-slice.png",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 24,
+	"Height": 24,
+	"Thickness": 0.2,
+	"HiddenInHand": false,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": true,
+	"FrontTextureOverrideExposed": true,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "global/utility/milty-slice.png",
+	"ShapeAccuracy": 2,
+	"ConvexCollision": false,
+	"Indices": [ 0 ],
+	"CardNames":
+	{
+		"0": "Milty Slice"
+	},
+	"CardMetadata":
+	{
+	}
+}

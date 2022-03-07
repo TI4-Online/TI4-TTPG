@@ -12,6 +12,7 @@
     "ui.message.distribute_command_tokens": "Distributing {count} command tokens to {playerColor}.",
     "ui.message.not_enough_command_tokens": "{playerColor} does not have enough command tokens in supply.",
 
+    "ui.message.system_name": "System {systemTile}: {systemName}",
     "ui.message.attach_token": "Attaching {attachmentName} to {planetName}",
     "ui.message.detach_token": "Detaching {attachmentName} from {planetName}",
 
@@ -77,8 +78,8 @@
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
-
     "ui.menu.purge": "Purge",
+    "ui.menu.score": "Score",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
@@ -506,6 +507,10 @@
     "token.exploration.ion_storm": "Ion Storm",
     "token.exploration.mirage": "Mirage",
     "token.exploration.stellar_converter": "Stellar Converter",
+
+    "wormhole.alpha": "Alpha Wormhole",
+    "wormhole.beta": "Beta Wormhole",
+    "wormhole.gamma": "Gamma Wormhole",
 
     "token.wormhole.alpha": "Alpha Wormhole",
     "token.wormhole.beta": "Beta Wormhole",

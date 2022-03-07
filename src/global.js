@@ -40,6 +40,10 @@ globalEvents.TI4 = {
     // <(systemTile: GameObject, player: Player) => void>
     onSystemActivated: new TriggerableMulticastDelegate(),
 
+    // Called when an attachment mutates a system (probably a planet).
+    // <(systemTile: GameObject) => void>
+    onSystemChanged: new TriggerableMulticastDelegate(),
+
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(),
@@ -140,7 +144,9 @@ require("./global/r-swap-split-combine");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-purge");
+require("./global/right-click/right-click-score");
 require("./global/shuffle-decks-on-load");
+require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");

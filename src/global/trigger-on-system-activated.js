@@ -23,13 +23,13 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
 });
 
 // Called when a player drops a command token.
-function onCommandTokenReleased(
+const onCommandTokenReleased = (
     obj,
     player,
     thrown,
     grabPosition,
     grabRotation
-) {
+) => {
     if (!world.TI4.turns.isActivePlayer(player)) {
         return; // not the active player
     }
@@ -45,7 +45,7 @@ function onCommandTokenReleased(
     if (systemTile) {
         globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
     }
-}
+};
 
 // Add our listener to future objects.
 globalEvents.onObjectCreated.add((obj) => {
