@@ -743,9 +743,10 @@ async function writeDeckTemplate(
     const deckNsid = `${deckNsidType}:${deckNsidSource}/${cardSheetIndex}`;
 
     // Generate a deterministic guid.
+    const forwardSlashPath = outputFilename.split(path.sep).join("/");
     const guid = crypto
         .createHash("sha256")
-        .update(outputFilename)
+        .update(forwardSlashPath)
         .digest("hex")
         .substring(0, 32)
         .toUpperCase();
