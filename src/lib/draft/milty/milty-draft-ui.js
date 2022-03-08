@@ -115,11 +115,13 @@ class MiltyDraftUI {
             return new SeatTokenUI(canvas, seatOffset, { w: seatW, h: seatH });
         });
 
-        const miltySliceString = "1 2 3 4 5";
+        const miltySliceString = [1, 2, 3, 4, 5];
         const color = new Color(1, 0, 0);
         const label = "Test Longer Slice Name";
         for (const miltySliceUI of this._miltySliceUIs) {
-            miltySliceUI.setSlice(miltySliceString, color, label);
+            miltySliceUI.setSlice(miltySliceString);
+            miltySliceUI.setColor(color);
+            miltySliceUI.setLabel(label);
         }
         for (const factionTokenUI of this._factionTokenUIs) {
             factionTokenUI.setFaction("arborec");
