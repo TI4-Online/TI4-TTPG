@@ -282,7 +282,7 @@ const calculateHeight = (playerSlot) => {
         .map((type) => technologies[type].length)
         .reduce((a, b) => Math.max(a, b));
     const unitUpgradeRows = Math.ceil(technologies.unitUpgrade.length / 4);
-    return (techRows + unitUpgradeRows) * 55 + 100;
+    return (techRows + unitUpgradeRows) * 55 + 130;
 };
 
 new RegisterStrategyCardUI()
