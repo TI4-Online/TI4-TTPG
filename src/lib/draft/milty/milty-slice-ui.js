@@ -2,6 +2,7 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
+    HorizontalAlignment,
     HorizontalBox,
     ImageWidget,
     LayoutBox,
@@ -19,6 +20,14 @@ const TILE_H = Math.floor((TILE_W * 3) / 2);
  * Draw a milty slice as a UI Widget.
  */
 class MiltySliceUI extends LayoutBox {
+    static getSize(scale = 1) {
+        const tileW = Math.floor(TILE_W * scale);
+        const tileH = Math.floor(TILE_H * scale);
+        const w = tileW * 3 + 10;
+        const h = tileH * 4 + 10;
+        return [w, h];
+    }
+
     constructor(scale = 1) {
         super();
         this._scale = scale;
@@ -28,11 +37,16 @@ class MiltySliceUI extends LayoutBox {
             .setFontSize(fontSize)
             .setJustification(TextJustification.Center);
 
-        this._tileW = TILE_W * this._scale;
-        this._tileH = TILE_H * this._scale;
+        this._tileW = Math.floor(TILE_W * this._scale);
+        this._tileH = Math.floor(TILE_H * this._scale);
 
-        //this.setOverrideHeight(this._tileH * 3.5 + 10);
-        //this.setOverrideWidth(this._tileW * 3 + 10);
+        // Size correctly even if a slice isn't set.
+        // Use a slightly larger than expected box to prevent scrollbars.
+        const [w, h] = MiltySliceUI.getSize(scale);
+        this.setOverrideHeight(h)
+            .setOverrideWidth(w)
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center);
 
         this._leftLayout = new LayoutBox()
             .setPadding(0, 0, this._tileH / 2, 0)
@@ -44,15 +58,16 @@ class MiltySliceUI extends LayoutBox {
             .setPadding(0, 0, (this._tileH * 3) / 2, 0)
             .setVerticalAlignment(VerticalAlignment.Top);
 
-        const horizontalBox = new HorizontalBox()
+        const slicePanel = new HorizontalBox()
             .addChild(this._leftLayout)
             .addChild(this._centerLayout)
             .addChild(this._rightLayout);
-        this.setChild(
-            new VerticalBox()
-                .addChild(horizontalBox) // slice
-                .addChild(this._label) // label
-        );
+
+        const overallPanel = new VerticalBox()
+            .addChild(slicePanel)
+            .addChild(this._label);
+
+        this.setChild(overallPanel);
     }
 
     setSlice(miltySliceString, color, label) {
