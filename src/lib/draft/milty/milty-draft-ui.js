@@ -1,16 +1,15 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const {
     Border,
     Canvas,
     Color,
     LayoutBox,
-    refPackageId,
     world,
 } = require("../../../wrapper/api");
 
-const OVERALL_WIDTH = 833;
-const OVERALL_HEIGHT = 310;
+const SCALE_X = 0.7; // UI is distorted?
 const PADDING = 10;
 
 /**
@@ -19,10 +18,14 @@ const PADDING = 10;
  */
 class MiltyDraftUI {
     static getSize(scale) {
-        const pad = Math.floor(PADDING * scale);
+        assert(typeof scale === "number" && scale >= 1);
+        const scaleW = scale * SCALE_X;
+        const scaleH = scale;
+        const padW = Math.floor(PADDING * scaleW);
+        const padH = Math.floor(PADDING * scaleH);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
-        const w = sliceW * 6 + pad * 7;
-        const h = sliceH * 3 + pad * 4;
+        const w = sliceW * 6 + padW * 7;
+        const h = sliceH * 3 + padH * 4;
         return [w, h];
     }
 
@@ -34,20 +37,25 @@ class MiltyDraftUI {
 
         const playerCount = world.TI4.config.playerCount;
         const halfPlayerCount = Math.ceil(playerCount / 2);
-        const pad = Math.floor(PADDING * scale);
+
+        const scaleW = scale * SCALE_X;
+        const scaleH = scale;
+        const padW = Math.floor(PADDING * scaleW);
+        const padH = Math.floor(PADDING * scaleH);
+
         const [w, h] = MiltyDraftUI.getSize(scale);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
         const factionW = sliceW;
-        const factionH = (sliceH - pad) / 2;
+        const factionH = (sliceH - padH) / 2;
         const seatW =
-            (sliceW * 3 + pad * 2 - (halfPlayerCount - 1) * pad) /
+            (sliceW * 3 + padW * 2 - (halfPlayerCount - 1) * padW) /
             halfPlayerCount;
         const seatH = factionH;
 
         // Fill background.
         canvas.addChild(new Border(), canvasOffset.x, canvasOffset.y, w, h);
 
-        const sliceOrigin = { x: pad, y: pad };
+        const sliceOrigin = { x: padW, y: padH };
         const sliceOffsets = [
             { x: 0, y: 0 },
             { x: 1, y: 0 },
@@ -60,15 +68,15 @@ class MiltyDraftUI {
             { x: 2, y: 2 },
         ].map((offset) => {
             return {
-                x: canvasOffset.x + sliceOrigin.x + offset.x * (sliceW + pad),
-                y: canvasOffset.y + sliceOrigin.y + offset.y * (sliceH + pad),
+                x: canvasOffset.x + sliceOrigin.x + offset.x * (sliceW + padW),
+                y: canvasOffset.y + sliceOrigin.y + offset.y * (sliceH + padH),
             };
         });
         this._miltySliceUIs = sliceOffsets.map((sliceOffset) => {
             return new MiltySliceUI(canvas, sliceOffset, scale);
         });
 
-        const factionOrigin = { x: pad + (sliceW + pad) * 3, y: pad };
+        const factionOrigin = { x: padW + (sliceW + padW) * 3, y: padH };
         const factionOffsets = [
             { x: 0, y: 0 },
             { x: 1, y: 0 },
@@ -87,37 +95,30 @@ class MiltyDraftUI {
                 x:
                     canvasOffset.x +
                     factionOrigin.x +
-                    offset.x * (factionW + pad),
+                    offset.x * (factionW + padW),
                 y:
                     canvasOffset.y +
                     factionOrigin.y +
-                    offset.y * (factionH + pad),
+                    offset.y * (factionH + padH),
             };
         });
-        this._factionBoxes = factionOffsets.map((factionOffset) => {
-            const factionBox = new LayoutBox().setChild(
-                new Border().setColor([1, 1, 1])
-            );
-            canvas.addChild(
-                factionBox,
-                factionOffset.x,
-                factionOffset.y,
-                factionW,
-                factionH
-            );
-            return factionBox;
+        this._factionTokenUIs = factionOffsets.map((factionOffset) => {
+            return new FactionTokenUI(canvas, factionOffset, {
+                w: factionW,
+                h: factionH,
+            });
         });
 
         const seatOrigin = {
-            x: pad + (sliceW + pad) * 3,
-            y: pad + (factionH + pad) * 4,
+            x: padW + (sliceW + padW) * 3,
+            y: padH + (factionH + padH) * 4,
         };
         const seatOffsets = [...Array(playerCount).keys()].map((index) => {
             const col = index % halfPlayerCount;
             const row = Math.floor(index / halfPlayerCount);
             return {
-                x: canvasOffset.x + seatOrigin.x + col * (seatW + pad),
-                y: canvasOffset.y + seatOrigin.y + row * (seatH + pad),
+                x: canvasOffset.x + seatOrigin.x + col * (seatW + padW),
+                y: canvasOffset.y + seatOrigin.y + row * (seatH + padH),
             };
         });
         this._seatBoxes = seatOffsets.map((seatOffset) => {
@@ -133,6 +134,10 @@ class MiltyDraftUI {
         const label = "Test Longer Slice Name";
         for (const miltySliceUI of this._miltySliceUIs) {
             miltySliceUI.setSlice(miltySliceString, color, label);
+        }
+
+        for (const factionTokenUI of this._factionTokenUIs) {
+            factionTokenUI.setFaction("arborec");
         }
     }
 

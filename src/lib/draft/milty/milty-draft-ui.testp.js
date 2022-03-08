@@ -7,7 +7,7 @@ const {
     refObject,
 } = require("../../../wrapper/api");
 
-const scale = 10;
+const scale = DEFAULT_SLICE_SCALE;
 const [w, h] = MiltyDraftUI.getSize(scale);
 console.log(`draft ${w}x${h}`);
 
