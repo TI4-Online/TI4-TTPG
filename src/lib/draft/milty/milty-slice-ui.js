@@ -2,73 +2,106 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
-    HorizontalAlignment,
-    HorizontalBox,
+    Button,
+    Canvas,
     ImageWidget,
     LayoutBox,
     Text,
     TextJustification,
-    VerticalAlignment,
-    VerticalBox,
     refPackageId,
 } = require("../../../wrapper/api");
 
 const DEFAULT_SLICE_SCALE = 20;
 const TILE_W = 20;
 const TILE_H = Math.floor((TILE_W * 3) / 2);
+const FONT_SIZE = 4;
+const WRAP_LABEL_AFTER = 20;
 
 /**
  * Draw a milty slice as a UI Widget.
  */
-class MiltySliceUI extends LayoutBox {
-    static getSize(scale = DEFAULT_SLICE_SCALE) {
+class MiltySliceUI {
+    static getSize(scale) {
+        assert(typeof scale === "number" && scale >= 1);
+
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
-        const w = tileW * 3 + 10;
-        const h = tileH * 4 + 10;
+        const w = Math.floor(tileW * 2.5);
+        const h = Math.floor(tileH * 3);
         return [w, h];
     }
 
-    constructor(scale = DEFAULT_SLICE_SCALE) {
-        super();
-        this._scale = scale;
+    static wrapLabel(label) {
+        assert(typeof label === "string");
 
-        const fontSize = Math.min(255, Math.floor(8 * scale));
+        // Adding to a string creates a different object.  Instead push
+        // to a per-line token list.
+        let currentLine = [];
+        let currentLineLen = 0;
+
+        const result = [currentLine];
+
+        const tokens = label.split(" ");
+        for (const token of tokens) {
+            let delimLen = currentLineLen > 0 ? 1 : 0;
+            const tokenLen = token.length;
+            if (currentLineLen + delimLen + tokenLen > WRAP_LABEL_AFTER) {
+                currentLine = [];
+                currentLineLen = 0;
+                delimLen = 0;
+                result.push(currentLine);
+            }
+            currentLine.push(token);
+            currentLineLen += delimLen + tokenLen;
+        }
+        return result.map((line) => line.join(" ")).join("\n");
+    }
+
+    constructor(canvas, canvasOffset, scale) {
+        assert(canvas instanceof Canvas);
+        assert(typeof canvasOffset.x === "number");
+        assert(typeof canvasOffset.y === "number");
+        assert(typeof scale === "number" && scale >= 1);
+
+        // Tile positions in "tile size" space.
+        let offsets = [
+            { x: 0.75, y: 2 }, // HS, ADD FIRST TO DRAW ON BOTTOM
+            { x: 0, y: 1.5 }, // left of home
+            { x: 0.75, y: 1 }, // front of home
+            { x: 1.5, y: 1.5 }, // right of home
+            { x: 0, y: 0.5 }, // left equidistant
+            { x: 0.75, y: 0 }, // front far
+        ];
+
+        // Translate tile positions to canvas offsets.
+        const tileW = Math.floor(TILE_W * scale);
+        const tileH = Math.floor(TILE_H * scale);
+        offsets = offsets.map((offset) => {
+            return {
+                x: offset.x * tileW + canvasOffset.x,
+                y: offset.y * tileH + canvasOffset.y,
+            };
+        });
+
+        // Create per-tile LayoutBox elements.
+        this._imageBoxes = offsets.map((offset) => {
+            const imageBox = new LayoutBox();
+            canvas.addChild(imageBox, offset.x, offset.y, tileW, tileH);
+            return imageBox;
+        });
+        this._homeSystemBox = this._imageBoxes.shift();
+
+        // Add label.
+        const fontSize = Math.min(255, Math.floor(FONT_SIZE * scale));
         this._label = new Text()
             .setFontSize(fontSize)
             .setJustification(TextJustification.Center);
 
-        this._tileW = Math.floor(TILE_W * this._scale);
-        this._tileH = Math.floor(TILE_H * this._scale);
-
-        // Size correctly even if a slice isn't set.
-        // Use a slightly larger than expected box to prevent scrollbars.
-        const [w, h] = MiltySliceUI.getSize(scale);
-        this.setOverrideHeight(h)
-            .setOverrideWidth(w)
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setVerticalAlignment(VerticalAlignment.Center);
-
-        this._leftLayout = new LayoutBox()
-            .setPadding(0, 0, this._tileH / 2, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-        this._centerLayout = new LayoutBox()
-            .setPadding(0, 0, 0, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-        this._rightLayout = new LayoutBox()
-            .setPadding(0, 0, (this._tileH * 3) / 2, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-
-        const slicePanel = new HorizontalBox()
-            .addChild(this._leftLayout)
-            .addChild(this._centerLayout)
-            .addChild(this._rightLayout);
-
-        const overallPanel = new VerticalBox()
-            .addChild(slicePanel)
-            .addChild(this._label);
-
-        this.setChild(overallPanel);
+        const labelX = canvasOffset.x;
+        const labelY = canvasOffset.y + tileH * 2.5;
+        const labelW = tileW * 2.5;
+        const labelH = tileH / 2;
+        canvas.addChild(this._label, labelX, labelY, labelW, labelH);
     }
 
     setSlice(miltySliceString, color, label) {
@@ -80,13 +113,6 @@ class MiltySliceUI extends LayoutBox {
             (str) => Number.parseInt(str)
         );
         assert(tileNumbers.length === 5);
-        const [
-            leftOfHome,
-            frontOfHome,
-            rightOfHome,
-            leftEquidistant,
-            frontFar,
-        ] = tileNumbers;
 
         const getSystemTile = (tile) => {
             assert(typeof tile === "number");
@@ -96,27 +122,14 @@ class MiltySliceUI extends LayoutBox {
                 .setImage(imgPath, refPackageId);
         };
 
-        const leftBox = new VerticalBox();
-        this._leftLayout.setChild(leftBox);
-        leftBox
-            .addChild(getSystemTile(leftEquidistant))
-            .addChild(getSystemTile(leftOfHome));
+        for (let i = 0; i < 5; i++) {
+            const tile = tileNumbers[i];
+            const imageBox = this._imageBoxes[i];
+            imageBox.setChild(getSystemTile(tile));
+        }
+        this._homeSystemBox.setChild(new Border().setColor(color));
 
-        const centerBox = new VerticalBox();
-        this._centerLayout.setChild(centerBox);
-        centerBox
-            .addChild(getSystemTile(frontFar))
-            .addChild(getSystemTile(frontOfHome))
-            .addChild(
-                new LayoutBox()
-                    .setChild(new Border().setColor(color))
-                    .setOverrideHeight(this._tileH)
-            );
-
-        const rightBox = new VerticalBox();
-        this._rightLayout.setChild(rightBox);
-        rightBox.addChild(getSystemTile(rightOfHome));
-
+        label = MiltySliceUI.wrapLabel(label);
         this._label.setText(label);
 
         return this;
