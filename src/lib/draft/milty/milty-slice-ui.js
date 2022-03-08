@@ -6,6 +6,7 @@ const {
     ImageWidget,
     LayoutBox,
     Text,
+    TextJustification,
     VerticalAlignment,
     VerticalBox,
     refPackageId,
@@ -22,17 +23,35 @@ class MiltySliceUI extends LayoutBox {
         super();
         this._scale = scale;
 
-        this._slice = new LayoutBox();
-        this._label = new Text();
+        const fontSize = Math.min(255, Math.floor(8 * scale));
+        this._label = new Text()
+            .setFontSize(fontSize)
+            .setJustification(TextJustification.Center);
 
         this._tileW = TILE_W * this._scale;
         this._tileH = TILE_H * this._scale;
 
-        this.setOverrideHeight(this._tileH * 3.5 + 10);
-        this.setOverrideWidth(this._tileW * 3 + 10);
+        //this.setOverrideHeight(this._tileH * 3.5 + 10);
+        //this.setOverrideWidth(this._tileW * 3 + 10);
 
+        this._leftLayout = new LayoutBox()
+            .setPadding(0, 0, this._tileH / 2, 0)
+            .setVerticalAlignment(VerticalAlignment.Top);
+        this._centerLayout = new LayoutBox()
+            .setPadding(0, 0, 0, 0)
+            .setVerticalAlignment(VerticalAlignment.Top);
+        this._rightLayout = new LayoutBox()
+            .setPadding(0, 0, (this._tileH * 3) / 2, 0)
+            .setVerticalAlignment(VerticalAlignment.Top);
+
+        const horizontalBox = new HorizontalBox()
+            .addChild(this._leftLayout)
+            .addChild(this._centerLayout)
+            .addChild(this._rightLayout);
         this.setChild(
-            new VerticalBox().addChild(this._slice).addChild(this._label)
+            new VerticalBox()
+                .addChild(horizontalBox) // slice
+                .addChild(this._label) // label
         );
     }
 
@@ -53,32 +72,6 @@ class MiltySliceUI extends LayoutBox {
             frontFar,
         ] = tileNumbers;
 
-        const horizontalBox = new HorizontalBox();
-        this._slice.setChild(horizontalBox);
-
-        const leftBox = new VerticalBox();
-        const leftPadded = new LayoutBox()
-            .setChild(leftBox)
-            .setPadding(0, 0, this._tileH / 2, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-        horizontalBox.addChild(leftPadded);
-
-        const centerBox = new VerticalBox();
-        const centerPadded = new LayoutBox()
-            .setChild(centerBox)
-            .setPadding(0, 0, 0, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-
-        horizontalBox.addChild(centerPadded);
-
-        const rightBox = new VerticalBox();
-        const rightPadded = new LayoutBox()
-            .setChild(rightBox)
-            .setPadding(0, 0, (this._tileH * 3) / 2, 0)
-            .setVerticalAlignment(VerticalAlignment.Top);
-
-        horizontalBox.addChild(rightPadded);
-
         const getSystemTile = (tile) => {
             assert(typeof tile === "number");
             const imgPath = TileToImage.tileToImage(tile);
@@ -86,19 +79,29 @@ class MiltySliceUI extends LayoutBox {
                 .setImageSize(this._tileW, this._tileH)
                 .setImage(imgPath, refPackageId);
         };
+
+        const leftBox = new VerticalBox();
+        this._leftLayout.setChild(leftBox);
         leftBox
             .addChild(getSystemTile(leftEquidistant))
             .addChild(getSystemTile(leftOfHome));
+
+        const centerBox = new VerticalBox();
+        this._centerLayout.setChild(centerBox);
         centerBox
             .addChild(getSystemTile(frontFar))
-            .addChild(getSystemTile(frontOfHome));
+            .addChild(getSystemTile(frontOfHome))
+            .addChild(
+                new LayoutBox()
+                    .setChild(new Border().setColor(color))
+                    .setOverrideHeight(this._tileH)
+            );
+
+        const rightBox = new VerticalBox();
+        this._rightLayout.setChild(rightBox);
         rightBox.addChild(getSystemTile(rightOfHome));
 
-        centerBox.addChild(
-            new LayoutBox()
-                .setChild(new Border().setColor(color))
-                .setOverrideHeight(this._tileH)
-        );
+        this._label.setText(label);
 
         return this;
     }
