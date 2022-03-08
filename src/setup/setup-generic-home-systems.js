@@ -85,14 +85,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
         obj.setPrimaryColor(color);
         obj.setOwningPlayerSlot(playerSlot);
 
-        const text = new Text()
-            .setText(locale("ui.label.home_system_tile"))
-            .setJustification(TextJustification.Center);
-
-        const ui = new UIElement();
-        ui.position = new Vector(0, 0, 0.13);
-        ui.widget = text;
-        obj.addUI(ui);
+        this._addLabel(obj);
 
         // Also spawn one at off-map for visualizing.
         if (SPAWN_OFF_MAP_ALSO) {
@@ -105,23 +98,6 @@ class SetupGenericHomeSystems extends AbstractSetup {
             obj.setPrimaryColor(color);
             obj.setOwningPlayerSlot(playerSlot);
         }
-
-        // Report hex coordinates when dropped.
-        // obj.onSnapped.add(
-        //     (object, player, snapPoint, grabPosition, grabRotation) => {
-        //         //const pos = snapPoint.getGlobalPosition();
-        //         const pos = object.getPosition();
-        //         const hex = Hex.fromPosition(pos);
-        //         text.setText(hex);
-        //         obj.updateUI(ui);
-        //     }
-        // );
-        // obj.onReleased.add((object) => {
-        //     const pos = object.getPosition();
-        //     const hex = Hex.fromPosition(pos);
-        //     text.setText(hex);
-        //     obj.updateUI(ui);
-        // });
     }
 
     clean() {
@@ -139,6 +115,17 @@ class SetupGenericHomeSystems extends AbstractSetup {
             }
             obj.destroy();
         }
+    }
+
+    _addLabel(obj) {
+        const text = new Text()
+            .setText(locale("ui.label.home_system_tile"))
+            .setJustification(TextJustification.Center);
+
+        const ui = new UIElement();
+        ui.position = new Vector(0, 0, 0.13);
+        ui.widget = text;
+        obj.addUI(ui);
     }
 }
 

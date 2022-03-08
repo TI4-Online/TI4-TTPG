@@ -1,17 +1,26 @@
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const {
-    Border,
+    Canvas,
     UIElement,
     Vector,
     refObject,
 } = require("../../../wrapper/api");
 
-const miltyDraftWidget = new MiltyDraftUI();
+const scale = 10;
+const [w, h] = MiltyDraftUI.getSize(scale);
+console.log(`draft ${w}x${h}`);
+
+const canvas = new Canvas();
+const canvasOffset = { x: 0, y: 0 };
+const miltyDraftUI = new MiltyDraftUI(canvas, canvasOffset, scale);
 
 const ui = new UIElement();
-ui.position = new Vector(0, 0, 3);
-ui.widget = new Border().setColor([0.5, 0.5, 0.5]).setChild(miltyDraftWidget);
-ui.scale = 1 / DEFAULT_SLICE_SCALE;
+ui.width = w;
+ui.height = h;
+ui.useWidgetSize = false;
+ui.position = new Vector(0, 0, 6);
+ui.widget = canvas;
+ui.scale = 1 / scale;
 
 refObject.addUI(ui);
