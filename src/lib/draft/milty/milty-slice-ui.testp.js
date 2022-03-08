@@ -1,4 +1,4 @@
-const { MiltySliceUI } = require("./milty-slice-ui");
+const { MiltySliceUI, DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const {
     Canvas,
     Color,
@@ -10,14 +10,9 @@ const {
 const miltySliceString = "1 2 3 4 5";
 const color = new Color(1, 0, 0);
 const label = "Test";
-const SCALE = 20;
-const miltySlice = new MiltySliceUI(SCALE).setSlice(
-    miltySliceString,
-    color,
-    label
-);
+const miltySlice = new MiltySliceUI().setSlice(miltySliceString, color, label);
 
-const [w, h] = MiltySliceUI.getSize(SCALE);
+const [w, h] = MiltySliceUI.getSize();
 const canvas = new Canvas();
 canvas.addChild(miltySlice, 0, 0, w, h);
 
@@ -27,6 +22,6 @@ ui.height = h;
 ui.useWidgetSize = false;
 ui.position = new Vector(0, 0, 3);
 ui.widget = canvas;
-ui.scale = 1 / SCALE;
+ui.scale = 1 / DEFAULT_SLICE_SCALE;
 
 refObject.addUI(ui);

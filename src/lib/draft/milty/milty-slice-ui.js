@@ -13,6 +13,7 @@ const {
     refPackageId,
 } = require("../../../wrapper/api");
 
+const DEFAULT_SLICE_SCALE = 20;
 const TILE_W = 20;
 const TILE_H = Math.floor((TILE_W * 3) / 2);
 
@@ -20,7 +21,7 @@ const TILE_H = Math.floor((TILE_W * 3) / 2);
  * Draw a milty slice as a UI Widget.
  */
 class MiltySliceUI extends LayoutBox {
-    static getSize(scale = 1) {
+    static getSize(scale = DEFAULT_SLICE_SCALE) {
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
         const w = tileW * 3 + 10;
@@ -28,7 +29,7 @@ class MiltySliceUI extends LayoutBox {
         return [w, h];
     }
 
-    constructor(scale = 1) {
+    constructor(scale = DEFAULT_SLICE_SCALE) {
         super();
         this._scale = scale;
 
@@ -122,4 +123,4 @@ class MiltySliceUI extends LayoutBox {
     }
 }
 
-module.exports = { MiltySliceUI };
+module.exports = { MiltySliceUI, DEFAULT_SLICE_SCALE };
