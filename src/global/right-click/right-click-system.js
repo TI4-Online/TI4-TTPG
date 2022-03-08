@@ -17,13 +17,11 @@ const {
 } = require("../../wrapper/api");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 
-let _openPopupObj = false;
 let _openPopupUi = false;
 
 function _closePopup() {
-    if (_openPopupObj) {
-        _openPopupObj.removeUIElement(_openPopupUi);
-        _openPopupObj = false;
+    if (_openPopupUi) {
+        world.removeUIElement(_openPopupUi);
         _openPopupUi = false;
     }
 }
@@ -110,7 +108,9 @@ function addRightClickOptions(systemTileObj) {
         const popupUi = new UIElement();
         popupUi.widget = new Border().setChild(popupPanel);
         popupUi.rotation = new Rotator(0, player.getRotation().yaw, 0);
-        popupUi.position = ui.position.add([0, 0, 3]);
+        popupUi.position = systemTileObj
+            .localPositionToWorld(ui.position)
+            .add([0, 0, 3]);
 
         const namesAndActions = getNamesAndActions(player, systemTileObj);
         for (const nameAndAction of namesAndActions) {
@@ -128,8 +128,7 @@ function addRightClickOptions(systemTileObj) {
         });
         popupPanel.addChild(closeButton);
 
-        systemTileObj.addUI(popupUi);
-        _openPopupObj = systemTileObj;
+        world.addUI(popupUi);
         _openPopupUi = popupUi;
     });
 }
