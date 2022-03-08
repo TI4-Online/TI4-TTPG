@@ -1,15 +1,9 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
-const {
-    Border,
-    Canvas,
-    Color,
-    LayoutBox,
-    world,
-} = require("../../../wrapper/api");
+const { SeatTokenUI } = require("./seat-token-ui");
+const { Border, Canvas, Color, world } = require("../../../wrapper/api");
 
-const SCALE_X = 0.7; // UI is distorted?
 const PADDING = 10;
 
 /**
@@ -19,10 +13,8 @@ const PADDING = 10;
 class MiltyDraftUI {
     static getSize(scale) {
         assert(typeof scale === "number" && scale >= 1);
-        const scaleW = scale * SCALE_X;
-        const scaleH = scale;
-        const padW = Math.floor(PADDING * scaleW);
-        const padH = Math.floor(PADDING * scaleH);
+        const padW = Math.floor(PADDING * scale);
+        const padH = Math.floor(PADDING * scale);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
         const w = sliceW * 6 + padW * 7;
         const h = sliceH * 3 + padH * 4;
@@ -38,10 +30,8 @@ class MiltyDraftUI {
         const playerCount = world.TI4.config.playerCount;
         const halfPlayerCount = Math.ceil(playerCount / 2);
 
-        const scaleW = scale * SCALE_X;
-        const scaleH = scale;
-        const padW = Math.floor(PADDING * scaleW);
-        const padH = Math.floor(PADDING * scaleH);
+        const padW = Math.floor(PADDING * scale);
+        const padH = Math.floor(PADDING * scale);
 
         const [w, h] = MiltyDraftUI.getSize(scale);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
@@ -121,12 +111,8 @@ class MiltyDraftUI {
                 y: canvasOffset.y + seatOrigin.y + row * (seatH + padH),
             };
         });
-        this._seatBoxes = seatOffsets.map((seatOffset) => {
-            const seatBox = new LayoutBox().setChild(
-                new Border().setColor([1, 1, 1])
-            );
-            canvas.addChild(seatBox, seatOffset.x, seatOffset.y, seatW, seatH);
-            return seatBox;
+        this._seatTokenUIs = seatOffsets.map((seatOffset) => {
+            return new SeatTokenUI(canvas, seatOffset, { w: seatW, h: seatH });
         });
 
         const miltySliceString = "1 2 3 4 5";
@@ -135,9 +121,11 @@ class MiltyDraftUI {
         for (const miltySliceUI of this._miltySliceUIs) {
             miltySliceUI.setSlice(miltySliceString, color, label);
         }
-
         for (const factionTokenUI of this._factionTokenUIs) {
             factionTokenUI.setFaction("arborec");
+        }
+        for (const SeatTokenUI of this._seatTokenUIs) {
+            SeatTokenUI.setSeatIndex(1);
         }
     }
 
@@ -146,8 +134,8 @@ class MiltyDraftUI {
         // XXX TODO
     }
 
-    setFactions(factionNames) {
-        assert(Array.isArray(factionNames));
+    setFactions(factionNsidNames) {
+        assert(Array.isArray(factionNsidNames));
         // XXX TODO
     }
 }
