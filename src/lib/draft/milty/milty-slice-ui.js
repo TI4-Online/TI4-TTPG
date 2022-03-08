@@ -2,7 +2,6 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
-    Button,
     Canvas,
     ImageWidget,
     LayoutBox,
@@ -10,7 +9,6 @@ const {
     TextJustification,
     refPackageId,
 } = require("../../../wrapper/api");
-
 const DEFAULT_SLICE_SCALE = 20;
 const TILE_W = 20;
 const TILE_H = Math.floor((TILE_W * 3) / 2);
