@@ -16,6 +16,9 @@ const SLICE_HEXES = [
     "<2,0,-2>",
 ];
 
+/**
+ * Place system tiles on the map given a milty slice string and home system position.
+ */
 class MiltySliceLayout {
     static _getAnchorPosition(playerSlot) {
         assert(typeof playerSlot === "number");
