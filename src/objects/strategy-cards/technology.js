@@ -12,6 +12,7 @@ const {
     world,
 } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
+const { ColorUtil } = require("../../lib/color/color-util");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert-wrapper");
@@ -47,25 +48,25 @@ const factionIcons = {
 
 const techIcons = {
     unitUpgrade: {
-        color: new Color(1, 1, 1),
+        color: ColorUtil.colorFromHex("#ffffff"),
     },
     Red: {
-        color: new Color(1, 0, 0),
+        color: ColorUtil.colorFromHex("#cc0000"),
         activeIcon: "global/technology/warfare_tech_icon.png",
         disabledIcon: "global/technology/warfare_tech_disabled_icon.png",
     },
     Yellow: {
-        color: new Color(1, 1, 0),
+        color: ColorUtil.colorFromHex("#e5e500"),
         activeIcon: "global/technology/cybernetic_tech_icon.png",
         disabledIcon: "global/technology/cybernetic_tech_disabled_icon.png",
     },
     Green: {
-        color: new Color(0, 1, 0),
+        color: ColorUtil.colorFromHex("#008000"),
         activeIcon: "global/technology/biotic_tech_icon.png",
         disabledIcon: "global/technology/biotic_tech_disabled_icon.png",
     },
     Blue: {
-        color: new Color(0, 0, 1),
+        color: ColorUtil.colorFromHex("#3232ff"),
         activeIcon: "global/technology/propulsion_tech_icon.png",
         disabledIcon: "global/technology/propulsion_tech_disabled_icon.png",
     },
@@ -230,9 +231,11 @@ function widgetFactory(playerDesk, packageId) {
                 packageId
             );
 
-            if (Object.keys(tech.requirements).length > 0) {
-                yOffset += 15;
-            }
+            // Always add offset for consistent layout
+            //if (Object.keys(tech.requirements).length > 0) {
+            //   yOffset += 15;
+            //}
+            yOffset += 15;
 
             yOffset += 40;
         });
@@ -279,7 +282,7 @@ const calculateHeight = (playerSlot) => {
         .map((type) => technologies[type].length)
         .reduce((a, b) => Math.max(a, b));
     const unitUpgradeRows = Math.ceil(technologies.unitUpgrade.length / 4);
-    return (techRows + unitUpgradeRows) * 55 + 100;
+    return (techRows + unitUpgradeRows) * 55 + 130;
 };
 
 new RegisterStrategyCardUI()
