@@ -3,16 +3,16 @@ const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
+    Button,
     Canvas,
     ImageWidget,
-    Text,
-    TextJustification,
+    LayoutBox,
     refPackageId,
 } = require("../../../wrapper/api");
 
 const DEFAULT_SLICE_SCALE = 20;
 const TILE_W = 20;
-const TILE_H = Math.floor((TILE_W * 3) / 2);
+const TILE_H = TILE_W * 0.866;
 const FONT_SIZE = 4;
 
 /**
@@ -25,8 +25,12 @@ class MiltySliceUI {
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
         const w = Math.floor(tileW * 2.5);
-        const h = Math.floor(tileH * 3);
+        const h = Math.floor(tileH * 4);
         return [w, h];
+    }
+
+    static getFontSize(scale) {
+        return Math.min(255, Math.floor(FONT_SIZE * scale));
     }
 
     constructor(canvas, canvasOffset, scale) {
@@ -56,34 +60,21 @@ class MiltySliceUI {
         });
 
         // Add home system behind other elements (drawn in order).
-        const hsOffset = offsets.shift();
-        this._homeSystemBorder = new Border();
-        canvas.addChild(
-            this._homeSystemBorder,
-            hsOffset.x,
-            hsOffset.y,
-            tileW,
-            tileH
-        );
-
-        // Create per-tile LayoutBox elements.
-        this._tileImages = offsets.map((offset) => {
-            const img = new ImageWidget().setImageSize(tileW, tileH);
-            canvas.addChild(img, offset.x, offset.y, tileW, tileH);
-            return img;
+        this._tileBoxes = offsets.map((offset) => {
+            const layoutBox = new LayoutBox();
+            canvas.addChild(layoutBox, offset.x, offset.y, tileW, tileH);
+            return layoutBox;
         });
+        this._homeSystemBox = this._tileBoxes.shift();
 
-        // Add label.
-        const fontSize = Math.min(255, Math.floor(FONT_SIZE * scale));
-        this._label = new Text()
-            .setFontSize(fontSize)
-            .setJustification(TextJustification.Center);
-
+        // Label / button area.
+        this._labelFontSize = MiltySliceUI.getFontSize(scale);
+        this._labelBox = new LayoutBox();
         const labelX = canvasOffset.x;
-        const labelY = canvasOffset.y + tileH * 2.5;
+        const labelY = canvasOffset.y + tileH * 3;
         const labelW = tileW * 2.5;
-        const labelH = tileH / 2;
-        canvas.addChild(this._label, labelX, labelY, labelW, labelH);
+        const labelH = tileH;
+        canvas.addChild(this._labelBox, labelX, labelY, labelW, labelH);
     }
 
     setSlice(miltySlice) {
@@ -93,23 +84,34 @@ class MiltySliceUI {
         for (let i = 0; i < 5; i++) {
             const tile = miltySlice[i];
             const imgPath = TileToImage.tileToImage(tile);
-            const image = this._tileImages[i];
-            image.setImage(imgPath, refPackageId);
+            const tileBox = this._tileBoxes[i];
+            tileBox.setChild(new ImageWidget().setImage(imgPath, refPackageId));
         }
         return this;
     }
 
     setColor(color) {
         assert(typeof color.r === "number");
-        this._homeSystemBorder.setColor(color);
+        this._homeSystemBox.setChild(new Border().setColor(color));
         return this;
     }
 
     setLabel(label) {
         assert(typeof label === "string");
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
-        this._label.setText(label);
+        this._labelBox.setChild(
+            new Button().setFontSize(this._labelFontSize).setText(label)
+        );
         return this;
+    }
+
+    clear() {
+        for (let i = 0; i < 5; i++) {
+            const tileBox = this._tileBoxes[i];
+            tileBox.setChild();
+        }
+        this._homeSystemBox.setChild();
+        this._labelBox.setChild();
     }
 }
 

@@ -1,8 +1,9 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../../color/color-util");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
-const { Border, Canvas, Color, world } = require("../../../wrapper/api");
+const { Border, Canvas, world } = require("../../../wrapper/api");
 
 const PADDING = 10;
 
@@ -35,6 +36,7 @@ class MiltyDraftUI {
 
         const [w, h] = MiltyDraftUI.getSize(scale);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
+
         const factionW = sliceW;
         const factionH = (sliceH - padH) / 2;
         const seatW =
@@ -62,8 +64,8 @@ class MiltyDraftUI {
                 y: canvasOffset.y + sliceOrigin.y + offset.y * (sliceH + padH),
             };
         });
-        this._miltySliceUIs = sliceOffsets.map((sliceOffset) => {
-            return new MiltySliceUI(canvas, sliceOffset, scale);
+        this._miltySliceUIs = sliceOffsets.map((offset) => {
+            return new MiltySliceUI(canvas, offset, scale);
         });
 
         const factionOrigin = { x: padW + (sliceW + padW) * 3, y: padH };
@@ -92,8 +94,8 @@ class MiltyDraftUI {
                     offset.y * (factionH + padH),
             };
         });
-        this._factionTokenUIs = factionOffsets.map((factionOffset) => {
-            return new FactionTokenUI(canvas, factionOffset, {
+        this._factionTokenUIs = factionOffsets.map((offset) => {
+            return new FactionTokenUI(canvas, offset, {
                 w: factionW,
                 h: factionH,
             });
@@ -104,41 +106,74 @@ class MiltyDraftUI {
             y: padH + (factionH + padH) * 4,
         };
         const seatOffsets = [...Array(playerCount).keys()].map((index) => {
-            const col = index % halfPlayerCount;
-            const row = Math.floor(index / halfPlayerCount);
+            const row = index < halfPlayerCount ? 1 : 0;
+            let col = index % halfPlayerCount;
+            if (row === 1) {
+                col = halfPlayerCount - col - 1;
+            }
             return {
                 x: canvasOffset.x + seatOrigin.x + col * (seatW + padW),
                 y: canvasOffset.y + seatOrigin.y + row * (seatH + padH),
             };
         });
-        this._seatTokenUIs = seatOffsets.map((seatOffset) => {
-            return new SeatTokenUI(canvas, seatOffset, { w: seatW, h: seatH });
+        this._seatTokenUIs = seatOffsets.map((offset) => {
+            return new SeatTokenUI(canvas, offset, { w: seatW, h: seatH });
         });
-
-        const miltySliceString = [1, 2, 3, 4, 5];
-        const color = new Color(1, 0, 0);
-        const label = "Test Longer Slice Name";
-        for (const miltySliceUI of this._miltySliceUIs) {
-            miltySliceUI.setSlice(miltySliceString);
-            miltySliceUI.setColor(color);
-            miltySliceUI.setLabel(label);
-        }
-        for (const factionTokenUI of this._factionTokenUIs) {
-            factionTokenUI.setFaction("arborec");
-        }
-        for (const SeatTokenUI of this._seatTokenUIs) {
-            SeatTokenUI.setSeatIndex(1);
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        for (let i = 0; i < this._seatTokenUIs.length; i++) {
+            const seatTokenUI = this._seatTokenUIs[i];
+            const playerDesk = playerDesks[i];
+            assert(playerDesk);
+            seatTokenUI.setColor(playerDesk.color);
         }
     }
 
     setSlices(miltySlices) {
         assert(Array.isArray(miltySlices));
-        // XXX TODO
+        miltySlices.forEach((miltySlice) => {
+            assert(Array.isArray(miltySlice.slice));
+            assert(ColorUtil.isColor(miltySlice.color));
+            assert(typeof miltySlice.label === "string");
+        });
+        for (let i = 0; i < this._miltySliceUIs.length; i++) {
+            const miltySliceUI = this._miltySliceUIs[i];
+            const miltySlice = miltySlices[i];
+            if (miltySlice) {
+                miltySliceUI.setSlice(miltySlice.slice);
+                miltySliceUI.setColor(miltySlice.color);
+                miltySliceUI.setLabel(miltySlice.label);
+            } else {
+                miltySliceUI.clear();
+            }
+        }
+        return this;
     }
 
     setFactions(factionNsidNames) {
         assert(Array.isArray(factionNsidNames));
-        // XXX TODO
+        for (let i = 0; i < this._factionTokenUIs.length; i++) {
+            const factionTokenUI = this._factionTokenUIs[i];
+            const factionNsidName = factionNsidNames[i];
+            if (factionNsidName) {
+                factionTokenUI.setFaction(factionNsidName);
+            } else {
+                factionTokenUI.clear();
+            }
+        }
+        return this;
+    }
+
+    setSpeakerSeatIndex(speakerSeatIndex) {
+        assert(typeof speakerSeatIndex === "number");
+        for (let i = 0; i < this._seatTokenUIs.length; i++) {
+            const seatTokenUI = this._seatTokenUIs[i];
+            let orderIndex = i - speakerSeatIndex;
+            if (orderIndex < 0) {
+                orderIndex += this._seatTokenUIs.length;
+            }
+            seatTokenUI.setSeatIndex(orderIndex);
+        }
+        return this;
     }
 }
 

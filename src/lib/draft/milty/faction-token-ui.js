@@ -1,14 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
-const {
-    Canvas,
-    ImageWidget,
-    LayoutBox,
-    Text,
-    TextJustification,
-    VerticalAlignment,
-    refPackageId,
-    world,
-} = require("../../../wrapper/api");
+const { Button, Canvas, LayoutBox, world } = require("../../../wrapper/api");
 
 class FactionTokenUI {
     constructor(canvas, canvasOffset, size) {
@@ -18,28 +9,10 @@ class FactionTokenUI {
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
 
-        const fontSize = Math.min(255, Math.floor(size.h * 0.1));
-        const d = Math.min(size.w, size.h) - fontSize * 1.5;
-        this._image = new ImageWidget().setImageSize(d, d);
-
-        const dx = (size.w - d) / 2;
-        const dy = (size.h - d) / 2 - fontSize;
+        this._labelFontSize = Math.min(255, Math.floor(size.h * 0.3));
+        this._labelBox = new LayoutBox();
         canvas.addChild(
-            this._image,
-            canvasOffset.x + dx,
-            canvasOffset.y + dy,
-            d,
-            d
-        );
-
-        this._label = new Text()
-            .setFontSize(size.h * 0.1)
-            .setJustification(TextJustification.Center);
-        const textBox = new LayoutBox()
-            .setVerticalAlignment(VerticalAlignment.Bottom)
-            .setChild(this._label);
-        canvas.addChild(
-            textBox,
+            this._labelBox,
             canvasOffset.x,
             canvasOffset.y,
             size.w,
@@ -55,10 +28,15 @@ class FactionTokenUI {
             throw new Error(`unknown faction "${factionNsidName}`);
         }
 
-        const path = `global/factions/${factionNsidName}_icon.png`;
-        this._image.setImage(path, refPackageId);
+        this._labelBox.setChild(
+            new Button()
+                .setFontSize(this._labelFontSize)
+                .setText(faction.nameAbbr)
+        );
+    }
 
-        this._label.setText(faction.nameAbbr);
+    clear() {
+        this._labelBox.setChild();
     }
 }
 

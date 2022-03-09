@@ -66,6 +66,8 @@
     "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
     "ui.action.end_turn": "End Turn",
 
+    "ui.label.speaker": "Speaker",
+
     "ui.label.movement": "Movement Step",
     "ui.label.space_combat": "Space Combat Step",
     "ui.label.invasion": "Invasion Step",
