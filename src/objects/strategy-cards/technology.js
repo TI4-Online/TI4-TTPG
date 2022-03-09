@@ -244,7 +244,7 @@ function widgetFactory(playerDesk, packageId) {
         let techButton = new Button().setText(tech.name);
         const xOffset = (tech.unitPosition % 4) * 210;
         const yOffset = yOffsetMax + 20 + 
-          Math.floor(tech.unitPosition / 4) * 60;
+            Math.floor(tech.unitPosition / 4) * 60;
         canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
         drawTechButton(
