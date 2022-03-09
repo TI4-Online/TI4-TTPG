@@ -146,11 +146,14 @@
     "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
     "ui.maptool.place_hyperlanes": "Place Hyperlanes",
 
+    "ui.draft.button.start": "Start",
+    "ui.draft.button.finish": "Finish",
     "ui.draft.category.slice": "slice",
     "ui.draft.category.faction": "faction",
     "ui.draft.category.seat": "seat",
     "ui.draft.not_seated": "Must be seated to select",
     "ui.draft.deselected": "{playerName} de-selected {categoryName} \"{selectionName}\"",
+    "ui.draft.already_claimed": "{playerName} cannot choose already-claimed {categoryName} \"{selectionName}\"",
     "ui.draft.already_have": "{playerName} already has a {categoryName}",
     "ui.draft.selected": "{playerName} selected {categoryName} \"{selectionName}\"",
 

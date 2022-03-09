@@ -1,12 +1,10 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
-const { Border } = require("@tabletop-playground/api");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
 const {
-    Canvas,
     Color,
     UIElement,
     Vector,
@@ -15,9 +13,6 @@ const {
 } = require("../../../wrapper/api");
 
 const scale = DEFAULT_SLICE_SCALE;
-
-const canvas = new Canvas();
-const miltyDraftUI = new MiltyDraftUI(canvas, scale);
 
 const SLICES = [
     {
@@ -65,19 +60,17 @@ const FACTIONS = [
     { nsidName: "hacan" },
     { nsidName: "creuss" },
     { nsidName: "muaat" },
-    { nsidName: "nekro" },
+    //{ nsidName: "nekro" },
 ];
 
 const SEATS = SeatTokenUI.getSeatDataArray(-1);
 
+const manager = new DraftSelectionManager().setBorderSize(4 * scale);
+
 const sliceCategoryName = locale("ui.draft.category.slice");
 const factionCategoryName = locale("ui.draft.category.faction");
 const seatCategoryName = locale("ui.draft.category.seat");
-const manager = new DraftSelectionManager()
-    .setBorderSize(4 * scale)
-    .addCategory(sliceCategoryName)
-    .addCategory(factionCategoryName)
-    .addCategory(seatCategoryName);
+
 SLICES.forEach((sliceData) => {
     sliceData.onClickedGenerator = manager.createOnClickedGenerator(
         sliceCategoryName,
@@ -102,16 +95,26 @@ SEATS.forEach((seatData) => {
     );
 });
 
-miltyDraftUI.addSlices(SLICES).addFactions(FACTIONS).addSeats(SEATS);
-const [w, h] = miltyDraftUI.getSize();
-console.log(`draft ${w}x${h}`);
+function buildDemo(pos) {
+    const onFinishedButton = manager.createOnFinishedButton();
 
-const ui = new UIElement();
-ui.width = w;
-ui.height = h;
-ui.useWidgetSize = false;
-ui.position = new Vector(0, 0, 6);
-ui.widget = new Border().setChild(canvas);
-ui.scale = 1 / scale;
+    const { widget, w, h } = new MiltyDraftUI(scale)
+        .addSlices(SLICES)
+        .addFactions(FACTIONS)
+        .addSeats(SEATS)
+        .getWidgetAndSize(onFinishedButton);
+    console.log(`draft ${w}x${h}`);
 
-refObject.addUI(ui);
+    const ui = new UIElement();
+    ui.width = w;
+    ui.height = h;
+    ui.useWidgetSize = false;
+    ui.position = pos;
+    ui.widget = widget;
+    ui.scale = 1 / scale;
+
+    refObject.addUI(ui);
+}
+
+buildDemo(new Vector(0, 0, 6));
+buildDemo(new Vector(0, -80, 6));

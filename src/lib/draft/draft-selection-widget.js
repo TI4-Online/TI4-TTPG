@@ -2,8 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ColorUtil } = require("../color/color-util");
 const { Border, LayoutBox, Widget } = require("../../wrapper/api");
 
-const PADDING = 4;
-
 /**
  * Wrap child inside a padded box.
  */
@@ -32,7 +30,7 @@ class DraftSelectionWidget extends Border {
         this._layoutBox = new LayoutBox();
         super.setChild(this._layoutBox);
 
-        this.setBorderSize(PADDING);
+        this.setBorderSize(1);
         this.clearSelection();
     }
 
