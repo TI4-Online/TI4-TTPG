@@ -10,12 +10,15 @@ const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
 
 class SeatTokenUI {
-    constructor(canvas, canvasOffset, size) {
+    constructor(canvas, canvasOffset, size, onClicked) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
+        assert(typeof onClicked === "function");
+
+        this._onClicked = onClicked;
 
         this._seatIndex = -1;
         this._fontSize = Math.min(255, Math.floor(size.h * 0.3));
@@ -54,9 +57,10 @@ class SeatTokenUI {
         } else {
             label = (seatIndex + 1).toString();
         }
-        this._labelBox.setChild(
-            new Button().setFontSize(this._fontSize).setText(label)
-        );
+        const button = new Button().setFontSize(this._fontSize).setText(label);
+
+        this._labelBox.setChild(button);
+        button.onClicked.add(this._onClicked);
     }
 }
 

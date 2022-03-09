@@ -7,17 +7,15 @@ const {
     Vector,
     refObject,
 } = require("../../../wrapper/api");
+const { Border } = require("@tabletop-playground/api");
 
 const scale = DEFAULT_SLICE_SCALE;
-const [w, h] = MiltyDraftUI.getSize(scale);
-console.log(`draft ${w}x${h}`);
 
 const canvas = new Canvas();
-const canvasOffset = { x: 0, y: 0 };
-const miltyDraftUI = new MiltyDraftUI(canvas, canvasOffset, scale);
+const miltyDraftUI = new MiltyDraftUI(canvas, scale);
 
 miltyDraftUI
-    .setSlices([
+    .addSlices([
         {
             slice: [1, 2, 3, 4, 5],
             color: new Color(1, 0, 0),
@@ -54,7 +52,7 @@ miltyDraftUI
             label: "Slice G",
         },
     ])
-    .setFactions([
+    .addFactions([
         "arborec",
         "ul",
         "letnev",
@@ -64,14 +62,16 @@ miltyDraftUI
         "muaat",
         "nekro",
     ])
-    .setSpeakerSeatIndex(2);
+    .addSeats(2);
+const [w, h] = miltyDraftUI.getSize();
+console.log(`draft ${w}x${h}`);
 
 const ui = new UIElement();
 ui.width = w;
 ui.height = h;
 ui.useWidgetSize = false;
 ui.position = new Vector(0, 0, 6);
-ui.widget = canvas;
+ui.widget = new Border().setChild(canvas);
 ui.scale = 1 / scale;
 
 refObject.addUI(ui);

@@ -2,13 +2,15 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { Button, Canvas, LayoutBox, world } = require("../../../wrapper/api");
 
 class FactionTokenUI {
-    constructor(canvas, canvasOffset, size) {
+    constructor(canvas, canvasOffset, size, onClicked) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
+        assert(typeof onClicked === "function");
 
+        this._onClicked = onClicked;
         this._labelFontSize = Math.min(255, Math.floor(size.h * 0.3));
         this._labelBox = new LayoutBox();
         canvas.addChild(
@@ -28,11 +30,12 @@ class FactionTokenUI {
             throw new Error(`unknown faction "${factionNsidName}`);
         }
 
-        this._labelBox.setChild(
-            new Button()
-                .setFontSize(this._labelFontSize)
-                .setText(faction.nameAbbr)
-        );
+        const button = new Button()
+            .setFontSize(this._labelFontSize)
+            .setText(faction.nameAbbr);
+        this._labelBox.setChild(button);
+
+        button.onClicked.add(this._onClicked);
     }
 
     clear() {

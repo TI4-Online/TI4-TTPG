@@ -5,6 +5,9 @@ const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { Border, Canvas, world } = require("../../../wrapper/api");
 
+const NUM_SLICE_ROWS = 2;
+const NUM_FACTION_ROWS = 5;
+const NUM_SEAT_ROWS = 6;
 const PADDING = 10;
 
 /**
@@ -12,167 +15,163 @@ const PADDING = 10;
  *
  */
 class MiltyDraftUI {
-    static getSize(scale) {
+    constructor(canvas, scale) {
+        assert(canvas instanceof Canvas);
         assert(typeof scale === "number" && scale >= 1);
-        const padW = Math.floor(PADDING * scale);
-        const padH = Math.floor(PADDING * scale);
-        const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
-        const w = sliceW * 6 + padW * 7;
-        const h = sliceH * 3 + padH * 4;
-        return [w, h];
+
+        this._canvas = canvas;
+        this._scale = scale;
+        this._pad = Math.floor(PADDING * scale);
+
+        // Fix height.
+        const sliceH = MiltySliceUI.getSize(this._scale)[1];
+        this._h = this._pad + (sliceH + this._pad) * NUM_SLICE_ROWS;
+
+        // Grow when adding things.
+        this._nextX = this._pad;
+        this._w = this._pad;
     }
 
-    constructor(canvas, canvasOffset, scale) {
-        assert(canvas instanceof Canvas);
-        assert(typeof canvasOffset.x === "number");
-        assert(typeof canvasOffset.y === "number");
-        assert(typeof scale === "number" && scale >= 1);
+    getSize() {
+        return [this._w, this._h];
+    }
+
+    addSlices(slices) {
+        assert(Array.isArray(slices));
+        slices.forEach((slice) => {
+            assert(Array.isArray(slice.slice));
+            assert(ColorUtil.isColor(slice.color));
+            assert(typeof slice.label === "string");
+        });
+
+        const [sliceW, sliceH] = MiltySliceUI.getSize(this._scale);
+        let row = 0;
+        for (let i = 0; i < slices.length; i++) {
+            const slice = slices[i];
+
+            // Grow when starting a new column.
+            if (row === 0) {
+                this._w += sliceW + this._pad;
+            }
+
+            const offset = {
+                x: this._nextX,
+                y: this._pad + row * (sliceH + this._pad),
+            };
+
+            // Push to next column for next when full.
+            row = (row + 1) % NUM_SLICE_ROWS;
+            if (row === 0) {
+                this._nextX += sliceW + this._pad;
+            }
+
+            const onClicked = (button, player) => {};
+            new MiltySliceUI(this._canvas, offset, this._scale, onClicked)
+                .setSlice(slice.slice)
+                .setColor(slice.color)
+                .setLabel(slice.label);
+        }
+
+        // If stopped before finishing row still advance to next "column".
+        if (row > 0) {
+            this._nextX += sliceW + this._pad;
+        }
+
+        return this;
+    }
+
+    addFactions(factionNsidNames) {
+        assert(Array.isArray(factionNsidNames));
+        factionNsidNames.forEach((factionNsidName) => {
+            assert(typeof factionNsidName === "string");
+        });
+
+        const factionW = MiltySliceUI.getSize(this._scale)[0];
+        const factionH =
+            (this._h - (NUM_FACTION_ROWS + 1) * this._pad) / NUM_FACTION_ROWS;
+
+        let row = 0;
+        for (let i = 0; i < factionNsidNames.length; i++) {
+            const factionNsidName = factionNsidNames[i];
+
+            // Grow when starting a new column.
+            if (row === 0) {
+                this._w += factionW + this._pad;
+            }
+
+            const offset = {
+                x: this._nextX,
+                y: this._pad + row * (factionH + this._pad),
+            };
+
+            // Push to next column for next when full.
+            row = (row + 1) % NUM_FACTION_ROWS;
+            if (row === 0) {
+                this._nextX += factionW + this._pad;
+            }
+
+            const onClicked = (button, player) => {};
+            new FactionTokenUI(
+                this._canvas,
+                offset,
+                { w: factionW, h: factionH },
+                onClicked
+            ).setFaction(factionNsidName);
+        }
+
+        // If stopped before finishing row still advance to next "column".
+        if (row > 0) {
+            this._nextX += factionW + this._pad;
+        }
+
+        return this;
+    }
+
+    addSeats(speakerSeatIndex) {
+        assert(typeof speakerSeatIndex === "number");
 
         const playerCount = world.TI4.config.playerCount;
-        const halfPlayerCount = Math.ceil(playerCount / 2);
 
-        const padW = Math.floor(PADDING * scale);
-        const padH = Math.floor(PADDING * scale);
+        const seatW = MiltySliceUI.getSize(this._scale)[0];
+        const seatH = (this._h - (playerCount + 1) * this._pad) / playerCount;
 
-        const [w, h] = MiltyDraftUI.getSize(scale);
-        const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
-
-        const factionW = sliceW;
-        const factionH = (sliceH - padH) / 2;
-        const seatW =
-            (sliceW * 3 + padW * 2 - (halfPlayerCount - 1) * padW) /
-            halfPlayerCount;
-        const seatH = factionH;
-
-        // Fill background.
-        canvas.addChild(new Border(), canvasOffset.x, canvasOffset.y, w, h);
-
-        const sliceOrigin = { x: padW, y: padH };
-        const sliceOffsets = [
-            { x: 0, y: 0 },
-            { x: 1, y: 0 },
-            { x: 2, y: 0 },
-            { x: 0, y: 1 },
-            { x: 1, y: 1 },
-            { x: 2, y: 1 },
-            { x: 0, y: 2 },
-            { x: 1, y: 2 },
-            { x: 2, y: 2 },
-        ].map((offset) => {
-            return {
-                x: canvasOffset.x + sliceOrigin.x + offset.x * (sliceW + padW),
-                y: canvasOffset.y + sliceOrigin.y + offset.y * (sliceH + padH),
-            };
-        });
-        this._miltySliceUIs = sliceOffsets.map((offset) => {
-            return new MiltySliceUI(canvas, offset, scale);
-        });
-
-        const factionOrigin = { x: padW + (sliceW + padW) * 3, y: padH };
-        const factionOffsets = [
-            { x: 0, y: 0 },
-            { x: 1, y: 0 },
-            { x: 2, y: 0 },
-            { x: 0, y: 1 },
-            { x: 1, y: 1 },
-            { x: 2, y: 1 },
-            { x: 0, y: 2 },
-            { x: 1, y: 2 },
-            { x: 2, y: 2 },
-            { x: 0, y: 3 },
-            { x: 1, y: 3 },
-            { x: 2, y: 3 },
-        ].map((offset) => {
-            return {
-                x:
-                    canvasOffset.x +
-                    factionOrigin.x +
-                    offset.x * (factionW + padW),
-                y:
-                    canvasOffset.y +
-                    factionOrigin.y +
-                    offset.y * (factionH + padH),
-            };
-        });
-        this._factionTokenUIs = factionOffsets.map((offset) => {
-            return new FactionTokenUI(canvas, offset, {
-                w: factionW,
-                h: factionH,
-            });
-        });
-
-        const seatOrigin = {
-            x: padW + (sliceW + padW) * 3,
-            y: padH + (factionH + padH) * 4,
-        };
-        const seatOffsets = [...Array(playerCount).keys()].map((index) => {
-            const row = index < halfPlayerCount ? 1 : 0;
-            let col = index % halfPlayerCount;
-            if (row === 1) {
-                col = halfPlayerCount - col - 1;
-            }
-            return {
-                x: canvasOffset.x + seatOrigin.x + col * (seatW + padW),
-                y: canvasOffset.y + seatOrigin.y + row * (seatH + padH),
-            };
-        });
-        this._seatTokenUIs = seatOffsets.map((offset) => {
-            return new SeatTokenUI(canvas, offset, { w: seatW, h: seatH });
-        });
-        const playerDesks = world.TI4.getAllPlayerDesks();
-        for (let i = 0; i < this._seatTokenUIs.length; i++) {
-            const seatTokenUI = this._seatTokenUIs[i];
-            const playerDesk = playerDesks[i];
-            assert(playerDesk);
-            seatTokenUI.setColor(playerDesk.color);
-        }
-    }
-
-    setSlices(miltySlices) {
-        assert(Array.isArray(miltySlices));
-        miltySlices.forEach((miltySlice) => {
-            assert(Array.isArray(miltySlice.slice));
-            assert(ColorUtil.isColor(miltySlice.color));
-            assert(typeof miltySlice.label === "string");
-        });
-        for (let i = 0; i < this._miltySliceUIs.length; i++) {
-            const miltySliceUI = this._miltySliceUIs[i];
-            const miltySlice = miltySlices[i];
-            if (miltySlice) {
-                miltySliceUI.setSlice(miltySlice.slice);
-                miltySliceUI.setColor(miltySlice.color);
-                miltySliceUI.setLabel(miltySlice.label);
-            } else {
-                miltySliceUI.clear();
-            }
-        }
-        return this;
-    }
-
-    setFactions(factionNsidNames) {
-        assert(Array.isArray(factionNsidNames));
-        for (let i = 0; i < this._factionTokenUIs.length; i++) {
-            const factionTokenUI = this._factionTokenUIs[i];
-            const factionNsidName = factionNsidNames[i];
-            if (factionNsidName) {
-                factionTokenUI.setFaction(factionNsidName);
-            } else {
-                factionTokenUI.clear();
-            }
-        }
-        return this;
-    }
-
-    setSpeakerSeatIndex(speakerSeatIndex) {
-        assert(typeof speakerSeatIndex === "number");
-        for (let i = 0; i < this._seatTokenUIs.length; i++) {
-            const seatTokenUI = this._seatTokenUIs[i];
+        let row = 0;
+        for (let i = 0; i < playerCount; i++) {
             let orderIndex = i - speakerSeatIndex;
             if (orderIndex < 0) {
-                orderIndex += this._seatTokenUIs.length;
+                orderIndex += playerCount;
             }
-            seatTokenUI.setSeatIndex(orderIndex);
+
+            // Grow when starting a new column.
+            if (row === 0) {
+                this._w += seatW + this._pad;
+            }
+
+            const offset = {
+                x: this._nextX,
+                y: this._pad + row * (seatH + this._pad),
+            };
+
+            // Push to next column for next when full.
+            row = (row + 1) % NUM_SEAT_ROWS;
+            if (row === 0) {
+                this._nextX += seatW + this._pad;
+            }
+
+            const onClicked = (button, player) => {};
+            new SeatTokenUI(
+                this._canvas,
+                offset,
+                { w: seatW, h: seatH },
+                onClicked
+            ).setSeatIndex(orderIndex);
         }
+
+        // If stopped before finishing row still advance to next "column".
+        if (row > 0) {
+            this._nextX += seatW + this._pad;
+        }
+
         return this;
     }
 }

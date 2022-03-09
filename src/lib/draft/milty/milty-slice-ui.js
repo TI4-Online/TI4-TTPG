@@ -10,8 +10,8 @@ const {
     refPackageId,
 } = require("../../../wrapper/api");
 
-const DEFAULT_SLICE_SCALE = 20;
-const TILE_W = 20;
+const DEFAULT_SLICE_SCALE = 10;
+const TILE_W = 30;
 const TILE_H = TILE_W * 0.866;
 const FONT_SIZE = 4;
 
@@ -25,7 +25,7 @@ class MiltySliceUI {
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
         const w = Math.floor(tileW * 2.5);
-        const h = Math.floor(tileH * 4);
+        const h = Math.floor(tileH * 3.75);
         return [w, h];
     }
 
@@ -33,11 +33,14 @@ class MiltySliceUI {
         return Math.min(255, Math.floor(FONT_SIZE * scale));
     }
 
-    constructor(canvas, canvasOffset, scale) {
+    constructor(canvas, canvasOffset, scale, onClicked) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof scale === "number" && scale >= 1);
+        assert(typeof onClicked === "function");
+
+        this._onClicked = onClicked;
 
         // Tile positions in "tile size" space.
         let offsets = [
@@ -52,17 +55,27 @@ class MiltySliceUI {
         // Translate tile positions to canvas offsets.
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
+
+        // Images are square with some transparency at the top/bottom.
+        const dH = (tileW - tileH) / 2;
+
         offsets = offsets.map((offset) => {
             return {
                 x: offset.x * tileW + canvasOffset.x,
-                y: offset.y * tileH + canvasOffset.y,
+                y: offset.y * tileH + canvasOffset.y - dH,
             };
         });
 
         // Add home system behind other elements (drawn in order).
         this._tileBoxes = offsets.map((offset) => {
             const layoutBox = new LayoutBox();
-            canvas.addChild(layoutBox, offset.x, offset.y, tileW, tileH);
+            canvas.addChild(
+                layoutBox,
+                offset.x - 1,
+                offset.y - 1,
+                tileW + 2,
+                tileW + 2
+            ); // "tileH" is cropped, image is tileW tall
             return layoutBox;
         });
         this._homeSystemBox = this._tileBoxes.shift();
@@ -71,7 +84,7 @@ class MiltySliceUI {
         this._labelFontSize = MiltySliceUI.getFontSize(scale);
         this._labelBox = new LayoutBox();
         const labelX = canvasOffset.x;
-        const labelY = canvasOffset.y + tileH * 3;
+        const labelY = canvasOffset.y + tileH * 2.75;
         const labelW = tileW * 2.5;
         const labelH = tileH;
         canvas.addChild(this._labelBox, labelX, labelY, labelW, labelH);
@@ -99,9 +112,12 @@ class MiltySliceUI {
     setLabel(label) {
         assert(typeof label === "string");
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
-        this._labelBox.setChild(
-            new Button().setFontSize(this._labelFontSize).setText(label)
-        );
+        const button = new Button()
+            .setFontSize(this._labelFontSize)
+            .setText(label);
+
+        this._labelBox.setChild(button);
+        button.onClicked.add(this._onClicked);
         return this;
     }
 
