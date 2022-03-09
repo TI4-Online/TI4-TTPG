@@ -844,4 +844,12 @@ module.exports = [
         abbrev: "Scenario Tech",
         source: "Codex 1",
     },
+    {
+        localeName: "strategy_card.technology.button.nekro",
+        type: "unitUpgrade",
+        requirements: {},
+        abbrev: "Singularity Button",
+        faction: "nekro",
+        unitPosition: 3,
+    },
 ];

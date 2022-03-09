@@ -704,8 +704,10 @@
     "strategy_card.warfare.message.pass": "{playerName} passes on Warfare.",
 
     "strategy_card.technology.text": "Technology",
+    "strategy_card.technology.button.nekro": "3 command tokens",
     "strategy_card.technology.message.researched": "{playerName} researches {technologyName}.",
     "strategy_card.technology.message.researched_and_skips": "{playerName} researches {technologyName}, skipping {skips}.",
+    "strategy_card.technology.message.nekro": "{playerName} gained 3 command tokens.",
 
     "strategy_card.imperial.text": "Imperial",
     "strategy_card.imperial.message.primary": "{playerName} uses the primary ability of Imperial.",
