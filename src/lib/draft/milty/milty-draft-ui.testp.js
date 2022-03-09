@@ -33,8 +33,37 @@ miltyDraftUI
             color: new Color(0, 0, 1),
             label: "Slice C",
         },
+        {
+            slice: [16, 17, 18, 19, 20],
+            color: new Color(1, 0, 1),
+            label: "Longer Slice Name That Wraps",
+        },
+        {
+            slice: [21, 22, 23, 24, 25],
+            color: new Color(1, 1, 0),
+            label: "Slice E",
+        },
+        {
+            slice: [26, 27, 28, 29, 30],
+            color: new Color(0, 0, 1),
+            label: "Slice F",
+        },
+        {
+            slice: [31, 32, 33, 34, 35],
+            color: new Color(1, 0, 1),
+            label: "Slice G",
+        },
     ])
-    .setFactions(["arborec", "ul"])
+    .setFactions([
+        "arborec",
+        "ul",
+        "letnev",
+        "l1z1x",
+        "hacan",
+        "creuss",
+        "muaat",
+        "nekro",
+    ])
     .setSpeakerSeatIndex(2);
 
 const ui = new UIElement();

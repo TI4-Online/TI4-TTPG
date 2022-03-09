@@ -3,11 +3,10 @@ const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
+    Button,
     Canvas,
     ImageWidget,
     LayoutBox,
-    Text,
-    TextJustification,
     refPackageId,
 } = require("../../../wrapper/api");
 
@@ -26,7 +25,7 @@ class MiltySliceUI {
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
         const w = Math.floor(tileW * 2.5);
-        const h = Math.floor(tileH * 3);
+        const h = Math.floor(tileH * 4);
         return [w, h];
     }
 
@@ -62,25 +61,20 @@ class MiltySliceUI {
 
         // Add home system behind other elements (drawn in order).
         this._tileBoxes = offsets.map((offset) => {
-            const layoutBox = new LayoutBox()
-                .setOverrideWidth(tileW)
-                .setOverrideHeight(tileH);
+            const layoutBox = new LayoutBox();
             canvas.addChild(layoutBox, offset.x, offset.y, tileW, tileH);
             return layoutBox;
         });
         this._homeSystemBox = this._tileBoxes.shift();
 
-        // Add label.
-        const fontSize = MiltySliceUI.getFontSize(scale);
-        this._label = new Text()
-            .setFontSize(fontSize)
-            .setJustification(TextJustification.Center);
-
+        // Label / button area.
+        this._labelFontSize = MiltySliceUI.getFontSize(scale);
+        this._labelBox = new LayoutBox();
         const labelX = canvasOffset.x;
-        const labelY = canvasOffset.y + tileH * 2.5;
+        const labelY = canvasOffset.y + tileH * 3;
         const labelW = tileW * 2.5;
-        const labelH = tileH / 2;
-        canvas.addChild(this._label, labelX, labelY, labelW, labelH);
+        const labelH = tileH;
+        canvas.addChild(this._labelBox, labelX, labelY, labelW, labelH);
     }
 
     setSlice(miltySlice) {
@@ -105,7 +99,9 @@ class MiltySliceUI {
     setLabel(label) {
         assert(typeof label === "string");
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
-        this._label.setText(label);
+        this._labelBox.setChild(
+            new Button().setFontSize(this._labelFontSize).setText(label)
+        );
         return this;
     }
 
@@ -115,7 +111,7 @@ class MiltySliceUI {
             tileBox.setChild();
         }
         this._homeSystemBox.setChild();
-        this._label.setText("");
+        this._labelBox.setChild();
     }
 }
 

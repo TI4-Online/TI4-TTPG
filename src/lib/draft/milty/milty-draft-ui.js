@@ -36,7 +36,6 @@ class MiltyDraftUI {
 
         const [w, h] = MiltyDraftUI.getSize(scale);
         const [sliceW, sliceH] = MiltySliceUI.getSize(scale);
-        const fontSize = MiltySliceUI.getFontSize(scale);
 
         const factionW = sliceW;
         const factionH = (sliceH - padH) / 2;
@@ -65,8 +64,8 @@ class MiltyDraftUI {
                 y: canvasOffset.y + sliceOrigin.y + offset.y * (sliceH + padH),
             };
         });
-        this._miltySliceUIs = sliceOffsets.map((sliceOffset) => {
-            return new MiltySliceUI(canvas, sliceOffset, scale);
+        this._miltySliceUIs = sliceOffsets.map((offset) => {
+            return new MiltySliceUI(canvas, offset, scale);
         });
 
         const factionOrigin = { x: padW + (sliceW + padW) * 3, y: padH };
@@ -95,16 +94,11 @@ class MiltyDraftUI {
                     offset.y * (factionH + padH),
             };
         });
-        this._factionTokenUIs = factionOffsets.map((factionOffset) => {
-            return new FactionTokenUI(
-                canvas,
-                factionOffset,
-                {
-                    w: factionW,
-                    h: factionH,
-                },
-                fontSize
-            );
+        this._factionTokenUIs = factionOffsets.map((offset) => {
+            return new FactionTokenUI(canvas, offset, {
+                w: factionW,
+                h: factionH,
+            });
         });
 
         const seatOrigin = {
@@ -122,8 +116,8 @@ class MiltyDraftUI {
                 y: canvasOffset.y + seatOrigin.y + row * (seatH + padH),
             };
         });
-        this._seatTokenUIs = seatOffsets.map((seatOffset) => {
-            return new SeatTokenUI(canvas, seatOffset, { w: seatW, h: seatH });
+        this._seatTokenUIs = seatOffsets.map((offset) => {
+            return new SeatTokenUI(canvas, offset, { w: seatW, h: seatH });
         });
         const playerDesks = world.TI4.getAllPlayerDesks();
         for (let i = 0; i < this._seatTokenUIs.length; i++) {
