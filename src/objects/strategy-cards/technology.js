@@ -158,6 +158,19 @@ const onTechResearched = (technologyName, playerSlot) => {
     const technology = Technology.getTechnologies(playerSlot).find(
         (tech) => tech.name === technologyName
     );
+
+    if (technology.localeName == "strategy_card.technology.button.nekro") {
+        let messageKey = "strategy_card.technology.message.nekro";
+        let messageParameters = {
+            playerName: player ? player.getName() : playerDesk.colorName,
+        };
+        Broadcast.chatAll(
+            locale(messageKey, messageParameters),
+            playerDesk.color
+        );
+        return;
+    }
+
     const ownedTechnologies = countPlayerTechsByType(playerSlot);
     const skippedTechs = {};
 

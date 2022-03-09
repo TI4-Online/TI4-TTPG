@@ -35,7 +35,7 @@ describe("getTechnologies", () => {
 
     it("without parameters and enabled PoK", () => {
         const technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(81);
+        expect(technologies.length).toBe(82);
     });
 
     it("with a playerSlot and enabled PoK", () => {
@@ -52,7 +52,7 @@ describe("getTechnologies", () => {
             raw: { faction: "arborec" },
         });
         const technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(59);
+        expect(technologies.length).toBe(60);
     });
 
     it("with a playerSlot and disabled PoK", () => {
@@ -70,15 +70,15 @@ describe("getTechnologies", () => {
         });
 
         let technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(81);
+        expect(technologies.length).toBe(82);
 
         world.TI4.config.setPoK(false);
         technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(59);
+        expect(technologies.length).toBe(60);
 
         world.TI4.config.setPoK(true);
         technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(81);
+        expect(technologies.length).toBe(82);
     });
 });
 
@@ -89,7 +89,7 @@ describe("getTechnologiesByType", () => {
         expect(technologies.Red.length).toBe(12);
         expect(technologies.Yellow.length).toBe(17);
         expect(technologies.Green.length).toBe(16);
-        expect(technologies.unitUpgrade.length).toBe(23);
+        expect(technologies.unitUpgrade.length).toBe(24);
     });
 
     it("with a playerSlot", () => {
@@ -119,7 +119,7 @@ describe("getTechnologiesOfType", () => {
         expect(getLength("Red")).toBe(12);
         expect(getLength("Yellow")).toBe(17);
         expect(getLength("Green")).toBe(16);
-        expect(getLength("unitUpgrade")).toBe(23);
+        expect(getLength("unitUpgrade")).toBe(24);
     });
 
     it("with a playerSlot", () => {
