@@ -1,13 +1,10 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const {
     Border,
+    Button,
     Canvas,
     Color,
-    HorizontalAlignment,
     LayoutBox,
-    Text,
-    TextJustification,
-    VerticalAlignment,
 } = require("../../../wrapper/api");
 const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
@@ -21,8 +18,7 @@ class SeatTokenUI {
         assert(typeof size.h === "number");
 
         this._seatIndex = -1;
-        this._speakerFontSize = Math.min(255, Math.floor(size.h * 1));
-        this._otherFontSize = Math.min(255, Math.floor(size.h * 2));
+        this._fontSize = Math.min(255, Math.floor(size.h * 0.3));
 
         this._bg = new Border().setColor(new Color(1, 1, 1));
         canvas.addChild(
@@ -33,15 +29,9 @@ class SeatTokenUI {
             size.h
         );
 
-        this._label = new Text()
-            .setFontSize(this._speakerFontSize)
-            .setJustification(TextJustification.Center);
-        const textBox = new LayoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setVerticalAlignment(VerticalAlignment.Center)
-            .setChild(this._label);
+        this._labelBox = new LayoutBox();
         canvas.addChild(
-            textBox,
+            this._labelBox,
             canvasOffset.x,
             canvasOffset.y,
             size.w,
@@ -58,17 +48,15 @@ class SeatTokenUI {
         assert(typeof seatIndex === "number");
         this._seatIndex = seatIndex;
 
-        let fontSize;
         let label;
         if (seatIndex === 0) {
             label = locale("ui.label.speaker");
-            fontSize = this._speakerFontSize;
         } else {
-            label = " " + (seatIndex + 1).toString() + " ";
-            fontSize = this._otherFontSize;
+            label = (seatIndex + 1).toString();
         }
-        this._label.setFontSize(fontSize);
-        this._label.setText(label);
+        this._labelBox.setChild(
+            new Button().setFontSize(this._fontSize).setText(label)
+        );
     }
 }
 
