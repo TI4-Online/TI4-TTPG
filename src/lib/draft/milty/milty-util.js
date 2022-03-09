@@ -3,6 +3,19 @@ const assert = require("../../../wrapper/assert-wrapper");
 const DEFAULT_WRAP_AT = 20;
 
 class MiltyUtil {
+    static validateSliceOrThrow(miltySlice) {
+        assert(Array.isArray(miltySlice));
+        if (miltySlice.length !== 5) {
+            throw new Error(`MiltyUtil.validate: slice does not have 5 tiles`);
+        }
+        for (const tile of miltySlice) {
+            if (typeof tile !== "number") {
+                throw new Error("MiltyUtil.validate: tile is not a number");
+            }
+        }
+        return true;
+    }
+
     static parseSliceString(miltySliceStr) {
         assert(typeof miltySliceStr === "string");
         return Array.from(miltySliceStr.matchAll(/\d+/g)).map((str) =>

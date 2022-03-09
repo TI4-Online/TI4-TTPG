@@ -11,21 +11,23 @@ const {
 } = require("../../../wrapper/api");
 
 class FactionTokenUI {
-    constructor(canvas, canvasOffset, size) {
+    constructor(canvas, canvasOffset, size, fontSize) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
+        assert(typeof fontSize === "number");
 
-        const fontSize = Math.min(255, Math.floor(size.h * 0.1));
-        const d = Math.min(size.w, size.h) - fontSize * 1.5;
-        this._image = new ImageWidget().setImageSize(d, d);
+        const d = Math.min(size.w, size.h) - fontSize;
+        this._imageBox = new LayoutBox()
+            .setOverrideWidth(d)
+            .setOverrideHeight(d);
 
         const dx = (size.w - d) / 2;
         const dy = (size.h - d) / 2 - fontSize;
         canvas.addChild(
-            this._image,
+            this._imageBox,
             canvasOffset.x + dx,
             canvasOffset.y + dy,
             d,
@@ -33,7 +35,7 @@ class FactionTokenUI {
         );
 
         this._label = new Text()
-            .setFontSize(size.h * 0.1)
+            .setFontSize(fontSize)
             .setJustification(TextJustification.Center);
         const textBox = new LayoutBox()
             .setVerticalAlignment(VerticalAlignment.Bottom)
@@ -56,9 +58,13 @@ class FactionTokenUI {
         }
 
         const path = `global/factions/${factionNsidName}_icon.png`;
-        this._image.setImage(path, refPackageId);
-
+        this._imageBox.setChild(new ImageWidget().setImage(path, refPackageId));
         this._label.setText(faction.nameAbbr);
+    }
+
+    clear() {
+        this._imageBox.setChild();
+        this._label.setText("");
     }
 }
 

@@ -10,6 +10,7 @@ const {
     VerticalAlignment,
 } = require("../../../wrapper/api");
 const locale = require("../../locale");
+const { ColorUtil } = require("../../color/color-util");
 
 class SeatTokenUI {
     constructor(canvas, canvasOffset, size) {
@@ -19,8 +20,9 @@ class SeatTokenUI {
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
 
-        this._speakerFontSize = Math.min(255, Math.floor(size.h * 0.15));
-        this._otherFontSize = Math.min(255, Math.floor(size.h * 2.6));
+        this._seatIndex = -1;
+        this._speakerFontSize = Math.min(255, Math.floor(size.h * 1));
+        this._otherFontSize = Math.min(255, Math.floor(size.h * 2));
 
         this._bg = new Border().setColor(new Color(1, 1, 1));
         canvas.addChild(
@@ -37,7 +39,7 @@ class SeatTokenUI {
         const textBox = new LayoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center)
-            .setChild(new Border().setChild(this._label));
+            .setChild(this._label);
         canvas.addChild(
             textBox,
             canvasOffset.x,
@@ -47,10 +49,14 @@ class SeatTokenUI {
         );
     }
 
-    setColor(color) {}
+    setColor(color) {
+        assert(ColorUtil.isColor(color));
+        this._bg.setColor(color);
+    }
 
     setSeatIndex(seatIndex) {
         assert(typeof seatIndex === "number");
+        this._seatIndex = seatIndex;
 
         let fontSize;
         let label;
