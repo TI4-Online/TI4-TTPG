@@ -3,12 +3,11 @@ const { ColorUtil } = require("../../color/color-util");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
-const { Border, Canvas, world } = require("../../../wrapper/api");
+const { Canvas } = require("../../../wrapper/api");
 
 const NUM_SLICE_ROWS = 2;
 const NUM_FACTION_ROWS = 5;
 const NUM_SEAT_ROWS = 6;
-const PADDING = 10;
 
 /**
  * Strategy cards are using 833 width, follow that convention.
@@ -21,34 +20,35 @@ class MiltyDraftUI {
 
         this._canvas = canvas;
         this._scale = scale;
-        this._pad = Math.floor(PADDING * scale);
+        this._sliceSize = MiltySliceUI.getSize(this._scale);
+        this._pad = Math.floor(this._sliceSize.tileH / 2);
 
         // Fix height.
-        const sliceH = MiltySliceUI.getSize(this._scale)[1];
-        this._h = this._pad + (sliceH + this._pad) * NUM_SLICE_ROWS;
+        const pad = this._pad;
+        const sliceH = this._sliceSize.sliceH;
+        this._h = pad + (sliceH + pad) * NUM_SLICE_ROWS;
 
         // Grow when adding things.
-        this._nextX = this._pad;
-        this._w = this._pad;
+        this._nextX = pad;
+        this._w = pad;
     }
 
     getSize() {
         return [this._w, this._h];
     }
 
-    addSlices(slices) {
-        assert(Array.isArray(slices));
-        slices.forEach((slice) => {
-            assert(Array.isArray(slice.slice));
-            assert(ColorUtil.isColor(slice.color));
-            assert(typeof slice.label === "string");
+    addSlices(sliceDataArray) {
+        assert(Array.isArray(sliceDataArray));
+        sliceDataArray.forEach((sliceData) => {
+            assert(Array.isArray(sliceData.slice));
+            assert(ColorUtil.isColor(sliceData.color));
+            assert(typeof sliceData.label === "string");
+            assert(typeof sliceData.onClickedGenerator === "function");
         });
 
-        const [sliceW, sliceH] = MiltySliceUI.getSize(this._scale);
+        const { sliceW, sliceH } = this._sliceSize;
         let row = 0;
-        for (let i = 0; i < slices.length; i++) {
-            const slice = slices[i];
-
+        sliceDataArray.forEach((sliceData) => {
             // Grow when starting a new column.
             if (row === 0) {
                 this._w += sliceW + this._pad;
@@ -65,12 +65,11 @@ class MiltyDraftUI {
                 this._nextX += sliceW + this._pad;
             }
 
-            const onClicked = (button, player) => {};
-            new MiltySliceUI(this._canvas, offset, this._scale, onClicked)
-                .setSlice(slice.slice)
-                .setColor(slice.color)
-                .setLabel(slice.label);
-        }
+            new MiltySliceUI(this._canvas, offset, this._scale)
+                .setSlice(sliceData.slice)
+                .setColor(sliceData.color)
+                .setLabel(sliceData.label, sliceData.onClickedGenerator);
+        });
 
         // If stopped before finishing row still advance to next "column".
         if (row > 0) {
@@ -80,20 +79,20 @@ class MiltyDraftUI {
         return this;
     }
 
-    addFactions(factionNsidNames) {
-        assert(Array.isArray(factionNsidNames));
-        factionNsidNames.forEach((factionNsidName) => {
-            assert(typeof factionNsidName === "string");
+    addFactions(factionDataArray) {
+        assert(Array.isArray(factionDataArray));
+        factionDataArray.forEach((factionData) => {
+            assert(typeof factionData.nsidName === "string");
+            assert(typeof factionData.onClickedGenerator === "function");
         });
 
-        const factionW = MiltySliceUI.getSize(this._scale)[0];
+        const { sliceW } = this._sliceSize;
+        const factionW = sliceW;
         const factionH =
             (this._h - (NUM_FACTION_ROWS + 1) * this._pad) / NUM_FACTION_ROWS;
 
         let row = 0;
-        for (let i = 0; i < factionNsidNames.length; i++) {
-            const factionNsidName = factionNsidNames[i];
-
+        factionDataArray.forEach((factionData) => {
             // Grow when starting a new column.
             if (row === 0) {
                 this._w += factionW + this._pad;
@@ -110,14 +109,11 @@ class MiltyDraftUI {
                 this._nextX += factionW + this._pad;
             }
 
-            const onClicked = (button, player) => {};
-            new FactionTokenUI(
-                this._canvas,
-                offset,
-                { w: factionW, h: factionH },
-                onClicked
-            ).setFaction(factionNsidName);
-        }
+            new FactionTokenUI(this._canvas, offset, {
+                w: factionW,
+                h: factionH,
+            }).setFaction(factionData.nsidName, factionData.onClickedGenerator);
+        });
 
         // If stopped before finishing row still advance to next "column".
         if (row > 0) {
@@ -127,21 +123,20 @@ class MiltyDraftUI {
         return this;
     }
 
-    addSeats(speakerSeatIndex) {
-        assert(typeof speakerSeatIndex === "number");
+    addSeats(seatDataArray) {
+        assert(Array.isArray(seatDataArray));
+        seatDataArray.forEach((seatData) => {
+            assert(typeof seatData.orderIndex === "number");
+            assert(typeof seatData.onClickedGenerator === "function");
+        });
 
-        const playerCount = world.TI4.config.playerCount;
-
-        const seatW = MiltySliceUI.getSize(this._scale)[0];
-        const seatH = (this._h - (playerCount + 1) * this._pad) / playerCount;
+        const count = seatDataArray.length;
+        const { sliceW } = this._sliceSize;
+        const seatW = sliceW;
+        const seatH = (this._h - (count + 1) * this._pad) / count;
 
         let row = 0;
-        for (let i = 0; i < playerCount; i++) {
-            let orderIndex = i - speakerSeatIndex;
-            if (orderIndex < 0) {
-                orderIndex += playerCount;
-            }
-
+        seatDataArray.forEach((seatData) => {
             // Grow when starting a new column.
             if (row === 0) {
                 this._w += seatW + this._pad;
@@ -158,14 +153,11 @@ class MiltyDraftUI {
                 this._nextX += seatW + this._pad;
             }
 
-            const onClicked = (button, player) => {};
-            new SeatTokenUI(
-                this._canvas,
-                offset,
-                { w: seatW, h: seatH },
-                onClicked
-            ).setSeatIndex(orderIndex);
-        }
+            new SeatTokenUI(this._canvas, offset, {
+                w: seatW,
+                h: seatH,
+            }).setSeatIndex(seatData.orderIndex, seatData.onClickedGenerator);
+        });
 
         // If stopped before finishing row still advance to next "column".
         if (row > 0) {

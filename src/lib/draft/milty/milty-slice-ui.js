@@ -9,6 +9,7 @@ const {
     LayoutBox,
     refPackageId,
 } = require("../../../wrapper/api");
+const { DraftSelectionWidget } = require("../draft-selection-widget");
 
 const DEFAULT_SLICE_SCALE = 10;
 const TILE_W = 30;
@@ -24,23 +25,20 @@ class MiltySliceUI {
 
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
-        const w = Math.floor(tileW * 2.5);
-        const h = Math.floor(tileH * 3.75);
-        return [w, h];
+        const sliceW = Math.floor(tileW * 2.5);
+        const sliceH = Math.floor(tileH * 3.75);
+        return { sliceW, sliceH, tileW, tileH };
     }
 
     static getFontSize(scale) {
         return Math.min(255, Math.floor(FONT_SIZE * scale));
     }
 
-    constructor(canvas, canvasOffset, scale, onClicked) {
+    constructor(canvas, canvasOffset, scale) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof scale === "number" && scale >= 1);
-        assert(typeof onClicked === "function");
-
-        this._onClicked = onClicked;
 
         // Tile positions in "tile size" space.
         let offsets = [
@@ -74,8 +72,8 @@ class MiltySliceUI {
                 offset.x - 1,
                 offset.y - 1,
                 tileW + 2,
-                tileW + 2
-            ); // "tileH" is cropped, image is tileW tall
+                tileW + 2 // use W for H because image is square with transparent top/bottom
+            );
             return layoutBox;
         });
         this._homeSystemBox = this._tileBoxes.shift();
@@ -109,15 +107,17 @@ class MiltySliceUI {
         return this;
     }
 
-    setLabel(label) {
+    setLabel(label, onClickedGenerator) {
         assert(typeof label === "string");
+        assert(typeof onClickedGenerator === "function");
+
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
         const button = new Button()
             .setFontSize(this._labelFontSize)
             .setText(label);
-
-        this._labelBox.setChild(button);
-        button.onClicked.add(this._onClicked);
+        const draftSelection = new DraftSelectionWidget().setChild(button);
+        button.onClicked.add(onClickedGenerator(draftSelection));
+        this._labelBox.setChild(draftSelection);
         return this;
     }
 

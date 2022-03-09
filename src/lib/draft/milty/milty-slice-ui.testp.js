@@ -8,8 +8,8 @@ const {
 } = require("../../../wrapper/api");
 
 const scale = DEFAULT_SLICE_SCALE;
-const [w, h] = MiltySliceUI.getSize(scale);
-console.log(`slice ${w}x${h}`);
+const { sliceW, sliceH } = MiltySliceUI.getSize(scale);
+console.log(`slice ${sliceW}x${sliceH}`);
 
 const canvas = new Canvas();
 const canvasOffset = { x: 0, y: 0 };
@@ -22,8 +22,8 @@ const label = "Test Longer Slice Name";
 miltySliceUI.setSlice(slice, color, label);
 
 const ui = new UIElement();
-ui.width = w;
-ui.height = h;
+ui.width = sliceW;
+ui.height = sliceH;
 ui.useWidgetSize = false;
 ui.position = new Vector(0, 0, 3);
 ui.widget = canvas;
