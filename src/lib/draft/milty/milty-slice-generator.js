@@ -89,6 +89,33 @@ const infu = {
     76: 3.5,
 };
 
+function fixAdjAnomalies(s) {
+    const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
+    const neigh = [
+        [0, 1],
+        [0, 3],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [3, 4],
+    ];
+    let good = false;
+    do {
+        s = Shuffle.shuffle(s);
+        good = true;
+        for (let j = 0; j < neigh.length; j++) {
+            if (
+                anom.includes(s[neigh[j][0]]) &&
+                anom.includes(s[neigh[j][1]])
+            ) {
+                good = false;
+                break;
+            }
+        }
+    } while (!good);
+    return s;
+}
+
 function miltyslices(
     numslice,
     extralegwh = true,
@@ -176,29 +203,8 @@ function miltyslices(
                 break;
             }
 
-            s = Shuffle.shuffle(s);
-            const neigh = [
-                [0, 1],
-                [0, 3],
-                [1, 2],
-                [1, 3],
-                [1, 4],
-                [3, 4],
-            ];
-            const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
-            for (let j = 0; j < neigh.length; j++) {
-                if (
-                    anom.includes(s[neigh[j][0]]) &&
-                    anom.includes(s[neigh[j][1]])
-                ) {
-                    good = false;
-                    break;
-                }
-            }
-            if (!good) {
-                break;
-            }
-
+            // Keep shuffling tiles in slice until no adjacent anomalies.
+            s = fixAdjAnomalies(s);
             slices.push(s);
         }
         if (good) {
