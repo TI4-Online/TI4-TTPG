@@ -30,6 +30,7 @@ class SeatTokenUI {
             }
             result.push({
                 orderIndex,
+                deskIndex: i,
             });
         }
 
