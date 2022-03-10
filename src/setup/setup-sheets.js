@@ -1,7 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { Spawn } = require("./spawn/spawn");
-const { TableLayout } = require("../table/table-layout");
+const { FACTION_SHEET_POS } = require("./faction/setup-faction-sheet");
 const { ObjectType, Vector } = require("../wrapper/api");
 
 const SHEET_DATA = [
@@ -30,10 +30,9 @@ class SetupSheets extends AbstractSetup {
     }
 
     _setupSheet(sheetData) {
-        const layout = TableLayout.deskLayout().factionSheet;
         let pos = new Vector(
-            layout.pos.x + sheetData.pos.x,
-            layout.pos.y + sheetData.pos.y,
+            FACTION_SHEET_POS.x + sheetData.pos.x,
+            FACTION_SHEET_POS.y + sheetData.pos.y,
             2
         );
         pos = this.playerDesk.localPositionToWorld(pos);

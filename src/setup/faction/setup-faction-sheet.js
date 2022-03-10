@@ -2,8 +2,9 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { TableLayout } = require("../../table/table-layout");
 const { ObjectType, Vector, world } = require("../../wrapper/api");
+
+const FACTION_SHEET_POS = { x: 18, y: 0 };
 
 class SetupFactionSheet extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -12,8 +13,7 @@ class SetupFactionSheet extends AbstractSetup {
     }
 
     setup() {
-        const layout = TableLayout.deskLayout().factionSheet;
-        let pos = new Vector(layout.pos.x, layout.pos.y, 2);
+        let pos = new Vector(FACTION_SHEET_POS.x, FACTION_SHEET_POS.y, 2);
         pos = this.playerDesk.localPositionToWorld(pos);
         const rot = this.playerDesk.rot;
 
@@ -43,4 +43,4 @@ class SetupFactionSheet extends AbstractSetup {
     }
 }
 
-module.exports = { SetupFactionSheet };
+module.exports = { SetupFactionSheet, FACTION_SHEET_POS };
