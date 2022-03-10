@@ -9,4 +9,4 @@ miltyDraft
     .addFaction("arborec")
     .addFaction("ul")
     .setSpeakerIndex(1)
-    .createUIs();
+    .createPlayerUIs();

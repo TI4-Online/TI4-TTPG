@@ -3,6 +3,7 @@ const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { MapStringLoad } = require("../../map-string/map-string-load");
+const { MiltyDraftSettingsUI } = require("./milty-draft-settings-ui");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
@@ -24,11 +25,20 @@ class MiltyDraft {
         this._draftSelectionManager = new DraftSelectionManager().setBorderSize(
             SELECTION_BORDER_SIZE * this._scale
         );
+
+        this._ui = new MiltyDraftSettingsUI();
+    }
+
+    /**
+     * UI for showing in the unified phase UI.
+     */
+    getUI() {
+        return this._ui;
     }
 
     addSlice(slice, color, label) {
         assert(Array.isArray(slice));
-        assert(ColorUtil.isColor(color));
+        assert(!color || ColorUtil.isColor(color));
         assert(typeof label === "string");
 
         MiltyUtil.validateSliceOrThrow(slice);
@@ -95,7 +105,7 @@ class MiltyDraft {
         const onFinishedButton =
             this._draftSelectionManager.createOnFinishedButton();
         onFinishedButton.onClicked.add((button, player) => {
-            this.clearUIs();
+            this.clearPlayerUIs();
             this.applyChoices();
         });
 
@@ -118,7 +128,7 @@ class MiltyDraft {
         return ui;
     }
 
-    createUIs() {
+    createPlayerUIs() {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             // Hide desk UI (still show "take seat")
             playerDesk.setReady(true);
@@ -130,11 +140,18 @@ class MiltyDraft {
         return this;
     }
 
-    clearUIs() {
+    clearPlayerUIs() {
         this._uis.forEach((ui) => {
             world.removeUIElement(ui);
         });
         return this;
+    }
+
+    cancel() {
+        this.clearPlayerUIs();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.setReady(false);
+        }
     }
 
     _applyPlayerChoices(chooserSlot, chooserPlayer) {

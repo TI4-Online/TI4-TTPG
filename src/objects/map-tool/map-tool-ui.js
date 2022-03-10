@@ -45,6 +45,7 @@ class MapToolUI extends VerticalBox {
         assert(uiElement instanceof UIElement);
         this._gameObject = gameObject;
         this._uiElement = uiElement;
+        return this;
     }
 
     _update() {

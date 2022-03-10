@@ -107,7 +107,10 @@
     "ui.button.place_trade_goods_and_set_turns": "Place Trade Goods and Set Turns",
     "ui.button.end_status_phase": "Return Strategy Cards and End Status Phase",
 
-    "ui.tab.map_tool": "Map",
+    "ui.tab.map": "Map",
+    "ui.tab.map.map_tool": "Map Tool",
+    "ui.tab.map.milty_draft": "Milty",
+    "ui.tab.map.scpt_draft": "SCPT",
     "ui.tab.strategy_phase": "Strategy",
     "ui.tab.auto_roller": "Action",
     "ui.tab.status_phase": "Status",

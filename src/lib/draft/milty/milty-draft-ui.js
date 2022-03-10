@@ -10,6 +10,18 @@ const NUM_SLICE_ROWS = 2;
 const NUM_FACTION_ROWS = 4;
 const NUM_SEAT_ROWS = 6;
 
+const DEFAULT_SLICE_COLORS = [
+    "#FF2417", // red
+    "#5AE35A", // green
+    "#FF932B", // orange
+    "#FF84D6", // pink
+    "#FFDA00", // yellow
+    "#C800FF", // purple
+    "#07B2FF", // blue
+    "#BABABA", // white
+    "#00CAB1", // teal
+];
+
 /**
  * Strategy cards are using 833 width, follow that convention.
  *
@@ -69,14 +81,14 @@ class MiltyDraftUI {
         assert(Array.isArray(sliceDataArray));
         sliceDataArray.forEach((sliceData) => {
             assert(Array.isArray(sliceData.slice));
-            assert(ColorUtil.isColor(sliceData.color));
+            assert(!sliceData.color || ColorUtil.isColor(sliceData.color));
             assert(typeof sliceData.label === "string");
             assert(typeof sliceData.onClickedGenerator === "function");
         });
 
         const { sliceW, sliceH } = this._sliceSize;
         let row = 0;
-        sliceDataArray.forEach((sliceData) => {
+        sliceDataArray.forEach((sliceData, index) => {
             // Grow when starting a new column.
             if (row === 0) {
                 this._w += sliceW + this._pad;
@@ -93,9 +105,13 @@ class MiltyDraftUI {
                 this._nextX += sliceW + this._pad;
             }
 
+            const color = sliceData.color
+                ? sliceData.color
+                : ColorUtil.colorFromHex(DEFAULT_SLICE_COLORS[index]);
+
             new MiltySliceUI(this._canvas, offset, this._scale)
                 .setSlice(sliceData.slice)
-                .setColor(sliceData.color)
+                .setColor(color)
                 .setLabel(sliceData.label, sliceData.onClickedGenerator);
         });
 
