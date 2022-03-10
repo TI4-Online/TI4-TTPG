@@ -14,7 +14,7 @@ const MECATOL_REX_SYSTEM_TILE = 18;
  * @returns {boolean} true if the map string is valid and can be parsed, otherwise false
  */
 const validate = function (mapString) {
-    return /^\s*(?:\{\d+\})?(?:\s*,?\s*\d+(?:[abAB]\d)?)+\s*$/.test(mapString);
+    return /^\s*(?:\{\d+\})?(?:\s*,?\s*\d+(?:[abAB]\d)?)*\s*$/.test(mapString);
 };
 
 /**

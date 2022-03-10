@@ -1,17 +1,22 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { DraftSelectionWidget } = require("../draft-selection-widget");
 const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
+const { System } = require("../../system/system");
 const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
     Button,
     Canvas,
+    HorizontalAlignment,
     ImageWidget,
     LayoutBox,
+    Text,
+    VerticalAlignment,
     refPackageId,
 } = require("../../../wrapper/api");
 
-const DEFAULT_SLICE_SCALE = 20;
-const TILE_W = 20;
+const DEFAULT_SLICE_SCALE = 10;
+const TILE_W = 30;
 const TILE_H = TILE_W * 0.866;
 const FONT_SIZE = 4;
 
@@ -24,9 +29,9 @@ class MiltySliceUI {
 
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
-        const w = Math.floor(tileW * 2.5);
-        const h = Math.floor(tileH * 4);
-        return [w, h];
+        const sliceW = Math.floor(tileW * 2.5);
+        const sliceH = Math.floor(tileH * 3.75);
+        return { sliceW, sliceH, tileW, tileH };
     }
 
     static getFontSize(scale) {
@@ -52,26 +57,53 @@ class MiltySliceUI {
         // Translate tile positions to canvas offsets.
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
+
+        // Images are square with some transparency at the top/bottom.
+        const dH = (tileW - tileH) / 2;
+
         offsets = offsets.map((offset) => {
             return {
                 x: offset.x * tileW + canvasOffset.x,
-                y: offset.y * tileH + canvasOffset.y,
+                y: offset.y * tileH + canvasOffset.y - dH,
             };
         });
 
         // Add home system behind other elements (drawn in order).
         this._tileBoxes = offsets.map((offset) => {
             const layoutBox = new LayoutBox();
-            canvas.addChild(layoutBox, offset.x, offset.y, tileW, tileH);
+            canvas.addChild(
+                layoutBox,
+                offset.x - 1,
+                offset.y - 1,
+                tileW + 2,
+                tileW + 2 // use W for H because image is square with transparent top/bottom
+            );
             return layoutBox;
         });
         this._homeSystemBox = this._tileBoxes.shift();
+
+        // Summary.
+        this._summaryFontSize = MiltySliceUI.getFontSize(scale);
+        this._summaryBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Bottom);
+        const summaryX = canvasOffset.x;
+        const summaryY = canvasOffset.y + tileH * 2;
+        const summaryW = tileW * 2.5;
+        const summaryH = tileH * 0.75;
+        canvas.addChild(
+            this._summaryBox,
+            summaryX,
+            summaryY,
+            summaryW,
+            summaryH
+        );
 
         // Label / button area.
         this._labelFontSize = MiltySliceUI.getFontSize(scale);
         this._labelBox = new LayoutBox();
         const labelX = canvasOffset.x;
-        const labelY = canvasOffset.y + tileH * 3;
+        const labelY = canvasOffset.y + tileH * 2.75;
         const labelW = tileW * 2.5;
         const labelH = tileH;
         canvas.addChild(this._labelBox, labelX, labelY, labelW, labelH);
@@ -87,6 +119,13 @@ class MiltySliceUI {
             const tileBox = this._tileBoxes[i];
             tileBox.setChild(new ImageWidget().setImage(imgPath, refPackageId));
         }
+
+        const summaryValue = System.summarize(miltySlice);
+        const summary = new Text()
+            .setFontSize(this._summaryFontSize)
+            .setText(summaryValue);
+        this._summaryBox.setChild(new Border().setChild(summary));
+
         return this;
     }
 
@@ -96,12 +135,17 @@ class MiltySliceUI {
         return this;
     }
 
-    setLabel(label) {
+    setLabel(label, onClickedGenerator) {
         assert(typeof label === "string");
+        assert(typeof onClickedGenerator === "function");
+
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
-        this._labelBox.setChild(
-            new Button().setFontSize(this._labelFontSize).setText(label)
-        );
+        const button = new Button()
+            .setFontSize(this._labelFontSize)
+            .setText(label);
+        const draftSelection = new DraftSelectionWidget().setChild(button);
+        button.onClicked.add(onClickedGenerator(draftSelection));
+        this._labelBox.setChild(draftSelection);
         return this;
     }
 

@@ -119,6 +119,7 @@ On messages in addition the clicking `player` is passed as a text property.
 The TTS mod: inspiration, some framework concepts.
 
 11quats: attachments, planet positions, system tables, unit + system schema, command token take/put reporting
+BradleySigma: tech layout, nekro tech button
 Darrell: scripting
 Dotlogix: map string parsing, formatting
 Lonwyr: strategy card infrastructure, ui, technology helper

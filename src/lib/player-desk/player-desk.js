@@ -391,6 +391,9 @@ class PlayerDesk {
                 this.resetUI();
             },
             onLeaveSeat: (button, player) => {
+                if (player.getSlot() !== this.playerSlot) {
+                    return;
+                }
                 moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
@@ -496,6 +499,13 @@ class PlayerDesk {
             }
             return result;
         };
+    }
+
+    unseatPlayer() {
+        const player = world.getPlayerBySlot(this.playerSlot);
+        if (player) {
+            moveNewPlayerToNonSeatSlot(player);
+        }
     }
 
     /**
@@ -660,6 +670,7 @@ class PlayerDesk {
     setReady(value) {
         this._ready = value;
         this.saveDesksState();
+        this.resetUI();
     }
 
     saveDesksState() {

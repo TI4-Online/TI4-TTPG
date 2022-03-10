@@ -40,6 +40,7 @@ class AutoRollerUI extends Border {
         assert(uiElement instanceof UIElement);
         this._gameObject = gameObject;
         this._uiElement = uiElement;
+        return this;
     }
 
     _update(panels) {

@@ -1,15 +1,41 @@
+const locale = require("../../locale");
 const assert = require("../../../wrapper/assert-wrapper");
+const { DraftSelectionWidget } = require("../draft-selection-widget");
 const {
     Border,
     Button,
     Canvas,
     Color,
     LayoutBox,
+    world,
 } = require("../../../wrapper/api");
-const locale = require("../../locale");
-const { ColorUtil } = require("../../color/color-util");
 
 class SeatTokenUI {
+    static getSeatDataArray(speakerIndex) {
+        assert(typeof speakerIndex === "number");
+        const result = [];
+
+        const playerCount = world.TI4.config.playerCount;
+        if (speakerIndex === -1) {
+            speakerIndex = Math.floor(Math.random() * playerCount);
+        }
+
+        assert(speakerIndex < playerCount);
+
+        for (let i = 0; i < playerCount; i++) {
+            let orderIndex = i - speakerIndex;
+            if (orderIndex < 0) {
+                orderIndex += playerCount;
+            }
+            result.push({
+                orderIndex,
+                deskIndex: i,
+            });
+        }
+
+        return result;
+    }
+
     constructor(canvas, canvasOffset, size) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
@@ -17,7 +43,6 @@ class SeatTokenUI {
         assert(typeof size.w === "number");
         assert(typeof size.h === "number");
 
-        this._seatIndex = -1;
         this._fontSize = Math.min(255, Math.floor(size.h * 0.3));
 
         this._bg = new Border().setColor(new Color(1, 1, 1));
@@ -39,24 +64,27 @@ class SeatTokenUI {
         );
     }
 
-    setColor(color) {
-        assert(ColorUtil.isColor(color));
-        this._bg.setColor(color);
-    }
+    setSeatIndex(deskIndex, orderIndex, onClickedGenerator) {
+        assert(typeof deskIndex === "number");
+        assert(typeof orderIndex === "number");
+        assert(typeof onClickedGenerator === "function");
 
-    setSeatIndex(seatIndex) {
-        assert(typeof seatIndex === "number");
-        this._seatIndex = seatIndex;
+        const playerDesk = world.TI4.getAllPlayerDesks()[deskIndex];
+        assert(playerDesk);
+        let deskColor = playerDesk.colorName;
+        deskColor =
+            deskColor[0].toUpperCase() + deskColor.substring(1).toLowerCase();
 
         let label;
-        if (seatIndex === 0) {
+        if (orderIndex === 0) {
             label = locale("ui.label.speaker");
         } else {
-            label = (seatIndex + 1).toString();
+            label = `${orderIndex + 1}: ${deskColor}`;
         }
-        this._labelBox.setChild(
-            new Button().setFontSize(this._fontSize).setText(label)
-        );
+        const button = new Button().setFontSize(this._fontSize).setText(label);
+        const draftSelection = new DraftSelectionWidget().setChild(button);
+        button.onClicked.add(onClickedGenerator(draftSelection));
+        this._labelBox.setChild(draftSelection);
     }
 }
 
