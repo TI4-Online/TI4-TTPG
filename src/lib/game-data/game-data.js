@@ -9,6 +9,12 @@ const LOCALHOST = "localhost:8080";
 const DEFAULT_DELAY_MSECS = 10 * 60 * 1000;
 const KEY_DELAY_MSECS = 30 * 1000;
 
+// TIER 1:
+// score
+// objectives
+// TIER 2:
+// tech
+
 /**
  * Periodic upload of (normally) anonymized game state.
  * When used with streamer mode will include player names.
