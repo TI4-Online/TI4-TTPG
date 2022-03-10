@@ -251,6 +251,52 @@ class System {
         return result;
     }
 
+    static summarize(tiles) {
+        assert(Array.isArray(tiles));
+        let res = 0;
+        let inf = 0;
+        let tech = [];
+        let wormholes = [];
+
+        for (const tile of tiles) {
+            const system = System.getByTileNumber(tile);
+            assert(system);
+            for (const planet of system.planets) {
+                res += planet.raw.resources;
+                inf += planet.raw.influence;
+                if (planet.raw.tech) {
+                    for (const planetTech of planet.raw.tech) {
+                        tech.push(planetTech.substring(0, 1).toUpperCase());
+                    }
+                }
+            }
+            for (const wormhole of system.wormholes) {
+                switch (wormhole) {
+                    case "alpha":
+                        wormholes.push("α");
+                        break;
+                    case "beta":
+                        wormholes.push("β");
+                        break;
+                    case "gamma":
+                        wormholes.push("γ");
+                        break;
+                    case "delta":
+                        wormholes.push("δ");
+                        break;
+                }
+            }
+        }
+        const result = [`${res}/${inf}`];
+        if (tech.length > 0) {
+            result.push(tech.sort().join(""));
+        }
+        if (wormholes.length > 0) {
+            result.push(wormholes.sort().join(""));
+        }
+        return result.join(" ");
+    }
+
     /**
      * Get the currently active system tile.  Note that a competing
      * globalEvents.TI4.onSystemActivated handler might be called first,
