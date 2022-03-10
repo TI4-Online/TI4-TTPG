@@ -7,6 +7,10 @@ it("validate with numeric only", () => {
     assert.equal(validate("7 18 23"), true);
 });
 
+it("validate with only mecatol", () => {
+    assert.equal(validate(""), true);
+});
+
 it("validate with custom home tile", () => {
     assert.equal(validate("{4} 7 18 23"), true);
 });
