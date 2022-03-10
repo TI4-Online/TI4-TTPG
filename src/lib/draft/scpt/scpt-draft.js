@@ -1,39 +1,10 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { Broadcast } = require("../../broadcast");
 const { MiltyDraft } = require("../milty/milty-draft");
 const { MiltyUtil } = require("../milty/milty-util");
 const { SCPTDraftSettings } = require("./scpt-draft-settings-ui");
+const { FACTION_NAME_TO_NSID_NAME } = require("./scpt-draft.data");
 const { world } = require("../../../wrapper/api");
-const { Broadcast } = require("../../broadcast");
-
-const FACTION_NAME_TO_NSID_NAME = {
-    Arborec: "arborec",
-    Argent: "argent",
-    Creuss: "creuss",
-    Empyrean: "empyrean",
-    Hacan: "hacan",
-    "Jol-Nar": "jolnar",
-    L1Z1X: "l1z1x",
-    Letnev: "letnev",
-    Mahact: "mahact",
-    Mentak: "mentak",
-    Muaat: "muaat",
-    "N'orr": "norr",
-    Naalu: "naalu",
-    "Naaz-Rokha": "naazrokha",
-    Nekro: "nekro",
-    Nomad: "nomad",
-    Saar: "saar",
-    Sol: "sol",
-    Ul: "ul",
-    "Vuil'raith": "vuilraith",
-    Winnu: "winnu",
-    Xxcha: "xxcha",
-    Yin: "yin",
-    Yssaril: "yssaril",
-
-    Sardakk: "norr",
-    Titans: "ul",
-};
 
 class SCPTDraft {
     constructor() {
