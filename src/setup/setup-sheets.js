@@ -1,17 +1,17 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
-const { ObjectType } = require("../wrapper/api");
 const { Spawn } = require("./spawn/spawn");
-const { FACTION_SHEET } = require("./faction/setup-faction-sheet");
+const { TableLayout } = require("../table/table-layout");
+const { ObjectType, Vector } = require("../wrapper/api");
 
 const SHEET_DATA = [
     {
         nsid: "sheet:base/command",
-        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y + 20.8, z: 1 },
+        pos: { x: 0, y: 20.8 },
     },
     {
         nsid: "sheet:pok/leader",
-        pos: { x: FACTION_SHEET.pos.x, y: FACTION_SHEET.pos.y - 19, z: 1 },
+        pos: { x: 0, y: -19 },
     },
 ];
 
@@ -30,12 +30,20 @@ class SetupSheets extends AbstractSetup {
     }
 
     _setupSheet(sheetData) {
-        const pos = this.playerDesk.localPositionToWorld(sheetData.pos);
+        const layout = TableLayout.deskLayout().factionSheet;
+        let pos = new Vector(
+            layout.pos.x + sheetData.pos.x,
+            layout.pos.y + sheetData.pos.y,
+            2
+        );
+        pos = this.playerDesk.localPositionToWorld(pos);
         const rot = this.playerDesk.rot;
+
+        const obj = Spawn.spawn(sheetData.nsid, pos, rot);
+
         const playerSlot = this.playerDesk.playerSlot;
         const color = this.playerDesk.color;
 
-        const obj = Spawn.spawn(sheetData.nsid, pos, rot);
         obj.setObjectType(ObjectType.Ground);
         obj.setOwningPlayerSlot(playerSlot);
         obj.setPrimaryColor(color);
