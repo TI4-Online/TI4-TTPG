@@ -19,6 +19,15 @@ const ACTION = {
     SETUP: "*SETUP",
 };
 
+function clean() {
+    for (const obj of world.getAllObjects()) {
+        if (obj !== refObject) {
+            obj.destroy();
+        }
+    }
+    GlobalSavedData.clear();
+}
+
 for (const action of Object.values(ACTION)) {
     refObject.addCustomAction(action);
 }
@@ -27,15 +36,11 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
     if (actionName === ACTION.CLEAN) {
-        for (const obj of world.getAllObjects()) {
-            if (obj !== refObject) {
-                obj.destroy();
-            }
-        }
-        GlobalSavedData.clear();
+        clean();
     }
 
     if (actionName === ACTION.SETUP) {
+        clean();
         const setups = [];
 
         // Duck-typed "setup"  for player desks.  Use the same setup as
