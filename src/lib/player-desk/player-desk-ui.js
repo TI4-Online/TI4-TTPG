@@ -70,7 +70,7 @@ class PlayerDeskUI {
         // ALWAYS: ready
         if (config.hasFaction) {
             panel.addChild(
-                this._createButton("ui.desk.done", this._callbacks.onReady)
+                this._createButton("ui.button.ready", this._callbacks.onReady)
             );
         }
 

@@ -1,10 +1,10 @@
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { MapTool } = require("../map-tool/map-tool");
 const { MiltyDraft } = require("../../lib/draft/milty/milty-draft");
 const { SCPTDraft } = require("../../lib/draft/scpt/scpt-draft");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const { GameObject, UIElement } = require("../../wrapper/api");
-const assert = require("assert");
 
 class TabMap {
     constructor(gameObject, uiElement) {

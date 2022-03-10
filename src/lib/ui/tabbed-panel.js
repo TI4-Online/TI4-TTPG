@@ -41,7 +41,7 @@ class TabbedPanel extends Border {
     }
 
     _selectTab(label) {
-        console.log(`TabbedPanel._selectTab("${label}")`);
+        //console.log(`TabbedPanel._selectTab("${label}")`);
         const tab = this._labelToTabData[label];
         assert(tab);
 
