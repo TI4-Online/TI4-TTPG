@@ -68,6 +68,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             const setup = setups.shift();
             if (!setup) {
                 console.log(`World #objects = ${world.getAllObjects().length}`);
+                world.resetScripting();
                 return;
             }
             setup.setup();
