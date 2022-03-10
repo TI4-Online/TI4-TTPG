@@ -1,4 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const TP = require("../wrapper/api");
 
@@ -29,8 +31,10 @@ pnlUI.widget.setMinimumHeight(300);
 const obj = TP.refObject; // get reference now, cannot use later
 const packageId = TP.refPackageId;
 
-const awayButton = new TP.Button().setText("Away").setFontSize(24);
-const passButton = new TP.Button().setText("Pass").setFontSize(24);
+const awayButton = new TP.Button()
+    .setText(locale("ui.button.away"))
+    .setFontSize(24);
+const passButton = new TP.Button().setText("ui.button.pass").setFontSize(24);
 
 const awayImage = new TP.ImageWidget();
 const passImage = new TP.ImageWidget();
@@ -80,7 +84,16 @@ awayButton.onClicked = (btn, player) => {
 };
 
 passButton.onClicked = (btn, player) => {
-    setPass(!getPass());
+    const newValue = !getPass();
+    setPass(newValue);
+    if (newValue) {
+        const playerSlot = player.getSlot();
+        const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
+        const playerName = faction ? faction.nameFull : player.getName();
+        Broadcast.broadcastAll(
+            locale("ui.message.player_pass", { playerName })
+        );
+    }
 };
 
 TP.refObject.__getPass = () => {
