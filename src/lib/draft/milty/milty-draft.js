@@ -2,6 +2,7 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
+const { MapStringLoad } = require("../../map-string/map-string-load");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
@@ -179,6 +180,9 @@ class MiltyDraft {
     }
 
     applyChoices() {
+        // Position Mecatol and Mallice.
+        MapStringLoad.load("{18}", false);
+
         // Remember player slot to chooser-player.
         const playerSlotToChooserPlayer = {};
         for (const player of world.getAllPlayers()) {

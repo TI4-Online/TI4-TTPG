@@ -154,6 +154,7 @@ class MiltyDraftUI {
     addSeats(seatDataArray) {
         assert(Array.isArray(seatDataArray));
         seatDataArray.forEach((seatData) => {
+            assert(typeof seatData.deskIndex === "number");
             assert(typeof seatData.orderIndex === "number");
             assert(typeof seatData.onClickedGenerator === "function");
         });
@@ -184,7 +185,11 @@ class MiltyDraftUI {
             new SeatTokenUI(this._canvas, offset, {
                 w: seatW,
                 h: seatH,
-            }).setSeatIndex(seatData.orderIndex, seatData.onClickedGenerator);
+            }).setSeatIndex(
+                seatData.deskIndex,
+                seatData.orderIndex,
+                seatData.onClickedGenerator
+            );
         });
 
         // If stopped before finishing row still advance to next "column".
