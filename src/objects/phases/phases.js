@@ -1,9 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AutoRoller } = require("../roller/auto-roller");
-const { MapTool } = require("../map-tool/map-tool");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
+const { TabMap } = require("./tab-map");
 const { TabStatus } = require("./tab-status");
 const { TabStrategy } = require("./tab-strategy");
 const { TurnOrderPanel } = require("../../lib/ui/turn-order-panel");
@@ -23,7 +23,9 @@ class Phases {
     constructor(gameObject) {
         assert(gameObject instanceof GameObject);
 
-        const mapTool = new MapTool();
+        const uiElement = new UIElement();
+
+        const tabMap = new TabMap(gameObject, uiElement);
         const tabStrategy = new TabStrategy();
         const autoRoller = new AutoRoller();
         const tabStatus = new TabStatus();
@@ -31,7 +33,7 @@ class Phases {
         const turnOrderPanel = new TurnOrderPanel();
 
         const tabbedPanel = new TabbedPanel(true)
-            .addTab(locale("ui.tab.map_tool"), mapTool.getUI())
+            .addTab(locale("ui.tab.map"), tabMap.getUI())
             .addTab(locale("ui.tab.strategy_phase"), tabStrategy.getUI())
             .addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
             .addTab(locale("ui.tab.status_phase"), tabStatus.getUI())
@@ -51,7 +53,6 @@ class Phases {
             .setMinimumWidth(w)
             .setMinimumHeight(60);
 
-        const uiElement = new UIElement();
         uiElement.anchorY = 0;
         uiElement.position = new Vector(0, 0, 5);
         uiElement.widget = layoutBox;
@@ -63,7 +64,6 @@ class Phases {
 
         gameObject.addUI(uiElement);
 
-        mapTool.getUI().setOwningObjectForUpdate(gameObject, uiElement);
         autoRoller.getUI().setOwningObjectForUpdate(gameObject, uiElement);
     }
 }

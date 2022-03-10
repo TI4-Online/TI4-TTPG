@@ -89,3 +89,19 @@ it("wormholes", () => {
     assert.equal(system.wormholes.length, 1);
     assert.equal(system.wormholes[0], "alpha");
 });
+
+it("summarize", () => {
+    let tiles, summary;
+
+    tiles = [25, 26, 27]; // quann, lodor, new albion
+    summary = System.summarize(tiles);
+    assert.equal(summary, "9/4 G αβ");
+
+    tiles = [25];
+    summary = System.summarize(tiles);
+    assert.equal(summary, "2/1 β");
+
+    tiles = [27];
+    summary = System.summarize(tiles);
+    assert.equal(summary, "4/2 G");
+});

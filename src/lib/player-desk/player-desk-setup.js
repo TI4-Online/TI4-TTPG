@@ -61,11 +61,15 @@ class PlayerDeskSetup {
         setups.forEach((setup) => setup.clean());
     }
 
-    setupFaction() {
+    setupFaction(factionNsidName) {
         let faction = false;
-        const factionToken = FactionToken.getByPlayerDesk(this._playerDesk);
+        const factionToken =
+            !factionNsidName && FactionToken.getByPlayerDesk(this._playerDesk);
 
-        if (factionToken) {
+        if (factionNsidName) {
+            faction = world.TI4.getFactionByNsidName(factionNsidName);
+            assert(faction);
+        } else if (factionToken) {
             // Found a faction token / reference card, use that.
             const above = factionToken.getPosition().add([0, 0, 15]);
             factionToken.setPosition(above);
