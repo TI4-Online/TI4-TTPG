@@ -109,6 +109,13 @@ class DraftSelectionManager {
         });
     }
 
+    _updateFinish() {
+        const isFinished = this.allPlayersHaveAllCategories();
+        this._onFinishedButtons.forEach((button) => {
+            button.setEnabled(isFinished);
+        });
+    }
+
     /**
      * Create a click handler that adds/removes a draft selection.
      * Requires button be a (potentially nested) DraftSelectionWidget child.
@@ -194,6 +201,24 @@ class DraftSelectionManager {
                     return;
                 }
 
+                // Has another player already claimed it?
+                for (const alreadySelectedData of Object.values(
+                    playerSlotToSelectionData
+                )) {
+                    if (
+                        !oldSelectionData &&
+                        alreadySelectedData === selectionData
+                    ) {
+                        const msg = locale("ui.draft.already_claimed", {
+                            playerName,
+                            categoryName,
+                            selectionName,
+                        });
+                        Broadcast.broadcastAll(msg, playerDesk.color);
+                        return;
+                    }
+                }
+
                 // Player clicked their existing selection, de-select it.
                 // We may want to get clever and only let them undo their
                 // immediately-preceeding selection without any other
@@ -201,6 +226,7 @@ class DraftSelectionManager {
                 if (oldSelectionData === selectionData) {
                     playerSlotToSelectionData[playerSlot] = undefined;
                     this._clearDraftSelection(categoryName, selectionName);
+                    this._updateFinish();
                     const msg = locale("ui.draft.deselected", {
                         playerName,
                         categoryName,
@@ -208,20 +234,6 @@ class DraftSelectionManager {
                     });
                     Broadcast.broadcastAll(msg, playerDesk.color);
                     return;
-                }
-
-                // Has another player already claimed it?
-                for (const alreadySelectedData of Object.values(
-                    playerSlotToSelectionData
-                )) {
-                    if (alreadySelectedData === selectionData) {
-                        const msg = locale("ui.draft.already_claimed", {
-                            playerName,
-                            categoryName,
-                        });
-                        Broadcast.broadcastAll(msg, playerDesk.color);
-                        return;
-                    }
                 }
 
                 // Otherwise something is changing, change ALL linked
@@ -234,18 +246,13 @@ class DraftSelectionManager {
                     selectionName,
                     playerDesk.color
                 );
+                this._updateFinish();
                 const msg = locale("ui.draft.selected", {
                     playerName,
                     categoryName,
                     selectionName,
                 });
                 Broadcast.broadcastAll(msg, playerDesk.color);
-
-                // Player just selected something.  Finished?
-                const isFinished = this.allPlayersHaveAllCategories();
-                this._onFinishedButtons.forEach((button) => {
-                    button.setEnabled(isFinished);
-                });
             };
         };
     }
