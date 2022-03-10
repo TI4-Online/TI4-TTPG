@@ -1,5 +1,4 @@
 const locale = require("../../locale");
-const { ColorUtil } = require("../../color/color-util");
 const assert = require("../../../wrapper/assert-wrapper");
 const { DraftSelectionWidget } = require("../draft-selection-widget");
 const {
@@ -65,20 +64,22 @@ class SeatTokenUI {
         );
     }
 
-    setColor(color) {
-        assert(ColorUtil.isColor(color));
-        this._bg.setColor(color);
-    }
-
-    setSeatIndex(orderIndex, onClickedGenerator) {
+    setSeatIndex(deskIndex, orderIndex, onClickedGenerator) {
+        assert(typeof deskIndex === "number");
         assert(typeof orderIndex === "number");
         assert(typeof onClickedGenerator === "function");
+
+        const playerDesk = world.TI4.getAllPlayerDesks()[deskIndex];
+        assert(playerDesk);
+        let deskColor = playerDesk.colorName;
+        deskColor =
+            deskColor[0].toUpperCase() + deskColor.substring(1).toLowerCase();
 
         let label;
         if (orderIndex === 0) {
             label = locale("ui.label.speaker");
         } else {
-            label = (orderIndex + 1).toString();
+            label = `${orderIndex + 1}: ${deskColor}`;
         }
         const button = new Button().setFontSize(this._fontSize).setText(label);
         const draftSelection = new DraftSelectionWidget().setChild(button);
