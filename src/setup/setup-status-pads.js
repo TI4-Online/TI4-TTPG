@@ -6,7 +6,7 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 
 const STATUS_PAD = {
     nsid: "pad:base/status",
-    pos: { x: 20, y: 22, z: 0 },
+    pos: { x: 18, y: 36, z: 0 },
     yaw: 180,
 };
 
