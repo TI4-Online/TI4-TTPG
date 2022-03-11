@@ -3,6 +3,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const { Spawn } = require("./spawn/spawn");
+const { ANCHOR_SCORE } = require("./setup-table-mats");
 const {
     CardHolder,
     HiddenCardsType,
@@ -13,7 +14,7 @@ const {
 } = require("../wrapper/api");
 
 const X0 = -29;
-const Y0 = -66;
+const Y0 = 10;
 const DY = -10;
 const YAW = -90;
 const DESK_INDEX_KEY = "deskIndex";
@@ -29,8 +30,8 @@ class SetupSecretHolders extends AbstractSetup {
 
         const numLeft = Math.floor(playerCount / 2);
 
-        const positions = [];
-        const rotations = [];
+        let positions = [];
+        let rotations = [];
         const z = world.getTableHeight();
         for (let i = 0; i < playerCount; i++) {
             if (i < numLeft) {
@@ -46,6 +47,15 @@ class SetupSecretHolders extends AbstractSetup {
                 rotations.push(new Rotator(0, YAW, 0));
             }
         }
+
+        // Move to anchor.
+        positions = positions.map((pos) => {
+            return this.anchorPositionToWorld(ANCHOR_SCORE, pos);
+        });
+        rotations = rotations.map((rot) => {
+            return this.anchorRotationToWorld(ANCHOR_SCORE, rot);
+        });
+
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const nsid = "cardholder:base/small";
             const pos = positions[playerDesk.index];
