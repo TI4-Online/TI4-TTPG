@@ -10,13 +10,14 @@ const SCALE = 1;
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 11.5 * SCALE;
 
 const SUPPLY_BOXES_RIGHT = {
+    spaceBy: 4,
     tokenNsids: [
         "token:base/tradegood_commodity_1",
         "token:base/tradegood_commodity_3",
-        "token:base/fighter_1",
-        "token:base/fighter_3",
-        "token:base/infantry_1",
-        "token:base/infantry_3",
+        //"token:base/fighter_1",
+        //"token:base/fighter_3",
+        //"token:base/infantry_1",
+        //"token:base/infantry_3",
     ],
 };
 
@@ -46,12 +47,17 @@ class SetupSupplyBoxesDesks extends AbstractSetup {
 
         // Use layout to find positions and rotations along an arc.
         const pointPosRots = new Layout()
-            .setCount(SUPPLY_BOXES_RIGHT.tokenNsids.length)
+            .setCount(
+                SUPPLY_BOXES_RIGHT.tokenNsids.length +
+                    SUPPLY_BOXES_RIGHT.spaceBy
+            )
             .setDistanceBetween(DISTANCE_BETWEEN_SUPPLY_BOXES)
             .setCenter(shelfCenter)
             .layoutLinear(rot.yaw)
             .getPoints();
-        assert(SUPPLY_BOXES_RIGHT.tokenNsids.length == pointPosRots.length);
+        while (pointPosRots.length > SUPPLY_BOXES_RIGHT.tokenNsids.length) {
+            pointPosRots.shift();
+        }
         for (let i = 0; i < SUPPLY_BOXES_RIGHT.tokenNsids.length; i++) {
             this._setupBox(SUPPLY_BOXES_RIGHT.tokenNsids[i], pointPosRots[i]);
         }
