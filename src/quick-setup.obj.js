@@ -37,6 +37,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
 
     if (actionName === ACTION.CLEAN) {
         clean();
+        world.resetScripting();
     }
 
     if (actionName === ACTION.SETUP) {
