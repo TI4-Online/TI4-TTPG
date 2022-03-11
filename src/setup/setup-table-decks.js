@@ -1,6 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { TableLayout } = require("../table/table-layout");
 const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
 const TABLE_DECKS = [
@@ -90,14 +91,14 @@ const TABLE_DECKS = [
     },
     {
         nsidPrefix: "card.faction_token",
-        parent: false,
-        pos: { x: -6.1, y: 77.9, z: world.getTableHeight() + 5 },
+        anchor: TableLayout.anchor.score,
+        pos: { x: 30, y: -33, z: 5 },
         yaw: -90,
     },
     {
         nsidPrefix: "card.faction_reference",
-        parent: false,
-        pos: { x: 3.6, y: 78.9, z: world.getTableHeight() + 5 },
+        anchor: TableLayout.anchor.score,
+        pos: { x: 30, y: -26, z: 5 },
         yaw: -90,
     },
 ];
@@ -174,6 +175,11 @@ class SetupTableDecks extends AbstractSetup {
         } else {
             pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
             rot = new Rotator(0, deckData.yaw, 0);
+            if (deckData.anchor) {
+                pos = this.anchorPositionToWorld(deckData.anchor, pos);
+                rot = this.anchorRotationToWorld(deckData.anchor, rot);
+            }
+            pos.z = world.getTableHeight() + deckData.pos.z;
         }
 
         // Spawn the decks, combine into one.

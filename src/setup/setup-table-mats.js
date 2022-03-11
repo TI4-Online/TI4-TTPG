@@ -1,43 +1,38 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Rotator, world } = require("../wrapper/api");
-const { Vector } = require("@tabletop-playground/api");
-
-const ANCHOR_SCORE = {
-    pos: { x: -150, y: 0, z: 3 },
-    yaw: 90,
-};
+const { TableLayout } = require("../table/table-layout");
+const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const MATS = [
     {
         nsid: "mat:base/objectives_1",
-        anchor: ANCHOR_SCORE,
+        anchor: TableLayout.anchor.score,
         pos: { x: 0, y: -10 },
         yaw: 0,
     },
     {
         nsid: "token:base/scoreboard",
-        anchor: ANCHOR_SCORE,
+        anchor: TableLayout.anchor.score,
         pos: { x: 0, y: 0 },
         yaw: 0,
     },
     {
         nsid: "mat:base/objectives_2",
-        anchor: ANCHOR_SCORE,
+        anchor: TableLayout.anchor.score,
         pos: { x: 0, y: 10 },
         yaw: 0,
     },
 
     {
         nsid: "mat:base/decks",
-        anchor: ANCHOR_SCORE,
+        anchor: TableLayout.anchor.score,
         pos: { x: 14, y: -30 }, // 16.9 width
         yaw: 0,
     },
     {
         nsid: "mat:pok/exploration",
-        anchor: ANCHOR_SCORE,
+        anchor: TableLayout.anchor.score,
         pos: { x: -10, y: -29 }, // 26 width
         yaw: 0,
     },
@@ -101,4 +96,4 @@ class SetupTableMats extends AbstractSetup {
     }
 }
 
-module.exports = { SetupTableMats, MATS, ANCHOR_SCORE };
+module.exports = { SetupTableMats, MATS };

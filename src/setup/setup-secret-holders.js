@@ -3,7 +3,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const { Spawn } = require("./spawn/spawn");
-const { ANCHOR_SCORE } = require("./setup-table-mats");
+const { TableLayout } = require("../table/table-layout");
 const {
     CardHolder,
     HiddenCardsType,
@@ -14,7 +14,7 @@ const {
 } = require("../wrapper/api");
 
 const X0 = -29;
-const Y0 = 10;
+const YCENTER = 0;
 const DY = -10;
 const YAW = -90;
 const DESK_INDEX_KEY = "deskIndex";
@@ -29,6 +29,7 @@ class SetupSecretHolders extends AbstractSetup {
         assert(playerCount > 0);
 
         const numLeft = Math.floor(playerCount / 2);
+        const y0 = YCENTER - ((playerCount - numLeft - 1) * DY) / 2;
 
         let positions = [];
         let rotations = [];
@@ -36,13 +37,13 @@ class SetupSecretHolders extends AbstractSetup {
         for (let i = 0; i < playerCount; i++) {
             if (i < numLeft) {
                 const x = X0;
-                const y = Y0 + i * DY;
+                const y = y0 + i * DY;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             } else {
                 const iRight = playerCount - i - 1;
                 const x = -X0;
-                const y = Y0 + iRight * DY;
+                const y = y0 + iRight * DY;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             }
@@ -50,10 +51,10 @@ class SetupSecretHolders extends AbstractSetup {
 
         // Move to anchor.
         positions = positions.map((pos) => {
-            return this.anchorPositionToWorld(ANCHOR_SCORE, pos);
+            return this.anchorPositionToWorld(TableLayout.anchor.score, pos);
         });
         rotations = rotations.map((rot) => {
-            return this.anchorRotationToWorld(ANCHOR_SCORE, rot);
+            return this.anchorRotationToWorld(TableLayout.anchor.score, rot);
         });
 
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {

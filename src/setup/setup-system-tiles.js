@@ -1,9 +1,20 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
+const { AbstractSetup } = require("./abstract-setup");
+const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const { Rotator, Vector, world } = require("../wrapper/api");
-const { AbstractSetup } = require("./abstract-setup");
+
+const BAG = {
+    nsid: "bag:base/generic",
+    anchor: TableLayout.anchor.score,
+    pos: { x: -13, y: 25, z: 3 },
+    yaw: 90,
+    scale: { x: 0.8, y: 0.8, z: 0.5 },
+    colorHex: "#0033AA",
+};
 
 class SetupSystemTiles extends AbstractSetup {
     constructor() {
@@ -11,10 +22,14 @@ class SetupSystemTiles extends AbstractSetup {
     }
 
     setup() {
-        const pos = new Vector(-28, 101, world.getTableHeight() + 5);
-        const rot = new Rotator(0, 0, 0);
-        const bag = Spawn.spawnGenericContainer(pos, rot);
+        let pos = new Vector(BAG.pos.x, BAG.pos.y, BAG.pos.z);
+        let rot = new Rotator(0, BAG.yaw, 0);
+        pos = this.anchorPositionToWorld(BAG.anchor, pos);
+        rot = this.anchorRotationToWorld(BAG.anchor, rot);
+        const bag = Spawn.spawn(BAG.nsid, pos, rot);
         bag.setName(locale("bag.system_tiles"));
+        bag.setScale(new Vector(BAG.scale.x, BAG.scale.y, BAG.scale.z));
+        bag.setPrimaryColor(ColorUtil.colorFromHex(BAG.colorHex));
 
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
             if (!nsid.startsWith("tile.system")) {

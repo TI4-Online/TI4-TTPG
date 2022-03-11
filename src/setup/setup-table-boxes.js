@@ -1,30 +1,46 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
+const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const { Container, Rotator, Vector, world } = require("../wrapper/api");
 
 const BOXES = [
     {
+        nsid: "bag:base/generic",
         localeName: "bag.purge",
-        templateId: "A44BAA604E0ED034CD67FA9502214AA7",
-        pos: { x: 32, y: 113, z: 18 },
-        yaw: 0,
+        anchor: TableLayout.anchor.score,
+        pos: { x: -4, y: 25, z: 3 },
+        yaw: 90,
+        scale: { x: 0.8, y: 0.8, z: 0.5 },
     },
 ];
 
 class SetupTableBoxes extends AbstractSetup {
     setup() {
         for (const boxData of BOXES) {
-            const pos = new Vector(boxData.pos.x, boxData.pos.y, boxData.pos.z);
-            const rot = new Rotator(0, boxData.yaw, 0);
-            const container = world.createObjectFromTemplate(
-                boxData.templateId,
-                pos
-            );
+            let pos = new Vector(boxData.pos.x, boxData.pos.y, 0);
+            let rot = new Rotator(0, boxData.yaw, 0);
+            if (boxData.anchor) {
+                pos = this.anchorPositionToWorld(boxData.anchor, pos);
+                rot = this.anchorRotationToWorld(boxData.anchor, rot);
+            }
+            pos.z = world.getTableHeight() + boxData.pos.z;
+
+            const container = Spawn.spawn(boxData.nsid, pos, rot);
             assert(container instanceof Container);
-            container.setRotation(rot, 0);
             const name = locale(boxData.localeName);
             container.setName(name);
+
+            if (boxData.scale) {
+                container.setScale(
+                    new Vector(
+                        boxData.scale.x,
+                        boxData.scale.y,
+                        boxData.scale.z
+                    )
+                );
+            }
         }
     }
 
