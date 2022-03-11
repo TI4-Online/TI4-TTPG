@@ -10,7 +10,7 @@ const {
 } = require("../../wrapper/api");
 
 const DESK_UI = {
-    pos: { x: 30, y: 0, z: 2 },
+    pos: { x: 60, y: 0, z: 2 },
 };
 const LARGE_FONT_SIZE = 30;
 
@@ -77,6 +77,7 @@ class PlayerDeskUI {
         const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
 
         const ui = new UIElement();
+        ui.anchorY = 0;
         ui.position = pos;
         ui.rotation = this._playerDesk.rot;
         ui.widget = new Border().setChild(panel);
