@@ -138,10 +138,13 @@ class DealDiscard {
 
         // getSnappedObject isn't reliable.  Try, then fallback to cast.
         let deck = snapPoint.getSnappedObject();
+        if (!(deck instanceof Card)) {
+            deck = false; // non-card snapped?
+        }
         if (deck && deck.isInHolder()) {
             deck = false; // already dealt, but not moved yet
         }
-        if (!deck || !(deck instanceof Card)) {
+        if (!deck) {
             const pos = snapPoint.getGlobalPosition();
             const src = pos.subtract([0, 0, 50]);
             const dst = pos.add([0, 0, 50]);
