@@ -20,7 +20,7 @@ const SUPPLY_BOXES_RIGHT = {
     ],
 };
 
-class SetupSupplyBoxes extends AbstractSetup {
+class SetupSupplyBoxesDesks extends AbstractSetup {
     constructor(playerDesk) {
         assert(playerDesk);
         super(playerDesk);
@@ -105,4 +105,4 @@ class SetupSupplyBoxes extends AbstractSetup {
     }
 }
 
-module.exports = { SetupSupplyBoxes };
+module.exports = { SetupSupplyBoxesDesks };
