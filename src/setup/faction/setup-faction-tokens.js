@@ -10,7 +10,7 @@ const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
-    bagPos: { x: 10, y: 33, z: 0 },
+    bagPos: { x: 1, y: 13, z: 0 },
     bagYaw: 45,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
@@ -33,7 +33,7 @@ const CONTROL_TOKENS = {
     tokenCount: 1,
     bagNsid: "bag.token.control:base/*",
     bagType: 1, // infinite
-    bagPos: { x: 10, y: 39, z: 0 },
+    bagPos: { x: 1, y: 7, z: 0 },
     bagYaw: COMMAND_TOKENS.bagYaw,
 };
 

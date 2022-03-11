@@ -4,7 +4,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
 const { ObjectType, Vector, world } = require("../../wrapper/api");
 
-const FACTION_SHEET_POS = { x: 18, y: 0 };
+const FACTION_SHEET_POS = { x: 18, y: -4 };
 
 class SetupFactionSheet extends AbstractSetup {
     constructor(playerDesk, faction) {
