@@ -4,7 +4,7 @@ const { CloneReplace } = require("../../lib/clone-replace");
 const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { FACTION_SHEET_POS } = require("./faction/setup-faction-sheet");
+const { FACTION_SHEET_POS } = require("./setup-faction-sheet");
 const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
 
 const COMMAND_TOKENS = {
