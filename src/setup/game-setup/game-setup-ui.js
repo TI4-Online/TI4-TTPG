@@ -14,8 +14,7 @@ const {
 } = require("../../wrapper/api");
 
 // Large font size affects text but checkboxes don't scale with it.
-const UI_SCALE = 1.25;
-const UI_FONT_SIZE = 24 / UI_SCALE;
+const UI_FONT_SIZE = 20;
 
 class GameSetupUI {
     constructor(callbacks) {
@@ -26,7 +25,7 @@ class GameSetupUI {
         const panel = new VerticalBox().setChildDistance(5);
 
         const title = new Text()
-            .setFontSize(UI_FONT_SIZE * 1.2)
+            .setFontSize(UI_FONT_SIZE * 1.8)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
             .setFont("ambroise_firmin_bold.otf", refPackageId);
