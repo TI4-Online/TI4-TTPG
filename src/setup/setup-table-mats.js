@@ -1,47 +1,56 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Rotator, world } = require("../wrapper/api");
+const { TableLayout } = require("../table/table-layout");
+const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const MATS = [
     {
-        nsid: "mat:base/decks",
-        pos: { x: -34, y: 85 },
+        nsid: "mat:base/objectives_1",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 0, y: -10 },
         yaw: 0,
     },
+    {
+        nsid: "token:base/scoreboard",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 0, y: 0 },
+        yaw: 0,
+    },
+    {
+        nsid: "mat:base/objectives_2",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 0, y: 10 },
+        yaw: 0,
+    },
+
+    {
+        nsid: "mat:base/decks",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 14, y: -30 }, // 16.9 width
+        yaw: 0,
+    },
+    {
+        nsid: "mat:pok/exploration",
+        anchor: TableLayout.anchor.score,
+        pos: { x: -10, y: -29 }, // 26 width
+        yaw: 0,
+    },
+
     //{
     //    nsid: "mat:base/laws",
     //    pos: { x: 0, y: 94 },
     //    yaw: 0,
     //},
-    {
-        nsid: "mat:base/objectives_1",
-        pos: { x: 0, y: -86 },
-        yaw: 180,
-    },
-    {
-        nsid: "token:base/scoreboard",
-        pos: { x: 0, y: -76 },
-        yaw: 180,
-    },
-    {
-        nsid: "mat:base/objectives_2",
-        pos: { x: 0, y: -66 },
-        yaw: 180,
-    },
     // {
     //     nsid: "mat:base/secrets",
     //     pos: { x: 20, y: -85 },
     //     yaw: 180,
     // },
     {
-        nsid: "mat:pok/exploration",
-        pos: { x: 33, y: 89 },
-        yaw: 90,
-    },
-    {
         nsid: "mat:base/strategy_card",
-        pos: { x: 0, y: 92 },
+        anchor: TableLayout.anchor.strategy,
+        pos: { x: 0, y: 0 },
         yaw: 0,
     },
 ];
@@ -54,9 +63,17 @@ class SetupTableMats extends AbstractSetup {
     setup() {
         MATS.forEach((matData) => {
             const nsid = matData.nsid;
-            const pos = matData.pos;
-            pos.z = world.getTableHeight() + 3;
-            const rot = new Rotator(0, matData.yaw, 0);
+            let pos = new Vector(
+                matData.pos.x,
+                matData.pos.y,
+                world.getTableHeight() + 3
+            );
+            let rot = new Rotator(0, matData.yaw, 0);
+            if (matData.anchor) {
+                pos = this.anchorPositionToWorld(matData.anchor, pos);
+                rot = this.anchorRotationToWorld(matData.anchor, rot);
+            }
+
             const obj = Spawn.spawn(nsid, pos, rot);
             obj.setObjectType(ObjectType.Ground);
         });

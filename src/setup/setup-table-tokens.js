@@ -1,18 +1,23 @@
 const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
+const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const EXPLORATION_TOKENS = {
-    bagNsid: "bag:base/garbage",
+    bagNsid: "bag:base/generic",
+    bagHexColor: "#505050",
+    bagScale: { x: 0.8, y: 0.8, z: 0.5 },
     tokens: [
         { nsidPrefix: "token.attachment.exploration" },
         { nsidPrefix: "token.wormhole.exploration" },
         { nsidPrefix: "token.exploration" },
     ],
-    pos: { x: -38, y: 101, z: world.getTableHeight() + 5 },
-    yaw: 0,
+    anchor: TableLayout.anchor.score,
+    pos: { x: 5, y: 25, z: 3 },
+    yaw: -90,
 };
 
 const GENERIC_TOKENS = [
@@ -20,22 +25,26 @@ const GENERIC_TOKENS = [
         tokenNsid: "token:pok/frontier",
         bagNsid: "bag.token:pok/frontier",
         bagType: 2,
-        pos: { x: -36.4, y: 113.3, z: world.getTableHeight() + 5 },
+        bagScale: { x: 0.8, y: 0.8, z: 0.8 },
+        anchor: TableLayout.anchor.score,
+        pos: { x: 14, y: 25, z: 3 },
         yaw: 0,
     },
     {
         tokenNsid: "token:base/speaker",
         bagNsid: false,
         bagType: false,
-        pos: { x: -39, y: 72, z: world.getTableHeight() + 5 },
-        yaw: -90,
+        anchor: TableLayout.anchor.score,
+        pos: { x: -30, y: -25, z: 3 },
+        yaw: 90,
     },
     {
         tokenNsid: "token:base/custodians",
         bagNsid: false,
         bagType: false,
-        pos: { x: -39, y: 66, z: world.getTableHeight() + 5 },
-        yaw: 0,
+        anchor: TableLayout.anchor.score,
+        pos: { x: -30, y: -31, z: 3 },
+        yaw: 90,
     },
 
     // scoreboard is in setup-table-mats
@@ -92,18 +101,37 @@ class SetupTableTokens extends AbstractSetup {
     }
 
     _setupExplorationTokens() {
-        const pos = new Vector(
+        let pos = new Vector(
             EXPLORATION_TOKENS.pos.x,
             EXPLORATION_TOKENS.pos.y,
             EXPLORATION_TOKENS.pos.z
         );
-        const rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
+        let rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
 
-        //const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
-        const bag = Spawn.spawnGenericContainer(pos, rot);
+        if (EXPLORATION_TOKENS.anchor) {
+            pos = this.anchorPositionToWorld(EXPLORATION_TOKENS.anchor, pos);
+            rot = this.anchorRotationToWorld(EXPLORATION_TOKENS.anchor, rot);
+        }
+        pos.z = world.getTableHeight() + EXPLORATION_TOKENS.pos.z;
+
+        const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
         bag.setName(locale("bag.exploration_tokens"));
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Regular);
+        if (EXPLORATION_TOKENS.bagHexColor) {
+            bag.setPrimaryColor(
+                ColorUtil.colorFromHex(EXPLORATION_TOKENS.bagHexColor)
+            );
+        }
+        if (EXPLORATION_TOKENS.bagScale) {
+            bag.setScale(
+                new Vector(
+                    EXPLORATION_TOKENS.bagScale.x,
+                    EXPLORATION_TOKENS.bagScale.y,
+                    EXPLORATION_TOKENS.bagScale.z
+                )
+            );
+        }
 
         const above = pos.add([0, 0, 10]);
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
@@ -127,12 +155,14 @@ class SetupTableTokens extends AbstractSetup {
     }
 
     _setupGenericToken(tokenData) {
-        const pos = new Vector(
-            tokenData.pos.x,
-            tokenData.pos.y,
-            tokenData.pos.z
-        );
-        const rot = new Rotator(0, tokenData.yaw, 0);
+        let pos = new Vector(tokenData.pos.x, tokenData.pos.y, tokenData.pos.z);
+        let rot = new Rotator(0, tokenData.yaw, 0);
+
+        if (tokenData.anchor) {
+            pos = this.anchorPositionToWorld(tokenData.anchor, pos);
+            rot = this.anchorRotationToWorld(tokenData.anchor, rot);
+        }
+        pos.z = world.getTableHeight() + tokenData.pos.z;
 
         let bag;
         if (tokenData.bagNsid) {
@@ -147,6 +177,16 @@ class SetupTableTokens extends AbstractSetup {
                 bag.destroy();
                 bag = world.createObjectFromJSON(json, pos);
                 bag.setRotation(rot);
+            }
+
+            if (tokenData.bagScale) {
+                bag.setScale(
+                    new Vector(
+                        tokenData.bagScale.x,
+                        tokenData.bagScale.y,
+                        tokenData.bagScale.z
+                    )
+                );
             }
         }
 

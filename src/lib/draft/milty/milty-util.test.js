@@ -1,3 +1,4 @@
+require("../../../global"); // create world.TI4
 const assert = require("assert");
 const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
 

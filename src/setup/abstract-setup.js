@@ -2,7 +2,7 @@ const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
-const { Card, world } = require("../wrapper/api");
+const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
@@ -170,6 +170,23 @@ class AbstractSetup {
                 return obj;
             }
         }
+    }
+
+    anchorPositionToWorld(anchor, pos) {
+        assert(typeof anchor.pos.x === "number");
+        assert(typeof anchor.pos.y === "number");
+        assert(typeof anchor.pos.z === "number");
+        assert(typeof anchor.yaw === "number");
+        assert(typeof pos.x === "number");
+        assert(typeof pos.y === "number");
+        return new Vector(pos.x, pos.y, world.getTableHeight())
+            .rotateAngleAxis(anchor.yaw, [0, 0, 1])
+            .add(new Vector(anchor.pos.x, anchor.pos.y, anchor.pos.z));
+    }
+
+    anchorRotationToWorld(anchor, rot) {
+        assert(typeof anchor.yaw === "number");
+        return new Rotator(0, anchor.yaw, 0).compose(rot);
     }
 }
 

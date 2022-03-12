@@ -4,6 +4,28 @@ const { DealDiscard } = require("../../lib/card/deal-discard");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, globalEvents, world } = require("../../wrapper/api");
 
+function updateDescription(deck, onTop) {
+    if (!deck) {
+        deck = DealDiscard.getDeckWithReshuffle("card.agenda");
+    }
+    if (!deck) {
+        return;
+    }
+
+    let desc;
+    if (onTop === undefined) {
+        desc = locale("tile.strategy.politics");
+    } else {
+        desc = deck.getDescription();
+        const localeStr = onTop
+            ? "ui.menu.place_agenda_top"
+            : "ui.menu.place_agenda_bottom";
+        const str = locale(localeStr);
+        desc = desc + "\n" + str;
+    }
+    deck.setDescription(desc);
+}
+
 function _placeAgenda(agendaCard, onTop) {
     assert(agendaCard instanceof Card);
     assert(typeof onTop === "boolean");
@@ -18,6 +40,9 @@ function _placeAgenda(agendaCard, onTop) {
     const animate = true;
     const flipped = false;
     deck.addCards(agendaCard, toFront, offset, animate, flipped);
+
+    // Add to deck description.
+    updateDescription(deck, onTop);
 }
 
 const NAMES_AND_ACTIONS = [
@@ -71,6 +96,13 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     assert(card instanceof Card);
     if (card.__hasRightClickAgendaOptions) {
         removeRightClickOptions(card);
+    }
+});
+
+globalEvents.TI4.onStrategyCardPlayed.add((strategyCardObj, player) => {
+    const parsed = ObjectNamespace.parseGeneric(strategyCardObj);
+    if (parsed && parsed.name.startsWith("politics")) {
+        updateDescription(undefined, undefined);
     }
 });
 

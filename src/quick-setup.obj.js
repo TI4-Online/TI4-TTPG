@@ -6,6 +6,7 @@ const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
+const { SetupSupplyBoxesTable } = require("./setup/setup-supply-boxes-table");
 const { SetupSystemTiles } = require("./setup/setup-system-tiles");
 const { SetupTableBoxes } = require("./setup/setup-table-boxes");
 const { SetupTableDecks } = require("./setup/setup-table-decks");
@@ -19,6 +20,15 @@ const ACTION = {
     SETUP: "*SETUP",
 };
 
+function clean() {
+    for (const obj of world.getAllObjects()) {
+        if (obj !== refObject) {
+            obj.destroy();
+        }
+    }
+    GlobalSavedData.clear();
+}
+
 for (const action of Object.values(ACTION)) {
     refObject.addCustomAction(action);
 }
@@ -27,15 +37,12 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
 
     if (actionName === ACTION.CLEAN) {
-        for (const obj of world.getAllObjects()) {
-            if (obj !== refObject) {
-                obj.destroy();
-            }
-        }
-        GlobalSavedData.clear();
+        clean();
+        world.resetScripting();
     }
 
     if (actionName === ACTION.SETUP) {
+        clean();
         const setups = [];
 
         // Duck-typed "setup"  for player desks.  Use the same setup as
@@ -53,6 +60,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         // Now the rest.
         setups.push(new SetupSecretHolders());
         setups.push(new SetupStrategyCards());
+        setups.push(new SetupSupplyBoxesTable());
         setups.push(new SetupSystemTiles());
         setups.push(new SetupTableBoxes());
         setups.push(new SetupTableDecks());
@@ -63,6 +71,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             const setup = setups.shift();
             if (!setup) {
                 console.log(`World #objects = ${world.getAllObjects().length}`);
+                world.resetScripting();
                 return;
             }
             setup.setup();

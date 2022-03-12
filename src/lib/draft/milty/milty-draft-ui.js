@@ -66,7 +66,7 @@ class MiltyDraftUI {
         // Set it up here, as part of UI.
         const fontSize = Math.min(255, Math.floor(h * 0.3));
         onFinishedButton
-            .setText(locale("ui.draft.button.finish"))
+            .setText(locale("ui.button.ready"))
             .setFontSize(fontSize)
             .setEnabled(false);
 

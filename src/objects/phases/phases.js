@@ -69,11 +69,9 @@ class Phases {
 }
 
 refObject.onCreated.add((obj) => {
-    console.log("Phases onCreated");
     new Phases(obj);
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    console.log("Phases ScriptReload");
     new Phases(refObject);
 }

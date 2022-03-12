@@ -1,1 +1,4 @@
-{ "pad:base/status": "1C78FD3041A92C57AC10EBB7653904CC" }
+{
+    "pad:base/status": "1C78FD3041A92C57AC10EBB7653904CC",
+    "bag:base/generic": "A44BAA604E0ED034CD67FA9502214AA7"
+}

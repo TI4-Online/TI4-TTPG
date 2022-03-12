@@ -2,6 +2,7 @@ const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { Hex } = require("../lib/hex");
+const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const {
     Rotator,
@@ -11,7 +12,6 @@ const {
     Vector,
     world,
 } = require("../wrapper/api");
-const { ObjectNamespace } = require("../lib/object-namespace");
 
 // "Standard" home system locations, and suggested off-map positions keeping
 // closer to the center of the table but pushed out (north and south).  The
@@ -61,12 +61,66 @@ class SetupGenericHomeSystems extends AbstractSetup {
         super(playerDesk);
     }
 
-    static getHomeSystemPosition(playerDesk, offMap = false) {
+    /**
+     * Assign home system positions to be near associated player desk.
+     *
+     * @returns {Object} - map from player slot to position
+     */
+    static getPlayerSlotToHomeSystemIndex() {
+        // Optimal placement is called "the assignment problem" and is tricky.
+        // Make a simplifying assumption that tiles in clockwise order get the
+        // player zone colors in clockwise order, choosing the best start.
+        const deskIndexToAngle = {};
+        const playerDeskArray = world.TI4.getAllPlayerDesks();
+        playerDeskArray.forEach((playerDesk, index) => {
+            const pos = playerDesk.center;
+            const angle = Math.atan2(pos.y, pos.x);
+            deskIndexToAngle[index] = angle;
+        });
+
+        const hexIndexToAngle = {};
         const playerCount = world.TI4.config.playerCount;
-        const deskIndex = playerDesk.index;
-        const hexArray = HOME_SYSTEM_POSITIONS[playerCount];
-        const hexData = hexArray[deskIndex];
+        const hexDataArray = HOME_SYSTEM_POSITIONS[playerCount];
+        hexDataArray.forEach((hexData, index) => {
+            const pos = Hex.toPosition(hexData.onMap);
+            const angle = Math.atan2(pos.y, pos.x);
+            hexIndexToAngle[index] = angle;
+        });
+
+        let best = false;
+        let bestD = Number.MAX_VALUE;
+        for (let candidate = 0; candidate < playerCount; candidate++) {
+            let d = 0;
+            for (let offset = 0; offset < playerCount; offset++) {
+                const index = (offset + candidate) % playerCount;
+                const deskAngle = deskIndexToAngle[offset];
+                const hexAngle = hexIndexToAngle[index];
+                d += Math.abs(deskAngle - hexAngle);
+            }
+            if (d < bestD) {
+                best = candidate;
+                bestD = d;
+            }
+        }
+
+        const playerSlotToHomeSystemIndex = {};
+        playerDeskArray.forEach((playerDesk, index) => {
+            index = (index + best) % playerCount;
+            const playerSlot = playerDesk.playerSlot;
+            playerSlotToHomeSystemIndex[playerSlot] = index;
+        });
+        return playerSlotToHomeSystemIndex;
+    }
+
+    static getHomeSystemPosition(playerDesk, offMap = false) {
+        const playerSlot = playerDesk.playerSlot;
+        const index = this.getPlayerSlotToHomeSystemIndex()[playerSlot];
+
+        const playerCount = world.TI4.config.playerCount;
+        const hexDataArray = HOME_SYSTEM_POSITIONS[playerCount];
+        const hexData = hexDataArray[index];
         const hex = offMap ? hexData.offMap : hexData.onMap;
+
         const pos = Hex.toPosition(hex);
         pos.z = world.getTableHeight();
         return pos;

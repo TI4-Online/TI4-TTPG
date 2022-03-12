@@ -39,6 +39,9 @@
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
 
     "ui.message.turn_order": "Turn order: {turnOrder}",
+    "ui.message.player_pass": "{playerName} pass",
+    "ui.message.player_here": "{playerName} here",
+    "ui.message.player_away": "{playerName} AFK",
     "ui.message.all_players_have_passed": "All players have passed",
 
     "ui.movement.finish_movement": "Finalize Movement",
@@ -54,9 +57,12 @@
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
     "ui.message.strategy_card_play": "{playerName} played {cardName} strategy card",
 
+    "ui.button.pass": "PASS",
+    "ui.button.away": "AWAY",
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
     "ui.button.cancel": "CANCEL",
+    "ui.button.ready": "READY",
     "ui.button.resolve_explore": "Resolve",
 
     "ui.action.system.activate": "Activate System",
@@ -100,7 +106,6 @@
     "ui.desk.clean_desk": "Clear desk",
     "ui.desk.setup_faction": "Setup faction",
     "ui.desk.clean_faction": "Clear faction",
-    "ui.desk.done": "READY",
     "ui.desk.color_in_use": "Color already in use",
 
     "ui.button.deal_action_cards": "Deal Action Cards",
@@ -149,8 +154,10 @@
     "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
     "ui.maptool.place_hyperlanes": "Place Hyperlanes",
 
-    "ui.draft.button.start": "Start",
-    "ui.draft.button.finish": "Finish",
+    "ui.draft.slice_count": "Slice count",
+    "ui.draft.faction_count": "Faction count",
+    "ui.draft.extra_legendaries_and_wormholes": "Extra legendaries, wormholes",
+    "ui.draft.slice_label": "Slice {index}",
     "ui.draft.category.slice": "slice",
     "ui.draft.category.faction": "faction",
     "ui.draft.category.seat": "seat",

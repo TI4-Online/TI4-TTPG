@@ -1,4 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const TP = require("../wrapper/api");
 
@@ -13,7 +15,7 @@ btnUI.widget = new TP.LayoutBox();
 btnUI.widget.setVerticalAlignment(0);
 btnUI.widget.setHorizontalAlignment(0);
 btnUI.widget.setMinimumWidth(300);
-btnUI.widget.setMinimumHeight(100);
+btnUI.widget.setMinimumHeight(120);
 
 pnlUI.position = new TP.Vector(-0.5, 0, 0.8);
 pnlUI.rotation = new TP.Rotator(15, 0, 0);
@@ -29,8 +31,12 @@ pnlUI.widget.setMinimumHeight(300);
 const obj = TP.refObject; // get reference now, cannot use later
 const packageId = TP.refPackageId;
 
-const awayButton = new TP.Button().setText("Away").setFontSize(24);
-const passButton = new TP.Button().setText("Pass").setFontSize(24);
+const awayButton = new TP.Button()
+    .setText(locale("ui.button.away"))
+    .setFontSize(32);
+const passButton = new TP.Button()
+    .setText(locale("ui.button.pass"))
+    .setFontSize(32);
 
 const awayImage = new TP.ImageWidget();
 const passImage = new TP.ImageWidget();
@@ -76,11 +82,33 @@ function setPass(value) {
 }
 
 awayButton.onClicked = (btn, player) => {
-    setAway(!getAway());
+    const newValue = !getAway();
+    setAway(newValue);
+
+    const playerSlot = player.getSlot();
+    const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
+    const playerName = faction ? faction.nameFull : player.getName();
+    const localeMsg = newValue
+        ? "ui.message.player_away"
+        : "ui.message.player_here";
+    const msg = locale(localeMsg, { playerName });
+    const color = playerDesk ? playerDesk.color : player.getPlayerColor();
+    Broadcast.broadcastAll(msg, color);
 };
 
 passButton.onClicked = (btn, player) => {
-    setPass(!getPass());
+    const newValue = !getPass();
+    setPass(newValue);
+    if (newValue) {
+        const playerSlot = player.getSlot();
+        const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
+        const playerName = faction ? faction.nameFull : player.getName();
+        const color = playerDesk ? playerDesk.color : player.getPlayerColor();
+        const msg = locale("ui.message.player_pass", { playerName });
+        Broadcast.broadcastAll(msg, color);
+    }
 };
 
 TP.refObject.__getPass = () => {

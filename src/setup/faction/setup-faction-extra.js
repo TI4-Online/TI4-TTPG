@@ -3,9 +3,9 @@ const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
 const { Vector, world } = require("../../wrapper/api");
-const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
 
-const EXTRA_OFFSET = [0, 5, 0];
+const EXTRA_P0 = { x: 32, y: -20, z: 10 }; // start higher than leaders
+const EXTRA_DY = 6;
 
 class SetupFactionExtra extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -18,13 +18,12 @@ class SetupFactionExtra extends AbstractSetup {
         if (!extra) {
             return; // nothing to unpack
         }
-        const pos = PROMISSORY_DECK_LOCAL_OFFSET;
-        let nextPos = new Vector(pos.x, pos.y, pos.z).add(EXTRA_OFFSET);
+        let nextPos = new Vector(EXTRA_P0.x, EXTRA_P0.y, EXTRA_P0.z);
         extra.forEach((extra) => {
             if (extra.tokenNsid && extra.bagNsid) {
                 extra.bagPos = nextPos;
                 this.spawnTokensAndBag(extra);
-                nextPos = nextPos.add(EXTRA_OFFSET);
+                nextPos.y += EXTRA_DY;
             } else if (extra.tokenNsid) {
                 const count = extra.tokenCount || 1;
                 for (let i = 0; i < count; i++) {
@@ -33,7 +32,7 @@ class SetupFactionExtra extends AbstractSetup {
                     const playerSlot = this.playerDesk.playerSlot;
                     const token = Spawn.spawn(extra.tokenNsid, pos, rot);
                     token.setOwningPlayerSlot(playerSlot);
-                    nextPos = nextPos.add(EXTRA_OFFSET);
+                    nextPos.y += EXTRA_DY;
                 }
             } else {
                 throw new Error("unknown faction.unpackExtra");
