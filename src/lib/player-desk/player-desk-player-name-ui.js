@@ -12,19 +12,20 @@ const NAME_DATA = {
     border: 5,
     fontSize: 80,
     pos: {
-        x: -50,
+        x: -60,
         y: 0,
         z: 0,
     },
     rot: {
-        pitch: 0, // 90 makes it rotate the wrong way
+        pitch: 20, // 90 makes it rotate the wrong way
         yaw: 180,
         roll: 0,
     },
 };
 
 /**
- * Display name behind desk.
+ * Display name behind desk.  PlayerDesk proper resets UIs when players
+ * change color, no need to listen for those events here.
  */
 class PlayerDeskPlayerNameUI {
     constructor(playerDesk) {
@@ -52,6 +53,11 @@ class PlayerDeskPlayerNameUI {
         });
     }
 
+    /**
+     * Add a name UI.  Could have more than one (e.g. front/back).
+     *
+     * @param {Rotator} rot
+     */
     _createName(rot) {
         assert(typeof rot.yaw === "number");
 
@@ -76,6 +82,7 @@ class PlayerDeskPlayerNameUI {
         ui.position = this._playerDesk.localPositionToWorld(NAME_DATA.pos);
         ui.rotation = this._playerDesk.localRotationToWorld(rot);
         ui.widget = outerBorder;
+        ui.anchorY = 1; // bottom
 
         this._names.push(name);
         this._borders.push(outerBorder);
@@ -92,7 +99,7 @@ class PlayerDeskPlayerNameUI {
         });
         this._names.forEach((name) => {
             name.setTextColor(this._playerDesk.plasticColor).setText(
-                playerName
+                ` ${playerName} `
             );
         });
     }
