@@ -3,6 +3,7 @@ const locale = require("../locale");
 const { ColorUtil } = require("../color/color-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskSetup } = require("./player-desk-setup");
+const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
 const { PlayerDeskUI } = require("./player-desk-ui");
 const { TableLayout } = require("../../table/table-layout");
 const {
@@ -249,6 +250,7 @@ class PlayerDesk {
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
         this._ui = false;
+        this._nameUI = false;
 
         // Pos is center, but allow for non-center pos.
         this._center = this._pos.clone();
@@ -340,12 +342,19 @@ class PlayerDesk {
             },
         }).create(config);
         world.addUI(this._ui);
+
+        this._nameUI = new PlayerDeskPlayerNameUI(this);
+        this._nameUI.addUI();
     }
 
     removeUI() {
         if (this._ui) {
             world.removeUIElement(this._ui);
             this._ui = false;
+        }
+        if (this._nameUI) {
+            this._nameUI.removeUI();
+            this._nameUI = false;
         }
     }
 

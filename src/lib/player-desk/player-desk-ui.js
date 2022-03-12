@@ -10,7 +10,7 @@ const {
 } = require("../../wrapper/api");
 
 const DESK_UI = {
-    pos: { x: 60, y: 0, z: 2 },
+    pos: { x: 40, y: 0, z: 3 },
 };
 const LARGE_FONT_SIZE = 30;
 
