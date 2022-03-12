@@ -6,6 +6,7 @@ const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
+const { SetupSupplyBoxesTable } = require("./setup/setup-supply-boxes-table");
 const { SetupSystemTiles } = require("./setup/setup-system-tiles");
 const { SetupTableBoxes } = require("./setup/setup-table-boxes");
 const { SetupTableDecks } = require("./setup/setup-table-decks");
@@ -59,6 +60,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         // Now the rest.
         setups.push(new SetupSecretHolders());
         setups.push(new SetupStrategyCards());
+        setups.push(new SetupSupplyBoxesTable());
         setups.push(new SetupSystemTiles());
         setups.push(new SetupTableBoxes());
         setups.push(new SetupTableDecks());
