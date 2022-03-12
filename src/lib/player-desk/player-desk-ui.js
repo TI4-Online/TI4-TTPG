@@ -4,7 +4,9 @@ const {
     Border,
     Button,
     HorizontalBox,
+    LayoutBox,
     Text,
+    TextJustification,
     UIElement,
     VerticalBox,
 } = require("../../wrapper/api");
@@ -80,7 +82,9 @@ class PlayerDeskUI {
         ui.anchorY = 0;
         ui.position = pos;
         ui.rotation = this._playerDesk.rot;
-        ui.widget = new Border().setChild(panel);
+        ui.widget = new Border().setChild(
+            new LayoutBox().setChild(panel).setPadding(5, 5, 5, 5)
+        );
 
         return ui;
     }
@@ -108,6 +112,7 @@ class PlayerDeskUI {
         const text = new Text()
             .setTextColor(color)
             .setFontSize(LARGE_FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(labelText);
 
         const colorChoices = new HorizontalBox();
