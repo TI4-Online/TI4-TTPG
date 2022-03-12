@@ -25,7 +25,7 @@ it("_getTilePositions", () => {
 
 it("_toMapString", () => {
     const miltySliceString = "1 2 3 4 5";
-    const playerDesk = world.TI4.getAllPlayerDesks()[0];
+    const playerDesk = world.TI4.getAllPlayerDesks()[1];
     const playerSlot = playerDesk.playerSlot;
     const mapString = MiltySliceLayout._toMapString(
         miltySliceString,
@@ -35,6 +35,6 @@ it("_toMapString", () => {
     assert(mapString.length > 0);
     assert.equal(
         mapString,
-        "{0} -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 3 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 2 5 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 1 4"
+        "{0} -1 -1 -1 5 -1 -1 -1 -1 -1 -1 -1 -1 2 4 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 3 0 1"
     );
 });

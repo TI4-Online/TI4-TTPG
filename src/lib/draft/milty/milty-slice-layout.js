@@ -68,7 +68,7 @@ class MiltySliceLayout {
             (str) => Number.parseInt(str)
         );
         assert(Array.isArray(tileNumbers));
-        assert(tileNumbers.length === SLICE_HEXES.length - 1);
+        assert(tileNumbers.length === 5);
 
         // Get tile positions.
         const anchorPos = MiltySliceLayout._getAnchorPosition(playerSlot);
@@ -80,12 +80,16 @@ class MiltySliceLayout {
             const hex = Hex.fromPosition(pos);
             return MapStringHex.hexStringToIdx(hex);
         });
+        assert(idxArray.length === 6);
 
         const mapStringArray = [];
 
         // Home.
         const homeIdx = idxArray.shift();
         mapStringArray[homeIdx] = 0;
+
+        // After shifting out home, expect 5.
+        assert(idxArray.length === 5);
 
         // Generate slice as a map string (not slice string)
         for (let i = 0; i < idxArray.length; i++) {
