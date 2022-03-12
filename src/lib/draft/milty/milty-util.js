@@ -23,6 +23,37 @@ class MiltyUtil {
         );
     }
 
+    static parseCustomConfig(customStr) {
+        assert(typeof customStr === "string");
+
+        customStr = customStr.trim();
+        if (customStr.length === 0) {
+            return;
+        }
+
+        const result = {};
+        const parts = customStr.split("&");
+
+        // First part is always slices, no arg.
+        const sliceStrs = parts.shift().split("|");
+        result.slices = sliceStrs.map((sliceStr) => {
+            return MiltyUtil.parseSliceString(sliceStr);
+        });
+
+        // More parts?
+        while (parts.length > 0) {
+            const part = parts.shift();
+            if (part.startsWith("labels=")) {
+                const partParts = part.split("=");
+                assert(partParts.length === 2);
+                result.labels = partParts[1].split("|");
+            } else {
+                throw new Error(`unknown part ${part}`);
+            }
+        }
+        return result;
+    }
+
     static wrapSliceLabel(label, wrapAt) {
         assert(typeof label === "string");
         assert(typeof wrapAt === "number");
