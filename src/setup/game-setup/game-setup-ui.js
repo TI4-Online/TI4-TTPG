@@ -49,7 +49,7 @@ class GameSetupUI {
 
         const wip = new Text()
             .setFontSize(UI_FONT_SIZE)
-            .setText("ALPHA TEST") // temp, no need for locale
+            .setText("BETA TEST") // temp, no need for locale
             .setTextColor(new Color([0.8, 0.2, 0, 1]))
             .setBold(true)
             .setJustification(TextJustification.Center);

@@ -122,7 +122,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
         const hex = offMap ? hexData.offMap : hexData.onMap;
 
         const pos = Hex.toPosition(hex);
-        pos.z = world.getTableHeight();
+        pos.z = world.getTableHeight() + 10;
         return pos;
     }
 
