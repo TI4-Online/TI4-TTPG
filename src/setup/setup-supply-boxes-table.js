@@ -10,17 +10,17 @@ const DISTANCE_BETWEEN_SUPPLY_BOXES = 11.5 * SCALE;
 
 const SUPPLY_BOX_SETS = [
     {
-        d: 95,
-        yaw0: 120,
-        dyaw: 120,
-        count: 3,
+        d: 99,
+        yaw0: 72,
+        dyaw: 72,
+        count: 5,
         nsids: ["token:base/infantry_3", "token:base/fighter_3"],
     },
     {
-        d: 95 - DISTANCE_BETWEEN_SUPPLY_BOXES,
-        yaw0: 120,
-        dyaw: 120,
-        count: 3,
+        d: 99 - DISTANCE_BETWEEN_SUPPLY_BOXES,
+        yaw0: 72,
+        dyaw: 72,
+        count: 5,
         nsids: ["token:base/infantry_1", "token:base/fighter_1"],
     },
 ];

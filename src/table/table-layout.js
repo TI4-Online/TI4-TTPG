@@ -1,4 +1,4 @@
-const layout = require("./layout-v5");
+const layout = require("./layout-round-8p-double-wide-common");
 
 class TableLayout {
     static desks() {
