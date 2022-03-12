@@ -5,8 +5,6 @@ const { globalEvents, world } = require("../../wrapper/api");
 const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 
-let _ui = false;
-
 function onPlayerCountChanged(slider, player, value) {
     world.TI4.config.setPlayerCount(value, player);
 }
@@ -53,17 +51,12 @@ function onSetupClicked(button, player) {
 
     // Tell world setup happened.
     globalEvents.TI4.onGameSetup.trigger(this._state, player);
-
-    world.removeUI(_ui);
-    _ui = false;
 }
 
-if (!world.__isMock) {
-    process.nextTick(() => {
-        if (world.TI4.config.timestamp > 0) {
-            return;
-        }
-        _ui = new GameSetupUI({
+class GameSetup {
+    constructor() {
+        assert(world.TI4.config.timestamp <= 0);
+        this._ui = new GameSetupUI({
             onPlayerCountChanged,
             onGamePointsChanged,
             onUsePokChanged,
@@ -72,6 +65,10 @@ if (!world.__isMock) {
             onUseCodex2Changed,
             onSetupClicked,
         }).create();
-        world.addUI(_ui);
-    });
+    }
+    getUI() {
+        return this._ui;
+    }
 }
+
+module.exports = { GameSetup };

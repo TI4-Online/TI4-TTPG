@@ -6,18 +6,13 @@ const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const EDGE_YAW = -18;
-const SCALE = 1;
+const SCALE = 0.8;
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 11.5 * SCALE;
 
 const SUPPLY_BOXES_RIGHT = {
-    spaceBy: 4,
     tokenNsids: [
         "token:base/tradegood_commodity_1",
         "token:base/tradegood_commodity_3",
-        //"token:base/fighter_1",
-        //"token:base/fighter_3",
-        //"token:base/infantry_1",
-        //"token:base/infantry_3",
     ],
 };
 
@@ -30,7 +25,7 @@ class SetupSupplyBoxesDesks extends AbstractSetup {
     setup() {
         // Compute center by rotating the desk center to match desk edge.
         let shelfCenter = this.playerDesk.center
-            .multiply(1.03)
+            .multiply(1.21)
             .rotateAngleAxis(EDGE_YAW, [0, 0, 1]);
 
         // Move it closer to desk center.
@@ -47,17 +42,12 @@ class SetupSupplyBoxesDesks extends AbstractSetup {
 
         // Use layout to find positions and rotations along an arc.
         const pointPosRots = new Layout()
-            .setCount(
-                SUPPLY_BOXES_RIGHT.tokenNsids.length +
-                    SUPPLY_BOXES_RIGHT.spaceBy
-            )
+            .setCount(SUPPLY_BOXES_RIGHT.tokenNsids.length)
             .setDistanceBetween(DISTANCE_BETWEEN_SUPPLY_BOXES)
             .setCenter(shelfCenter)
             .layoutLinear(rot.yaw)
             .getPoints();
-        while (pointPosRots.length > SUPPLY_BOXES_RIGHT.tokenNsids.length) {
-            pointPosRots.shift();
-        }
+        assert(pointPosRots.length === SUPPLY_BOXES_RIGHT.tokenNsids.length);
         for (let i = 0; i < SUPPLY_BOXES_RIGHT.tokenNsids.length; i++) {
             this._setupBox(SUPPLY_BOXES_RIGHT.tokenNsids[i], pointPosRots[i]);
         }
