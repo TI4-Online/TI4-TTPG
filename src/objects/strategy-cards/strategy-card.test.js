@@ -185,6 +185,7 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the play button is pressed as well as a player UI is closed", () => {
+        const before = globalEvents.TI4.onStrategyCardPlayed._delegates.length;
         new RegisterStrategyCardUI()
             .setCard(card)
             .setWidgetFactory(widgetFactory)
@@ -194,7 +195,9 @@ describe("when registering a strategy card", () => {
             .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
             .register();
 
-        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(1);
+        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(
+            before + 1
+        );
         expect(
             globalEvents.TI4.onStrategyCardSelectionDone._delegates.length
         ).toBe(1);
@@ -214,6 +217,7 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the object is destroyed", () => {
+        const before = globalEvents.TI4.onStrategyCardPlayed._delegates.length;
         new RegisterStrategyCardUI()
             .setCard(card)
             .setWidgetFactory(widgetFactory)
@@ -225,7 +229,9 @@ describe("when registering a strategy card", () => {
 
         card.destroy();
 
-        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(0);
+        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(
+            before
+        );
         expect(
             globalEvents.TI4.onStrategyCardSelectionDone._delegates.length
         ).toBe(0);
