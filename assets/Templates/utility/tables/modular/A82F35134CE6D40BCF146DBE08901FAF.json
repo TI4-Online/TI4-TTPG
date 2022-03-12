@@ -1,11 +1,11 @@
 {
 	"Type": "Table",
-	"GUID": "0E839FDE4E75A4E2AAFEA7A5B8D1DE0B",
-	"Name": "Round (8p, double-wide common)",
+	"GUID": "A82F35134CE6D40BCF146DBE08901FAF",
+	"Name": "9-player",
 	"Metadata": "",
 	"CollisionType": "Static",
 	"Friction": 0.7,
-	"Restitution": 0.31,
+	"Restitution": 0.3,
 	"Density": 1,
 	"SurfaceType": "Plastic",
 	"Roughness": 1,
@@ -29,7 +29,49 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/table/segment_table_8c2.obj",
+			"Model": "utility/table_modular/table_9p.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 68,
+				"G": 68,
+				"B": 68
+			},
+			"SecondaryColor":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -71,7 +113,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_72d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -88,7 +130,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 0
+				"Z": 40
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -113,7 +155,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -130,7 +172,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 54
+				"Z": 80
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -142,9 +184,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -155,7 +197,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -172,7 +214,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 90
+				"Z": 120
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -184,9 +226,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -197,7 +239,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -214,7 +256,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 126
+				"Z": 160
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -226,9 +268,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -239,7 +281,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -256,7 +298,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 162
+				"Z": -160
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -268,9 +310,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -281,7 +323,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -298,7 +340,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -162
+				"Z": -120
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -310,9 +352,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -323,7 +365,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -340,7 +382,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -126
+				"Z": -80
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -352,9 +394,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -365,7 +407,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/table/segment_desk_36d.obj",
+			"Model": "utility/table_modular/desk_40n.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -382,7 +424,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -90
+				"Z": -40
 			},
 			"Texture": "",
 			"NormalMap": "",
@@ -394,51 +436,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 34,
-				"G": 34,
-				"B": 34
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
-			"SurfaceType": "Plastic"
-		},
-		{
-			"Model": "utility/table/segment_desk_36d.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": -54
-			},
-			"Texture": "",
-			"NormalMap": "",
-			"ExtraMap": "",
-			"IsTransparent": false,
-			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 34,
-				"G": 34,
-				"B": 34
+				"R": 51,
+				"G": 51,
+				"B": 51
 			},
 			"SecondaryColor":
 			{
@@ -451,7 +451,7 @@
 	],
 	"Collision": [
 		{
-			"Model": "utility/table/segment_collider.obj",
+			"Model": "utility/table_modular/collider_main.obj",
 			"Offset":
 			{
 				"X": 0,
