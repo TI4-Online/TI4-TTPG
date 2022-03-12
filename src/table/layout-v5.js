@@ -94,7 +94,7 @@ module.exports = {
     deskLayout: {
         anchor: {
             score: { pos: { x: -150, y: 0, z: 0 }, yaw: 90 },
-            strategy: { pos: { x: -70, y: 0, z: 0 }, yaw: 90 },
+            strategy: { pos: { x: -80, y: 0, z: 0 }, yaw: 90 },
         },
     },
 };
