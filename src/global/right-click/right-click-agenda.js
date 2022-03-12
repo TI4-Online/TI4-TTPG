@@ -101,7 +101,7 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
 
 globalEvents.TI4.onStrategyCardPlayed.add((strategyCardObj, player) => {
     const parsed = ObjectNamespace.parseGeneric(strategyCardObj);
-    if (parsed.name.startsWith("politics")) {
+    if (parsed && parsed.name.startsWith("politics")) {
         updateDescription(undefined, undefined);
     }
 });
