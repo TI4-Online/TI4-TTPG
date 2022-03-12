@@ -49,7 +49,8 @@ const MATS = [
     // },
     {
         nsid: "mat:base/strategy_card",
-        pos: { x: 0, y: 92 },
+        anchor: TableLayout.anchor.strategy,
+        pos: { x: 0, y: 0 },
         yaw: 0,
     },
 ];
