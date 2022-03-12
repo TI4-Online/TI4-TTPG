@@ -5,21 +5,23 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 
-const SCALE = 1;
+const SCALE = 0.8;
 const DISTANCE_BETWEEN_SUPPLY_BOXES = 11.5 * SCALE;
 
 const SUPPLY_BOX_SETS = [
     {
         d: 95,
-        yaw0: 0,
-        dyaw: 80,
-        nsids: ["token:base/fighter_1", "token:base/fighter_3"],
+        yaw0: 120,
+        dyaw: 120,
+        count: 3,
+        nsids: ["token:base/infantry_3", "token:base/fighter_3"],
     },
     {
-        d: 95,
-        yaw0: 40,
-        dyaw: 80,
-        nsids: ["token:base/infantry_1", "token:base/infantry_3"],
+        d: 95 - DISTANCE_BETWEEN_SUPPLY_BOXES,
+        yaw0: 120,
+        dyaw: 120,
+        count: 3,
+        nsids: ["token:base/infantry_1", "token:base/fighter_1"],
     },
 ];
 
@@ -30,7 +32,8 @@ class SetupSupplyBoxesTable extends AbstractSetup {
 
     setup() {
         for (const supplyData of SUPPLY_BOX_SETS) {
-            for (let yaw = supplyData.yaw0; yaw < 360; yaw += supplyData.dyaw) {
+            for (let i = 0; i < supplyData.count; i++) {
+                const yaw = supplyData.yaw0 + supplyData.dyaw * i;
                 const pos = new Vector(
                     supplyData.d,
                     0,
