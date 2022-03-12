@@ -16,7 +16,7 @@ it("_getTilePositions", () => {
     const yaw = 0;
     const posArray = MiltySliceLayout._getTilePositions(anchorPos, yaw);
     assert(Array.isArray(posArray));
-    assert.equal(posArray.length, 5);
+    assert.equal(posArray.length, 6);
     const hexArray = posArray.map((pos) => {
         return Hex.fromPosition(pos);
     });
@@ -35,6 +35,6 @@ it("_toMapString", () => {
     assert(mapString.length > 0);
     assert.equal(
         mapString,
-        "{0} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 4"
+        "{0} -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 3 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 2 5 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 1 4"
     );
 });
