@@ -5,7 +5,7 @@ const { Spawn } = require("./spawn/spawn");
 const { HiddenCardsType, ObjectType, world } = require("../wrapper/api");
 
 const HAND_LOCAL_OFFSET = {
-    x: -29.7,
+    x: -28,
     y: 0,
     z: 5,
 };

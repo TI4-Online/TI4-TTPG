@@ -9,12 +9,16 @@ const {
 const { world } = require("../../../wrapper/api");
 
 const SLICE_HEXES = [
-    "<1,-1,0>",
-    "<1,0,-1>",
-    "<0,1,-1>",
-    "<2,-1,-1>",
-    "<2,0,-2>",
+    "<0,0,0>", // home
+    "<1,-1,0>", // left
+    "<1,0,-1>", // front
+    "<0,1,-1>", // right
+    "<2,-1,-1>", // left-eq
+    "<2,0,-2>", // far-front
 ];
+
+const SLICE_HEXES_HYPERLANES_LEFT = [...SLICE_HEXES];
+SLICE_HEXES_HYPERLANES_LEFT[4] = "<3,-1,-2>";
 
 /**
  * Place system tiles on the map given a milty slice string and home system position.
@@ -64,7 +68,7 @@ class MiltySliceLayout {
             (str) => Number.parseInt(str)
         );
         assert(Array.isArray(tileNumbers));
-        assert(tileNumbers.length === SLICE_HEXES.length);
+        assert(tileNumbers.length === 5);
 
         // Get tile positions.
         const anchorPos = MiltySliceLayout._getAnchorPosition(playerSlot);
@@ -76,9 +80,18 @@ class MiltySliceLayout {
             const hex = Hex.fromPosition(pos);
             return MapStringHex.hexStringToIdx(hex);
         });
+        assert(idxArray.length === 6);
+
+        const mapStringArray = [];
+
+        // Home.
+        const homeIdx = idxArray.shift();
+        mapStringArray[homeIdx] = 0;
+
+        // After shifting out home, expect 5.
+        assert(idxArray.length === 5);
 
         // Generate slice as a map string (not slice string)
-        const mapStringArray = [];
         for (let i = 0; i < idxArray.length; i++) {
             const idx = idxArray[i];
             const tile = tileNumbers[i];
@@ -87,8 +100,8 @@ class MiltySliceLayout {
 
         // Fill in any missing slots.
         for (let i = 0; i < mapStringArray.length; i++) {
-            if (!mapStringArray[i]) {
-                mapStringArray[i] = 0;
+            if (mapStringArray[i] === undefined) {
+                mapStringArray[i] = -1;
             }
         }
         mapStringArray[0] = "{0}";

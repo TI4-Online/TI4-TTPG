@@ -4,7 +4,7 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 
-const PLANETS_X = -8;
+const PLANETS_X = -7;
 const PLANETS_Y = -18;
 const MATS = [
     {
