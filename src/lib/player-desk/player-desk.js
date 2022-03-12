@@ -289,6 +289,10 @@ class PlayerDesk {
     }
 
     addUI() {
+        // Always add name, even after ready.
+        this._nameUI = new PlayerDeskPlayerNameUI(this);
+        this._nameUI.addUI();
+
         const playerSlot = this.playerSlot;
         const isOccupied = world.getPlayerBySlot(playerSlot);
         const isReady = this.isDeskReady();
@@ -342,9 +346,6 @@ class PlayerDesk {
             },
         }).create(config);
         world.addUI(this._ui);
-
-        this._nameUI = new PlayerDeskPlayerNameUI(this);
-        this._nameUI.addUI();
     }
 
     removeUI() {
