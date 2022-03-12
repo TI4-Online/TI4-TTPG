@@ -2,25 +2,16 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 
 const {
-    Border,
     Button,
     CheckBox,
     Color,
-    Rotator,
     Slider,
     Text,
     TextJustification,
-    UIElement,
-    Vector,
     VerticalBox,
     refPackageId,
     world,
 } = require("../../wrapper/api");
-
-const GAME_SETUP_UI = {
-    pos: { x: 0, y: 0, z: world.getTableHeight() + 5 },
-    rot: { pitch: 0, yaw: 0, roll: 0 },
-};
 
 // Large font size affects text but checkboxes don't scale with it.
 const UI_SCALE = 1.25;
@@ -110,14 +101,7 @@ class GameSetupUI {
             )
         );
 
-        const pos = GAME_SETUP_UI.pos;
-        const rot = GAME_SETUP_UI.rot;
-        const ui = new UIElement();
-        ui.position = new Vector(pos.x, pos.y, pos.z);
-        ui.rotation = new Rotator(rot.pitch, rot.yaw, rot.roll);
-        ui.scale = UI_SCALE;
-        ui.widget = new Border().setChild(panel);
-        return ui;
+        return panel;
     }
 
     _createText(localeText) {

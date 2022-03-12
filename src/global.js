@@ -65,8 +65,6 @@ globalEvents.TI4 = {
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
 
-// Show setup ui.
-require("./setup/game-setup/game-setup");
 if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
@@ -107,6 +105,14 @@ world.TI4 = {
     },
     getFactionByPlayerSlot: (playerSlot) => {
         return Faction.getByPlayerSlot(playerSlot);
+    },
+    getNameByPlayerSlot: (playerSlot) => {
+        return (
+            world.TI4.getFactionByPlayerSlot(playerSlot)?.nameFull ||
+            world.TI4.getPlayerDeskByPlayerSlot(playerSlot)?.colorName ||
+            world.getPlayerBySlot(playerSlot).getName() ||
+            "<???>"
+        );
     },
     getPlanetByCard: (card) => {
         return Planet.getByCard(card);
