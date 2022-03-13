@@ -29,6 +29,8 @@ function setupUnitBag(bag) {
         return;
     }
 
+    bag.getUIs().forEach((ui) => bag.removeUI(ui));
+
     const yStart = -0.5 * (maxItems - 1) * yStep;
 
     for (let x = 0; x < maxItems; x++) {
@@ -51,6 +53,7 @@ function setupUnitBag(bag) {
 }
 
 function updateItemCount(bag) {
+    console.log(bag);
     const currentNumber = bag.getNumItems();
 
     bag.getUIs().forEach((ui, index) => {
@@ -69,15 +72,17 @@ globalEvents.onObjectCreated.add((obj) => {
     }
 });
 
-// Script reload doesn't call onObjectCreated on existing objects, load manually.
-if (world.getExecutionReason() === "ScriptReload") {
+const initUnitBags = () => {
     for (const obj of world.getAllObjects()) {
         if (ObjectNamespace.isUnitBag(obj)) {
             setupUnitBag(obj);
         }
     }
+};
+
+// Script reload doesn't call onObjectCreated on existing objects, load manually.
+if (world.getExecutionReason() === "ScriptReload") {
+    initUnitBags();
 }
 
-module.exports = {
-    setupStrategyCard: setupUnitBag,
-};
+globalEvents.TI4.onPlayerColorChanged.add(initUnitBags);

@@ -555,7 +555,7 @@ class PlayerDesk {
         this._plasticColor = dstPlasticColorTint;
         this._playerSlot = dstPlayerSlot;
 
-        // Desks are reset.  Move players to desks.
+        // Desks are reset. Move players to desks.
         if (srcPlayer) {
             srcPlayer.switchSlot(dstPlayerSlot);
         }
