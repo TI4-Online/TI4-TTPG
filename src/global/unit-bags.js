@@ -28,10 +28,10 @@ function setupUnitBag(bag) {
         // not configured unit bag or units which can be substituted by tokens
         return;
     }
-    
-    const yStart = -0.5 * (maxItems-1) * yStep;
 
-    for(let x = 0; x < maxItems; x++) {
+    const yStart = -0.5 * (maxItems - 1) * yStep;
+
+    for (let x = 0; x < maxItems; x++) {
         let uiElement = new UIElement();
         uiElement.useWidgetSize = false;
         uiElement.height = boxHeight;
@@ -39,22 +39,25 @@ function setupUnitBag(bag) {
         const yPos = yStart + x * yStep;
         uiElement.position = new Vector(xPos, yPos, 0.1);
         uiElement.widget = new LayoutBox()
-        .setMinimumWidth(boxWidth)
-        .setMinimumHeight(boxHeight)
+            .setMinimumWidth(boxWidth)
+            .setMinimumHeight(boxHeight)
             .setChild(new Border());
         bag.addUI(uiElement);
     }
 
     updateItemCount(bag);
     bag.onInserted.add(updateItemCount);
-    bag.onRemoved.add(updateItemCount)
+    bag.onRemoved.add(updateItemCount);
 }
 
 function updateItemCount(bag) {
     const currentNumber = bag.getNumItems();
-    
+
     bag.getUIs().forEach((ui, index) => {
-        const color = index < currentNumber ? bag.getPrimaryColor() : new Color(0.2, 0.2, 0.2);
+        const color =
+            index < currentNumber
+                ? bag.getPrimaryColor()
+                : new Color(0.2, 0.2, 0.2);
         ui.widget.getChild().setColor(color, refPackageId);
     });
 }
