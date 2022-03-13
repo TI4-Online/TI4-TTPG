@@ -9,6 +9,7 @@ const {
     Color,
     UIElement,
     Vector,
+    globalEvents,
     refPackageId,
     world,
 } = require("../wrapper/api");
