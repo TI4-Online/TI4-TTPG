@@ -4,14 +4,13 @@ const { CloneReplace } = require("../../lib/clone-replace");
 const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { FACTION_SHEET_POS } = require("./setup-faction-sheet");
 const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
-    bagPos: { x: FACTION_SHEET_POS.x + 2, y: 32, z: 0 },
+    bagPos: { x: 8.028, y: 38.895, z: 0 },
     bagYaw: 45,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
@@ -35,8 +34,8 @@ const CONTROL_TOKENS = {
     bagNsid: "bag.token.control:base/*",
     bagType: 1, // infinite
     bagPos: {
-        x: COMMAND_TOKENS.bagPos.x + 6,
-        y: COMMAND_TOKENS.bagPos.y - 3.464,
+        x: 13.449,
+        y: 37.134,
         z: 0,
     },
     bagYaw: COMMAND_TOKENS.bagYaw,

@@ -5,8 +5,10 @@ const { MiltySliceGenerator } = require("./milty-slice-generator");
 const {
     Button,
     CheckBox,
+    LayoutBox,
     Slider,
     Text,
+    MultilineTextBox,
     VerticalBox,
 } = require("../../../wrapper/api");
 
@@ -20,6 +22,17 @@ class MiltyDraftSettingsUI extends VerticalBox {
         super();
 
         this.setChildDistance(5);
+
+        const customInputLabel = new Text().setText(
+            locale("ui.draft.custom_input")
+        );
+        this.addChild(customInputLabel);
+        const customInput = new MultilineTextBox().setMaxLength(1000);
+        const customInputBox = new LayoutBox()
+            .setChild(customInput)
+            .setMinimumHeight(50);
+        this.addChild(customInputBox);
+
         const sliceCountLabel = new Text().setText(
             locale("ui.draft.slice_count")
         );
@@ -72,8 +85,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
         );
         this.addChild(onFinishedButton);
         onFinishedButton.onClicked.add((button, player) => {
-            applyEnabled(false);
-            callbacks.onFinish();
+            const customInputValue = customInput.getText();
+            const success = callbacks.onFinish(customInputValue);
+            applyEnabled(!success);
         });
 
         const onCancelButton = new Button().setText(locale("ui.button.cancel"));
