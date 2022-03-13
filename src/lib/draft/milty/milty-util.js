@@ -3,22 +3,32 @@ const assert = require("../../../wrapper/assert-wrapper");
 const DEFAULT_WRAP_AT = 20;
 
 class MiltyUtil {
-    static validateSliceOrThrow(miltySlice) {
+    static getSliceError(miltySlice) {
         assert(Array.isArray(miltySlice));
         if (miltySlice.length !== 5) {
-            throw new Error(`MiltyUtil.validate: slice does not have 5 tiles`);
+            return `slice does not have 5 tiles`;
         }
         for (const tile of miltySlice) {
             if (typeof tile !== "number") {
-                throw new Error("MiltyUtil.validate: tile is not a number");
+                return `tile "${tile}" is not a number`;
             }
         }
-        return true;
+        return false;
     }
 
-    static parseSliceString(miltySliceStr) {
-        assert(typeof miltySliceStr === "string");
-        return Array.from(miltySliceStr.matchAll(/\d+/g)).map((str) =>
+    static getCustomConfigError(customConfig) {
+        for (const slice of customConfig.slices) {
+            const error = MiltyUtil.getSliceError(slice);
+            if (error) {
+                return error;
+            }
+        }
+        return false;
+    }
+
+    static parseSliceString(sliceStr) {
+        assert(typeof sliceStr === "string");
+        return Array.from(sliceStr.matchAll(/\d+/g)).map((str) =>
             Number.parseInt(str)
         );
     }
@@ -27,6 +37,12 @@ class MiltyUtil {
         assert(typeof customStr === "string");
 
         customStr = customStr.trim();
+
+        const removePrefix = "slices=";
+        if (customStr.startsWith(removePrefix)) {
+            customStr = customStr.substr(removePrefix.length);
+        }
+
         if (customStr.length === 0) {
             return;
         }
@@ -36,19 +52,22 @@ class MiltyUtil {
 
         // First part is always slices, no arg.
         const sliceStrs = parts.shift().split("|");
-        result.slices = sliceStrs.map((sliceStr) => {
-            return MiltyUtil.parseSliceString(sliceStr);
-        });
+        result.slices = sliceStrs
+            .map((sliceStr) => {
+                return MiltyUtil.parseSliceString(sliceStr);
+            })
+            .filter((slice) => {
+                return slice && slice.length === 5;
+            });
 
         // More parts?
         while (parts.length > 0) {
             const part = parts.shift();
             if (part.startsWith("labels=")) {
                 const partParts = part.split("=");
-                assert(partParts.length === 2);
-                result.labels = partParts[1].split("|");
-            } else {
-                throw new Error(`unknown part ${part}`);
+                if (partParts.length > 1) {
+                    result.labels = partParts[1].split("|");
+                }
             }
         }
         return result;
