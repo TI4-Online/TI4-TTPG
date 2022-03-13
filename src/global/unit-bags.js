@@ -5,8 +5,8 @@
  */
 
 const {
-    ImageWidget,
-    Rotator,
+    Border,
+    Color,
     UIElement,
     Vector,
     refPackageId,
@@ -14,31 +14,34 @@ const {
 } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
 
-const boxSize = 10;
+const boxHeight = 14;
+const boxWidth = 4;
+const spacing = 5;
+const xPos = -3.5;
+const factor = 16;
+const yStep = (boxWidth + spacing) / factor;
 
 function setupUnitBag(bag) {
     const maxItems = bag.getMaxItems();
 
-    if (maxItems === 100) {
-        // not configured unit bag
+    if (maxItems > 9) {
+        // not configured unit bag or units which can be substituted by tokens
         return;
     }
-
-    // TODO: add colors
-    // TODO: set the container max value according to the plastics
     
-    const yStart = (1.1 + Math.min(maxItems, 3) * -0.75) * boxSize/10;
+    const yStart = -0.5 * (maxItems-1) * yStep;
 
     for(let x = 0; x < maxItems; x++) {
         let uiElement = new UIElement();
         uiElement.useWidgetSize = false;
-        uiElement.height = boxSize;
-        uiElement.width = boxSize;
-        const xPos = -3.5 + Math.floor(x/3) * -0.12 * boxSize;
-        const yPos = yStart + 0.12 * (x % 3) * boxSize;
+        uiElement.height = boxHeight;
+        uiElement.width = boxWidth;
+        const yPos = yStart + x * yStep;
         uiElement.position = new Vector(xPos, yPos, 0.1);
-        uiElement.widget = new ImageWidget()
-            .setImageSize(boxSize, boxSize);
+        uiElement.widget = new LayoutBox()
+        .setMinimumWidth(boxWidth)
+        .setMinimumHeight(boxHeight)
+            .setChild(new Border());
         bag.addUI(uiElement);
     }
 
@@ -49,8 +52,11 @@ function setupUnitBag(bag) {
 
 function updateItemCount(bag) {
     const currentNumber = bag.getNumItems();
-    bag.getUIs().forEach((ui, index) => ui.widget
-        .setImage(index < currentNumber ? "global/ui/contained_unit.png": "global/ui/missing_unit.png", refPackageId));
+    
+    bag.getUIs().forEach((ui, index) => {
+        const color = index < currentNumber ? bag.getPrimaryColor() : new Color(0.2, 0.2, 0.2);
+        ui.widget.getChild().setColor(color, refPackageId);
+    });
 }
 
 // Add our listener to future objects.
