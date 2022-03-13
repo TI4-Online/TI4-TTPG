@@ -13,6 +13,7 @@ const { PlayerDeskSetup } = require("../../player-desk/player-desk-setup");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const { Player, UIElement, world } = require("../../../wrapper/api");
+const { Broadcast } = require("../../broadcast");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -31,7 +32,7 @@ class MiltyDraft {
         const sliceGenerator = new MiltySliceGenerator();
         const factionGenerator = new MiltyFactionGenerator();
         const callbacks = {
-            onFinish: () => {
+            onFinish: (customConfig) => {
                 console.log("MiltyDraft.Settings.onFinish");
                 this.cancel();
 
@@ -52,7 +53,29 @@ class MiltyDraft {
                     this.addFaction(faction.nsidName);
                 });
                 this.setSpeakerIndex(-1); // random
+
+                // If custom config set slices, labels, or factions use those instead.
+                const custom = MiltyUtil.parseCustomConfig(customConfig);
+                if (custom) {
+                    const error = MiltyUtil.getCustomConfigError(custom);
+                    if (error) {
+                        Broadcast.chatAll(error);
+                        return false;
+                    }
+                    if (custom.slices.length < world.TI4.config.playerCount) {
+                        Broadcast.chatAll("not enough slices for player count");
+                        return false;
+                    }
+                    this._sliceDataArray = [];
+                    for (let i = 0; i < custom.slices.length; i++) {
+                        const slice = custom.slices[i];
+                        const label = custom.labels[i];
+                        this.addSlice(slice, false, label);
+                    }
+                }
+
                 this.createPlayerUIs();
+                return true;
             },
             onCancel: () => {
                 console.log("MiltyDraft.Settings.onCancel");
@@ -78,7 +101,11 @@ class MiltyDraft {
         assert(!color || ColorUtil.isColor(color));
         assert(typeof label === "string");
 
-        MiltyUtil.validateSliceOrThrow(slice);
+        const error = MiltyUtil.getSliceError(slice);
+        if (error) {
+            Broadcast.chatAll(error);
+            return;
+        }
 
         const sliceData = {
             slice,
