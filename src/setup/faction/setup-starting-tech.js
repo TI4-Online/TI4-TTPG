@@ -12,6 +12,9 @@ class SetupStartingTech extends AbstractSetup {
 
     setup() {
         const startingTechNsidNames = this._faction.raw.startingTech;
+        if (startingTechNsidNames.length === 0) {
+            return;
+        }
         const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
             if (!nsid.startsWith("card.technology")) {
                 return false;
@@ -25,7 +28,9 @@ class SetupStartingTech extends AbstractSetup {
             return closestDesk === this.playerDesk;
         });
         if (cards.length === 0) {
-            console.warn("SetupStartingTech: missing tech cards");
+            console.warn(
+                `SetupStartingTech: missing tech cards "${this._faction.nameAbbr}`
+            );
             return;
         }
         const deck = CardUtil.makeDeck(cards);
