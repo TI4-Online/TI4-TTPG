@@ -101,7 +101,7 @@ class SetupFactionTokens extends AbstractSetup {
             this.playerDesk.rot
         );
         const playerSlot = this.playerDesk.playerSlot;
-        const color = this.playerDesk.color;
+        const color = this.playerDesk.plasticColor;
 
         // Spawn bag.
         const bagNsid = tokenData.bagNsid;
