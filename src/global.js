@@ -145,7 +145,6 @@ require("./global/active-idle-unit-modifiers");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/patch-infinite-container");
-require("./global/patch-exclusive-bags");
 require("./global/r-swap-split-combine");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");

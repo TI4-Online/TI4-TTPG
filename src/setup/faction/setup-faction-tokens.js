@@ -1,8 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CloneReplace } = require("../../lib/clone-replace");
-const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 const { Spawn } = require("../spawn/spawn");
 const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
 
@@ -11,7 +11,7 @@ const COMMAND_TOKENS = {
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
     bagPos: { x: 8.028, y: 38.895, z: 0 },
-    bagYaw: 45,
+    bagYaw: 72,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
         // Tactic
@@ -133,35 +133,21 @@ class SetupFactionTokens extends AbstractSetup {
     }
 
     _placeScoreboradControlToken() {
-        let scoreboard = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== "token:base/scoreboard") {
-                continue;
-            }
-            scoreboard = obj;
-            break;
-        }
-        if (!scoreboard) {
+        const scoreboard = Scoreboard.getScoreboard();
+        const score = 0;
+        const playerSlot = this.playerDesk.playerSlot;
+        const posRot = Scoreboard.getTokenScoreboardPosRot(
+            scoreboard,
+            score,
+            playerSlot
+        );
+        if (!posRot) {
             return;
         }
 
         const tokenNsid = `token.control:${this.faction.nsidSource}/${this.faction.nsidName}`;
-        let x = 16;
-        if (Facing.isFaceDown(scoreboard)) {
-            x = -x;
-        }
-        const y =
-            -2 +
-            (4 * this.playerDesk.index) / (world.TI4.config.playerCount - 1);
-        const pos = scoreboard.localPositionToWorld([x, y, 0]).add([0, 0, 5]);
-        const rot = new Rotator(0, 0, 0);
-        const token = Spawn.spawn(tokenNsid, pos, rot);
+        const token = Spawn.spawn(tokenNsid, posRot.pos, posRot.rot);
 
-        const playerSlot = this.playerDesk.playerSlot;
         const color = this.playerDesk.color;
         token.setOwningPlayerSlot(playerSlot);
         token.setPrimaryColor(color);
@@ -201,4 +187,4 @@ class SetupFactionTokens extends AbstractSetup {
     }
 }
 
-module.exports = { SetupFactionTokens };
+module.exports = { SetupFactionTokens, COMMAND_TOKENS };
