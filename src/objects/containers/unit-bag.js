@@ -11,22 +11,24 @@ const {
     Vector,
     VerticalBox,
     globalEvents,
-    refObject,
+    refContainer,
     world,
 } = require("../wrapper/api");
 
-const boxHeight = 4;
-const boxWidth = 14;
-const boxGap = 1;
-const xPos = -3.5;
+const BOX = {
+    height: 4,
+    width: 14,
+    gap: 1,
+    x: -3.8,
+};
 
 class UnitBag {
-    constructor(gameObject) {
-        assert(gameObject instanceof Container);
-        assert(ObjectNamespace.isUnitBag(gameObject));
+    constructor(container) {
+        assert(container instanceof Container);
+        assert(ObjectNamespace.isUnitBag(container));
 
-        this._container = gameObject;
-        this._unit = ObjectNamespace.parseUnitBag(gameObject).unit;
+        this._container = container;
+        this._unit = ObjectNamespace.parseUnitBag(container).unit;
         this._UIElement = false;
         this._boxes = [];
 
@@ -47,55 +49,55 @@ class UnitBag {
         this.updateUI();
 
         // Watch for player-driven events.
-        gameObject.onInserted.add((container, insertObjs, player) => {
+        container.onInserted.add((container, insertObjs, player) => {
             this.onInserted(container, insertObjs, player);
             this.updateUI();
         });
-        gameObject.onRemoved.add((container, removedObj, player) => {
+        container.onRemoved.add((container, removedObj, player) => {
             this.updateUI();
         });
 
         // Patch mutators.  When a script adds or removes it does not trigger
         // the onInserted/onRemoved events.
-        gameObject._addObjects = gameObject.addObjects;
-        gameObject.addObjects = (...args) => {
-            gameObject._addObjects(...args);
+        container._addObjects = container.addObjects;
+        container.addObjects = (...args) => {
+            container._addObjects(...args);
             this.updateUI();
         };
-        gameObject._clear = gameObject.clear;
-        gameObject.clear = (...args) => {
-            gameObject._clear(...args);
+        container._clear = container.clear;
+        container.clear = (...args) => {
+            container._clear(...args);
             this.updateUI();
         };
-        gameObject._insert = gameObject.insert;
-        gameObject.insert = (...args) => {
-            gameObject._insert(...args);
+        container._insert = container.insert;
+        container.insert = (...args) => {
+            container._insert(...args);
             this.updateUI();
         };
-        gameObject._remove = gameObject.remove;
-        gameObject.remove = (...args) => {
-            gameObject._remove(...args);
+        container._remove = container.remove;
+        container.remove = (...args) => {
+            container._remove(...args);
             this.updateUI();
         };
-        gameObject._removeAt = gameObject.removeAt;
-        gameObject.removeAt = (...args) => {
-            gameObject._removeAt(...args);
+        container._removeAt = container.removeAt;
+        container.removeAt = (...args) => {
+            container._removeAt(...args);
             this.updateUI();
         };
-        gameObject._take = gameObject.take;
-        gameObject.take = (...args) => {
-            gameObject._take(...args);
+        container._take = container.take;
+        container.take = (...args) => {
+            container._take(...args);
             this.updateUI();
         };
-        gameObject._takeAt = gameObject.takeAt;
-        gameObject.takeAt = (...args) => {
-            gameObject._takeAt(...args);
+        container._takeAt = container.takeAt;
+        container.takeAt = (...args) => {
+            container._takeAt(...args);
             this.updateUI();
         };
     }
 
     createUI() {
-        const boxPanel = new VerticalBox().setChildDistance(boxGap);
+        const boxPanel = new VerticalBox().setChildDistance(BOX.gap);
         this._boxes = [];
         for (let i = 0; i < this._capacity; i++) {
             const box = new Border();
@@ -106,9 +108,9 @@ class UnitBag {
         this._UIElement = new UIElement();
         this._UIElement.useWidgetSize = false;
         this._UIElement.height =
-            (boxHeight + boxGap) * this._boxes.length - boxGap;
-        this._UIElement.width = boxWidth;
-        this._UIElement.position = new Vector(xPos, 0, 0.1);
+            (BOX.height + BOX.gap) * this._boxes.length - BOX.gap;
+        this._UIElement.width = BOX.width;
+        this._UIElement.position = new Vector(BOX.x, 0, 0.1);
         this._UIElement.rotation = new Rotator(0, -90, 0);
         this._UIElement.widget = boxPanel;
 
@@ -159,9 +161,9 @@ class UnitBag {
     }
 }
 
-refObject.onCreated.add((obj) => {
+refContainer.onCreated.add((obj) => {
     new UnitBag(obj);
 });
 if (world.getExecutionReason() === "ScriptReload") {
-    new UnitBag(refObject);
+    new UnitBag(refContainer);
 }
