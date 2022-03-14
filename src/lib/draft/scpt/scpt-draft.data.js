@@ -28,7 +28,7 @@ const SCPT_DRAFTS = [
     {
         name: "SCPT 2022 Prelim",
         slices: "28,19,25,43,47|34,77,36,41,64|37,60,39,50,67|42,75,78,59,24|76,66,40,62,44|68,73,79,20,65|46,71,63,31,26",
-        labels: "Twilight Imperium 4th Edition|The Glass House|Custodian's Gambit|Soft Launch|Grand Opening|Between a Rock and a Slow Place|Winslayer's Delight",
+        labels: "Twilight Imperium 4th Edition|The Glass House|Custodian's Gambit|Soft Launch|Grand Opening|Between a Rock and a Slow Place|Winslayer's Dugout",
         clock: 28800,
         factionSets: [
             "Argent|Saar|Mahact|Naaz-Rokha|Nomad|Titans|Vuil'raith",
