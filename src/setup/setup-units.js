@@ -122,7 +122,6 @@ class SetupUnits extends AbstractSetup {
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(playerSlot);
-        bag.setMaxItems(unitData.unitCount);
         bag.setPrimaryColor(color); // setting owning slot applies default, set again paranoia
 
         for (let i = 0; i < unitData.unitCount; i++) {
@@ -136,4 +135,4 @@ class SetupUnits extends AbstractSetup {
     }
 }
 
-module.exports = { SetupUnits };
+module.exports = { SetupUnits, UNIT_DATA };
