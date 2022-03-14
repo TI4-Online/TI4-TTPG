@@ -1,6 +1,6 @@
-const assert = require("../wrapper/assert-wrapper");
-const { ObjectNamespace } = require("../lib/object-namespace");
-const { UNIT_DATA } = require("../setup/setup-units");
+const assert = require("../../wrapper/assert-wrapper");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { UNIT_DATA } = require("../../setup/setup-units");
 const {
     Border,
     Color,
