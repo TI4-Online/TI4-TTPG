@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { TableLayout } = require("../../table/table-layout");
 const { ObjectType, Rotator, world } = require("../../wrapper/api");
 
 class ApplyScoreboard {
@@ -17,10 +18,11 @@ class ApplyScoreboard {
         // well as flipping it to prevent it from sinking into table.
         let rot;
         if (gamePoints <= 10) {
-            rot = new Rotator(0, 180, 0);
+            rot = new Rotator(0, 0, 0);
         } else {
-            rot = new Rotator(0, 0, 180);
+            rot = new Rotator(0, 180, 180);
         }
+        rot = rot.compose(new Rotator(0, TableLayout.anchor.score.yaw, 0));
 
         scoreboard.setObjectType(ObjectType.Regular);
         scoreboard.setRotation(rot, 0); // careful if animating this, saw a collision (??)

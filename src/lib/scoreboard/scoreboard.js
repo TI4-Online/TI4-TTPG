@@ -57,12 +57,19 @@ class Scoreboard {
         let col = 0;
         let row = numRows - 1 - index;
         if (row < 0) {
-            row = numRows + row; // swap order
+            row = numRows - 1 - (numRows + row); // swap order
             col = 1;
         }
+
+        // Fix for face down.
+        if (Facing.isFaceDown(scoreboard)) {
+            col = 1 - col;
+        }
+
         // Make relative to center of score slot.
         row -= (numRows - 1) / 2;
         col -= 0.5;
+
         const x = localPos.x - col * 2.1;
         const y = localPos.y - row * 2.3;
         //console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
@@ -74,6 +81,25 @@ class Scoreboard {
             pos,
             rot,
         };
+    }
+
+    static getScoreFromToken(scoreboard, token) {
+        assert(scoreboard instanceof GameObject);
+        assert(token instanceof GameObject);
+
+        const pos = token.getPosition();
+        const localPos = scoreboard.worldPositionToLocal(pos);
+
+        let dir = 1;
+        let slotCount = 11;
+        if (Facing.isFaceDown(scoreboard)) {
+            dir = -1;
+            slotCount = 15;
+        }
+        const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
+        const slotWidth = scoreboardLocalWidth / slotCount;
+
+        let fromLeft = scoreboardLocalWidth / 2 + localPos.x;
     }
 }
 
