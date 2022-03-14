@@ -156,3 +156,4 @@ require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
+require("./global/unit-bags");
