@@ -1,24 +1,17 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CloneReplace } = require("../../lib/clone-replace");
-const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 const { Spawn } = require("../spawn/spawn");
-const {
-    Container,
-    ObjectType,
-    Rotator,
-    Vector,
-    world,
-} = require("../../wrapper/api");
+const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
     bagPos: { x: 8.028, y: 38.895, z: 0 },
-    bagYaw: 36,
+    bagYaw: 72,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
         // Tactic
@@ -49,48 +42,6 @@ const CONTROL_TOKENS = {
 };
 
 class SetupFactionTokens extends AbstractSetup {
-    static getTokenScoreboardPosRot(playerSlot, score) {
-        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        if (!playerDesk) {
-            return;
-        }
-        const scoreboard = SetupFactionTokens.getScoreboard();
-        if (!scoreboard) {
-            return;
-        }
-
-        let dir = 1;
-        let slotCount = 11;
-        let slotWidth = 20 / 11;
-        if (Facing.isFaceDown(scoreboard)) {
-            dir = -1;
-            slotCount = 15;
-            slotWidth *= 43.169 / 15;
-        }
-        let dLeft = (slotCount - 1 - score) * slotWidth * dir;
-        dLeft = 0;
-
-        const playerCount = world.TI4.config.playerCount;
-        let index = playerCount - playerDesk.index - 1;
-        const numLeft = Math.floor(playerCount / 2);
-        if (index >= numLeft) {
-            index = playerCount - (index - numLeft) - 1;
-        }
-        const col = index < numLeft ? 0 : 1;
-        const row = index - col * numLeft;
-        const x = dLeft + (row - (numLeft - 1) / 2) * 2.3;
-        const y = (col - 0.5) * 3;
-        //console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
-        let pos = new Vector(x, y, 0);
-        pos = scoreboard.localPositionToWorld(pos);
-        pos.z = scoreboard.getPosition().z + 5;
-        const rot = new Rotator(0, 90, 0).compose(scoreboard.getRotation());
-        return {
-            pos,
-            rot,
-        };
-    }
-
     constructor(playerDesk, faction) {
         assert(playerDesk && faction);
         super(playerDesk, faction);
@@ -183,11 +134,13 @@ class SetupFactionTokens extends AbstractSetup {
 
     _placeScoreboradControlToken() {
         const scoreboard = Scoreboard.getScoreboard();
+        const score = 0;
         const playerSlot = this.playerDesk.playerSlot;
-        const posRot = {
-            pos: scoreboard.getPosition().add([0, 0, 10]),
-            rot: scoreboard.getRotation(),
-        };
+        const posRot = Scoreboard.getTokenScoreboardPosRot(
+            scoreboard,
+            score,
+            playerSlot
+        );
         if (!posRot) {
             return;
         }
