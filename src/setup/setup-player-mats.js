@@ -5,7 +5,7 @@ const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 
 const PLANETS_X = -7;
-const PLANETS_Y = -8;
+const PLANETS_Y = -7;
 const MATS = [
     {
         nsid: "mat:base/planets",

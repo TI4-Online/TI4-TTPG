@@ -3,7 +3,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { Vector, world } = require("../wrapper/api");
 
-const TECH_DECK_LOCAL_OFFSET = { x: 2, y: 7 };
+const TECH_DECK_LOCAL_OFFSET = { x: 2, y: 8 };
 
 class SetupGenericTech extends AbstractSetup {
     constructor(playerDesk) {
