@@ -14,14 +14,14 @@ const SUPPLY_BOX_SETS = [
         yaw0: 162,
         dyaw: 72,
         count: 4,
-        nsids: ["token:base/infantry_3", "token:base/fighter_3"],
+        nsids: ["token:base/infantry_3", "token:base/infantry_1"],
     },
     {
-        d: 99 - DISTANCE_BETWEEN_SUPPLY_BOXES,
-        yaw0: 162,
+        d: 99,
+        yaw0: 126,
         dyaw: 72,
-        count: 4,
-        nsids: ["token:base/infantry_1", "token:base/fighter_1"],
+        count: 5,
+        nsids: ["token:base/fighter_3", "token:base/fighter_1"],
     },
 ];
 
@@ -37,7 +37,7 @@ class SetupSupplyBoxesTable extends AbstractSetup {
                 const pos = new Vector(
                     supplyData.d,
                     0,
-                    world.getTableHeight()
+                    world.getTableHeight() + 1
                 ).rotateAngleAxis(yaw, [0, 0, 1]);
                 const pointPosRots = new Layout()
                     .setCenter(pos)
