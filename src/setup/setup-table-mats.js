@@ -8,7 +8,7 @@ const MATS = [
     {
         nsid: "mat:base/objectives_1",
         anchor: TableLayout.anchor.score,
-        pos: { x: 0, y: -10 },
+        pos: { x: 0, y: 10 },
         yaw: 0,
     },
     {
@@ -20,7 +20,7 @@ const MATS = [
     {
         nsid: "mat:base/objectives_2",
         anchor: TableLayout.anchor.score,
-        pos: { x: 0, y: 10 },
+        pos: { x: 0, y: -10 },
         yaw: 0,
     },
 

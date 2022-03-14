@@ -90,9 +90,6 @@ function onInsertedExclusiveBag(container, insertObjs, player) {
 // ----------------------------------------------------------------------------
 
 function isPatchCandidate(obj) {
-    if (ObjectNamespace.isUnitBag(obj)) {
-        return true;
-    }
     if (ObjectNamespace.isCommandTokenBag(obj)) {
         return true;
     }

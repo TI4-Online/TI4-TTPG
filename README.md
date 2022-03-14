@@ -129,4 +129,5 @@ Secrest: image denoising, in-progress card generation
 Somberlord: map string index to map hex translation
 TenjouUtena: strategy card buttons
 ThatRobHuman: modeling, art, tooling
+THE EV: hyperlane adjacency
 Wekker: cleanup art assets, ui
