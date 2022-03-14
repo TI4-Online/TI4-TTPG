@@ -13,7 +13,7 @@ const {
     world,
 } = require("../wrapper/api");
 
-const X0 = -29;
+const X0 = -33;
 const YCENTER = 0;
 const DY = -10;
 const YAW = -90;
