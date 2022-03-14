@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "objects/phases/phases.js",
+	"ScriptName": "objects/mats/strategy-card-mat.js",
 	"Blueprint": "",
 	"Models": [
 		{
