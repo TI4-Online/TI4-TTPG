@@ -81,7 +81,7 @@ function addControlToken(scoreableObj, playerSlot) {
         const row = index - col * numLeft;
         const x = (row - (numLeft - 1) / 2) * 2.3;
         const y = (col - 0.5) * 3;
-        console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
+        //console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
         pos = new Vector(x, y, -3 - index);
     } else {
         const extent = scoreableObj.getExtent();
