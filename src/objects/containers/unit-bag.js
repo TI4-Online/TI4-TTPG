@@ -61,38 +61,45 @@ class UnitBag {
         // the onInserted/onRemoved events.
         container._addObjects = container.addObjects;
         container.addObjects = (...args) => {
-            container._addObjects(...args);
+            const r = container._addObjects(...args);
             this.updateUI();
+            return r;
         };
         container._clear = container.clear;
         container.clear = (...args) => {
-            container._clear(...args);
+            const r = container._clear(...args);
             this.updateUI();
+            return r;
         };
         container._insert = container.insert;
         container.insert = (...args) => {
-            container._insert(...args);
+            const r = container._insert(...args);
             this.updateUI();
+            return r;
         };
         container._remove = container.remove;
         container.remove = (...args) => {
-            container._remove(...args);
+            const r = container._remove(...args);
             this.updateUI();
+            return r;
         };
         container._removeAt = container.removeAt;
         container.removeAt = (...args) => {
-            container._removeAt(...args);
+            const r = container._removeAt(...args);
             this.updateUI();
+            return r;
         };
         container._take = container.take;
         container.take = (...args) => {
-            container._take(...args);
+            const r = container._take(...args);
             this.updateUI();
+            return r;
         };
         container._takeAt = container.takeAt;
         container.takeAt = (...args) => {
-            container._takeAt(...args);
+            const r = container._takeAt(...args);
             this.updateUI();
+            return r;
         };
     }
 
