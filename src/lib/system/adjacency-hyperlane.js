@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { Hex } = require("../hex");
 const { AdjacencyNeighbor } = require("./adjacency-neighbor");
 const { Facing } = require("../facing");
+const { GameObject, world } = require("../../wrapper/api");
 
 /**
  * Get adjacent-via-hyperlane hexes.
