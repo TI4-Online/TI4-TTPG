@@ -21,7 +21,6 @@ class SetupTableGraveyards extends AbstractSetup {
                 world.getTableHeight() + 1
             ).rotateAngleAxis(yaw, [0, 0, 1]);
             const rot = new Rotator(0, yaw, 0);
-            console.log(pos);
             const obj = Spawn.spawn(GRAVEYARDS.nsid, pos, rot);
             obj.setScale(new Vector(0.8, 0.8, 0.5));
             obj.setObjectType(ObjectType.Ground);

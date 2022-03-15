@@ -10,7 +10,7 @@ const BOXES = [
         nsid: "bag:base/generic",
         localeName: "bag.purge",
         anchor: TableLayout.anchor.score,
-        pos: { x: -4, y: 25, z: 3 },
+        pos: { x: -9, y: -50, z: 3 },
         yaw: 90,
         scale: { x: 0.8, y: 0.8, z: 0.5 },
     },

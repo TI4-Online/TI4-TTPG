@@ -16,7 +16,7 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.exploration" },
     ],
     anchor: TableLayout.anchor.score,
-    pos: { x: 5, y: 25, z: 3 },
+    pos: { x: 0, y: -50, z: 3 },
     yaw: -90,
 };
 
@@ -27,7 +27,7 @@ const GENERIC_TOKENS = [
         bagType: 2,
         bagScale: { x: 0.8, y: 0.8, z: 0.8 },
         anchor: TableLayout.anchor.score,
-        pos: { x: 14, y: 25, z: 3 },
+        pos: { x: 0, y: -59, z: 3 },
         yaw: 0,
     },
     {
