@@ -10,13 +10,13 @@ const CONFIG = require("../../game-ui-config");
 const {
     Button,
     CheckBox,
+    HorizontalBox,
     LayoutBox,
     Slider,
     Text,
     MultilineTextBox,
     VerticalBox,
 } = require("../../../wrapper/api");
-const { HorizontalBox } = require("@tabletop-playground/api");
 
 class MiltyDraftSettingsUI extends VerticalBox {
     constructor(sliceGenerator, factionGenerator, callbacks) {
