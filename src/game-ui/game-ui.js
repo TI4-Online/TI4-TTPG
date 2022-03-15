@@ -2,7 +2,12 @@
  * Attach Game UI to world.
  */
 const locale = require("../lib/locale");
+const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 const { TableLayout } = require("../table/table-layout");
+const { TabMap } = require("./tab-map/tab-map");
+const { TabStrategy } = require("./tab-strategy/tab-strategy");
+const { TabStatus } = require("./tab-status/tab-status");
+const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
     Border,
@@ -14,25 +19,22 @@ const {
     VerticalBox,
     world,
 } = require("../wrapper/api");
-const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
-const { TabbedPanel } = require("../lib/ui/tabbed-panel");
-const { TabMap } = require("./tab-map/tab-map");
 
 class GameUI {
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
-        this._layout = new LayoutBox().setPadding(
-            CONFIG.padding,
-            CONFIG.padding,
-            CONFIG.padding,
-            CONFIG.padding
-        );
+        this._layout = new LayoutBox()
+            .setPadding(
+                CONFIG.padding,
+                CONFIG.padding,
+                CONFIG.padding,
+                CONFIG.padding
+            )
+            .setMinimumWidth(anchor.width)
+            .setMinimumHeight(anchor.height);
 
         this._uiElement = new UIElement();
-        this._uiElement.useWidgetSize = false;
-        this._uiElement.width = anchor.width;
-        this._uiElement.height = anchor.height;
         this._uiElement.anchorY = 0;
         this._uiElement.position = new Vector(
             anchor.pos.x,
@@ -64,18 +66,23 @@ class GameUI {
         panel.addChild(tabbedPanel);
 
         const tabMap = new TabMap(this._doRefresh);
+        tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());
 
-        tabbedPanel
-            .addTab(locale("ui.tab.map"), tabMap.getUI())
-            //.addTab(locale("ui.tab.strategy_phase"), tabStrategy.getUI())
-            //.addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
-            //.addTab(locale("ui.tab.status_phase"), tabStatus.getUI())
-            .addTab(
-                locale("ui.tab.agenda_phase"),
-                new Text().setText("< work in progress >")
-            );
+        const tabStrategy = new TabStrategy();
+        tabbedPanel.addTab(
+            locale("ui.tab.strategy_phase"),
+            tabStrategy.getUI()
+        );
 
-        tabbedPanel.addTab("test", new Text().setText("foo"));
+        const tabStatus = new TabStatus();
+        tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());
+
+        //.addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
+
+        tabbedPanel.addTab(
+            locale("ui.tab.agenda_phase"),
+            new Text().setText("< work in progress >")
+        );
     }
 }
 
