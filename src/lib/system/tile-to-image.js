@@ -1,6 +1,3 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { world } = require("../../wrapper/api");
-
 const TILE_TO_PNG = {
     1: "locale/ui/tiles/base/homeworld/tile_001.png",
     2: "locale/ui/tiles/base/homeworld/tile_002.png",
