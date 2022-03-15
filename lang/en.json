@@ -6,6 +6,8 @@
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.no_system_activated": "No system activated",
     "ui.message.shuffling_all_decks": "Shuffling all decks",
+    "ui.message.enabling_game_data": "Enabling game data",
+    "ui.message.disabling_game_data": "Disabling game data",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
     "ui.message.shuffle_action_cards": "Shuffling action card discard pile",
@@ -97,7 +99,8 @@
     "ui.setup.use_omega": "Omega replacements",
     "ui.setup.use_codex1": "Codex 1: Ordinian",
     "ui.setup.use_codex2": "Codex 2: Affinity",
-    "ui.setup.do_setup": "SETUP GAME",
+    "ui.setup.use_game_data": "Send anonymized game data",
+    "ui.setup.do_setup": "START GAME",
 
     "ui.desk.take_seat": "TAKE SEAT",
     "ui.desk.leave_seat": "LEAVE SEAT",
