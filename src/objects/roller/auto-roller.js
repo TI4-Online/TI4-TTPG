@@ -49,9 +49,18 @@ class AutoRoller {
             this.onSystemActivated(systemTile, player);
         };
         globalEvents.TI4.onSystemActivated.add(handler);
+
+        // New turn handler.
+        const newTurnHandler = () => {
+            assert(this instanceof AutoRoller);
+            this.getUI().resetAwaitingSystemActivation();
+        };
+        globalEvents.TI4.onTurnChanged.add(newTurnHandler);
+
         if (gameObject) {
             gameObject.onDestroyed.add((obj) => {
                 globalEvents.TI4.onSystemActivated.remove(handler);
+                globalEvents.TI4.onTurnChanged.remove(newTurnHandler);
             });
         }
 
