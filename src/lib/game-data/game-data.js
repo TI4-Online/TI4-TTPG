@@ -16,8 +16,8 @@ const UPDATORS = [
     require("./updator-turn"),
 ];
 
-//const DEFAULT_HOST = "ti4-game-data.appspot.com";
-const DEFAULT_HOST = "localhost:8080";
+const DEFAULT_HOST = "ti4-game-data.appspot.com";
+//const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
 const POSTKEY = "postkey2";
@@ -213,7 +213,7 @@ class GameData {
     }
 
     _post(data) {
-        console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
+        //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
 
         // Drop if nothing changed.  No native digest, just keep whole string.
         const thisPostStr = JSON.stringify(data);
