@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const {
     Border,
+    Button,
     Color,
     GameObject,
     LayoutBox,
@@ -12,7 +13,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Button } = require("@tabletop-playground/api");
 
 class TurnOrderPanel extends VerticalBox {
     constructor(gameObject) {
