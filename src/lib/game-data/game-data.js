@@ -13,6 +13,7 @@ const UPDATORS = [
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
+    require("./updator-turn"),
 ];
 
 //const DEFAULT_HOST = "ti4-game-data.appspot.com";
@@ -24,6 +25,17 @@ const POSTTIMESTAMP = "posttimestamp2";
 
 const DEFAULT_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
+
+const REQUIRED_COLORS = [
+    "White",
+    "Blue",
+    "Purple",
+    "Yellow",
+    "Red",
+    "Green",
+    "Pink",
+    "Orange",
+];
 
 // TIER 1:
 // score
@@ -171,16 +183,6 @@ class GameData {
 
         // Root's overlay requires colors in order.  Give "required" color
         // as well as actual color.
-        const REQUIRED_COLORS = [
-            "White",
-            "Blue",
-            "Purple",
-            "Yellow",
-            "Red",
-            "Green",
-            "Pink",
-            "Orange",
-        ];
         data.players.forEach((playerData, index) => {
             playerData.actualColor = playerData.color;
             playerData.color = REQUIRED_COLORS[index];
@@ -211,7 +213,7 @@ class GameData {
     }
 
     _post(data) {
-        //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
+        console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
 
         // Drop if nothing changed.  No native digest, just keep whole string.
         const thisPostStr = JSON.stringify(data);

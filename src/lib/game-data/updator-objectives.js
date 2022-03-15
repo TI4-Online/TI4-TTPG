@@ -1,6 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const { ObjectSavedData } = require("../saved-data/object-saved-data");
 const { world } = require("../../wrapper/api");
 
 module.exports = (data) => {
@@ -22,20 +22,25 @@ module.exports = (data) => {
             controlTokens.push(obj);
         }
 
-        // Find objective cards.
+        // Find objective cards.  Can be in a card holder (secrets)!
         const nsid = ObjectNamespace.getNsid(obj);
-        const checkDiscardPile = false;
-        const allowFaceDown = false;
+        if (nsid.startsWith("card.objective.")) {
+            objectiveCards.push(obj);
+        }
+
+        // Find SFTT cards.
         if (
-            nsid.startsWith("card.objective.") &&
-            CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)
+            nsid.startsWith("card.promissory") &&
+            nsid.endsWith("support_for_the_throne")
         ) {
             objectiveCards.push(obj);
         }
     }
 
+    const playerDesks = world.TI4.getAllPlayerDesks();
     const playerSlotToObjectiveNames = {};
     objectiveCards.forEach((card) => {
+        // Find objectives with tokens on them.
         controlTokens
             .filter((token) => {
                 let pos = token.getPosition();
@@ -56,6 +61,27 @@ module.exports = (data) => {
                     objectiveNames.push(objectiveName);
                 }
             });
+
+        // Find objectives inside secrets holers.
+        const cardHolder = card.getHolder();
+        if (cardHolder) {
+            const deskIndex = ObjectSavedData.get(cardHolder, "deskIndex");
+            if (deskIndex !== undefined) {
+                const playerDesk = playerDesks[deskIndex];
+                if (playerDesk) {
+                    const playerSlot = playerDesk.playerSlot;
+                    let objectiveNames = playerSlotToObjectiveNames[playerSlot];
+                    if (!objectiveNames) {
+                        objectiveNames = [];
+                        playerSlotToObjectiveNames[playerSlot] = objectiveNames;
+                    }
+                    const objectiveName = card.getCardDetails().name;
+                    if (!objectiveNames.includes(objectiveName)) {
+                        objectiveNames.push(objectiveName);
+                    }
+                }
+            }
+        }
     });
 
     // Report all objectives, even those not scored.
@@ -87,7 +113,6 @@ module.exports = (data) => {
     };
 
     // Add per-player objectives.
-    const playerDesks = world.TI4.getAllPlayerDesks();
     data.players.forEach((playerData, index) => {
         const playerDesk = playerDesks[index];
         assert(playerDesk);
