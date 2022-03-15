@@ -1,6 +1,11 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
-const { GameData } = require("./game-data");
+const {
+    GameData,
+    DEFAULT_HOST,
+    POSTKEY,
+    POSTTIMESTAMP,
+} = require("./game-data");
 const { world } = require("../../wrapper/api");
 
 it("constructor", () => {
@@ -16,7 +21,7 @@ it("url (standard)", () => {
     const gameData = new GameData();
     assert.equal(
         gameData._getUrl(),
-        "http://ti4-game-data.appspot.com/posttimestamp?timestamp=0"
+        `http://${DEFAULT_HOST}/${POSTTIMESTAMP}?timestamp=0`
     );
 });
 
@@ -26,7 +31,7 @@ it("url (streamer key)", () => {
     gameData.setStreamerOverlayKey("mykey");
     assert.equal(
         gameData._getUrl(),
-        "http://ti4-game-data.appspot.com/postkey?timestamp=0&key=mykey"
+        `http://${DEFAULT_HOST}/${POSTKEY}?timestamp=0&key=mykey`
     );
 });
 
@@ -36,7 +41,7 @@ it("url (localhost)", () => {
     gameData.setStreamerOverlayKey("localhost");
     assert.equal(
         gameData._getUrl(),
-        "http://localhost:8080/postkey?timestamp=0&key=localhost"
+        `http://localhost:8080/${POSTKEY}?timestamp=0&key=localhost`
     );
 });
 

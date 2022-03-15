@@ -15,6 +15,9 @@ const UPDATORS = [
 const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
+const POSTKEY = "postkey2";
+const POSTTIMESTAMP = "posttimestamp2";
+
 const DEFAULT_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
 
@@ -188,7 +191,7 @@ class GameData {
 
     _getUrl() {
         const host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
-        const path = this._key ? "postkey2" : "posttimestamp2";
+        const path = this._key ? POSTKEY : POSTTIMESTAMP;
         const urlArgs = [`timestamp=${world.TI4.config.timestamp}`];
         if (this._key) {
             urlArgs.push(`key=${this._key}`);
@@ -218,4 +221,4 @@ class GameData {
     }
 }
 
-module.exports = { GameData };
+module.exports = { GameData, DEFAULT_HOST, POSTKEY, POSTTIMESTAMP };
