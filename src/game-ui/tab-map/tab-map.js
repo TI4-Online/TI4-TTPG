@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { MapTool } = require("./tab-map-tool/map-tool");
 const { MiltyDraftSettings } = require("./tab-milty/milty-draft-settings");
-const { SCPTDraft } = require("../../lib/draft/scpt/scpt-draft");
+const { SCPTDraftSettings } = require("./tab-scpt/scpt-draft-settings");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
 
@@ -27,10 +27,10 @@ class TabMap {
             miltyDraftSettings.getUI()
         );
 
-        const scptDraft = new SCPTDraft();
+        const scptDraftSettings = new SCPTDraftSettings();
         this._tabbedPanel.addTab(
             locale("ui.tab.map.scpt_draft"),
-            scptDraft.getUI()
+            scptDraftSettings.getUI()
         );
     }
 

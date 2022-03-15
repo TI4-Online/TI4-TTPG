@@ -1,12 +1,14 @@
 const assert = require("../../../wrapper/assert-wrapper");
-const { Broadcast } = require("../../broadcast");
-const { MiltyDraft } = require("../milty/milty-draft");
-const { MiltyUtil } = require("../milty/milty-util");
-const { SCPTDraftSettings } = require("./scpt-draft-settings-ui");
-const { FACTION_NAME_TO_NSID_NAME } = require("./scpt-draft.data");
+const { Broadcast } = require("../../../lib/broadcast");
+const { MiltyDraft } = require("../../../lib/draft/milty/milty-draft");
+const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
+const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
+const {
+    FACTION_NAME_TO_NSID_NAME,
+} = require("../../../lib/draft/scpt/scpt-draft.data");
 const { world } = require("../../../wrapper/api");
 
-class SCPTDraft {
+class SCPTDraftSettings {
     constructor() {
         this._miltyDraft = false;
 
@@ -18,7 +20,7 @@ class SCPTDraft {
                 this._cancel();
             },
         };
-        this._ui = new SCPTDraftSettings(onClickHandlers);
+        this._ui = new SCPTDraftSettingsUI(onClickHandlers);
     }
 
     getUI() {
@@ -76,4 +78,4 @@ class SCPTDraft {
     }
 }
 
-module.exports = { SCPTDraft };
+module.exports = { SCPTDraftSettings };

@@ -16,7 +16,6 @@ const {
     MultilineTextBox,
     VerticalBox,
 } = require("../../../wrapper/api");
-const { HorizontalBox } = require("@tabletop-playground/api");
 
 class MiltyDraftSettingsUI extends VerticalBox {
     constructor(sliceGenerator, factionGenerator, callbacks) {
