@@ -93,7 +93,6 @@ class GameUI {
         zone.setSavedData("game-ui-nope-zone");
         zone.setRotation(zoneRot);
         zone.setScale(zoneScale);
-        zone.setInserting(ZonePermission.Nobody);
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {

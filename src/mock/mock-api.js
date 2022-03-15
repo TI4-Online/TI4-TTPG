@@ -27,6 +27,7 @@ Object.assign(module.exports, {
     MockUIElement: require("./mock-ui-element"),
     MockVector: require("./mock-vector"),
     MockVerticalBox: require("./mock-vertical-box"),
+    MockZone: require("./mock-zone"),
 });
 
 // Export under the TTPG api names for unaware consumers.
@@ -56,6 +57,7 @@ Object.assign(module.exports, {
     UIElement: module.exports.MockUIElement,
     Vector: module.exports.MockVector,
     VerticalBox: module.exports.MockVerticalBox,
+    Zone: module.exports.MockZone,
 });
 
 // SHARE global objects.
