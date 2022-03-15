@@ -1,9 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
 const { Button, Text, VerticalBox, world } = require("../../wrapper/api");
-const { AutoRoller } = require("../../objects/roller/auto-roller");
 
 class TabAction {
     constructor(doRefresh) {
@@ -15,6 +15,19 @@ class TabAction {
 
         const autoRoller = new AutoRoller();
         autoRoller.getUI().setDoRefresh(doRefresh);
+
+        // const systemImg = new ImageWidget().setImage(
+        //     "locale/ui/tiles/base/special/tile_018.png",
+        //     refPackageId
+        // );
+        // const systemBox = new LayoutBox()
+        //     .setChild(systemImg)
+        //     .setOverrideHeight(300)
+        //     .setOverrideWidth(300);
+        // const tacticalPanel = new HorizontalBox()
+        //     .addChild(autoRoller.getUI())
+        //     .addChild(systemBox);
+
         tabbedPanel.addTab(
             locale("ui.tab.tactical_action"),
             autoRoller.getUI(),
