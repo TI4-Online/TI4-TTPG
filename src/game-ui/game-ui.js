@@ -19,7 +19,6 @@ const {
     Text,
     UIElement,
     Vector,
-    ZonePermission,
     globalEvents,
     world,
 } = require("../wrapper/api");
