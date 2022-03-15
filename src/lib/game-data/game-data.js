@@ -7,6 +7,8 @@ const { fetch, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
+    require("./updator-player-active"),
+    require("./updator-player-faction-name"),
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
 ];
@@ -145,7 +147,13 @@ class GameData {
                 this._post(data);
                 return;
             }
-            updator(data);
+            // Run each updator in an ignore-errors wrapper.  If one breaks
+            // at least the rest still gather/update.
+            try {
+                updator(data);
+            } catch (exception) {
+                console.error(exception);
+            }
             process.nextTick(doNextUpdatorOrPost);
         };
         process.nextTick(doNextUpdatorOrPost);
