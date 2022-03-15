@@ -5,7 +5,7 @@ module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
 
     data.players.forEach((playerData) => {
-        playerData.faction = "---";
+        playerData.factionName = "---";
     });
 
     world.TI4.getAllPlayerDesks().forEach((playerDesk, index) => {

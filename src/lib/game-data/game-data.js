@@ -7,10 +7,12 @@ const { fetch, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
+    require("./updator-objectives"),
     require("./updator-player-active"),
     require("./updator-player-faction-name"),
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
+    require("./updator-player-tech"),
 ];
 
 //const DEFAULT_HOST = "ti4-game-data.appspot.com";
@@ -153,6 +155,7 @@ class GameData {
                 updator(data);
             } catch (exception) {
                 console.error(exception);
+                //throw exception;
             }
             process.nextTick(doNextUpdatorOrPost);
         };
@@ -208,6 +211,8 @@ class GameData {
     }
 
     _post(data) {
+        //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
+
         // Drop if nothing changed.  No native digest, just keep whole string.
         const thisPostStr = JSON.stringify(data);
         if (this._lastPostString === thisPostStr) {
