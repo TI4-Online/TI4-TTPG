@@ -55,7 +55,7 @@ class MapTool {
                 this.placeHyperlanes();
             },
         };
-        this._ui = new MapToolUI(doRefresh, onButtonCallbacks);
+        this._ui = new MapToolUI(onButtonCallbacks);
     }
 
     getUI() {

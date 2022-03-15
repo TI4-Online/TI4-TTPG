@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const CONFIG = require("../game-ui-config");
 const {
     Button,
+    HorizontalBox,
     LayoutBox,
     MultilineTextBox,
     VerticalBox,
@@ -11,29 +13,51 @@ class MapToolUI extends VerticalBox {
     constructor(onButtonCallbacks) {
         super();
 
-        this.setChildDistance(5);
+        this.setChildDistance(CONFIG.spacing);
 
-        this._mapStringTextBox = new MultilineTextBox().setMaxLength(1000);
+        this._mapStringTextBox = new MultilineTextBox()
+            .setFontSize(CONFIG.fontSize)
+            .setMaxLength(1000)
+            .setText("map string");
         const mapStringLayoutBox = new LayoutBox()
             .setChild(this._mapStringTextBox)
-            .setMinimumHeight(50);
+            .setMinimumHeight(CONFIG.fontSize * 4);
         this.addChild(mapStringLayoutBox);
 
+        let panel = false;
+
+        const addRow = () => {
+            panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
+            this.addChild(panel);
+        };
+
         const addButton = (localeText, onClickHandler) => {
-            const button = new Button().setText(locale(localeText));
+            assert(typeof localeText === "string");
+            assert(typeof onClickHandler === "function");
+            const button = new Button()
+                .setText(locale(localeText))
+                .setFontSize(CONFIG.fontSize);
             button.onClicked.add(onClickHandler);
-            this.addChild(button);
+            panel.addChild(button, 1);
         };
 
         const f = onButtonCallbacks;
-        addButton("ui.maptool.clear", f.clear);
-        addButton("ui.maptool.save", f.save);
+
+        addRow();
         addButton("ui.maptool.load", f.load);
+        addButton("ui.maptool.save", f.save);
+
+        addRow();
         addButton("ui.maptool.place_cards", f.placeCards);
         addButton("ui.maptool.clear_cards", f.clearCards);
+
+        addRow();
         addButton("ui.maptool.place_frontier_tokens", f.placeFrontierTokens);
         addButton("ui.maptool.clear_frontier_tokens", f.clearFrontierTokens);
+
+        addRow();
         addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
+        addButton("ui.maptool.clear", f.clear);
     }
 
     getMapString() {
