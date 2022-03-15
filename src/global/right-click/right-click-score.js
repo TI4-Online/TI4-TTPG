@@ -13,6 +13,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 
 const OTHER_SCORABLE_NSIDS = new Set([
     "card.action:base/imperial_rider",
@@ -150,6 +151,36 @@ function moveToSecretsHolder(scoreableObj, playerSlot) {
     holder.insert(scoreableObj);
 }
 
+function advanceScoreboardToken(player, points) {
+    assert(player instanceof Player);
+    assert(typeof points === "number");
+
+    const scoreboard = Scoreboard.getScoreboard();
+    if (!scoreboard) {
+        return;
+    }
+
+    const playerSlot = player.getSlot();
+    const playerSlotToTokens = Scoreboard.getPlayerSlotToTokens(scoreboard);
+    const tokens = playerSlotToTokens[playerSlot];
+    if (!tokens || tokens.length > 1) {
+        return;
+    }
+    const token = tokens[0];
+
+    const oldScore = Scoreboard.getScoreFromToken(scoreboard, token);
+    let newScore = oldScore + points;
+    newScore = Math.min(newScore, world.TI4.config.gamePoints);
+
+    const posRot = Scoreboard.getTokenScoreboardPosRot(
+        scoreboard,
+        newScore,
+        playerSlot
+    );
+    token.setPosition(posRot.pos, 1);
+    token.setRotation(posRot.rot, 1);
+}
+
 function score(scoreableObj, player) {
     assert(scoreableObj instanceof GameObject);
     assert(player instanceof Player);
@@ -171,12 +202,20 @@ function score(scoreableObj, player) {
     const msg = locale("ui.message.score", { playerName, scoredName });
     Broadcast.chatAll(msg, playerDesk.color);
 
-    // Score.
+    // Mark scored.
     if (isSecretsHolderScorable(scoreableObj)) {
         moveToSecretsHolder(scoreableObj, playerSlot);
     } else {
         addControlToken(scoreableObj, playerSlot);
     }
+
+    // Move player's scoreboard token.
+    const scoreableNsid = ObjectNamespace.getNsid(scoreableObj);
+    let points = 1;
+    if (scoreableNsid.startsWith("card.objective.public_2")) {
+        points = 2;
+    }
+    advanceScoreboardToken(player, points);
 }
 
 function addRightClickOptions(scoreableObj) {

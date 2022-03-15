@@ -87,15 +87,15 @@ class Scoreboard {
         assert(scoreboard instanceof GameObject);
         assert(token instanceof GameObject);
 
-        const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
-        const slotWidth = scoreboardLocalWidth / slotCount;
-
         let dir = -1;
         let slotCount = 11;
         if (Facing.isFaceDown(scoreboard)) {
             dir = 1;
             slotCount = 15;
         }
+
+        const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
+        const slotWidth = scoreboardLocalWidth / slotCount;
 
         const pos = token.getPosition();
         const localPos = scoreboard.worldPositionToLocal(pos);
@@ -124,7 +124,7 @@ class Scoreboard {
             if (obj.getContainer()) {
                 continue;
             }
-            if (!ObjectNamespace.isControlToken()) {
+            if (!ObjectNamespace.isControlToken(obj)) {
                 continue;
             }
             const pos = obj.getPosition();
