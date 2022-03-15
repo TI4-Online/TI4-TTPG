@@ -17,28 +17,31 @@ const {
     Text,
     UIElement,
     Vector,
-    VerticalBox,
     globalEvents,
     world,
 } = require("../wrapper/api");
 const { TabAction } = require("./tab-action/tab-action");
+const { HorizontalBox } = require("@tabletop-playground/api");
 
 class GameUI {
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
-        this._layout = new LayoutBox()
-            .setPadding(
-                CONFIG.padding,
-                CONFIG.padding,
-                CONFIG.padding,
-                CONFIG.padding
-            )
-            .setMinimumWidth(anchor.width)
-            .setMinimumHeight(anchor.height);
+        this._layout = new LayoutBox().setPadding(
+            CONFIG.padding,
+            CONFIG.padding,
+            CONFIG.padding,
+            CONFIG.padding
+        );
+        //.setMinimumWidth(anchor.width)
+        //.setMinimumHeight(anchor.height);
 
         this._uiElement = new UIElement();
         this._uiElement.anchorY = 0;
+        this._uiElement.width = anchor.width;
+        this._uiElement.height = anchor.height;
+        this._uiElement.useWidgetSize = false;
+
         this._uiElement.position = new Vector(
             anchor.pos.x,
             anchor.pos.y,
@@ -72,18 +75,20 @@ class GameUI {
     }
 
     fillForGame() {
-        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
         this._layout.setChild(panel);
-
-        const turnOrderPanel = new TurnOrderPanel()
-            .setFontSize(CONFIG.fontSize)
-            .setSpacing(CONFIG.spacing);
-        panel.addChild(turnOrderPanel);
 
         const tabbedPanel = new TabbedPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
-        panel.addChild(tabbedPanel);
+        panel.addChild(tabbedPanel, 4);
+
+        panel.addChild(new Border().setColor([0.02, 0.02, 0.02]));
+
+        const turnOrderPanel = new TurnOrderPanel()
+            .setFontSize(CONFIG.fontSize)
+            .setSpacing(CONFIG.spacing);
+        panel.addChild(turnOrderPanel, 1);
 
         const tabMap = new TabMap(this._doRefresh);
         tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());

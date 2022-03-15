@@ -94,13 +94,13 @@ module.exports = {
     deskLayout: {
         anchor: {
             gameUI: {
-                pos: { x: 50, y: 147, z: 0 },
+                pos: { x: 55, y: 147, z: 0 },
                 yaw: 0,
-                width: 900,
-                height: 600,
+                width: 1000,
+                height: 520,
             },
             score: { pos: { x: -33, y: 147, z: 0 }, yaw: -90 },
-            strategy: { pos: { x: 75, y: 147, z: 0 }, yaw: -90 },
+            strategy: { pos: { x: 77, y: 147, z: 0 }, yaw: -90 },
         },
     },
 };

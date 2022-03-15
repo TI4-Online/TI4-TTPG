@@ -1,24 +1,27 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const {
     Border,
     Color,
     GameObject,
-    HorizontalBox,
     LayoutBox,
     Text,
     TextJustification,
+    VerticalAlignment,
+    VerticalBox,
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { Button } = require("@tabletop-playground/api");
 
-class TurnOrderPanel extends HorizontalBox {
+class TurnOrderPanel extends VerticalBox {
     constructor(gameObject) {
         assert(!gameObject || gameObject instanceof GameObject);
         super();
 
         this._fontSize = undefined;
 
-        const update = (playerDeskOrder, player) => {
+        const update = () => {
             this.update();
         };
 
@@ -77,7 +80,10 @@ class TurnOrderPanel extends HorizontalBox {
             if (this._fontSize) {
                 label.setFontSize(this._fontSize);
             }
-            const inner = new Border().setChild(label);
+            const labelBox = new LayoutBox()
+                .setVerticalAlignment(VerticalAlignment.Center)
+                .setChild(label);
+            const inner = new Border().setChild(labelBox);
 
             const p = 1;
             const innerBox = new LayoutBox()
@@ -98,6 +104,17 @@ class TurnOrderPanel extends HorizontalBox {
 
             this.addChild(outer, 1);
         }
+
+        const endTurnButton = new Button().setText(
+            locale("ui.button.end_turn")
+        );
+        if (this._fontSize) {
+            endTurnButton.setFontSize(this._fontSize);
+        }
+        endTurnButton.onClicked.add((button, player) => {
+            world.TI4.turns.endTurn(player);
+        });
+        this.addChild(endTurnButton, 1.5);
     }
 }
 

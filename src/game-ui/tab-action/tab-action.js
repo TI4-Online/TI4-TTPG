@@ -3,7 +3,7 @@ const locale = require("../../lib/locale");
 const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Button, Text, VerticalBox, world } = require("../../wrapper/api");
+const { Text, VerticalBox } = require("../../wrapper/api");
 
 class TabAction {
     constructor(doRefresh) {
@@ -50,14 +50,6 @@ class TabAction {
 
         const verticalBox = new VerticalBox().setChildDistance(CONFIG.spacing);
         verticalBox.addChild(tabbedPanel);
-
-        const endTurn = new Button()
-            .setFontSize(CONFIG.fontSize * 2)
-            .setText(locale("ui.action.end_turn"));
-        endTurn.onClicked.add((button, player) => {
-            world.TI4.turns.endTurn(player);
-        });
-        verticalBox.addChild(endTurn, 1);
 
         this._ui = verticalBox;
     }
