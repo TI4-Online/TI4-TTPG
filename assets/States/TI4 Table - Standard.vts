@@ -3946,7 +3946,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -3987,7 +3987,7 @@
 				"z": 0
 			},
 			"objectScriptPackage": "DEE44C689452447E8ED6FDDBEB19BB23",
-			"objectScriptName": "objects/containers/unit-bag.js",
+			"objectScriptName": "objects/containers/y.js",
 			"persistentData": "",
 			"uniqueId": "a6b",
 			"objectGroupId": -1,
@@ -4020,7 +4020,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4102,7 +4102,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4182,7 +4182,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4255,7 +4255,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4331,7 +4331,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4405,7 +4405,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4483,7 +4483,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4561,7 +4561,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4636,7 +4636,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4707,7 +4707,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4921,7 +4921,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -4995,7 +4995,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5077,7 +5077,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5157,7 +5157,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5230,7 +5230,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5306,7 +5306,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5380,7 +5380,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5458,7 +5458,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5536,7 +5536,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5611,7 +5611,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5682,7 +5682,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5896,7 +5896,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -5970,7 +5970,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6052,7 +6052,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6132,7 +6132,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6205,7 +6205,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6281,7 +6281,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6355,7 +6355,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6433,7 +6433,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6511,7 +6511,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6586,7 +6586,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6657,7 +6657,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6871,7 +6871,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -6945,7 +6945,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7027,7 +7027,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7107,7 +7107,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7180,7 +7180,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7256,7 +7256,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7330,7 +7330,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7408,7 +7408,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7486,7 +7486,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7561,7 +7561,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7632,7 +7632,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7846,7 +7846,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -7920,7 +7920,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8002,7 +8002,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8082,7 +8082,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8155,7 +8155,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8231,7 +8231,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8305,7 +8305,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8383,7 +8383,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8461,7 +8461,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8536,7 +8536,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8607,7 +8607,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8821,7 +8821,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8895,7 +8895,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 12,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -8977,7 +8977,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 10,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9057,7 +9057,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 3,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9130,7 +9130,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 6,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9206,7 +9206,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 4,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9280,7 +9280,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9358,7 +9358,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 8,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9436,7 +9436,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 5,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9511,7 +9511,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 1,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
@@ -9582,7 +9582,7 @@
 			},
 			"simulatingPhysics": false,
 			"bagType": "Random",
-			"maxItems": 100,
+			"maxItems": 2,
 			"takeRotation": "Zero",
 			"lazyLoad": false,
 			"itemsJson": [
