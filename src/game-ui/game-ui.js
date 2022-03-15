@@ -19,6 +19,7 @@ const {
     VerticalBox,
     world,
 } = require("../wrapper/api");
+const { TabAction } = require("./tab-action/tab-action");
 
 class GameUI {
     constructor() {
@@ -73,6 +74,9 @@ class GameUI {
             locale("ui.tab.strategy_phase"),
             tabStrategy.getUI()
         );
+
+        const tabAction = new TabAction(this._doRefresh);
+        tabbedPanel.addTab(locale("ui.tab.action_phase"), tabAction.getUI());
 
         const tabStatus = new TabStatus();
         tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());

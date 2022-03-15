@@ -117,7 +117,7 @@
     "ui.tab.map.milty_draft": "Milty",
     "ui.tab.map.scpt_draft": "SCPT",
     "ui.tab.strategy_phase": "Strategy",
-    "ui.tab.auto_roller": "Action",
+    "ui.tab.action_phase": "Action",
     "ui.tab.status_phase": "Status",
     "ui.tab.agenda_phase": "Agenda",
     "ui.tab.tactical_action": "Tactical",
