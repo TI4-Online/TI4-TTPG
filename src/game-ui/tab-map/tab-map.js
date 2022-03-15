@@ -1,23 +1,22 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { MapTool } = require("../map-tool/map-tool");
+const { MapTool } = require("../objects/map-tool/map-tool");
 const { MiltyDraft } = require("../../lib/draft/milty/milty-draft");
 const { SCPTDraft } = require("../../lib/draft/scpt/scpt-draft");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
-const { GameObject, UIElement } = require("../../wrapper/api");
+const CONFIG = require("../game-ui-config");
 
 class TabMap {
-    constructor(gameObject, uiElement) {
-        assert(gameObject instanceof GameObject);
-        assert(uiElement instanceof UIElement);
+    constructor(doRefresh) {
+        assert(typeof doRefresh === "function");
 
-        this._tabbedPanel = new TabbedPanel();
+        this._tabbedPanel = new TabbedPanel()
+            .setFontSize(CONFIG.fontSize)
+            .setSpacing(CONFIG.spacing);
 
-        const mapTool = new MapTool();
+        const mapTool = new MapTool(doRefresh);
         const miltyDraft = new MiltyDraft();
         const scptDraft = new SCPTDraft();
-
-        mapTool.getUI().setOwningObjectForUpdate(gameObject, uiElement);
 
         this._tabbedPanel
             .addTab(locale("ui.tab.map.map_tool"), mapTool.getUI(), true)

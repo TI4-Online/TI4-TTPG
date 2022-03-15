@@ -1,10 +1,20 @@
 const { MapTool } = require("./map-tool");
-const { refObject, world } = require("../../wrapper/api");
+const { UIElement, refObject, world } = require("../../wrapper/api");
+
+function makeMapTool(obj) {
+    const uiElement = new UIElement();
+    const doRefresh = () => {
+        obj.updateUI(uiElement);
+    };
+    const mapTool = new MapTool(doRefresh);
+    uiElement.widget = mapTool.getUI();
+    obj.addUI(uiElement);
+}
 
 refObject.onCreated.add((obj) => {
-    new MapTool(obj);
+    makeMapTool(obj);
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    new MapTool(refObject);
+    makeMapTool(refObject);
 }

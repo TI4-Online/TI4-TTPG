@@ -56,6 +56,12 @@ class TabbedPanel extends Border {
         return this;
     }
 
+    setSpacing(value) {
+        this._verticalBox.setChildDistance(value);
+        this._tabButtons.setChildDistance(value);
+        return this;
+    }
+
     _selectTab(label) {
         //console.log(`TabbedPanel._selectTab("${label}")`);
         const tab = this._labelToTabData[label];

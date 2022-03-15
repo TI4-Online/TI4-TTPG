@@ -2,18 +2,14 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const {
     Button,
-    GameObject,
     LayoutBox,
     MultilineTextBox,
-    UIElement,
     VerticalBox,
 } = require("../../wrapper/api");
 
 class MapToolUI extends VerticalBox {
     constructor(onButtonCallbacks) {
         super();
-        this._gameObject = false;
-        this._uiElement = false;
 
         this.setChildDistance(5);
 
@@ -40,20 +36,6 @@ class MapToolUI extends VerticalBox {
         addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
     }
 
-    setOwningObjectForUpdate(gameObject, uiElement) {
-        assert(gameObject instanceof GameObject);
-        assert(uiElement instanceof UIElement);
-        this._gameObject = gameObject;
-        this._uiElement = uiElement;
-        return this;
-    }
-
-    _update() {
-        if (this._gameObject && this._uiElement) {
-            this._gameObject.updateUI(this._uiElement);
-        }
-    }
-
     getMapString() {
         return this._mapStringTextBox.getText();
     }
@@ -66,7 +48,6 @@ class MapToolUI extends VerticalBox {
         assert(typeof value === "string");
         console.log(`MapToolUI.setMapString("${value}") |s|=${value.length}`);
         this._mapStringTextBox.setText(value);
-        this._update();
     }
 }
 

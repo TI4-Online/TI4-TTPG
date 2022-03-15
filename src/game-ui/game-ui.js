@@ -1,6 +1,7 @@
 /**
  * Attach Game UI to world.
  */
+const locale = require("../lib/locale");
 const { TableLayout } = require("../table/table-layout");
 const CONFIG = require("./game-ui-config");
 const {
@@ -15,6 +16,7 @@ const {
 } = require("../wrapper/api");
 const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
+const { TabMap } = require("./tab-map/tab-map");
 
 class GameUI {
     constructor() {
@@ -40,6 +42,10 @@ class GameUI {
         this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
         this._uiElement.widget = new Border().setChild(this._layout);
 
+        this._doRefresh = () => {
+            world.updateUI(this._uiElement);
+        };
+
         world.addUI(this._uiElement);
     }
 
@@ -52,8 +58,22 @@ class GameUI {
             .setSpacing(CONFIG.spacing);
         panel.addChild(turnOrderPanel);
 
-        const tabbedPanel = new TabbedPanel().setFontSize(CONFIG.fontSize);
+        const tabbedPanel = new TabbedPanel()
+            .setFontSize(CONFIG.fontSize)
+            .setSpacing(CONFIG.spacing);
         panel.addChild(tabbedPanel);
+
+        const tabMap = new TabMap(this._doRefresh);
+
+        tabbedPanel
+            .addTab(locale("ui.tab.map"), tabMap.getUI())
+            //.addTab(locale("ui.tab.strategy_phase"), tabStrategy.getUI())
+            //.addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
+            //.addTab(locale("ui.tab.status_phase"), tabStatus.getUI())
+            .addTab(
+                locale("ui.tab.agenda_phase"),
+                new Text().setText("< work in progress >")
+            );
 
         tabbedPanel.addTab("test", new Text().setText("foo"));
     }
