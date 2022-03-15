@@ -31,6 +31,8 @@ class MapTool {
         // Pass wrapped functions that call with "this" correctly.
         const onButtonCallbacks = {
             clear: () => {
+                this.clearFrontierTokens();
+                this.clearCards();
                 this.clear();
             },
             save: () => {
