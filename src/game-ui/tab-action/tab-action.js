@@ -3,7 +3,7 @@ const locale = require("../../lib/locale");
 const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Text, VerticalBox } = require("../../wrapper/api");
+const { Text } = require("../../wrapper/api");
 
 class TabAction {
     constructor(doRefresh) {
@@ -48,10 +48,7 @@ class TabAction {
                 .setText(locale("ui.component.instructions"))
         );
 
-        const verticalBox = new VerticalBox().setChildDistance(CONFIG.spacing);
-        verticalBox.addChild(tabbedPanel);
-
-        this._ui = verticalBox;
+        this._ui = tabbedPanel;
     }
 
     getUI() {

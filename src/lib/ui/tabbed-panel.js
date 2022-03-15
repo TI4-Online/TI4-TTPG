@@ -1,8 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const {
-    Border,
     Button,
     HorizontalBox,
+    LayoutBox,
     VerticalBox,
     Widget,
 } = require("../../wrapper/api");
@@ -10,7 +10,7 @@ const {
 /**
  * Wrap Widgets inside a panet with top-row of tabs to select between them.
  */
-class TabbedPanel extends Border {
+class TabbedPanel extends LayoutBox {
     /**
      * Constructor.
      */
@@ -77,7 +77,7 @@ class TabbedPanel extends Border {
             this._verticalBox.removeChildAt(1);
         }
         assert(tab.widget);
-        this._verticalBox.addChild(tab.widget);
+        this._verticalBox.addChild(tab.widget, 1);
     }
 
     addTab(label, widget, selectThisTab) {

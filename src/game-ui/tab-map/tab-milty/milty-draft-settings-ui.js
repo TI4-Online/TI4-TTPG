@@ -10,6 +10,7 @@ const CONFIG = require("../../game-ui-config");
 const {
     Button,
     CheckBox,
+    HorizontalBox,
     LayoutBox,
     Slider,
     Text,
@@ -38,22 +39,6 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setMinimumHeight(CONFIG.fontSize * 4);
         this.addChild(customInputBox);
 
-        const sliceCountLabel = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.draft.slice_count"));
-        this.addChild(sliceCountLabel);
-        const sliceCountSlider = new Slider()
-            .setFontSize(CONFIG.fontSize)
-            .setTextBoxWidth(CONFIG.fontSize * 4)
-            .setMinValue(MiltySliceGenerator.minCount)
-            .setMaxValue(MiltySliceGenerator.maxCount)
-            .setStepSize(1)
-            .setValue(sliceGenerator.getCount());
-        this.addChild(sliceCountSlider);
-        sliceCountSlider.onValueChanged.add((slider, player, value) => {
-            sliceGenerator.setCount(value);
-        });
-
         const extraLegendariesAndWormholes = new CheckBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.extra_legendaries_and_wormholes"));
@@ -64,10 +49,28 @@ class MiltyDraftSettingsUI extends VerticalBox {
             }
         );
 
+        const sliceCountLabel = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.slice_count"));
+        const sliceCountSlider = new Slider()
+            .setFontSize(CONFIG.fontSize)
+            .setTextBoxWidth(CONFIG.fontSize * 4)
+            .setMinValue(MiltySliceGenerator.minCount)
+            .setMaxValue(MiltySliceGenerator.maxCount)
+            .setStepSize(1)
+            .setValue(sliceGenerator.getCount());
+        sliceCountSlider.onValueChanged.add((slider, player, value) => {
+            sliceGenerator.setCount(value);
+        });
+        const sliceCountPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(sliceCountLabel, 2)
+            .addChild(sliceCountSlider, 4);
+        this.addChild(sliceCountPanel);
+
         const factionCountLabel = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.faction_count"));
-        this.addChild(factionCountLabel);
         const factionCountSlider = new Slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
@@ -75,10 +78,14 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setMaxValue(MiltyFactionGenerator.maxCount)
             .setStepSize(1)
             .setValue(factionGenerator.getCount());
-        this.addChild(factionCountSlider);
         factionCountSlider.onValueChanged.add((slider, player, value) => {
             factionGenerator.setCount(value);
         });
+        const factionCountPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(factionCountLabel, 2)
+            .addChild(factionCountSlider, 4);
+        this.addChild(factionCountPanel);
 
         const applyEnabled = (value) => {
             sliceCountLabel.setEnabled(value);
@@ -92,21 +99,26 @@ class MiltyDraftSettingsUI extends VerticalBox {
         const onFinishedButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
-        this.addChild(onFinishedButton);
         onFinishedButton.onClicked.add((button, player) => {
             const customInputValue = customInput.getText();
             const success = callbacks.onFinish(customInputValue);
             applyEnabled(!success);
         });
 
+        this.addChild(new LayoutBox(), 1);
+
         const onCancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
-        this.addChild(onCancelButton);
         onCancelButton.onClicked.add((button, player) => {
             applyEnabled(true);
             callbacks.onCancel();
         });
+        const readyCancelPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(onFinishedButton, 1)
+            .addChild(onCancelButton, 1);
+        this.addChild(readyCancelPanel);
     }
 }
 

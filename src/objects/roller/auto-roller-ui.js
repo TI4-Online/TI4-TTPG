@@ -68,6 +68,8 @@ class AutoRollerUI extends LayoutBox {
             .setText(locale("ui.message.no_system_activated"));
         panel.addChild(message);
 
+        panel.addChild(new LayoutBox(), 1); // stretch to fill space
+
         const reportModifiers = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.roller.report_modifiers"));
@@ -77,7 +79,6 @@ class AutoRollerUI extends LayoutBox {
         panel.addChild(reportModifiers);
 
         this.setChild(panel);
-
         this._update();
     }
 
