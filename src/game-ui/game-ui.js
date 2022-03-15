@@ -81,7 +81,9 @@ class GameUI {
 
         tabbedPanel.addTab(
             locale("ui.tab.agenda_phase"),
-            new Text().setText("< work in progress >")
+            new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setText("< work in progress >")
         );
     }
 }
