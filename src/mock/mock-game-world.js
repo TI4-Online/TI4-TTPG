@@ -4,6 +4,7 @@ const CardHolder = require("./mock-card-holder");
 const GameObject = require("./mock-game-object");
 const Player = require("./mock-player");
 const UIElement = require("./mock-ui-element");
+const Zone = require("./mock-zone");
 
 class GameWorld {
     constructor(data) {
@@ -71,12 +72,20 @@ class GameWorld {
         return result;
     }
 
+    createZone(position) {
+        return new Zone();
+    }
+
     getAllObjects() {
         return this._allObjects;
     }
 
     getAllPlayers() {
         return this._allPlayers;
+    }
+
+    getAllZones() {
+        return [];
     }
 
     // TTPG exposes this both static and per-instance.

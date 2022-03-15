@@ -70,7 +70,7 @@
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
     "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
-    "ui.action.end_turn": "End Turn",
+    "ui.button.end_turn": "END TURN",
 
     "ui.label.speaker": "Speaker",
 

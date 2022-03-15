@@ -71,6 +71,13 @@ class Turns {
         if (this._needsLoad) {
             this._needsLoad = false;
             this._load();
+
+            // This happens exactly once.
+            const onChangedHandler = () => {
+                this.setTurnOrder(world.TI4.getAllPlayerDesks(), undefined);
+            };
+            globalEvents.TI4.onPlayerCountChanged.add(onChangedHandler);
+            globalEvents.TI4.onGameSetup.add(onChangedHandler);
         }
     }
 

@@ -5,6 +5,8 @@ const {
     Button,
     CheckBox,
     Color,
+    HorizontalBox,
+    LayoutBox,
     Slider,
     Text,
     TextJustification,
@@ -19,14 +21,11 @@ class GameSetupUI {
     }
 
     create() {
-        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
-
         const title = new Text()
             .setFontSize(CONFIG.fontSize * 3.8)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
             .setFont("ambroise_firmin_bold.otf", refPackageId);
-        panel.addChild(title);
 
         const wip = new Text()
             .setFontSize(CONFIG.fontSize)
@@ -34,9 +33,20 @@ class GameSetupUI {
             .setTextColor(new Color([0.8, 0.2, 0, 1]))
             .setBold(true)
             .setJustification(TextJustification.Center);
-        panel.addChild(wip);
 
-        panel.addChild(
+        const col1Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const col2Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const colsPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing * 4)
+            .addChild(col1Panel, 1)
+            .addChild(col2Panel, 1);
+        const fullPanel = new VerticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(title)
+            .addChild(wip)
+            .addChild(colsPanel);
+
+        col1Panel.addChild(
             this._createSlider(
                 "ui.setup.player_count",
                 2,
@@ -46,7 +56,7 @@ class GameSetupUI {
             )
         );
 
-        panel.addChild(
+        col1Panel.addChild(
             this._createSlider(
                 "ui.setup.game_points",
                 10,
@@ -56,42 +66,44 @@ class GameSetupUI {
             )
         );
 
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_pok",
                 world.TI4.config.pok,
                 this._callbacks.onUsePokChanged
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_omega",
                 world.TI4.config.omega,
                 this._callbacks.onUseOmegaChanged
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_codex1",
                 world.TI4.config.codex1,
                 this._callbacks.onUseCodex1Changed
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_codex2",
                 world.TI4.config.codex2,
                 this._callbacks.onUseCodex2Changed
             )
         );
-        panel.addChild(
+
+        fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space
+        fullPanel.addChild(
             this._createButton(
                 "ui.setup.do_setup",
                 this._callbacks.onSetupClicked
             )
         );
 
-        return panel;
+        return fullPanel;
     }
 
     _createText(localeText) {
