@@ -112,6 +112,9 @@ class GameUI {
 }
 
 const gameUI = new GameUI();
-process.nextTick(() => {
-    gameUI.fill();
-});
+
+if (!world.__isMock) {
+    process.nextTick(() => {
+        gameUI.fill();
+    });
+}
