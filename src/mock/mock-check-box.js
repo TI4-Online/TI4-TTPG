@@ -7,6 +7,10 @@ class Button extends TextWidgetBase {
     }
 
     onCheckStateChanged = new TriggerableMulticastDelegate();
+
+    setIsChecked(value) {
+        return this;
+    }
 }
 
 module.exports = Button;
