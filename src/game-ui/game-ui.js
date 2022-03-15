@@ -3,6 +3,7 @@
  */
 const locale = require("../lib/locale");
 const { GameSetup } = require("../setup/game-setup/game-setup");
+const { TabAction } = require("./tab-action/tab-action");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
@@ -12,16 +13,16 @@ const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
     Border,
+    HorizontalBox,
     LayoutBox,
     Rotator,
     Text,
     UIElement,
     Vector,
+    ZonePermission,
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { TabAction } = require("./tab-action/tab-action");
-const { HorizontalBox } = require("@tabletop-playground/api");
 
 class GameUI {
     constructor() {
@@ -58,6 +59,56 @@ class GameUI {
 
         globalEvents.TI4.onGameSetup.add(() => {
             this.fill();
+        });
+
+        // Resetting scripting may orphan zones.
+        this.destroyNopeZone();
+        this.createNopeZone();
+    }
+
+    destroyNopeZone() {
+        for (const zone of world.getAllZones()) {
+            if (zone.getSavedData() === "game-ui-nope-zone") {
+                zone.destroy();
+            }
+        }
+    }
+
+    /**
+     * Create a zone to keep objects from laying atop.
+        // A card on the UI can't be picked up without selection drag
+        // b/c UI takes pointer.
+     */
+    createNopeZone() {
+        const anchor = TableLayout.anchor.gameUI;
+
+        const zonePos = new Vector(
+            anchor.pos.x - anchor.height / 20, // height is 10x
+            anchor.pos.y,
+            world.getTableHeight() + 1
+        );
+        const zoneRot = new Rotator(0, anchor.yaw, 0);
+        const zoneScale = new Vector(anchor.height / 10, anchor.width / 10, 2);
+        const zone = world.createZone(zonePos);
+        zone.setSavedData("game-ui-nope-zone");
+        zone.setRotation(zoneRot);
+        zone.setScale(zoneScale);
+        zone.setInserting(ZonePermission.Nobody);
+        zone.setColor([1, 0, 0, 0.2]);
+        zone.setAlwaysVisible(false);
+        zone.onBeginOverlap.add((zone, obj) => {
+            //console.log("onBeginOverlap");
+            const container = undefined;
+            const rejectedObjs = [obj];
+            const player = undefined;
+            globalEvents.TI4.onContainerRejected.trigger(
+                container,
+                rejectedObjs,
+                player
+            );
+        });
+        zone.onEndOverlap.add((zone, obj) => {
+            //console.log("onEndOverlap");
         });
     }
 
