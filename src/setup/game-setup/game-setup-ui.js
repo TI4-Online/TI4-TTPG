@@ -4,7 +4,6 @@ const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Button,
     CheckBox,
-    Color,
     HorizontalBox,
     LayoutBox,
     Slider,
@@ -27,13 +26,6 @@ class GameSetupUI {
             .setJustification(TextJustification.Center)
             .setFont("ambroise_firmin_bold.otf", refPackageId);
 
-        const wip = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText("BETA TEST") // temp, no need for locale
-            .setTextColor(new Color([0.8, 0.2, 0, 1]))
-            .setBold(true)
-            .setJustification(TextJustification.Center);
-
         const col1Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
         const col2Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
         const colsPanel = new HorizontalBox()
@@ -43,7 +35,6 @@ class GameSetupUI {
         const fullPanel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(title)
-            .addChild(wip)
             .addChild(colsPanel);
 
         col1Panel.addChild(
@@ -92,6 +83,13 @@ class GameSetupUI {
                 "ui.setup.use_codex2",
                 world.TI4.config.codex2,
                 this._callbacks.onUseCodex2Changed
+            )
+        );
+        col2Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_game_data",
+                false,
+                this._callbacks.onUseGameDataChanged
             )
         );
 

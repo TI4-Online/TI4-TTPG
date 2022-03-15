@@ -5,6 +5,8 @@ const { globalEvents, world } = require("../../wrapper/api");
 const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 
+let _useGameData = false;
+
 function onPlayerCountChanged(slider, player, value) {
     world.TI4.config.setPlayerCount(value, player);
 }
@@ -34,6 +36,11 @@ function onUseCodex2Changed(checkBox, player, isChecked) {
     world.TI4.config.setCodex2(isChecked);
 }
 
+function onUseGameDataChanged(checkBox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    _useGameData = isChecked;
+}
+
 function onSetupClicked(button, player) {
     // Record setup timestamp for gamedata.
     const timestamp = Date.now() / 1000;
@@ -51,6 +58,11 @@ function onSetupClicked(button, player) {
 
     // Tell world setup happened.
     globalEvents.TI4.onGameSetup.trigger(this._state, player);
+
+    // Kick off game data.
+    if (_useGameData) {
+        world.TI4.gameData.enable();
+    }
 }
 
 class GameSetup {
@@ -63,6 +75,7 @@ class GameSetup {
             onUseOmegaChanged,
             onUseCodex1Changed,
             onUseCodex2Changed,
+            onUseGameDataChanged,
             onSetupClicked,
         }).create();
     }
