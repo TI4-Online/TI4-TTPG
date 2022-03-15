@@ -1,21 +1,13 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
-const { DealDiscard } = require("../../lib/card/deal-discard");
-const { Hyperlane } = require("../../lib/map-string/hyperlane");
-const { MapStringLoad } = require("../../lib/map-string/map-string-load");
-const { MapStringSave } = require("../../lib/map-string/map-string-save");
+const assert = require("../../../wrapper/assert-wrapper");
+const { DealDiscard } = require("../../../lib/card/deal-discard");
+const { Hyperlane } = require("../../../lib/map-string/hyperlane");
+const { MapStringLoad } = require("../../../lib/map-string/map-string-load");
+const { MapStringSave } = require("../../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const PositionToPlanet = require("../../lib/system/position-to-planet");
-const { Spawn } = require("../../setup/spawn/spawn");
-const {
-    Card,
-    GameObject,
-    Rotator,
-    UIElement,
-    Vector,
-    world,
-} = require("../../wrapper/api");
+const { ObjectNamespace } = require("../../../lib/object-namespace");
+const PositionToPlanet = require("../../../lib/system/position-to-planet");
+const { Spawn } = require("../../../setup/spawn/spawn");
+const { Card, Rotator, world } = require("../../../wrapper/api");
 
 class MapTool {
     static getMapTilesContainer() {
@@ -32,12 +24,15 @@ class MapTool {
         throw new Error("MapTool.getMapTilesContainer: no container");
     }
 
-    constructor(gameObject) {
-        assert(!gameObject || gameObject instanceof GameObject);
+    constructor(doRefresh) {
+        assert(typeof doRefresh === "function");
+        this._doRefresh = doRefresh;
 
         // Pass wrapped functions that call with "this" correctly.
         const onButtonCallbacks = {
             clear: () => {
+                this.clearFrontierTokens();
+                this.clearCards();
                 this.clear();
             },
             save: () => {
@@ -63,15 +58,6 @@ class MapTool {
             },
         };
         this._ui = new MapToolUI(onButtonCallbacks);
-
-        if (gameObject) {
-            const uiElement = new UIElement();
-            uiElement.position = new Vector(0, 0, 5);
-            uiElement.widget = new CollapsiblePanel().setChild(this._ui);
-            uiElement.anchorY = 0;
-            gameObject.addUI(uiElement);
-            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
-        }
     }
 
     getUI() {
@@ -100,6 +86,7 @@ class MapTool {
         const mapString = MapStringSave.save();
         console.log(`MapTool.save: "${mapString}"`);
         this._ui.setMapString(mapString);
+        this._doRefresh();
     }
 
     load() {

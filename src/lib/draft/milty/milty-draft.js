@@ -3,10 +3,7 @@ const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { MapStringLoad } = require("../../map-string/map-string-load");
-const { MiltyDraftSettingsUI } = require("./milty-draft-settings-ui");
 const { MiltyDraftUI } = require("./milty-draft-ui");
-const { MiltyFactionGenerator } = require("./milty-faction-generator");
-const { MiltySliceGenerator } = require("./milty-slice-generator");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
 const { PlayerDeskSetup } = require("../../player-desk/player-desk-setup");
@@ -28,72 +25,10 @@ class MiltyDraft {
         this._draftSelectionManager = new DraftSelectionManager().setBorderSize(
             SELECTION_BORDER_SIZE * this._scale
         );
-
-        const sliceGenerator = new MiltySliceGenerator();
-        const factionGenerator = new MiltyFactionGenerator();
-        const callbacks = {
-            onFinish: (customConfig) => {
-                console.log("MiltyDraft.Settings.onFinish");
-                this.cancel();
-
-                this._sliceDataArray = [];
-                this._factionDataArray = [];
-                this._seatDataArray = [];
-
-                sliceGenerator.generate().forEach((slice, index) => {
-                    console.log(`adding slice [${slice.join(",")}]`);
-                    const label = locale("ui.draft.slice_label", {
-                        index: index + 1,
-                    });
-                    this.addSlice(slice, false, label);
-                });
-                factionGenerator.generate().forEach((faction) => {
-                    const nsidName = faction.nsidName;
-                    console.log(`adding faction [${nsidName}]`);
-                    this.addFaction(faction.nsidName);
-                });
-                this.setSpeakerIndex(-1); // random
-
-                // If custom config set slices, labels, or factions use those instead.
-                const custom = MiltyUtil.parseCustomConfig(customConfig);
-                if (custom) {
-                    const error = MiltyUtil.getCustomConfigError(custom);
-                    if (error) {
-                        Broadcast.chatAll(error);
-                        return false;
-                    }
-                    if (custom.slices.length < world.TI4.config.playerCount) {
-                        Broadcast.chatAll("not enough slices for player count");
-                        return false;
-                    }
-                    this._sliceDataArray = [];
-                    for (let i = 0; i < custom.slices.length; i++) {
-                        const slice = custom.slices[i];
-                        const label = custom.labels[i];
-                        this.addSlice(slice, false, label);
-                    }
-                }
-
-                this.createPlayerUIs();
-                return true;
-            },
-            onCancel: () => {
-                console.log("MiltyDraft.Settings.onCancel");
-                this.cancel();
-            },
-        };
-        this._ui = new MiltyDraftSettingsUI(
-            sliceGenerator,
-            factionGenerator,
-            callbacks
-        );
     }
 
-    /**
-     * UI for showing in the unified phase UI.
-     */
-    getUI() {
-        return this._ui;
+    resetSlices() {
+        this._sliceDataArray = [];
     }
 
     addSlice(slice, color, label) {

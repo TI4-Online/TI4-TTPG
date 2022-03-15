@@ -141,6 +141,7 @@ world.TI4 = {
     },
 };
 
+require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");

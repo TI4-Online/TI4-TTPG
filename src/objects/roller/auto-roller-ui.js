@@ -1,9 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { System } = require("../../lib/system/system");
-const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
+const CONFIG = require("../../game-ui/game-ui-config");
 const {
-    Border,
     Button,
     GameObject,
     HorizontalBox,
@@ -18,7 +17,7 @@ const {
 /**
  * Manage the UI on an AutoRoller object.
  */
-class AutoRollerUI extends Border {
+class AutoRollerUI extends LayoutBox {
     /**
      * Constructor.
      *
@@ -43,12 +42,18 @@ class AutoRollerUI extends Border {
         return this;
     }
 
-    _update(panels) {
-        assert(typeof panels === typeof []);
-        this.setChild(panels[panels.length - 1]);
+    setDoRefresh(doRefresh) {
+        assert(typeof doRefresh === "function");
+        this._doRefresh = doRefresh;
+        return this;
+    }
 
+    _update() {
         if (this._gameObject && this._uiElement) {
             this._gameObject.updateUI(this._uiElement);
+        }
+        if (this._doRefresh) {
+            this._doRefresh();
         }
     }
 
@@ -56,121 +61,24 @@ class AutoRollerUI extends Border {
      * Reset for "no system activated".
      */
     resetAwaitingSystemActivation() {
-        const panels = [new VerticalBox().setChildDistance(5)];
+        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
-        const addLayoutButton = (
-            parent,
-            localeText,
-            combatType,
-            planet,
-            fontSize,
-            maxWidth,
-            maxHeight
-        ) => {
-            assert(typeof parent === "object");
-            const lbox1 = new LayoutBox()
-                .setOverrideWidth(maxWidth)
-                .setOverrideHeight(maxHeight);
-            const button = new Button()
-                .setText(locale(localeText))
-                .setFontSize(fontSize);
-            const lbox2 = new LayoutBox()
-                .setVerticalAlignment(2)
-                .setHorizontalAlignment(2);
-            const hpanel = new HorizontalBox().setChildDistance(5);
-            button.onClicked.add((button, player) => {
-                this._onButton(combatType, planet, player);
-            });
-            lbox1.setChild(button);
-            hpanel.addChild(lbox1);
-            lbox2.setChild(hpanel);
-            parent[parent.length - 1].addChild(lbox2);
-        };
+        const message = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.message.no_system_activated"));
+        panel.addChild(message);
 
-        const addText = (parent, localeText) => {
-            assert(typeof parent === typeof []);
-            const text = new Text()
-                .setText(locale(localeText))
-                .setJustification(TextJustification.Center);
-            parent[parent.length - 1].addChild(text);
-            return text;
-        };
+        const reportModifiers = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.roller.report_modifiers"));
+        reportModifiers.onClicked.add((button, player) => {
+            this._onButton("reportModifiers", false, player);
+        });
+        panel.addChild(reportModifiers);
 
-        const addLayoutText = (
-            parent,
-            localeText,
-            fontSize,
-            maxWidth,
-            maxHeight
-        ) => {
-            assert(typeof parent === typeof []);
-            const text = new Text()
-                .setText(locale(localeText))
-                .setJustification(TextJustification.Center)
-                .setFontSize(fontSize);
-            const lbox1 = new LayoutBox()
-                .setOverrideWidth(maxWidth)
-                .setOverrideHeight(maxHeight);
-            const lbox2 = new LayoutBox()
-                .setVerticalAlignment(2)
-                .setHorizontalAlignment(2);
-            const hpanel = new HorizontalBox().setChildDistance(5);
-            lbox1.setChild(text);
-            hpanel.addChild(lbox1);
-            lbox2.setChild(hpanel);
-            parent[parent.length - 1].addChild(lbox2);
-        };
+        this.setChild(panel);
 
-        const addVerticalSubPanel = (parent, spacing) => {
-            assert(typeof parent === typeof []);
-            const panel = new VerticalBox().setChildDistance(spacing);
-            parent[parent.length - 1].addChild(panel);
-            parent.push(panel);
-        };
-
-        addText(panels, "ui.message.no_system_activated");
-
-        //Extra
-        addVerticalSubPanel(panels, 0);
-        addLayoutText(panels, locale("ui.label.etc"), 8, -1, -1);
-        addLayoutButton(
-            panels,
-            "ui.roller.report_modifiers",
-            "reportModifiers",
-            false,
-            7,
-            100,
-            -1
-        );
-        panels.pop();
-
-        //Strategic Action Panel
-        panels.push(new VerticalBox().setChildDistance(5));
-        addText(panels, locale("ui.strategy.instructions"));
-
-        //Component Action Panel
-        panels.push(new VerticalBox().setChildDistance(5));
-        addText(panels, locale("ui.component.instructions"));
-
-        const actionTypes = new TabbedPanel(false)
-            .addTab(locale("ui.tab.tactical_action"), panels[0], true)
-            .addTab(locale("ui.tab.strategic_action"), panels[1], false)
-            .addTab(locale("ui.tab.component_action"), panels[2], false);
-        panels.push(
-            new VerticalBox().setChildDistance(5).addChild(actionTypes)
-        );
-
-        addLayoutButton(
-            panels,
-            locale("ui.action.end_turn"),
-            "endTurn",
-            false,
-            12,
-            300,
-            -1
-        );
-
-        this._update(panels);
+        this._update();
     }
 
     /**
@@ -226,15 +134,6 @@ class AutoRollerUI extends Border {
             hpanel.addChild(lbox1);
             lbox2.setChild(hpanel);
             parent[parent.length - 1].addChild(lbox2);
-        };
-
-        const addText = (parent, localeText) => {
-            assert(typeof parent === typeof []);
-            const text = new Text()
-                .setText(locale(localeText))
-                .setJustification(TextJustification.Center);
-            parent[parent.length - 1].addChild(text);
-            return text;
         };
 
         const addLayoutText = (
@@ -425,7 +324,6 @@ class AutoRollerUI extends Border {
 
         //Extra
         addVerticalSubPanel(panels, 0);
-        addLayoutText(panels, locale("ui.label.etc"), 8, false, -1, -1);
         addLayoutButton(
             panels,
             "ui.roller.report_modifiers",
@@ -437,32 +335,8 @@ class AutoRollerUI extends Border {
         );
         panels.pop();
 
-        //Strategic Action Panel
-        panels.push(new VerticalBox().setChildDistance(5));
-        addText(panels, locale("ui.strategy.instructions"));
-
-        //Component Action Panel
-        panels.push(new VerticalBox().setChildDistance(5));
-        addText(panels, locale("ui.component.instructions"));
-
-        const actionTypes = new TabbedPanel(false)
-            .addTab(locale("ui.tab.tactical_action"), panels[0], true)
-            .addTab(locale("ui.tab.strategic_action"), panels[1], false)
-            .addTab(locale("ui.tab.component_action"), panels[2], false);
-        panels.push(
-            new VerticalBox().setChildDistance(5).addChild(actionTypes)
-        );
-        addLayoutButton(
-            panels,
-            locale("ui.action.end_turn"),
-            "endTurn",
-            false,
-            12,
-            300,
-            -1
-        );
-
-        this._update(panels);
+        this.setChild(panels[panels.length - 1]);
+        this._update();
     }
 }
 

@@ -17,6 +17,8 @@ class TabbedPanel extends Border {
     constructor(includeCollapseButton) {
         super();
 
+        this._fontSize = undefined;
+
         this._verticalBox = new VerticalBox();
         super.setChild(this._verticalBox);
 
@@ -38,6 +40,26 @@ class TabbedPanel extends Border {
             });
             this._tabButtons.addChild(collapseButton);
         }
+    }
+
+    setFontSize(value) {
+        assert(typeof value === "number");
+        this._fontSize = value;
+
+        for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
+            const tabButton = this._tabButtons.getChildAt(i);
+            if (!tabButton) {
+                break;
+            }
+            tabButton.setFontSize(this._fontSize);
+        }
+        return this;
+    }
+
+    setSpacing(value) {
+        this._verticalBox.setChildDistance(value);
+        this._tabButtons.setChildDistance(value);
+        return this;
     }
 
     _selectTab(label) {
@@ -63,6 +85,9 @@ class TabbedPanel extends Border {
         assert(widget instanceof Widget);
 
         const tabButton = new Button().setText(label);
+        if (this._fontSize) {
+            tabButton.setFontSize(this._fontSize);
+        }
         tabButton.onClicked.add((button, player) => {
             this._selectTab(label);
         });

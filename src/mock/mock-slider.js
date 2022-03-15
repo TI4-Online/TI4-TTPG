@@ -6,6 +6,15 @@ class Slider extends TextWidgetBase {
         super(data);
         this._stepSize = (data && data.stepSize) || undefined;
         this._maxValue = (data && data.maxValue) || undefined;
+        this._minValue = (data && data.minValue) || undefined;
+    }
+
+    getMaxValue() {
+        return this._maxValue;
+    }
+
+    getMinValue() {
+        return this._minValue;
     }
 
     setStepSize(size) {
@@ -21,9 +30,17 @@ class Slider extends TextWidgetBase {
         this._maxValue = maxValue;
         return this;
     }
+    setMinValue(minValue) {
+        this._minValue = minValue;
+        return this;
+    }
 
-    getMaxValue() {
-        return this._maxValue;
+    setTextBoxWidth(value) {
+        return this;
+    }
+
+    setValue(value) {
+        return this;
     }
 
     onValueChanged = new TriggerableMulticastDelegate();

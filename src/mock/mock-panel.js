@@ -12,9 +12,15 @@ class Panel extends Widget {
         return this;
     }
 
+    getChildAt(index) {
+        return this._children[index];
+    }
+
     getChildren() {
         return this._children;
     }
+
+    removeChildAt(index) {}
 
     setChildDistance() {
         return this;

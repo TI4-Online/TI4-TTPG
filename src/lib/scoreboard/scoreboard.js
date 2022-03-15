@@ -87,19 +87,86 @@ class Scoreboard {
         assert(scoreboard instanceof GameObject);
         assert(token instanceof GameObject);
 
-        const pos = token.getPosition();
-        const localPos = scoreboard.worldPositionToLocal(pos);
-
-        let dir = 1;
-        let slotCount = 11;
-        if (Facing.isFaceDown(scoreboard)) {
-            dir = -1;
-            slotCount = 15;
-        }
         const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
         const slotWidth = scoreboardLocalWidth / slotCount;
 
-        let fromLeft = scoreboardLocalWidth / 2 + localPos.x;
+        let dir = -1;
+        let slotCount = 11;
+        if (Facing.isFaceDown(scoreboard)) {
+            dir = 1;
+            slotCount = 15;
+        }
+
+        const pos = token.getPosition();
+        const localPos = scoreboard.worldPositionToLocal(pos);
+        const leftOffset = localPos.x * dir + scoreboardLocalWidth / 2;
+        const score = Math.floor(leftOffset / slotWidth);
+        return score;
+    }
+
+    static getPlayerSlotToTokens(scoreboard) {
+        assert(scoreboard instanceof GameObject);
+
+        const size = scoreboard.getSize();
+        const bb = {
+            min: {
+                x: -size.x / 2,
+                y: -size.y / 2,
+            },
+            max: {
+                x: size.x / 2,
+                y: size.y / 2,
+            },
+        };
+
+        const playerSlotToTokens = {};
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!ObjectNamespace.isControlToken()) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const localPos = scoreboard.worldPositionToLocal(pos);
+            if (
+                localPos.x < bb.min.x ||
+                localPos.x > bb.max.x ||
+                localPos.y < bb.min.y ||
+                localPos.y > bb.max.y
+            ) {
+                continue;
+            }
+            const playerSlot = obj.getOwningPlayerSlot();
+            if (playerSlot < 0) {
+                continue;
+            }
+            let tokens = playerSlotToTokens[playerSlot];
+            if (!tokens) {
+                tokens = [];
+                playerSlotToTokens[playerSlot] = tokens;
+            }
+            tokens.push(obj);
+        }
+        return playerSlotToTokens;
+    }
+
+    static getPlayerSlotToScore(scoreboard) {
+        assert(scoreboard instanceof GameObject);
+
+        const playerSlotToScore = {};
+        const playerSlotToTokens = Scoreboard.getPlayerSlotToTokens(scoreboard);
+        for (const [playerSlot, tokens] of Object.entries(playerSlotToTokens)) {
+            for (const token of tokens) {
+                let score = Scoreboard.getScoreFromToken(scoreboard, token);
+                const before = playerSlotToScore[playerSlot];
+                if (before) {
+                    score = Math.max(before, score);
+                }
+                playerSlotToScore[playerSlot] = score;
+            }
+        }
+        return playerSlotToScore;
     }
 }
 
