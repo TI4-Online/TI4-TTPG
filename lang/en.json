@@ -82,7 +82,7 @@
 
     "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
 
-    "ui.component.instructions": "Player uses the component action of \none their cards or abilities.\nFollow the instructions on that card/ability.",
+    "ui.component.instructions": "Player uses the component action of a cards or ability.\nFollow the instructions on that component.",
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",

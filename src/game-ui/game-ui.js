@@ -2,6 +2,7 @@
  * Attach Game UI to world.
  */
 const locale = require("../lib/locale");
+const { GameSetup } = require("../setup/game-setup/game-setup");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
@@ -17,6 +18,7 @@ const {
     UIElement,
     Vector,
     VerticalBox,
+    globalEvents,
     world,
 } = require("../wrapper/api");
 const { TabAction } = require("./tab-action/tab-action");
@@ -50,9 +52,26 @@ class GameUI {
         };
 
         world.addUI(this._uiElement);
+
+        globalEvents.TI4.onGameSetup.add(() => {
+            this.fill();
+        });
     }
 
     fill() {
+        if (world.TI4.config.timestamp <= 0) {
+            this.fillForSetup();
+        } else {
+            this.fillForGame();
+        }
+    }
+
+    fillForSetup() {
+        const gameSetup = new GameSetup();
+        this._layout.setChild(gameSetup.getUI());
+    }
+
+    fillForGame() {
         const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
         this._layout.setChild(panel);
 

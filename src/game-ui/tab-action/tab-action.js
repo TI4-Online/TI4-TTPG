@@ -2,7 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Border, Button, VerticalBox, world } = require("../../wrapper/api");
+const { Button, Text, VerticalBox, world } = require("../../wrapper/api");
+const { AutoRoller } = require("../../objects/roller/auto-roller");
 
 class TabAction {
     constructor(doRefresh) {
@@ -12,15 +13,27 @@ class TabAction {
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
 
+        const autoRoller = new AutoRoller();
+        autoRoller.getUI().setDoRefresh(doRefresh);
         tabbedPanel.addTab(
             locale("ui.tab.tactical_action"),
-            new Border(),
+            autoRoller.getUI(),
             true
         );
 
-        tabbedPanel.addTab(locale("ui.tab.strategic_action"), new Border());
+        tabbedPanel.addTab(
+            locale("ui.tab.strategic_action"),
+            new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setText(locale("ui.strategy.instructions"))
+        );
 
-        tabbedPanel.addTab(locale("ui.tab.component_action"), new Border());
+        tabbedPanel.addTab(
+            locale("ui.tab.component_action"),
+            new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setText(locale("ui.component.instructions"))
+        );
 
         const verticalBox = new VerticalBox().setChildDistance(CONFIG.spacing);
         verticalBox.addChild(tabbedPanel);
@@ -31,7 +44,7 @@ class TabAction {
         endTurn.onClicked.add((button, player) => {
             world.TI4.turns.endTurn(player);
         });
-        verticalBox.addChild(endTurn);
+        verticalBox.addChild(endTurn, 1);
 
         this._ui = verticalBox;
     }
