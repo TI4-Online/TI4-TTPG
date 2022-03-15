@@ -143,6 +143,7 @@ world.TI4 = {
 
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
+require("./global/gamedata-key");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/patch-infinite-container");
@@ -156,3 +157,7 @@ require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
+
+if (!world.__isMock) {
+    GameData.maybeRestartGameData();
+}

@@ -1,13 +1,25 @@
 const assert = require("../../wrapper/assert-wrapper");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("../../lib/saved-data/global-saved-data");
 const { fetch, world } = require("../../wrapper/api");
 
-const UPDATORS = [require("./updator-config")];
+const UPDATORS = [
+    require("./updator-config"),
+    require("./updator-player-score"),
+    require("./updator-player-strategy-cards"),
+];
 
-const DEFAULT_HOST = "ti4-game-data.appspot.com";
+//const DEFAULT_HOST = "ti4-game-data.appspot.com";
+const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
-const DEFAULT_DELAY_MSECS = 10 * 60 * 1000;
-const KEY_DELAY_MSECS = 30 * 1000;
+const POSTKEY = "postkey2";
+const POSTTIMESTAMP = "posttimestamp2";
+
+const DEFAULT_DELAY_MSECS = 15 * 60 * 1000;
+const KEY_DELAY_MSECS = 45 * 1000;
 
 // TIER 1:
 // score
@@ -20,10 +32,28 @@ const KEY_DELAY_MSECS = 30 * 1000;
  * When used with streamer mode will include player names.
  */
 class GameData {
+    static maybeRestartGameData() {
+        const config = GlobalSavedData.get(
+            GLOBAL_SAVED_DATA_KEY.GAME_DATA_CONFIG
+        );
+        if (config && config.enabled) {
+            world.TI4.gameData.enable();
+        }
+    }
+
     constructor() {
+        this._enabled = false;
         this._key = false;
         this._intervalHandle = false;
         this._extraData = false;
+
+        this._lastPostString = false;
+    }
+
+    updatePersistentConfig() {
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.GAME_DATA_CONFIG, {
+            enabled: this._enabled,
+        });
     }
 
     /**
@@ -33,6 +63,11 @@ class GameData {
      */
     enable() {
         this.disable(); // cancel if currently active
+        this._enabled = true;
+        this.updatePersistentConfig();
+
+        // Update immediately.
+        this._asyncUpdate();
 
         const delay = this._key ? KEY_DELAY_MSECS : DEFAULT_DELAY_MSECS;
         this._intervalHandle = setInterval(() => {
@@ -48,6 +83,9 @@ class GameData {
      * @returns {GameData} self, for chaining
      */
     disable() {
+        this._enabled = false;
+        this.updatePersistentConfig();
+
         if (this._intervalHandle) {
             clearInterval(this._intervalHandle);
             this._intervalHandle = false;
@@ -95,14 +133,19 @@ class GameData {
     }
 
     _asyncUpdate() {
+        //console.log(`GameData._asyncUpdate ${Date.now() / 1000}`);
         const data = this._createGameDataShell();
-        const updators = [...UPDATORS];
+        const updators = [...UPDATORS]; // copy can use shift to mutate
         const doNextUpdatorOrPost = () => {
+            if (!this._enabled) {
+                return;
+            }
             const updator = updators.shift();
             if (!updator) {
                 this._post(data);
                 return;
             }
+            updator(data);
             process.nextTick(doNextUpdatorOrPost);
         };
         process.nextTick(doNextUpdatorOrPost);
@@ -110,11 +153,28 @@ class GameData {
 
     _createGameDataShell() {
         const data = {
-            timestamp: Date.now() / 1000,
             players: world.TI4.getAllPlayerDesks().map((desk) => {
                 return { color: desk.colorName };
             }),
         };
+
+        // Root's overlay requires colors in order.  Give "required" color
+        // as well as actual color.
+        const REQUIRED_COLORS = [
+            "White",
+            "Blue",
+            "Purple",
+            "Yellow",
+            "Red",
+            "Green",
+            "Pink",
+            "Orange",
+        ];
+        data.players.forEach((playerData, index) => {
+            playerData.actualColor = playerData.color;
+            playerData.color = REQUIRED_COLORS[index];
+        });
+
         // Streamer data includes player names.
         if (this._key) {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -131,7 +191,7 @@ class GameData {
 
     _getUrl() {
         const host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
-        const path = this._key ? "postkey" : "posttimestamp";
+        const path = this._key ? POSTKEY : POSTTIMESTAMP;
         const urlArgs = [`timestamp=${world.TI4.config.timestamp}`];
         if (this._key) {
             urlArgs.push(`key=${this._key}`);
@@ -140,7 +200,18 @@ class GameData {
     }
 
     _post(data) {
-        const url = this.getUrl();
+        // Drop if nothing changed.  No native digest, just keep whole string.
+        const thisPostStr = JSON.stringify(data);
+        if (this._lastPostString === thisPostStr) {
+            return; // nothing changed
+        }
+        this._lastPostString = thisPostStr;
+
+        // Add current timestamp.
+        data.timestamp = Date.now() / 1000;
+
+        // Post.
+        const url = this._getUrl();
         const fetchOptions = {
             body: JSON.stringify(data),
             method: "POST",
@@ -150,4 +221,4 @@ class GameData {
     }
 }
 
-module.exports = { GameData };
+module.exports = { GameData, DEFAULT_HOST, POSTKEY, POSTTIMESTAMP };
