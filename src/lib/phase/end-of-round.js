@@ -275,7 +275,9 @@ class EndStatusPhase {
         assert(snapPoint);
         const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
         const yaw = snapPoint.getSnapRotation();
-        const rot = new Rotator(0, yaw, 0);
+        const rot = new Rotator(0, yaw, 0).compose(
+            strategyCardMat.getRotation()
+        );
         strategyCardObj.setPosition(pos, ANIMATION_SPEED);
         strategyCardObj.setRotation(rot, ANIMATION_SPEED);
     }
