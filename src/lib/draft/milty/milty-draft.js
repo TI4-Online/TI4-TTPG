@@ -3,10 +3,7 @@ const locale = require("../../locale");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { MapStringLoad } = require("../../map-string/map-string-load");
-const { MiltyDraftSettingsUI } = require("./milty-draft-settings-ui");
 const { MiltyDraftUI } = require("./milty-draft-ui");
-const { MiltyFactionGenerator } = require("./milty-faction-generator");
-const { MiltySliceGenerator } = require("./milty-slice-generator");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
 const { PlayerDeskSetup } = require("../../player-desk/player-desk-setup");
@@ -28,13 +25,6 @@ class MiltyDraft {
         this._draftSelectionManager = new DraftSelectionManager().setBorderSize(
             SELECTION_BORDER_SIZE * this._scale
         );
-    }
-
-    /**
-     * UI for showing in the unified phase UI.
-     */
-    getUI() {
-        return this._ui;
     }
 
     resetSlices() {

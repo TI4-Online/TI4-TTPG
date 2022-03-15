@@ -136,15 +136,6 @@ class AutoRollerUI extends LayoutBox {
             parent[parent.length - 1].addChild(lbox2);
         };
 
-        const addText = (parent, localeText) => {
-            assert(typeof parent === typeof []);
-            const text = new Text()
-                .setText(locale(localeText))
-                .setJustification(TextJustification.Center);
-            parent[parent.length - 1].addChild(text);
-            return text;
-        };
-
         const addLayoutText = (
             parent,
             localeText,
