@@ -722,7 +722,7 @@ module.exports = [
         requirements: {
             Red: 2,
         },
-        abbrev: "String Wing II",
+        abbrev: "Strike Wing II",
         faction: "argent",
         source: "PoK",
         unitPosition: 5,
