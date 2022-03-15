@@ -2,32 +2,64 @@
  * Attach Game UI to world.
  */
 const { TableLayout } = require("../table/table-layout");
+const CONFIG = require("./game-ui-config");
 const {
     Border,
+    LayoutBox,
     Rotator,
     Text,
     UIElement,
     Vector,
+    VerticalBox,
     world,
 } = require("../wrapper/api");
+const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
+const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 
-const anchor = TableLayout.anchor.gameUI;
+class GameUI {
+    constructor() {
+        const anchor = TableLayout.anchor.gameUI;
 
-const _border = new Border().setChild(
-    new Text().setText("HELLO").setFontSize(40)
-);
+        this._layout = new LayoutBox().setPadding(
+            CONFIG.padding,
+            CONFIG.padding,
+            CONFIG.padding,
+            CONFIG.padding
+        );
 
-const _uiElement = new UIElement();
-_uiElement.useWidgetSize = false;
-_uiElement.width = anchor.width;
-_uiElement.height = anchor.height;
-_uiElement.anchorY = 0;
-_uiElement.position = new Vector(
-    anchor.pos.x,
-    anchor.pos.y,
-    world.getTableHeight() + 0.01
-);
-_uiElement.rotation = new Rotator(0, anchor.yaw, 0);
-_uiElement.widget = _border;
+        this._uiElement = new UIElement();
+        this._uiElement.useWidgetSize = false;
+        this._uiElement.width = anchor.width;
+        this._uiElement.height = anchor.height;
+        this._uiElement.anchorY = 0;
+        this._uiElement.position = new Vector(
+            anchor.pos.x,
+            anchor.pos.y,
+            world.getTableHeight() + 0.01
+        );
+        this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
+        this._uiElement.widget = new Border().setChild(this._layout);
 
-world.addUI(_uiElement);
+        world.addUI(this._uiElement);
+    }
+
+    fill() {
+        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        this._layout.setChild(panel);
+
+        const turnOrderPanel = new TurnOrderPanel()
+            .setFontSize(CONFIG.fontSize)
+            .setSpacing(CONFIG.spacing);
+        panel.addChild(turnOrderPanel);
+
+        const tabbedPanel = new TabbedPanel().setFontSize(CONFIG.fontSize);
+        panel.addChild(tabbedPanel);
+
+        tabbedPanel.addTab("test", new Text().setText("foo"));
+    }
+}
+
+const gameUI = new GameUI();
+process.nextTick(() => {
+    gameUI.fill();
+});
