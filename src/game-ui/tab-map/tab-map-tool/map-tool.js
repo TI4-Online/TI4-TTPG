@@ -1,13 +1,13 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { DealDiscard } = require("../../lib/card/deal-discard");
-const { Hyperlane } = require("../../lib/map-string/hyperlane");
-const { MapStringLoad } = require("../../lib/map-string/map-string-load");
-const { MapStringSave } = require("../../lib/map-string/map-string-save");
+const assert = require("../../../wrapper/assert-wrapper");
+const { DealDiscard } = require("../../../lib/card/deal-discard");
+const { Hyperlane } = require("../../../lib/map-string/hyperlane");
+const { MapStringLoad } = require("../../../lib/map-string/map-string-load");
+const { MapStringSave } = require("../../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const PositionToPlanet = require("../../lib/system/position-to-planet");
-const { Spawn } = require("../../setup/spawn/spawn");
-const { Card, Rotator, world } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../../../lib/object-namespace");
+const PositionToPlanet = require("../../../lib/system/position-to-planet");
+const { Spawn } = require("../../../setup/spawn/spawn");
+const { Card, Rotator, world } = require("../../../wrapper/api");
 
 class MapTool {
     static getMapTilesContainer() {

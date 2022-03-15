@@ -1,13 +1,13 @@
-const assert = require("../../wrapper/assert-wrapper");
-const locale = require("../../lib/locale");
-const CONFIG = require("../game-ui-config");
+const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
+const CONFIG = require("../../game-ui-config");
 const {
     Button,
     HorizontalBox,
     LayoutBox,
     MultilineTextBox,
     VerticalBox,
-} = require("../../wrapper/api");
+} = require("../../../wrapper/api");
 
 class MapToolUI extends VerticalBox {
     constructor(onButtonCallbacks) {

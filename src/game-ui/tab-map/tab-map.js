@@ -1,6 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { MapTool } = require("./map-tool");
+const { MapTool } = require("./tab-map-tool/map-tool");
 const { MiltyDraft } = require("../../lib/draft/milty/milty-draft");
 const { SCPTDraft } = require("../../lib/draft/scpt/scpt-draft");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
