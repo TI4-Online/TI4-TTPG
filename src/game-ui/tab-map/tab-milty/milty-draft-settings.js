@@ -1,3 +1,4 @@
+const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const { Broadcast } = require("../../../lib/broadcast");
 const { MiltyDraft } = require("../../../lib/draft/milty/milty-draft");
@@ -9,31 +10,37 @@ const {
     MiltySliceGenerator,
 } = require("../../../lib/draft/milty/milty-slice-generator");
 const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
-const { world } = require("../../../wrapper/api");
+const { Player, world } = require("../../../wrapper/api");
 
 class MiltyDraftSettings {
     constructor() {
         const sliceGenerator = new MiltySliceGenerator();
         const factionGenerator = new MiltyFactionGenerator();
-        const miltyDraft = new MiltyDraft();
+        this._miltyDraft = undefined;
         const callbacks = {
-            onFinish: (customConfig) => {
+            onFinish: (customConfig, player) => {
+                assert(player instanceof Player);
                 console.log("MiltyDraft.Settings.onFinish");
-                miltyDraft.cancel();
+                if (this._miltyDraft) {
+                    this._miltyDraft.cancel();
+                    this._miltyDraft = undefined;
+                }
+
+                this._miltyDraft = new MiltyDraft();
 
                 sliceGenerator.generate().forEach((slice, index) => {
                     console.log(`adding slice [${slice.join(",")}]`);
                     const label = locale("ui.draft.slice_label", {
                         index: index + 1,
                     });
-                    miltyDraft.addSlice(slice, false, label);
+                    this._miltyDraft.addSlice(slice, false, label);
                 });
                 factionGenerator.generate().forEach((faction) => {
                     const nsidName = faction.nsidName;
                     console.log(`adding faction [${nsidName}]`);
-                    miltyDraft.addFaction(faction.nsidName);
+                    this._miltyDraft.addFaction(faction.nsidName);
                 });
-                miltyDraft.setSpeakerIndex(-1); // random
+                this._miltyDraft.setSpeakerIndex(-1); // random
 
                 // If custom config set slices, labels, or factions use those instead.
                 const custom = MiltyUtil.parseCustomConfig(customConfig);
@@ -47,20 +54,25 @@ class MiltyDraftSettings {
                         Broadcast.chatAll("not enough slices for player count");
                         return false;
                     }
-                    miltyDraft.resetSlices();
+                    this._miltyDraft.resetSlices();
                     for (let i = 0; i < custom.slices.length; i++) {
                         const slice = custom.slices[i];
                         const label = custom.labels[i];
-                        miltyDraft.addSlice(slice, false, label);
+                        this._miltyDraft.addSlice(slice, false, label);
                     }
                 }
 
-                miltyDraft.createPlayerUIs();
+                const playerDesks = world.TI4.getAllPlayerDesks();
+                world.TI4.turns.randomizeTurnOrder(playerDesks, player);
+
+                this._miltyDraft.createPlayerUIs();
                 return true;
             },
-            onCancel: () => {
+            onCancel: (player) => {
+                assert(player instanceof Player);
                 console.log("MiltyDraft.Settings.onCancel");
-                miltyDraft.cancel();
+                this._miltyDraft.cancel();
+                this._miltyDraft = undefined;
             },
         };
         this._ui = new MiltyDraftSettingsUI(

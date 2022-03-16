@@ -8,33 +8,33 @@ const MATS = [
     {
         nsid: "mat:base/objectives_1",
         anchor: TableLayout.anchor.score,
-        pos: { x: 0, y: 10 },
-        yaw: 0,
+        pos: { x: 10, y: 0 },
+        yaw: -90,
     },
     {
         nsid: "token:base/scoreboard",
         anchor: TableLayout.anchor.score,
         pos: { x: 0, y: 0 },
-        yaw: 0,
+        yaw: -90,
     },
     {
         nsid: "mat:base/objectives_2",
         anchor: TableLayout.anchor.score,
-        pos: { x: 0, y: -10 },
-        yaw: 0,
+        pos: { x: -10, y: 0 },
+        yaw: -90,
     },
 
     {
         nsid: "mat:base/decks",
         anchor: TableLayout.anchor.score,
-        pos: { x: 14, y: -30 }, // 16.9 width
-        yaw: 0,
+        pos: { x: -30, y: 14 }, // 16.9 width
+        yaw: -90,
     },
     {
         nsid: "mat:pok/exploration",
         anchor: TableLayout.anchor.score,
-        pos: { x: -10, y: -29 }, // 26 width
-        yaw: 0,
+        pos: { x: -29, y: -10 }, // 26 width
+        yaw: -90,
     },
 
     //{

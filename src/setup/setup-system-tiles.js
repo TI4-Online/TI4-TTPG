@@ -10,8 +10,8 @@ const { Rotator, Vector, world } = require("../wrapper/api");
 const BAG = {
     nsid: "bag:base/generic",
     anchor: TableLayout.anchor.score,
-    pos: { x: 9, y: -50, z: 3 },
-    yaw: 90,
+    pos: { x: -50, y: 9, z: 3 },
+    yaw: 0,
     scale: { x: 0.8, y: 0.8, z: 0.5 },
     colorHex: "#0033AA",
 };

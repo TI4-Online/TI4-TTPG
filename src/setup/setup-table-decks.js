@@ -92,14 +92,14 @@ const TABLE_DECKS = [
     {
         nsidPrefix: "card.faction_token",
         anchor: TableLayout.anchor.score,
-        pos: { x: 30, y: -33, z: 5 },
-        yaw: -90,
+        pos: { x: -33, y: 30, z: 5 },
+        yaw: 0,
     },
     {
         nsidPrefix: "card.faction_reference",
         anchor: TableLayout.anchor.score,
-        pos: { x: 30, y: -26, z: 5 },
-        yaw: -90,
+        pos: { x: -26, y: 30, z: 5 },
+        yaw: 0,
     },
 ];
 

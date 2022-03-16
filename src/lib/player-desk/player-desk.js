@@ -20,8 +20,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
-const SEAT_CAMERA = {
-    pos: { x: -90, y: -6, z: 100 },
+const TAKE_SEAT_CAMERA = {
+    pos: { x: -90, y: 0, z: 70 },
 };
 
 let _playerDesks = false;
@@ -135,7 +135,7 @@ class PlayerDesk {
      */
     static getAllPlayerDesks() {
         if (_playerDesks) {
-            return _playerDesks;
+            return [..._playerDesks]; // copy in case caller mutates order
         }
         const playerCount = world.TI4.config.playerCount;
         _playerDesks = [];
@@ -411,8 +411,10 @@ class PlayerDesk {
 
         // Careful, need to look at a position on the top surface of
         // the table or else the camera can bug out and fall below table.
-        const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
-        const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
+        const pos = this.localPositionToWorld(TAKE_SEAT_CAMERA.pos);
+        const rot = pos.findLookAtRotation(
+            new Vector(0, 0, world.getTableHeight())
+        );
         player.setPositionAndRotation(pos, rot);
 
         // HACK HACK HACK

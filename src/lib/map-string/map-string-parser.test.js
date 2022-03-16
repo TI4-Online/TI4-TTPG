@@ -7,6 +7,10 @@ it("validate with numeric only", () => {
     assert.equal(validate("7 18 23"), true);
 });
 
+it("validate with 0 and -1", () => {
+    assert.equal(validate("7 0 -1"), true);
+});
+
 it("validate with only mecatol", () => {
     assert.equal(validate(""), true);
 });
@@ -42,6 +46,15 @@ it("parse with numeric only", () => {
         { tile: 7 },
         { tile: 18 },
         { tile: 23 },
+    ]);
+});
+
+it("parse with 0 and -1", () => {
+    assert.deepEqual(parse("7 0 -1"), [
+        { tile: 18 },
+        { tile: 7 },
+        { tile: 0 },
+        { tile: -1 },
     ]);
 });
 
