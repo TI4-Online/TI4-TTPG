@@ -20,7 +20,7 @@ class FactionTokenUI {
 
         this._labelFontSize = Math.min(255, Math.floor(size.h * 0.3));
         this._labelBox = new LayoutBox();
-        this._imageSize = Math.min(size.h,size.w);
+        this._imageSize = Math.min(size.h, size.w);
 
         canvas.addChild(
             this._labelBox,
@@ -46,7 +46,7 @@ class FactionTokenUI {
                 Faction.getByNsidName(factionNsidName).icon,
                 refPackageId
             );
-        this._factionIcon
+        this._factionIcon;
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));
         this._labelBox.setChild(draftSelection);

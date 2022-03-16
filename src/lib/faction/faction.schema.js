@@ -32,7 +32,6 @@ const FACTION_SCHEMA = {
         // Just NSID name ("card.promissory.muaat:base/fires_of_the_gashlai").
         promissoryNotes: { type: "array", items: { type: "string" } },
 
-
         // Image file of the faction eg. "global/factions/muaat_icon.png"
         icon: { type: "string" },
 

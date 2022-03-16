@@ -106,7 +106,7 @@ const FACTION_DATA = [
             heroes: ["conservator_procyon"],
         },
         promissoryNotes: ["blood_pact", "dark_pact"],
-        
+
         icon: "global/factions/empyrean_icon.png",
         source: "pok",
         startingTech: ["dark_energy_tap"],
