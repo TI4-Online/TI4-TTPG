@@ -1,6 +1,14 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { DraftSelectionWidget } = require("../draft-selection-widget");
-const { Button, Canvas, LayoutBox, world } = require("../../../wrapper/api");
+const { Faction } = require("../../faction/faction");
+const {
+    Canvas,
+    ImageButton,
+    ImageWidget,
+    LayoutBox,
+    refPackageId,
+    world,
+} = require("../../../wrapper/api");
 
 class FactionTokenUI {
     constructor(canvas, canvasOffset, size) {
@@ -12,6 +20,7 @@ class FactionTokenUI {
 
         this._labelFontSize = Math.min(255, Math.floor(size.h * 0.3));
         this._labelBox = new LayoutBox();
+        this._imageSize = Math.min(size.h,size.w);
 
         canvas.addChild(
             this._labelBox,
@@ -31,9 +40,13 @@ class FactionTokenUI {
             throw new Error(`unknown faction "${factionNsidName}`);
         }
 
-        const button = new Button()
-            .setFontSize(this._labelFontSize)
-            .setText(faction.nameAbbr);
+        const button = new ImageButton()
+            .setImageSize(this._imageSize, this._imageSize)
+            .setImage(
+                Faction.getByNsidName(factionNsidName).icon,
+                refPackageId
+            );
+        this._factionIcon
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));
         this._labelBox.setChild(draftSelection);
