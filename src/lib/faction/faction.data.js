@@ -10,6 +10,7 @@ const FACTION_DATA = [
             heroes: ["letani_miasmiala"],
         },
         promissoryNotes: ["stymie"],
+        icon: "global/factions/arborec_icon.png",
         source: "base",
         startingTech: ["magen_defense_grid"],
         startingUnits: {
@@ -39,6 +40,7 @@ const FACTION_DATA = [
             heroes: ["mirik_aun_sissiri"],
         },
         promissoryNotes: ["strike_wing_ambuscade"],
+        icon: "global/factions/argent_icon.png",
         source: "pok",
         startingTech: ["sarween_tools", "neural_motivator", "plasma_scoring"],
         startingUnits: {
@@ -69,6 +71,7 @@ const FACTION_DATA = [
             heroes: ["riftwalker_meian"],
         },
         promissoryNotes: ["creuss_iff"],
+        icon: "global/factions/creuss_icon.png",
         source: "base",
         startingTech: ["gravity_drive"],
         startingUnits: {
@@ -103,6 +106,8 @@ const FACTION_DATA = [
             heroes: ["conservator_procyon"],
         },
         promissoryNotes: ["blood_pact", "dark_pact"],
+        
+        icon: "global/factions/empyrean_icon.png",
         source: "pok",
         startingTech: ["dark_energy_tap"],
         startingUnits: {
@@ -126,6 +131,7 @@ const FACTION_DATA = [
             heroes: ["harrugh_gefhara"],
         },
         promissoryNotes: ["trade_convoys"],
+        icon: "global/factions/hacan_icon.png",
         source: "base",
         startingTech: ["antimass_deflectors", "sarween_tools"],
         startingUnits: {
@@ -149,6 +155,7 @@ const FACTION_DATA = [
             heroes: ["rin_the_masters_legacy"],
         },
         promissoryNotes: ["research_agreement"],
+        icon: "global/factions/jolnar_icon.png",
         source: "base",
         startingTech: [
             "antimass_deflectors",
@@ -178,6 +185,7 @@ const FACTION_DATA = [
             heroes: ["the_helmsman"],
         },
         promissoryNotes: ["cybernetic_enhancements"],
+        icon: "global/factions/l1z1x_icon.png",
         source: "base",
         startingTech: ["neural_motivator", "plasma_scoring"],
         startingUnits: {
@@ -202,6 +210,7 @@ const FACTION_DATA = [
             heroes: ["darktalon_treilla"],
         },
         promissoryNotes: ["war_funding"],
+        icon: "global/factions/letnev_icon.png",
         source: "base",
         startingTech: ["antimass_deflectors", "plasma_scoring"],
         startingUnits: {
@@ -226,6 +235,7 @@ const FACTION_DATA = [
             heroes: ["airo_shir_aur"],
         },
         promissoryNotes: ["scepter_of_dominion"],
+        icon: "global/factions/mahact_icon.png",
         source: "pok",
         startingTech: ["predictive_intelligence", "biostims"],
         startingUnits: {
@@ -255,6 +265,7 @@ const FACTION_DATA = [
             heroes: ["ipswitch_loose_cannon"],
         },
         promissoryNotes: ["promise_of_protection"],
+        icon: "global/factions/mentak_icon.png",
         source: "base",
         startingTech: ["sarween_tools", "plasma_scoring"],
         startingUnits: {
@@ -279,6 +290,7 @@ const FACTION_DATA = [
             heroes: ["adjudicator_baal"],
         },
         promissoryNotes: ["fires_of_the_gashlai"],
+        icon: "global/factions/muaat_icon.png",
         source: "base",
         startingTech: ["plasma_scoring"],
         startingUnits: {
@@ -311,6 +323,7 @@ const FACTION_DATA = [
             heroes: ["the_oracle"],
         },
         promissoryNotes: ["gift_of_prescience"],
+        icon: "global/factions/naalu_icon.png",
         source: "base",
         startingTech: ["neural_motivator", "sarween_tools"],
         startingUnits: {
@@ -346,6 +359,7 @@ const FACTION_DATA = [
             heroes: ["hesh_and_prit"],
         },
         promissoryNotes: ["black_market_forgery"],
+        icon: "global/factions/naazrokha_icon.png",
         source: "pok",
         startingTech: ["psychoarchaeology", "ai_development_algorithm"],
         startingUnits: {
@@ -374,6 +388,7 @@ const FACTION_DATA = [
             heroes: ["unitdsgnflayesh"],
         },
         promissoryNotes: ["antivirus"],
+        icon: "global/factions/nekro_icon.png",
         source: "base",
         startingTech: [
             "dacxive_animators",
@@ -418,6 +433,7 @@ const FACTION_DATA = [
             heroes: ["ahksyl_siven"],
         },
         promissoryNotes: ["the_cavalry"],
+        icon: "global/factions/nomad_icon.png",
         source: "pok",
         startingTech: ["sling_relay"],
         startingUnits: {
@@ -442,6 +458,7 @@ const FACTION_DATA = [
             heroes: ["shval_harbinger"],
         },
         promissoryNotes: ["tekklar_legion"],
+        icon: "global/factions/norr_icon.png",
         source: "base",
         startingTech: [],
         startingUnits: {
@@ -470,6 +487,7 @@ const FACTION_DATA = [
             heroes: ["gurno_aggero"],
         },
         promissoryNotes: ["raghs_call"],
+        icon: "global/factions/saar_icon.png",
         source: "base",
         startingTech: ["antimass_deflectors"],
         startingUnits: {
@@ -498,6 +516,7 @@ const FACTION_DATA = [
             heroes: ["jace_x_4th_air_legion"],
         },
         promissoryNotes: ["military_support"],
+        icon: "global/factions/sol_icon.png",
         source: "base",
         startingTech: ["antimass_deflectors", "neural_motivator"],
         startingUnits: {
@@ -528,6 +547,7 @@ const FACTION_DATA = [
             heroes: ["ul_the_progenitor"],
         },
         promissoryNotes: ["terraform"],
+        icon: "global/factions/ul_icon.png",
         source: "pok",
         startingTech: ["antimass_deflectors", "scanlink_drone_network"],
         startingUnits: {
@@ -564,6 +584,7 @@ const FACTION_DATA = [
             heroes: ["it_feeds_on_carrion"],
         },
         promissoryNotes: ["crucible"],
+        icon: "global/factions/vuilraith_icon.png",
         source: "pok",
         startingTech: ["self_assembly_routines"],
         startingUnits: {
@@ -599,6 +620,7 @@ const FACTION_DATA = [
             heroes: ["mathis_mathinus"],
         },
         promissoryNotes: ["acquiescence"],
+        icon: "global/factions/winnu_icon.png",
         source: "base",
         startingTech: [],
         startingUnits: {
@@ -623,6 +645,7 @@ const FACTION_DATA = [
             heroes: ["xxekir_grom"],
         },
         promissoryNotes: ["political_favor"],
+        icon: "global/factions/xxcha_icon.png",
         source: "base",
         startingTech: ["graviton_laser_system"],
         startingUnits: {
@@ -647,6 +670,7 @@ const FACTION_DATA = [
             heroes: ["dannel_of_the_tenth"],
         },
         promissoryNotes: ["greyfire_mutagen"],
+        icon: "global/factions/yin_icon.png",
         source: "base",
         startingTech: ["sarween_tools"],
         startingUnits: {
@@ -670,6 +694,7 @@ const FACTION_DATA = [
             heroes: ["kyver_blade_and_key"],
         },
         promissoryNotes: ["spy_net"],
+        icon: "global/factions/yssaril_icon.png",
         source: "base",
         startingTech: ["neural_motivator"],
         startingUnits: {

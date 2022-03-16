@@ -32,6 +32,10 @@ const FACTION_SCHEMA = {
         // Just NSID name ("card.promissory.muaat:base/fires_of_the_gashlai").
         promissoryNotes: { type: "array", items: { type: "string" } },
 
+
+        // Image file of the faction eg. "global/factions/muaat_icon.png"
+        icon: { type: "string" },
+
         // Faction tech, but not unit upgrades e.g. "magmus_reator".
         // Just NSID name ("card.technology.red.muaat:base/magmus_reator").
         techs: { type: "array", items: { type: "string" } },

@@ -15,6 +15,7 @@ it("validate good", () => {
             mechs: [],
         },
         promissoryNotes: [],
+        icon: "global/factions/my_faction.png",
         techs: [],
         units: [],
         startingTech: [],
