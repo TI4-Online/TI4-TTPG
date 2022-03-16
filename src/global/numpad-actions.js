@@ -53,7 +53,7 @@ globalEvents.onScriptButtonPressed.add((player, index) => {
         Spawn.spawn(nsid, pos, rot);
     }
 
-    // [4-9] Move camera: 4=UI, 5=active system, 6=map, 7=scoreboard, 8=votes, 9=player zone.
+    // [4-9] Move camera: 4=UI, 5=active system, 6=map, 7=scoreboard, 8=(votes), 9=player zone.
     if (index === 4) {
         const anchor = TableLayout.anchor.gameUI;
         lookAt(anchor.pos, anchor.yaw, 70, player);
@@ -65,8 +65,20 @@ globalEvents.onScriptButtonPressed.add((player, index) => {
             lookAt(pos, yaw, 20, player);
         }
     } else if (index === 6) {
+        const pos = new Vector(0, 0, 0);
+        const yaw = 0;
+        lookAt(pos, yaw, 110, player);
+    } else if (index === 7) {
         const anchor = TableLayout.anchor.score;
         lookAt(anchor.pos, anchor.yaw, 50, player);
+    } else if (index === 9) {
+        const playerSlot = player.getSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            const pos = playerDesk.center;
+            const yaw = playerDesk.rot.yaw;
+            lookAt(pos, yaw, 70, player);
+        }
     }
 
     if (index === 10) {

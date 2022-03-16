@@ -5,6 +5,7 @@ const locale = require("../lib/locale");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { TabAction } = require("./tab-action/tab-action");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
+const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
@@ -139,7 +140,7 @@ class GameUI {
             .setSpacing(CONFIG.spacing);
         panel.addChild(turnOrderPanel, 1);
 
-        const tabHelp = new Text().setText("asdf");
+        const tabHelp = new TabHelpUI();
         tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
 
         const tabMap = new TabMap(this._doRefresh);

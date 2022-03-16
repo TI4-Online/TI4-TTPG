@@ -2,6 +2,7 @@
     "example.helloworld": "Hello World!",
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
+    "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",
     "ui.help.numpad.2": "[2]: spawn fighter",
     "ui.help.numpad.3": "[3]: spawn infantry",
