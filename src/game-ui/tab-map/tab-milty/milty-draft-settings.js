@@ -1,3 +1,4 @@
+const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const { Broadcast } = require("../../../lib/broadcast");
 const { MiltyDraft } = require("../../../lib/draft/milty/milty-draft");
@@ -10,7 +11,6 @@ const {
 } = require("../../../lib/draft/milty/milty-slice-generator");
 const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
 const { Player, world } = require("../../../wrapper/api");
-const assert = require("assert");
 
 class MiltyDraftSettings {
     constructor() {
