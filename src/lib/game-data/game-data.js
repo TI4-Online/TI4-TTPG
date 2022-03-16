@@ -23,7 +23,7 @@ const LOCALHOST = "localhost:8080";
 const POSTKEY = "postkey2";
 const POSTTIMESTAMP = "posttimestamp2";
 
-const DEFAULT_DELAY_MSECS = 15 * 60 * 1000;
+const TIMESTAMP_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
 
 const REQUIRED_COLORS = [
@@ -60,7 +60,8 @@ class GameData {
     constructor() {
         this._enabled = false;
         this._key = false;
-        this._intervalHandle = false;
+        this._intervalHandleTimestamp = false;
+        this._intervalHandleKey = false;
         this._extraData = false;
 
         this._lastPostString = false;
@@ -82,13 +83,23 @@ class GameData {
         this._enabled = true;
         this.updatePersistentConfig();
 
-        // Update immediately.
-        this._asyncUpdate();
+        // Update immediately to pop-up authorization dialog(s).
+        this._asyncUpdate(POSTTIMESTAMP);
+        if (this._key) {
+            this._asyncUpdate(POSTKEY);
+        }
 
-        const delay = this._key ? KEY_DELAY_MSECS : DEFAULT_DELAY_MSECS;
-        this._intervalHandle = setInterval(() => {
-            this._asyncUpdate();
-        }, delay);
+        // Run separate timestamp and key handlers.  Backend stores timestamp
+        // data but only in-memory caches streamer key data.
+        this._intervalHandleTimestamp = setInterval(() => {
+            this._asyncUpdate(POSTTIMESTAMP);
+        }, TIMESTAMP_DELAY_MSECS);
+
+        if (this._key) {
+            this._intervalHandleKey = setInterval(() => {
+                this._asyncUpdate(POSTKEY);
+            }, KEY_DELAY_MSECS);
+        }
 
         return this;
     }
@@ -102,9 +113,13 @@ class GameData {
         this._enabled = false;
         this.updatePersistentConfig();
 
-        if (this._intervalHandle) {
-            clearInterval(this._intervalHandle);
-            this._intervalHandle = false;
+        if (this._intervalHandleTimestamp) {
+            clearInterval(this._intervalHandleTimestamp);
+            this._intervalHandleTimestamp = false;
+        }
+        if (this._intervalHandleKey) {
+            clearInterval(this._intervalHandleKey);
+            this._intervalHandleKey = false;
         }
         return this;
     }
@@ -140,15 +155,25 @@ class GameData {
         return this;
     }
 
-    _syncUpdate() {
+    _syncUpdate(endpoint) {
+        assert(typeof endpoint == "string");
+
         const data = this._createGameDataShell();
         for (const updator of UPDATORS) {
             updator(data);
         }
-        this._post(data);
+
+        this._post(data, endpoint);
     }
 
-    _asyncUpdate() {
+    _asyncUpdate(endpoint) {
+        assert(typeof endpoint == "string");
+
+        // Abort normal (timestamp) reporting if only one player in game.
+        if (endpoint === POSTTIMESTAMP && world.getAllPlayers().length <= 1) {
+            return;
+        }
+
         //console.log(`GameData._asyncUpdate ${Date.now() / 1000}`);
         const data = this._createGameDataShell();
         const updators = [...UPDATORS]; // copy can use shift to mutate
@@ -158,7 +183,7 @@ class GameData {
             }
             const updator = updators.shift();
             if (!updator) {
-                this._post(data);
+                this._post(data, endpoint);
                 return;
             }
             // Run each updator in an ignore-errors wrapper.  If one breaks
@@ -202,17 +227,21 @@ class GameData {
         return data;
     }
 
-    _getUrl() {
+    _getUrl(endpoint) {
+        assert(typeof endpoint == "string");
+        assert(endpoint === POSTKEY || endpoint === POSTTIMESTAMP);
+
         const host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
-        const path = this._key ? POSTKEY : POSTTIMESTAMP;
         const urlArgs = [`timestamp=${world.TI4.config.timestamp}`];
         if (this._key) {
             urlArgs.push(`key=${this._key}`);
         }
-        return `http://${host}/${path}?${urlArgs.join("&")}`;
+        return `http://${host}/${endpoint}?${urlArgs.join("&")}`;
     }
 
-    _post(data) {
+    _post(data, endpoint) {
+        assert(typeof endpoint == "string");
+
         //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
 
         // Drop if nothing changed.  No native digest, just keep whole string.
@@ -226,7 +255,7 @@ class GameData {
         data.timestamp = Date.now() / 1000;
 
         // Post.
-        const url = this._getUrl();
+        const url = this._getUrl(endpoint);
         const fetchOptions = {
             body: JSON.stringify(data),
             method: "POST",
