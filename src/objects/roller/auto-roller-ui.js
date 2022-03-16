@@ -3,6 +3,7 @@ const locale = require("../../lib/locale");
 const { System, Planet } = require("../../lib/system/system");
 const CONFIG = require("../../game-ui/game-ui-config");
 const {
+    Border,
     Button,
     GameObject,
     HorizontalBox,
@@ -16,7 +17,6 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { Border } = require("@tabletop-playground/api");
 
 /**
  * Manage the UI on an AutoRoller object.
