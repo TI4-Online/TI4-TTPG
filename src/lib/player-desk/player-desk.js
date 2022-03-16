@@ -135,7 +135,7 @@ class PlayerDesk {
      */
     static getAllPlayerDesks() {
         if (_playerDesks) {
-            return _playerDesks;
+            return [..._playerDesks]; // copy in case caller mutates order
         }
         const playerCount = world.TI4.config.playerCount;
         _playerDesks = [];

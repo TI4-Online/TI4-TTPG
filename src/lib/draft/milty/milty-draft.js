@@ -105,7 +105,7 @@ class MiltyDraft {
             this._draftSelectionManager.createOnFinishedButton();
         onFinishedButton.onClicked.add((button, player) => {
             this.clearPlayerUIs();
-            this.applyChoices();
+            this.applyChoices(player);
         });
 
         const { widget, w, h } = new MiltyDraftUI(this._scale)
@@ -195,7 +195,9 @@ class MiltyDraft {
         new PlayerDeskSetup(playerDesk).setupFaction();
     }
 
-    applyChoices() {
+    applyChoices(player) {
+        assert(player instanceof Player);
+
         // Position Mecatol and Mallice.
         MapStringLoad.load("{18}", false);
 
@@ -216,6 +218,26 @@ class MiltyDraft {
             const player = playerSlotToChooserPlayer[playerSlot];
             this._applyPlayerChoices(playerSlot, player);
         }
+
+        // Set turn order.
+        let order = [];
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const playerSlot = playerDesk.playerSlot;
+            const seatCategoryName = locale("ui.draft.category.seat");
+            const seatData = this._draftSelectionManager.getSelectionData(
+                playerSlot,
+                seatCategoryName
+            );
+            assert(seatData);
+            order[seatData.orderIndex] = playerDesk;
+        }
+        order = order.filter((entry) => {
+            return entry ? true : false;
+        });
+        if (order.length > 0) {
+            world.TI4.turns.setTurnOrder(order, player);
+        }
+
         return this;
     }
 }

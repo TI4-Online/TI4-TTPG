@@ -7,6 +7,7 @@ const {
 } = require("./saved-data/global-saved-data");
 const { ObjectNamespace } = require("./object-namespace");
 const { Player, globalEvents, world } = require("../wrapper/api");
+const { Shuffle } = require("./shuffle");
 
 /**
  * Player turn manager.
@@ -90,8 +91,7 @@ class Turns {
         this._maybeLoad();
         assert(Array.isArray(playerDeskOrder));
         assert(!player || player instanceof Player);
-
-        this._turnOrder = playerDeskOrder;
+        this._turnOrder = [...playerDeskOrder];
         this._currentTurn = this._turnOrder[0];
 
         // Tell world order changed.  First by message then by event.
@@ -108,8 +108,18 @@ class Turns {
             this._save();
         }
 
-        // Tell any listeners, and set to be the first player's turn.
+        // Tell any listeners.
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
+    }
+
+    randomizeTurnOrder(playerDesks, player) {
+        this._maybeLoad();
+        assert(Array.isArray(playerDesks));
+        assert(!player || player instanceof Player);
+
+        let order = [...playerDesks];
+        order = Shuffle.shuffle(order);
+        this.setTurnOrder(order, player);
     }
 
     getCurrentTurn() {
