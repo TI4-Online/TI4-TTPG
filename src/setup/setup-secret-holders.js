@@ -16,7 +16,7 @@ const {
 const X0 = -33;
 const YCENTER = 0;
 const DY = -10;
-const YAW = -90;
+const YAW = 90;
 const DESK_INDEX_KEY = "deskIndex";
 
 class SetupSecretHolders extends AbstractSetup {
@@ -29,21 +29,21 @@ class SetupSecretHolders extends AbstractSetup {
         assert(playerCount > 0);
 
         const numLeft = Math.floor(playerCount / 2);
-        const y0 = YCENTER - ((playerCount - numLeft - 1) * DY) / 2;
+        const y0 = YCENTER + ((playerCount - numLeft - 1) * DY) / 2;
 
         let positions = [];
         let rotations = [];
         const z = world.getTableHeight();
         for (let i = 0; i < playerCount; i++) {
             if (i < numLeft) {
-                const x = X0;
-                const y = y0 + i * DY;
+                const x = -X0;
+                const y = y0 - i * DY;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             } else {
                 const iRight = playerCount - i - 1;
-                const x = -X0;
-                const y = y0 + iRight * DY;
+                const x = X0;
+                const y = y0 - iRight * DY;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             }

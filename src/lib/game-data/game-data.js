@@ -7,12 +7,17 @@ const { fetch, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
+    require("./updator-objectives"),
+    require("./updator-player-active"),
+    require("./updator-player-faction-name"),
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
+    require("./updator-player-tech"),
+    require("./updator-turn"),
 ];
 
-//const DEFAULT_HOST = "ti4-game-data.appspot.com";
-const DEFAULT_HOST = "localhost:8080";
+const DEFAULT_HOST = "ti4-game-data.appspot.com";
+//const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
 const POSTKEY = "postkey2";
@@ -20,6 +25,17 @@ const POSTTIMESTAMP = "posttimestamp2";
 
 const DEFAULT_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
+
+const REQUIRED_COLORS = [
+    "White",
+    "Blue",
+    "Purple",
+    "Yellow",
+    "Red",
+    "Green",
+    "Pink",
+    "Orange",
+];
 
 // TIER 1:
 // score
@@ -145,7 +161,14 @@ class GameData {
                 this._post(data);
                 return;
             }
-            updator(data);
+            // Run each updator in an ignore-errors wrapper.  If one breaks
+            // at least the rest still gather/update.
+            try {
+                updator(data);
+            } catch (exception) {
+                console.error(exception);
+                //throw exception;
+            }
             process.nextTick(doNextUpdatorOrPost);
         };
         process.nextTick(doNextUpdatorOrPost);
@@ -160,16 +183,6 @@ class GameData {
 
         // Root's overlay requires colors in order.  Give "required" color
         // as well as actual color.
-        const REQUIRED_COLORS = [
-            "White",
-            "Blue",
-            "Purple",
-            "Yellow",
-            "Red",
-            "Green",
-            "Pink",
-            "Orange",
-        ];
         data.players.forEach((playerData, index) => {
             playerData.actualColor = playerData.color;
             playerData.color = REQUIRED_COLORS[index];
@@ -200,6 +213,8 @@ class GameData {
     }
 
     _post(data) {
+        //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
+
         // Drop if nothing changed.  No native digest, just keep whole string.
         const thisPostStr = JSON.stringify(data);
         if (this._lastPostString === thisPostStr) {
