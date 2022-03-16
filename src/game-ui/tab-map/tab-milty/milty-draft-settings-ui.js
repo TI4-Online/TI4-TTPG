@@ -101,7 +101,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
             const customInputValue = customInput.getText();
-            const success = callbacks.onFinish(customInputValue);
+            const success = callbacks.onFinish(customInputValue, player);
             applyEnabled(!success);
         });
 
@@ -112,7 +112,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
             applyEnabled(true);
-            callbacks.onCancel();
+            callbacks.onCancel(player);
         });
         const readyCancelPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
