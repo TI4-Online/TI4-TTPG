@@ -37,7 +37,6 @@ class GameUI {
         //.setMinimumHeight(anchor.height);
 
         this._uiElement = new UIElement();
-        this._uiElement.anchorY = 0;
         this._uiElement.width = anchor.width;
         this._uiElement.height = anchor.height;
         this._uiElement.useWidgetSize = false;
@@ -82,7 +81,7 @@ class GameUI {
         const anchor = TableLayout.anchor.gameUI;
 
         const zonePos = new Vector(
-            anchor.pos.x - anchor.height / 20, // height is 10x
+            anchor.pos.x,
             anchor.pos.y,
             world.getTableHeight() + 1
         );
@@ -132,12 +131,16 @@ class GameUI {
             .setSpacing(CONFIG.spacing);
         panel.addChild(tabbedPanel, 4);
 
+        // Line between main UI and turn order.
         panel.addChild(new Border().setColor([0.02, 0.02, 0.02]));
 
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
         panel.addChild(turnOrderPanel, 1);
+
+        const tabHelp = new Text().setText("asdf");
+        tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
 
         const tabMap = new TabMap(this._doRefresh);
         tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());
