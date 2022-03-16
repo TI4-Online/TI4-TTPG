@@ -2,6 +2,7 @@ const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
+const { Faction } = require("../../lib/faction/faction");
 const {
     Button,
     Canvas,
@@ -18,33 +19,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ColorUtil } = require("../../lib/color/color-util");
 
 const imageSize = 30;
-
-const factionIcons = {
-    arborec: "global/factions/arborec_icon.png",
-    argent: "global/factions/argent_icon.png",
-    creuss: "global/factions/creuss_icon.png",
-    empyrean: "global/factions/empyrean_icon.png",
-    hacan: "global/factions/hacan_icon.png",
-    jolnar: "global/factions/jolnar_icon.png",
-    l1z1x: "global/factions/l1z1x_icon.png",
-    letnev: "global/factions/letnev_icon.png",
-    mahact: "global/factions/mahact_icon.png",
-    mentak: "global/factions/mentak_icon.png",
-    muaat: "global/factions/muaat_icon.png",
-    naalu: "global/factions/naalu_icon.png",
-    naazrokha: "global/factions/naazrokha_icon.png",
-    nekro: "global/factions/nekro_icon.png",
-    nomad: "global/factions/nomad_icon.png",
-    norr: "global/factions/norr_icon.png",
-    saar: "global/factions/saar_icon.png",
-    sol: "global/factions/sol_icon.png",
-    ul: "global/factions/ul_icon.png",
-    vuilraith: "global/factions/vuilraith_icon.png",
-    winnu: "global/factions/winnu_icon.png",
-    xxcha: "global/factions/xxcha_icon.png",
-    yin: "global/factions/yin_icon.png",
-    yssaril: "global/factions/yssaril_icon.png",
-};
 
 const techIcons = {
     unitUpgrade: {
@@ -95,8 +69,9 @@ function drawTechButton(
     canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
     if (tech.faction) {
+        console.log(tech.faction);
         let factionIcon = new ImageWidget()
-            .setImage(factionIcons[tech.faction], packageId)
+            .setImage(Faction.getByNsidName(tech.faction).icon, packageId)
             .setImageSize(imageSize, imageSize);
         canvas.addChild(
             factionIcon,
