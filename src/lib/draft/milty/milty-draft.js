@@ -192,7 +192,7 @@ class MiltyDraft {
         MiltySliceLayout.doLayout(sliceStr, playerSlot);
 
         // Unpack faction.
-        new PlayerDeskSetup(playerDesk).setupFaction();
+        new PlayerDeskSetup(playerDesk).setupFaction(factionData.nsidName);
     }
 
     applyChoices(player) {

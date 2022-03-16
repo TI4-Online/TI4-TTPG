@@ -88,11 +88,10 @@
 
     "ui.label.speaker": "Speaker",
 
-    "ui.label.movement": "Movement Step",
-    "ui.label.space_combat": "Space Combat Step",
-    "ui.label.invasion": "Invasion Step",
-    "ui.label.production": "Production Step",
-    "ui.label.etc": "ETC.",
+    "ui.label.movement": "Movement",
+    "ui.label.space_combat": "Space Combat",
+    "ui.label.invasion": "Invasion",
+    "ui.label.production": "Production",
 
     "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
 
@@ -146,13 +145,13 @@
     "rollType.bombardment": "Bombardment",
     "rollType.groundCombat": "Ground Combat",
 
-    "ui.roller.space_cannon_offense": "Space Cannon Offense",
+    "ui.roller.space_cannon_offense": "Spc Cannon Offense",
     "ui.roller.anti_fighter_barrage": "Anti-fighter Barrage",
     "ui.roller.announce_retreat": "Announce Retreat",
     "ui.roller.space_combat": "Space Combat",
     "ui.roller.retreat": "Retreat",
     "ui.roller.bombardment": "Bombardment",
-    "ui.roller.space_cannon_defense": "Space Cannon Defense",
+    "ui.roller.space_cannon_defense": "Spc Cannon Defense",
     "ui.roller.ground_combat": "Ground Combat",
     "ui.roller.report_modifiers": "Report Modifiers",
 
