@@ -88,11 +88,10 @@
 
     "ui.label.speaker": "Speaker",
 
-    "ui.label.movement": "Movement Step",
-    "ui.label.space_combat": "Space Combat Step",
-    "ui.label.invasion": "Invasion Step",
-    "ui.label.production": "Production Step",
-    "ui.label.etc": "ETC.",
+    "ui.label.movement": "Movement",
+    "ui.label.space_combat": "Space Combat",
+    "ui.label.invasion": "Invasion",
+    "ui.label.production": "Production",
 
     "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
 

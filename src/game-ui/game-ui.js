@@ -133,7 +133,7 @@ class GameUI {
         panel.addChild(tabbedPanel, 4);
 
         // Line between main UI and turn order.
-        panel.addChild(new Border().setColor([0.02, 0.02, 0.02]));
+        panel.addChild(new Border().setColor(CONFIG.spacerColor));
 
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
