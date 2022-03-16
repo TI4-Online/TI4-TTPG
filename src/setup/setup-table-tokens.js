@@ -16,8 +16,8 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.exploration" },
     ],
     anchor: TableLayout.anchor.score,
-    pos: { x: 0, y: -50, z: 3 },
-    yaw: -90,
+    pos: { x: -50, y: 0, z: 3 },
+    yaw: 0,
 };
 
 const GENERIC_TOKENS = [
@@ -27,7 +27,7 @@ const GENERIC_TOKENS = [
         bagType: 2,
         bagScale: { x: 0.8, y: 0.8, z: 0.8 },
         anchor: TableLayout.anchor.score,
-        pos: { x: 0, y: -59, z: 3 },
+        pos: { x: -59, y: 0, z: 3 },
         yaw: 0,
     },
     {
@@ -35,16 +35,16 @@ const GENERIC_TOKENS = [
         bagNsid: false,
         bagType: false,
         anchor: TableLayout.anchor.score,
-        pos: { x: -30, y: -25, z: 3 },
-        yaw: 90,
+        pos: { x: -25, y: -30, z: 3 },
+        yaw: 0,
     },
     {
         tokenNsid: "token:base/custodians",
         bagNsid: false,
         bagType: false,
         anchor: TableLayout.anchor.score,
-        pos: { x: -30, y: -31, z: 3 },
-        yaw: 90,
+        pos: { x: -31, y: -30, z: 3 },
+        yaw: 0,
     },
 
     // scoreboard is in setup-table-mats

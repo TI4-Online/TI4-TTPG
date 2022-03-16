@@ -13,10 +13,10 @@ const {
     world,
 } = require("../wrapper/api");
 
-const X0 = -33;
-const YCENTER = 0;
-const DY = -10;
-const YAW = 90;
+const Y0 = -33;
+const XCENTER = 0;
+const DX = -10;
+const YAW = 0;
 const DESK_INDEX_KEY = "deskIndex";
 
 class SetupSecretHolders extends AbstractSetup {
@@ -29,21 +29,21 @@ class SetupSecretHolders extends AbstractSetup {
         assert(playerCount > 0);
 
         const numLeft = Math.floor(playerCount / 2);
-        const y0 = YCENTER + ((playerCount - numLeft - 1) * DY) / 2;
+        const x0 = XCENTER + ((playerCount - numLeft - 1) * DX) / 2;
 
         let positions = [];
         let rotations = [];
         const z = world.getTableHeight();
         for (let i = 0; i < playerCount; i++) {
             if (i < numLeft) {
-                const x = -X0;
-                const y = y0 - i * DY;
+                const y = Y0;
+                const x = x0 - i * DX;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             } else {
                 const iRight = playerCount - i - 1;
-                const x = X0;
-                const y = y0 - iRight * DY;
+                const y = -Y0;
+                const x = x0 - iRight * DX;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             }
