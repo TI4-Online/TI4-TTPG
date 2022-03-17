@@ -3,6 +3,9 @@ const { ObjectNamespace } = require("../object-namespace");
 const { Facing } = require("../facing");
 const { GameObject, Rotator, Vector, world } = require("../../wrapper/api");
 
+const SCOREBOARD_LOCAL_WIDTH = 43;
+const SCOREBOARD_LOCAL_HEIGHT = 6.3;
+
 let _scoreboardObj = false;
 
 class Scoreboard {
@@ -33,8 +36,7 @@ class Scoreboard {
             dir = -1;
             slotCount = 15;
         }
-        const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
-        const slotWidth = scoreboardLocalWidth / slotCount;
+        const slotWidth = SCOREBOARD_LOCAL_WIDTH / slotCount;
 
         const mid = (slotCount - 1) / 2;
         const dLeft = (mid - score) * slotWidth * dir;
@@ -94,12 +96,11 @@ class Scoreboard {
             slotCount = 15;
         }
 
-        const scoreboardLocalWidth = scoreboard.getSize().x * 0.99;
-        const slotWidth = scoreboardLocalWidth / slotCount;
+        const slotWidth = SCOREBOARD_LOCAL_WIDTH / slotCount;
 
         const pos = token.getPosition();
         const localPos = scoreboard.worldPositionToLocal(pos);
-        const leftOffset = localPos.x * dir + scoreboardLocalWidth / 2;
+        const leftOffset = localPos.x * dir + SCOREBOARD_LOCAL_WIDTH / 2;
         const score = Math.floor(leftOffset / slotWidth);
         return score;
     }
@@ -107,15 +108,14 @@ class Scoreboard {
     static getPlayerSlotToTokens(scoreboard) {
         assert(scoreboard instanceof GameObject);
 
-        const size = scoreboard.getSize();
         const bb = {
             min: {
-                x: -size.x / 2,
-                y: -size.y / 2,
+                x: -SCOREBOARD_LOCAL_WIDTH / 2,
+                y: -SCOREBOARD_LOCAL_HEIGHT / 2,
             },
             max: {
-                x: size.x / 2,
-                y: size.y / 2,
+                x: SCOREBOARD_LOCAL_WIDTH / 2,
+                y: SCOREBOARD_LOCAL_HEIGHT / 2,
             },
         };
 

@@ -41,7 +41,8 @@ class MiltyDraftSettingsUI extends VerticalBox {
 
         const extraLegendariesAndWormholes = new CheckBox()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.draft.extra_legendaries_and_wormholes"));
+            .setText(locale("ui.draft.extra_legendaries_and_wormholes"))
+            .setIsChecked(true);
         this.addChild(extraLegendariesAndWormholes);
         extraLegendariesAndWormholes.onCheckStateChanged.add(
             (checkbox, player, isChecked) => {

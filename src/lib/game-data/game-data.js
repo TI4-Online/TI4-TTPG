@@ -3,7 +3,7 @@ const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
 } = require("../../lib/saved-data/global-saved-data");
-const { fetch, world } = require("../../wrapper/api");
+const { fetch, globalEvents, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
@@ -65,6 +65,16 @@ class GameData {
         this._extraData = false;
 
         this._lastPostString = false;
+
+        // Update on game end (throttle).
+        this._onGameEndLastSendTimestamp = 0;
+        globalEvents.TI4.onGameEnded.add((player) => {
+            const timestamp = Date.now() / 1000;
+            if (timestamp > this._onGameEndLastSendTimestamp + 60) {
+                this._onGameEndLastSendTimestamp = timestamp;
+                this._asyncUpdate(POSTTIMESTAMP);
+            }
+        });
     }
 
     updatePersistentConfig() {
@@ -204,6 +214,7 @@ class GameData {
             players: world.TI4.getAllPlayerDesks().map((desk) => {
                 return { color: desk.colorName };
             }),
+            platform: "ttpg",
         };
 
         // Root's overlay requires colors in order.  Give "required" color

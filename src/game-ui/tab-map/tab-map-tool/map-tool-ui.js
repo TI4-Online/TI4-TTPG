@@ -6,6 +6,7 @@ const {
     HorizontalBox,
     LayoutBox,
     MultilineTextBox,
+    Text,
     VerticalBox,
 } = require("../../../wrapper/api");
 
@@ -15,10 +16,14 @@ class MapToolUI extends VerticalBox {
 
         this.setChildDistance(CONFIG.spacing);
 
+        const customInputLabel = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.maptool.map_string"));
+        this.addChild(customInputLabel);
+
         this._mapStringTextBox = new MultilineTextBox()
             .setFontSize(CONFIG.fontSize)
-            .setMaxLength(1000)
-            .setText("map string");
+            .setMaxLength(1000);
         const mapStringLayoutBox = new LayoutBox()
             .setChild(this._mapStringTextBox)
             .setMinimumHeight(CONFIG.fontSize * 4);

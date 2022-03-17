@@ -4,8 +4,8 @@ const { Faction } = require("../../faction/faction");
 const {
     Canvas,
     ImageButton,
-    ImageWidget,
     LayoutBox,
+    Text,
     refPackageId,
     world,
 } = require("../../../wrapper/api");

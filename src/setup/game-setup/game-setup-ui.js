@@ -50,7 +50,7 @@ class GameSetupUI {
         col1Panel.addChild(
             this._createSlider(
                 "ui.setup.game_points",
-                10,
+                8,
                 14,
                 world.TI4.config.gamePoints,
                 this._callbacks.onGamePointsChanged

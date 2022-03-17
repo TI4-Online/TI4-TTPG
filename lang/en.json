@@ -13,6 +13,7 @@
     "ui.help.numpad.8": "[8]: (reserved)",
     "ui.help.numpad.9": "[9]: look player area",
     "ui.help.numpad.0": "[0]: trash held objects",
+    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc:\nsettings > game > advanced\n\"Object zoom for ground\"",
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
@@ -160,6 +161,7 @@
 
     "ui.label.home_system_tile": "HOME\nSYSTEM",
 
+    "ui.maptool.map_string": "Map String:",
     "ui.maptool.clear": "Clear",
     "ui.maptool.save": "Save Map String",
     "ui.maptool.load": "Load Map From String",
@@ -169,6 +171,7 @@
     "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
     "ui.maptool.place_hyperlanes": "Place Hyperlanes",
 
+    "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.faction_count": "Faction count",
     "ui.draft.extra_legendaries_and_wormholes": "Extra legendaries, wormholes",
