@@ -2,13 +2,13 @@ const assert = require("../wrapper/assert-wrapper");
 const { Scoreboard } = require("../lib/scoreboard/scoreboard");
 const {
     GameObject,
+    Rotator,
     Text,
     UIElement,
     globalEvents,
     refObject,
     world,
 } = require("../wrapper/api");
-const { Rotator } = require("@tabletop-playground/api");
 
 class ScoreboardObj {
     constructor(gameObject) {
