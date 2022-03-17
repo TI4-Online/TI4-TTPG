@@ -48,6 +48,10 @@ class AbstractSystemAttachment {
         // set up yet, have them call `attachIfOnSystem` when ready.
     }
 
+    isAttachedFaceUp() {
+        return this._attachedFaceUp;
+    }
+
     /**
      * Attach if on a system tile.  This may be called at the very end of
      * subclass constructor to attach on reload.

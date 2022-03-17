@@ -2,16 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSystemAttachment } = require("./abstract-system-attachment");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ATTACHMENTS } = require("./attachment.data");
-const {
-    Card,
-    GameObject,
-    ImageWidget,
-    ObjectType,
-    Rotator,
-    UIElement,
-    Vector,
-    refPackageId,
-} = require("../../wrapper/api");
+const { GameObject, ObjectType, Vector } = require("../../wrapper/api");
 
 /**
  * Mutate planet on attach/detach.
@@ -62,6 +53,10 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         this._obj = gameObject;
         this._attrs = attrs;
         this._originallyLegendary = false;
+    }
+
+    getAttrs() {
+        return this._attrs;
     }
 
     place(system, planet, systemTileObj, faceUp) {
@@ -170,23 +165,6 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
                 planet.raw.tech.splice(index, 1);
             });
         }
-    }
-
-    // XXX TODO work in progress
-    _addImageToPlanetCard(card, imagePath) {
-        assert(card instanceof Card);
-        assert(typeof imagePath === "string");
-        console.log("XXX " + imagePath);
-
-        const ui = new UIElement();
-        ui.position = new Vector(0, 0, 0.1);
-        ui.rotation = new Rotator(0, 0, 0);
-        ui.scale = 0.3;
-        ui.widget = new ImageWidget()
-            .setImage(imagePath, refPackageId)
-            .setImageSize(60, 60);
-
-        card.addUI(ui);
     }
 }
 
