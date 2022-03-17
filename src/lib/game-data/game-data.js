@@ -3,8 +3,7 @@ const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
 } = require("../../lib/saved-data/global-saved-data");
-const { fetch, world } = require("../../wrapper/api");
-const { globalEvents } = require("@tabletop-playground/api");
+const { fetch, globalEvents, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),

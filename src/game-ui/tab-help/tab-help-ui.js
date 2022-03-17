@@ -1,7 +1,6 @@
 const CONFIG = require("../game-ui-config");
 const { HorizontalBox, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
-const {} = require("@tabletop-playground/api");
 
 class TabHelpUI extends HorizontalBox {
     constructor() {
