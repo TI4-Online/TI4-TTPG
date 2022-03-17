@@ -20,8 +20,8 @@ const DEFAULT_HOST = "ti4-game-data.appspot.com";
 //const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
-const POSTKEY = "postkey2";
-const POSTTIMESTAMP = "posttimestamp2";
+const POSTKEY = "postkey_ttpg";
+const POSTTIMESTAMP = "posttimestamp_ttpg";
 
 const TIMESTAMP_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
@@ -142,8 +142,7 @@ class GameData {
      * @returns {GameData} self, for chaining
      */
     setStreamerOverlayKey(key) {
-        assert(typeof key === "string");
-        assert(key.length > 0);
+        assert(!key || (typeof key === "string" && key.length > 0));
         this._key = key;
         return this;
     }

@@ -27,7 +27,8 @@ function consider(player, message) {
         world.TI4.gameData.enable();
         Broadcast.chatAll(locale("ui.message.enabling_game_data"));
     } else {
-        world.TI4.gameData.disable();
+        world.TI4.gameData.setStreamerOverlayKey();
+        world.TI4.gameData.enable();
         Broadcast.chatAll(locale("ui.message.disabling_game_data"));
     }
 

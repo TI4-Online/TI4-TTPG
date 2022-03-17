@@ -14,6 +14,7 @@ it("validate good planet", () => {
                 influence: 2,
             },
         ],
+        img: "path/tile_001.png",
     };
     assert(SystemSchema.validate(jord));
 });
@@ -29,6 +30,7 @@ it("validate system missing tile #", () => {
                 influence: 2,
             },
         ],
+        img: "path/tile_001.png",
     };
     assert(!SystemSchema.validate(badJord, (err) => {}));
 });
@@ -45,6 +47,7 @@ it("validate system with malformed planet", () => {
                 influence: 2,
             },
         ],
+        img: "path/tile_001.png",
     };
     assert(!SystemSchema.validate(badJord, (err) => {}));
 });
@@ -58,6 +61,7 @@ it("validate multiplanet system", () => {
             { localeName: "Maaluuk", resources: 0, influence: 2 },
             { localeName: "Druaa", resources: 3, influence: 1 },
         ],
+        img: "path/tile_009.png",
     };
     assert(SystemSchema.validate(maaluukDruaa));
 });

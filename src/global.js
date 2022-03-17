@@ -151,6 +151,7 @@ require("./global/gamedata-key");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/patch-infinite-container");
+require("./global/planet-card-attachments");
 require("./global/r-swap-split-combine");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");

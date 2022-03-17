@@ -161,6 +161,12 @@ class Planet {
         }
         return m[1];
     }
+
+    getPlanetCardNsid() {
+        const source = this.system.raw.source;
+        const name = this.getPlanetNsidName();
+        return `card.planet:${source}/${name}`;
+    }
 }
 
 /**

@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const chalk = require("colorette");
+const klaw = require("klaw"); // walk file system
 const spawn = require("cross-spawn");
 
 console.log(chalk.yellow("Good Morning, Captain"));
@@ -116,6 +117,22 @@ const setupWorkspace = () => {
                             "Tabletop Playground is now aware of this production bundle. Huzzah."
                         );
                     });
+            })
+            .then(() => {
+                console.log("rewriting States GUIDs");
+                const oldStr = `"${variantConfig.guid.dev}"`;
+                const newStr = `"${variantConfig.guid.prd}"`;
+                const re = new RegExp(oldStr, "g");
+                klaw(`./prd/${variantConfig.slug}/States`).on(
+                    "data",
+                    (item) => {
+                        if (item.path.endsWith(".vts")) {
+                            let content = fs.readFileSync(item.path).toString();
+                            content = content.replace(re, newStr);
+                            fs.writeFileSync(item.path, content);
+                        }
+                    }
+                );
             });
     });
 };

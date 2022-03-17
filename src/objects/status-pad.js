@@ -85,10 +85,10 @@ awayButton.onClicked = (btn, player) => {
     const newValue = !getAway();
     setAway(newValue);
 
-    const playerSlot = player.getSlot();
+    const playerSlot = obj.getOwningPlayerSlot();
     const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
-    const playerName = faction ? faction.nameFull : player.getName();
+    const playerName = faction ? faction.nameFull : playerDesk.colorName;
     const localeMsg = newValue
         ? "ui.message.player_away"
         : "ui.message.player_here";
@@ -101,10 +101,10 @@ passButton.onClicked = (btn, player) => {
     const newValue = !getPass();
     setPass(newValue);
     if (newValue) {
-        const playerSlot = player.getSlot();
+        const playerSlot = obj.getOwningPlayerSlot();
         const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
-        const playerName = faction ? faction.nameFull : player.getName();
+        const playerName = faction ? faction.nameFull : playerDesk.colorName;
         const color = playerDesk ? playerDesk.color : player.getPlayerColor();
         const msg = locale("ui.message.player_pass", { playerName });
         Broadcast.broadcastAll(msg, color);

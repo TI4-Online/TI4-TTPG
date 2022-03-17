@@ -7,18 +7,23 @@
 const assert = require("../wrapper/assert-wrapper");
 const { Card, globalEvents, world } = require("../wrapper/api");
 
-const onInsertedHandler = (deck, insertedCard, position, player) => {
+let onInsertedHandler;
+let onRemovedHandler;
+
+onInsertedHandler = (deck, insertedCard, position, player) => {
     // This handler is only installed on singleton cards, and other card(s)
     // have already been added to deck before calling this.  So remove
     // this handler, and signal the card is now a deck.
+    assert(deck instanceof Card);
     assert(deck.getStackSize() > 1);
     deck.onInserted.remove(onInsertedHandler);
     deck.onRemoved.add(onRemovedHandler);
     globalEvents.TI4.onSingletonCardMadeDeck.trigger(deck);
 };
 
-const onRemovedHandler = (deck, removedCard, position, player) => {
+onRemovedHandler = (deck, removedCard, position, player) => {
     // Called after card is removed.
+    assert(deck instanceof Card);
     if (deck.getStackSize() === 1) {
         deck.onRemoved.remove(onRemovedHandler);
         deck.onInserted.add(onInsertedHandler);
@@ -30,14 +35,17 @@ globalEvents.onObjectCreated.add((obj) => {
     if (!(obj instanceof Card)) {
         return;
     }
-    if (obj.getStackSize() > 1) {
-        // deck
-        obj.onRemoved.add(onRemovedHandler);
-    } else {
-        // singleton card
-        obj.onInserted.add(onInsertedHandler);
-        globalEvents.TI4.onSingletonCardCreated.trigger(obj);
-    }
+    // Strange things happen when making a deck.  Wait a frame then see.
+    process.nextTick(() => {
+        if (obj.getStackSize() > 1) {
+            // deck
+            obj.onRemoved.add(onRemovedHandler);
+        } else {
+            // singleton card
+            obj.onInserted.add(onInsertedHandler);
+            globalEvents.TI4.onSingletonCardCreated.trigger(obj);
+        }
+    });
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
