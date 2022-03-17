@@ -2,7 +2,6 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { DraftSelectionWidget } = require("../draft-selection-widget");
 const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
 const { System } = require("../../system/system");
-const { TileToImage } = require("../../system/tile-to-image");
 const {
     Border,
     Button,
@@ -13,6 +12,7 @@ const {
     Text,
     VerticalAlignment,
     refPackageId,
+    world,
 } = require("../../../wrapper/api");
 
 const DEFAULT_SLICE_SCALE = 10;
@@ -115,7 +115,8 @@ class MiltySliceUI {
 
         for (let i = 0; i < 5; i++) {
             const tile = miltySlice[i];
-            const imgPath = TileToImage.tileToImage(tile);
+            const system = world.TI4.getSystemByTileNumber(tile);
+            const imgPath = system.raw.img;
             const tileBox = this._tileBoxes[i];
             tileBox.setChild(new ImageWidget().setImage(imgPath, refPackageId));
         }

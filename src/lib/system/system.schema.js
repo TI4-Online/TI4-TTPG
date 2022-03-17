@@ -66,8 +66,10 @@ const SYSTEM_SCHEMA = {
         hyperlane: { type: "boolean" },
         hyperlaneFaceUp: HYPERLANE_SCHEMA,
         hyperlaneFaceDown: HYPERLANE_SCHEMA,
+        img: { type: "string" },
+        imgFaceDown: { type: "string" },
     },
-    required: ["tile", "source"],
+    required: ["tile", "source", "img"],
 };
 
 // Lazy instantiate on first use.
