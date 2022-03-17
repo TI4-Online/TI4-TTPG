@@ -14,7 +14,9 @@ const ATTACHMENT_HELPER_SCHEMA = {
             type: "array",
             items: { enum: ["yellow", "red", "blue", "green"] },
         },
+        image: { type: "string" },
     },
+    required: ["image"],
 };
 
 const ATTACHMENT_SCHEMA = {
