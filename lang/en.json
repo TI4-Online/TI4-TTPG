@@ -13,6 +13,7 @@
     "ui.help.numpad.8": "[8]: (reserved)",
     "ui.help.numpad.9": "[9]: look player area",
     "ui.help.numpad.0": "[0]: trash held objects",
+    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc:\nsettings > game > advanced\n\"Object zoom for ground\"",
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
