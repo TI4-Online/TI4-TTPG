@@ -171,7 +171,6 @@ class DraftSelectionManager {
             draftSelectionWidgets.push(draftSelectionWidget);
 
             return (button, player) => {
-                console.log(player.constructor);
                 assert(
                     button instanceof ImageButton || button instanceof Button
                 );
