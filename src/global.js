@@ -15,6 +15,10 @@ globalEvents.TI4 = {
     // <(deskPlayerSlot: number, player: Player|undefined) => void>
     onFactionChanged: new TriggerableMulticastDelegate(),
 
+    // Called after a player drops a control token on the final scoreboard slot.
+    // <(player: Player|undefined) => void>
+    onGameEnded: new TriggerableMulticastDelegate(),
+
     // Called after a player clicks the initial game "setup" button.
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(),
@@ -155,6 +159,7 @@ require("./global/right-click/right-click-score");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
+require("./global/trigger-on-game-ended");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 
