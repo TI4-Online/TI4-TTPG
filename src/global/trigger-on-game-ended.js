@@ -24,6 +24,7 @@ function checkControlToken(obj, player) {
     const target = world.TI4.config.gamePoints;
     assert(typeof points === "number");
     assert(typeof target === "number");
+    //console.log(`checkControlToken: ${points}`);
     if (points === target) {
         globalEvents.TI4.onGameEnded.trigger(player);
     }
