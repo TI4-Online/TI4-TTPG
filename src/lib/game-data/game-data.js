@@ -142,8 +142,7 @@ class GameData {
      * @returns {GameData} self, for chaining
      */
     setStreamerOverlayKey(key) {
-        assert(typeof key === "string");
-        assert(key.length > 0);
+        assert(!key || (typeof key === "string" && key.length > 0));
         this._key = key;
         return this;
     }
