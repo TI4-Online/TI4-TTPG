@@ -43,7 +43,7 @@ class FactionTokenUI {
             canvasOffset.x,
             canvasOffset.y + buttonHeight,
             size.w,
-            textHeight * 2
+            textHeight * 2 // double the height to aviod offsets cutting off the lower text part
         );
     }
 
