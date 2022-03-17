@@ -15,7 +15,6 @@ const {
     VerticalAlignment,
     VerticalBox,
     refPackageId,
-    world,
 } = require("../../wrapper/api");
 
 /**
@@ -35,8 +34,8 @@ class AutoRollerUI extends LayoutBox {
         this._onButton = onButton;
         this._player = undefined;
 
-        //this.resetAwaitingSystemActivation();
-        this.resetAfterSystemActivation(world.TI4.getSystemByTileNumber(16));
+        this.resetAwaitingSystemActivation();
+        //this.resetAfterSystemActivation(world.TI4.getSystemByTileNumber(18));
     }
 
     setOwningObjectForUpdate(gameObject, uiElement) {
@@ -76,7 +75,7 @@ class AutoRollerUI extends LayoutBox {
         panel.addChild(new LayoutBox(), 1); // stretch to fill space
 
         const reportModifiers = new Button()
-            .setFontSize(CONFIG.fontSize)
+            .setFontSize(12)
             .setText(locale("ui.roller.report_modifiers"));
         reportModifiers.onClicked.add((button, player) => {
             this._onButton("reportModifiers", false, player);
@@ -110,16 +109,20 @@ class AutoRollerUI extends LayoutBox {
         );
         const spaceBox = new LayoutBox()
             .setOverrideWidth(COLUMN_WIDTH)
+            .setVerticalAlignment(VerticalAlignment.Bottom)
             .setChild(spaceLayout);
 
         const groundLayout = new HorizontalBox().setChildDistance(
             HORIZONTAL_DISTANCE
         );
+        const groundOuterLayout = new VerticalBox()
+            .setChildDistance(VERTICAL_DISTANCE)
+            .addChild(groundLayout);
         const groundBox = new LayoutBox()
             .setOverrideWidth(COLUMN_WIDTH * 3 + HORIZONTAL_DISTANCE * 3)
             .setVerticalAlignment(VerticalAlignment.Bottom)
-            .setPadding(0, 0, 0, 44)
-            .setChild(groundLayout);
+            .setPadding(0, 0, 0, 0) //44
+            .setChild(groundOuterLayout);
 
         const BUTTON_FONT_SIZE = 12;
         const LABEL_FONT = "Handel_Gothic_Regular.otf";
@@ -217,6 +220,9 @@ class AutoRollerUI extends LayoutBox {
             );
             addButton("ui.roller.ground_combat", "groundCombat", planet);
         }
+
+        panel = groundOuterLayout;
+        addButton("ui.roller.report_modifiers", "reportModifiers");
 
         this._update();
     }
