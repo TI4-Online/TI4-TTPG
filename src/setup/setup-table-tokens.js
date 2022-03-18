@@ -46,6 +46,14 @@ const GENERIC_TOKENS = [
         pos: { x: -31, y: -30, z: 3 },
         yaw: 0,
     },
+    {
+        tokenNsid: "tool:base/quick_roller",
+        bagNsid: false,
+        bagType: false,
+        anchor: TableLayout.anchor.strategy,
+        pos: { x: -10, y: -35, z: 3 },
+        yaw: 0,
+    },
 
     // scoreboard is in setup-table-mats
 ];

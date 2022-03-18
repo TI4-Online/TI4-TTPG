@@ -100,7 +100,7 @@ module.exports = {
                 height: 520,
             },
             score: { pos: { x: -33, y: 147, z: 0 }, yaw: 0 },
-            strategy: { pos: { x: 77, y: 147, z: 0 }, yaw: -90 },
+            strategy: { pos: { x: 77, y: 147, z: 0 }, yaw: 0 },
         },
     },
 };
