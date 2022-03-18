@@ -2,12 +2,15 @@ const CONFIG = require("../game-ui-config");
 const { HorizontalBox, Text, VerticalBox } = require("../../wrapper/api");
 const locale = require("../../lib/locale");
 
+const HELP_FONTSIZE = CONFIG.fontSize * 0.9;
+const PARAGRAPH_SPACING = HELP_FONTSIZE * 0.8;
+
 class TabHelpUI extends HorizontalBox {
     constructor() {
         super();
         this.setChildDistance(CONFIG.spacing);
 
-        let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        let panel = new VerticalBox().setChildDistance(PARAGRAPH_SPACING);
         this.addChild(panel, 1);
 
         const numpadStrs = [
@@ -24,17 +27,31 @@ class TabHelpUI extends HorizontalBox {
             locale("ui.help.numpad.0"),
         ];
         panel.addChild(
-            new Text()
-                .setFontSize(CONFIG.fontSize)
-                .setText(numpadStrs.join("\n"))
+            new Text().setFontSize(HELP_FONTSIZE).setText(numpadStrs.join("\n"))
         );
 
-        panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        panel = new VerticalBox().setChildDistance(PARAGRAPH_SPACING);
         this.addChild(panel, 1);
+
+        const ttpgKeyStrings = [
+            locale("ui.help.ttpg"),
+            locale("ui.help.ttpg.f"),
+            locale("ui.help.ttpg.r"),
+            locale("ui.help.ttpg.r2"),
+            locale("ui.help.ttpg.r3"),
+            locale("ui.help.ttpg.number"),
+            locale("ui.help.ttpg.alt"),
+            locale("ui.help.ttpg.alt_shift"),
+        ];
+        panel.addChild(
+            new Text()
+                .setFontSize(HELP_FONTSIZE)
+                .setText(ttpgKeyStrings.join("\n"))
+        );
 
         panel.addChild(
             new Text()
-                .setFontSize(CONFIG.fontSize)
+                .setFontSize(HELP_FONTSIZE)
                 .setText(locale("ui.help.alt_zoom_ground"))
         );
     }

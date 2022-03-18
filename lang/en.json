@@ -14,9 +14,12 @@
     "ui.help.numpad.9": "[9]: look player area",
     "ui.help.numpad.0": "[0]: trash held objects",
 
+    "ui.help.ttpg": "Other keys:",
     "ui.help.ttpg.f": "[f]: flip card",
     "ui.help.ttpg.r": "[r]: shuffle deck",
-    "ui.help.ttpg.number": "[#]: (keyboard#) draw N cards",
+    "ui.help.ttpg.r2": "[r]: swap token/plastic",
+    "ui.help.ttpg.r3": "[r]: split/join x1/x3 tokens",
+    "ui.help.ttpg.number": "[#]: (keyboard#) draw cards",
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
