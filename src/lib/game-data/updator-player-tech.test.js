@@ -3,11 +3,15 @@ const assert = require("assert");
 const UPDATOR = require("./updator-player-tech");
 const { MockCard, MockCardDetails, world } = require("../../wrapper/api");
 
-it("tech", () => {
-    world.__clear();
-
+it("player.tech", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
+    const data = {
+        players: playerDesks.map((desk) => {
+            return { color: desk.colorName };
+        }),
+    };
 
+    world.__clear();
     world.__addObject(
         new MockCard({
             allCardDetails: [
@@ -19,11 +23,6 @@ it("tech", () => {
         })
     );
 
-    const data = {
-        players: world.TI4.getAllPlayerDesks().map((desk) => {
-            return { color: desk.colorName };
-        }),
-    };
     UPDATOR(data);
     world.__clear();
 
