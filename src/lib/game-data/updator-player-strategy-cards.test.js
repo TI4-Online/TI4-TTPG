@@ -3,7 +3,7 @@ const assert = require("assert");
 const UPDATOR = require("./updator-player-strategy-cards");
 const { MockGameObject, world } = require("../../wrapper/api");
 
-it("player.score", () => {
+it("player.strategyCards", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
     const data = {
         players: playerDesks.map((desk) => {

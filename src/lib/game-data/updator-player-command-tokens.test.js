@@ -3,7 +3,7 @@ const assert = require("assert");
 const UPDATOR = require("./updator-player-command-tokens");
 const { MockGameObject, MockVector, world } = require("../../wrapper/api");
 
-it("player.tech", () => {
+it("player.commandTokens", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
     const data = {
         players: playerDesks.map((desk) => {
