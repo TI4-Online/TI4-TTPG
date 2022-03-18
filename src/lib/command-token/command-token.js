@@ -80,7 +80,7 @@ class CommandToken {
     static _sortTokensByRegion(sheetAndTokens) {
         assert(sheetAndTokens.commandSheet);
 
-        sheetAndTokens.tactic = [];
+        sheetAndTokens.tactics = [];
         sheetAndTokens.fleet = [];
         sheetAndTokens.strategy = [];
 
@@ -94,13 +94,30 @@ class CommandToken {
             // Which region?
             let angle = (Math.atan2(pos.y, pos.x) * 180) / Math.PI;
             if (-30 < angle && angle <= 30) {
-                sheetAndTokens.tactic.push(token);
+                sheetAndTokens.tactics.push(token);
             } else if (30 < angle && angle <= 90) {
                 sheetAndTokens.fleet.push(token);
             } else if (90 < angle && angle <= 150) {
                 sheetAndTokens.strategy.push(token);
             }
         }
+    }
+
+    static getPlayerSlotToTokenCount() {
+        const playerSlotToSheetAndTokens =
+            CommandToken._getAllCommandSheetsAndTokens();
+        const result = {};
+        for (const [playerSlotStr, sheetAndTokens] of Object.entries(
+            playerSlotToSheetAndTokens
+        )) {
+            CommandToken._sortTokensByRegion(sheetAndTokens);
+            result[playerSlotStr] = {
+                tactics: sheetAndTokens.tactics.length,
+                fleet: sheetAndTokens.fleet.length,
+                strategy: sheetAndTokens.strategy.length,
+            };
+        }
+        return result;
     }
 
     /**
@@ -119,7 +136,7 @@ class CommandToken {
         }
         assert(sheetAndTokens);
         CommandToken._sortTokensByRegion(sheetAndTokens);
-        return sheetAndTokens.tactic[0];
+        return sheetAndTokens.tactics[0];
     }
 
     static getPlayerSlotToCommandTokenBag() {
