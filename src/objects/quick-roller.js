@@ -1,5 +1,11 @@
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
+const { ColorUtil } = require("../lib/color/color-util");
+const { RollGroup } = require("../lib/dice/roll-group");
+const { SimpleDieBuilder } = require("../lib/dice/simple-die");
 const {
+    Border,
     Button,
     Canvas,
     GameObject,
@@ -9,10 +15,6 @@ const {
     refObject,
     world,
 } = require("../wrapper/api");
-const { SimpleDieBuilder } = require("../lib/dice/simple-die");
-const { RollGroup } = require("../lib/dice/roll-group");
-const { Broadcast } = require("../lib/broadcast");
-const locale = require("../lib/locale");
 
 const DELETE_AFTER_N_SECONDS = 20;
 const WAIT_MSECS_BEFORE_ROLL = 2500;
@@ -24,6 +26,7 @@ class QuickRoller {
         this._obj = gameObject;
         this._value = 5;
         this._buttons = [];
+        this._borders = [];
         this._pendingDice = [];
         this._pendingRollHandle = undefined;
 
@@ -33,8 +36,6 @@ class QuickRoller {
         const buttonW = 8 * scale;
         const buttonH = buttonW;
         const canvas = new Canvas();
-
-        //canvas.addChild(new Border(), 0, 0, w, h);
 
         const ui = new UIElement();
         ui.useWidgetSize = false;
@@ -51,16 +52,16 @@ class QuickRoller {
             const phi = (Math.PI / 5) * i;
             const x = Math.sin(phi) * r + w / 2 - buttonW / 2;
             const y = -Math.cos(phi) * r + h / 2 - buttonH / 2;
-            console.log(`xxx ${x}, ${y}`);
-            const button = new Button()
-                .setFontSize(30)
-                .setText(i)
-                .setEnabled(i !== this._value);
+            const button = new Button().setFontSize(30).setText(i);
             button.onClicked.add((button, player) => {
                 this.onClickedValue(i, player);
             });
-            canvas.addChild(button, x, y, buttonW, buttonH);
             this._buttons.push(button);
+
+            const border = new Border().setChild(button);
+            this._borders.push(border);
+
+            canvas.addChild(border, x, y, buttonW, buttonH);
         }
 
         const s = w * 0.4;
@@ -69,13 +70,24 @@ class QuickRoller {
             this.onClickedRoll(player);
         });
         canvas.addChild(rollButton, w / 2 - s / 2, h / 2 - s / 2, s, s);
+
+        this.update();
+    }
+
+    update() {
+        for (let i = 0; i < this._buttons.length; i++) {
+            const active = this._value === i + 1;
+            this._buttons[i].setEnabled(!active);
+
+            const colorHex = active ? "#ff0000" : "#000000";
+            const color = ColorUtil.colorFromHex(colorHex);
+            this._borders[i].setColor(color);
+        }
     }
 
     onClickedValue(value, player) {
         this._value = value;
-        this._buttons.forEach((button, index) => {
-            button.setEnabled(value !== index + 1);
-        });
+        this.update();
     }
 
     onClickedRoll(player) {
@@ -124,7 +136,9 @@ class QuickRoller {
             }
             parts.push(die.getValueStr());
         }
-        const report = parts.join(", ");
+
+        const prefix = `[${locale("ui.message.roll.hit")}:${this._value}] `;
+        const report = prefix + parts.join(", ");
         let msg = locale("ui.message.player_rolled", { playerName, report });
         Broadcast.broadcastAll(msg, color);
 

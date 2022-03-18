@@ -13,6 +13,7 @@ const { SetupTableDecks } = require("./setup/setup-table-decks");
 const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
 const { SetupTableTokens } = require("./setup/setup-table-tokens");
+const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
 const { refObject, world } = require("./wrapper/api");
 
 const ACTION = {
@@ -66,6 +67,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupTableDecks());
         setups.push(new SetupTableGraveyards());
         setups.push(new SetupTableTokens());
+        setups.push(new SetupQuickRollers());
 
         const setupNext = () => {
             const setup = setups.shift();
