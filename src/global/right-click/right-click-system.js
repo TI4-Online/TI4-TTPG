@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { CommandToken } = require("../../lib/command-token/command-token");
+const { ControlToken } = require("../../lib/control-token/control-token");
 const { Explore } = require("../../lib/explore/explore");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Border,
     Button,
@@ -15,7 +17,6 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
 
 let _openPopupUi = false;
 
@@ -42,6 +43,15 @@ function getNamesAndActions(player, systemTileObj) {
             action: (player) => {
                 _closePopup();
                 CommandToken.diplomacySystem(systemTileObj, player);
+            },
+        },
+        {
+            // This could be disabled for empty systems (diplomcay rider
+            // makes it legal for Mecatol).
+            name: locale("ui.action.system.control"),
+            action: (player) => {
+                _closePopup();
+                ControlToken.spawnOnSystem(systemTileObj, player);
             },
         },
     ];
@@ -90,9 +100,11 @@ function addRightClickOptions(systemTileObj) {
 
     // Also offer via a button.  Image buttons are quite blurry especially
     // when small.  Make a big one and scale it down.
+    const scale = systemTileObj.getScale();
+    const scaleW = scale.x / scale.z; // Z scales image
     const button = new ImageButton()
         .setImage("global/ui/menu_button_hex.png", refPackageId)
-        .setImageSize(100, 150);
+        .setImageSize(100, 100 * scaleW);
 
     // Mallice needs to be flipped to see button, that's ok.
     const ui = new UIElement();

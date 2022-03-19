@@ -3,7 +3,7 @@ const assert = require("assert");
 const updatorConfig = require("./updator-config");
 const { world } = require("../../wrapper/api");
 
-it("updator", () => {
+it("config", () => {
     world.TI4.reset();
     let data = {};
     updatorConfig(data);

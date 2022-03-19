@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/mats/public-objective-mat.js",
 	"Blueprint": "",
 	"Models": [
 		{

@@ -1059,7 +1059,7 @@ module.exports = [
                 influence: 3,
                 legendary: true,
                 legendaryCard:
-                    "card.legendary_planet:pok/exterric_headquarters",
+                    "card.legendary_planet:pok/exterrix_headquarters",
                 trait: ["cultural"],
                 position: { x: 1.2, y: 1 },
             },

@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/mats/build-area-mat.js",
 	"Blueprint": "",
 	"Models": [
 		{

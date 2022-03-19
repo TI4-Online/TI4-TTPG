@@ -55,5 +55,31 @@ it("sortTokensByRegion", () => {
 
     const sheetAndTokens = playerSlotToSheetAndTokens[slot];
     CommandToken._sortTokensByRegion(sheetAndTokens);
-    assert.equal(sheetAndTokens.tactic.length, 1);
+    assert.equal(sheetAndTokens.tactics.length, 1);
+});
+
+it("getPlayerSlotToTokenCount", () => {
+    const slot = 7;
+    world.__clear();
+
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "sheet:base/command",
+            owningPlayerSlot: slot,
+            position: new MockVector(0, 0, 0),
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "token.command:base/arborec",
+            owningPlayerSlot: slot,
+            position: new MockVector(10, 0, 0),
+        })
+    );
+
+    const playerSlotToTokenCount = CommandToken.getPlayerSlotToTokenCount();
+    world.__clear();
+
+    const tokenCount = playerSlotToTokenCount[slot];
+    assert.equal(tokenCount.tactics, 1);
 });

@@ -3,6 +3,19 @@ const { ObjectNamespace } = require("../object-namespace");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
 const { world } = require("../../wrapper/api");
 
+const OTHER_SCORABLE_NSIDS = new Set([
+    "card.action:base/imperial_rider",
+    "card.agenda:base.only/holy_planet_of_ixth",
+    "card.agenda:base.only/shard_of_the_throne",
+    "card.agenda:base.only/the_crown_of_emphidia",
+    "card.agenda:base/mutiny",
+    "card.agenda:base/seed_of_an_empire",
+    "card.agenda:pok/political_censure",
+    "card.relic:pok/shard_of_the_throne",
+    "card.relic:pok/the_crown_of_emphidia",
+    "token:base/custodians",
+]);
+
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
     data.players.forEach((playerData) => {
@@ -20,12 +33,14 @@ module.exports = (data) => {
         // Find control tokens.
         if (ObjectNamespace.isControlToken(obj)) {
             controlTokens.push(obj);
+            continue; // make sure later cannot add again
         }
 
         // Find objective cards.  Can be in a card holder (secrets)!
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid.startsWith("card.objective.")) {
             objectiveCards.push(obj);
+            continue; // make sure later cannot add again
         }
 
         // Find SFTT cards.
@@ -34,6 +49,13 @@ module.exports = (data) => {
             nsid.endsWith("support_for_the_throne")
         ) {
             objectiveCards.push(obj);
+            continue; // make sure later cannot add again
+        }
+
+        // Other scorables.
+        if (OTHER_SCORABLE_NSIDS.has(nsid)) {
+            objectiveCards.push(obj);
+            continue; // make sure later cannot add again
         }
     }
 
@@ -106,6 +128,22 @@ module.exports = (data) => {
             .filter((obj) => {
                 const nsid = ObjectNamespace.getNsid(obj);
                 return nsid.startsWith("card.objective.secret");
+            })
+            .map((obj) => {
+                return obj.getCardDetails().name;
+            }),
+        Agenda: objectiveCards
+            .filter((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                return nsid.startsWith("card.agenda");
+            })
+            .map((obj) => {
+                return obj.getCardDetails().name;
+            }),
+        Relics: objectiveCards
+            .filter((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                return nsid.startsWith("card.relic");
             })
             .map((obj) => {
                 return obj.getCardDetails().name;

@@ -1,5 +1,4 @@
 const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { Hex } = require("../lib/hex");
 const { ObjectNamespace } = require("../lib/object-namespace");
@@ -13,14 +12,16 @@ const {
     world,
 } = require("../wrapper/api");
 
+const SPAWN_OFF_MAP_ALSO = false;
+
 // "Standard" home system locations, and suggested off-map positions keeping
 // closer to the center of the table but pushed out (north and south).  The
 // idea is to leave the long ends clear for other use.
 const HEX = {
-    N: { onMap: "<3,0,-3>", offMap: "<5,-1,-4>" },
+    N: { onMap: "<3,0,-3>", offMap: "<5,0,-5>" },
     NE: { onMap: "<0,3,-3>", offMap: "<2,3,-5>" },
     SE: { onMap: "<-3,3,0>", offMap: "<-5,3,2>" },
-    S: { onMap: "<-3,0,3>", offMap: "<-5,1,4>" },
+    S: { onMap: "<-3,0,3>", offMap: "<-5,0,5>" },
     SW: { onMap: "<0,-3,3>", offMap: "<-2,-3,5>" },
     NW: { onMap: "<3,-3,0>", offMap: "<5,-3,-2>" },
 };
@@ -34,28 +35,47 @@ const HOME_SYSTEM_POSITIONS = {
     6: [HEX.SE, HEX.S, HEX.SW, HEX.NW, HEX.N, HEX.NE],
     7: [
         HEX.SE,
-        { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
+        { onMap: "<-4,0,4>", offMap: "<-6,0,6>" }, // red
         { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-        { onMap: "<2,-4,2>", offMap: "<-2,-4,6>" },
-        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
-        { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
+        { onMap: "<2,-4,2>", offMap: "<4,-5,1>" }, // pink
+        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" }, // yellow
+        { onMap: "<4,0,-4>", offMap: "<6,0,-6>" }, // blue
         HEX.NE,
     ],
     8: [
         { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
-        { onMap: "<-4,0,4>", offMap: "<-6,2,4>" },
+        { onMap: "<-4,0,4>", offMap: "<-6,0,6>" }, // yellow
         { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-        { onMap: "<2,-4,2>", offMap: "<-2,-4,6>" },
-        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" },
-        { onMap: "<4,0,-4>", offMap: "<6,-2,-4>" },
+        { onMap: "<2,-4,2>", offMap: "<2,-6,4>" }, // orange
+        { onMap: "<4,-3,-1>", offMap: "<4,-5,1>" }, // pink
+        { onMap: "<4,0,-4>", offMap: "<6,0,-6>" }, // blue
         { onMap: "<1,3,-4>", offMap: "<3,3,-6>" },
         { onMap: "<-2,4,-2>", offMap: "<2,4,-6>" },
     ],
 };
 
-const SPAWN_OFF_MAP_ALSO = false;
-
 class SetupGenericHomeSystems extends AbstractSetup {
+    static addLabel(systemTileObj, labelText) {
+        const text = new Text()
+            .setText(labelText)
+            .setJustification(TextJustification.Center);
+
+        for (const ui of systemTileObj.getUIs()) {
+            systemTileObj.removeUI(ui);
+        }
+
+        const ui = new UIElement();
+        ui.position = new Vector(0, 0, 0.13);
+        ui.widget = text;
+        systemTileObj.addUI(ui);
+
+        systemTileObj.onReleased.add((obj) => {
+            const pos = obj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            obj.setDescription(hex);
+        });
+    }
+
     constructor(playerDesk) {
         assert(playerDesk);
         super(playerDesk);
@@ -139,7 +159,10 @@ class SetupGenericHomeSystems extends AbstractSetup {
         obj.setPrimaryColor(color);
         obj.setOwningPlayerSlot(playerSlot);
 
-        this._addLabel(obj);
+        //SetupGenericHomeSystems.addLabel(
+        //    obj,
+        //    locale("ui.label.home_system_tile")
+        //);
 
         // Also spawn one at off-map for visualizing.
         if (SPAWN_OFF_MAP_ALSO) {
@@ -169,17 +192,6 @@ class SetupGenericHomeSystems extends AbstractSetup {
             }
             obj.destroy();
         }
-    }
-
-    _addLabel(obj) {
-        const text = new Text()
-            .setText(locale("ui.label.home_system_tile"))
-            .setJustification(TextJustification.Center);
-
-        const ui = new UIElement();
-        ui.position = new Vector(0, 0, 0.13);
-        ui.widget = text;
-        obj.addUI(ui);
     }
 }
 

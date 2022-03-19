@@ -28,7 +28,6 @@ class ScoreboardObj {
 
     update() {
         const gamePoints = world.TI4.config.gamePoints;
-        console.log(gamePoints);
 
         for (const ui of this._obj.getUIs()) {
             this._obj.removeUI(ui);

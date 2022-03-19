@@ -1,9 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ApplyScoreboard } = require("./apply-scoreboard");
 const { GameSetupUI } = require("./game-setup-ui");
-const { globalEvents, world } = require("../../wrapper/api");
+const { Hex } = require("../../lib/hex");
 const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
+const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
+const { globalEvents, world } = require("../../wrapper/api");
 
 let _useGameData = false;
 
@@ -41,6 +43,19 @@ function onUseGameDataChanged(checkBox, player, isChecked) {
     _useGameData = isChecked;
 }
 
+function onUseLargerHexes(checkBox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+
+    Hex.setLargerScale(isChecked);
+
+    // Redo generic HS placement.  Nothing else should care at this point.
+    world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
+        const setup = new SetupGenericHomeSystems(playerDesk);
+        setup.clean();
+        setup.setup();
+    });
+}
+
 function onSetupClicked(button, player) {
     // Record setup timestamp for gamedata.
     const timestamp = Date.now() / 1000;
@@ -71,6 +86,7 @@ class GameSetup {
         this._ui = new GameSetupUI({
             onPlayerCountChanged,
             onGamePointsChanged,
+            onUseLargerHexes,
             onUsePokChanged,
             onUseOmegaChanged,
             onUseCodex1Changed,

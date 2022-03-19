@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { Hex } = require("../../lib/hex");
 const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Button,
@@ -46,7 +47,6 @@ class GameSetupUI {
                 this._callbacks.onPlayerCountChanged
             )
         );
-
         col1Panel.addChild(
             this._createSlider(
                 "ui.setup.game_points",
@@ -54,6 +54,13 @@ class GameSetupUI {
                 14,
                 world.TI4.config.gamePoints,
                 this._callbacks.onGamePointsChanged
+            )
+        );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.larger_hexes",
+                Hex.getLargerScale(),
+                this._callbacks.onUseLargerHexes
             )
         );
 

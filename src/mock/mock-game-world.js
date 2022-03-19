@@ -36,6 +36,9 @@ class GameWorld {
     }
 
     __clear() {
+        this._allObjects.forEach((obj) => {
+            obj.destroy(); // mark as not valid
+        });
         this._allObjects = [];
         this._allPlayers = [];
         this._uis = [];
