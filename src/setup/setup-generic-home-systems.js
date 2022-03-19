@@ -13,7 +13,7 @@ const {
     world,
 } = require("../wrapper/api");
 
-const SPAWN_OFF_MAP_ALSO = true;
+const SPAWN_OFF_MAP_ALSO = false;
 
 // "Standard" home system locations, and suggested off-map positions keeping
 // closer to the center of the table but pushed out (north and south).  The
