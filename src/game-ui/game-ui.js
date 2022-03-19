@@ -96,6 +96,10 @@ class GameUI {
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
             //console.log("onBeginOverlap");
+
+            const above = obj.getPosition().add([0, 0, 10]);
+            obj.setPosition(above);
+
             const container = undefined;
             const rejectedObjs = [obj];
             const player = undefined;
