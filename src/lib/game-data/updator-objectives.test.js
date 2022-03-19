@@ -38,8 +38,10 @@ it("objectives (token)", () => {
     world.__clear();
 
     assert.deepEqual(data.objectives, {
+        Agenda: [],
         "Public Objectives I": ["Amass Wealth"],
         "Public Objectives II": [],
+        Relics: [],
         "Secret Objectives": [],
     });
     assert.deepEqual(data.players[0].objectives, ["Amass Wealth"]);
@@ -74,8 +76,10 @@ it("objectives (holder)", () => {
     world.__clear();
 
     assert.deepEqual(data.objectives, {
+        Agenda: [],
         "Public Objectives I": [],
         "Public Objectives II": [],
+        Relics: [],
         "Secret Objectives": ["Become a Martyr"],
     });
     assert.deepEqual(data.players[0].objectives, ["Become a Martyr"]);
