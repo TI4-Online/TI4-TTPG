@@ -1,5 +1,4 @@
 const assert = require("../wrapper/assert-wrapper");
-const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { Hex } = require("../lib/hex");
 const { ObjectNamespace } = require("../lib/object-namespace");
@@ -56,6 +55,27 @@ const HOME_SYSTEM_POSITIONS = {
 };
 
 class SetupGenericHomeSystems extends AbstractSetup {
+    static addLabel(systemTileObj, labelText) {
+        const text = new Text()
+            .setText(labelText)
+            .setJustification(TextJustification.Center);
+
+        for (const ui of systemTileObj.getUIs()) {
+            systemTileObj.removeUI(ui);
+        }
+
+        const ui = new UIElement();
+        ui.position = new Vector(0, 0, 0.13);
+        ui.widget = text;
+        systemTileObj.addUI(ui);
+
+        systemTileObj.onReleased.add((obj) => {
+            const pos = obj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            obj.setDescription(hex);
+        });
+    }
+
     constructor(playerDesk) {
         assert(playerDesk);
         super(playerDesk);
@@ -139,7 +159,10 @@ class SetupGenericHomeSystems extends AbstractSetup {
         obj.setPrimaryColor(color);
         obj.setOwningPlayerSlot(playerSlot);
 
-        this._addLabel(obj);
+        //SetupGenericHomeSystems.addLabel(
+        //    obj,
+        //    locale("ui.label.home_system_tile")
+        //);
 
         // Also spawn one at off-map for visualizing.
         if (SPAWN_OFF_MAP_ALSO) {
@@ -169,23 +192,6 @@ class SetupGenericHomeSystems extends AbstractSetup {
             }
             obj.destroy();
         }
-    }
-
-    _addLabel(obj) {
-        const text = new Text()
-            .setText(locale("ui.label.home_system_tile"))
-            .setJustification(TextJustification.Center);
-
-        const ui = new UIElement();
-        ui.position = new Vector(0, 0, 0.13);
-        ui.widget = text;
-        obj.addUI(ui);
-
-        obj.onReleased.add((obj) => {
-            const pos = obj.getPosition();
-            const hex = Hex.fromPosition(pos);
-            obj.setDescription(hex);
-        });
     }
 }
 
