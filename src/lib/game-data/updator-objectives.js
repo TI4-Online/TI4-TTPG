@@ -132,6 +132,22 @@ module.exports = (data) => {
             .map((obj) => {
                 return obj.getCardDetails().name;
             }),
+        Agenda: objectiveCards
+            .filter((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                return nsid.startsWith("card.agenda");
+            })
+            .map((obj) => {
+                return obj.getCardDetails().name;
+            }),
+        Relics: objectiveCards
+            .filter((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                return nsid.startsWith("card.relic");
+            })
+            .map((obj) => {
+                return obj.getCardDetails().name;
+            }),
     };
 
     // Add per-player objectives.
