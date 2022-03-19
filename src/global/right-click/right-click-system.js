@@ -100,9 +100,11 @@ function addRightClickOptions(systemTileObj) {
 
     // Also offer via a button.  Image buttons are quite blurry especially
     // when small.  Make a big one and scale it down.
+    const scale = systemTileObj.getScale();
+    const scaleW = scale.x / scale.z; // Z scales image
     const button = new ImageButton()
         .setImage("global/ui/menu_button_hex.png", refPackageId)
-        .setImageSize(100, 150);
+        .setImageSize(100, 100 * scaleW);
 
     // Mallice needs to be flipped to see button, that's ok.
     const ui = new UIElement();
