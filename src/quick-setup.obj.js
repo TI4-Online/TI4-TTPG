@@ -3,6 +3,7 @@
  */
 
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
+const { Hex } = require("./lib/hex");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
@@ -28,6 +29,9 @@ function clean() {
         }
     }
     GlobalSavedData.clear();
+
+    // Hex keeps some in-memory state.  Reset it.
+    Hex.setLargerScale(Hex.getLargerScale());
 }
 
 for (const action of Object.values(ACTION)) {

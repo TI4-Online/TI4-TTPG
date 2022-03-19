@@ -55,7 +55,7 @@ const HALF_SIZE_UNSCALED = 5.77735;
 class Hex {
     static getLargerScale() {
         const config = GlobalSavedData.get(GLOBAL_SAVED_DATA_KEY.HEX, {});
-        return config.lg;
+        return config.lg ? true : false;
     }
 
     /**

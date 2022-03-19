@@ -116,6 +116,7 @@
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
     "ui.setup.player_count": "Player count",
+    "ui.setup.larger_hexes": "Larger hexes",
     "ui.setup.game_points": "Game points",
     "ui.setup.use_pok": "Prophecy of Kings",
     "ui.setup.use_omega": "Omega replacements",
