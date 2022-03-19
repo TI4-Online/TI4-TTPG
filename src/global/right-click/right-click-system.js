@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { CommandToken } = require("../../lib/command-token/command-token");
+const { ControlToken } = require("../../lib/control-token/control-token");
 const { Explore } = require("../../lib/explore/explore");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Border,
     Button,
@@ -15,7 +17,6 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
 
 let _openPopupUi = false;
 
@@ -42,6 +43,15 @@ function getNamesAndActions(player, systemTileObj) {
             action: (player) => {
                 _closePopup();
                 CommandToken.diplomacySystem(systemTileObj, player);
+            },
+        },
+        {
+            // This could be disabled for empty systems (diplomcay rider
+            // makes it legal for Mecatol).
+            name: locale("ui.action.system.control"),
+            action: (player) => {
+                _closePopup();
+                ControlToken.spawnOnSystem(systemTileObj, player);
             },
         },
     ];
