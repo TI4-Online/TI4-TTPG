@@ -112,6 +112,7 @@
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
     "ui.menu.purge": "Purge",
     "ui.menu.score": "Score",
+    "ui.menu.fetch_planet": "Fetch {planetName}",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
