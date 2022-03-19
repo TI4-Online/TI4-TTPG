@@ -52,6 +52,11 @@ class MapStringLoad {
                 obj = Spawn.spawn(nsid, pos, rot);
             }
 
+            // Mallice starts upside down.
+            if (entry.tile === 82) {
+                rot.roll = 180;
+            }
+
             // Place tile.
             const animSpeed = 1;
             obj.setObjectType(ObjectType.Regular);
