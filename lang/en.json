@@ -580,6 +580,10 @@
     "tile.strategy.technology": "Technology",
     "tile.strategy.imperial": "Imperial",
 
+    "trait.cultural": "Cultural",
+    "trait.hazardous": "Hazardous",
+    "trait.industrial": "Industrial",
+
     "deck.action": "Actions",
     "deck.agenda": "Agendas",
     "deck.alliance": "Alliances",
