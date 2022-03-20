@@ -56,7 +56,6 @@ it("objectives (holder)", () => {
     };
 
     const holder = new MockCardHolder({
-        owningPlayerSlot: playerDesks[0].playerSlot,
         savedData: `{"deskIndex":"${playerDesks[0].index}"}`,
     });
 
