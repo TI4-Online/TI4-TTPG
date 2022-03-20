@@ -37,9 +37,6 @@ class SetupFactionExtra extends AbstractSetup {
             } else {
                 throw new Error("unknown faction.unpackExtra");
             }
-            if (nextPos.y > -3) {
-                nextPos.y += 6;
-            }
         });
     }
 
