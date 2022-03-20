@@ -30,6 +30,7 @@ class TurnOrderPanel extends VerticalBox {
         globalEvents.TI4.onTurnChanged.add(update);
         globalEvents.TI4.onPlayerColorChanged.add(update);
         globalEvents.TI4.onPlayerCountChanged.add(update);
+        globalEvents.onPlayerJoined.add(update);
         globalEvents.onPlayerSwitchedSlots.add(update);
 
         // Unregister listeners when destroyed.
@@ -39,6 +40,7 @@ class TurnOrderPanel extends VerticalBox {
                 globalEvents.TI4.onTurnChanged.remove(update);
                 globalEvents.TI4.onPlayerColorChanged.remove(update);
                 globalEvents.TI4.onPlayerCountChanged.remove(update);
+                globalEvents.onPlayerJoined.remove(update);
                 globalEvents.onPlayerSwitchedSlots.remove(update);
             });
         }

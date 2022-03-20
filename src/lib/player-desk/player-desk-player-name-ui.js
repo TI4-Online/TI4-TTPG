@@ -54,6 +54,8 @@ class PlayerDeskPlayerNameUI {
         });
         globalEvents.TI4.onTurnChanged.add(this._eventHandler);
         globalEvents.TI4.onTurnOrderChanged.add(this._eventHandler);
+        globalEvents.onPlayerJoined.add(this._eventHandler);
+        globalEvents.onPlayerSwitchedSlots.add(this._eventHandler);
     }
 
     removeUI() {
@@ -62,6 +64,8 @@ class PlayerDeskPlayerNameUI {
         });
         globalEvents.TI4.onTurnChanged.remove(this._eventHandler);
         globalEvents.TI4.onTurnOrderChanged.remove(this._eventHandler);
+        globalEvents.onPlayerJoined.remove(this._eventHandler);
+        globalEvents.onPlayerSwitchedSlots.remove(this._eventHandler);
     }
 
     /**
