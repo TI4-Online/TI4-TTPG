@@ -23,6 +23,10 @@ it("validate with side and rotation", () => {
     assert.equal(validate("7 83b2"), true);
 });
 
+it("validate start with side and rotation", () => {
+    assert.equal(validate("83b2"), true);
+});
+
 it("validate supports multiple and mixed delimiters", () => {
     assert.deepEqual(validate("{4}   ,7   18,   23"), true);
 });
@@ -73,6 +77,9 @@ it("parse with side and rotation", () => {
         { tile: 7 },
         { tile: 83, side: "b", rotation: 2 },
     ]);
+});
+it("parse start with side and rotation", () => {
+    assert.deepEqual(parse("{83b2}"), [{ tile: 83, side: "b", rotation: 2 }]);
 });
 
 it("parse supports multiple and mixed delimiters", () => {
