@@ -2,7 +2,7 @@ require("../global"); // register world.TI4
 const assert = require("assert");
 const { GlobalSavedData } = require("./saved-data/global-saved-data");
 const { PlayerDesk } = require("./player-desk/player-desk");
-const { Turns } = require("./turns");
+const { Turns, TURN_ORDER_TYPE } = require("./turns");
 const { MockGameObject, MockPlayer, world } = require("../wrapper/api");
 
 it("constructor", () => {
@@ -119,4 +119,36 @@ it("persistence", () => {
     //assert.equal(turns2.getCurrentTurn(), currentTurnDesk);
 
     GlobalSavedData.clear();
+});
+
+it("snake", () => {
+    const numbers = [...Array(3).keys()];
+    const playerDesks = numbers.map((i) => PlayerDesk.createDummy(i, i));
+    const clickingPlayer = new MockPlayer();
+
+    const turns = new Turns();
+    turns.setTurnOrder(playerDesks, clickingPlayer, TURN_ORDER_TYPE.SNAKE);
+    turns.setCurrentTurn(playerDesks[0], clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[2]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[2]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
 });
