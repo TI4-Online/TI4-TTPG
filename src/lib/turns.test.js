@@ -121,6 +121,38 @@ it("persistence", () => {
     GlobalSavedData.clear();
 });
 
+it("forward", () => {
+    const numbers = [...Array(3).keys()];
+    const playerDesks = numbers.map((i) => PlayerDesk.createDummy(i, i));
+    const clickingPlayer = new MockPlayer();
+
+    const turns = new Turns();
+    turns.setTurnOrder(playerDesks, clickingPlayer, TURN_ORDER_TYPE.FORWARD);
+    turns.setCurrentTurn(playerDesks[0], clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[2]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[2]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[0]);
+
+    turns.endTurn(clickingPlayer);
+    assert(turns.getCurrentTurn(), playerDesks[1]);
+});
+
 it("snake", () => {
     const numbers = [...Array(3).keys()];
     const playerDesks = numbers.map((i) => PlayerDesk.createDummy(i, i));

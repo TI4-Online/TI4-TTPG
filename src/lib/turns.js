@@ -255,9 +255,7 @@ class Turns {
         // Scan for next active, respecting order and snaking.
         // Set scan limit 2x size for snaking, harmless for normal.
         let dir = this._isForward ? 1 : -1;
-        let candidateIdx =
-            (currentIdx + this._turnOrder.length + dir) %
-            this._turnOrder.length;
+        let candidateIdx = currentIdx;
         let remaining = this._turnOrder.length * 2;
         while (remaining > 0) {
             // Move to next.  If snaking, end slots get 2x turns.

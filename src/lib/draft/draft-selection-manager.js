@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
 const { DraftSelectionWidget } = require("./draft-selection-widget");
-const { Button, Player, world } = require("../../wrapper/api");
+const { Button, ImageButton, Player, world } = require("../../wrapper/api");
 const { ColorUtil } = require("../color/color-util");
 
 /**
@@ -15,6 +15,19 @@ class DraftSelectionManager {
         this._categoryNameToSelectionNameToDraftSelectionWidgets = {};
         this._borderSize = 4;
         this._onFinishedButtons = [];
+        this._advanceTurnOnSelection = false;
+    }
+
+    /**
+     * Advance turn when current-turn player selects something?
+     *
+     * @param {boolean} value
+     * @returns self, for chaining
+     */
+    setAdvanceTurnOnSelection(value) {
+        assert(typeof value === "boolean");
+        this._advanceTurnOnSelection = value;
+        return this;
     }
 
     /**
@@ -255,6 +268,14 @@ class DraftSelectionManager {
                     selectionName,
                 });
                 Broadcast.broadcastAll(msg, playerDesk.color);
+
+                // Advance turn.
+                if (
+                    this._advanceTurnOnSelection &&
+                    world.TI4.turns.isActivePlayer(player)
+                ) {
+                    world.TI4.turns.endTurn(player);
+                }
             };
         };
     }

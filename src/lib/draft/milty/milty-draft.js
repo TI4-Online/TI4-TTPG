@@ -22,9 +22,9 @@ class MiltyDraft {
         this._uis = [];
         this._scale = DEFAULT_SLICE_SCALE;
 
-        this._draftSelectionManager = new DraftSelectionManager().setBorderSize(
-            SELECTION_BORDER_SIZE * this._scale
-        );
+        this._draftSelectionManager = new DraftSelectionManager()
+            .setBorderSize(SELECTION_BORDER_SIZE * this._scale)
+            .setAdvanceTurnOnSelection(true);
     }
 
     resetSlices() {
