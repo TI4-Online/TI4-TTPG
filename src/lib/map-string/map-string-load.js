@@ -20,9 +20,11 @@ class MapStringLoad {
 
         // Find existing tiles (may be inside containers).
         const tileToSystemObj = {};
-        for (const obj of world.TI4.getAllSystemTileObjects()) {
-            const tile = ObjectNamespace.parseSystemTile(obj).tile;
-            tileToSystemObj[tile] = obj;
+        for (const obj of world.getAllObjects()) {
+            if (ObjectNamespace.isSystemTile(obj)) {
+                const tile = ObjectNamespace.parseSystemTile(obj).tile;
+                tileToSystemObj[tile] = obj;
+            }
         }
 
         const placeTile = (entry, hex) => {
