@@ -95,6 +95,7 @@ class MapTool {
         if (mapString.length === 0) {
             return;
         }
+        MapStringLoad.moveGenericHomeSystemTiles(mapString);
         MapStringLoad.load(mapString);
     }
 

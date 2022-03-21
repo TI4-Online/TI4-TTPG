@@ -571,6 +571,12 @@ const FACTION_DATA = [
                 tokenNsid: "token.ul:pok/sleeper",
                 tokenCount: 5,
             },
+            {
+                tokenNsid: "token.attachment.ul:pok/geoform",
+            },
+            {
+                tokenNsid: "token.attachment.ul:pok/terraform",
+            },
         ],
     },
     {

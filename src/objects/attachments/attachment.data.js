@@ -127,7 +127,7 @@ const ATTACHMENTS = [
         faceUp: {
             resources: 1,
             influence: 1,
-            traits: ["industrial", "hazardous", "cultural"],
+            trait: ["industrial", "hazardous", "cultural"],
             image: "global/tokens/pok/exploration/terraform.png",
         },
     },

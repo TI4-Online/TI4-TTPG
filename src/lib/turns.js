@@ -9,6 +9,12 @@ const { ObjectNamespace } = require("./object-namespace");
 const { Player, globalEvents, world } = require("../wrapper/api");
 const { Shuffle } = require("./shuffle");
 
+const TURN_ORDER_TYPE = {
+    FORWARD: 1,
+    REVERSE: 2,
+    SNAKE: 3,
+};
+
 /**
  * Player turn manager.
  */
@@ -17,6 +23,9 @@ class Turns {
         assert(!isPersistent || typeof isPersistent === "boolean");
         this._turnOrder = [];
         this._currentTurn = undefined;
+        this._isForward = undefined;
+        this._isSnake = undefined;
+
         this._persistent = isPersistent ? true : false;
         this._needsLoad = true;
 
@@ -87,12 +96,21 @@ class Turns {
         return this._turnOrder;
     }
 
-    setTurnOrder(playerDeskOrder, player) {
+    setTurnOrder(
+        playerDeskOrder,
+        player,
+        turnOrderType = TURN_ORDER_TYPE.FORWARD
+    ) {
         this._maybeLoad();
         assert(Array.isArray(playerDeskOrder));
         assert(!player || player instanceof Player);
         this._turnOrder = [...playerDeskOrder];
         this._currentTurn = this._turnOrder[0];
+
+        this._isForward =
+            turnOrderType === TURN_ORDER_TYPE.FORWARD ||
+            turnOrderType === TURN_ORDER_TYPE.SNAKE;
+        this._isSnake = turnOrderType === TURN_ORDER_TYPE.SNAKE;
 
         // Tell world order changed.  First by message then by event.
         const colorOrder = this._turnOrder.map(
@@ -112,14 +130,14 @@ class Turns {
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
     }
 
-    randomizeTurnOrder(playerDesks, player) {
+    randomizeTurnOrder(playerDesks, player, turnOrderType) {
         this._maybeLoad();
         assert(Array.isArray(playerDesks));
         assert(!player || player instanceof Player);
 
         let order = [...playerDesks];
         order = Shuffle.shuffle(order);
-        this.setTurnOrder(order, player);
+        this.setTurnOrder(order, player, turnOrderType);
     }
 
     getCurrentTurn() {
@@ -211,34 +229,67 @@ class Turns {
             passedPlayerSlots.add(owningPlayerSlot);
         }
 
-        // Careful, the "current" player may have passed during their turn.
-        let firstActive = undefined;
-        let useNextActive = false;
-        let nextActive = undefined;
+        // Stop if all players have passed (with respect to current turn order).
+        let anyActive = false;
         for (const candidate of this._turnOrder) {
             const candidateSlot = candidate.playerSlot;
             const isActive = !passedPlayerSlots.has(candidateSlot);
-            if (!firstActive && isActive) {
-                firstActive = candidate;
-            }
-            if (useNextActive && isActive) {
-                useNextActive = false;
-                nextActive = candidate;
-            }
-            if (candidate === this._currentTurn) {
-                useNextActive = true;
+            if (isActive) {
+                anyActive = true;
+                break;
             }
         }
-        if (!nextActive) {
-            nextActive = firstActive;
-        }
-
-        if (nextActive) {
-            this.setCurrentTurn(nextActive, clickingPlayer);
-        } else {
+        if (!anyActive) {
             Broadcast.broadcastAll(
                 locale("ui.message.all_players_have_passed")
             );
+            return;
+        }
+
+        // Careful, the "current" player may have passed during their turn.
+        const currentIdx = this._turnOrder.indexOf(this._currentTurn);
+        if (currentIdx === -1) {
+            return;
+        }
+
+        // Scan for next active, respecting order and snaking.
+        // Set scan limit 2x size for snaking, harmless for normal.
+        let dir = this._isForward ? 1 : -1;
+        let candidateIdx = currentIdx;
+        let remaining = this._turnOrder.length * 2;
+        while (remaining > 0) {
+            // Move to next.  If snaking, end slots get 2x turns.
+            if (this._isSnake) {
+                if (this._isForward) {
+                    if (candidateIdx === this._turnOrder.length) {
+                        this._isForward = !this._isForward;
+                        dir = this._isForward ? 1 : -1;
+                        // Continue leaving current candidate in place.
+                    } else {
+                        candidateIdx += dir;
+                    }
+                } else {
+                    if (candidateIdx === 0) {
+                        this._isForward = !this._isForward;
+                        dir = this._isForward ? 1 : -1;
+                        // Continue leaving current candidate in place.
+                    } else {
+                        candidateIdx += dir;
+                    }
+                }
+            } else {
+                candidateIdx =
+                    (currentIdx + this._turnOrder.length + dir) %
+                    this._turnOrder.length;
+            }
+
+            const candidate = this._turnOrder[candidateIdx];
+            const candidateSlot = candidate.playerSlot;
+            const isActive = !passedPlayerSlots.has(candidateSlot);
+            if (isActive) {
+                this.setCurrentTurn(candidate, clickingPlayer);
+                break;
+            }
         }
     }
 
@@ -258,4 +309,5 @@ class Turns {
 
 module.exports = {
     Turns,
+    TURN_ORDER_TYPE,
 };

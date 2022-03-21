@@ -76,36 +76,21 @@ class Explore {
         const namesAndActions = [];
         if (system.planets.length > 0) {
             for (const planet of system.planets) {
-                if (!planet.firstTrait) {
-                    continue;
-                }
-                namesAndActions.push({
-                    name: locale("ui.action.system.explore", {
-                        planetName: planet.getNameStr(),
-                    }),
-                    action: (player) => {
-                        assert(player instanceof Player);
-                        const overrideTrait = false;
-                        Explore.onExplorePlanetAction(
-                            systemTileObj,
-                            planet,
-                            overrideTrait,
-                            player
-                        );
-                    },
-                });
-                if (
-                    distantSunsPlanets &&
-                    distantSunsPlanets.includes(planet.localeName)
-                ) {
+                const traits = [...new Set(planet.traits)]; // unique
+                for (const trait of traits) {
+                    let planetName = planet.getNameStr();
+                    if (traits.length > 1) {
+                        planetName =
+                            planetName + " " + locale("trait." + trait);
+                    }
                     namesAndActions.push({
-                        name: locale("ui.action.system.distant_suns_explore", {
-                            planetName: planet.getNameStr(),
+                        name: locale("ui.action.system.explore", {
+                            planetName,
                         }),
                         action: (player) => {
                             assert(player instanceof Player);
                             const overrideTrait = false;
-                            Explore.doubleExplore(
+                            Explore.onExplorePlanetAction(
                                 systemTileObj,
                                 planet,
                                 overrideTrait,
@@ -113,6 +98,29 @@ class Explore {
                             );
                         },
                     });
+                    if (
+                        distantSunsPlanets &&
+                        distantSunsPlanets.includes(planet.localeName)
+                    ) {
+                        namesAndActions.push({
+                            name: locale(
+                                "ui.action.system.distant_suns_explore",
+                                {
+                                    planetName,
+                                }
+                            ),
+                            action: (player) => {
+                                assert(player instanceof Player);
+                                const overrideTrait = false;
+                                Explore.doubleExplore(
+                                    systemTileObj,
+                                    planet,
+                                    overrideTrait,
+                                    player
+                                );
+                            },
+                        });
+                    }
                 }
             }
         } else {

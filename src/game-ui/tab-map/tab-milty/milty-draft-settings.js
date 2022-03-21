@@ -11,6 +11,7 @@ const {
 } = require("../../../lib/draft/milty/milty-slice-generator");
 const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
 const { Player, world } = require("../../../wrapper/api");
+const { TURN_ORDER_TYPE } = require("../../../lib/turns");
 
 class MiltyDraftSettings {
     constructor() {
@@ -63,7 +64,11 @@ class MiltyDraftSettings {
                 }
 
                 const playerDesks = world.TI4.getAllPlayerDesks();
-                world.TI4.turns.randomizeTurnOrder(playerDesks, player);
+                world.TI4.turns.randomizeTurnOrder(
+                    playerDesks,
+                    player,
+                    TURN_ORDER_TYPE.SNAKE
+                );
 
                 this._miltyDraft.createPlayerUIs();
                 return true;

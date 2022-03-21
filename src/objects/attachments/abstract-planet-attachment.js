@@ -116,10 +116,10 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
             planet.raw.legendary = true;
         }
         if (attrs.trait) {
-            if (!planet.raw.attrs) {
-                planet.raw.attrs = [];
+            if (!planet.raw.trait) {
+                planet.raw.trait = [];
             }
-            attrs.trait.forEach((element) => planet.raw.attrs.push(element));
+            attrs.trait.forEach((element) => planet.raw.trait.push(element));
         }
         if (attrs.tech) {
             if (!planet.raw.tech) {

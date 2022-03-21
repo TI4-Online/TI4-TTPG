@@ -6,6 +6,12 @@ const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const MATS = [
     {
+        nsid: "mat:base/agenda",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 25, y: 0 },
+        yaw: -90,
+    },
+    {
         nsid: "mat:base/objectives_1",
         anchor: TableLayout.anchor.score,
         pos: { x: 10, y: 0 },
