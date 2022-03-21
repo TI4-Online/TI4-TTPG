@@ -41,6 +41,17 @@ function _getUnitPlastic(gameObject) {
  */
 class UnitPlastic {
     /**
+     * Get UnitPlastic from a single game object.
+     *
+     * @param {GameObject} gameObject
+     * @returns {UnitPlastic|undefined}
+     */
+    static getOne(gameObject) {
+        assert(gameObject instanceof GameObject);
+        return _getUnitPlastic(gameObject);
+    }
+
+    /**
      * Find all pastic units and cardboard unit tokens.
      * Tokens are anonymous, call assignTokens (preferably with a filtered set).
      *
@@ -52,7 +63,7 @@ class UnitPlastic {
             if (obj.getContainer()) {
                 continue; // inside a container
             }
-            const unitPlastic = _getUnitPlastic(obj);
+            const unitPlastic = UnitPlastic.getOne(obj);
             if (unitPlastic) {
                 result.push(unitPlastic);
             }
