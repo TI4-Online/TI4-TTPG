@@ -118,7 +118,7 @@ class BuildAreaMat {
         this._obj.addUI(ui);
 
         this._createZone();
-        this.scheduleUpdate();
+        this.update();
     }
 
     _createUI() {
