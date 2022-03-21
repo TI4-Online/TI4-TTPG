@@ -103,6 +103,7 @@
     "ui.label.space_combat": "Space Combat",
     "ui.label.invasion": "Invasion",
     "ui.label.production": "Production",
+    "ui.label.search": "Search:",
 
     "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
 
@@ -142,6 +143,7 @@
     "ui.tab.help": "Help",
     "ui.tab.map": "Map",
     "ui.tab.map.map_tool": "Map Tool",
+    "ui.tab.map.premade": "Premade",
     "ui.tab.map.milty_draft": "Milty",
     "ui.tab.map.scpt_draft": "SCPT",
     "ui.tab.strategy_phase": "Strategy",
