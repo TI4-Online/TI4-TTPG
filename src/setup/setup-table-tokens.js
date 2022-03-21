@@ -117,7 +117,7 @@ class SetupTableTokens extends AbstractSetup {
         const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
         bag.setName(locale("bag.exploration_tokens"));
         bag.clear(); // paranoia
-        bag.setObjectType(ObjectType.Regular);
+        bag.setObjectType(ObjectType.Ground);
         if (EXPLORATION_TOKENS.bagHexColor) {
             bag.setPrimaryColor(
                 ColorUtil.colorFromHex(EXPLORATION_TOKENS.bagHexColor)
@@ -168,7 +168,7 @@ class SetupTableTokens extends AbstractSetup {
         if (tokenData.bagNsid) {
             bag = Spawn.spawn(tokenData.bagNsid, pos, rot);
             bag.clear(); // paranoia
-            bag.setObjectType(ObjectType.Regular);
+            bag.setObjectType(ObjectType.Ground);
 
             // Bag needs to have the correct type at create time.
             if (bag.getType() !== tokenData.bagType) {

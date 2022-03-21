@@ -5,7 +5,7 @@ const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { TableLayout } = require("../table/table-layout");
-const { Rotator, Vector, world } = require("../wrapper/api");
+const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const BAG = {
     nsid: "bag:base/generic",
@@ -30,6 +30,8 @@ class SetupSystemTiles extends AbstractSetup {
         bag.setName(locale("bag.system_tiles"));
         bag.setScale(new Vector(BAG.scale.x, BAG.scale.y, BAG.scale.z));
         bag.setPrimaryColor(ColorUtil.colorFromHex(BAG.colorHex));
+        bag.setMaxItems(500);
+        bag.setObjectType(ObjectType.Ground);
 
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
             if (!nsid.startsWith("tile.system")) {

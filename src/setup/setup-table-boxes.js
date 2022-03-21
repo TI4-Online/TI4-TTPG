@@ -3,7 +3,13 @@ const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { Spawn } = require("./spawn/spawn");
 const { TableLayout } = require("../table/table-layout");
-const { Container, Rotator, Vector, world } = require("../wrapper/api");
+const {
+    Container,
+    ObjectType,
+    Rotator,
+    Vector,
+    world,
+} = require("../wrapper/api");
 
 const BOXES = [
     {
@@ -29,6 +35,7 @@ class SetupTableBoxes extends AbstractSetup {
 
             const container = Spawn.spawn(boxData.nsid, pos, rot);
             assert(container instanceof Container);
+            container.setObjectType(ObjectType.Ground);
             const name = locale(boxData.localeName);
             container.setName(name);
 

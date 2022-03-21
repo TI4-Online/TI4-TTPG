@@ -5,6 +5,7 @@ const { MiltyDraftSettings } = require("./tab-milty/milty-draft-settings");
 const { SCPTDraftSettings } = require("./tab-scpt/scpt-draft-settings");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
+const { PremadeMap } = require("./tab-premade/premade-map");
 
 class TabMap {
     constructor(doRefresh) {
@@ -20,6 +21,8 @@ class TabMap {
             mapTool.getUI(),
             true
         );
+        const premade = new PremadeMap(doRefresh);
+        this._tabbedPanel.addTab(locale("ui.tab.map.premade"), premade.getUI());
 
         const miltyDraftSettings = new MiltyDraftSettings();
         this._tabbedPanel.addTab(
