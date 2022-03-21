@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { CardUtil } = require("../../lib/card/card-util");
 const {
+    Border,
     Button,
     GameObject,
     ImageButton,
@@ -13,7 +14,6 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { Border } = require("@tabletop-playground/api");
 
 // Fetch cards
 class PlanetMat {
@@ -32,7 +32,6 @@ class PlanetMat {
             this.createPopupMenu();
         });
 
-        // Mallice needs to be flipped to see button, that's ok.
         const ui = new UIElement();
         ui.widget = button;
         ui.position = new Vector(13.5, 0, 0.26);
