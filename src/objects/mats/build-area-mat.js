@@ -8,14 +8,21 @@ const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const {
     Border,
     Button,
+    Canvas,
     Card,
     GameObject,
-    Rotator,
+    HorizontalAlignment,
+    HorizontalBox,
+    ImageButton,
+    LayoutBox,
+    Text,
     UIElement,
     Vector,
+    VerticalAlignment,
     VerticalBox,
     ZonePermission,
     refObject,
+    refPackageId,
     world,
 } = require("../../wrapper/api");
 
@@ -53,6 +60,7 @@ class BuildAreaMat {
             return {
                 obj,
                 type: TYPE.TRADEGOOD,
+                value: 1,
                 count: 1,
             };
         }
@@ -60,6 +68,7 @@ class BuildAreaMat {
             return {
                 obj,
                 type: TYPE.TRADEGOOD,
+                value: 1,
                 count: 3,
             };
         }
@@ -72,6 +81,7 @@ class BuildAreaMat {
                 type: TYPE.PLANET,
                 name: planet.getNameStr(),
                 value,
+                count: 1,
             };
         }
     }
@@ -82,6 +92,15 @@ class BuildAreaMat {
         this._obj = gameObject;
         this._zone = undefined;
         this._updateHandle = undefined;
+
+        this._ui = {
+            uiE: undefined,
+            cost: undefined,
+            resources: undefined,
+            unitCount: undefined,
+            production: undefined,
+        };
+        this._popupUI = undefined;
 
         // GameObject.getExtent changes after adding UI.  Read it now.
         this._extent = this._obj.getExtent().clone();
@@ -100,29 +119,89 @@ class BuildAreaMat {
             this._createZone();
         });
 
-        this._uiBox = new Border().setColor([1, 0, 0]);
-
-        const pad = 1;
-        const ui = new UIElement();
-        ui.useWidgetSize = false;
-        ui.width = this._extent.x * 20 - pad * 20; // ui is 10x
-        ui.height = 20;
-        ui.anchorX = 0;
-        ui.anchorY = 0;
-        ui.position = new Vector(
-            this._extent.x - pad,
-            -this._extent.y + pad,
-            this._extent.z * 2 + 0.01
-        );
-        ui.widget = this._uiBox;
-        this._obj.addUI(ui);
-
+        this._createPopupUI();
+        this._createUI();
         this._createZone();
         this.update();
     }
 
     _createUI() {
-        assert(this._uiBox);
+        // Get layout position and size.
+        const scale = 4;
+        const pad = 0.35;
+        const fontSize = 6 * scale;
+        const size = {
+            w: (this._extent.x * 20 - pad * 20) * scale, // ui is 10x
+            h: 15 * scale,
+        };
+        const pos = new Vector(
+            this._extent.x - pad,
+            -this._extent.y + pad,
+            this._extent.z + 0.01
+        );
+
+        // Attach a canvas.
+        const canvas = new Canvas();
+        this._ui.uiE = new UIElement();
+        this._ui.uiE.useWidgetSize = false;
+        this._ui.uiE.width = size.w;
+        this._ui.uiE.height = size.h;
+        this._ui.uiE.scale = 1 / scale;
+        this._ui.uiE.anchorX = 0;
+        this._ui.uiE.anchorY = 0;
+        this._ui.uiE.position = pos;
+        this._ui.uiE.widget = canvas;
+        this._obj.addUI(this._ui.uiE);
+
+        canvas.addChild(
+            new Border(), //.setColor([0.3, 0, 0]),
+            0,
+            0,
+            size.w,
+            size.h
+        );
+
+        // Layout.
+        this._ui.cost = new Text().setFontSize(fontSize);
+        this._ui.resources = new Text().setFontSize(fontSize);
+        this._ui.unitCount = new Text().setFontSize(fontSize);
+        this._ui.production = new Text().setFontSize(fontSize);
+
+        const panel = new HorizontalBox()
+            .setChildDistance(size.h / 2)
+            .addChild(this._ui.cost)
+            .addChild(this._ui.resources)
+            .addChild(this._ui.unitCount);
+        const box = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
+
+        // Leave room for button on right.
+        canvas.addChild(box, 0, 0, size.w - size.h, size.h);
+
+        const p = size.h * 0.05;
+        const buttonSize = size.h - p * 2;
+        const button = new ImageButton()
+            .setImage("global/ui/menu_button_hex.png", refPackageId)
+            .setImageSize(buttonSize, buttonSize);
+        button.onClicked.add((button, player) => {
+            this.closePopupMenu();
+            this.createPopupMenu();
+        });
+        canvas.addChild(
+            button,
+            size.w - buttonSize - p,
+            p,
+            buttonSize,
+            buttonSize
+        );
+    }
+
+    _createPopupUI() {
+        this._popupUI = new UIElement();
+        this._popupUI.position = new Vector(this._extent.x, this._extent.y, 3);
+        this._popupUI.widget = new Border();
     }
 
     _destroyZone() {
@@ -185,7 +264,6 @@ class BuildAreaMat {
 
     update() {
         assert(this._zone);
-        console.log("BuildAreaMat.update");
 
         // What's inside area?
         const produce = [];
@@ -207,10 +285,12 @@ class BuildAreaMat {
 
         // Group same-units together.
         let unitToCount = {};
+        let totalUnitCount = 0;
         for (const produceEntry of produce) {
             if (produceEntry.type === TYPE.UNIT) {
                 unitToCount[produceEntry.unit] =
                     (unitToCount[produceEntry.unit] || 0) + produceEntry.count;
+                totalUnitCount += produceEntry.count;
             }
         }
 
@@ -233,7 +313,47 @@ class BuildAreaMat {
             const cost = invokeCount * attrs.raw.cost;
             totalCost += cost;
         }
-        console.log(`totalCost: ${totalCost}`);
+
+        // Compute consumed resources.
+        let totalResources = 0;
+        for (const consumeEntry of consume) {
+            totalResources += consumeEntry.count * consumeEntry.value;
+        }
+
+        this._ui.cost.setText(locale("ui.build.cost", { cost: totalCost }));
+        this._ui.resources.setText(
+            locale("ui.build.resources", { resources: totalResources })
+        );
+        this._ui.unitCount.setText(
+            locale("ui.build.unitCount", { unitCount: totalUnitCount })
+        );
+        this._obj.updateUI(this._ui.uiE);
+    }
+
+    closePopupMenu() {
+        assert(this._popupUI);
+
+        this._obj.removeUIElement(this._popupUI);
+    }
+
+    createPopupMenu() {
+        assert(this._popupUI);
+
+        const panel = new VerticalBox();
+        const button = new Button().setText("something something");
+        button.onClicked.add((button, player) => {
+            this.closePopupMenu();
+        });
+        panel.addChild(button);
+
+        const cancelButton = new Button().setText(locale("ui.button.cancel"));
+        cancelButton.onClicked.add((button, player) => {
+            this.closePopupMenu();
+        });
+        panel.addChild(cancelButton);
+
+        this._popupUI.widget.setChild(panel);
+        this._obj.addUI(this._popupUI);
     }
 }
 
