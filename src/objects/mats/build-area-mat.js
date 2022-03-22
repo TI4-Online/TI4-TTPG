@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
+const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
@@ -30,6 +31,14 @@ const TYPE = {
     UNIT: "unit",
     TRADEGOOD: "tradegood",
     PLANET: "planet",
+};
+
+const NSID_TO_PRODUCE_LOCALE_EXTRA = {
+    "card.technology.yellow:base/sarween_tools": "ui.build.sarween_tools_abbr",
+    "card.action:codex.ordinian/war_machine.1": "ui.build.war_machine_abbr",
+    "card.action:codex.ordinian/war_machine.2": "ui.build.war_machine_abbr",
+    "card.action:codex.ordinian/war_machine.3": "ui.build.war_machine_abbr",
+    "card.action:codex.ordinian/war_machine.4": "ui.build.war_machine_abbr",
 };
 
 class BuildAreaMat {
@@ -129,7 +138,7 @@ class BuildAreaMat {
         // Get layout position and size.
         const scale = 4;
         const pad = 0.35;
-        const fontSize = 6 * scale;
+        const fontSize = 5.8 * scale;
         const size = {
             w: (this._extent.x * 20 - pad * 20) * scale, // ui is 10x
             h: 15 * scale,
@@ -168,7 +177,7 @@ class BuildAreaMat {
         this._ui.production = new Text().setFontSize(fontSize);
 
         const panel = new HorizontalBox()
-            .setChildDistance(size.h / 2)
+            .setChildDistance(size.h / 3)
             .addChild(this._ui.cost)
             .addChild(this._ui.resources)
             .addChild(this._ui.unitCount);
@@ -283,6 +292,33 @@ class BuildAreaMat {
             }
         }
 
+        // Some things can be anywhere on table.
+        let consumeExtras = [];
+        const checkIsDiscardPile = false;
+        const allowFaceDown = false;
+        const myDesk = world.TI4.getClosestPlayerDesk(this._obj.getPosition());
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            const localeExtra = NSID_TO_PRODUCE_LOCALE_EXTRA[nsid];
+            if (!localeExtra) {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== myDesk) {
+                continue;
+            }
+            const extra = locale(localeExtra);
+            if (consumeExtras.includes(extra)) {
+                continue;
+            }
+            consumeExtras.push(extra);
+        }
+        consumeExtras = consumeExtras.sort();
+
         // Group same-units together.
         let unitToCount = {};
         let totalUnitCount = 0;
@@ -319,6 +355,12 @@ class BuildAreaMat {
         for (const consumeEntry of consume) {
             totalResources += consumeEntry.count * consumeEntry.value;
         }
+        if (consumeExtras.length > 0) {
+            totalResources = `${totalResources}+${consumeExtras.join("+")}`;
+        }
+
+        // TODO XXX unitAttrs.freeProduce
+        // TODO XXX unitAttrs.sharedFreeProduce
 
         this._ui.cost.setText(locale("ui.build.cost", { cost: totalCost }));
         this._ui.resources.setText(
@@ -340,11 +382,15 @@ class BuildAreaMat {
         assert(this._popupUI);
 
         const panel = new VerticalBox();
-        const button = new Button().setText("something something");
-        button.onClicked.add((button, player) => {
-            this.closePopupMenu();
-        });
-        panel.addChild(button);
+
+        // TODO XXX MOVE TO ACTIVE SYSTEM
+        // TODO XXX MOVE TO HOME SYSTEM
+        // TODO CLEAR TRADE GOODS
+        // const button = new Button().setText("something something");
+        // button.onClicked.add((button, player) => {
+        //     this.closePopupMenu();
+        // });
+        // panel.addChild(button);
 
         const cancelButton = new Button().setText(locale("ui.button.cancel"));
         cancelButton.onClicked.add((button, player) => {
