@@ -185,6 +185,13 @@
     "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
     "ui.maptool.place_hyperlanes": "Place Hyperlanes",
 
+    "ui.build.cost": "Cost: {cost}",
+    "ui.build.resources": "Resources: {resources}",
+    "ui.build.unitCount": "#Units: {unitCount}",
+    "ui.build.production": "Production: {production}",
+    "ui.build.sarween_tools_abbr": "ST",
+    "ui.build.war_machine_abbr": "WM",
+
     "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.faction_count": "Faction count",

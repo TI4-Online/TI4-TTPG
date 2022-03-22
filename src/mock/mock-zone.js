@@ -1,13 +1,18 @@
 const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 
 class Zone {
-    constructor() {}
+    constructor(data) {
+        this._overlappingObjects = (data && data.overlappingObjects) || [];
+    }
 
     onBeginOverlap = new TriggerableMulticastDelegate();
     onEndOverlap = new TriggerableMulticastDelegate();
 
     destroy() {}
 
+    getOverlappingObjects() {
+        return this._overlappingObjects;
+    }
     getSavedData(value) {}
 
     setAlwaysVisible(value) {}
@@ -16,6 +21,7 @@ class Zone {
     setRotation(value) {}
     setSavedData(value) {}
     setScale(value) {}
+    setStacking(value) {}
 }
 
 module.exports = Zone;

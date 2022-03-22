@@ -159,6 +159,8 @@ class GameObject {
         return "{}";
     }
 
+    updateUI(uiElement) {}
+
     localPositionToWorld(position) {
         return position; // true if object at origin with no rotation...
     }

@@ -2,6 +2,9 @@ class LayoutBox {
     setChild(value) {
         return this;
     }
+    setHorizontalAlignment(value) {
+        return this;
+    }
     setMinimumHeight(value) {
         return this;
     }
@@ -11,5 +14,9 @@ class LayoutBox {
     setPadding(left, right, top, bottom) {
         return this;
     }
+    setVerticalAlignment(value) {
+        return this;
+    }
 }
+
 module.exports = LayoutBox;
