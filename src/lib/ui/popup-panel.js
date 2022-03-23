@@ -59,13 +59,14 @@ class PopupPanel extends Border {
     /**
      * Add a popup button to an object.
      *
+     * @param {number} scale - already scaled for crisp image, this scale affects size
      * @returns {PopupPanel} self, for chaining
      */
-    attachPopupButton() {
+    attachPopupButton(scale = 1) {
         const ui = new UIElement();
         ui.widget = this.createPopupButton();
         ui.position = this._localPos;
-        ui.scale = 0.1;
+        ui.scale = 0.1 * scale;
         this._obj.addUI(ui);
         return this;
     }
