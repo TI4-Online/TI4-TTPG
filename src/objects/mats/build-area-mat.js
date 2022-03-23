@@ -111,7 +111,7 @@ class BuildAreaMat {
         };
         this._popup = new PopupPanel(
             gameObject,
-            new Vector(MAT_WIDTH, MAT_HEIGHT, 0.26)
+            new Vector(MAT_WIDTH / 2, MAT_HEIGHT / 2, 0.26)
         );
 
         this._obj.onDestroyed.add(() => {
