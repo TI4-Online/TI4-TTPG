@@ -7,6 +7,7 @@ const {
     GameObject,
     ImageButton,
     Player,
+    Rotator,
     UIElement,
     VerticalBox,
     refPackageId,
@@ -36,17 +37,23 @@ class PopupPanel extends Border {
 
         this._obj = gameObject;
         this._localPos = localPos;
-
         this._ui = new UIElement();
         this._ui.widget = this;
 
+        this._matchPlayerYaw = false;
         this._namesAndActions = [];
         this._isShowing = false;
 
-        // <(popupPanel: PopupPanel, player: Player) => void>
+        // <(gameObject: GameObject, player: Player, popupPanel: PopupPanel) => void>
         this.onShow = new TriggerableMulticastDelegate();
 
         this.reset();
+    }
+
+    setMatchPlayerYaw(value) {
+        assert(typeof value === "boolean");
+        this._matchPlayerYaw = value;
+        return this;
     }
 
     /**
@@ -112,7 +119,7 @@ class PopupPanel extends Border {
         }
 
         // Call listeners *before* showing so they can mutate the menu that appears.
-        this.onShow.trigger(this, player);
+        this.onShow.trigger(this._obj, player, this);
 
         // Add owner-specified actions, followed by cancel.
         const panel = new VerticalBox().setChildDistance(POPUP_CHILD_DISTANCE);
@@ -120,7 +127,7 @@ class PopupPanel extends Border {
             const button = new Button().setText(name);
             button.onClicked.add((button, player) => {
                 this._hide();
-                action(this._obj, name, player);
+                action(this._obj, player, name);
             });
             panel.addChild(button);
         }
@@ -137,6 +144,13 @@ class PopupPanel extends Border {
                 .localPositionToWorld(this._localPos)
                 .add([0, 0, POPUP_HEIGHT])
         );
+        this._ui.rotation = new Rotator(0, 0, 0);
+        if (this._matchPlayerYaw) {
+            const localRot = this._obj.worldRotationToLocal(
+                player.getRotation()
+            );
+            this._ui.rotation.yaw = localRot.yaw;
+        }
         this._obj.addUI(this._ui);
         this._isShowing = true;
     }

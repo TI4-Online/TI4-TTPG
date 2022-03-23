@@ -24,6 +24,9 @@ const {
     world,
 } = require("../../wrapper/api");
 
+const MAT_WIDTH = 18.4;
+const MAT_HEIGHT = 18.4;
+
 const TYPE = {
     UNIT: "unit",
     TRADEGOOD: "tradegood",
@@ -99,9 +102,6 @@ class BuildAreaMat {
         this._zone = undefined;
         this._updateHandle = undefined;
 
-        // GameObject.getExtent changes after adding UI.  Read it now.
-        this._extent = this._obj.getExtent().clone();
-
         this._ui = {
             uiE: undefined,
             cost: undefined,
@@ -111,7 +111,7 @@ class BuildAreaMat {
         };
         this._popup = new PopupPanel(
             gameObject,
-            new Vector(this._extent.x, this._extent.y, this._extent.z)
+            new Vector(MAT_WIDTH, MAT_HEIGHT, 0.26)
         );
 
         this._obj.onDestroyed.add(() => {
@@ -139,13 +139,13 @@ class BuildAreaMat {
         const pad = 0.35;
         const fontSize = 5.8 * scale;
         const size = {
-            w: (this._extent.x * 20 - pad * 20) * scale, // ui is 10x
+            w: (MAT_WIDTH * 10 - pad * 20) * scale, // ui is 10x
             h: 15 * scale,
         };
         const pos = new Vector(
-            this._extent.x - pad,
-            -this._extent.y + pad,
-            this._extent.z + 0.01
+            MAT_WIDTH / 2 - pad,
+            -(MAT_HEIGHT / 2) + pad,
+            0.13
         );
 
         // Attach a canvas.
@@ -222,8 +222,7 @@ class BuildAreaMat {
             ObjectSavedData.set(this._obj, "zoneId", zoneId);
         }
 
-        const extent = this._extent; // recorded before adding UI
-        const zoneScale = new Vector(extent.x * 2, extent.y * 2, 4);
+        const zoneScale = new Vector(MAT_WIDTH, MAT_HEIGHT, 4);
         const zonePos = this._obj.getPosition().add([0, 0, zoneScale.z / 2]);
         this._zone = world.createZone(zonePos);
         this._zone.setSavedData(zoneId);
