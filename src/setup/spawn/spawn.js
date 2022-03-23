@@ -213,7 +213,7 @@ class Spawn {
         // If this is a system tile, scale it to match Hex size.
         if (ObjectNamespace.isSystemTile(obj)) {
             const scale = Hex.SCALE * 0.995;
-            obj.setScale([scale, scale, 1]);
+            obj.setScale([scale, scale, scale]);
         }
 
         return obj;

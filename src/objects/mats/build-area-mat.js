@@ -4,28 +4,28 @@ const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
+const { PopupPanel } = require("../../lib/ui/popup-panel");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const {
     Border,
-    Button,
     Canvas,
     Card,
     GameObject,
     HorizontalAlignment,
     HorizontalBox,
-    ImageButton,
     LayoutBox,
     Text,
     UIElement,
     Vector,
     VerticalAlignment,
-    VerticalBox,
     ZonePermission,
     refObject,
-    refPackageId,
     world,
 } = require("../../wrapper/api");
+
+const MAT_WIDTH = 18.4;
+const MAT_HEIGHT = 18.4;
 
 const TYPE = {
     UNIT: "unit",
@@ -109,10 +109,10 @@ class BuildAreaMat {
             unitCount: undefined,
             production: undefined,
         };
-        this._popupUI = undefined;
-
-        // GameObject.getExtent changes after adding UI.  Read it now.
-        this._extent = this._obj.getExtent().clone();
+        this._popup = new PopupPanel(
+            gameObject,
+            new Vector(MAT_WIDTH / 2, MAT_HEIGHT / 2, 0.26)
+        );
 
         this._obj.onDestroyed.add(() => {
             this._destroyZone();
@@ -128,7 +128,6 @@ class BuildAreaMat {
             this._createZone();
         });
 
-        this._createPopupUI();
         this._createUI();
         this._createZone();
         this.update();
@@ -140,13 +139,13 @@ class BuildAreaMat {
         const pad = 0.35;
         const fontSize = 5.8 * scale;
         const size = {
-            w: (this._extent.x * 20 - pad * 20) * scale, // ui is 10x
+            w: (MAT_WIDTH * 10 - pad * 20) * scale, // ui is 10x
             h: 15 * scale,
         };
         const pos = new Vector(
-            this._extent.x - pad,
-            -this._extent.y + pad,
-            this._extent.z + 0.01
+            MAT_WIDTH / 2 - pad,
+            -(MAT_HEIGHT / 2) + pad,
+            0.13
         );
 
         // Attach a canvas.
@@ -191,26 +190,13 @@ class BuildAreaMat {
 
         const p = size.h * 0.05;
         const buttonSize = size.h - p * 2;
-        const button = new ImageButton()
-            .setImage("global/ui/menu_button_hex.png", refPackageId)
-            .setImageSize(buttonSize, buttonSize);
-        button.onClicked.add((button, player) => {
-            this.closePopupMenu();
-            this.createPopupMenu();
-        });
         canvas.addChild(
-            button,
+            this._popup.createPopupButton(),
             size.w - buttonSize - p,
             p,
             buttonSize,
             buttonSize
         );
-    }
-
-    _createPopupUI() {
-        this._popupUI = new UIElement();
-        this._popupUI.position = new Vector(this._extent.x, this._extent.y, 3);
-        this._popupUI.widget = new Border();
     }
 
     _destroyZone() {
@@ -236,8 +222,7 @@ class BuildAreaMat {
             ObjectSavedData.set(this._obj, "zoneId", zoneId);
         }
 
-        const extent = this._extent; // recorded before adding UI
-        const zoneScale = new Vector(extent.x * 2, extent.y * 2, 4);
+        const zoneScale = new Vector(MAT_WIDTH, MAT_HEIGHT, 4);
         const zonePos = this._obj.getPosition().add([0, 0, zoneScale.z / 2]);
         this._zone = world.createZone(zonePos);
         this._zone.setSavedData(zoneId);
@@ -370,36 +355,6 @@ class BuildAreaMat {
             locale("ui.build.unitCount", { unitCount: totalUnitCount })
         );
         this._obj.updateUI(this._ui.uiE);
-    }
-
-    closePopupMenu() {
-        assert(this._popupUI);
-
-        this._obj.removeUIElement(this._popupUI);
-    }
-
-    createPopupMenu() {
-        assert(this._popupUI);
-
-        const panel = new VerticalBox();
-
-        // TODO XXX MOVE TO ACTIVE SYSTEM
-        // TODO XXX MOVE TO HOME SYSTEM
-        // TODO CLEAR TRADE GOODS
-        // const button = new Button().setText("something something");
-        // button.onClicked.add((button, player) => {
-        //     this.closePopupMenu();
-        // });
-        // panel.addChild(button);
-
-        const cancelButton = new Button().setText(locale("ui.button.cancel"));
-        cancelButton.onClicked.add((button, player) => {
-            this.closePopupMenu();
-        });
-        panel.addChild(cancelButton);
-
-        this._popupUI.widget.setChild(panel);
-        this._obj.addUI(this._popupUI);
     }
 }
 
