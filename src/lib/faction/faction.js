@@ -114,6 +114,10 @@ class Faction {
     get nameFull() {
         return locale("faction.full." + this.nsidName);
     }
+
+    get homeNsid() {
+        return `tile.system:${this.nsidSource}/${this.home}`;
+    }
 }
 
 module.exports = { Faction };

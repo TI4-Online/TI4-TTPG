@@ -1,18 +1,21 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
+const { Broadcast } = require("../../broadcast");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { MapStringLoad } = require("../../map-string/map-string-load");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
+const { ObjectNamespace } = require("../../object-namespace");
 const { PlayerDeskSetup } = require("../../player-desk/player-desk-setup");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const { Player, UIElement, world } = require("../../../wrapper/api");
-const { Broadcast } = require("../../broadcast");
 
 const SELECTION_BORDER_SIZE = 4;
+
+const SPEAKER_TOKEN_POS = { x: 46, y: 0, z: 5 };
 
 class MiltyDraft {
     constructor() {
@@ -236,6 +239,27 @@ class MiltyDraft {
         });
         if (order.length > 0) {
             world.TI4.turns.setTurnOrder(order, player);
+        }
+
+        // Move speaker token.
+        const speakerDesk = order.length > 0 ? order[0] : false;
+        const speakerTokenNsid = "token:base/speaker";
+        let speakerToken = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === speakerTokenNsid) {
+                speakerToken = obj;
+                break;
+            }
+        }
+        if (speakerDesk && speakerToken) {
+            const pos = speakerDesk.localPositionToWorld(SPEAKER_TOKEN_POS);
+            const rot = speakerDesk.rot;
+            speakerToken.setPosition(pos);
+            speakerToken.setRotation(rot);
         }
 
         return this;
