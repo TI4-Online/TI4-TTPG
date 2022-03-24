@@ -6,7 +6,6 @@ const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
-const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const {
     Border,
