@@ -69,16 +69,13 @@ class SetupTableMats extends AbstractSetup {
     setup() {
         MATS.forEach((matData) => {
             const nsid = matData.nsid;
-            let pos = new Vector(
-                matData.pos.x,
-                matData.pos.y,
-                world.getTableHeight() + 3
-            );
+            let pos = new Vector(matData.pos.x, matData.pos.y, 0);
             let rot = new Rotator(0, matData.yaw, 0);
             if (matData.anchor) {
                 pos = this.anchorPositionToWorld(matData.anchor, pos);
                 rot = this.anchorRotationToWorld(matData.anchor, rot);
             }
+            pos.z = world.getTableHeight() + 3;
 
             const obj = Spawn.spawn(nsid, pos, rot);
             obj.setObjectType(ObjectType.Ground);
