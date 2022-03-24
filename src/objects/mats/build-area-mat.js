@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
+const { Broadcast } = require("../../lib/broadcast");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
@@ -15,11 +16,14 @@ const {
     HorizontalAlignment,
     HorizontalBox,
     LayoutBox,
+    Player,
+    Rotator,
     Text,
     UIElement,
     Vector,
     VerticalAlignment,
     ZonePermission,
+    globalEvents,
     refObject,
     world,
 } = require("../../wrapper/api");
@@ -41,15 +45,42 @@ const NSID_TO_PRODUCE_LOCALE_EXTRA = {
     "card.action:codex.ordinian/war_machine.4": "ui.build.war_machine_abbr",
 };
 
+const _playerSlotToLastActivatedSystemTileObj = {};
+globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
+    assert(systemTileObj instanceof GameObject);
+    assert(player instanceof Player);
+    const playerSlot = player.getSlot();
+    _playerSlotToLastActivatedSystemTileObj[playerSlot] = systemTileObj;
+});
+
 class BuildAreaMat {
+    static getLastActivatedSystem(player) {
+        assert(player instanceof Player);
+        const playerSlot = player.getSlot();
+        return _playerSlotToLastActivatedSystemTileObj[playerSlot];
+    }
+
+    static getHomeSystem(player) {
+        assert(player instanceof Player);
+        const playerSlot = player.getSlot();
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        if (!faction) {
+            return;
+        }
+        const homeNsid = faction.homeNsid;
+        for (const obj of world.TI4.getAllSystemTileObjects()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === homeNsid) {
+                return obj;
+            }
+        }
+    }
+
     static getProduceEntry(obj) {
         assert(obj instanceof GameObject);
 
         const unitPlastic = UnitPlastic.getOne(obj);
-        const attrs =
-            unitPlastic && UnitAttrs.getDefaultUnitAttrs(unitPlastic.unit);
-
-        if (attrs && attrs.raw.cost) {
+        if (unitPlastic) {
             return {
                 obj,
                 type: TYPE.UNIT,
@@ -129,6 +160,7 @@ class BuildAreaMat {
         });
 
         this._createUI();
+        this._createPopupUI();
         this._createZone();
         this.update();
     }
@@ -197,6 +229,28 @@ class BuildAreaMat {
             buttonSize,
             buttonSize
         );
+    }
+
+    _createPopupUI() {
+        this._popup
+            .addAction(locale("ui.build.report"), (obj, player, actionName) => {
+                this.reportBuild();
+            })
+            .addAction(
+                locale("ui.build.warp_to_home"),
+                (obj, player, actionName) => {
+                    const systemTileObj = BuildAreaMat.getHomeSystem(player);
+                    this.moveUnitsToSystem(systemTileObj, player);
+                }
+            )
+            .addAction(
+                locale("ui.build.warp_to_last_actived"),
+                (obj, player, actionName) => {
+                    const systemTileObj =
+                        BuildAreaMat.getLastActivatedSystem(player);
+                    this.moveUnitsToSystem(systemTileObj, player);
+                }
+            );
     }
 
     _destroyZone() {
@@ -331,7 +385,7 @@ class BuildAreaMat {
             const attrs = auxData.unitAttrsSet.get(unit);
             const produce = attrs.raw.produce || 1;
             const invokeCount = Math.ceil(count / produce);
-            const cost = invokeCount * attrs.raw.cost;
+            const cost = invokeCount * (attrs.raw.cost || 0);
             totalCost += cost;
         }
 
@@ -355,6 +409,73 @@ class BuildAreaMat {
             locale("ui.build.unitCount", { unitCount: totalUnitCount })
         );
         this._obj.updateUI(this._ui.uiE);
+
+        return {
+            produce,
+            consume,
+            unitToCount,
+            totalUnitCount,
+        };
+    }
+
+    reportBuild() {
+        const { unitToCount } = this.update();
+        let build = [];
+        for (const [unit, count] of Object.entries(unitToCount)) {
+            build.push(`${count} ${unit}`);
+        }
+        build = build.join(", ");
+
+        const pos = this._obj.getPosition();
+        const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+        const playerSlot = playerDesk.playerSlot;
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        const playerName = faction ? faction.nameFull : playerDesk.colorName;
+        const color = playerDesk.color;
+
+        const msg = locale("ui.build.report.output", { playerName, build });
+        Broadcast.chatAll(msg, color);
+    }
+
+    moveUnitsToSystem(systemTileObj, player) {
+        assert(!systemTileObj || systemTileObj instanceof GameObject);
+        assert(player instanceof Player);
+
+        if (!systemTileObj) {
+            const msg = locale("ui.build.warp_target_missing");
+            player.sendChatMessage(msg, [1, 0, 0]);
+            return;
+        }
+
+        const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+        if (system) {
+            const msg = locale("ui.build.warp.output", {
+                warpTarget: system.getSummaryStr(),
+            });
+            player.sendChatMessage(msg);
+        }
+
+        const objs = [];
+        const { produce } = this.update();
+        for (const produceEntry of produce) {
+            if (produceEntry.type === TYPE.UNIT) {
+                assert(produceEntry.obj instanceof GameObject);
+                objs.push(produceEntry.obj);
+            }
+        }
+
+        const r = 3.5;
+        const dPhi = (Math.PI * 2) / objs.length;
+        objs.forEach((obj, index) => {
+            const phi = dPhi * index;
+            let pos = new Vector(Math.cos(phi) * r, Math.sin(phi) * r, 0);
+            pos = systemTileObj
+                .localPositionToWorld(pos)
+                .add([0, 0, 5 + index / 2]);
+            const rot = new Rotator(0, obj.getRotation().yaw, 0);
+            obj.setPosition(pos, 1);
+            obj.setRotation(rot, 1);
+        });
     }
 }
 
