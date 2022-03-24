@@ -15,20 +15,27 @@ const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
 const { SetupTableTokens } = require("./setup/setup-table-tokens");
 const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
+const { TableLayout } = require("./table/table-layout");
 const { refObject, world } = require("./wrapper/api");
 
 const ACTION = {
     CLEAN: "*CLEAN",
     SETUP: "*SETUP",
+    OCTO_TABLE: "*OCTO TABLE",
 };
 
-function clean() {
+function clean(preserveTable) {
     for (const obj of world.getAllObjects()) {
         if (obj !== refObject) {
             obj.destroy();
         }
     }
+
+    const tableValue = TableLayout.GET_TABLE();
     GlobalSavedData.clear();
+    if (preserveTable) {
+        TableLayout.SET_TABLE(tableValue);
+    }
 
     // Hex keeps some in-memory state.  Reset it.
     Hex.setLargerScale(Hex.getLargerScale());
@@ -47,7 +54,8 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     }
 
     if (actionName === ACTION.SETUP) {
-        clean();
+        clean(true);
+
         const setups = [];
 
         // Duck-typed "setup"  for player desks.  Use the same setup as
@@ -84,5 +92,10 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             process.nextTick(setupNext);
         };
         process.nextTick(setupNext);
+    }
+
+    if (actionName === ACTION.OCTO_TABLE) {
+        clean();
+        TableLayout.SET_TABLE("layout-v5-oct");
     }
 });
