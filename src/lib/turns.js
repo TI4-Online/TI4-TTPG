@@ -261,7 +261,7 @@ class Turns {
             // Move to next.  If snaking, end slots get 2x turns.
             if (this._isSnake) {
                 if (this._isForward) {
-                    if (candidateIdx === this._turnOrder.length) {
+                    if (candidateIdx === this._turnOrder.length - 1) {
                         this._isForward = !this._isForward;
                         dir = this._isForward ? 1 : -1;
                         // Continue leaving current candidate in place.
@@ -284,6 +284,7 @@ class Turns {
             }
 
             const candidate = this._turnOrder[candidateIdx];
+            assert(candidate);
             const candidateSlot = candidate.playerSlot;
             const isActive = !passedPlayerSlots.has(candidateSlot);
             if (isActive) {
