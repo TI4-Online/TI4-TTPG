@@ -71,7 +71,7 @@
     "ui.message.player_away": "{playerName} AFK",
     "ui.message.all_players_have_passed": "All players have passed",
 
-    "ui.message.whisper": "{senderName} whispered {receiverName}",
+    "ui.message.whisper": "Whisper: {senderName} -> {receiverName}",
 
     "ui.movement.finish_movement": "Finalize Movement",
 
