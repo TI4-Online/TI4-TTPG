@@ -54,6 +54,12 @@ class TabHelpUI extends HorizontalBox {
                 .setFontSize(HELP_FONTSIZE)
                 .setText(locale("ui.help.alt_zoom_ground"))
         );
+
+        panel.addChild(
+            new Text()
+                .setFontSize(HELP_FONTSIZE)
+                .setText(locale("ui.help.whisper"))
+        );
     }
 }
 

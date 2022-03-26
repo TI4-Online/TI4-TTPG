@@ -163,6 +163,7 @@ require("./global/strategy-card-functions");
 require("./global/trigger-on-game-ended");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
+require("./global/whisper-message");
 
 if (!world.__isMock) {
     GameData.maybeRestartGameData();
