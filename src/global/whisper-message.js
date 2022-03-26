@@ -1,4 +1,4 @@
-const { globalEvents, world } = require("../wrapper/api");
+const { globalEvents } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
 const locale = require("../lib/locale");
 
