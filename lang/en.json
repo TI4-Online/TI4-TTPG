@@ -25,6 +25,8 @@
 
     "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc:\nsettings > game > advanced\n\"Object zoom for ground\"",
 
+    "ui.help.whisper": "Whisper: \"/w {playerName}\"",
+
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.no_system_activated": "No system activated",
@@ -68,6 +70,8 @@
     "ui.message.player_here": "{playerName} here",
     "ui.message.player_away": "{playerName} AFK",
     "ui.message.all_players_have_passed": "All players have passed",
+
+    "ui.message.whisper": "{senderName} whispered {receiverName}",
 
     "ui.movement.finish_movement": "Finalize Movement",
 
