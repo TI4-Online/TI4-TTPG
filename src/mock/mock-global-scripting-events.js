@@ -12,6 +12,7 @@ class GlobalScriptingEvents {
     onScriptButtonReleased = new TriggerableMulticastDelegate();
     onTeamChatMessage = new TriggerableMulticastDelegate();
     onTick = new TriggerableMulticastDelegate();
+    onWhisper = new TriggerableMulticastDelegate();
 }
 
 module.exports = GlobalScriptingEvents;
