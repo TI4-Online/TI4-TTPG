@@ -1,5 +1,4 @@
 const { CardUtil } = require("../lib/card/card-util");
-const { CloneReplace } = require("../lib/clone-replace");
 const { DealDiscard } = require("../lib/card/deal-discard");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Card, Container, globalEvents, world } = require("../wrapper/api");
@@ -17,9 +16,9 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
         }
 
         // Held objects can be put into decks or containers, but not moved.
-        // Just break the hold before continuing.
+        // Break the hold before continuing.
         if (!container && rejectedObj.isHeld()) {
-            rejectedObj = CloneReplace.cloneReplace(rejectedObj);
+            rejectedObj.release();
         }
 
         const nsid = ObjectNamespace.getNsid(rejectedObj);
@@ -31,8 +30,6 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             if (container) {
                 const pos = container.getPosition().add([10, 0, 10]);
                 container.take(rejectedObj, pos, false, false);
-                // Temporary workaround for TTPG bug.
-                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
             }
 
             const cards = CardUtil.separateDeck(rejectedObj);
@@ -56,8 +53,6 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             if (container) {
                 const pos = container.getPosition().add([10, 0, 10]);
                 container.take(rejectedObj, pos, false, false);
-                // Temporary workaround for TTPG bug.
-                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
             }
 
             EndStatusPhase.returnStrategyCard(rejectedObj);
@@ -104,8 +99,6 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             if (container) {
                 const pos = container.getPosition().add([10, 0, 10]);
                 container.take(rejectedObj, pos, true, false);
-                // Temporary workaround for TTPG bug.
-                rejectedObj = CloneReplace.cloneReplace(rejectedObj);
             }
         }
     }

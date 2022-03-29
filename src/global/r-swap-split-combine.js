@@ -4,7 +4,6 @@
  */
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
-const { CloneReplace } = require("../lib/clone-replace");
 const { Facing } = require("../lib/facing");
 const { Spawn } = require("../setup/spawn/spawn");
 const {
@@ -283,7 +282,6 @@ function doSwapSplitCombine(objs, player) {
             obj = Spawn.spawn(match.produce.nsid, pos, new Rotator(0, 0, 0));
         } else {
             obj = produceBag.takeAt(0, pos, true);
-            obj = CloneReplace.cloneReplace(obj);
         }
         obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0]);
         pos = pos.add(obj.getExtent().multiply(2));

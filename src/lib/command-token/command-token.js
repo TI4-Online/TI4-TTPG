@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
-const { CloneReplace } = require("../clone-replace");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const {
@@ -176,7 +175,6 @@ class CommandToken {
             let token = commandTokenBag.getItems()[0];
             const above = commandTokenBag.getPosition().add([0, 0, 10]);
             commandTokenBag.take(token, above, false);
-            token = CloneReplace.cloneReplace(token);
             return token;
         }
     }
