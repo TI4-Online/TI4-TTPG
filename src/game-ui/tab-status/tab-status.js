@@ -3,6 +3,7 @@ const {
     EndStatusPhase,
 } = require("../../lib/phase/end-of-round");
 const { TabStatusUI } = require("./tab-status-ui");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 class TabStatus {
     constructor() {
@@ -19,6 +20,7 @@ class TabStatus {
                 EndStatusPhase.resetPassedFlags();
             },
         };
+        ThrottleClickHandler.wrapValues(onButtonCallbacks);
 
         this._ui = new TabStatusUI(onButtonCallbacks);
     }
