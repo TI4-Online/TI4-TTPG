@@ -6,6 +6,7 @@ const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 
 let _useGameData = false;
 
@@ -47,6 +48,14 @@ function onUseLargerHexes(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
 
     Hex.setLargerScale(isChecked);
+
+    // Resize any existing system tiles.
+    const scale = Hex.SCALE * 0.995;
+    for (const obj of world.getAllObjects()) {
+        if (ObjectNamespace.isSystemTile(obj)) {
+            obj.setScale([scale, scale, scale]);
+        }
+    }
 
     // Redo generic HS placement.  Nothing else should care at this point.
     world.TI4.getAllPlayerDesks().forEach((playerDesk) => {

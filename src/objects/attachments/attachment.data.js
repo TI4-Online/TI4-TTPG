@@ -11,6 +11,7 @@ const ATTACHMENTS = [
         faceDown: {
             tech: ["green"],
             image: "global/tokens/pok/exploration/exploration_r_biotic_c.png",
+            tintColorHex: "#53FF58",
         },
     },
     {
@@ -26,6 +27,7 @@ const ATTACHMENTS = [
         faceDown: {
             tech: ["yellow"],
             image: "global/tokens/pok/exploration/exploration_r_cybernetic_c.png",
+            tintColorHex: "#FFE900",
         },
     },
     {
@@ -109,6 +111,7 @@ const ATTACHMENTS = [
         faceDown: {
             tech: ["blue"],
             image: "global/tokens/pok/exploration/exploration_r_propulsion_c.png",
+            tintColorHex: "#285BFF",
         },
     },
     {
@@ -152,6 +155,7 @@ const ATTACHMENTS = [
         faceDown: {
             tech: ["red"],
             image: "global/tokens/pok/exploration/exploration_r_warfare_c.png",
+            tintColorHex: "#FF393C",
         },
     },
 

@@ -39,6 +39,7 @@ class TabAction {
             new Text()
                 .setFontSize(CONFIG.fontSize)
                 .setText(locale("ui.strategy.instructions"))
+                .setAutoWrap(true)
         );
 
         tabbedPanel.addTab(
@@ -46,6 +47,7 @@ class TabAction {
             new Text()
                 .setFontSize(CONFIG.fontSize)
                 .setText(locale("ui.component.instructions"))
+                .setAutoWrap(true)
         );
 
         this._ui = tabbedPanel;

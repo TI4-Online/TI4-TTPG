@@ -3,6 +3,7 @@ const locale = require("../lib/locale");
 const {
     AbstractPlanetAttachment,
 } = require("../objects/attachments/abstract-planet-attachment");
+const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Card,
@@ -31,9 +32,10 @@ const BOT = {
     numCols: 2,
 };
 
-function addImageCardFace(card, image, index) {
+function addImageCardFace(card, image, tintColor, index) {
     assert(card instanceof Card);
     assert(typeof image === "string");
+    assert(ColorUtil.isColor(tintColor));
     assert(typeof index === "number");
 
     if (index >= 2) {
@@ -59,14 +61,16 @@ function addImageCardFace(card, image, index) {
     ui.scale = 0.3;
     ui.widget = new ImageWidget()
         .setImage(image, refPackageId)
-        .setImageSize(50, 50);
+        .setImageSize(50, 50)
+        .setTintColor(tintColor);
 
     card.addUI(ui);
 }
 
-function addImageCardBack(card, image, index) {
+function addImageCardBack(card, image, tintColor, index) {
     assert(card instanceof Card);
     assert(typeof image === "string");
+    assert(ColorUtil.isColor(tintColor));
     assert(typeof index === "number");
 
     if (index >= 4) {
@@ -86,7 +90,8 @@ function addImageCardBack(card, image, index) {
     ui.scale = 0.3;
     ui.widget = new ImageWidget()
         .setImage(image, refPackageId)
-        .setImageSize(50, 50);
+        .setImageSize(50, 50)
+        .setTintColor(tintColor);
 
     card.addUI(ui);
 }
@@ -112,11 +117,14 @@ function addAttachmentsUI(card) {
         assert(attachment instanceof AbstractPlanetAttachment);
         const attrs = attachment.getAttrs();
         const isFaceUp = attachment.isAttachedFaceUp() || !attrs.faceDown;
-        const image = attrs[isFaceUp ? "faceUp" : "faceDown"].image;
+        const faceAttrs = attrs[isFaceUp ? "faceUp" : "faceDown"];
+        const image = faceAttrs.image;
+        const tintColorHex = faceAttrs.tintColorHex || "#ffffff";
+        const tintColor = ColorUtil.colorFromHex(tintColorHex);
         assert(image);
 
-        addImageCardFace(card, image, index);
-        addImageCardBack(card, image, index);
+        addImageCardFace(card, image, tintColor, index);
+        addImageCardBack(card, image, tintColor, index);
         attachmentNames.push(locale(attrs.localeName));
     });
     card.setDescription(attachmentNames.join("\n"));
