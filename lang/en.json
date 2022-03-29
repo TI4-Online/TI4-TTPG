@@ -23,7 +23,7 @@
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
-    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc:\nsettings > game > advanced\n\"Object zoom for ground\"",
+    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced \"Object zoom for ground\"",
 
     "ui.help.whisper": "Whisper: \"/w {playerName}\"",
 
@@ -109,9 +109,9 @@
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
 
-    "ui.strategy.instructions": "Player uses their Strategy Card.\nClick the button on the back of the card.",
+    "ui.strategy.instructions": "Player uses their Strategy Card. Click the button on the back of the card.",
 
-    "ui.component.instructions": "Player uses the component action of a cards or ability.\nFollow the instructions on that component.",
+    "ui.component.instructions": "Player uses the component action of a cards or ability. Follow the instructions on that component.",
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
@@ -177,7 +177,7 @@
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",
 
-    "ui.label.home_system_tile": "HOME\nSYSTEM",
+    "ui.label.home_system_tile": "HOME SYSTEM",
 
     "ui.maptool.map_string": "Map String:",
     "ui.maptool.clear": "Clear",
