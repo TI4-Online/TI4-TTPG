@@ -13,11 +13,11 @@ module.exports = [
         owner: "self",
         priority: "mutate",
         triggerNsids: [
-            "card.leader.commander.l1z1x:base/2ram",
+            "card.leader.commander.l1z1x:pok/2ram",
             "card.alliance:pok/l1z1x",
         ],
         filter: (auxData) => {
-            auxData.rollType === "bombardment";
+            return auxData.rollType === "bombardment";
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.bombardment) {
@@ -654,7 +654,7 @@ module.exports = [
         localeName: "unit_modifier.name.planetary_shield",
         localeDescription: "unit_modifier.desc.planetary_shield",
         owner: "any",
-        priority: "mutate", // want "mutate-late"
+        priority: "mutate.late", // after adding bombardment elsewhere
         triggerIf: (auxData) => {
             if (auxData.rollType !== "bombardment") {
                 return false;
@@ -695,6 +695,19 @@ module.exports = [
         },
         applyEach: (unitAttrs, auxData) => {
             if (!auxData.activePlanet) {
+                return false;
+            }
+            let anyDisable = false;
+            for (const unitAttrs of auxData.self.unitAttrsSet.values()) {
+                if (!auxData.self.has(unitAttrs.unit)) {
+                    continue;
+                }
+                if (unitAttrs.raw.disablePlanetaryShield) {
+                    anyDisable = true;
+                    break;
+                }
+            }
+            if (anyDisable) {
                 return false;
             }
             let anyHas = false;
@@ -828,7 +841,7 @@ module.exports = [
         localeName: "unit.flagship.quetzecoatl",
         localeDescription: "unit_modifier.desc.quetzecoatl",
         owner: "opponent",
-        priority: "adjust",
+        priority: "mutate.late",
         triggerUnitAbility: "unit.flagship.quetzecoatl",
         filter: (auxData) => {
             return auxData.rollType === "spaceCannon" && !auxData.activePlanet;
