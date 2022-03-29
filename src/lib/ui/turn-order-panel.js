@@ -77,20 +77,23 @@ class TurnOrderPanel extends VerticalBox {
                 name = `<${playerDesk.colorName}>`;
             }
             let label;
+            let verticalAlignment;
             if (isTurn) {
                 label = new Text().setJustification(TextJustification.Center);
+                verticalAlignment = VerticalAlignment.Center;
             } else {
                 label = new Button();
                 label.onClicked.add((button, clickingPlayer) => {
                     world.TI4.turns.setCurrentTurn(playerDesk, clickingPlayer);
                 });
+                verticalAlignment = VerticalAlignment.Fill;
             }
             label.setText(name);
             if (this._fontSize) {
                 label.setFontSize(this._fontSize);
             }
             const labelBox = new LayoutBox()
-                .setVerticalAlignment(VerticalAlignment.Center)
+                .setVerticalAlignment(verticalAlignment)
                 .setChild(label);
             const inner = new Border().setChild(labelBox);
 
