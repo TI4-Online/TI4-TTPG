@@ -5,7 +5,6 @@ const { Spawn } = require("../../setup/spawn/spawn");
 const MapStringHex = require("./map-string-hex");
 const MapStringParser = require("./map-string-parser");
 const { ObjectType, Rotator, world } = require("../../wrapper/api");
-const { CloneReplace } = require("../clone-replace");
 
 /**
  * Place system tiles according to map string.
@@ -66,7 +65,6 @@ class MapStringLoad {
             if (container) {
                 container.take(obj, pos, animSpeed > 0);
                 obj.setRotation(rot, animSpeed);
-                obj = CloneReplace.cloneReplace(obj);
             } else {
                 obj.setPosition(pos, animSpeed);
                 obj.setRotation(rot, animSpeed);

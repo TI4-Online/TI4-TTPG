@@ -86,9 +86,11 @@ class UnitModifier {
      */
     static sortPriorityOrder(unitModifierArray) {
         unitModifierArray.sort((a, b) => {
-            return (
-                PRIORITY[a._modifier.priority] - PRIORITY[b._modifier.priority]
-            );
+            a = PRIORITY[a._modifier.priority];
+            b = PRIORITY[b._modifier.priority];
+            assert(typeof a === "number");
+            assert(typeof b === "number");
+            return a - b;
         });
         return unitModifierArray;
     }
@@ -156,6 +158,9 @@ class UnitModifier {
                     continue; // different owner
                 }
             }
+
+            // Alliance only available if linked commander is unlocked.
+            // TODO XXX
 
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier);

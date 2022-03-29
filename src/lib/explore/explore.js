@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const PositionToPlanet = require("../system/position-to-planet");
 const { CardUtil } = require("../card/card-util");
-const { CloneReplace } = require("../clone-replace");
 const { DealDiscard } = require("../card/deal-discard");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -201,7 +200,6 @@ class Explore {
                     if (container) {
                         const above = container.getPosition().add([0, 0, 10]);
                         container.take(tokenObj, above);
-                        tokenObj = CloneReplace.cloneReplace(tokenObj);
                     }
                     break;
                 }

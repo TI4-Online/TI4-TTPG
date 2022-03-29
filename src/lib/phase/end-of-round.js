@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
-const { CloneReplace } = require("../clone-replace");
 const { CommandToken } = require("../command-token/command-token");
 const { DealDiscard } = require("../card/deal-discard");
 const { Faction } = require("../faction/faction");
@@ -244,8 +243,7 @@ class EndStatusPhase {
                     const dropPosition = playerDesk
                         .localPositionToWorld(new Vector(5, 20 + i * 1, 0))
                         .add([0, 0, 10]);
-                    let obj = commandTokenBag.takeAt(0, dropPosition, true);
-                    obj = CloneReplace.cloneReplace(obj);
+                    commandTokenBag.takeAt(0, dropPosition, true);
                 }
             }
         }
