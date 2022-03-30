@@ -3,7 +3,7 @@ const locale = require("../../lib/locale");
 const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Text } = require("../../wrapper/api");
+const { Text, globalEvents } = require("../../wrapper/api");
 
 class TabAction {
     constructor(doRefresh) {
@@ -51,6 +51,10 @@ class TabAction {
         );
 
         this._ui = tabbedPanel;
+
+        globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
+            tabbedPanel.selectTab(locale("ui.tab.tactical_action"));
+        });
     }
 
     getUI() {
