@@ -3,11 +3,13 @@ const locale = require("../../lib/locale");
 const { FindTurnOrder } = require("../../lib/phase/find-turn-order");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
+const { Facing } = require("../facing");
 
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
     data.players.forEach((playerData) => {
         playerData.strategyCards = [];
+        playerData.strategyCardsFaceDown = [];
     });
 
     for (const obj of world.getAllObjects()) {
@@ -32,5 +34,9 @@ module.exports = (data) => {
         const playerData = data.players[playerIndex];
         assert(playerData && playerData.strategyCards);
         playerData.strategyCards.push(strategyCardName);
+
+        if (Facing.isFaceDown(obj)) {
+            playerData.strategyCardsFaceDown.push(strategyCardName);
+        }
     }
 };

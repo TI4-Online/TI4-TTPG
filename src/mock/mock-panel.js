@@ -20,6 +20,8 @@ class Panel extends Widget {
         return this._children;
     }
 
+    removeAllChildren() {}
+
     removeChildAt(index) {}
 
     setChildDistance() {

@@ -170,6 +170,10 @@ class GameUI {
                 .setFontSize(CONFIG.fontSize)
                 .setText("< work in progress >")
         );
+
+        globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
+            tabbedPanel.selectTab(locale("ui.tab.action_phase"));
+        });
     }
 }
 

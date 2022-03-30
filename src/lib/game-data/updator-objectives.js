@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
-const { world } = require("../../wrapper/api");
+const { Card, world } = require("../../wrapper/api");
 
 const OTHER_SCORABLE_NSIDS = new Set([
     "card.action:base/imperial_rider",
@@ -34,6 +34,18 @@ module.exports = (data) => {
         if (ObjectNamespace.isControlToken(obj)) {
             controlTokens.push(obj);
             continue; // make sure later cannot add again
+        }
+
+        // At this point everything is a card.  Secrets can be in card holders!
+        if (!(obj instanceof Card)) {
+            continue;
+        }
+        if (!obj.isFaceUp()) {
+            continue;
+        }
+        const cardHolder = obj.getHolder();
+        if (cardHolder && cardHolder.getOwningPlayerSlot() !== -1) {
+            continue; // in a player's hand
         }
 
         // Find objective cards.  Can be in a card holder (secrets)!
@@ -85,7 +97,7 @@ module.exports = (data) => {
             });
 
         // Find objectives inside secrets holers.
-        const cardHolder = card.getHolder();
+        const cardHolder = card instanceof Card ? card.getHolder() : false;
         if (cardHolder) {
             const deskIndex = ObjectSavedData.get(cardHolder, "deskIndex");
             if (deskIndex !== undefined) {

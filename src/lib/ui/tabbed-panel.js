@@ -62,8 +62,7 @@ class TabbedPanel extends LayoutBox {
         return this;
     }
 
-    _selectTab(label) {
-        //console.log(`TabbedPanel._selectTab("${label}")`);
+    selectTab(label) {
         const tab = this._labelToTabData[label];
         assert(tab);
 
@@ -89,7 +88,7 @@ class TabbedPanel extends LayoutBox {
             tabButton.setFontSize(this._fontSize);
         }
         tabButton.onClicked.add((button, player) => {
-            this._selectTab(label);
+            this.selectTab(label);
         });
 
         const weight = 1; // make all same width
@@ -105,7 +104,7 @@ class TabbedPanel extends LayoutBox {
         };
 
         if (selectThisTab) {
-            this._selectTab(label);
+            this.selectTab(label);
         }
 
         return this;

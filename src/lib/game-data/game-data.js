@@ -1,3 +1,10 @@
+/**
+ * Store: https://ti4-game-data.appspot.com/data?timestamp=<v>
+ * Store: https://ti4-game-data.appspot.com/data?key=<v>
+ * Alec/Root's Twitch overlay: https://ti4-tts-gamedata-display-tool.herokuapp.com/
+ * TheParsleySage's data studio: https://datastudio.google.com/s/prr6ZINoncQ
+ */
+
 const assert = require("../../wrapper/assert-wrapper");
 const {
     GlobalSavedData,
@@ -7,12 +14,20 @@ const { fetch, globalEvents, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
+    require("./updator-laws"),
     require("./updator-objectives"),
     require("./updator-player-active"),
+    require("./updator-player-alliances"),
+    require("./updator-player-command-tokens"),
     require("./updator-player-faction-name"),
+    require("./updator-player-hand-summary"),
+    require("./updator-player-leaders"),
+    require("./updator-player-planet-totals"),
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
+    require("./updator-player-tgs"),
+    require("./updator-round"),
     require("./updator-turn"),
 ];
 
