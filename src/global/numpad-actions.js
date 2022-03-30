@@ -22,7 +22,6 @@ function lookAt(pos, yaw, distance, player) {
         .rotateAngleAxis(yaw, [0, 0, 1])
         .add(lookAt);
     const rot = lookFrom.findLookAtRotation(lookAt);
-    console.log(`${lookAt}->${lookFrom}`);
     player.setPositionAndRotation(lookFrom, rot);
 }
 
