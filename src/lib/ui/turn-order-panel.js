@@ -64,9 +64,7 @@ class TurnOrderPanel extends VerticalBox {
         const playerDeskOrder = world.TI4.turns.getTurnOrder();
         assert(Array.isArray(playerDeskOrder));
 
-        while (this.getChildAt(0)) {
-            this.removeChildAt(0);
-        }
+        this.removeAllChildren();
 
         const currentDesk = world.TI4.turns.getCurrentTurn();
         for (const playerDesk of playerDeskOrder) {
