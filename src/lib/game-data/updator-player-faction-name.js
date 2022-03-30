@@ -6,6 +6,7 @@ module.exports = (data) => {
 
     data.players.forEach((playerData) => {
         playerData.factionName = "---";
+        playerData.factionShort = "---"; // streamer overlay uses this
     });
 
     world.TI4.getAllPlayerDesks().forEach((playerDesk, index) => {
@@ -14,6 +15,7 @@ module.exports = (data) => {
         const playerData = data.players[playerDesk.index];
         if (playerData && faction) {
             playerData.factionName = faction.nameAbbr;
+            playerData.factionShort = faction.nameAbbr;
         }
     });
 };
