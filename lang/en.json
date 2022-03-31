@@ -86,6 +86,8 @@
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
     "ui.message.strategy_card_play": "{playerName} played {cardName} strategy card",
 
+    "ui.context.report_remaining": "Report remaining",
+
     "ui.button.pass": "PASS",
     "ui.button.away": "AWAY",
     "ui.button.active": "Active",
