@@ -30,6 +30,9 @@ class RestrictObjects {
         if (!world.TI4.config.codex2) {
             removeSources.add("codex.affinity");
         }
+        if (!world.TI4.config.codex3) {
+            removeSources.add("codex.vigil");
+        }
 
         let removedCount = 0;
 

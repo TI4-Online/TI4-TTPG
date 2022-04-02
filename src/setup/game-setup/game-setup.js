@@ -76,11 +76,11 @@ function onSetupClicked(button, player) {
 
     let removedCount = 0;
 
+    // Apply other restrictions.  Do first in case replacements also apply.
+    removedCount += RestrictObjects.removeRestrictObjects();
+
     // Apply omega.  This one verifies replacement exists.
     removedCount += ReplaceObjects.removeReplacedObjects();
-
-    // Apply other restrictions.
-    removedCount += RestrictObjects.removeRestrictObjects();
 
     console.log(`GameSetup: removed ${removedCount} objects`);
 
