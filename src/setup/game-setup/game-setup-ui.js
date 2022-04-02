@@ -63,6 +63,13 @@ class GameSetupUI {
                 this._callbacks.onUseLargerHexes
             )
         );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_game_data",
+                false,
+                this._callbacks.onUseGameDataChanged
+            )
+        );
 
         col2Panel.addChild(
             this._createCheckbox(
@@ -94,9 +101,9 @@ class GameSetupUI {
         );
         col2Panel.addChild(
             this._createCheckbox(
-                "ui.setup.use_game_data",
-                false,
-                this._callbacks.onUseGameDataChanged
+                "ui.setup.use_codex3",
+                world.TI4.config.codex3,
+                this._callbacks.onUseCodex3Changed
             )
         );
 

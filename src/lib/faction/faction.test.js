@@ -14,7 +14,7 @@ const {
 } = require("../../wrapper/api");
 
 it("FACTION_DATA schema", () => {
-    FACTION_DATA.forEach((faction) => {
+    FACTION_DATA.filter((faction) => !faction.merge).forEach((faction) => {
         if (!FactionSchema.validate(faction)) {
             console.log(`error for "${faction.faction}"`);
             assert(FactionSchema.validate(faction));
@@ -23,7 +23,7 @@ it("FACTION_DATA schema", () => {
 });
 
 it("FACTION_DATA units", () => {
-    FACTION_DATA.forEach((faction) => {
+    FACTION_DATA.filter((faction) => !faction.merge).forEach((faction) => {
         faction.units.forEach((nsidName) => {
             // Verify this is a known unit upgrade.
             // Units are overrides, mech, or flagship.
@@ -38,7 +38,7 @@ it("FACTION_DATA units", () => {
 
 it("FACTION_DATA starting units", () => {
     const allUnitTypes = UnitAttrs.getAllUnitTypes();
-    FACTION_DATA.forEach((faction) => {
+    FACTION_DATA.filter((faction) => !faction.merge).forEach((faction) => {
         Object.keys(faction.startingUnits).forEach((nsidName) => {
             assert(allUnitTypes.includes(nsidName));
         });
@@ -46,13 +46,13 @@ it("FACTION_DATA starting units", () => {
 });
 
 it("FACTION_DATA faction locale", () => {
-    FACTION_DATA.forEach((faction) => {
+    FACTION_DATA.filter((faction) => !faction.merge).forEach((faction) => {
         const abbrKey = "faction.abbr." + faction.faction;
         const abbr = locale(abbrKey);
         const fullKey = "faction.full." + faction.faction;
         const full = locale(fullKey);
-        assert(abbr !== abbrKey);
-        assert(full !== fullKey);
+        assert.notEqual(abbr, abbrKey);
+        assert.notEqual(full, fullKey);
     });
 });
 
