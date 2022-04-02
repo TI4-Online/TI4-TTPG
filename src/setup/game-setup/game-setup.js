@@ -38,6 +38,10 @@ function onUseCodex2Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex2(isChecked);
 }
+function onUseCodex3Changed(checkBox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    world.TI4.config.setCodex3(isChecked);
+}
 
 function onUseGameDataChanged(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
@@ -72,11 +76,11 @@ function onSetupClicked(button, player) {
 
     let removedCount = 0;
 
+    // Apply other restrictions.  Do first in case replacements also apply.
+    removedCount += RestrictObjects.removeRestrictObjects();
+
     // Apply omega.  This one verifies replacement exists.
     removedCount += ReplaceObjects.removeReplacedObjects();
-
-    // Apply other restrictions.
-    removedCount += RestrictObjects.removeRestrictObjects();
 
     console.log(`GameSetup: removed ${removedCount} objects`);
 
@@ -100,6 +104,7 @@ class GameSetup {
             onUseOmegaChanged,
             onUseCodex1Changed,
             onUseCodex2Changed,
+            onUseCodex3Changed,
             onUseGameDataChanged,
             onSetupClicked,
         }).create();

@@ -9,6 +9,9 @@ const FACTION_SCHEMA = {
         faction: { type: "string" },
         source: { type: "string" },
 
+        // Copy the merge faction, overlay this factionAttrs over it.
+        merge: { type: "string" },
+
         // Faction abilities, e.g. "fragile".
         // UnitModifier.triggerFactionAbility="{x}"
         // Locale key "faction.ability.{x}".

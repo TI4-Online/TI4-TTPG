@@ -1,5 +1,5 @@
 {
-	"Type": "Generic",
+	"Type": "Card",
 	"GUID": "EBE21413FA0850AE408A59FCEFF65F86",
 	"Name": "Faction Sheet (Mahact)",
 	"Metadata": "sheet.faction:pok/mahact",
@@ -25,84 +25,43 @@
 	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
-	"Models": [
-		{
-			"Model": "utility/factionsheet.obj",
-			"Offset": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale": {
-				"X": 1,
-				"Y": 1,
-				"Z": 0.399984
-			},
-			"Rotation": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Texture": "locale/factionsheets/pok/mahact.face.jpg",
-			"NormalMap": "",
-			"ExtraMap": "",
-			"IsTransparent": false,
-			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor": {
-				"R": 255,
-				"G": 255,
-				"B": 255
-			},
-			"SecondaryColor": {
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
-			"SurfaceType": "Cardboard"
-		},
-		{
-			"Model": "utility/factionsheet.obj",
-			"Offset": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale": {
-				"X": 1,
-				"Y": 1,
-				"Z": 0.399984
-			},
-			"Rotation": {
-				"X": 180,
-				"Y": 0,
-				"Z": 0
-			},
-			"Texture": "locale/factionsheets/pok/mahact.back.jpg",
-			"NormalMap": "",
-			"ExtraMap": "",
-			"IsTransparent": false,
-			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor": {
-				"R": 255,
-				"G": 255,
-				"B": 255
-			},
-			"SecondaryColor": {
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
-			"SurfaceType": "Cardboard"
-		}
-	],
+	"Models": [],
 	"Collision": [],
 	"SnapPointsGlobal": false,
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"Tags": [],
+	"FrontTexture": "locale/factionsheets/pok/mahact.back.jpg",
+	"BackTexture": "locale/factionsheets/pok/mahact.face.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -1,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 28,
+	"Height": 19.002,
+	"Thickness": 0.1,
+	"HiddenInHand": false,
+	"UsedWithCardHolders": false,
+	"CanStack": false,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Square",
+	"Indices": [
+		0
+	],
+	"CardNames": {
+		"0": "Faction Sheet (Mahact)"
+	},
+	"CardMetadata": {
+		"0": "sheet.faction:pok/mahact"
+	},
+	"CardTags": {},
 	"SnapPoints": [
 		{
 			"X": -7.05,
@@ -192,10 +151,5 @@
 			"SnapRotation": true,
 			"RotationOffset": 0
 		}
-	],
-	"ZoomViewDirection": {
-		"X": 0,
-		"Y": 0,
-		"Z": 1
-	}
+	]
 }

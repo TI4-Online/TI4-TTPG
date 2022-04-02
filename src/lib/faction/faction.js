@@ -1,8 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const lodash = require("lodash");
 const { ObjectNamespace } = require("../object-namespace");
 const { FACTION_DATA } = require("./faction.data");
 const { globalEvents, world } = require("../../wrapper/api");
-const locale = require("../locale");
 
 let _nsidNameToFaction = false;
 let _playerSlotToFaction = false;
@@ -19,6 +20,18 @@ function _maybeInit() {
     if (!_nsidNameToFaction) {
         _nsidNameToFaction = {};
         FACTION_DATA.forEach((factionAttrs) => {
+            // "merge" copies the named faction and applies local updates.
+            if (factionAttrs.merge) {
+                let newFactionAttrs = undefined;
+                for (const faction of FACTION_DATA) {
+                    if (faction.faction === factionAttrs.merge) {
+                        newFactionAttrs = lodash.cloneDeep(faction);
+                        break;
+                    }
+                }
+                assert(newFactionAttrs);
+                factionAttrs = lodash.merge(newFactionAttrs, factionAttrs);
+            }
             const faction = new Faction(factionAttrs);
             _nsidNameToFaction[faction.raw.faction] = faction;
         });

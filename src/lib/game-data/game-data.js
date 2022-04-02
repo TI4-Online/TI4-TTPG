@@ -3,6 +3,8 @@
  * Store: https://ti4-game-data.appspot.com/data?key=<v>
  * Alec/Root's Twitch overlay: https://ti4-tts-gamedata-display-tool.herokuapp.com/
  * TheParsleySage's data studio: https://datastudio.google.com/s/prr6ZINoncQ
+ *
+ * Read w/ parse: curl 'https://ti4-game-data.appspot.com/data?key=<v>' | python -m json.tool
  */
 
 const assert = require("../../wrapper/assert-wrapper");

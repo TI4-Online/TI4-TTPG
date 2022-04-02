@@ -175,6 +175,46 @@ const FACTION_DATA = [
         units: ["jns_hylarim", "shield_paling"],
     },
     {
+        faction: "keleres.argent",
+        abilities: [],
+        commodities: 2,
+        home: 58,
+        leaders: {
+            agents: [],
+            commanders: [],
+            heroes: [],
+        },
+        promissoryNotes: [],
+        icon: "global/factions/argent_icon.png",
+        source: "codex.vigil",
+        startingTech: [
+            // player chooses 2 non-faction tech from others
+        ],
+        startingUnits: {
+            space_dock: 1,
+        },
+        techs: [],
+        units: [],
+    },
+    {
+        faction: "keleres.mentak",
+        merge: "keleres.argent",
+        home: 2,
+        leaders: {
+            heroes: [],
+        },
+        icon: "global/factions/mentak_icon.png",
+    },
+    {
+        faction: "keleres.xxcha",
+        merge: "keleres.argent",
+        home: 14,
+        leaders: {
+            heroes: [],
+        },
+        icon: "global/factions/xxcha_icon.png",
+    },
+    {
         faction: "l1z1x",
         abilities: ["assimilate", "harrow"],
         commodities: 2,

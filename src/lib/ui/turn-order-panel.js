@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Border,
     Button,
@@ -64,12 +65,33 @@ class TurnOrderPanel extends VerticalBox {
         const playerDeskOrder = world.TI4.turns.getTurnOrder();
         assert(Array.isArray(playerDeskOrder));
 
+        // Get passed players.
+        const passedPlayerSlotSet = new Set();
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "pad:base/status") {
+                continue;
+            }
+            const playerSlot = obj.getOwningPlayerSlot();
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+            if (!playerDesk) {
+                continue;
+            }
+            if (obj.__getPass()) {
+                passedPlayerSlotSet.add(playerSlot);
+            }
+        }
+
         this.removeAllChildren();
 
         const currentDesk = world.TI4.turns.getCurrentTurn();
         for (const playerDesk of playerDeskOrder) {
+            const playerSlot = playerDesk.playerSlot;
             const isTurn = playerDesk === currentDesk;
-            const player = world.getPlayerBySlot(playerDesk.playerSlot);
+            const player = world.getPlayerBySlot(playerSlot);
             let name = player && player.getName();
             if (!name || name.length === 0) {
                 name = `<${playerDesk.colorName}>`;
@@ -108,7 +130,10 @@ class TurnOrderPanel extends VerticalBox {
             const fgColor = isTurn ? altColor : plrColor;
             const bgColor = isTurn ? plrColor : altColor;
 
-            outer.setColor(plrColor);
+            const passed = passedPlayerSlotSet.has(playerSlot);
+            const passColor = altColor;
+
+            outer.setColor(passed ? passColor : plrColor);
             inner.setColor(bgColor);
             label.setTextColor(fgColor);
 
