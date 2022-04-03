@@ -64,7 +64,7 @@ class AgendaUiDeskWhenAfter extends Border {
     }
 
     get anyAfters() {
-        return this._anyWhens;
+        return this._anyAfters;
     }
 
     get playCard() {

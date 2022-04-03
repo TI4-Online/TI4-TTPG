@@ -40,14 +40,19 @@ class TabAgenda {
 
         // Once-only event that resets early pass indicators and advances the state.
         this._advanceOnTurnOrderEmpty = () => {
-            if (this._stateMachine) {
-                this._stateMachine.next();
-            }
-            this.updateUI();
             // Only trigger once.
             globalEvents.TI4.onTurnOrderEmpty.remove(
                 this._advanceOnTurnOrderEmpty
             );
+            // Wait until next frame to finish processing (let other listeners go first).
+            // This makes sure status pads can reset to active before setting turn order.
+            // (Not strictly needed, but feels safer.)
+            process.nextTick(() => {
+                if (this._stateMachine) {
+                    this._stateMachine.next();
+                }
+                this.updateUI();
+            });
         };
 
         globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
@@ -59,6 +64,13 @@ class TabAgenda {
             this._noWhensSet = new Set();
             this._noAftersSet = new Set();
             this.updateUI();
+
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const statusPad = TabAgenda.getStatusPad(playerDesk);
+                if (statusPad.__getPass()) {
+                    statusPad.__setPass(false);
+                }
+            }
         });
 
         // Let players mark they will pass when it becomes their turn.
@@ -168,9 +180,6 @@ class TabAgenda {
                 );
                 deskWhenAfter.anyWhens.onCheckStateChanged.add(
                     (checkBox, player, isChecked) => {
-                        console.log(
-                            `onCheckStateChanged ${playerDesk.colorName} ${isChecked}`
-                        );
                         if (isChecked) {
                             this._noWhensSet.delete(playerDesk.index);
                         } else {
