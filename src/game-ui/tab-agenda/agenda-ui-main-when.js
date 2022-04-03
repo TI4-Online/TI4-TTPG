@@ -23,7 +23,7 @@ const onTurnChangedProxy = (currentDesk, previousDesk, player) => {
 };
 globalEvents.TI4.onTurnChanged.add(onTurnChangedProxy);
 
-class AgendaUiWhenMain extends LayoutBox {
+class AgendaUiMainWhen extends LayoutBox {
     constructor(doRefresh) {
         assert(typeof doRefresh === "function");
 
@@ -32,7 +32,7 @@ class AgendaUiWhenMain extends LayoutBox {
         this._doRefresh = doRefresh;
 
         const text = new Text()
-            .setText(locale("ui.agenda.clippy.any_whens"))
+            .setText(locale("ui.agenda.clippy.whens"))
             .setJustification(TextJustification.Center)
             .setFontSize(CONFIG.fontSize)
             .setAutoWrap(true);
@@ -71,4 +71,4 @@ class AgendaUiWhenMain extends LayoutBox {
     }
 }
 
-module.exports = { AgendaUiWhenMain };
+module.exports = { AgendaUiMainWhen };

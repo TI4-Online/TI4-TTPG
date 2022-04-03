@@ -8,7 +8,7 @@ const {
     VerticalAlignment,
 } = require("../../wrapper/api");
 
-class AgendaUiBlank extends LayoutBox {
+class AgendaUiMainBlank extends LayoutBox {
     constructor() {
         super();
 
@@ -24,4 +24,4 @@ class AgendaUiBlank extends LayoutBox {
     }
 }
 
-module.exports = { AgendaUiBlank };
+module.exports = { AgendaUiMainBlank };

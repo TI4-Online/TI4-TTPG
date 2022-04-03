@@ -19,7 +19,7 @@ const OUTCOME_TYPE = {
     OTHER: "other",
 };
 
-class AgendaUiOutcomeType extends LayoutBox {
+class AgendaUiMainOutcomeType extends LayoutBox {
     constructor() {
         super();
 
@@ -86,4 +86,4 @@ class AgendaUiOutcomeType extends LayoutBox {
     }
 }
 
-module.exports = { AgendaUiOutcomeType, OUTCOME_TYPE };
+module.exports = { AgendaUiMainOutcomeType, OUTCOME_TYPE };

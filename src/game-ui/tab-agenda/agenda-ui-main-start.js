@@ -13,7 +13,7 @@ const {
     refPackageId,
 } = require("../../wrapper/api");
 
-class AgendaUiStart extends LayoutBox {
+class AgendaUiMainStart extends LayoutBox {
     constructor() {
         super();
 
@@ -66,4 +66,4 @@ class AgendaUiStart extends LayoutBox {
     }
 }
 
-module.exports = { AgendaUiStart };
+module.exports = { AgendaUiMainStart };
