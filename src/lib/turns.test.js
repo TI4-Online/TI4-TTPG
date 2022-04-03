@@ -9,7 +9,6 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { ObjectNamespace } = require("./object-namespace");
 
 it("constructor", () => {
     new Turns();

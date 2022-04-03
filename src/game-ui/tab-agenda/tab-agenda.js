@@ -32,6 +32,10 @@ class TabAgenda {
     }
 
     updateUI() {
+        if (this._widget) {
+            return; // XXX HACK FOR EMPTY UI UNTIL READY
+        }
+
         if (!this._stateMachine) {
             this._widget.setChild(new AgendaUiBlank());
             return;
