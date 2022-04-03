@@ -61,12 +61,16 @@ globalEvents.TI4 = {
     onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
 
     // Called when turn changes.
-    // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player) => void>
+    // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
     onTurnChanged: new TriggerableMulticastDelegate(),
 
     // Called when setting turn order.
-    // <playerDeskOrder: Array.{PlayerDesk}, player: Player) => void>
+    // <(playerDeskOrder: Array.{PlayerDesk}, player: Player|undefined) => void>
     onTurnOrderChanged: new TriggerableMulticastDelegate(),
+
+    // Called when all players have passed.
+    // <(player: Player|undefined) => void>
+    onTurnOrderEmpty: new TriggerableMulticastDelegate(),
 };
 
 // Some naughty scripts register global event listeners.
