@@ -21,6 +21,7 @@ class Zone {
     setRotation(value) {}
     setSavedData(value) {}
     setScale(value) {}
+    setSlotOwns(slot, isOwner) {}
     setStacking(value) {}
 }
 
