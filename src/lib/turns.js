@@ -148,7 +148,7 @@ class Turns {
     setCurrentTurn(playerDesk, clickingPlayer) {
         this._maybeLoad();
         // playerDesk may be undefined
-        assert(clickingPlayer instanceof Player);
+        assert(!clickingPlayer || clickingPlayer instanceof Player);
 
         const playerSlot = playerDesk.playerSlot;
         const currentTurnPlayer = world.getPlayerBySlot(playerSlot);
@@ -189,10 +189,8 @@ class Turns {
         assert(clickingPlayer instanceof Player);
         this._maybeLoad();
 
-        if (!this.isActivePlayer(clickingPlayer)) {
-            return;
-        }
         if (!this._currentTurn) {
+            console.log("endTurn: no current turn");
             return;
         }
 
@@ -243,12 +241,14 @@ class Turns {
             Broadcast.broadcastAll(
                 locale("ui.message.all_players_have_passed")
             );
+            globalEvents.TI4.onTurnOrderEmpty.trigger(clickingPlayer);
             return;
         }
 
         // Careful, the "current" player may have passed during their turn.
         const currentIdx = this._turnOrder.indexOf(this._currentTurn);
         if (currentIdx === -1) {
+            console.log("endTurn: current turn not in list");
             return;
         }
 
@@ -279,7 +279,7 @@ class Turns {
                 }
             } else {
                 candidateIdx =
-                    (currentIdx + this._turnOrder.length + dir) %
+                    (candidateIdx + this._turnOrder.length + dir) %
                     this._turnOrder.length;
             }
 
@@ -291,6 +291,7 @@ class Turns {
                 this.setCurrentTurn(candidate, clickingPlayer);
                 break;
             }
+            remaining -= 1;
         }
     }
 

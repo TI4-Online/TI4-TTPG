@@ -3,7 +3,12 @@ const assert = require("assert");
 const { GlobalSavedData } = require("./saved-data/global-saved-data");
 const { PlayerDesk } = require("./player-desk/player-desk");
 const { Turns, TURN_ORDER_TYPE } = require("./turns");
-const { MockGameObject, MockPlayer, world } = require("../wrapper/api");
+const {
+    MockGameObject,
+    MockPlayer,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
 
 it("constructor", () => {
     new Turns();
@@ -72,9 +77,12 @@ it("passed turn (self)", () => {
 });
 
 it("passed turn (next)", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks();
+    const clickingPlayer = new MockPlayer();
+
     const mockStatusPad = new MockGameObject({
-        templateMetadta: "pad:base/status",
-        owningPlayerSlot: 1,
+        templateMetadata: "pad:base/status",
+        owningPlayerSlot: playerDesks[1].playerSlot,
     });
     mockStatusPad.__getPass = () => {
         return true;
@@ -83,18 +91,46 @@ it("passed turn (next)", () => {
     world.__clear();
     world.__addObject(mockStatusPad);
 
-    const numbers = [...Array(5).keys()];
-    const playerDesks = numbers.map((i) => PlayerDesk.createDummy(i, i));
-    const clickingPlayer = new MockPlayer();
-
     const turns = new Turns();
     turns.setTurnOrder(playerDesks, clickingPlayer);
     turns.setCurrentTurn(playerDesks[0], clickingPlayer);
-    assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert.equal(turns.getCurrentTurn().index, 0);
     turns.endTurn(clickingPlayer); // player 1 passed!
-    assert(turns.getCurrentTurn(), playerDesks[2]);
+    assert.equal(turns.getCurrentTurn().index, 2);
 
     world.__clear();
+});
+
+it("onTurnOrderEmpty", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks();
+    const clickingPlayer = new MockPlayer();
+
+    let triggerCount = 0;
+    const listener = () => {
+        triggerCount += 1;
+    };
+    globalEvents.TI4.onTurnOrderEmpty.add(listener);
+
+    world.__clear();
+    for (const playerDesk of playerDesks) {
+        const mockStatusPad = new MockGameObject({
+            templateMetadata: "pad:base/status",
+            owningPlayerSlot: playerDesk.playerSlot,
+        });
+        mockStatusPad.__getPass = () => {
+            return true;
+        };
+        world.__addObject(mockStatusPad);
+    }
+    const turns = new Turns();
+    turns.setTurnOrder(playerDesks, clickingPlayer);
+    turns.setCurrentTurn(playerDesks[0], clickingPlayer);
+    turns.endTurn(clickingPlayer); // all players passed!
+
+    globalEvents.TI4.onTurnOrderEmpty.remove(listener);
+    world.__clear();
+
+    assert.equal(triggerCount, 1);
 });
 
 it("persistence", () => {

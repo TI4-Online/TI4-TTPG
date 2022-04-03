@@ -111,6 +111,10 @@ passButton.onClicked = (btn, player) => {
     }
 };
 
+TP.globalEvents.TI4.onTurnOrderEmpty.add((player) => {
+    setPass(false);
+});
+
 TP.refObject.__getPass = () => {
     return getPass();
 };

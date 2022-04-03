@@ -4,6 +4,7 @@
 const locale = require("../lib/locale");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { TabAction } = require("./tab-action/tab-action");
+const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
@@ -17,7 +18,6 @@ const {
     HorizontalBox,
     LayoutBox,
     Rotator,
-    Text,
     UIElement,
     Vector,
     globalEvents,
@@ -162,17 +162,16 @@ class GameUI {
         const tabStatus = new TabStatus();
         tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());
 
-        //.addTab(locale("ui.tab.auto_roller"), autoRoller.getUI())
-
-        tabbedPanel.addTab(
-            locale("ui.tab.agenda_phase"),
-            new Text()
-                .setFontSize(CONFIG.fontSize)
-                .setText("< work in progress >")
-        );
+        const tabAgenda = new TabAgenda(this._doRefresh);
+        tabbedPanel.addTab(locale("ui.tab.agenda_phase"), tabAgenda.getUI());
 
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
             tabbedPanel.selectTab(locale("ui.tab.action_phase"));
+        });
+        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
+            if (agendaCard) {
+                tabbedPanel.selectTab(locale("ui.tab.agenda_phase"));
+            }
         });
     }
 }

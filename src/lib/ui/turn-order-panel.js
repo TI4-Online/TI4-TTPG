@@ -28,6 +28,7 @@ class TurnOrderPanel extends VerticalBox {
 
         // Register listeners.
         globalEvents.TI4.onTurnOrderChanged.add(update);
+        globalEvents.TI4.onTurnOrderEmpty.add(update);
         globalEvents.TI4.onTurnChanged.add(update);
         globalEvents.TI4.onPlayerColorChanged.add(update);
         globalEvents.TI4.onPlayerCountChanged.add(update);
@@ -38,6 +39,7 @@ class TurnOrderPanel extends VerticalBox {
         if (gameObject) {
             gameObject.onDestroyed.add(() => {
                 globalEvents.TI4.onTurnOrderChanged.remove(update);
+                globalEvents.TI4.onTurnOrderEmpty.remove(update);
                 globalEvents.TI4.onTurnChanged.remove(update);
                 globalEvents.TI4.onPlayerColorChanged.remove(update);
                 globalEvents.TI4.onPlayerCountChanged.remove(update);
@@ -147,7 +149,9 @@ class TurnOrderPanel extends VerticalBox {
             endTurnButton.setFontSize(this._fontSize);
         }
         endTurnButton.onClicked.add((button, player) => {
-            world.TI4.turns.endTurn(player);
+            if (world.TI4.turns.isActivePlayer(player)) {
+                world.TI4.turns.endTurn(player);
+            }
         });
         this.addChild(endTurnButton, 1.5);
     }
