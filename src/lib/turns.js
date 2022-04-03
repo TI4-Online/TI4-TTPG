@@ -148,7 +148,7 @@ class Turns {
     setCurrentTurn(playerDesk, clickingPlayer) {
         this._maybeLoad();
         // playerDesk may be undefined
-        assert(clickingPlayer instanceof Player);
+        assert(!clickingPlayer || clickingPlayer instanceof Player);
 
         const playerSlot = playerDesk.playerSlot;
         const currentTurnPlayer = world.getPlayerBySlot(playerSlot);
