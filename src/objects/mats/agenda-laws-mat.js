@@ -11,8 +11,9 @@ const {
 const { ObjectNamespace } = require("../../lib/object-namespace");
 
 const ZONE = {
-    WIDTH: 5,
-    HEIGHT: 7,
+    X: 5,
+    Y: 7,
+    Z: 2,
 };
 
 // place cards on game setup
@@ -66,10 +67,9 @@ class AgendaLawsMat {
         const snapPoints = this._obj.getAllSnapPoints();
         const snapPoint = snapPoints[5];
 
-        const zoneScale = new Vector(ZONE.WIDTH, ZONE.HEIGHT, 10);
-        const zonePos = snapPoint
-            .getGlobalPosition()
-            .add([0, 0, zoneScale.z / 2 - 0.1]);
+        const zoneScale = new Vector(ZONE.X, ZONE.Y, ZONE.Z);
+        const zonePos = snapPoint.getGlobalPosition();
+        zonePos.z = world.getTableHeight();
         this._zone = world.createZone(zonePos);
         this._zone.setSavedData(zoneId);
         this._zone.setRotation(this._obj.getRotation());
