@@ -3,6 +3,10 @@ const { globalEvents, world } = require("./wrapper/api");
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
+    // Called when an ageda card enters or leaves the "agenda spot" on the mat.
+    // <(agendaCard: GameObject|undefined) => void>
+    onAgendaChanged: new TriggerableMulticastDelegate(),
+
     // Called when container rejects an added object.
     // Object is still inside container when this event fires, handlers should
     // verify object.getContainer matches in case multiple act on it.
