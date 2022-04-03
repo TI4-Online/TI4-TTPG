@@ -23,6 +23,7 @@ class SetupGenericPromissory extends AbstractSetup {
             const colorName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             return colorName === this.playerDesk.colorName;
         });
+        deck.setName("");
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
