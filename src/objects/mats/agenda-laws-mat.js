@@ -92,7 +92,7 @@ class AgendaLawsMat {
         });
         if (agendaCards.length <= 1) {
             const agendaCard = agendaCards[0]; // might be undefined
-            console.log(`AgendaLawsMat.onAgendaChanged ${agendaCard}`);
+            //console.log(`AgendaLawsMat.onAgendaChanged ${agendaCard}`);
             globalEvents.TI4.onAgendaChanged.trigger(agendaCard);
         }
     }
