@@ -204,6 +204,7 @@
     "ui.build.warp_to_last_actived": "Warp to last activated system",
     "ui.build.warp.output": "Warping to {warpTarget}",
     "ui.build.warp_target_missing": "Build: no such system",
+    "ui.build.toggle_privacy": "Toggle privacy",
 
     "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",

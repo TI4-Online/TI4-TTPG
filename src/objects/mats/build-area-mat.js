@@ -53,15 +53,13 @@ globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
 });
 
 class BuildAreaMat {
-    static getLastActivatedSystem(player) {
-        assert(player instanceof Player);
-        const playerSlot = player.getSlot();
+    static getLastActivatedSystem(playerSlot) {
+        assert(typeof playerSlot === "number");
         return _playerSlotToLastActivatedSystemTileObj[playerSlot];
     }
 
-    static getHomeSystem(player) {
-        assert(player instanceof Player);
-        const playerSlot = player.getSlot();
+    static getHomeSystem(playerSlot) {
+        assert(typeof playerSlot === "number");
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         if (!faction) {
             return;
@@ -238,16 +236,33 @@ class BuildAreaMat {
             .addAction(
                 locale("ui.build.warp_to_home"),
                 (obj, player, actionName) => {
-                    const systemTileObj = BuildAreaMat.getHomeSystem(player);
+                    const playerSlot = this._getPlayerSlot();
+                    const systemTileObj =
+                        BuildAreaMat.getHomeSystem(playerSlot);
                     this.moveUnitsToSystem(systemTileObj, player);
                 }
             )
             .addAction(
                 locale("ui.build.warp_to_last_actived"),
                 (obj, player, actionName) => {
+                    const playerSlot = this._getPlayerSlot();
                     const systemTileObj =
-                        BuildAreaMat.getLastActivatedSystem(player);
+                        BuildAreaMat.getLastActivatedSystem(playerSlot);
                     this.moveUnitsToSystem(systemTileObj, player);
+                }
+            )
+            .addAction(
+                locale("ui.build.toggle_privacy"),
+                (obj, player, actionName) => {
+                    assert(this._zone);
+                    const oldValue = this._zone.isAlwaysVisible();
+                    const newValue = !oldValue;
+                    this._zone.setAlwaysVisible(newValue);
+                    this._zone.setObjectVisibility(
+                        newValue
+                            ? ZonePermission.OwnersOnly
+                            : ZonePermission.Everybody
+                    );
                 }
             );
     }
@@ -275,6 +290,7 @@ class BuildAreaMat {
             ObjectSavedData.set(this._obj, "zoneId", zoneId);
         }
 
+        const c = 0.7;
         const zoneScale = new Vector(MAT_WIDTH, MAT_HEIGHT, 4);
         const zonePos = this._obj.getPosition().add([0, 0, zoneScale.z / 2]);
         this._zone = world.createZone(zonePos);
@@ -282,7 +298,8 @@ class BuildAreaMat {
         this._zone.setRotation(this._obj.getRotation());
         this._zone.setScale(zoneScale);
         this._zone.setStacking(ZonePermission.Nobody);
-        this._zone.setColor([1, 0, 0, 0.1]);
+        this._zone.setSlotOwns(this._getPlayerSlot(), true);
+        this._zone.setColor([c, c, c, 0.1]);
         this._zone.setAlwaysVisible(false);
         this._zone.onBeginOverlap.add((zone, obj) => {
             if (obj === this._obj) {
@@ -296,6 +313,12 @@ class BuildAreaMat {
             }
             this.scheduleUpdate();
         });
+    }
+
+    _getPlayerSlot() {
+        const pos = this._obj.getPosition();
+        const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+        return playerDesk.playerSlot;
     }
 
     scheduleUpdate() {
@@ -369,9 +392,7 @@ class BuildAreaMat {
         }
 
         // Get per-unit data.
-        const pos = this._obj.getPosition();
-        const playerDesk = world.TI4.getClosestPlayerDesk(pos);
-        const playerSlot = playerDesk.playerSlot;
+        const playerSlot = this._getPlayerSlot();
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         const auxData = new AuxDataBuilder()
             .setPlayerSlot(playerSlot)
@@ -425,9 +446,8 @@ class BuildAreaMat {
         }
         build = build.join(", ");
 
-        const pos = this._obj.getPosition();
-        const playerDesk = world.TI4.getClosestPlayerDesk(pos);
-        const playerSlot = playerDesk.playerSlot;
+        const playerSlot = this._getPlayerSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         const playerName = faction ? faction.nameFull : playerDesk.colorName;
         const color = playerDesk.color;
