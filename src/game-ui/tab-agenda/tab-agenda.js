@@ -34,6 +34,8 @@ class TabAgenda {
         this._doRefresh = doRefresh;
         this._widget = new LayoutBox();
         this._stateMachine = undefined;
+
+        this._outcomeType = undefined;
         this._noWhensSet = new Set();
         this._noAftersSet = new Set();
         this._deskWhenAfters = [];
@@ -93,6 +95,10 @@ class TabAgenda {
                     }
                     world.TI4.turns.endTurn();
                 }
+
+                for (const deskWhenAfter of this._deskWhenAfters) {
+                    deskWhenAfter.update();
+                }
             }
         );
 
@@ -125,7 +131,7 @@ class TabAgenda {
             this.updateUI();
         };
         const onOutcomeType = (outcomeType) => {
-            // TODO XXX
+            this._outcomeType = outcomeType;
         };
         let order;
 

@@ -7,6 +7,8 @@ const {
     CheckBox,
     LayoutBox,
     Rotator,
+    Text,
+    TextJustification,
     UIElement,
     Vector,
     VerticalBox,
@@ -35,12 +37,18 @@ class AgendaUiDeskWhenAfter extends Border {
         this._playCard = new Button()
             .setText(locale("ui.agenda.clippy.play_card"))
             .setFontSize(CONFIG.fontSize);
+        this._waitingFor = new Text()
+            .setText(locale("ui.agenda.clippy.waiting_for_player_name"))
+            .setJustification(TextJustification.Center)
+            .setFontSize(CONFIG.fontSize)
+            .setAutoWrap(true);
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._anyWhens)
             .addChild(this._anyAfters)
-            .addChild(this._playCard);
+            .addChild(this._playCard)
+            .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
             .setPadding(
                 CONFIG.padding,
@@ -57,6 +65,8 @@ class AgendaUiDeskWhenAfter extends Border {
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
+
+        this.update();
     }
 
     get anyWhens() {
@@ -79,6 +89,16 @@ class AgendaUiDeskWhenAfter extends Border {
     detach() {
         world.removeUIElement(this._ui);
         return this;
+    }
+
+    update() {
+        const currentTurn = world.TI4.turns.getCurrentTurn();
+        this._playCard.setEnabled(currentTurn === this._playerDesk);
+        const playerName = currentTurn.colorName;
+        this._waitingFor.setText(
+            locale("ui.agenda.clippy.waiting_for_player_name", { playerName })
+        );
+        world.updateUI(this._ui);
     }
 }
 
