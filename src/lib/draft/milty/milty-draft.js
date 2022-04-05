@@ -34,6 +34,10 @@ class MiltyDraft {
         this._sliceDataArray = [];
     }
 
+    resetFactions() {
+        this._factionDataArray = [];
+    }
+
     addSlice(slice, color, label) {
         assert(Array.isArray(slice));
         assert(!color || ColorUtil.isColor(color));
