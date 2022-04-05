@@ -47,7 +47,7 @@ class AgendaUiDeskPredictVote extends Border {
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(AgendaOutcome.formatOutcomes(outcomes))
+            .addChild(AgendaOutcome.formatOutcomes(outcomes, playerDesk))
             .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
             .setPadding(

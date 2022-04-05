@@ -145,6 +145,10 @@ class TabAgenda {
                 outcomeType,
                 doUpdateDesks
             );
+            this._outcomes.forEach((outcome) => {
+                outcome.setMutablePredictions();
+                outcome.setMutableVotes();
+            });
         };
         let order;
 
