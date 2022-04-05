@@ -13,6 +13,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
+const { AgendaOutcome } = require("./agenda-outcome");
 
 const OUTCOME_TYPE = {
     FOR_AGAINST: "for/against",
@@ -25,7 +26,7 @@ function capitalizeFirstLetter(string) {
 }
 
 class AgendaUiMainOutcomeType extends LayoutBox {
-    static getDefaultOutcomes(outcomeType) {
+    static getDefaultOutcomeNames(outcomeType) {
         assert(typeof outcomeType === "string");
         switch (outcomeType) {
             case OUTCOME_TYPE.FOR_AGAINST:
@@ -42,6 +43,16 @@ class AgendaUiMainOutcomeType extends LayoutBox {
                     return "???";
                 });
         }
+    }
+
+    static getDefaultOutcomes(outcomeType, doUpdateDesks) {
+        assert(typeof outcomeType === "string");
+        assert(typeof doUpdateDesks === "function");
+        const names =
+            AgendaUiMainOutcomeType.getDefaultOutcomeNames(outcomeType);
+        return names.map((name) => {
+            return new AgendaOutcome(name, doUpdateDesks);
+        });
     }
 
     constructor() {

@@ -64,7 +64,8 @@ class AgendaUiDeskWhenAfter extends Border {
             .setChildDistance(CONFIG.spacing)
             .addChild(this._anyWhens)
             .addChild(this._anyAfters)
-            .addChild(this._playCard)
+            .addChild(this._playPredictOutcome)
+            .addChild(this._playOther)
             .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
             .setPadding(

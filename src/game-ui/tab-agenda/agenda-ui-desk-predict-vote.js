@@ -1,9 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
+const { AgendaOutcome } = require("./agenda-outcome");
 const {
     Border,
-    Button,
     LayoutBox,
     Rotator,
     Text,
@@ -22,24 +22,18 @@ const {
 class AgendaUiDeskPredictVote extends Border {
     constructor(playerDesk, outcomes) {
         assert(playerDesk);
-        assert(outcomes);
+        assert(Array.isArray(outcomes));
+        outcomes.forEach((outcome) => {
+            assert(outcome instanceof AgendaOutcome);
+        });
+
         super();
 
         // Outcomes are always text, either fixed or editable.
         // Use a select button to choose.
         // Show prediction/votes next to it.
 
-        // Only enable if current turn.
         const currentDesk = world.TI4.turns.getCurrentTurn();
-        this._playPredictOutcome = new Button()
-            .setText(locale("ui.agenda.clippy.play_predict"))
-            .setFontSize(CONFIG.fontSize)
-            .setEnabled(currentDesk === playerDesk && !this._isWhen);
-        this._playOther = new Button()
-            .setText(locale("ui.agenda.clippy.play_other"))
-            .setFontSize(CONFIG.fontSize)
-            .setEnabled(currentDesk === playerDesk);
-
         const playerName = currentDesk.colorName;
         this._waitingFor = new Text()
             .setText(
@@ -53,9 +47,7 @@ class AgendaUiDeskPredictVote extends Border {
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(this._anyWhens)
-            .addChild(this._anyAfters)
-            .addChild(this._playCard)
+            .addChild(AgendaOutcome.formatOutcomes(outcomes))
             .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
             .setPadding(

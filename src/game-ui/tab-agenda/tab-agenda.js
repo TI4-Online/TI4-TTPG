@@ -138,8 +138,13 @@ class TabAgenda {
         };
         const onOutcomeType = (outcomeType) => {
             this._outcomeType = outcomeType;
-            this._outcomes =
-                AgendaUiMainOutcomeType.getDefaultOutcomes(outcomeType);
+            const doUpdateDesks = () => {
+                this.updateDeskUI();
+            };
+            this._outcomes = AgendaUiMainOutcomeType.getDefaultOutcomes(
+                outcomeType,
+                doUpdateDesks
+            );
         };
         let order;
 

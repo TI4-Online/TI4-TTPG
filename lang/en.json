@@ -249,6 +249,10 @@
     "ui.agenda.outcome.for": "For",
     "ui.agenda.outcome.against": "Against",
 
+    "ui.agenda.label.outcomes": "Outcome",
+    "ui.agenda.label.votes": "Votes",
+    "ui.agenda.label.predictions": "Riders",
+
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",
     "faction.abbr.creuss": "Creuss",

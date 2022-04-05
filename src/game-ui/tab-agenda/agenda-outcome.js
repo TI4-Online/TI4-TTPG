@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const {
-    Border,
     Button,
     HorizontalBox,
     Text,
@@ -16,21 +15,21 @@ class AgendaOutcome {
         return new Text()
             .setFontSize(CONFIG.fontSize)
             .setBold(true)
-            .setText(locale("ui.agenda.label.outcome"));
+            .setText(locale("ui.agenda.label.outcomes"));
     }
 
     static get headerPredictions() {
         return new Text()
             .setFontSize(CONFIG.fontSize)
             .setBold(true)
-            .setText(locale("ui.agenda.label.prediction"));
+            .setText(locale("ui.agenda.label.predictions"));
     }
 
     static get headerVotes() {
         return new Text()
             .setFontSize(CONFIG.fontSize)
             .setBold(true)
-            .setText(locale("ui.agenda.label.outcome"));
+            .setText(locale("ui.agenda.label.votes"));
     }
 
     static formatOutcomes(agendaOutcomes) {
@@ -49,6 +48,12 @@ class AgendaOutcome {
             .setChildDistance(CONFIG.spacing)
             .addChild(AgendaOutcome.headerPredictions);
 
+        for (const agendaOutcome of agendaOutcomes) {
+            colOutcomeName.addChild(agendaOutcome.outcomeName);
+            colVotes.addChild(agendaOutcome.votes);
+            colPredictions.addChild(agendaOutcome.predictions);
+        }
+
         const columns = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(colOutcomeName)
@@ -64,12 +69,12 @@ class AgendaOutcome {
             .addChild(columns)
             .addChild(commitButton);
 
-        return new Border().setChild(panel);
+        return panel;
     }
 
     constructor(name, doUpdateDesks) {
         assert(typeof name === "string");
-        assert(typeof doRefresh === "function");
+        assert(typeof doUpdateDesks === "function");
 
         this._name = name;
         this._doUpdateDesks = doUpdateDesks;
@@ -93,7 +98,7 @@ class AgendaOutcome {
     }
 
     get outcomeName() {
-        const text = new Text()
+        const nameText = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(this._name);
         const editText = new TextBox().setFontSize(CONFIG.fontSize);
@@ -101,11 +106,18 @@ class AgendaOutcome {
             .setFontSize(CONFIG.fontSize)
             .setText("[?]");
 
-        const panel = new HorizontalBox().addChild(text).addChild(editButton);
+        const panel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(nameText)
+            .addChild(editButton);
 
         editText.onTextCommitted.add((textBox, player, text, usingEnter) => {
+            if (!usingEnter) {
+                return;
+            }
+            console.log("AgendaOutcome.editText");
             this._name = text;
-            text.setText(this._name);
+            nameText.setText(this._name);
             panel.removeAllChildren();
             panel.addChild(text).addChild(editButton);
 
@@ -114,9 +126,10 @@ class AgendaOutcome {
         });
 
         editButton.onClicked.add((button, player) => {
+            console.log("AgendaOutcome.editButton");
             editText.setText(this._name);
             panel.removeAllChildren();
-            panel.addChild(editText);
+            panel.addChild(editText, 1);
         });
 
         return panel;
@@ -170,7 +183,13 @@ class AgendaOutcome {
         result.addChild(
             new Text().setFontSize(CONFIG.fontSize).setText(`${total} (`)
         );
-        world.TI4.getAllPlayerDesks().forEach((desk) => {
+        world.TI4.getAllPlayerDesks().forEach((desk, index) => {
+            if (index > 0) {
+                const comma = new Text()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText(", ");
+                result.addChild(comma);
+            }
             const voteCount = this._deskIndexToVoteCount[desk.index];
             const text = new Text()
                 .setFontSize(CONFIG.fontSize)
