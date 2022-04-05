@@ -4,7 +4,6 @@ const CONFIG = require("../game-ui-config");
 const {
     Border,
     Button,
-    CheckBox,
     LayoutBox,
     Rotator,
     Text,
@@ -16,27 +15,19 @@ const {
 } = require("../../wrapper/api");
 
 /**
- * Per-desk "any whens / afters?" UI.  Note that zones do not hide world UI.
- * TTPG may offer screen space and/or more visibility control in the future.
+ * Per-desk predict/vote display.
+ *
+ * <label><edit button> [total] [per-player votes +/-]
  */
-class AgendaUiDeskWhenAfter extends Border {
-    constructor(playerDesk, isWhen) {
+class AgendaUiDeskPredictVote extends Border {
+    constructor(playerDesk, outcomes) {
         assert(playerDesk);
-        assert(typeof isWhen === "boolean");
+        assert(outcomes);
         super();
 
-        this._playerDesk = playerDesk;
-        this._isWhen = isWhen;
-
-        // Always display any X, players may commit early.
-        this._anyWhens = new CheckBox()
-            .setText(locale("ui.agenda.clippy.any_whens"))
-            .setFontSize(CONFIG.fontSize)
-            .setIsChecked(true);
-        this._anyAfters = new CheckBox()
-            .setText(locale("ui.agenda.clippy.any_afters"))
-            .setFontSize(CONFIG.fontSize)
-            .setIsChecked(true);
+        // Outcomes are always text, either fixed or editable.
+        // Use a select button to choose.
+        // Show prediction/votes next to it.
 
         // Only enable if current turn.
         const currentDesk = world.TI4.turns.getCurrentTurn();
@@ -84,22 +75,6 @@ class AgendaUiDeskWhenAfter extends Border {
         this._ui.widget = this;
     }
 
-    get anyWhens() {
-        return this._anyWhens;
-    }
-
-    get anyAfters() {
-        return this._anyAfters;
-    }
-
-    get playPredictOutcome() {
-        return this._playPredictOutcome;
-    }
-
-    get playOther() {
-        return this._playOther;
-    }
-
     attach() {
         world.addUI(this._ui);
         return this;
@@ -121,4 +96,4 @@ class AgendaUiDeskWhenAfter extends Border {
     }
 }
 
-module.exports = { AgendaUiDeskWhenAfter };
+module.exports = { AgendaUiDeskPredictVote };

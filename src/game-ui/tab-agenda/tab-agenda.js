@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const { AgendaStateMachine } = require("./agenda-state-machine");
 const { AgendaTurnOrder } = require("./agenda-turn-order");
 const { AgendaUiDeskWhenAfter } = require("./agenda-ui-desk-when-after");
@@ -6,9 +7,12 @@ const { AgendaUiMainAfter } = require("./agenda-ui-main-after");
 const { AgendaUiMainBlank } = require("./agenda-ui-main-blank");
 const { AgendaUiMainOutcomeType } = require("./agenda-ui-main-outcome-type");
 const { AgendaUiMainStart } = require("./agenda-ui-main-start");
+const { AgendaUiMainVote } = require("./agenda-ui-main-vote");
 const { AgendaUiMainWhen } = require("./agenda-ui-main-when");
+const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
+const { AgendaUiDeskPredictVote } = require("./agenda-ui-desk-predict-vote");
 
 class TabAgenda {
     static getStatusPad(playerDesk) {
@@ -36,9 +40,10 @@ class TabAgenda {
         this._stateMachine = undefined;
 
         this._outcomeType = undefined;
+        this._outcomes = [];
         this._noWhensSet = new Set();
         this._noAftersSet = new Set();
-        this._deskWhenAfters = [];
+        this._deskUIs = [];
 
         // Once-only event that resets early pass indicators and advances the state.
         this._advanceOnTurnOrderEmpty = () => {
@@ -65,6 +70,8 @@ class TabAgenda {
             }
             this._noWhensSet = new Set();
             this._noAftersSet = new Set();
+            this._outcomeType = undefined;
+            this._outcomes = [];
             this.updateUI();
 
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -96,8 +103,8 @@ class TabAgenda {
                     world.TI4.turns.endTurn();
                 }
 
-                for (const deskWhenAfter of this._deskWhenAfters) {
-                    deskWhenAfter.update();
+                for (const deskUI of this._deskUIs) {
+                    deskUI.update();
                 }
             }
         );
@@ -110,12 +117,11 @@ class TabAgenda {
     }
 
     updateUI() {
-        // Always clear when-afters, recreate if in use.
-        for (const deskWhenAfter of this._deskWhenAfters) {
-            deskWhenAfter.detach();
-        }
-        this._deskWhenAfters = [];
+        this.updateMainUI();
+        this.updateDeskUI();
+    }
 
+    updateMainUI() {
         // Abort if not active.
         if (!this._stateMachine) {
             this._widget.setChild(new AgendaUiMainBlank());
@@ -132,6 +138,8 @@ class TabAgenda {
         };
         const onOutcomeType = (outcomeType) => {
             this._outcomeType = outcomeType;
+            this._outcomes =
+                AgendaUiMainOutcomeType.getDefaultOutcomes(outcomeType);
         };
         let order;
 
@@ -151,35 +159,64 @@ class TabAgenda {
             case "WHEN.MAIN":
                 this._widget.setChild(new AgendaUiMainWhen(this._doRefresh));
                 order = AgendaTurnOrder.getResolveOrder();
-                world.TI4.turns.setTurnOrder(order);
-                world.TI4.turns.setCurrentTurn(order[0], undefined);
                 globalEvents.TI4.onTurnOrderEmpty.remove(
                     this._advanceOnTurnOrderEmpty
                 );
                 globalEvents.TI4.onTurnOrderEmpty.add(
                     this._advanceOnTurnOrderEmpty
                 );
+                world.TI4.turns.setTurnOrder(order);
+                world.TI4.turns.setCurrentTurn(order[0], undefined);
                 break;
             case "AFTER.MAIN":
                 this._widget.setChild(new AgendaUiMainAfter(this._doRefresh));
                 order = AgendaTurnOrder.getResolveOrder();
-                world.TI4.turns.setTurnOrder(order);
-                world.TI4.turns.setCurrentTurn(order[0], undefined);
                 globalEvents.TI4.onTurnOrderEmpty.remove(
                     this._advanceOnTurnOrderEmpty
                 );
                 globalEvents.TI4.onTurnOrderEmpty.add(
                     this._advanceOnTurnOrderEmpty
                 );
+                world.TI4.turns.setTurnOrder(order);
+                world.TI4.turns.setCurrentTurn(order[0], undefined);
+                break;
+            case "VOTE.MAIN":
+                this._widget.setChild(new AgendaUiMainVote(this._doRefresh));
+                order = AgendaTurnOrder.getVoteOrder();
+                globalEvents.TI4.onTurnOrderEmpty.remove(
+                    this._advanceOnTurnOrderEmpty
+                );
+                globalEvents.TI4.onTurnOrderEmpty.add(
+                    this._advanceOnTurnOrderEmpty
+                );
+                world.TI4.turns.setTurnOrder(order);
+                world.TI4.turns.setCurrentTurn(order[0], undefined);
                 break;
             default:
                 throw new Error(`unknown state "${this._stateMachine.main}"`);
         }
+    }
+
+    updateDeskUI() {
+        // Always clear, recreate if in use.
+        for (const deskUI of this._deskUIs) {
+            deskUI.detach();
+        }
+        this._deskUIs = [];
+
+        // Abort if not active.
+        if (!this._stateMachine) {
+            this._widget.setChild(new AgendaUiMainBlank());
+            return;
+        }
 
         if (this._stateMachine.desk === "WHEN-AFTER.DESK") {
+            const isWhen =
+                this._stateMachine && this._stateMachine.main === "WHEN.MAIN";
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
                 const deskWhenAfter = new AgendaUiDeskWhenAfter(
-                    playerDesk
+                    playerDesk,
+                    isWhen
                 ).attach();
                 deskWhenAfter.anyWhens.setIsChecked(
                     !this._noWhensSet.has(playerDesk.index)
@@ -229,12 +266,37 @@ class TabAgenda {
                         }
                     }
                 );
-                deskWhenAfter.playCard.onClicked.add((button, player) => {
+                deskWhenAfter.playPredictOutcome.onClicked.add(
+                    (button, player) => {
+                        const msg =
+                            "ui.agenda.clippy.playing_after_player_name";
+                        const playerName = playerDesk.colorName;
+                        Broadcast.chatAll(locale(msg, { playerName }));
+                        // TODO XXX SHOW CHOOSE PREDICTION UI
+                        if (world.TI4.turns.getCurrentTurn() === playerDesk) {
+                            world.TI4.turns.endTurn();
+                        }
+                    }
+                );
+                deskWhenAfter.playOther.onClicked.add((button, player) => {
+                    const msg = isWhen
+                        ? "ui.agenda.clippy.playing_when_player_name"
+                        : "ui.agenda.clippy.playing_after_player_name";
+                    const playerName = playerDesk.colorName;
+                    Broadcast.chatAll(locale(msg, { playerName }));
                     if (world.TI4.turns.getCurrentTurn() === playerDesk) {
                         world.TI4.turns.endTurn();
                     }
                 });
-                this._deskWhenAfters.push(deskWhenAfter);
+                this._deskUIs.push(deskWhenAfter);
+            }
+        } else if (this._stateMachine.desk === "VOTE.DESK") {
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const deskVote = new AgendaUiDeskPredictVote(
+                    playerDesk,
+                    this._outcomes
+                ).attach();
+                this._deskUIs.push(deskVote);
             }
         }
     }

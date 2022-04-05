@@ -11,6 +11,7 @@ const {
     VerticalAlignment,
     VerticalBox,
     refPackageId,
+    world,
 } = require("../../wrapper/api");
 
 const OUTCOME_TYPE = {
@@ -19,7 +20,30 @@ const OUTCOME_TYPE = {
     OTHER: "other",
 };
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 class AgendaUiMainOutcomeType extends LayoutBox {
+    static getDefaultOutcomes(outcomeType) {
+        assert(typeof outcomeType === "string");
+        switch (outcomeType) {
+            case OUTCOME_TYPE.FOR_AGAINST:
+                return [
+                    locale("ui.agenda.outcome.for"),
+                    locale("ui.agenda.outcome.against"),
+                ];
+            case OUTCOME_TYPE.PLAYER:
+                return world.TI4.getAllPlayerDesks().map((desk) => {
+                    return capitalizeFirstLetter(desk.colorName);
+                });
+            case OUTCOME_TYPE.OTHER:
+                return world.TI4.getAllPlayerDesks().map((desk) => {
+                    return "???";
+                });
+        }
+    }
+
     constructor() {
         super();
 
@@ -34,21 +58,21 @@ class AgendaUiMainOutcomeType extends LayoutBox {
 
         const outcomeForAgainstButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.agenda.outcome.for_against"));
+            .setText(locale("ui.agenda.outcome_type.for_against"));
         outcomeForAgainstButton.onClicked.add((button, player) => {
             this._outcomeTypeListener(OUTCOME_TYPE.FOR_AGAINST);
             this._onNext();
         });
         const outcomePlayerButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.agenda.outcome.player"));
+            .setText(locale("ui.agenda.outcome_type.player"));
         outcomePlayerButton.onClicked.add((button, player) => {
             this._outcomeTypeListener(OUTCOME_TYPE.PLAYER);
             this._onNext();
         });
         const outcomeOtherButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.agenda.outcome.other"));
+            .setText(locale("ui.agenda.outcome_type.other"));
         outcomeOtherButton.onClicked.add((button, player) => {
             this._outcomeTypeListener(OUTCOME_TYPE.OTHER);
             this._onNext();

@@ -59,6 +59,7 @@ class AgendaStateMachine {
     next() {
         this._state = STATES[this._state.next];
         assert(this._state);
+        console.log(`AgendaStateMachine: entering ${this._state.main}`);
         return this;
     }
 }
