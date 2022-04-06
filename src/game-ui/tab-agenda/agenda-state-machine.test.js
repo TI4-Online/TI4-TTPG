@@ -11,26 +11,33 @@ it("constructor", () => {
 it("transitions", () => {
     const asm = new AgendaStateMachine();
     assert.equal(asm.main, "START.MAIN");
-    assert(!asm.active);
-    assert(!asm.waiting);
+    assert(!asm.desk);
 
     asm.next();
     assert.equal(asm.main, "OUTCOME_TYPE.MAIN");
-    assert(!asm.active);
-    assert(!asm.waiting);
+    assert(!asm.desk);
 
     asm.next();
     assert.equal(asm.main, "WHEN.MAIN");
-    assert.equal(asm.active, "WHEN.START");
-    assert.equal(asm.waiting, "WHEN.WAITING");
-
-    asm.next();
-    assert.equal(asm.main, "WHEN.MAIN");
-    assert.equal(asm.active, "WHEN.FINISH");
-    assert.equal(asm.waiting, "WHEN.WAITING");
+    assert.equal(asm.desk, "WHEN-AFTER.DESK");
 
     asm.next();
     assert.equal(asm.main, "AFTER.MAIN");
-    assert.equal(asm.active, "AFTER.START");
-    assert.equal(asm.waiting, "AFTER.WAITING");
+    assert.equal(asm.desk, "WHEN-AFTER.DESK");
+
+    asm.next();
+    assert.equal(asm.main, "VOTE.MAIN");
+    assert.equal(asm.desk, "VOTE.DESK");
+
+    asm.next();
+    assert.equal(asm.main, "POST.MAIN");
+    assert.equal(asm.desk, "VOTE.DESK");
+
+    asm.next();
+    assert.equal(asm.main, "FINISH.MAIN");
+    assert(!asm.desk);
+
+    asm.next();
+    assert.equal(asm.main, "START.MAIN");
+    assert(!asm.desk);
 });

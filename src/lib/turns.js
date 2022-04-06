@@ -186,7 +186,7 @@ class Turns {
      * @param {Player} clickingPlayer
      */
     endTurn(clickingPlayer) {
-        assert(clickingPlayer instanceof Player);
+        assert(!clickingPlayer || clickingPlayer instanceof Player);
         this._maybeLoad();
 
         if (!this._currentTurn) {

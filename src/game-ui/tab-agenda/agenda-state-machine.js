@@ -17,20 +17,23 @@ const STATES = {
     },
     WHEN: {
         main: "WHEN.MAIN",
-        active: ["WHEN.START", "WHEN.FINISH"],
-        waiting: "WHEN.WAITING",
+        desk: "WHEN-AFTER.DESK",
         next: "AFTER",
     },
     AFTER: {
         main: "AFTER.MAIN",
-        active: ["AFTER.START", "AFTER.FINISH"],
-        waiting: "AFTER.WAITING",
+        desk: "WHEN-AFTER.DESK",
         next: "VOTE",
     },
     VOTE: {
         main: "VOTE.MAIN",
-        active: ["VOTE.START", "VOTE.FINISH"],
-        waiting: "VOTE.WAITING",
+        desk: "VOTE.DESK",
+        next: "POST",
+    },
+    POST: {
+        // bribery window
+        main: "POST.MAIN",
+        desk: "VOTE.DESK",
         next: "FINISH",
     },
     FINISH: {
@@ -42,20 +45,14 @@ const STATES = {
 class AgendaStateMachine {
     constructor() {
         this._state = STATES.START;
-        this._activeStateIndex = 0;
     }
 
     get main() {
         return this._state.main;
     }
 
-    get active() {
-        const activeList = this._state.active || [];
-        return activeList[this._activeStateIndex];
-    }
-
-    get waiting() {
-        return this._state.waiting;
+    get desk() {
+        return this._state.desk;
     }
 
     /**
@@ -66,15 +63,9 @@ class AgendaStateMachine {
      * @returns {AgendaStateMachine} self, for chaining
      */
     next() {
-        this._activeStateIndex += 1;
-        const activeList = this._state.active || [];
-        if (this._activeStateIndex < activeList.length) {
-            return; // moved to next active state
-        }
-        // Move to the next state, reset index.
         this._state = STATES[this._state.next];
-        this._activeStateIndex = 0;
         assert(this._state);
+        //console.log(`AgendaStateMachine: entering ${this._state.main}`);
         return this;
     }
 }

@@ -69,6 +69,12 @@ class MiltyUtil {
                     result.labels = partParts[1].split("|");
                 }
             }
+            if (part.startsWith("factions=")) {
+                const partParts = part.split("=");
+                if (partParts.length > 1) {
+                    result.factions = partParts[1].split("|");
+                }
+            }
         }
         return result;
     }

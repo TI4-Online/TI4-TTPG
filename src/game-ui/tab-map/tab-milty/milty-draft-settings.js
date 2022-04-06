@@ -61,6 +61,12 @@ class MiltyDraftSettings {
                         const label = custom.labels[i];
                         this._miltyDraft.addSlice(slice, false, label);
                     }
+                    if (custom.factions) {
+                        this._miltyDraft.resetFactions();
+                        for (const factionNsidName of custom.factions) {
+                            this._miltyDraft.addFaction(factionNsidName);
+                        }
+                    }
                 }
 
                 const playerDesks = world.TI4.getAllPlayerDesks();

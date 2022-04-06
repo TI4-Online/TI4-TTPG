@@ -17,6 +17,7 @@ const { fetch, globalEvents, world } = require("../../wrapper/api");
 const UPDATORS = [
     require("./updator-config"),
     require("./updator-laws"),
+    require("./updator-map-string"),
     require("./updator-objectives"),
     require("./updator-player-active"),
     require("./updator-player-alliances"),
