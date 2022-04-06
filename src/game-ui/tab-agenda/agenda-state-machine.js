@@ -28,7 +28,7 @@ const STATES = {
     VOTE: {
         main: "VOTE.MAIN",
         desk: "VOTE.DESK",
-        next: "FINISH",
+        next: "POST",
     },
     POST: {
         // bribery window
@@ -65,7 +65,7 @@ class AgendaStateMachine {
     next() {
         this._state = STATES[this._state.next];
         assert(this._state);
-        console.log(`AgendaStateMachine: entering ${this._state.main}`);
+        //console.log(`AgendaStateMachine: entering ${this._state.main}`);
         return this;
     }
 }

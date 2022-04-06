@@ -41,6 +41,8 @@ class TabAgenda {
         this._noAftersSet = new Set();
         this._deskUIs = [];
 
+        this._replaceWhenWithPredict = false;
+
         // Once-only event that resets early pass indicators and advances the state.
         this._advanceOnTurnOrderEmpty = () => {
             // Only trigger once.
@@ -99,9 +101,7 @@ class TabAgenda {
                     world.TI4.turns.endTurn();
                 }
 
-                for (const deskUI of this._deskUIs) {
-                    deskUI.update();
-                }
+                this.updateDeskUI();
             }
         );
 
@@ -145,10 +145,6 @@ class TabAgenda {
                 outcomeType,
                 doUpdateDesks
             );
-            this._outcomes.forEach((outcome) => {
-                outcome.setMutablePredictions();
-                outcome.setMutableVotes();
-            });
             this._stateMachine.next();
             this.updateUI();
         };
@@ -173,6 +169,8 @@ class TabAgenda {
             },
         ];
         let order;
+        let bestVotes = -1;
+        let outcome = "";
 
         switch (this._stateMachine.main) {
             case "START.MAIN":
@@ -237,13 +235,22 @@ class TabAgenda {
             case "POST.MAIN":
                 this._widget.setChild(
                     AgendaUiMain.simpleNext(
-                        locale("ui.agenda.clippy.post", onNext)
+                        locale("ui.agenda.clippy.post"),
+                        onNext
                     )
                 );
                 break;
             case "FINISH.MAIN":
+                this._outcomes.forEach((candidate) => {
+                    if (candidate.totalVotes > bestVotes) {
+                        bestVotes = candidate.totalVotes;
+                        outcome = candidate.name;
+                    }
+                });
                 this._widget.setChild(
-                    AgendaUiMain.simple(locale("ui.agenda.clippy.outcome"))
+                    AgendaUiMain.simple(
+                        locale("ui.agenda.clippy.outcome", { outcome })
+                    )
                 );
                 break;
             default:
@@ -259,6 +266,8 @@ class TabAgenda {
         this._deskUIs = [];
         for (const outcome of this._outcomes) {
             outcome.resetTexts(); // release internal references to Text objects
+            outcome.setMutablePredictions(false);
+            outcome.setMutableVotes(false);
         }
 
         // Abort if not active.
@@ -267,9 +276,31 @@ class TabAgenda {
         }
 
         if (this._stateMachine.desk === "WHEN-AFTER.DESK") {
+            const currentDesk = world.TI4.turns.getCurrentTurn();
             const isWhen =
                 this._stateMachine && this._stateMachine.main === "WHEN.MAIN";
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                if (
+                    this._replaceWhenWithPredict &&
+                    playerDesk === currentDesk
+                ) {
+                    for (const outcome of this._outcomes) {
+                        outcome.setMutablePredictions(true);
+                    }
+                    const deskVote = new AgendaUiDeskPredictVote(
+                        playerDesk,
+                        this._outcomes
+                    ).attach();
+                    this._deskUIs.push(deskVote);
+                    deskVote.commitButton.onClicked.add((button, player) => {
+                        console.log("predict finished");
+                        this._replaceWhenWithPredict = false;
+                        // Do not pass, can predict again
+                        world.TI4.turns.endTurn();
+                    });
+                    continue;
+                }
+
                 const deskWhenAfter = new AgendaUiDeskWhenAfter(
                     playerDesk,
                     isWhen
@@ -328,10 +359,9 @@ class TabAgenda {
                             "ui.agenda.clippy.playing_after_player_name";
                         const playerName = playerDesk.colorName;
                         Broadcast.chatAll(locale(msg, { playerName }));
-                        // TODO XXX SHOW CHOOSE PREDICTION UI
-                        if (world.TI4.turns.getCurrentTurn() === playerDesk) {
-                            world.TI4.turns.endTurn();
-                        }
+                        // Switch to predict ui.
+                        this._replaceWhenWithPredict = true;
+                        this.updateDeskUI();
                     }
                 );
                 deskWhenAfter.playOther.onClicked.add((button, player) => {
@@ -347,6 +377,9 @@ class TabAgenda {
                 this._deskUIs.push(deskWhenAfter);
             }
         } else if (this._stateMachine.desk === "VOTE.DESK") {
+            for (const outcome of this._outcomes) {
+                outcome.setMutableVotes(true);
+            }
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
                 const deskVote = new AgendaUiDeskPredictVote(
                     playerDesk,

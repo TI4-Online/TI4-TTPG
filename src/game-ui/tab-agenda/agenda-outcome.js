@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
+const { Broadcast } = require("../../lib/broadcast");
 const {
     Button,
     HorizontalBox,
@@ -146,13 +147,21 @@ class AgendaOutcome {
         return this._name;
     }
 
-    setMutablePredictions() {
-        this._mutablePredictions = true;
+    get totalVotes() {
+        let total = 0;
+        for (const voteCount of Object.values(this._deskIndexToVoteCount)) {
+            total += voteCount;
+        }
+        return total;
+    }
+
+    setMutablePredictions(value) {
+        this._mutablePredictions = value;
         return this;
     }
 
-    setMutableVotes() {
-        this._mutableVotes = true;
+    setMutableVotes(value) {
+        this._mutableVotes = value;
         return this;
     }
 
@@ -284,13 +293,11 @@ class AgendaOutcome {
             }
         }
 
-        let total = 0;
-        for (const voteCount of Object.values(this._deskIndexToVoteCount)) {
-            total += voteCount;
-        }
-        result.addChild(
-            new Text().setFontSize(CONFIG.fontSize).setText(`${total} (`)
-        );
+        this._totalVotesText = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(`${this.totalVotes}`);
+        result.addChild(this._totalVotesText);
+        result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" ("));
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
                 const delim = new Text()
@@ -337,6 +344,15 @@ class AgendaOutcome {
                     this._deskIndexToPredictions[playerDesk.index];
                 predictions.push(""); // may put a card NSID here in the future
 
+                const playerName = playerDesk.colorName;
+                const prediction = this.name;
+                Broadcast.broadcastAll(
+                    locale("ui.agenda.clippy.prediction", {
+                        playerName,
+                        prediction,
+                    })
+                );
+
                 // Update desks to reflect new prediction.
                 this._doUpdateDesks();
             });
@@ -356,6 +372,8 @@ class AgendaOutcome {
     }
 
     _updateVoteCounts() {
+        this._totalVotesText.setText(`${this.totalVotes}`);
+
         for (const [deskIndex, votes] of Object.entries(
             this._deskIndexToVoteCount
         )) {
