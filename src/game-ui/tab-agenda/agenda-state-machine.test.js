@@ -30,6 +30,10 @@ it("transitions", () => {
     assert.equal(asm.desk, "VOTE.DESK");
 
     asm.next();
+    assert.equal(asm.main, "POST.MAIN");
+    assert.equal(asm.desk, "VOTE.DESK");
+
+    asm.next();
     assert.equal(asm.main, "FINISH.MAIN");
     assert(!asm.desk);
 
