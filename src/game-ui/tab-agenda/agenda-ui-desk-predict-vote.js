@@ -28,6 +28,7 @@ class AgendaUiDeskPredictVote extends Border {
         });
 
         super();
+        this._playerDesk = playerDesk;
 
         // Outcomes are always text, either fixed or editable.
         // Use a select button to choose.
@@ -45,9 +46,18 @@ class AgendaUiDeskPredictVote extends Border {
             .setFontSize(CONFIG.fontSize)
             .setAutoWrap(true);
 
+        const [outcomesWidget, commitButton] = AgendaOutcome.formatOutcomes(
+            outcomes,
+            playerDesk
+        );
+        this._commitButton = commitButton;
+        this._commitButton.onClicked.add((button, player) => {
+            world.TI4.turns.endTurn(player);
+        });
+
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(AgendaOutcome.formatOutcomes(outcomes, playerDesk))
+            .addChild(outcomesWidget)
             .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
             .setPadding(
@@ -69,6 +79,8 @@ class AgendaUiDeskPredictVote extends Border {
         outcomes.forEach((outcome) => {
             outcome.linkUI(playerDesk.index, this._ui);
         });
+
+        this.update();
     }
 
     attach() {
@@ -81,6 +93,10 @@ class AgendaUiDeskPredictVote extends Border {
         return this;
     }
 
+    get commitButton() {
+        return this._commitButton;
+    }
+
     update() {
         const currentDesk = world.TI4.turns.getCurrentTurn();
         const playerName = currentDesk.colorName;
@@ -89,6 +105,7 @@ class AgendaUiDeskPredictVote extends Border {
                 playerName,
             })
         );
+        this._commitButton.setEnabled(currentDesk === this._playerDesk);
     }
 }
 

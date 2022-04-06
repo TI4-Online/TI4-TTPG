@@ -11,7 +11,52 @@ const {
     world,
 } = require("../../wrapper/api");
 
+const OUTCOME_TYPE = {
+    FOR_AGAINST: "for/against",
+    PLAYER: "player",
+    OTHER: "other",
+};
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**
+ * Represent a single outcome for an agenda.
+ */
 class AgendaOutcome {
+    static getDefaultOutcomeNames(outcomeType) {
+        assert(typeof outcomeType === "string");
+        switch (outcomeType) {
+            case OUTCOME_TYPE.FOR_AGAINST:
+                return [
+                    locale("ui.agenda.outcome.for"),
+                    locale("ui.agenda.outcome.against"),
+                ];
+            case OUTCOME_TYPE.PLAYER:
+                return world.TI4.getAllPlayerDesks().map((desk) => {
+                    return capitalizeFirstLetter(desk.colorName);
+                });
+            case OUTCOME_TYPE.OTHER:
+                return world.TI4.getAllPlayerDesks().map((desk) => {
+                    return "???";
+                });
+        }
+    }
+
+    static getDefaultOutcomes(outcomeType, doUpdateDesks) {
+        assert(typeof outcomeType === "string");
+        assert(typeof doUpdateDesks === "function");
+        const names = AgendaOutcome.getDefaultOutcomeNames(outcomeType);
+        const allOutcomes = names.map((name) => {
+            return new AgendaOutcome(name, doUpdateDesks);
+        });
+        allOutcomes.forEach((outcome) => {
+            outcome.setAllOutcomes(allOutcomes);
+        });
+        return allOutcomes;
+    }
+
     static get headerOutcomeName() {
         return new Text()
             .setFontSize(CONFIG.fontSize)
@@ -64,14 +109,14 @@ class AgendaOutcome {
 
         const commitButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText("TODO XXX");
+            .setText(locale("ui.agenda.clippy.finish"));
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(columns)
             .addChild(commitButton);
 
-        return panel;
+        return [panel, commitButton];
     }
 
     constructor(name, doUpdateDesks) {
@@ -92,6 +137,13 @@ class AgendaOutcome {
             this._deskIndexToVoteCount[desk.index] = 0;
             this._deskIndexToVoteTexts[desk.index] = [];
         });
+
+        this._allOutcomes = [];
+        this._deskIndexVoting = new Set();
+    }
+
+    get name() {
+        return this._name;
     }
 
     setMutablePredictions() {
@@ -102,6 +154,14 @@ class AgendaOutcome {
     setMutableVotes() {
         this._mutableVotes = true;
         return this;
+    }
+
+    setAllOutcomes(allOutcomes) {
+        assert(Array.isArray(allOutcomes));
+        allOutcomes.forEach((agendaOutcome) => {
+            assert(agendaOutcome instanceof AgendaOutcome);
+        });
+        this._allOutcomes = allOutcomes;
     }
 
     resetTexts() {
@@ -162,31 +222,66 @@ class AgendaOutcome {
 
     getVotes(playerDesk) {
         assert(playerDesk);
+
+        const deskIndex = playerDesk.index;
         const result = new HorizontalBox();
 
         // Add these first so they don't shift when the rest changes.
         if (this._mutableVotes) {
-            const minusButton = new Button()
-                .setFontSize(CONFIG.fontSize)
-                .setText("-");
-            minusButton.onClicked.add((button, player) => {
-                const oldValue = this._deskIndexToVoteCount[playerDesk.index];
-                const newValue = Math.max(0, oldValue - 1);
-                this._deskIndexToVoteCount[playerDesk.index] = newValue;
-                this._updateVoteCounts();
-            });
+            if (this._deskIndexVoting.has(deskIndex)) {
+                const minusButton = new Button()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText("-");
+                minusButton.onClicked.add((button, player) => {
+                    const oldValue =
+                        this._deskIndexToVoteCount[playerDesk.index];
+                    const newValue = Math.max(0, oldValue - 1);
+                    this._deskIndexToVoteCount[playerDesk.index] = newValue;
+                    this._updateVoteCounts();
+                });
 
-            const plusButton = new Button()
-                .setFontSize(CONFIG.fontSize)
-                .setText("+");
-            plusButton.onClicked.add((button, player) => {
-                const oldValue = this._deskIndexToVoteCount[playerDesk.index];
-                const newValue = oldValue + 1;
-                this._deskIndexToVoteCount[playerDesk.index] = newValue;
-                this._updateVoteCounts();
-            });
+                const plusButton = new Button()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText("+");
+                plusButton.onClicked.add((button, player) => {
+                    const oldValue =
+                        this._deskIndexToVoteCount[playerDesk.index];
+                    const newValue = oldValue + 1;
+                    this._deskIndexToVoteCount[playerDesk.index] = newValue;
+                    this._updateVoteCounts();
+                });
 
-            result.addChild(minusButton).addChild(plusButton);
+                result.addChild(minusButton).addChild(plusButton);
+            } else {
+                const voteButton = new Button()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText(locale("ui.agenda.clippy.vote"));
+                voteButton.onClicked.add((button, player) => {
+                    // Move votes to new outcome.
+                    let oldOutcome = false;
+                    let oldVotes = 0;
+                    for (const outcome of this._allOutcomes) {
+                        if (outcome._deskIndexVoting.has(deskIndex)) {
+                            oldOutcome = outcome;
+                            oldVotes =
+                                oldOutcome._deskIndexToVoteCount[deskIndex];
+                            oldOutcome._deskIndexToVoteCount[deskIndex] = 0;
+                            break;
+                        }
+                    }
+                    this._deskIndexToVoteCount[deskIndex] = oldVotes;
+
+                    // Signal new vote selection.
+                    for (const outcome of this._allOutcomes) {
+                        outcome._deskIndexVoting.delete(deskIndex);
+                    }
+                    this._deskIndexVoting.add(deskIndex);
+
+                    // Reset UI.
+                    this._doUpdateDesks();
+                });
+                result.addChild(voteButton);
+            }
         }
 
         let total = 0;
@@ -275,4 +370,4 @@ class AgendaOutcome {
     }
 }
 
-module.exports = { AgendaOutcome };
+module.exports = { AgendaOutcome, OUTCOME_TYPE };

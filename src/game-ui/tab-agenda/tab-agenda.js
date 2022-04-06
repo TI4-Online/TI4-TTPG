@@ -2,17 +2,13 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AgendaStateMachine } = require("./agenda-state-machine");
 const { AgendaTurnOrder } = require("./agenda-turn-order");
+const { AgendaUiDeskPredictVote } = require("./agenda-ui-desk-predict-vote");
 const { AgendaUiDeskWhenAfter } = require("./agenda-ui-desk-when-after");
-const { AgendaUiMainAfter } = require("./agenda-ui-main-after");
-const { AgendaUiMainBlank } = require("./agenda-ui-main-blank");
-const { AgendaUiMainOutcomeType } = require("./agenda-ui-main-outcome-type");
-const { AgendaUiMainStart } = require("./agenda-ui-main-start");
-const { AgendaUiMainVote } = require("./agenda-ui-main-vote");
-const { AgendaUiMainWhen } = require("./agenda-ui-main-when");
+const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
-const { AgendaUiDeskPredictVote } = require("./agenda-ui-desk-predict-vote");
+const { AgendaOutcome, OUTCOME_TYPE } = require("./agenda-outcome");
 
 class TabAgenda {
     static getStatusPad(playerDesk) {
@@ -124,7 +120,11 @@ class TabAgenda {
     updateMainUI() {
         // Abort if not active.
         if (!this._stateMachine) {
-            this._widget.setChild(new AgendaUiMainBlank());
+            this._widget.setChild(
+                AgendaUiMain.simpleNoMechy(
+                    locale("ui.agenda.clippy.place_agenda_to_start")
+                )
+            );
             return;
         }
 
@@ -141,7 +141,7 @@ class TabAgenda {
             const doUpdateDesks = () => {
                 this.updateDeskUI();
             };
-            this._outcomes = AgendaUiMainOutcomeType.getDefaultOutcomes(
+            this._outcomes = AgendaOutcome.getDefaultOutcomes(
                 outcomeType,
                 doUpdateDesks
             );
@@ -149,57 +149,102 @@ class TabAgenda {
                 outcome.setMutablePredictions();
                 outcome.setMutableVotes();
             });
+            this._stateMachine.next();
+            this.updateUI();
         };
+        const outcomeButtonTextsAndOnClicks = [
+            {
+                text: locale("ui.agenda.outcome_type.for_against"),
+                onClick: (button, player) => {
+                    onOutcomeType(OUTCOME_TYPE.FOR_AGAINST);
+                },
+            },
+            {
+                text: locale("ui.agenda.outcome_type.player"),
+                onClick: (button, player) => {
+                    onOutcomeType(OUTCOME_TYPE.PLAYER);
+                },
+            },
+            {
+                text: locale("ui.agenda.outcome_type.other"),
+                onClick: (button, player) => {
+                    onOutcomeType(OUTCOME_TYPE.OTHER);
+                },
+            },
+        ];
         let order;
 
         switch (this._stateMachine.main) {
             case "START.MAIN":
                 this._widget.setChild(
-                    new AgendaUiMainStart().setNext(onNext).setCancel(onCancel)
+                    AgendaUiMain.simpleYesNo(
+                        locale("ui.agenda.clippy.would_you_like_help"),
+                        onNext,
+                        onCancel
+                    )
                 );
                 break;
             case "OUTCOME_TYPE.MAIN":
                 this._widget.setChild(
-                    new AgendaUiMainOutcomeType()
-                        .setNext(onNext)
-                        .setOutcomeTypeListener(onOutcomeType)
+                    AgendaUiMain.simpleButtonList(
+                        locale("ui.agenda.clippy.outcome_category"),
+                        outcomeButtonTextsAndOnClicks
+                    )
                 );
                 break;
             case "WHEN.MAIN":
-                this._widget.setChild(new AgendaUiMainWhen(this._doRefresh));
-                order = AgendaTurnOrder.getResolveOrder();
+                this._widget.setChild(
+                    AgendaUiMain.simple(locale("ui.agenda.clippy.whens"))
+                );
                 globalEvents.TI4.onTurnOrderEmpty.remove(
                     this._advanceOnTurnOrderEmpty
                 );
                 globalEvents.TI4.onTurnOrderEmpty.add(
                     this._advanceOnTurnOrderEmpty
                 );
+                order = AgendaTurnOrder.getResolveOrder();
                 world.TI4.turns.setTurnOrder(order);
                 world.TI4.turns.setCurrentTurn(order[0], undefined);
                 break;
             case "AFTER.MAIN":
-                this._widget.setChild(new AgendaUiMainAfter(this._doRefresh));
-                order = AgendaTurnOrder.getResolveOrder();
+                this._widget.setChild(
+                    AgendaUiMain.simple(locale("ui.agenda.clippy.afters"))
+                );
                 globalEvents.TI4.onTurnOrderEmpty.remove(
                     this._advanceOnTurnOrderEmpty
                 );
                 globalEvents.TI4.onTurnOrderEmpty.add(
                     this._advanceOnTurnOrderEmpty
                 );
+                order = AgendaTurnOrder.getResolveOrder();
                 world.TI4.turns.setTurnOrder(order);
                 world.TI4.turns.setCurrentTurn(order[0], undefined);
                 break;
             case "VOTE.MAIN":
-                this._widget.setChild(new AgendaUiMainVote(this._doRefresh));
-                order = AgendaTurnOrder.getVoteOrder();
+                this._widget.setChild(
+                    AgendaUiMain.simple(locale("ui.agenda.clippy.voting"))
+                );
                 globalEvents.TI4.onTurnOrderEmpty.remove(
                     this._advanceOnTurnOrderEmpty
                 );
                 globalEvents.TI4.onTurnOrderEmpty.add(
                     this._advanceOnTurnOrderEmpty
                 );
+                order = AgendaTurnOrder.getVoteOrder();
                 world.TI4.turns.setTurnOrder(order);
                 world.TI4.turns.setCurrentTurn(order[0], undefined);
+                break;
+            case "POST.MAIN":
+                this._widget.setChild(
+                    AgendaUiMain.simpleNext(
+                        locale("ui.agenda.clippy.post", onNext)
+                    )
+                );
+                break;
+            case "FINISH.MAIN":
+                this._widget.setChild(
+                    AgendaUiMain.simple(locale("ui.agenda.clippy.outcome"))
+                );
                 break;
             default:
                 throw new Error(`unknown state "${this._stateMachine.main}"`);
@@ -218,7 +263,6 @@ class TabAgenda {
 
         // Abort if not active.
         if (!this._stateMachine) {
-            this._widget.setChild(new AgendaUiMainBlank());
             return;
         }
 
@@ -309,6 +353,13 @@ class TabAgenda {
                     this._outcomes
                 ).attach();
                 this._deskUIs.push(deskVote);
+                deskVote.commitButton.onClicked.add((button, player) => {
+                    const statusPad = TabAgenda.getStatusPad(playerDesk);
+                    if (!statusPad.__getPass()) {
+                        statusPad.__setPass(true);
+                    }
+                    world.TI4.turns.endTurn();
+                });
             }
         }
     }

@@ -42,12 +42,10 @@ class AgendaUiDeskWhenAfter extends Border {
         const currentDesk = world.TI4.turns.getCurrentTurn();
         this._playPredictOutcome = new Button()
             .setText(locale("ui.agenda.clippy.play_predict"))
-            .setFontSize(CONFIG.fontSize)
-            .setEnabled(currentDesk === playerDesk && !this._isWhen);
+            .setFontSize(CONFIG.fontSize);
         this._playOther = new Button()
             .setText(locale("ui.agenda.clippy.play_other"))
-            .setFontSize(CONFIG.fontSize)
-            .setEnabled(currentDesk === playerDesk);
+            .setFontSize(CONFIG.fontSize);
 
         const playerName = currentDesk.colorName;
         this._waitingFor = new Text()
@@ -83,6 +81,8 @@ class AgendaUiDeskWhenAfter extends Border {
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
+
+        this.update();
     }
 
     get anyWhens() {
@@ -119,6 +119,10 @@ class AgendaUiDeskWhenAfter extends Border {
                 playerName,
             })
         );
+        this._playPredictOutcome.setEnabled(
+            currentDesk === this._playerDesk && !this._isWhen
+        );
+        this._playOther.setEnabled(currentDesk === this._playerDesk);
     }
 }
 

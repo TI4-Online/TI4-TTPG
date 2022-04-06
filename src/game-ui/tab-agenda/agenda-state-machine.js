@@ -30,6 +30,12 @@ const STATES = {
         desk: "VOTE.DESK",
         next: "FINISH",
     },
+    POST: {
+        // bribery window
+        main: "POST.MAIN",
+        desk: "VOTE.DESK",
+        next: "FINISH",
+    },
     FINISH: {
         main: "FINISH.MAIN",
         next: "START",
