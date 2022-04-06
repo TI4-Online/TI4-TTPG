@@ -7,6 +7,7 @@ const {
     Text,
     TextBox,
     VerticalBox,
+    UIElement,
     world,
 } = require("../../wrapper/api");
 
@@ -84,9 +85,12 @@ class AgendaOutcome {
 
         this._deskIndexToPredictions = {};
         this._deskIndexToVoteCount = {};
+        this._deskIndexToVoteTexts = {};
+        this._deskIndexToUI = {};
         world.TI4.getAllPlayerDesks().forEach((desk) => {
             this._deskIndexToPredictions[desk.index] = [];
             this._deskIndexToVoteCount[desk.index] = 0;
+            this._deskIndexToVoteTexts[desk.index] = [];
         });
     }
 
@@ -100,6 +104,18 @@ class AgendaOutcome {
         return this;
     }
 
+    resetTexts() {
+        this._deskIndexToVoteTexts = {};
+        world.TI4.getAllPlayerDesks().forEach((desk) => {
+            this._deskIndexToVoteTexts[desk.index] = [];
+        });
+    }
+
+    linkUI(deskIndex, UI) {
+        assert(typeof deskIndex === "number");
+        assert(UI instanceof UIElement);
+    }
+
     getOutcomeName() {
         const nameText = new Text()
             .setFontSize(CONFIG.fontSize)
@@ -107,64 +123,41 @@ class AgendaOutcome {
         const editText = new TextBox().setFontSize(CONFIG.fontSize);
         const editButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText("[?]");
+            .setText("[~]");
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(nameText)
-            .addChild(editButton);
+            .addChild(editButton)
+            .addChild(nameText);
+
+        let isEditing = false;
+        editButton.onClicked.add((button, player) => {
+            if (isEditing) {
+                nameText.setText(editText.getText());
+                panel.removeAllChildren();
+                panel.addChild(editButton).addChild(nameText);
+            } else {
+                editText.setText(this._name);
+                panel.removeAllChildren();
+                panel.addChild(editButton).addChild(editText, 1);
+            }
+            isEditing = !isEditing;
+        });
 
         editText.onTextCommitted.add((textBox, player, text, usingEnter) => {
             if (!usingEnter) {
                 return;
             }
-            console.log("AgendaOutcome.editText");
             this._name = text;
             nameText.setText(this._name);
             panel.removeAllChildren();
-            panel.addChild(text).addChild(editButton);
+            panel.addChild(editButton).addChild(nameText);
 
             // Update desks to reflect new outcome name.
             this._doUpdateDesks();
         });
 
-        editButton.onClicked.add((button, player) => {
-            console.log("AgendaOutcome.editButton");
-            editText.setText(this._name);
-            panel.removeAllChildren();
-            panel.addChild(editText, 1);
-        });
-
         return panel;
-    }
-
-    getPredictions(playerDesk) {
-        assert(playerDesk);
-        const result = new HorizontalBox();
-        world.TI4.getAllPlayerDesks().forEach((desk) => {
-            const predictions = this._deskIndexToPredictions[desk.index];
-            predictions.forEach((prediction) => {
-                const text = new Text()
-                    .setFontSize(CONFIG.fontSize)
-                    .setTextColor(desk.color)
-                    .setText("X");
-                result.addChild(text);
-            });
-        });
-        if (this._mutablePredictions) {
-            const addPrediction = new Button()
-                .setFontSize(CONFIG.fontSize)
-                .setText("+");
-            addPrediction.onClicked.add((button, player) => {
-                const predictions =
-                    this._deskIndexToPredictions[playerDesk.index];
-                predictions.push(""); // may put a card NSID here in the future
-
-                // Update desks to reflect new prediction.
-                this._doUpdateDesks();
-            });
-        }
-        return result;
     }
 
     getVotes(playerDesk) {
@@ -180,7 +173,7 @@ class AgendaOutcome {
                 const oldValue = this._deskIndexToVoteCount[playerDesk.index];
                 const newValue = Math.max(0, oldValue - 1);
                 this._deskIndexToVoteCount[playerDesk.index] = newValue;
-                this._doUpdateDesks();
+                this._updateVoteCounts();
             });
 
             const plusButton = new Button()
@@ -190,7 +183,7 @@ class AgendaOutcome {
                 const oldValue = this._deskIndexToVoteCount[playerDesk.index];
                 const newValue = oldValue + 1;
                 this._deskIndexToVoteCount[playerDesk.index] = newValue;
-                this._doUpdateDesks();
+                this._updateVoteCounts();
             });
 
             result.addChild(minusButton).addChild(plusButton);
@@ -205,21 +198,80 @@ class AgendaOutcome {
         );
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
-                const comma = new Text()
+                const delim = new Text()
                     .setFontSize(CONFIG.fontSize)
-                    .setText(", ");
-                result.addChild(comma);
+                    .setText("/");
+                result.addChild(delim);
             }
             const voteCount = this._deskIndexToVoteCount[desk.index];
+            const votesText = voteCount > 0 ? `${voteCount}` : "";
             const text = new Text()
                 .setFontSize(CONFIG.fontSize)
                 .setTextColor(desk.color)
-                .setText(`${voteCount}`);
+                .setText(votesText);
             result.addChild(text);
+            this._deskIndexToVoteTexts[desk.index].push(text);
         });
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(")"));
 
         return result;
+    }
+
+    getPredictions(playerDesk) {
+        assert(playerDesk);
+        const result = new HorizontalBox();
+        if (this._mutablePredictions) {
+            const removePrediction = new Button()
+                .setFontSize(CONFIG.fontSize)
+                .setText("-");
+            removePrediction.onClicked.add((button, player) => {
+                const predictions =
+                    this._deskIndexToPredictions[playerDesk.index];
+                predictions.pop();
+
+                // Update desks to reflect new prediction.
+                this._doUpdateDesks();
+            });
+            result.addChild(removePrediction);
+
+            const addPrediction = new Button()
+                .setFontSize(CONFIG.fontSize)
+                .setText("+");
+            addPrediction.onClicked.add((button, player) => {
+                const predictions =
+                    this._deskIndexToPredictions[playerDesk.index];
+                predictions.push(""); // may put a card NSID here in the future
+
+                // Update desks to reflect new prediction.
+                this._doUpdateDesks();
+            });
+            result.addChild(addPrediction);
+        }
+        world.TI4.getAllPlayerDesks().forEach((desk) => {
+            const predictions = this._deskIndexToPredictions[desk.index];
+            predictions.forEach((prediction) => {
+                const text = new Text()
+                    .setFontSize(CONFIG.fontSize)
+                    .setTextColor(desk.color)
+                    .setText("X");
+                result.addChild(text);
+            });
+        });
+        return result;
+    }
+
+    _updateVoteCounts() {
+        for (const [deskIndex, votes] of Object.entries(
+            this._deskIndexToVoteCount
+        )) {
+            const votesText = votes > 0 ? `${votes}` : "";
+            for (const text of this._deskIndexToVoteTexts[deskIndex]) {
+                text.setText(votesText);
+            }
+        }
+        for (const ui of Object.values(this._deskIndexToUI)) {
+            world.updateUI(ui);
+        }
     }
 }
 

@@ -212,6 +212,9 @@ class TabAgenda {
             deskUI.detach();
         }
         this._deskUIs = [];
+        for (const outcome of this._outcomes) {
+            outcome.resetTexts(); // release internal references to Text objects
+        }
 
         // Abort if not active.
         if (!this._stateMachine) {

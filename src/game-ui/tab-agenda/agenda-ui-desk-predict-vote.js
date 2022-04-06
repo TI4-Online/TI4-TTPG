@@ -65,6 +65,10 @@ class AgendaUiDeskPredictVote extends Border {
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
+
+        outcomes.forEach((outcome) => {
+            outcome.linkUI(playerDesk.index, this._ui);
+        });
     }
 
     attach() {
