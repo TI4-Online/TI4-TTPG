@@ -46,21 +46,6 @@ class AutoRollerUI extends LayoutBox {
         return this;
     }
 
-    setDoRefresh(doRefresh) {
-        assert(typeof doRefresh === "function");
-        this._doRefresh = doRefresh;
-        return this;
-    }
-
-    _update() {
-        if (this._gameObject && this._uiElement) {
-            this._gameObject.updateUI(this._uiElement);
-        }
-        if (this._doRefresh) {
-            this._doRefresh();
-        }
-    }
-
     /**
      * Reset for "no system activated".
      */
@@ -83,7 +68,6 @@ class AutoRollerUI extends LayoutBox {
         panel.addChild(reportModifiers);
 
         this.setChild(panel);
-        this._update();
     }
 
     /**
@@ -223,8 +207,6 @@ class AutoRollerUI extends LayoutBox {
 
         panel = groundOuterLayout;
         addButton("ui.roller.report_modifiers", "reportModifiers");
-
-        this._update();
     }
 }
 

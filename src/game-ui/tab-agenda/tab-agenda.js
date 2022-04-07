@@ -29,10 +29,7 @@ class TabAgenda {
         }
     }
 
-    constructor(doRefresh) {
-        assert(typeof doRefresh === "function");
-
-        this._doRefresh = doRefresh;
+    constructor() {
         this._widget = new LayoutBox();
         this._stateMachine = undefined;
 

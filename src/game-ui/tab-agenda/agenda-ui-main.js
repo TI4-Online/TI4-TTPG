@@ -10,7 +10,6 @@ const {
     TextJustification,
     VerticalAlignment,
     VerticalBox,
-    UIElement,
     globalEvents,
     refPackageId,
     world,
@@ -206,11 +205,6 @@ class AgendaUiMain extends LayoutBox {
             .setImageSize(256, 256);
     }
 
-    setUIElement(uiElement) {
-        assert(uiElement instanceof UIElement);
-        this._uiElement = uiElement;
-    }
-
     update() {
         const playerName = world.TI4.turns.getCurrentTurn().colorName;
         if (this._waitingFor) {
@@ -219,9 +213,6 @@ class AgendaUiMain extends LayoutBox {
                     playerName,
                 })
             );
-        }
-        if (this._uiElement) {
-            world.updateUI(this._uiElement);
         }
     }
 }

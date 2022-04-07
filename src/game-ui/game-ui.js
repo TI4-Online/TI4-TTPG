@@ -50,10 +50,6 @@ class GameUI {
         this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
         this._uiElement.widget = new Border().setChild(this._layout);
 
-        this._doRefresh = () => {
-            world.updateUI(this._uiElement);
-        };
-
         world.addUI(this._uiElement);
 
         globalEvents.TI4.onGameSetup.add(() => {
@@ -147,7 +143,7 @@ class GameUI {
         const tabHelp = new TabHelpUI();
         tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
 
-        const tabMap = new TabMap(this._doRefresh);
+        const tabMap = new TabMap();
         tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());
 
         const tabStrategy = new TabStrategy();
@@ -156,13 +152,13 @@ class GameUI {
             tabStrategy.getUI()
         );
 
-        const tabAction = new TabAction(this._doRefresh);
+        const tabAction = new TabAction();
         tabbedPanel.addTab(locale("ui.tab.action_phase"), tabAction.getUI());
 
         const tabStatus = new TabStatus();
         tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());
 
-        const tabAgenda = new TabAgenda(this._doRefresh);
+        const tabAgenda = new TabAgenda();
         tabbedPanel.addTab(locale("ui.tab.agenda_phase"), tabAgenda.getUI());
 
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {

@@ -223,7 +223,6 @@ class CommandTokenBag {
             const color = index < currentNumber ? fullColor : emptyColor;
             box.setColor(color);
         });
-        this._container.updateUI(this._UIElement);
     }
 
     onInserted(container, insertObjs, player) {
