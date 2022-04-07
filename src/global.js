@@ -27,6 +27,10 @@ globalEvents.TI4 = {
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(),
 
+    // Called when a player flips a planet card.
+    // <(card: Card, isFaceUp: boolean) => void>
+    onPlanetCardFlipped: new TriggerableMulticastDelegate(),
+
     // Called after a player color changes (setup not finished).
     // <(playerColor: Color, deskIndex: number) => void>
     onPlayerColorChanged: new TriggerableMulticastDelegate(),
@@ -170,6 +174,7 @@ require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
 require("./global/trigger-on-game-ended");
+require("./global/trigger-on-planet-card-flipped");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 require("./global/whisper-message");

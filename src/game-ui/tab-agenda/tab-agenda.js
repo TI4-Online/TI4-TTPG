@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { AgendaOutcome, OUTCOME_TYPE } = require("./agenda-outcome");
 const { AgendaStateMachine } = require("./agenda-state-machine");
 const { AgendaTurnOrder } = require("./agenda-turn-order");
 const { AgendaUiDeskPredictVote } = require("./agenda-ui-desk-predict-vote");
@@ -7,8 +8,7 @@ const { AgendaUiDeskWhenAfter } = require("./agenda-ui-desk-when-after");
 const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
-const { AgendaOutcome, OUTCOME_TYPE } = require("./agenda-outcome");
+const { Card, LayoutBox, globalEvents, world } = require("../../wrapper/api");
 
 class TabAgenda {
     static getStatusPad(playerDesk) {
@@ -104,6 +104,35 @@ class TabAgenda {
                 this.updateDeskUI();
             }
         );
+
+        globalEvents.TI4.onPlanetCardFlipped.add((card, isFaceUp) => {
+            assert(card instanceof Card);
+            assert(typeof isFaceUp === "boolean");
+            const pos = card.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            const planet = world.TI4.getPlanetByCard(card);
+            assert(planet);
+
+            let influence = planet.raw.influence;
+            // TODO XXX ABILITIES THAT ADD INFLUENCE (XXCHA)
+
+            let chosenOutcome = false;
+            for (const outcome of this._outcomes) {
+                if (outcome._deskIndexVoting.has(closestDesk.index)) {
+                    chosenOutcome = outcome;
+                    break;
+                }
+            }
+            if (chosenOutcome) {
+                const deltaValue = influence * (isFaceUp ? -1 : 1);
+                const oldValue =
+                    chosenOutcome._deskIndexToVoteCount[closestDesk.index] || 0;
+                const newValue = Math.max(0, oldValue + deltaValue);
+                chosenOutcome._deskIndexToVoteCount[closestDesk.index] =
+                    newValue;
+                chosenOutcome._updateVoteCounts();
+            }
+        });
 
         this.updateUI();
     }
@@ -239,6 +268,15 @@ class TabAgenda {
                         onNext
                     )
                 );
+                globalEvents.TI4.onTurnOrderEmpty.remove(
+                    this._advanceOnTurnOrderEmpty
+                );
+                globalEvents.TI4.onTurnOrderEmpty.add(
+                    this._advanceOnTurnOrderEmpty
+                );
+                order = AgendaTurnOrder.getVoteOrder();
+                world.TI4.turns.setTurnOrder(order);
+                world.TI4.turns.setCurrentTurn(order[0], undefined);
                 break;
             case "FINISH.MAIN":
                 this._outcomes.forEach((candidate) => {

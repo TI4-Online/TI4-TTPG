@@ -11,6 +11,7 @@ const {
     UIElement,
     world,
 } = require("../../wrapper/api");
+const { push } = require("../../lib/unit/unit-attrs.data");
 
 const OUTCOME_TYPE = {
     FOR_AGAINST: "for/against",
@@ -129,6 +130,7 @@ class AgendaOutcome {
         this._mutablePredictions = false;
         this._mutableVotes = false;
 
+        this._totalVotesTexts = [];
         this._deskIndexToPredictions = {};
         this._deskIndexToVoteCount = {};
         this._deskIndexToVoteTexts = {};
@@ -174,6 +176,7 @@ class AgendaOutcome {
     }
 
     resetTexts() {
+        this._totalVotesTexts = [];
         this._deskIndexToVoteTexts = {};
         world.TI4.getAllPlayerDesks().forEach((desk) => {
             this._deskIndexToVoteTexts[desk.index] = [];
@@ -183,6 +186,7 @@ class AgendaOutcome {
     linkUI(deskIndex, UI) {
         assert(typeof deskIndex === "number");
         assert(UI instanceof UIElement);
+        this._deskIndexToUI[deskIndex] = UI;
     }
 
     getOutcomeName() {
@@ -293,10 +297,10 @@ class AgendaOutcome {
             }
         }
 
-        this._totalVotesText = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText(`${this.totalVotes}`);
-        result.addChild(this._totalVotesText);
+        result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" "));
+        const text = new Text().setFontSize(CONFIG.fontSize);
+        this._totalVotesTexts.push(text);
+        result.addChild(text);
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" ("));
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
@@ -305,17 +309,15 @@ class AgendaOutcome {
                     .setText("/");
                 result.addChild(delim);
             }
-            const voteCount = this._deskIndexToVoteCount[desk.index];
-            const votesText = voteCount > 0 ? `${voteCount}` : "";
             const text = new Text()
                 .setFontSize(CONFIG.fontSize)
-                .setTextColor(desk.color)
-                .setText(votesText);
+                .setTextColor(desk.color);
             result.addChild(text);
             this._deskIndexToVoteTexts[desk.index].push(text);
         });
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(")"));
 
+        this._updateVoteCounts();
         return result;
     }
 
@@ -372,7 +374,10 @@ class AgendaOutcome {
     }
 
     _updateVoteCounts() {
-        this._totalVotesText.setText(`${this.totalVotes}`);
+        const totalStr = `${this.totalVotes}`;
+        for (const text of this._totalVotesTexts) {
+            text.setText(totalStr);
+        }
 
         for (const [deskIndex, votes] of Object.entries(
             this._deskIndexToVoteCount
@@ -381,9 +386,6 @@ class AgendaOutcome {
             for (const text of this._deskIndexToVoteTexts[deskIndex]) {
                 text.setText(votesText);
             }
-        }
-        for (const ui of Object.values(this._deskIndexToUI)) {
-            world.updateUI(ui);
         }
     }
 }
