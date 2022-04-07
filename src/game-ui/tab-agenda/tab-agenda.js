@@ -7,6 +7,7 @@ const { AgendaUiDeskPredictVote } = require("./agenda-ui-desk-predict-vote");
 const { AgendaUiDeskWhenAfter } = require("./agenda-ui-desk-when-after");
 const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
+const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, LayoutBox, globalEvents, world } = require("../../wrapper/api");
 
@@ -40,6 +41,7 @@ class TabAgenda {
         this._noWhensSet = new Set();
         this._noAftersSet = new Set();
         this._deskUIs = [];
+        this._deskIndexToAvailableVotes = {};
 
         this._replaceWhenWithPredict = false;
 
@@ -66,10 +68,13 @@ class TabAgenda {
             } else {
                 this._stateMachine = undefined;
             }
-            this._noWhensSet = new Set();
-            this._noAftersSet = new Set();
             this._outcomeType = undefined;
             this._outcomes = [];
+            this._noWhensSet = new Set();
+            this._noAftersSet = new Set();
+            this._deskIndexToAvailableVotes = {};
+            this._replaceWhenWithPredict = false;
+            this.refreshAvailableVotes();
             this.updateUI();
 
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -110,28 +115,34 @@ class TabAgenda {
             assert(typeof isFaceUp === "boolean");
             const pos = card.getPosition();
             const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-            const planet = world.TI4.getPlanetByCard(card);
-            assert(planet);
-
-            let influence = planet.raw.influence;
-            // TODO XXX ABILITIES THAT ADD INFLUENCE (XXCHA)
+            const deskIndex = closestDesk.index;
 
             let chosenOutcome = false;
             for (const outcome of this._outcomes) {
-                if (outcome._deskIndexVoting.has(closestDesk.index)) {
+                if (outcome._deskIndexVoting.has(deskIndex)) {
                     chosenOutcome = outcome;
                     break;
                 }
             }
-            if (chosenOutcome) {
-                const deltaValue = influence * (isFaceUp ? -1 : 1);
-                const oldValue =
-                    chosenOutcome._deskIndexToVoteCount[closestDesk.index] || 0;
-                const newValue = Math.max(0, oldValue + deltaValue);
-                chosenOutcome._deskIndexToVoteCount[closestDesk.index] =
-                    newValue;
-                chosenOutcome._updateVoteCounts();
+            if (!chosenOutcome) {
+                return;
             }
+
+            const planet = world.TI4.getPlanetByCard(card);
+            assert(planet);
+            let influence = planet.raw.influence;
+
+            const deskIndexToPerPlanetBonus =
+                this.getDeskIndexToPerPlanetBonus();
+            const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
+            influence += bonus;
+
+            const deltaValue = influence * (isFaceUp ? -1 : 1);
+            const oldValue =
+                chosenOutcome._deskIndexToVoteCount[deskIndex] || 0;
+            const newValue = Math.max(0, oldValue + deltaValue);
+            chosenOutcome._deskIndexToVoteCount[deskIndex] = newValue;
+            chosenOutcome._updateVoteCounts();
         });
 
         this.updateUI();
@@ -139,6 +150,82 @@ class TabAgenda {
 
     getUI() {
         return this._widget;
+    }
+
+    getDeskIndexToPerPlanetBonus() {
+        const result = {};
+
+        let xxchaCommanderIndex = -1;
+        let xxchaAllianceIndex = -1;
+
+        const checkIsDiscardPile = false;
+        const allowFaceDown = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "card.leader.commander.xxcha:pok/elder_qanoj") {
+                const pos = obj.getPosition();
+                const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+                xxchaCommanderIndex = closestDesk.index;
+            } else if (nsid === "card.alliance:base/xxcha") {
+                const pos = obj.getPosition();
+                const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+                xxchaAllianceIndex = closestDesk.index;
+            }
+        }
+
+        if (xxchaCommanderIndex >= 0) {
+            result[xxchaCommanderIndex] = 1;
+
+            // Alliance only applies if commander is unlocked.
+            if (
+                xxchaAllianceIndex >= 0 &&
+                xxchaAllianceIndex != xxchaCommanderIndex
+            ) {
+                result[xxchaAllianceIndex] = 1;
+            }
+        }
+        return result;
+    }
+
+    refreshAvailableVotes() {
+        const deskIndexToPerPlanetBonus = this.getDeskIndexToPerPlanetBonus();
+
+        this._deskIndexToAvailableVotes = {};
+        const checkIsDiscardPile = false;
+        const allowFaceDown = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const planet = world.TI4.getPlanetByCard(obj);
+            if (!planet) {
+                continue;
+            }
+
+            const pos = obj.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (!closestDesk) {
+                continue;
+            }
+
+            const deskIndex = closestDesk.index;
+            const oldValue = this._deskIndexToAvailableVotes[deskIndex] || 0;
+            let newValue = oldValue + planet.raw.influence;
+
+            const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
+            newValue += bonus;
+
+            this._deskIndexToAvailableVotes[deskIndex] = newValue;
+        }
     }
 
     updateUI() {
@@ -327,7 +414,8 @@ class TabAgenda {
                     }
                     const deskVote = new AgendaUiDeskPredictVote(
                         playerDesk,
-                        this._outcomes
+                        this._outcomes,
+                        this._deskIndexToAvailableVotes
                     ).attach();
                     this._deskUIs.push(deskVote);
                     deskVote.commitButton.onClicked.add((button, player) => {
@@ -421,7 +509,8 @@ class TabAgenda {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
                 const deskVote = new AgendaUiDeskPredictVote(
                     playerDesk,
-                    this._outcomes
+                    this._outcomes,
+                    this._deskIndexToAvailableVotes
                 ).attach();
                 this._deskUIs.push(deskVote);
                 deskVote.commitButton.onClicked.add((button, player) => {
