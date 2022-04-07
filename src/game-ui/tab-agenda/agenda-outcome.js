@@ -11,6 +11,7 @@ const {
     UIElement,
     world,
 } = require("../../wrapper/api");
+const { push } = require("../../lib/unit/unit-attrs.data");
 
 const OUTCOME_TYPE = {
     FOR_AGAINST: "for/against",
@@ -129,6 +130,7 @@ class AgendaOutcome {
         this._mutablePredictions = false;
         this._mutableVotes = false;
 
+        this._totalVotesTexts = [];
         this._deskIndexToPredictions = {};
         this._deskIndexToVoteCount = {};
         this._deskIndexToVoteTexts = {};
@@ -174,6 +176,7 @@ class AgendaOutcome {
     }
 
     resetTexts() {
+        this._totalVotesTexts = [];
         this._deskIndexToVoteTexts = {};
         world.TI4.getAllPlayerDesks().forEach((desk) => {
             this._deskIndexToVoteTexts[desk.index] = [];
@@ -295,8 +298,9 @@ class AgendaOutcome {
         }
 
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" "));
-        this._totalVotesText = new Text().setFontSize(CONFIG.fontSize);
-        result.addChild(this._totalVotesText);
+        const text = new Text().setFontSize(CONFIG.fontSize);
+        this._totalVotesTexts.push(text);
+        result.addChild(text);
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" ("));
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
@@ -313,7 +317,7 @@ class AgendaOutcome {
         });
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(")"));
 
-        this._updateVoteCounts(true);
+        this._updateVoteCounts();
         return result;
     }
 
@@ -369,8 +373,11 @@ class AgendaOutcome {
         return result;
     }
 
-    _updateVoteCounts(suppressUpdate) {
-        this._totalVotesText.setText(`${this.totalVotes}`);
+    _updateVoteCounts() {
+        const totalStr = `${this.totalVotes}`;
+        for (const text of this._totalVotesTexts) {
+            text.setText(totalStr);
+        }
 
         for (const [deskIndex, votes] of Object.entries(
             this._deskIndexToVoteCount
@@ -379,16 +386,6 @@ class AgendaOutcome {
             for (const text of this._deskIndexToVoteTexts[deskIndex]) {
                 text.setText(votesText);
             }
-        }
-
-        if (!suppressUpdate) {
-            // For some reason world.updateUI is not.
-            // Use the full _doUpdateDesks "recreate UI" hammer.
-            //for (const ui of Object.values(this._deskIndexToUI)) {
-            //    assert(ui instanceof UIElement);
-            //    world.updateUI(ui);
-            //}
-            this._doUpdateDesks();
         }
     }
 }
