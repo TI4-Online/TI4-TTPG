@@ -11,7 +11,6 @@ const {
     UIElement,
     world,
 } = require("../../wrapper/api");
-const { push } = require("../../lib/unit/unit-attrs.data");
 
 const OUTCOME_TYPE = {
     FOR_AGAINST: "for/against",
