@@ -183,6 +183,7 @@ class AgendaOutcome {
     linkUI(deskIndex, UI) {
         assert(typeof deskIndex === "number");
         assert(UI instanceof UIElement);
+        this._deskIndexToUI[deskIndex] = UI;
     }
 
     getOutcomeName() {
@@ -293,9 +294,8 @@ class AgendaOutcome {
             }
         }
 
-        this._totalVotesText = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText(`${this.totalVotes}`);
+        result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" "));
+        this._totalVotesText = new Text().setFontSize(CONFIG.fontSize);
         result.addChild(this._totalVotesText);
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" ("));
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
@@ -305,17 +305,15 @@ class AgendaOutcome {
                     .setText("/");
                 result.addChild(delim);
             }
-            const voteCount = this._deskIndexToVoteCount[desk.index];
-            const votesText = voteCount > 0 ? `${voteCount}` : "";
             const text = new Text()
                 .setFontSize(CONFIG.fontSize)
-                .setTextColor(desk.color)
-                .setText(votesText);
+                .setTextColor(desk.color);
             result.addChild(text);
             this._deskIndexToVoteTexts[desk.index].push(text);
         });
         result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(")"));
 
+        this._updateVoteCounts(true);
         return result;
     }
 
@@ -371,7 +369,7 @@ class AgendaOutcome {
         return result;
     }
 
-    _updateVoteCounts() {
+    _updateVoteCounts(suppressUpdate) {
         this._totalVotesText.setText(`${this.totalVotes}`);
 
         for (const [deskIndex, votes] of Object.entries(
@@ -382,8 +380,15 @@ class AgendaOutcome {
                 text.setText(votesText);
             }
         }
-        for (const ui of Object.values(this._deskIndexToUI)) {
-            world.updateUI(ui);
+
+        if (!suppressUpdate) {
+            // For some reason world.updateUI is not.
+            // Use the full _doUpdateDesks "recreate UI" hammer.
+            //for (const ui of Object.values(this._deskIndexToUI)) {
+            //    assert(ui instanceof UIElement);
+            //    world.updateUI(ui);
+            //}
+            this._doUpdateDesks();
         }
     }
 }

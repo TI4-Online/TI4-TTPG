@@ -32,7 +32,8 @@ class AgendaUiDeskWhenAfter extends Border {
         this._anyWhens = new CheckBox()
             .setText(locale("ui.agenda.clippy.any_whens"))
             .setFontSize(CONFIG.fontSize)
-            .setIsChecked(true);
+            .setIsChecked(true)
+            .setEnabled(isWhen);
         this._anyAfters = new CheckBox()
             .setText(locale("ui.agenda.clippy.any_afters"))
             .setFontSize(CONFIG.fontSize)
