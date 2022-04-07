@@ -4,6 +4,8 @@ const CONFIG = require("../game-ui-config");
 const { AgendaOutcome } = require("./agenda-outcome");
 const {
     Border,
+    HorizontalAlignment,
+    HorizontalBox,
     LayoutBox,
     Rotator,
     Text,
@@ -20,12 +22,13 @@ const {
  * <label><edit button> [total] [per-player votes +/-]
  */
 class AgendaUiDeskPredictVote extends Border {
-    constructor(playerDesk, outcomes) {
+    constructor(playerDesk, outcomes, deskIndexToAvailableVotes) {
         assert(playerDesk);
         assert(Array.isArray(outcomes));
         outcomes.forEach((outcome) => {
             assert(outcome instanceof AgendaOutcome);
         });
+        assert(deskIndexToAvailableVotes);
 
         super();
         this._playerDesk = playerDesk;
@@ -33,6 +36,27 @@ class AgendaUiDeskPredictVote extends Border {
         // Outcomes are always text, either fixed or editable.
         // Use a select button to choose.
         // Show prediction/votes next to it.
+
+        const availableVotesPanel = new HorizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        world.TI4.getAllPlayerDesks().forEach((desk, index) => {
+            if (index > 0) {
+                const delim = new Text()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText("|");
+                availableVotesPanel.addChild(delim);
+            }
+            const available = deskIndexToAvailableVotes[index] || 0;
+            const text = new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setTextColor(desk.color)
+                .setText(available);
+            availableVotesPanel.addChild(text);
+        });
+        const availableVotesBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(availableVotesPanel);
 
         const currentDesk = world.TI4.turns.getCurrentTurn();
         const playerName = currentDesk.colorName;
@@ -57,6 +81,8 @@ class AgendaUiDeskPredictVote extends Border {
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
+            .addChild(availableVotesBox)
+            .addChild(new Border().setColor(CONFIG.spacerColor))
             .addChild(outcomesWidget)
             .addChild(this._waitingFor);
         const panelBox = new LayoutBox()
