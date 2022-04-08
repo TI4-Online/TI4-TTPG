@@ -133,6 +133,7 @@ class AgendaOutcome {
         this._deskIndexToPredictions = {};
         this._deskIndexToVoteCount = {};
         this._deskIndexToVoteTexts = {};
+        this._deskIndexToPreDelimTexts = {};
         this._deskIndexToUI = {};
         world.TI4.getAllPlayerDesks().forEach((desk) => {
             this._deskIndexToPredictions[desk.index] = [];
@@ -179,6 +180,7 @@ class AgendaOutcome {
         this._deskIndexToVoteTexts = {};
         world.TI4.getAllPlayerDesks().forEach((desk) => {
             this._deskIndexToVoteTexts[desk.index] = [];
+            this._deskIndexToPreDelimTexts[desk.index] = [];
         });
     }
 
@@ -300,13 +302,11 @@ class AgendaOutcome {
         const text = new Text().setFontSize(CONFIG.fontSize);
         this._totalVotesTexts.push(text);
         result.addChild(text);
-        result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(" ("));
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
-                const delim = new Text()
-                    .setFontSize(CONFIG.fontSize)
-                    .setText("/");
+                const delim = new Text().setFontSize(CONFIG.fontSize);
                 result.addChild(delim);
+                this._deskIndexToPreDelimTexts[desk.index].push(delim);
             }
             const text = new Text()
                 .setFontSize(CONFIG.fontSize)
@@ -314,7 +314,6 @@ class AgendaOutcome {
             result.addChild(text);
             this._deskIndexToVoteTexts[desk.index].push(text);
         });
-        result.addChild(new Text().setFontSize(CONFIG.fontSize).setText(")"));
 
         this._updateVoteCounts();
         return result;
@@ -373,17 +372,26 @@ class AgendaOutcome {
     }
 
     _updateVoteCounts() {
-        const totalStr = `${this.totalVotes}`;
+        const totalVotes = this.totalVotes;
+        const totalStr = totalVotes > 0 ? `${this.totalVotes}: ` : "";
         for (const text of this._totalVotesTexts) {
             text.setText(totalStr);
         }
 
+        let isFirst = true;
         for (const [deskIndex, votes] of Object.entries(
             this._deskIndexToVoteCount
         )) {
+            const delimText = !isFirst && votes > 0 ? "|" : "";
+            for (const delim of this._deskIndexToPreDelimTexts[deskIndex]) {
+                delim.setText(delimText);
+            }
             const votesText = votes > 0 ? `${votes}` : "";
             for (const text of this._deskIndexToVoteTexts[deskIndex]) {
                 text.setText(votesText);
+            }
+            if (votes > 0) {
+                isFirst = false;
             }
         }
     }
