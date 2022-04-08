@@ -5,15 +5,13 @@ const { PremadeMapUI } = require("./premade-map-ui");
 const { world } = require("../../../wrapper/api");
 
 class PremadeMap {
-    constructor(doRefresh) {
-        assert(typeof doRefresh === "function");
-
+    constructor() {
         const onClickHandlers = {
             useMap: (mapStringDbEntry) => {
                 this._useMap(mapStringDbEntry);
             },
         };
-        this._ui = new PremadeMapUI(onClickHandlers, doRefresh);
+        this._ui = new PremadeMapUI(onClickHandlers);
     }
 
     getUI() {

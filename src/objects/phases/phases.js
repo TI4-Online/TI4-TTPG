@@ -84,7 +84,6 @@ class Phases {
 
             this._layoutBox.setChild(overall);
         }
-        this._gameObject.updateUI(this._uiElement);
     }
 }
 

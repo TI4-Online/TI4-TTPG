@@ -1,4 +1,3 @@
-const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
@@ -6,15 +5,12 @@ const CONFIG = require("../game-ui-config");
 const { Text, globalEvents } = require("../../wrapper/api");
 
 class TabAction {
-    constructor(doRefresh) {
-        assert(typeof doRefresh === "function");
-
+    constructor() {
         const tabbedPanel = new TabbedPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
 
         const autoRoller = new AutoRoller();
-        autoRoller.getUI().setDoRefresh(doRefresh);
 
         // const systemImg = new ImageWidget().setImage(
         //     "locale/ui/tiles/base/special/tile_018.png",

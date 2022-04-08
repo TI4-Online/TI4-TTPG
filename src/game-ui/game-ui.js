@@ -23,6 +23,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 class GameUI {
     constructor() {
@@ -49,10 +50,6 @@ class GameUI {
         );
         this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
         this._uiElement.widget = new Border().setChild(this._layout);
-
-        this._doRefresh = () => {
-            world.updateUI(this._uiElement);
-        };
 
         world.addUI(this._uiElement);
 
@@ -95,6 +92,12 @@ class GameUI {
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
+            // The strategy card mat seems to trigger this even though not overlapping.
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid.startsWith("mat")) {
+                return;
+            }
+
             //console.log("onBeginOverlap");
 
             const above = obj.getPosition().add([0, 0, 10]);
@@ -147,7 +150,7 @@ class GameUI {
         const tabHelp = new TabHelpUI();
         tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
 
-        const tabMap = new TabMap(this._doRefresh);
+        const tabMap = new TabMap();
         tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());
 
         const tabStrategy = new TabStrategy();
@@ -156,13 +159,13 @@ class GameUI {
             tabStrategy.getUI()
         );
 
-        const tabAction = new TabAction(this._doRefresh);
+        const tabAction = new TabAction();
         tabbedPanel.addTab(locale("ui.tab.action_phase"), tabAction.getUI());
 
         const tabStatus = new TabStatus();
         tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());
 
-        const tabAgenda = new TabAgenda(this._doRefresh);
+        const tabAgenda = new TabAgenda();
         tabbedPanel.addTab(locale("ui.tab.agenda_phase"), tabAgenda.getUI());
 
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {

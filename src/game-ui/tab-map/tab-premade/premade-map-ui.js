@@ -1,4 +1,3 @@
-const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
 const MAP_STRING_DB = require("../../../lib/map-string/map-string-db.json");
@@ -12,12 +11,10 @@ const {
 } = require("../../../wrapper/api");
 
 class PremadeMapUI extends VerticalBox {
-    constructor(onClickHandlers, doRefresh) {
-        assert(typeof doRefresh === "function");
+    constructor(onClickHandlers) {
         super();
 
         this._onClickHandlers = onClickHandlers;
-        this._doRefresh = doRefresh;
         this._scheduleUpdateHandle = undefined;
         this._selectedMapString = undefined;
 
@@ -97,7 +94,6 @@ class PremadeMapUI extends VerticalBox {
             panel.addChild(button);
         }
         this._choicesBox.setChild(panel);
-        this._doRefresh();
     }
 }
 

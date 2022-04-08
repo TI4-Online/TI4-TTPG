@@ -24,10 +24,7 @@ class MapTool {
         throw new Error("MapTool.getMapTilesContainer: no container");
     }
 
-    constructor(doRefresh) {
-        assert(typeof doRefresh === "function");
-        this._doRefresh = doRefresh;
-
+    constructor() {
         // Pass wrapped functions that call with "this" correctly.
         const onButtonCallbacks = {
             clear: () => {
@@ -86,7 +83,6 @@ class MapTool {
         const mapString = MapStringSave.save();
         console.log(`MapTool.save: "${mapString}"`);
         this._ui.setMapString(mapString);
-        this._doRefresh();
     }
 
     load() {
