@@ -9,7 +9,13 @@ const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Card, LayoutBox, globalEvents, world } = require("../../wrapper/api");
+const {
+    Card,
+    LayoutBox,
+    Rotator,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 class TabAgenda {
     static getStatusPad(playerDesk) {
@@ -261,6 +267,36 @@ class TabAgenda {
             this._stateMachine.next();
             this.updateUI();
         };
+        const onResetPlanetCards = () => {
+            const checkIsDiscardPile = false;
+            const allowFaceDown = true;
+            for (const obj of world.getAllObjects()) {
+                if (
+                    !CardUtil.isLooseCard(
+                        obj,
+                        checkIsDiscardPile,
+                        allowFaceDown
+                    )
+                ) {
+                    continue;
+                }
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (!nsid.startsWith("card.planet")) {
+                    continue;
+                }
+                if (!obj.isFaceUp()) {
+                    const rotation = obj.getRotation();
+                    const newRotation = new Rotator(
+                        rotation.pitch,
+                        rotation.yaw,
+                        -180
+                    );
+                    obj.setRotation(newRotation, 1);
+                }
+            }
+            this._stateMachine = undefined;
+            this.updateUI();
+        };
         const outcomeButtonTextsAndOnClicks = [
             {
                 text: locale("ui.agenda.outcome_type.for_against"),
@@ -347,8 +383,9 @@ class TabAgenda {
                 break;
             case "POST.MAIN":
                 this._widget.setChild(
-                    AgendaUiMain.simpleNext(
+                    AgendaUiMain.simpleButton(
                         locale("ui.agenda.clippy.post"),
+                        locale("ui.agenda.clippy.next"),
                         onNext
                     )
                 );
@@ -370,8 +407,10 @@ class TabAgenda {
                     }
                 });
                 this._widget.setChild(
-                    AgendaUiMain.simple(
-                        locale("ui.agenda.clippy.outcome", { outcome })
+                    AgendaUiMain.simpleButton(
+                        locale("ui.agenda.clippy.outcome", { outcome }),
+                        locale("ui.agenda.clippy.reset_cards"),
+                        onResetPlanetCards
                     )
                 );
                 break;
