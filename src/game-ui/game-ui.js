@@ -23,6 +23,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { ObjectNamespace } = require("../lib/object-namespace");
 
 class GameUI {
     constructor() {
@@ -91,6 +92,12 @@ class GameUI {
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
+            // The strategy card mat seems to trigger this even though not overlapping.
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid.startsWith("mat")) {
+                return;
+            }
+
             //console.log("onBeginOverlap");
 
             const above = obj.getPosition().add([0, 0, 10]);
