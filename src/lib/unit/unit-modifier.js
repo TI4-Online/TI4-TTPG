@@ -140,26 +140,6 @@ class UnitModifier {
                 continue; // not active
             }
 
-            // double check that the associated commander is unlocked
-            if (objNsid.includes("alliance")) {
-                const faction = objNsid.split("/")[1];
-                const partialCommanderNsid = "card.leader.commander." + faction;
-                let commanderUnlocked = false;
-                for (const obj2 of world.getAllObjects()) {
-                    if (!CardUtil.isLooseCard(obj2, true)) {
-                        continue;
-                    }
-                    const obj2Nsid = ObjectNamespace.getNsid(obj2);
-                    if (obj2Nsid.startsWith(partialCommanderNsid)) {
-                        commanderUnlocked = true;
-                        break;
-                    }
-                }
-                if (!commanderUnlocked) {
-                    continue;
-                }
-            }
-
             // Enfoce modifier type (self, opponent, any).
             if (unitModifier.raw.owner !== "any") {
                 // Not an "any", require it be of "withType".
@@ -180,7 +160,24 @@ class UnitModifier {
             }
 
             // Alliance only available if linked commander is unlocked.
-            // TODO XXX
+            if (objNsid.includes("alliance")) {
+                const faction = objNsid.split("/")[1];
+                const partialCommanderNsid = "card.leader.commander." + faction;
+                let commanderUnlocked = false;
+                for (const obj2 of world.getAllObjects()) {
+                    if (!CardUtil.isLooseCard(obj2, true)) {
+                        continue;
+                    }
+                    const obj2Nsid = ObjectNamespace.getNsid(obj2);
+                    if (obj2Nsid.startsWith(partialCommanderNsid)) {
+                        commanderUnlocked = true;
+                        break;
+                    }
+                }
+                if (!commanderUnlocked) {
+                    continue;
+                }
+            }
 
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier);
