@@ -88,6 +88,10 @@ class AutoRollerUI extends LayoutBox {
         const HORIZONTAL_DISTANCE = 10;
         const COLUMN_WIDTH = 175;
 
+        const BUTTON_FONT_SIZE = 12;
+        const LABEL_FONT = "Handel_Gothic_Regular.otf";
+        const LABEL_FONT_SIZE = 14;
+
         const spaceLayout = new VerticalBox().setChildDistance(
             VERTICAL_DISTANCE
         );
@@ -99,18 +103,44 @@ class AutoRollerUI extends LayoutBox {
         const groundLayout = new HorizontalBox().setChildDistance(
             HORIZONTAL_DISTANCE
         );
-        const groundOuterLayout = new VerticalBox()
-            .setChildDistance(VERTICAL_DISTANCE)
-            .addChild(groundLayout);
+        const groundOuterLayout = new VerticalBox().setChildDistance(
+            VERTICAL_DISTANCE
+        );
         const groundBox = new LayoutBox()
             .setOverrideWidth(COLUMN_WIDTH * 3 + HORIZONTAL_DISTANCE * 3)
             .setVerticalAlignment(VerticalAlignment.Bottom)
             .setPadding(0, 0, 0, 0) //44
             .setChild(groundOuterLayout);
 
-        const BUTTON_FONT_SIZE = 12;
-        const LABEL_FONT = "Handel_Gothic_Regular.otf";
-        const LABEL_FONT_SIZE = 14;
+        // Add hotkey reminders to the ground layout.
+        groundOuterLayout
+            .addChild(
+                new Text()
+                    .setFontSize(LABEL_FONT_SIZE)
+                    .setText(locale("ui.help.numpad"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(LABEL_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.4"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(LABEL_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.5"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(LABEL_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.9"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(LABEL_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.0"))
+            )
+            .addChild(new Text().setFontSize(LABEL_FONT_SIZE))
+            .addChild(groundLayout);
 
         this.setChild(
             new HorizontalBox()

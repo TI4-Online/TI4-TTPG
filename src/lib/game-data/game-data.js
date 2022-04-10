@@ -35,7 +35,6 @@ const UPDATORS = [
 ];
 
 const DEFAULT_HOST = "ti4-game-data.appspot.com";
-//const DEFAULT_HOST = "localhost:8080";
 const LOCALHOST = "localhost:8080";
 
 const POSTKEY = "postkey_ttpg";
@@ -43,6 +42,9 @@ const POSTTIMESTAMP = "posttimestamp_ttpg";
 
 const TIMESTAMP_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
+
+const TI4_STREAMER_BUDDY_KEY = "buddy";
+const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 5 * 1000;
 
 const REQUIRED_COLORS = [
     "White",
@@ -124,9 +126,13 @@ class GameData {
         }, TIMESTAMP_DELAY_MSECS);
 
         if (this._key) {
+            let keyDelayMsecs = KEY_DELAY_MSECS;
+            if (this._key === TI4_STREAMER_BUDDY_KEY) {
+                keyDelayMsecs = TI4_STREAMER_BUDDY_KEY_DELAY_MSECS;
+            }
             this._intervalHandleKey = setInterval(() => {
                 this._asyncUpdate(POSTKEY);
-            }, KEY_DELAY_MSECS);
+            }, keyDelayMsecs);
         }
 
         return this;
@@ -184,6 +190,11 @@ class GameData {
 
     _syncUpdate(endpoint) {
         assert(typeof endpoint == "string");
+
+        // Abort normal (timestamp) reporting if only one player in game.
+        if (endpoint === POSTTIMESTAMP && world.getAllPlayers().length <= 1) {
+            return;
+        }
 
         const data = this._createGameDataShell();
         for (const updator of UPDATORS) {
@@ -259,7 +270,10 @@ class GameData {
         assert(typeof endpoint == "string");
         assert(endpoint === POSTKEY || endpoint === POSTTIMESTAMP);
 
-        const host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
+        let host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
+        if (this._key === TI4_STREAMER_BUDDY_KEY && endpoint === POSTKEY) {
+            host = LOCALHOST;
+        }
         const urlArgs = [`timestamp=${world.TI4.config.timestamp}`];
         if (this._key) {
             urlArgs.push(`key=${this._key}`);

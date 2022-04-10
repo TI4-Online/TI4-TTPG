@@ -7,6 +7,12 @@ function consider(player, message) {
     assert(player instanceof Player);
     assert(typeof message === "string");
 
+    // Shortcut for TI4 streamer buddy.
+    if (message === "!buddy") {
+        consider(player, "!gamedata buddy");
+        return;
+    }
+
     if (!message.startsWith("!gamedata")) {
         return;
     }
