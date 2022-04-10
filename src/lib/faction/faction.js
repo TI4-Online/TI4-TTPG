@@ -74,6 +74,10 @@ function _maybeInit() {
                 throw new Error(`unknown faction from sheet "${nsid}"`);
             }
             _playerSlotToFaction[slot] = faction;
+
+            // Remember the last player slot associated with the faction.
+            // This breaks if more than one player is using this faction.
+            faction._playerSlot = slot;
         }
     }
 }
@@ -130,6 +134,10 @@ class Faction {
 
     get homeNsid() {
         return `tile.system:${this.nsidSource}/${this.home}`;
+    }
+
+    get playerSlot() {
+        return this._playerSlot;
     }
 }
 

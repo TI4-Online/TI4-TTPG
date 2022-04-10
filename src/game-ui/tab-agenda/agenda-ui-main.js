@@ -92,15 +92,16 @@ class AgendaUiMain extends LayoutBox {
         return abstract;
     }
 
-    static simpleNext(text, nextHandler) {
+    static simpleButton(text, buttonText, buttonHandler) {
         assert(typeof text === "string");
-        assert(typeof nextHandler === "function");
+        assert(typeof buttonText === "string");
+        assert(typeof buttonHandler === "function");
         const abstract = new AgendaUiMain();
 
         const leftPanel = abstract
             .createLeftPanel()
             .addChild(abstract.createMainText(text))
-            .addChild(abstract.createNext(nextHandler));
+            .addChild(abstract.createButton(buttonText, buttonHandler));
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -190,13 +191,14 @@ class AgendaUiMain extends LayoutBox {
             .addChild(noButton, 1);
     }
 
-    createNext(nextHandler) {
-        assert(typeof nextHandler === "function");
-        const nextButton = new Button()
+    createButton(buttonText, buttonHandler) {
+        assert(typeof buttonText === "string");
+        assert(typeof buttonHandler === "function");
+        const button = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.agenda.clippy.next"));
-        nextButton.onClicked.add(nextHandler);
-        return nextButton;
+            .setText(buttonText);
+        button.onClicked.add(buttonHandler);
+        return button;
     }
 
     createMechy() {

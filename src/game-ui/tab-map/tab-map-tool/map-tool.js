@@ -210,7 +210,7 @@ class MapTool {
         const emptyPositions = [];
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
-            if (system.planets.length === 0) {
+            if (system.planets.length === 0 && !system.hyperlane) {
                 emptyPositions.push(obj.getPosition().add([0, 0, 1]));
             }
         }

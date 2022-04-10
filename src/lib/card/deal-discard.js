@@ -339,6 +339,21 @@ class DealDiscard {
             }
         }
 
+        // Return alliance to player.
+        if (nsid.startsWith("card.alliance")) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const factionNsidName = parsed.name.split(".")[0];
+            const faction = world.TI4.getFactionByNsidName(factionNsidName);
+            if (faction && faction.playerSlot) {
+                const count = 1;
+                const slots = [faction.playerSlot];
+                const faceDown = false;
+                const dealToAllHolders = true;
+                obj.deal(count, slots, faceDown, dealToAllHolders);
+                return true;
+            }
+        }
+
         if (!DealDiscard.isKnownDeck(nsid)) {
             // Otherwise discard to a known deck.
             return false;
