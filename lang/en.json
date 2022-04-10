@@ -198,6 +198,7 @@
     "ui.build.production": "Production: {production}",
     "ui.build.sarween_tools_abbr": "ST",
     "ui.build.war_machine_abbr": "WM",
+    "ui.build.ai_dev_abbr": "AI({value})",
     "ui.build.report": "Report build",
     "ui.build.report.output": "{playerName} building {build}",
     "ui.build.warp_to_home": "Warp to home system",

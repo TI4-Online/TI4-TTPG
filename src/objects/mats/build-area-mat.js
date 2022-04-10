@@ -26,6 +26,7 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
+const { Technology } = require("../../lib/technology/technology");
 
 const MAT_WIDTH = 18.4;
 const MAT_HEIGHT = 18.4;
@@ -321,6 +322,16 @@ class BuildAreaMat {
         return playerDesk.playerSlot;
     }
 
+    getAiDevConsumeExtra() {
+        const playerSlot = this._getPlayerSlot();
+        const techs = Technology.getOwnedPlayerTechnologies(playerSlot);
+        const updates = techs.filter((tech) => {
+            return tech.type === "unitUpgrade";
+        });
+        let value = updates.length;
+        return locale("ui.build.ai_dev_abbr", { value });
+    }
+
     scheduleUpdate() {
         if (this._updateHandle) {
             clearTimeout(this._updateHandle);
@@ -334,6 +345,7 @@ class BuildAreaMat {
 
     update() {
         assert(this._zone);
+        let consumeExtras = [];
 
         // What's inside area?
         const produce = [];
@@ -351,10 +363,15 @@ class BuildAreaMat {
             if (consumeEntry) {
                 consume.push(consumeEntry);
             }
+            // AI Dev handling.
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "card.technology.red:pok/ai_development_algorithm") {
+                const summary = this.getAiDevConsumeExtra();
+                consumeExtras.push(summary);
+            }
         }
 
         // Some things can be anywhere on table.
-        let consumeExtras = [];
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
         const myDesk = world.TI4.getClosestPlayerDesk(this._obj.getPosition());
