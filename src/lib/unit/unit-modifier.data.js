@@ -608,6 +608,24 @@ module.exports = [
         },
     },
     {
+        // Reroll space combat misses.
+        isCombat: true,
+        localeName: "unit_modifier.name.munitions_reserves",
+        localeDescription: "unit_modifier.desc.munitions_reserves",
+        owner: "self",
+        priority: "adjust",
+        toggleActive: true,
+        triggerNsid: "card.other.portrait:base/munitions_reserves",
+        filter: (auxData) => {
+            return auxData.rollType === "spaceCombat";
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.spaceCombat) {
+                unitAttrs.raw.spaceCombat.rerollMisses = true;
+            }
+        },
+    },
+    {
         // "You can produce your flagship without spending resources.",
         isCombat: false,
         localeName: "unit_modifier.name.navarch_feng",
