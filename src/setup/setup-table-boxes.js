@@ -16,7 +16,15 @@ const BOXES = [
         nsid: "bag:base/generic",
         localeName: "bag.purge",
         anchor: TableLayout.anchor.score,
-        pos: { x: -50, y: -9, z: 3 },
+        pos: { x: -50, y: -4.5, z: 3 },
+        yaw: 0,
+        scale: { x: 0.8, y: 0.8, z: 0.5 },
+    },
+    {
+        nsid: "bag:base/deleted_items",
+        localeName: "bag.deleted_items",
+        anchor: TableLayout.anchor.score,
+        pos: { x: -50, y: -13.5, z: 3 },
         yaw: 0,
         scale: { x: 0.8, y: 0.8, z: 0.5 },
     },
@@ -35,9 +43,10 @@ class SetupTableBoxes extends AbstractSetup {
 
             const container = Spawn.spawn(boxData.nsid, pos, rot);
             assert(container instanceof Container);
-            container.setObjectType(ObjectType.Ground);
+            container.setObjectType(ObjectType.Regular); // needs to be regular to explore
             const name = locale(boxData.localeName);
             container.setName(name);
+            container.setMaxItems(500);
 
             if (boxData.scale) {
                 container.setScale(

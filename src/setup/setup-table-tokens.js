@@ -16,7 +16,7 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.exploration" },
     ],
     anchor: TableLayout.anchor.score,
-    pos: { x: -50, y: 0, z: 3 },
+    pos: { x: -50, y: 4.5, z: 3 },
     yaw: 0,
 };
 
@@ -117,7 +117,7 @@ class SetupTableTokens extends AbstractSetup {
         const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
         bag.setName(locale("bag.exploration_tokens"));
         bag.clear(); // paranoia
-        bag.setObjectType(ObjectType.Ground);
+        bag.setObjectType(ObjectType.Regular); // needs to be regular to explore
         if (EXPLORATION_TOKENS.bagHexColor) {
             bag.setPrimaryColor(
                 ColorUtil.colorFromHex(EXPLORATION_TOKENS.bagHexColor)

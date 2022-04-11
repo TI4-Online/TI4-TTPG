@@ -132,6 +132,7 @@ class AbstractSetup {
                     cardObj = deck; // cannot take final card
                 }
                 assert(cardObj instanceof Card);
+                cardObj.setTags(["DELETED_ITEMS_IGNORE"]);
                 cardObj.destroy();
             }
         }
