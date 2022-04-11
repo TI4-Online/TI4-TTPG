@@ -188,6 +188,11 @@ class AutoRoller {
         const isFirstBombardmentPlanet =
             this._firstBombardmentPlanet === planet;
 
+        // Clear first bombarded on ground combat for future bombards (Harrow).
+        if (rollType === "groundCombat") {
+            this._firstBombardmentPlanet = false;
+        }
+
         // Build self.
         let faction = world.TI4.getFactionByPlayerSlot(player.getSlot());
         const aux1 = new AuxDataBuilder()
