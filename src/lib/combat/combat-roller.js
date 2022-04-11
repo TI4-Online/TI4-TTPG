@@ -65,7 +65,8 @@ class CombatRoller {
         const unitMessages = [];
         for (const [unit, dice] of Object.entries(unitToDice)) {
             const unitAttrs = this._auxData.unitAttrsSet.get(unit);
-            const rollAttrs = unitAttrs.raw[this._rollType];
+            const rollAttrs =
+                unitAttrs.raw[this._rollType] || unitAttrs.raw["spaceCombat"];
             const unitMessage = [
                 locale(unitAttrs.raw.localeName),
                 " [",
@@ -128,11 +129,24 @@ class CombatRoller {
     getUnitToDiceCount() {
         const unitToDiceCount = {};
 
+        const faction = world.TI4.getFactionByPlayerSlot(
+            this._player.getSlot()
+        );
+        const hasAmbush = faction && faction.raw.abilities.includes("ambush");
+        if (this._rollType === "ambush" && !hasAmbush) {
+            return unitToDiceCount;
+        }
+
         for (const unitAttrs of this._auxData.unitAttrsSet.values()) {
             const unit = unitAttrs.raw.unit;
-            const rollAttrs = unitAttrs.raw[this._rollType];
+            let rollAttrs = unitAttrs.raw[this._rollType];
             if (!rollAttrs) {
-                continue; // unit does not have this roll type
+                const ambushUnit = unit === "cruiser" || unit === "destroyer";
+                if (!(this._rollType === "ambush" && ambushUnit)) {
+                    continue; // unit does not have this roll type
+                } else {
+                    rollAttrs = unitAttrs.raw["spaceCombat"];
+                }
             }
 
             let count = 0;
@@ -156,6 +170,25 @@ class CombatRoller {
             if (count > 0) {
                 const extraDice = rollAttrs.extraDice || 0;
                 unitToDiceCount[unit] = count + extraDice;
+            }
+        }
+
+        if (this._rollType === "ambush") {
+            // double check only two dice are being rolled
+            // prioitize keeping cruisers if we need to remove dice
+            let totalDice = Object.values(unitToDiceCount).reduce(
+                (a, b) => a + b
+            );
+            while (totalDice > 2) {
+                if (Object.keys(unitToDiceCount).includes("destroyer")) {
+                    unitToDiceCount["destroyer"] -= 1;
+                    if (unitToDiceCount["destroyer"] === 0) {
+                        delete unitToDiceCount["destroyer"];
+                    }
+                } else {
+                    unitToDiceCount["cruiser"] -= 1;
+                }
+                totalDice -= 1;
             }
         }
 

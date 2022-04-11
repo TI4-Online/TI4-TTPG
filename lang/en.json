@@ -108,6 +108,7 @@
     "ui.label.movement": "Movement",
     "ui.label.space_combat": "Space Combat",
     "ui.label.invasion": "Invasion",
+    "ui.label.invasion_oneline": "Invasion —>",
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
 
@@ -166,6 +167,7 @@
     "rollType.spaceCombat": "Space Combat",
     "rollType.bombardment": "Bombardment",
     "rollType.groundCombat": "Ground Combat",
+    "rollType.ambush": "Ambush",
 
     "ui.roller.space_cannon_offense": "Spc Cannon Offense",
     "ui.roller.anti_fighter_barrage": "Anti-fighter Barrage",
@@ -176,6 +178,7 @@
     "ui.roller.space_cannon_defense": "Spc Cannon Defense",
     "ui.roller.ground_combat": "Ground Combat",
     "ui.roller.report_modifiers": "Report Modifiers",
+    "ui.roller.ambush": "Ambush",
 
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",

@@ -25,7 +25,8 @@ class UnitDieBuilder extends SimpleDieBuilder {
             this.setColor(new Color(color.r, color.g, color.b, color.a));
         }
 
-        const rollAttrs = unitAttrs.raw[rollType];
+        const rollAttrs =
+            unitAttrs.raw[rollType] || unitAttrs.raw["spaceCombat"];
         assert(rollAttrs);
         assert(rollAttrs.hit);
         this.setHitValue(rollAttrs.hit);
