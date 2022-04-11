@@ -121,9 +121,24 @@ class UnitModifier {
         assert(OWNER[withOwner]);
 
         _maybeInit();
+
+        const unlockedCommanders = [];
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj)) {
+                continue;
+            }
+            const objNsid = ObjectNamespace.getNsid(obj);
+            if (objNsid.startsWith("card.leader.commander")) {
+                const parsed = ObjectNamespace.parseNsid(objNsid);
+                const factionNsidName = parsed.type.split(".")[3];
+                unlockedCommanders.push(factionNsidName);
+            }
+        }
+
         const unitModifiers = [];
         for (const obj of world.getAllObjects()) {
             const objNsid = ObjectNamespace.getNsid(obj);
+
             const unitModifier = _triggerNsidToUnitModifier[objNsid];
             if (!unitModifier) {
                 continue;
@@ -160,21 +175,13 @@ class UnitModifier {
             }
 
             // Alliance only available if linked commander is unlocked.
-            if (objNsid.includes("alliance")) {
-                const faction = objNsid.split("/")[1];
-                const partialCommanderNsid = "card.leader.commander." + faction;
-                let commanderUnlocked = false;
-                for (const obj2 of world.getAllObjects()) {
-                    if (!CardUtil.isLooseCard(obj2, true)) {
-                        continue;
-                    }
-                    const obj2Nsid = ObjectNamespace.getNsid(obj2);
-                    if (obj2Nsid.startsWith(partialCommanderNsid)) {
-                        commanderUnlocked = true;
-                        break;
-                    }
-                }
-                if (!commanderUnlocked) {
+            // Only looks for registered faction alliance cards, NOT the
+            // generic "Alliance (White)" type cards.
+            if (objNsid.startsWith("card.alliance")) {
+                const parsed = ObjectNamespace.parseNsid(objNsid);
+                const factionNsidName = parsed.name.split(".")[0];
+                if (!unlockedCommanders.includes(factionNsidName)) {
+                    // Have an alliance, but commander is locked.
                     continue;
                 }
             }

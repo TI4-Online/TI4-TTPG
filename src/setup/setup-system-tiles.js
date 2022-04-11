@@ -10,7 +10,7 @@ const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 const BAG = {
     nsid: "bag:base/generic",
     anchor: TableLayout.anchor.score,
-    pos: { x: -50, y: 9, z: 3 },
+    pos: { x: -50, y: 13.5, z: 3 },
     yaw: 0,
     scale: { x: 0.8, y: 0.8, z: 0.5 },
     colorHex: "#0033AA",
@@ -31,7 +31,7 @@ class SetupSystemTiles extends AbstractSetup {
         bag.setScale(new Vector(BAG.scale.x, BAG.scale.y, BAG.scale.z));
         bag.setPrimaryColor(ColorUtil.colorFromHex(BAG.colorHex));
         bag.setMaxItems(500);
-        bag.setObjectType(ObjectType.Ground);
+        bag.setObjectType(ObjectType.Regular); // needs to be regular to explore
 
         const nsids = Spawn.getAllNSIDs().filter((nsid) => {
             if (!nsid.startsWith("tile.system")) {

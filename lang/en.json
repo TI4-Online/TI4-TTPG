@@ -601,6 +601,7 @@
     "token.tradegood_commodity_3": "Tradegoods/Commodities x3",
     "bag.token": "{token} Supply",
     "bag.garbage": "Garbage",
+    "bag.deleted_items": "Deleted Items",
     "bag.exploration_tokens": "Exploration Tokens",
     "bag.system_tiles": "System Tiles",
     "bag.purge": "Purged Items",

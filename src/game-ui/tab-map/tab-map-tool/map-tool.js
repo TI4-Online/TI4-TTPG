@@ -71,6 +71,7 @@ class MapTool {
                 continue;
             }
             if (!bag || clearedSet.has(system.tile)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             } else {
                 clearedSet.add(system.tile);
