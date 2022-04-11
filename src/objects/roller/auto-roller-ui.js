@@ -15,7 +15,10 @@ const {
     VerticalAlignment,
     VerticalBox,
     refPackageId,
+    world,
 } = require("../../wrapper/api");
+const { UnitPlastic } = require("../../lib/unit/unit-plastic");
+const { Hex } = require("../../lib/hex");
 
 /**
  * Manage the UI on an AutoRoller object.
@@ -71,6 +74,42 @@ class AutoRollerUI extends LayoutBox {
     }
 
     /**
+     * Returns true if the active player, or a player with ships in the system
+     * has the faction ability ambush.
+     *
+     * Does not check if the player with ambush has destroyers or cruisers in
+     * the system because this is called on activation and the active player
+     * will likely have not moved units into the system yet.
+     *
+     * @param {System} system
+     * @return {boolean}
+     */
+    _ambush(system) {
+        const activeSlot = world.TI4.turns.getCurrentTurn().playerSlot;
+        const activeFaction = world.TI4.getFactionByPlayerSlot(activeSlot);
+        if (activeFaction && activeFaction.raw.abilities.includes("ambush")) {
+            return true;
+        }
+
+        const systemObj = world.TI4.getAllSystemTileObjects().filter(
+            (obj) =>
+                world.TI4.getSystemBySystemTileObject(obj).tile === system.tile
+        )[0];
+        const systemHex = Hex.fromPosition(systemObj.getPosition());
+        const systemPlastic = UnitPlastic.getAll().filter(
+            (plastic) => plastic.hex === systemHex
+        );
+
+        for (var i = 0; i < systemPlastic.length; i++) {
+            const playerSlot = systemPlastic[i].owningPlayerSlot;
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (faction && faction.raw.abilities.includes("ambush")) {
+                return true;
+            }
+        }
+    }
+
+    /**
      * Reset for the given system.
      *
      * Get localized planet names by: `system.planets[].getNameStr()`
@@ -81,7 +120,6 @@ class AutoRollerUI extends LayoutBox {
      */
     resetAfterSystemActivation(system) {
         assert(system instanceof System);
-
         // Mandate column width so if button text overflows it truncates
         // instead of adding a scrollbar.  Do not assume EN locale!
         const VERTICAL_DISTANCE = 5;
@@ -196,6 +234,8 @@ class AutoRollerUI extends LayoutBox {
             );
         };
 
+        const ambushAvailable = this._ambush(system);
+
         // MOVEMENT STEP
         addStep("ui.label.movement");
         addButton("ui.movement.finish_movement", "finishMove");
@@ -204,14 +244,24 @@ class AutoRollerUI extends LayoutBox {
 
         // SPACE COMBAT STEP
         addStep("ui.label.space_combat");
+        if (ambushAvailable) {
+            // only show ambush button if a player has the ambush ability
+            addButton("ui.roller.ambush", "ambush");
+        }
         addButton("ui.roller.anti_fighter_barrage", "antiFighterBarrage");
         addButton("ui.roller.announce_retreat", "announceRetreat");
         addButton("ui.roller.space_combat", "spaceCombat");
         addGap();
 
         // INVASION (redirect)
-        addStep("ui.label.invasion");
-        addButton("—>", "").setEnabled(false);
+        if (ambushAvailable) {
+            // combine invasion step into one line
+            // otherwise adding the ambush button causes a vertical scroll bar
+            addStep("ui.label.invasion_oneline");
+        } else {
+            addStep("ui.label.invasion");
+            addButton("—>", "").setEnabled(false);
+        }
         addGap();
 
         // PRODUCTION
