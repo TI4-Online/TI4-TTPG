@@ -234,6 +234,8 @@ class AutoRollerUI extends LayoutBox {
             );
         };
 
+        const ambushAvailable = this._ambush(system);
+
         // MOVEMENT STEP
         addStep("ui.label.movement");
         addButton("ui.movement.finish_movement", "finishMove");
@@ -242,7 +244,7 @@ class AutoRollerUI extends LayoutBox {
 
         // SPACE COMBAT STEP
         addStep("ui.label.space_combat");
-        if (this._ambush(system)) {
+        if (ambushAvailable) {
             // only show ambush button if a player has the ambush ability
             addButton("ui.roller.ambush", "ambush");
         }
@@ -252,8 +254,14 @@ class AutoRollerUI extends LayoutBox {
         addGap();
 
         // INVASION (redirect)
-        addStep("ui.label.invasion");
-        addButton("—>", "").setEnabled(false);
+        if (ambushAvailable) {
+            // combine invasion step into one line
+            // otherwise adding the ambush button causes a vertical scroll bar
+            addStep("ui.label.invasion_oneline");
+        } else {
+            addStep("ui.label.invasion");
+            addButton("—>", "").setEnabled(false);
+        }
         addGap();
 
         // PRODUCTION

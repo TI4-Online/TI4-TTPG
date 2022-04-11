@@ -108,6 +108,7 @@
     "ui.label.movement": "Movement",
     "ui.label.space_combat": "Space Combat",
     "ui.label.invasion": "Invasion",
+    "ui.label.invasion_oneline": "Invasion —>",
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
 
