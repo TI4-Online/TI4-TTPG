@@ -17,6 +17,7 @@ const {
     Rotator,
     Vector,
 } = require("../../wrapper/api");
+const { PlayerDesk } = require("../player-desk/player-desk");
 
 const ANIMATION_SPEED = 1;
 
@@ -255,6 +256,32 @@ class EndStatusPhase {
 
         if (!FindTurnOrder.isStrategyCardPicked(strategyCardObj)) {
             return; // already on (a) home spot, leave it alone
+        }
+
+        // check if the player holding the current strategy card has played
+        // political stability, if yes return political stability instead of
+        // the strategy card
+        const desk = PlayerDesk.getClosest(strategyCardObj.getPosition());
+        const politicalStability = CardUtil.hasCard(
+            desk.playerSlot,
+            "card.action:base/political_stability",
+            true
+        );
+        if (politicalStability) {
+            const playerName = world.getPlayerBySlot(desk.playerSlot).getName();
+            const nsid = ObjectNamespace.getNsid(strategyCardObj);
+            const strategyCardName = nsid.split("/").slice(-1)[0].split(".")[0];
+            const strategyCard = locale(
+                "strategy_card." + strategyCardName + ".text"
+            );
+            Broadcast.broadcastAll(
+                locale("ui.message.political_stability", {
+                    playerName,
+                    strategyCard,
+                })
+            );
+            DealDiscard.discard(politicalStability);
+            return;
         }
 
         const strategyCardMat = FindTurnOrder.getStrategyCardMat();
