@@ -71,6 +71,8 @@
     "ui.message.player_away": "{playerName} AFK",
     "ui.message.all_players_have_passed": "All players have passed",
 
+    "ui.message.political_stability": "{playerName} used Political Stability to hold onto {strategyCard}",
+
     "ui.message.whisper": "Whisper: {senderName} -> {receiverName}",
 
     "ui.movement.finish_movement": "Finalize Movement",

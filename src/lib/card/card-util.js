@@ -65,11 +65,14 @@ class CardUtil {
     /**
      * Does the player have the given card?
      *
+     * If returnCardObj is true return the card object if the player has it.
+     *
      * @param {number} playerSlot
      * @param {string} cardNsid
+     * @param {boolean} returnCardObj
      * @returns {boolean}
      */
-    static hasCard(playerSlot, cardNsid) {
+    static hasCard(playerSlot, cardNsid, returnCardObj) {
         assert(typeof playerSlot === "number");
         assert(typeof cardNsid === "string");
         for (const obj of world.getAllObjects()) {
@@ -84,6 +87,9 @@ class CardUtil {
             const closestDesk = world.TI4.getClosestPlayerDesk(pos);
             if (closestDesk.playerSlot !== playerSlot) {
                 continue;
+            }
+            if (returnCardObj) {
+                return obj;
             }
             return true;
         }
