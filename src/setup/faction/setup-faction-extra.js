@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../spawn/spawn");
-const { Vector, world } = require("../../wrapper/api");
+const { Rotator, Vector, world } = require("../../wrapper/api");
 
 const EXTRA_P0 = { x: 32, y: -20, z: 10 }; // start higher than leaders
 const EXTRA_DY = 6;
@@ -34,6 +34,13 @@ class SetupFactionExtra extends AbstractSetup {
                     token.setOwningPlayerSlot(playerSlot);
                     nextPos.y += EXTRA_DY;
                 }
+            } else if (extra.cardNsid) {
+                const pos = this.playerDesk.localPositionToWorld(nextPos);
+                const rot = new Rotator(0, 0, 180).compose(this.playerDesk.rot);
+                const playerSlot = this.playerDesk.playerSlot;
+                const card = Spawn.spawn(extra.cardNsid, pos, rot);
+                card.setOwningPlayerSlot(playerSlot);
+                nextPos.y += EXTRA_DY;
             } else {
                 throw new Error("unknown faction.unpackExtra");
             }

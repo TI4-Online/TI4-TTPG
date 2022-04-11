@@ -263,6 +263,11 @@ const FACTION_DATA = [
         },
         techs: ["l4_disruptors", "noneuclidean_shielding"],
         units: ["arc_secundus", "dunlain_reaper"],
+        unpackExtra: [
+            {
+                cardNsid: "card.other.portrait:base/munitions_reserves",
+            },
+        ],
     },
     {
         faction: "mahact",
