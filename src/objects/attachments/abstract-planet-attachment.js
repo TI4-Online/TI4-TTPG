@@ -59,12 +59,25 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         return this._attrs;
     }
 
+    getFaceAttrs(faceUp) {
+        assert(typeof faceUp === "boolean");
+        let attrs = this._attrs.faceUp;
+        if (!faceUp && this._attrs.faceDown) {
+            attrs = this._attrs.faceDown;
+        }
+        return attrs;
+    }
+
     place(system, planet, systemTileObj, faceUp) {
+        assert(typeof faceUp === "boolean");
+
         this._positionOnPlanet(planet, systemTileObj);
         this._addPlanetAttrs(planet, faceUp);
     }
 
     remove(system, planet, systemTileObj, faceUp) {
+        assert(typeof faceUp === "boolean");
+
         this._delPlanetAttrs(planet, faceUp);
     }
 
@@ -95,10 +108,11 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
 
     _addPlanetAttrs(planet, faceUp) {
         assert(typeof faceUp === "boolean");
+
         planet.attachments.push(this);
 
         // Some attachments have not attributes (e.g. "DMZ")
-        const attrs = faceUp ? this._attrs.faceUp : this._attrs.faceDown;
+        const attrs = this.getFaceAttrs(faceUp);
         if (!attrs) {
             return;
         }
@@ -138,7 +152,7 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         }
 
         // Some attachments have not attributes (e.g. "DMZ")
-        const attrs = faceUp ? this._attrs.faceUp : this._attrs.faceDown;
+        const attrs = this.getFaceAttrs(faceUp);
         if (!attrs) {
             return;
         }
