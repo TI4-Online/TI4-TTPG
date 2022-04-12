@@ -120,8 +120,8 @@ const setupWorkspace = () => {
             })
             .then(() => {
                 console.log("rewriting States GUIDs");
-                const oldStr = `"${variantConfig.guid.dev}"`;
-                const newStr = `"${variantConfig.guid.prd}"`;
+                const oldStr = `${variantConfig.guid.dev}`;
+                const newStr = `${variantConfig.guid.prd}`;
                 const re = new RegExp(oldStr, "g");
                 klaw(`./prd/${variantConfig.slug}/States`).on(
                     "data",
