@@ -13,8 +13,9 @@ class SetupFactionSheet extends AbstractSetup {
     }
 
     setup() {
-        let pos = new Vector(FACTION_SHEET_POS.x, FACTION_SHEET_POS.y, 2);
+        let pos = new Vector(FACTION_SHEET_POS.x, FACTION_SHEET_POS.y, 0);
         pos = this.playerDesk.localPositionToWorld(pos);
+        pos.z = world.getTableHeight() + 1;
         const rot = this.playerDesk.rot;
 
         const sheetNsid = `sheet.faction:${this.faction.nsidSource}/${this.faction.nsidName}`;
