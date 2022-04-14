@@ -116,21 +116,28 @@ class EndStatusPhase {
         ) {
             dealNTokens += 1;
         }
-        if (
-            CardUtil.hasCard(
-                playerSlot,
-                "card.promissory.l1z1x:base/cybernetic_enhancements"
-            )
-        ) {
-            dealNTokens += 1;
-        }
-        if (
-            CardUtil.hasCard(
-                playerSlot,
-                "card.promissory.l1z1x:base/cybernetic_enhancements.omega"
-            )
-        ) {
-            dealNTokens += 1;
+
+        const cyberneticEnhancements1 = CardUtil.hasCard(
+            playerSlot,
+            "card.promissory.l1z1x:base/cybernetic_enhancements",
+            true
+        );
+        const cyberneticEnhancements2 = CardUtil.hasCard(
+            playerSlot,
+            "card.promissory.l1z1x:base/cybernetic_enhancements.omega",
+            true
+        );
+        if (cyberneticEnhancements1 || cyberneticEnhancements2) {
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (faction.nsidName !== "l1zix") {
+                dealNTokens += 1;
+                if (cyberneticEnhancements1) {
+                    DealDiscard.discard(cyberneticEnhancements1);
+                }
+                if (cyberneticEnhancements2) {
+                    DealDiscard.discard(cyberneticEnhancements2);
+                }
+            }
         }
 
         return dealNTokens;
@@ -241,9 +248,10 @@ class EndStatusPhase {
                     Broadcast.chatAll(errorMessage);
                     break;
                 } else {
-                    const dropPosition = playerDesk
-                        .localPositionToWorld(new Vector(5, 20 + i * 1, 0))
-                        .add([0, 0, 10]);
+                    const dropPosition = playerDesk.localPositionToWorld(
+                        new Vector(32, 16 + i * 2, 0)
+                    );
+                    dropPosition.z = world.getTableHeight() + 1 + i;
                     commandTokenBag.takeAt(0, dropPosition, true);
                 }
             }
