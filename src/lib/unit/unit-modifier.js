@@ -186,6 +186,24 @@ class UnitModifier {
                 }
             }
 
+            // Promissory notes in play area should ignore if the owning faction.
+            // E.g. "card.promissory.nomad:pok/the_cavalry".
+            if (objNsid.startsWith("card.promissory")) {
+                const parts =
+                    ObjectNamespace.parseNsid(objNsid).type.split(".");
+                const factionNsid = parts[2];
+                const objFaction = world.TI4.getFactionByNsidName(factionNsid);
+
+                const pos = obj.getPosition();
+                const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+                const ownerSlot = playerDesk.playerSlot;
+                const slotFaction = world.TI4.getFactionByPlayerSlot(ownerSlot);
+
+                if (objFaction === slotFaction) {
+                    continue; // players may advertise their promissory notes in play area
+                }
+            }
+
             // Found a unit modifier!  Add it to the list.
             unitModifiers.push(unitModifier);
         }
