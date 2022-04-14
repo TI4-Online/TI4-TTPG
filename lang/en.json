@@ -25,7 +25,7 @@
 
     "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced “Object zoom for ground”",
 
-    "ui.help.whisper": "Whisper: \"/w {playerName}\"",
+    "ui.help.whisper": "Whisper: \"/w {part of name}\"",
 
     "ui.message.welcome": "Welcome to Twilight Imperium IV",
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
