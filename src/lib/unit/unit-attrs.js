@@ -4,6 +4,7 @@ const locale = require("../locale");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const { ObjectNamespace } = require("../object-namespace");
+const { UnitAttrsSchema } = require("./unit-attrs.schema");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { world } = require("../../wrapper/api");
 
@@ -170,6 +171,15 @@ class UnitAttrs {
             }
         }
         return unitUpgrades;
+    }
+
+    static injectUnitAttrs(rawUnitAttrs) {
+        assert(rawUnitAttrs);
+        UnitAttrsSchema.validate(rawUnitAttrs, (err) => {
+            throw new Error('UnitAttrs.injectUnitAttrs "${err}"');
+        });
+        UNIT_ATTRS.push(rawUnitAttrs);
+        _triggerNsidToUnitUpgrade = undefined;
     }
 
     // ------------------------------------------------------------------------

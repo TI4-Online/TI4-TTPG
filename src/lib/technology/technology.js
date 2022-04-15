@@ -5,6 +5,7 @@ const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
 const { world } = require("../../wrapper/api");
+const { TechnologySchema } = require("./technology.schema");
 
 TECHNOLOGY_DATA.forEach((tech) => {
     tech.name = locale(tech.localeName);
@@ -36,11 +37,15 @@ const getTechnologiesRawArray = (factionName) => {
     });
 };
 
+const invalidateCache = () => {
+    _technologies = undefined;
+    _technologiesByFaction = {};
+};
+
 const checkCache = () => {
     const pok = world.TI4.config.pok;
     if (_settings.pok !== pok) {
-        _technologies = undefined;
-        _technologiesByFaction = {};
+        invalidateCache();
     }
     _settings.pok = pok;
 };
@@ -74,6 +79,19 @@ const getTechnologies = (factionName) => {
 };
 
 class Technology {
+    static injectTechnology(rawTechnology) {
+        assert(rawTechnology);
+        TechnologySchema.validate(rawTechnology, (err) => {
+            throw new Error(
+                `Technology.injectTechnology "${JSON.stringify(
+                    rawTechnology
+                )}" error "${err}"`
+            );
+        });
+        TECHNOLOGY_DATA.push(rawTechnology);
+        invalidateCache();
+    }
+
     static getOwnedPlayerTechnologies(playerSlot) {
         assert(Number.isInteger(playerSlot));
 

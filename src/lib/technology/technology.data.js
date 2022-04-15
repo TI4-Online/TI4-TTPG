@@ -826,6 +826,7 @@ module.exports = [
 
     {
         localeName: "technology.name.redacted",
+        cardNsid: "card.technology.unit_upgrade.nekro:codex.ordinian/redacted",
         type: "SCENARIO unitUpgrade",
         requirements: {
             Red: 2,
@@ -846,6 +847,7 @@ module.exports = [
     },
     {
         localeName: "strategy_card.technology.button.nekro",
+        cardNsid: "does_not_exist",
         type: "unitUpgrade",
         requirements: {},
         abbrev: "Singularity Button",

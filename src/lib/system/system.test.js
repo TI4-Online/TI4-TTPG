@@ -105,3 +105,24 @@ it("summarize", () => {
     summary = System.summarize(tiles);
     assert.equal(summary, "4/2 G");
 });
+
+it("inject", () => {
+    assert(!System.getByTileNumber(12349431));
+
+    System.injectSystem({
+        tile: 12349431,
+        source: "homebrew",
+        home: true,
+        planets: [
+            {
+                localeName: "face_name",
+                resources: 4,
+                influence: 2,
+            },
+        ],
+        img: "path/tile.png",
+    });
+
+    const system = System.getByTileNumber(12349431);
+    assert.equal(system.tile, 12349431);
+});

@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const lodash = require("lodash");
+const { FactionSchema } = require("./faction.schema");
 const { ObjectNamespace } = require("../object-namespace");
 const { FACTION_DATA } = require("./faction.data");
 const { globalEvents, world } = require("../../wrapper/api");
@@ -98,6 +99,16 @@ class Faction {
         assert(typeof nsidName === "string");
         _maybeInit();
         return _nsidNameToFaction[nsidName];
+    }
+
+    static injectFaction(factionAttrs) {
+        assert(factionAttrs);
+        FactionSchema.validate(factionAttrs, (err) => {
+            throw new Error(`Faction.injectFaction schema error "${err}"`);
+        });
+        assert(Array.isArray(FACTION_DATA));
+        FACTION_DATA.push(factionAttrs);
+        _nsidNameToFaction = undefined;
     }
 
     constructor(factionAttrs) {

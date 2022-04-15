@@ -226,6 +226,24 @@ class Spawn {
         bag.setMaxItems(500);
         return bag;
     }
+
+    /**
+     * Register a template ID for spawn.  Template IDs need to be unique across packages,
+     * additive loading the homebrew package is sufficient, no need to specify package id.
+     *
+     * @param {string} nsid
+     * @param {string} templateId
+     */
+    static injectNsidToTemplate(nsid, templateId) {
+        assert(typeof nsid === "string");
+        assert(typeof templateId === "string");
+        if (NSID_TO_TEMPLATE[nsid]) {
+            throw new Error(
+                `Spawn.injectNsidToTemplate: nsid "${nsid}" already registered`
+            );
+        }
+        NSID_TO_TEMPLATE[nsid] = templateId;
+    }
 }
 
 module.exports = { Spawn };

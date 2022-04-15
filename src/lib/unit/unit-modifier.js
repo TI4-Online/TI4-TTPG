@@ -3,6 +3,7 @@ const locale = require("../locale");
 const { ActiveIdle } = require("./active-idle");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { GameObject, world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
@@ -291,6 +292,18 @@ class UnitModifier {
         assert(typeof unitAbility === "string");
         _maybeInit();
         return _unitAbilityToUnitModifier[unitAbility];
+    }
+
+    static injectUnitModifier(rawModifier) {
+        assert(rawModifier);
+        UnitModifierSchema.validate(rawModifier, (err) => {
+            throw new Error(
+                `UnitModifier.injectUnitModifier schema error "${err}"`
+            );
+        });
+
+        UNIT_MODIFIERS.push(rawModifier);
+        _triggerNsidToUnitModifier = undefined;
     }
 
     // ------------------------------------------------------------------------
