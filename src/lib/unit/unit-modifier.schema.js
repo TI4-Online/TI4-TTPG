@@ -1,4 +1,4 @@
-const Ajv = require("../../wrapper/ajv-wrapper");
+const Ajv = require("ajv");
 
 const UNIT_MODIFIER_SCHEMA_JSON = {
     $id: "http://example.com/lib/unit/unit_modifier.json",

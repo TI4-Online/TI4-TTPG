@@ -1,4 +1,4 @@
-const Ajv = require("../../wrapper/ajv-wrapper");
+const Ajv = require("ajv");
 
 const FACTION_SCHEMA = {
     type: "object",

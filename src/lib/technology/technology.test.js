@@ -1,16 +1,22 @@
 require("../../global");
+const assert = require("assert");
 const { Faction } = require("../faction/faction");
-
+const { PlayerDesk } = require("../player-desk/player-desk");
 const {
     MockCard,
     MockCardDetails,
     MockGameObject,
     MockPlayer,
+    globalEvents,
     world,
 } = require("../../wrapper/api");
 
+const TECHNOLOGY_DATA = require("./technology.data");
 const { Technology } = require("./technology");
-const { PlayerDesk } = require("../player-desk/player-desk");
+const { TechnologySchema } = require("./technology.schema");
+
+// Clear/reset a `jest.spyOn` leaves the function gutted.  Remember original.
+const _faction_getByPlayerSlot = Faction.getByPlayerSlot;
 
 const player1 = new MockPlayer({ name: "one" });
 const player2 = new MockPlayer({ name: "two" });
@@ -28,9 +34,19 @@ const sheet = new MockGameObject({
 });
 world.__addObject(sheet);
 
+it("TECHNOLOGY_DATA validate", () => {
+    TECHNOLOGY_DATA.forEach((tech) => {
+        if (!TechnologySchema.validate(tech)) {
+            console.log(JSON.stringify(tech));
+            assert(TechnologySchema.validate(tech));
+        }
+    });
+});
+
 describe("getTechnologies", () => {
     afterEach(() => {
         world.TI4.config.setPoK(true);
+        jest.resetAllMocks();
     });
 
     it("without parameters and enabled PoK", () => {
@@ -83,6 +99,10 @@ describe("getTechnologies", () => {
 });
 
 describe("getTechnologiesByType", () => {
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     it("without a playerSlot", () => {
         const technologies = Technology.getTechnologiesByType();
         expect(technologies.Blue.length).toBe(11);
@@ -107,6 +127,10 @@ describe("getTechnologiesByType", () => {
 });
 
 describe("getTechnologiesOfType", () => {
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     it("without a type", () => {
         expect(Technology.getTechnologiesOfType).toThrowError();
     });
@@ -140,6 +164,7 @@ describe("getTechnologiesOfType", () => {
 describe("getOwnedPlayerTechnologies", () => {
     afterEach(() => {
         world.__clear();
+        jest.resetAllMocks();
     });
 
     it("without a player slot", () => {
@@ -147,6 +172,7 @@ describe("getOwnedPlayerTechnologies", () => {
     });
 
     it("without a playerSlot", () => {
+        const _world_getAllObjects = world.getAllObjects;
         jest.spyOn(world, "getAllObjects").mockReturnValue([
             new MockCard({
                 allCardDetails: [
@@ -173,6 +199,7 @@ describe("getOwnedPlayerTechnologies", () => {
             }),
         ]);
 
+        const _PlayerDesk_getClosest = PlayerDesk.getClosest;
         jest.spyOn(PlayerDesk, "getClosest")
             .mockReturnValueOnce({ playerSlot: 1 })
             .mockReturnValueOnce({ playerSlot: 2 })
@@ -188,5 +215,72 @@ describe("getOwnedPlayerTechnologies", () => {
         expect(ownedTechnologies[1].cardNsid).toBe(
             "card.technology.blue:pok/dark_energy_tap"
         );
+
+        // spyOn does not restore original on reset/clear
+        world.getAllObjects = _world_getAllObjects;
+        PlayerDesk.getClosest = _PlayerDesk_getClosest;
     });
+});
+
+it("inject", () => {
+    // Reset does not restore spyOn functions, manually reset with original.
+    jest.resetAllMocks();
+    Faction.getByPlayerSlot = _faction_getByPlayerSlot;
+
+    Faction.injectFaction({
+        faction: "homebrew_faction_name",
+        source: "homebrew.foo",
+        abilities: [],
+        commodities: 4,
+        home: 18,
+        leaders: {
+            agents: [],
+            commanders: [],
+            heroes: [],
+            mechs: [],
+        },
+        promissoryNotes: [],
+        icon: "global/factions/homebrew_faction_name.png",
+        techs: [],
+        units: [],
+        startingTech: [],
+        startingUnits: {},
+    });
+    Technology.injectTechnology({
+        localeName: "unit.infantry.homebrew_warrior_2",
+        cardNsid:
+            "card.technology.unit_upgrade.homebrew_faction_name:homebrew.foo/homebrew_warrior_2",
+        type: "unitUpgrade",
+        requirements: {
+            Green: 1,
+        },
+        abbrev: "Homebrew II",
+        faction: "homebrew_faction_name",
+        unitPosition: 10,
+    });
+
+    world.__clear();
+    const desk = world.TI4.getAllPlayerDesks()[1];
+    const sheet = new MockGameObject({
+        templateMetadata: "sheet.faction:homebrew.foo/homebrew_faction_name",
+        position: desk.center,
+    });
+    world.__addObject(sheet);
+
+    // Tell Faction to invalidate any caches.
+    const player = new MockPlayer();
+    globalEvents.TI4.onFactionChanged.trigger(desk.playerSlot, player);
+
+    // Make sure the faction applied.
+    const faction = Faction.getByPlayerSlot(desk.playerSlot);
+    assert.equal(faction.raw.faction, "homebrew_faction_name");
+    assert.equal(faction.nsidName, "homebrew_faction_name");
+
+    const techs = Technology.getTechnologies(desk.playerSlot);
+    world.__clear();
+
+    const localeNames = techs.map((tech) => {
+        return tech.localeName;
+    });
+    assert(localeNames.includes("unit.infantry.homebrew_warrior_2"));
 });

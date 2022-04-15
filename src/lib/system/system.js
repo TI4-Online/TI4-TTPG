@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Facing } = require("../facing");
 const { ObjectNamespace } = require("../object-namespace");
+const { SystemSchema } = require("./system.schema");
 const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
@@ -316,6 +317,15 @@ class System {
      */
     static getActiveSystemTileObject() {
         return _activeSystemGameObject;
+    }
+
+    static injectSystem(rawSystem) {
+        assert(rawSystem);
+        SystemSchema.validate(rawSystem, (err) => {
+            throw new Error('System.injectSystem "${err}"');
+        });
+        SYSTEM_ATTRS.push(rawSystem);
+        _tileToSystem = undefined;
     }
 
     constructor(systemAttrs) {

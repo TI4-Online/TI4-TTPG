@@ -1,4 +1,4 @@
-const Ajv = require("../../wrapper/ajv-wrapper");
+const Ajv = require("ajv");
 
 const ATTACHMENT_HELPER_SCHEMA = {
     type: "object",
