@@ -7,6 +7,10 @@ globalEvents.TI4 = {
     // <(agendaCard: GameObject|undefined) => void>
     onAgendaChanged: new TriggerableMulticastDelegate(),
 
+    // Called when a script broadcasts a message to all players (either as broadcast or chat window only).
+    // <(message: string, color: Color) => void>
+    onBroadcast: new TriggerableMulticastDelegate(),
+
     // Called when container rejects an added object.
     // Object is still inside container when this event fires, handlers should
     // verify object.getContainer matches in case multiple act on it.
@@ -160,6 +164,7 @@ world.TI4 = {
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/gamedata-key");
+require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/patch-infinite-container");

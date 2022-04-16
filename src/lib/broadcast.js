@@ -1,6 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ColorUtil } = require("./color/color-util");
-const { world } = require("../wrapper/api");
+const { Color, globalEvents, world } = require("../wrapper/api");
 
 class Broadcast {
     /**
@@ -10,7 +10,11 @@ class Broadcast {
      */
     static broadcastAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
-        assert(Array.isArray(color) || ColorUtil.isColor(color));
+
+        if (Array.isArray(color)) {
+            color = new Color(color[0], color[1], color[2], color[3] || 1);
+        }
+        assert(ColorUtil.isColor(color));
 
         for (const player of world.getAllPlayers()) {
             player.showMessage(message);
@@ -23,7 +27,11 @@ class Broadcast {
      */
     static chatAll(message, color = [1, 1, 1, 1]) {
         assert(typeof message === "string");
-        assert(Array.isArray(color) || ColorUtil.isColor(color));
+
+        if (Array.isArray(color)) {
+            color = new Color(color[0], color[1], color[2], color[3] || 1);
+        }
+        assert(ColorUtil.isColor(color));
 
         for (const player of world.getAllPlayers()) {
             player.sendChatMessage(message, color);
@@ -31,6 +39,7 @@ class Broadcast {
         if (!world.__isMock) {
             console.log(">> " + message);
         }
+        globalEvents.TI4.onBroadcast.trigger(message, color);
     }
 }
 

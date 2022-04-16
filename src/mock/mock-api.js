@@ -19,6 +19,7 @@ Object.assign(module.exports, {
     MockHorizontalAlignment: require("./mock-horizontal-alignment"),
     MockHorizontalBox: require("./mock-horizontal-box"),
     MockImageButton: require("./mock-image-button"),
+    MockImageWidget: require("./mock-image-widget"),
     MockLayoutBox: require("./mock-layout-box"),
     MockObjectType: require("./mock-object-type"),
     MockPlayer: require("./mock-player"),
@@ -33,6 +34,7 @@ Object.assign(module.exports, {
     MockVerticalBox: require("./mock-vertical-box"),
     MockZone: require("./mock-zone"),
     MockZonePermission: require("./mock-zone-permission"),
+    MockZoneShape: require("./mock-zone-shape"),
 });
 
 // Export under the TTPG api names for unaware consumers.
@@ -54,6 +56,7 @@ Object.assign(module.exports, {
     HorizontalAlignment: module.exports.MockHorizontalAlignment,
     HorizontalBox: module.exports.MockHorizontalBox,
     ImageButton: module.exports.MockImageButton,
+    ImageWidget: module.exports.MockImageWidget,
     LayoutBox: module.exports.MockLayoutBox,
     ObjectType: module.exports.MockObjectType,
     Player: module.exports.MockPlayer,
@@ -68,6 +71,7 @@ Object.assign(module.exports, {
     VerticalBox: module.exports.MockVerticalBox,
     Zone: module.exports.MockZone,
     ZonePermission: module.exports.MockZonePermission,
+    ZoneShape: module.exports.MockZoneShape,
 });
 
 // SHARE global objects.
