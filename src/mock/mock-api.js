@@ -33,6 +33,7 @@ Object.assign(module.exports, {
     MockVerticalBox: require("./mock-vertical-box"),
     MockZone: require("./mock-zone"),
     MockZonePermission: require("./mock-zone-permission"),
+    MockZoneShape: require("./mock-zone-shape"),
 });
 
 // Export under the TTPG api names for unaware consumers.
@@ -68,6 +69,7 @@ Object.assign(module.exports, {
     VerticalBox: module.exports.MockVerticalBox,
     Zone: module.exports.MockZone,
     ZonePermission: module.exports.MockZonePermission,
+    ZoneShape: module.exports.MockZoneShape,
 });
 
 // SHARE global objects.
