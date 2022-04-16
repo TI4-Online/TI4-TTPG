@@ -41,13 +41,15 @@ function applyHighlight(obj, color) {
     _obj.addUI(_ui);
 
     // Schedule removal.  Do not try fancy things like fading, world.updateUI flashes ALL UI.
-    if (_removeUiHandle) {
-        clearTimeout(_removeUiHandle);
+    if (!world.__isMock) {
+        if (_removeUiHandle) {
+            clearTimeout(_removeUiHandle);
+        }
+        _removeUiHandle = setTimeout(() => {
+            _obj.removeUIElement(_ui);
+            _removeUiHandle = undefined;
+        }, DISPLAY_SECONDS * 1000);
     }
-    _removeUiHandle = setTimeout(() => {
-        _obj.removeUIElement(_ui);
-        _removeUiHandle = undefined;
-    }, DISPLAY_SECONDS * 1000);
 }
 
 globalEvents.TI4.onSystemActivated.add((obj, player) => {

@@ -131,6 +131,12 @@ class GameObject {
         return this._isValid;
     }
 
+    removeUIElement(uiElement) {
+        this._uis = this._uis.filter((ui) => {
+            return ui != uiElement;
+        });
+    }
+
     setName(value) {
         this._name = value;
     }
