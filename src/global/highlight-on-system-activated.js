@@ -13,7 +13,7 @@ const {
 
 const OVERLAY_PNG = "global/ui/hex_highlight_notched.png";
 const OVERLAY_PNG_SIZE = 115;
-const OVERLAY_SCALE = 4;
+const OVERLAY_SCALE = 16;
 
 const DISPLAY_SECONDS = 20; // 30 in TTS
 
@@ -39,9 +39,10 @@ function applyHighlight(obj, color) {
 
     _obj = obj;
     _ui = new UIElement();
-    _ui.position = new Vector(0, 0, 0.21);
+    _ui.position = new Vector(0, 0, 0.13);
     _ui.rotation = new Rotator(0, 0, 0);
     _ui.widget = _img;
+    _ui.useTransparency = true;
     _ui.scale = 1 / OVERLAY_SCALE;
     _obj.addUI(_ui);
 
