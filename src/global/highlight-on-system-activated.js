@@ -13,7 +13,7 @@ const {
 
 const OVERLAY_PNG = "global/ui/hex_highlight_notched.png";
 const OVERLAY_PNG_SIZE = 115;
-const OVERLAY_SCALE = 16;
+const OVERLAY_SCALE = 4;
 
 const DISPLAY_SECONDS = 20; // 30 in TTS
 
