@@ -1,7 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
+const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Color,
+    GameObject,
     ImageWidget,
     Rotator,
     UIElement,
@@ -15,47 +17,78 @@ const OVERLAY_PNG = "global/ui/hex_highlight_notched.png";
 const OVERLAY_PNG_SIZE = 115;
 const OVERLAY_SCALE = 4;
 
-const DISPLAY_SECONDS = 20; // 30 in TTS
+const PULSE_SECONDS = 3; // from 0->1->0
+const DISPLAY_SECONDS_APPROX = 15; // 30 in TTS
+const DISPLAY_SECONDS =
+    Math.ceil(DISPLAY_SECONDS_APPROX / PULSE_SECONDS) * PULSE_SECONDS; // complete last pulse
 
 let _img = undefined;
-let _obj = undefined;
-let _ui = undefined;
-let _removeUiHandle = undefined;
+let _systemHighlight = undefined;
+
+class SystemHighlight {
+    constructor(obj, color) {
+        assert(obj instanceof GameObject);
+        assert(ColorUtil.isColor(color));
+
+        this._mintTimeMsecs = Date.now();
+        this._obj = obj;
+        this._color = new Color(color.r, color.g, color.b, 1);
+        this._ui = new UIElement();
+        this._updateHandler = () => {
+            const age = Date.now() - this._mintTimeMsecs;
+            if (age / 1000 > DISPLAY_SECONDS) {
+                this.detachUI();
+                return;
+            }
+            this.updateImg();
+        };
+
+        // Attach UI (registers listener).
+        this.attachUI();
+    }
+
+    attachUI() {
+        // Keep image around for future use.
+        if (!_img) {
+            _img = new ImageWidget()
+                .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
+                .setImage(OVERLAY_PNG, refPackageId);
+        }
+
+        this._ui.position = new Vector(0, 0, 0.13);
+        this._ui.rotation = new Rotator(0, 0, 0);
+        this._ui.widget = _img;
+        this._ui.useTransparency = true;
+        this._ui.scale = 1 / OVERLAY_SCALE;
+        this._obj.addUI(this._ui);
+
+        this.updateImg();
+        globalEvents.onTick.add(this._updateHandler);
+    }
+
+    detachUI() {
+        globalEvents.onTick.remove(this._updateHandler);
+        this._obj.removeUIElement(this._ui);
+    }
+
+    updateImg() {
+        const age = (Date.now() - this._mintTimeMsecs) / 1000;
+        const u = (age % PULSE_SECONDS) / PULSE_SECONDS;
+        const phi = u * Math.PI * 2;
+        this._color.a = 1 - (Math.cos(phi) + 1) / 2;
+        assert(this._color.a >= 0 && this._color.a <= 1);
+        _img.setTintColor(this._color);
+    }
+}
 
 function applyHighlight(obj, color) {
-    // Keep the image around.
-    if (!_img) {
-        _img = new ImageWidget()
-            .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
-            .setImage(OVERLAY_PNG, refPackageId);
-    }
-    color = new Color(color.r, color.g, color.b, 1);
-    _img.setTintColor(color);
-
-    // Release and re-create the ui element.
-    if (_obj && _ui) {
-        _obj.removeUIElement(_ui);
+    // Remove any old UI.
+    if (_systemHighlight) {
+        _systemHighlight.detachUI();
+        _systemHighlight = undefined;
     }
 
-    _obj = obj;
-    _ui = new UIElement();
-    _ui.position = new Vector(0, 0, 0.13);
-    _ui.rotation = new Rotator(0, 0, 0);
-    _ui.widget = _img;
-    _ui.useTransparency = true;
-    _ui.scale = 1 / OVERLAY_SCALE;
-    _obj.addUI(_ui);
-
-    // Schedule removal.  Do not try fancy things like fading, world.updateUI flashes ALL UI.
-    if (!world.__isMock) {
-        if (_removeUiHandle) {
-            clearTimeout(_removeUiHandle);
-        }
-        _removeUiHandle = setTimeout(() => {
-            _obj.removeUIElement(_ui);
-            _removeUiHandle = undefined;
-        }, DISPLAY_SECONDS * 1000);
-    }
+    _systemHighlight = new SystemHighlight(obj, color);
 }
 
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
