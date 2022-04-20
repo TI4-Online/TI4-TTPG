@@ -11,7 +11,11 @@ const {
     world,
 } = require("../wrapper/api");
 
-const DISPLAY_SECONDS = 10;
+const OVERLAY_PNG = "global/ui/hex_highlight_notched.png";
+const OVERLAY_PNG_SIZE = 115;
+const OVERLAY_SCALE = 4;
+
+const DISPLAY_SECONDS = 20; // 30 in TTS
 
 let _img = undefined;
 let _obj = undefined;
@@ -22,8 +26,8 @@ function applyHighlight(obj, color) {
     // Keep the image around.
     if (!_img) {
         _img = new ImageWidget()
-            .setImageSize(110, 0)
-            .setImage("global/ui/hex_0_45_final.png", refPackageId);
+            .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
+            .setImage(OVERLAY_PNG, refPackageId);
     }
     color = new Color(color.r, color.g, color.b, 1);
     _img.setTintColor(color);
@@ -35,9 +39,11 @@ function applyHighlight(obj, color) {
 
     _obj = obj;
     _ui = new UIElement();
-    _ui.position = new Vector(0, 0, 0.21);
+    _ui.position = new Vector(0, 0, 0.13);
     _ui.rotation = new Rotator(0, 0, 0);
     _ui.widget = _img;
+    _ui.useTransparency = true;
+    _ui.scale = 1 / OVERLAY_SCALE;
     _obj.addUI(_ui);
 
     // Schedule removal.  Do not try fancy things like fading, world.updateUI flashes ALL UI.
