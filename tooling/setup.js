@@ -6,7 +6,12 @@ console.log(chalk.yellow("Good Morning, Captain"));
 console.log(chalk.green("Welcome to the TTPG dev environment setup"));
 
 const projectConfig = fs.readJsonSync("./config/project.json");
-const variantConfig = projectConfig.variants[projectConfig.defaultVariant];
+const theVariant = process.argv[2] ?? projectConfig.defaultVariant;
+if (!(theVariant in projectConfig.variants)) {
+    console.error(`No such variant '${theVariant}' found`);
+    process.exit(1);
+}
+const variantConfig = projectConfig.variants[theVariant];
 
 const getSuggestedFolder = () => {
     if (process.platform === "darwin") {
