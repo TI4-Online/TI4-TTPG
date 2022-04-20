@@ -11,9 +11,9 @@ if (!fs.existsSync("./config/local.json")) {
     process.exit(1);
 }
 
-const buildLangFile = (config) => {
+const buildLangFile = (config, variant) => {
     return Promise.all(
-        config.variants[config.defaultVariant].lang.map((lang) =>
+        config.variants[variant].lang.map((lang) =>
             fs.readJson(`lang/${lang}.json`)
         )
     )
@@ -30,7 +30,7 @@ const buildLangFile = (config) => {
         });
 };
 
-const spawnWatcher = (config) => {
+const spawnWatcher = (config, variant) => {
     if (config.transpile) {
         return new Promise((resolve, reject) => {
             const child = spawn.spawn(
@@ -40,9 +40,7 @@ const spawnWatcher = (config) => {
                     "src",
                     "--watch",
                     "--out-dir",
-                    `dev/${
-                        config.variants[config.defaultVariant].slug
-                    }_dev/Scripts`,
+                    `dev/${config.variants[variant].slug}_dev/Scripts`,
                 ],
                 { stdio: "pipe" }
             );
@@ -59,9 +57,7 @@ const spawnWatcher = (config) => {
                 if (path) {
                     fs.copy(
                         `./src/${path}`,
-                        `./dev/${
-                            config.variants[config.defaultVariant].slug
-                        }_dev/Scripts/${path}`
+                        `./dev/${config.variants[variant].slug}_dev/Scripts/${path}`
                     ).catch((e) => {
                         console.error(e);
                     });
@@ -81,8 +77,12 @@ const spawnWatcher = (config) => {
 fs.readJson("./config/project.json")
     .then((config) => {
         console.log(chalk.green("Who watches the watchman"));
-        return buildLangFile(config).then(() => {
-            return spawnWatcher(config);
+        const theVariant = process.argv[2] ?? config.defaultVariant;
+        if (!(theVariant in config.variants)) {
+            return Promise.reject(`No such variant '${theVariant}' found`);
+        }
+        return buildLangFile(config, theVariant).then(() => {
+            return spawnWatcher(config, theVariant);
         });
     })
     .then((e) => {
