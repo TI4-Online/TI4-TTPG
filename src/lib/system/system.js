@@ -92,9 +92,13 @@ class Planet {
         return _planetLocaleNameToPlanet[localeName];
     }
 
-    constructor(attrs, system, standardPosition, standardRadius) {
+    constructor(attrs, system, planetIndex, standardPosition, standardRadius) {
+        assert(typeof planetIndex === "number");
+        assert(typeof standardRadius === "number");
+
         this._attrs = attrs;
         this._system = system;
+        this._planetIndex = planetIndex;
         this._attachments = [];
 
         // if the given system attributes does not contain radius
@@ -134,6 +138,10 @@ class Planet {
 
     get localeName() {
         return this.raw.localeName;
+    }
+
+    get planetIndex() {
+        return this._planetIndex;
     }
 
     get position() {
@@ -339,6 +347,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             ONE_PLANET_HOME_POSITION,
                             ONE_PLANET_HOME_RADIUS
                         );
@@ -346,6 +355,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             TWO_PLANET_HOME_POSITION[index],
                             TWO_PLANET_HOME_RADIUS[index]
                         );
@@ -353,6 +363,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             ONE_PLANET_POSITION,
                             ONE_PLANET_RADIUS
                         );
@@ -360,6 +371,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             TWO_PLANET_POSITION[index],
                             TWO_PLANET_RADIUS[index]
                         );
@@ -367,11 +379,12 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             THREE_PLANET_POSITION[index],
                             THREE_PLANET_RADIUS[index]
                         );
                     } else {
-                        return new Planet(planetAttrs, this);
+                        return new Planet(planetAttrs, this, index);
                     }
                 })
             );
