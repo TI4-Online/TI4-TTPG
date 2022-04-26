@@ -5,6 +5,9 @@
  * TheParsleySage's data studio: https://datastudio.google.com/s/prr6ZINoncQ
  *
  * Read w/ parse: curl 'https://ti4-game-data.appspot.com/data?key=<v>' | python -m json.tool
+ *
+ * Archived data in the google cloud, one bucket per month updated daily:
+ * https://storage.googleapis.com/ti4-game-data.appspot.com/2021_02
  */
 
 const assert = require("../../wrapper/assert-wrapper");
@@ -16,6 +19,7 @@ const { fetch, globalEvents, world } = require("../../wrapper/api");
 
 const UPDATORS = [
     require("./updator-config"),
+    require("./updator-hex-summary"),
     require("./updator-laws"),
     require("./updator-map-string"),
     require("./updator-objectives"),

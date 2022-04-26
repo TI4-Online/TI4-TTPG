@@ -1,12 +1,12 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
-const updatorConfig = require("./updator-map-string");
+const updator = require("./updator-map-string");
 const { MockGameObject, MockVector, world } = require("../../wrapper/api");
 
-it("config", () => {
+it("mapString", () => {
     world.TI4.reset();
     let data = {};
-    updatorConfig(data);
+    updator(data);
     assert.equal(data.mapString, "");
 
     world.__clear();
@@ -16,7 +16,7 @@ it("config", () => {
             position: new MockVector(0, 0, 0),
         })
     );
-    updatorConfig(data);
+    updator(data);
     world.__clear();
 
     assert.equal(data.mapString, "{19}");

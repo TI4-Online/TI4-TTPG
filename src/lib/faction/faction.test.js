@@ -46,7 +46,7 @@ it("FACTION_DATA starting units", () => {
 });
 
 it("FACTION_DATA faction locale", () => {
-    FACTION_DATA.filter((faction) => !faction.merge).forEach((faction) => {
+    FACTION_DATA.filter((faction) => !faction.abstract).forEach((faction) => {
         const abbrKey = "faction.abbr." + faction.faction;
         const abbr = locale(abbrKey);
         const fullKey = "faction.full." + faction.faction;

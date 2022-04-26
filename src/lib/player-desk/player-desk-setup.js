@@ -76,7 +76,8 @@ class PlayerDeskSetup {
             const above = factionToken.getPosition().add([0, 0, 15]);
             factionToken.setPosition(above);
             const parsed = ObjectNamespace.parseGeneric(factionToken);
-            faction = world.TI4.getFactionByNsidName(parsed.name);
+            const nsidName = parsed.name.split(".")[0];
+            faction = world.TI4.getFactionByNsidName(nsidName);
         } else {
             // No token, pick a random available faction.
             const inUse = new Set();
@@ -93,7 +94,7 @@ class PlayerDeskSetup {
             }
             const available = [];
             for (const candidate of world.TI4.getAllFactions()) {
-                if (!inUse.has(candidate)) {
+                if (!inUse.has(candidate) && !candidate.raw.abstract) {
                     available.push(candidate);
                 }
             }

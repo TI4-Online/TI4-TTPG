@@ -1,0 +1,155 @@
+{
+	"Type": "Card",
+	"GUID": "3997E158327857192E789E2EDB358845",
+	"Name": "Faction Sheet (Council Keleres)",
+	"Metadata": "sheet.faction:codex.vigil/keleres_xxcha",
+	"CollisionType": "Ground",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"Tags": [],
+	"FrontTexture": "locale/factionsheets/codex.vigil/keleres.back.jpg",
+	"BackTexture": "locale/factionsheets/codex.vigil/keleres.face.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -1,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 28,
+	"Height": 19.002,
+	"Thickness": 0.1,
+	"HiddenInHand": false,
+	"UsedWithCardHolders": false,
+	"CanStack": false,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Square",
+	"Indices": [
+		0
+	],
+	"CardNames": {
+		"0": "Faction Sheet (Council Keleres)"
+	},
+	"CardMetadata": {
+		"0": "sheet.faction:codex.vigil/keleres_xxcha"
+	},
+	"CardTags": {},
+	"SnapPoints": [
+		{
+			"X": -7.05,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -7.05,
+			"Y": -3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": -3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -7.05,
+			"Y": 3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": 3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -7.05,
+			"Y": 10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 2.35,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 7.05,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.35,
+			"Y": -10.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 2.35,
+			"Y": -3.5,
+			"Z": 0.0999961,
+			"Range": 2.39998,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		}
+	]
+}

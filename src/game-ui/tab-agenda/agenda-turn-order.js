@@ -92,8 +92,9 @@ class AgendaTurnOrder {
             }
         }
 
+        // Get desks in order ending with speaker.
         const first = speakerPlayerDesk.index + dir;
-        const result = [];
+        let result = [];
         for (let i = 0; i < playerDesks.length; i++) {
             let index = first + i * dir;
             while (index < 0) {
@@ -102,6 +103,35 @@ class AgendaTurnOrder {
             index = index % playerDesks.length;
             result.push(playerDesks[index]);
         }
+
+        // If "Zeal" (Argent) is in game, they always vote first.
+        // Allow more than one, preserving order.
+        const zealDesks = [];
+        const nonZealDesks = [];
+        for (const playerDesk of result) {
+            const playerSlot = playerDesk.playerSlot;
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (!faction) {
+                nonZealDesks.push(playerDesk);
+                continue;
+            }
+            let hasZeal = false;
+            for (const ability of faction.raw.abilities) {
+                if (ability === "zeal") {
+                    hasZeal = true;
+                    break;
+                }
+            }
+            if (hasZeal) {
+                zealDesks.push(playerDesk);
+            } else {
+                nonZealDesks.push(playerDesk);
+            }
+        }
+        result = [];
+        result.push(...zealDesks);
+        result.push(...nonZealDesks);
+
         return result;
     }
 }

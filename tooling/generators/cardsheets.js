@@ -328,7 +328,7 @@ class AssetFilenames {
      * @param {string} locale - localization
      * @returns {string} image filename, relative to package root.
      */
-    static cardImage(nsid, side, locale) {
+    static cardImage(nsid, side, locale, recursed = false) {
         assert(typeof nsid === "string");
         assert(nsid.startsWith("card"));
         assert(side === "face" || side == "back");
@@ -385,6 +385,15 @@ class AssetFilenames {
         for (const candidate of candidates) {
             if (fs.existsSync(candidate)) {
                 return candidate;
+            }
+        }
+
+        // Try some alternates if not found.
+        if (!recursed) {
+            // If nsid ends with ".omega" also check for _omega named file.
+            if (nsid.endsWith(".omega")) {
+                const omegaNsid = nsid.replace(/.omega$/, "_omega");
+                return AssetFilenames.cardImage(omegaNsid, side, locale, true);
             }
         }
 

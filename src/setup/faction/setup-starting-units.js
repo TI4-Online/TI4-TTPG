@@ -11,8 +11,12 @@ class SetupStartingUnits extends AbstractSetup {
     }
 
     setup() {
+        const tile = this.faction.raw.home;
+        const system = world.TI4.getSystemByTileNumber(tile);
+        const source = system.raw.source;
+
         const playerSlot = this.playerDesk.playerSlot;
-        const homeSystemNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
+        const homeSystemNsid = `tile.system:${source}/${this.faction.raw.home}`;
         const startingUnits = this.faction.raw.startingUnits;
 
         let homeSystemObj = false;

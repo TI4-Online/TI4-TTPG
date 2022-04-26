@@ -155,11 +155,9 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
     }
 });
 
-if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        if (canBePurged(obj)) {
-            addRightClickOption(obj);
-            obj.__hasRightClickPurge = true;
-        }
+for (const obj of world.getAllObjects()) {
+    if (canBePurged(obj)) {
+        addRightClickOption(obj);
+        obj.__hasRightClickPurge = true;
     }
 }

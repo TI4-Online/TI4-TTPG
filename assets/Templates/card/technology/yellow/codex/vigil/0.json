@@ -1,0 +1,67 @@
+{
+	"Type": "Card",
+	"GUID": "921ED7DDA1482633D36D0598A3AB9C72",
+	"Name": "Technology (Yellow) (codex.vigil)",
+	"Metadata": "card.technology.yellow:codex.vigil/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/technology/yellow/codex/vigil/0.face.jpg",
+	"BackTexture": "global/card/technology/yellow.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1
+	],
+	"CardNames": {
+		"0": "Agency Supply Network",
+		"1": "I.I.H.Q. Modernization"
+	},
+	"CardMetadata": {
+		"0": "card.technology.yellow.keleres:codex.vigil/agency_supply_network",
+		"1": "card.technology.yellow.keleres:codex.vigil/iihq_modernization"
+	}
+}

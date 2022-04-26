@@ -2,7 +2,6 @@ const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
-const { Faction } = require("../../lib/faction/faction");
 const {
     Button,
     Canvas,
@@ -68,10 +67,18 @@ function drawTechButton(
     });
     canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
-    if (tech.faction) {
-        console.log(tech.faction);
+    let factionNsidName = tech.faction;
+    if (tech.factions) {
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        factionNsidName = faction.nsidName;
+    }
+
+    if (factionNsidName) {
         let factionIcon = new ImageWidget()
-            .setImage(Faction.getByNsidName(tech.faction).icon, packageId)
+            .setImage(
+                world.TI4.getFactionByNsidName(factionNsidName).icon,
+                packageId
+            )
             .setImageSize(imageSize, imageSize);
         canvas.addChild(
             factionIcon,

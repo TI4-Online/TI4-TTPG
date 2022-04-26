@@ -2,11 +2,11 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ApplyScoreboard } = require("./apply-scoreboard");
 const { GameSetupUI } = require("./game-setup-ui");
 const { Hex } = require("../../lib/hex");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
 
 let _useGameData = false;
 

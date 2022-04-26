@@ -854,4 +854,28 @@ module.exports = [
         faction: "nekro",
         unitPosition: 3,
     },
+    {
+        localeName: "technology.name.iihq_modernization",
+        cardNsid:
+            "card.technology.yellow.keleres:codex.vigil/iihq_modernization",
+        type: "Yellow",
+        requirements: {
+            Yellow: 1,
+        },
+        abbrev: "IIQH Modern",
+        factions: ["keleres_argent", "keleres_mentak", "keleres_xxcha"],
+        source: "Codex 3",
+    },
+    {
+        localeName: "technology.name.agency_supply_network",
+        cardNsid:
+            "card.technology.yellow.keleres:codex.vigil/agency_supply_network",
+        type: "Yellow",
+        requirements: {
+            Yellow: 2,
+        },
+        abbrev: "Agency Supply",
+        factions: ["keleres_argent", "keleres_mentak", "keleres_xxcha"],
+        source: "Codex 3",
+    },
 ];

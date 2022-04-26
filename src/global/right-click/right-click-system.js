@@ -104,11 +104,8 @@ globalEvents.onObjectCreated.add((obj) => {
     }
 });
 
-// Script reload doesn't call onObjectCreated on existing objects, load manually.
-if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        if (ObjectNamespace.isSystemTile(obj)) {
-            addRightClickOptions(obj);
-        }
+for (const obj of world.getAllObjects()) {
+    if (ObjectNamespace.isSystemTile(obj)) {
+        addRightClickOptions(obj);
     }
 }

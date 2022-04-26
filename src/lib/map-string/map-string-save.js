@@ -33,7 +33,9 @@ class MapStringSave {
                 tile: tile,
             };
             if (system && system.raw.hyperlane) {
-                entry.rotation = Math.floor((obj.getRotation().yaw + 30) / 60);
+                entry.rotation = obj.getRotation().yaw + 30;
+                entry.rotation = (entry.rotation + 360) % 360;
+                entry.rotation = Math.floor(entry.rotation / 60);
                 entry.side = Facing.isFaceUp(obj) ? "A" : "B";
             }
 
