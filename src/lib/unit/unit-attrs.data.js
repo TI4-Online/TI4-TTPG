@@ -534,6 +534,12 @@ module.exports = [
     {
         unit: "mech",
         upgradeLevel: 1,
+        localeName: "unit.mech.omniopiares",
+        triggerNsid: "card.leader.mech.keleres:codex.vigil/omniopiares",
+    },
+    {
+        unit: "mech",
+        upgradeLevel: 1,
         localeName: "unit.mech.pride_of_kenara",
         triggerNsid: "card.leader.mech.hacan:base/pride_of_kenara",
     },
@@ -623,6 +629,15 @@ module.exports = [
         disablePlanetaryShield: true,
         bombardment: { dice: 3, hit: 5 },
         spaceCombat: { dice: 2, hit: 5 },
+    },
+    {
+        unit: "flagship",
+        upgradeLevel: 1,
+        localeName: "unit.flagship.artemiris",
+        triggerNsid:
+            "card.technology.unit_upgrade.keleres:franken.codex.vigil/artemiris",
+        spaceCombat: { dice: 2, hit: 7 },
+        capacity: 6,
     },
     {
         unit: "flagship",

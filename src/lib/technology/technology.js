@@ -16,24 +16,33 @@ let _technologies;
 let _technologiesByFaction = {};
 let _settings = {
     pok: world.TI4.config.pok,
+    codex3: world.TI4.config.codex3,
 };
 const types = ["Red", "Yellow", "Green", "Blue", "unitUpgrade"];
 
 const isSourceEnabled = (source) => {
     return (
         source === undefined || // base technology
-        (source === "PoK" && world.TI4.config.pok)
-    ); // PoK technology
+        (source === "PoK" && world.TI4.config.pok) ||
+        (source === "Codex 3" && world.TI4.config.codex3)
+    );
 };
 
 const getTechnologiesRawArray = (factionName) => {
     return TECHNOLOGY_DATA.filter((tech) => {
+        if (!isSourceEnabled(tech.source)) {
+            return false;
+        }
+        if (!factionName) {
+            return true; // no filtering for factions
+        }
+        if (!tech.faction && !tech.factions) {
+            return true; // not a faction technology
+        }
         return (
-            isSourceEnabled(tech.source) &&
-            (!factionName || // no filtering for factions
-                !tech.faction || // not a faction technology
-                tech.faction === factionName) // matching faction
-        );
+            tech.faction === factionName ||
+            (tech.factions && tech.factions.includes(factionName))
+        ); // matching faction
     });
 };
 
@@ -44,10 +53,12 @@ const invalidateCache = () => {
 
 const checkCache = () => {
     const pok = world.TI4.config.pok;
-    if (_settings.pok !== pok) {
+    const codex3 = world.TI4.config.codex3;
+    if (_settings.pok !== pok || _settings.codex3 !== codex3) {
         invalidateCache();
     }
     _settings.pok = pok;
+    _settings.codex3 = codex3;
 };
 
 const getTechnologiesMap = (factionName) => {

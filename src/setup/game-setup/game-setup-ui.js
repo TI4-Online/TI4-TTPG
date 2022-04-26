@@ -105,8 +105,6 @@ class GameSetupUI {
                 world.TI4.config.codex3,
                 this._callbacks.onUseCodex3Changed
             )
-                .setIsChecked(false) // XXX REMOVE WHEN READY
-                .setEnabled(false) // XXX REMOVE WHEN READY
         );
 
         fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space

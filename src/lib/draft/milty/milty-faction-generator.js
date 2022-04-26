@@ -40,8 +40,37 @@ class MiltyFactionGenerator {
     }
 
     generate() {
-        let factions = world.TI4.getAllFactions();
+        let factions = world.TI4.getAllFactions().filter((faction) => {
+            return !faction.raw.abstract;
+        });
         factions = Shuffle.shuffle(factions);
+
+        // Only use one Keleres, do not mix with conflicting home system.
+        const rejectSet = new Set();
+        factions = factions.filter((faction) => {
+            const nsidName = faction.nsidName;
+            if (rejectSet.has(nsidName)) {
+                return false;
+            }
+            if (nsidName === "argent") {
+                rejectSet.add("keleres_argent");
+            } else if (nsidName === "mentak") {
+                rejectSet.add("keleres_mentak");
+            } else if (nsidName === "xxcha") {
+                rejectSet.add("keleres_xxcha");
+            } else if (nsidName === "keleres_argent") {
+                rejectSet.add("keleres_mentak");
+                rejectSet.add("keleres_xxcha");
+            } else if (nsidName === "keleres_mentak") {
+                rejectSet.add("keleres_argent");
+                rejectSet.add("keleres_xxcha");
+            } else if (nsidName === "keleres_xxcha") {
+                rejectSet.add("keleres_argent");
+                rejectSet.add("keleres_mentak");
+            }
+            return true;
+        });
+
         return factions.slice(0, this._count);
     }
 }

@@ -1147,4 +1147,21 @@ module.exports = [
         img: "global/ui/tiles/pok/hyperlane/tile_091_o.png",
         imgFaceDown: "global/ui/tiles/pok/hyperlane/tile_091_r.png",
     },
+
+    // Planets without a system.
+    {
+        tile: -1,
+        source: "codex.vigil",
+        planets: [
+            {
+                localeName: "planet.custodia_vigilia",
+                resources: 2,
+                influence: 3,
+                legendary: true,
+                legendaryCard:
+                    "card.legendary_planet:codex.vigil/custodia_vigilia",
+            },
+        ],
+        img: "",
+    },
 ];

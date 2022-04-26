@@ -27,6 +27,7 @@ function _maybeInit() {
                 for (const faction of FACTION_DATA) {
                     if (faction.faction === factionAttrs.merge) {
                         newFactionAttrs = lodash.cloneDeep(faction);
+                        delete newFactionAttrs.abstract;
                         break;
                     }
                 }

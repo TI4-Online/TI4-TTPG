@@ -174,46 +174,57 @@ const FACTION_DATA = [
         techs: ["spacial_conduit_cylinder", "eres_siphons"],
         units: ["jns_hylarim", "shield_paling"],
     },
-    // {
-    //     faction: "keleres.argent",
-    //     abilities: [],
-    //     commodities: 2,
-    //     home: 58,
-    //     leaders: {
-    //         agents: [],
-    //         commanders: [],
-    //         heroes: [],
-    //     },
-    //     promissoryNotes: [],
-    //     icon: "global/factions/argent_icon.png",
-    //     source: "codex.vigil",
-    //     startingTech: [
-    //         // player chooses 2 non-faction tech from others
-    //     ],
-    //     startingUnits: {
-    //         space_dock: 1,
-    //     },
-    //     techs: [],
-    //     units: [],
-    // },
-    // {
-    //     faction: "keleres.mentak",
-    //     merge: "keleres.argent",
-    //     home: 2,
-    //     leaders: {
-    //         heroes: [],
-    //     },
-    //     icon: "global/factions/mentak_icon.png",
-    // },
-    // {
-    //     faction: "keleres.xxcha",
-    //     merge: "keleres.argent",
-    //     home: 14,
-    //     leaders: {
-    //         heroes: [],
-    //     },
-    //     icon: "global/factions/xxcha_icon.png",
-    // },
+    {
+        faction: "keleres",
+        abstract: true, // not for general use
+        abilities: ["the_tribunii", "council_patronage", "laws_order"],
+        commodities: 2,
+        home: -1,
+        leaders: {
+            agents: ["xander_alexin_victori_iii"],
+            commanders: ["suffi_an"],
+            heroes: [],
+        },
+        promissoryNotes: ["keleres_rider"],
+        source: "codex.vigil",
+        startingTech: [],
+        startingUnits: {
+            carrier: 2,
+            cruiser: 1,
+            fighter: 2,
+            infantry: 2,
+            space_dock: 1,
+        },
+        techs: ["iihq_modernization", "agency_supply_network"],
+        units: ["artemiris", "omniopiares"],
+    },
+    {
+        faction: "keleres_argent",
+        merge: "keleres",
+        home: 58,
+        leaders: {
+            heroes: ["kuuasi_aun_jalatai"],
+        },
+        icon: "global/factions/argent_icon.png",
+    },
+    {
+        faction: "keleres_mentak",
+        merge: "keleres",
+        home: 2,
+        leaders: {
+            heroes: ["harka_leeds"],
+        },
+        icon: "global/factions/mentak_icon.png",
+    },
+    {
+        faction: "keleres_xxcha",
+        merge: "keleres",
+        home: 14,
+        leaders: {
+            heroes: ["odlynn_myrr"],
+        },
+        icon: "global/factions/xxcha_icon.png",
+    },
     {
         faction: "l1z1x",
         abilities: ["assimilate", "harrow"],
