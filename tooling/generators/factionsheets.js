@@ -2,10 +2,18 @@ const fs = require("fs-extra");
 const crypto = require("crypto");
 
 const modSet =
-    process.argv.length > 2 ? process.argv.slice(2) : ["base", "pok"];
+    process.argv.length > 2
+        ? process.argv.slice(2)
+        : ["base", "pok", "codex.vigil"];
 
 const generateFactionSheet = (guid, mod, name, slug) => {
     const nsid = `sheet.faction:${mod}/${slug}`;
+
+    // Use a common image for Keleres *AFTER* minting NSID
+    if (slug.startsWith("keleres_")) {
+        slug = "keleres";
+    }
+
     return {
         Type: "Card",
         GUID: guid,
@@ -232,6 +240,17 @@ const FACTIONS = {
         },
         vuilraith: {
             name: "Vuil-Raith",
+        },
+    },
+    "codex.vigil": {
+        keleres_argent: {
+            name: "Council Keleres",
+        },
+        keleres_mentak: {
+            name: "Council Keleres",
+        },
+        keleres_xxcha: {
+            name: "Council Keleres",
         },
     },
 };
