@@ -106,12 +106,9 @@ globalEvents.TI4.onStrategyCardPlayed.add((strategyCardObj, player) => {
     }
 });
 
-// Script reload doesn't call onObjectCreated on existing objects, load manually.
-if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        const nsid = ObjectNamespace.getNsid(obj);
-        if (nsid.startsWith("card.agenda")) {
-            addRightClickOptions(obj);
-        }
+for (const obj of world.getAllObjects()) {
+    const nsid = ObjectNamespace.getNsid(obj);
+    if (nsid.startsWith("card.agenda")) {
+        addRightClickOptions(obj);
     }
 }

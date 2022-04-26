@@ -100,11 +100,8 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     }
 });
 
-// Script reload doesn't call onObjectCreated on existing objects, load manually.
-if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        if (isReportRemaining(obj)) {
-            addRightClickReportRemaining(obj);
-        }
+for (const obj of world.getAllObjects()) {
+    if (isReportRemaining(obj)) {
+        addRightClickReportRemaining(obj);
     }
 }
