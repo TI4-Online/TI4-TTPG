@@ -135,6 +135,14 @@ class TabAgenda {
             assert(planet);
             let influence = planet.raw.influence;
 
+            // Add resources to influence value.
+            const playerSlot = closestDesk.playerSlot;
+            const gromOmegaNsid =
+                "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
+            if (CardUtil.hasCard(playerSlot, gromOmegaNsid, false)) {
+                influence += planet.raw.resources;
+            }
+
             const deskIndexToPerPlanetBonus =
                 this.getDeskIndexToPerPlanetBonus();
             const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
