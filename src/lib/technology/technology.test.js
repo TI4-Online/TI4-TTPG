@@ -46,12 +46,13 @@ it("TECHNOLOGY_DATA validate", () => {
 describe("getTechnologies", () => {
     afterEach(() => {
         world.TI4.config.setPoK(true);
+        world.TI4.config.setCodex3(true);
         jest.resetAllMocks();
     });
 
     it("without parameters and enabled PoK", () => {
         const technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(82);
+        expect(technologies.length).toBe(84);
     });
 
     it("with a playerSlot and enabled PoK", () => {
@@ -64,6 +65,7 @@ describe("getTechnologies", () => {
 
     it("without parameters and disabled PoK", () => {
         world.TI4.config.setPoK(false);
+        world.TI4.config.setCodex3(false);
         jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
             raw: { faction: "arborec" },
         });
@@ -73,6 +75,7 @@ describe("getTechnologies", () => {
 
     it("with a playerSlot and disabled PoK", () => {
         world.TI4.config.setPoK(false);
+        world.TI4.config.setCodex3(false);
         jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
             raw: { faction: "arborec" },
         });
@@ -86,15 +89,17 @@ describe("getTechnologies", () => {
         });
 
         let technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(82);
+        expect(technologies.length).toBe(84);
 
         world.TI4.config.setPoK(false);
+        world.TI4.config.setCodex3(false);
         technologies = Technology.getTechnologies();
         expect(technologies.length).toBe(60);
 
         world.TI4.config.setPoK(true);
+        world.TI4.config.setCodex3(true);
         technologies = Technology.getTechnologies();
-        expect(technologies.length).toBe(82);
+        expect(technologies.length).toBe(84);
     });
 });
 
@@ -107,7 +112,7 @@ describe("getTechnologiesByType", () => {
         const technologies = Technology.getTechnologiesByType();
         expect(technologies.Blue.length).toBe(11);
         expect(technologies.Red.length).toBe(12);
-        expect(technologies.Yellow.length).toBe(17);
+        expect(technologies.Yellow.length).toBe(19);
         expect(technologies.Green.length).toBe(16);
         expect(technologies.unitUpgrade.length).toBe(24);
     });
@@ -141,7 +146,7 @@ describe("getTechnologiesOfType", () => {
 
         expect(getLength("Blue")).toBe(11);
         expect(getLength("Red")).toBe(12);
-        expect(getLength("Yellow")).toBe(17);
+        expect(getLength("Yellow")).toBe(19);
         expect(getLength("Green")).toBe(16);
         expect(getLength("unitUpgrade")).toBe(24);
     });
