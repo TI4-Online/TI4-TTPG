@@ -27,6 +27,7 @@ const {
     world,
 } = require("../../wrapper/api");
 const { Technology } = require("../../lib/technology/technology");
+const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 
 const MAT_WIDTH = 18.4;
 const MAT_HEIGHT = 18.4;
@@ -415,6 +416,9 @@ class BuildAreaMat {
             .setPlayerSlot(playerSlot)
             .setFaction(faction)
             .build();
+
+        // Apply unit upgrades.
+        new AuxDataPair(auxData, new AuxDataBuilder().build()).fillPairSync();
 
         // Compute produce cost, account for multiple units per produce.
         let totalCost = 0;
