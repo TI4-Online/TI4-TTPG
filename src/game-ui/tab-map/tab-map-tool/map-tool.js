@@ -192,6 +192,10 @@ class MapTool {
             }
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid.startsWith("card.planet")) {
+                const planet = world.TI4.getPlanetByCard(obj);
+                if (planet && planet.system.home) {
+                    continue;
+                }
                 loosePlanetCards.push(obj);
             } else if (nsid.startsWith("card.legendary_planet")) {
                 looseLegendaryPlanetCards.push(obj);
