@@ -186,6 +186,7 @@ const FACTION_DATA = [
             heroes: [],
         },
         promissoryNotes: ["keleres_rider"],
+        icon: "global/factions/keleres_icon.png",
         source: "codex.vigil",
         startingTech: [],
         startingUnits: {
@@ -205,7 +206,6 @@ const FACTION_DATA = [
         leaders: {
             heroes: ["kuuasi_aun_jalatai"],
         },
-        icon: "global/factions/argent_icon.png",
     },
     {
         faction: "keleres_mentak",
@@ -214,7 +214,6 @@ const FACTION_DATA = [
         leaders: {
             heroes: ["harka_leeds"],
         },
-        icon: "global/factions/mentak_icon.png",
     },
     {
         faction: "keleres_xxcha",
@@ -223,7 +222,6 @@ const FACTION_DATA = [
         leaders: {
             heroes: ["odlynn_myrr"],
         },
-        icon: "global/factions/xxcha_icon.png",
     },
     {
         faction: "l1z1x",

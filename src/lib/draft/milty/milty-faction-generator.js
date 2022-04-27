@@ -61,12 +61,15 @@ class MiltyFactionGenerator {
             } else if (nsidName === "keleres_argent") {
                 rejectSet.add("keleres_mentak");
                 rejectSet.add("keleres_xxcha");
+                rejectSet.add("argent");
             } else if (nsidName === "keleres_mentak") {
                 rejectSet.add("keleres_argent");
                 rejectSet.add("keleres_xxcha");
+                rejectSet.add("mentak");
             } else if (nsidName === "keleres_xxcha") {
                 rejectSet.add("keleres_argent");
                 rejectSet.add("keleres_mentak");
+                rejectSet.add("xxcha");
             }
             return true;
         });
