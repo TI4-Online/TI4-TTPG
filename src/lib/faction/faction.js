@@ -87,7 +87,19 @@ function _maybeInit() {
 class Faction {
     static getAllFactions() {
         _maybeInit();
-        return [...Object.values(_nsidNameToFaction)];
+        // Restrict to available factions.
+        return [...Object.values(_nsidNameToFaction)].filter((faction) => {
+            if (faction.nsidSource === "pok" && !world.TI4.config.pok) {
+                return false;
+            }
+            if (
+                faction.nsidSource === "codex.vigil" &&
+                !world.TI4.config.codex3
+            ) {
+                return false;
+            }
+            return true;
+        });
     }
 
     static getByPlayerSlot(playerSlot) {
