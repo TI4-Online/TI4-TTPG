@@ -103,6 +103,10 @@ class MapTool {
         const nsidTypeAndNameToPos = {};
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
+            // Ignore home systems.
+            if (system.home) {
+                continue;
+            }
             for (const planet of system.planets) {
                 const planetNsidName = planet.getPlanetNsidName();
 
