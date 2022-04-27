@@ -24,5 +24,7 @@
     "card.objective.secret:base/make_an_example_of_their_world": "card.objective.secret:codex.vigil/make_an_example_of_their_world.omega",
     "card.faction_reference:base/yin": "card.faction_reference:codex.vigil/yin.omega",
     "card.faction_reference:base/xxcha": "card.faction_reference:codex.vigil/xxcha.omega",
-    "card.faction_reference:base/naalu": "card.faction_reference:codex.vigil/naalu.omega"
+    "card.faction_reference:base/naalu": "card.faction_reference:codex.vigil/naalu.omega",
+    "card.alliance:pok/naalu": "card.alliance:codex.vigil/naalu.omega",
+    "card.alliance:pok/yin": "card.alliance:codex.vigil/yin.omega"
 }

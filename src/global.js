@@ -90,15 +90,17 @@ if (!world.__isMock) {
 }
 
 const { Faction } = require("./lib/faction/faction");
+const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
+const { GameData } = require("./lib/game-data/game-data");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
-const { GameData } = require("./lib/game-data/game-data");
 const { Turns } = require("./lib/turns");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     config: new GameSetupConfig(),
+    fogOfWar: new FogOfWar(),
     gameData: new GameData(),
     turns: new Turns(true),
 
@@ -186,4 +188,5 @@ require("./global/whisper-message");
 
 if (!world.__isMock) {
     GameData.maybeRestartGameData();
+    world.TI4.fogOfWar.maybeEnable();
 }

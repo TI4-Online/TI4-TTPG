@@ -23,7 +23,8 @@ class SetupFactionAlliance extends AbstractSetup {
         const card = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.alliance:pok/faction"
             const parsed = ObjectNamespace.parseNsid(nsid);
-            return parsed.name === this.faction.nsidName;
+            const name = parsed.name.split(".")[0];
+            return name === this.faction.nsidName;
         });
 
         const playerSlot = this.playerDesk.playerSlot;
@@ -41,7 +42,8 @@ class SetupFactionAlliance extends AbstractSetup {
                 return false;
             }
             const parsed = ObjectNamespace.parseNsid(nsid);
-            return parsed.name === this.faction.nsidName;
+            const name = parsed.name.split(".")[0];
+            return name === this.faction.nsidName;
         });
         for (const card of cards) {
             card.destroy();
