@@ -106,10 +106,11 @@ class SetupUnits extends AbstractSetup {
                 continue;
             }
             if (ObjectNamespace.isUnitBag(obj)) {
-                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 for (const inner of obj.getItems()) {
                     inner.setTags(["DELETED_ITEMS_IGNORE"]);
                 }
+                obj.clear();
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             } else if (ObjectNamespace.isUnit(obj)) {
                 obj.setTags(["DELETED_ITEMS_IGNORE"]);
