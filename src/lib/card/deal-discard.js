@@ -364,6 +364,7 @@ class DealDiscard {
         let deck = DealDiscard._getDeck(nsid, getDiscard);
         if (deck) {
             // Add to existing discard pile.
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             const toFront = true;
             const offset = 0;
             const animate = true;

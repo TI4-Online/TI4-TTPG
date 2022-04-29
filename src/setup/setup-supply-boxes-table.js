@@ -68,6 +68,7 @@ class SetupSupplyBoxesTable extends AbstractSetup {
             if (!bagNsids.has(nsid)) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }
@@ -85,6 +86,7 @@ class SetupSupplyBoxesTable extends AbstractSetup {
         if (bag.getType() !== 1) {
             bag.setType(1);
             const json = bag.toJSONString();
+            bag.setTags(["DELETED_ITEMS_IGNORE"]);
             bag.destroy();
             bag = world.createObjectFromJSON(json, pos);
             bag.setRotation(rot);

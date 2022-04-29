@@ -39,6 +39,7 @@ class SetupFactionSheet extends AbstractSetup {
             if (closestDesk !== this.playerDesk) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

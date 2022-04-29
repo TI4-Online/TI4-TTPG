@@ -190,6 +190,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
             if (nsid !== "tile.system:base/0") {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

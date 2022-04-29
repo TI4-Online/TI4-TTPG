@@ -74,6 +74,7 @@ class SetupTableBoxes extends AbstractSetup {
             if (!nameSet.has(name)) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

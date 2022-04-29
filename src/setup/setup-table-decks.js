@@ -152,8 +152,8 @@ class SetupTableDecks extends AbstractSetup {
             const nsid = nsids[0];
             for (const deckData of TABLE_DECKS) {
                 if (nsid.startsWith(deckData.nsidPrefix)) {
+                    obj.setTags(["DELETED_ITEMS_IGNORE"]);
                     obj.destroy();
-                    break;
                 }
             }
         }

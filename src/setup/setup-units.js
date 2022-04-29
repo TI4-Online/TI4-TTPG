@@ -105,7 +105,14 @@ class SetupUnits extends AbstractSetup {
             if (obj.getOwningPlayerSlot() !== playerSlot) {
                 continue;
             }
-            if (ObjectNamespace.isUnit(obj) || ObjectNamespace.isUnitBag(obj)) {
+            if (ObjectNamespace.isUnitBag(obj)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                for (const inner of obj.getItems()) {
+                    inner.setTags(["DELETED_ITEMS_IGNORE"]);
+                }
+                obj.destroy();
+            } else if (ObjectNamespace.isUnit(obj)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             }
         }

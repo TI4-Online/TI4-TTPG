@@ -35,6 +35,7 @@ class SetupGenericTech extends AbstractSetup {
             return closestDesk === this.playerDesk;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }
