@@ -52,7 +52,10 @@ function moveNewPlayerToNonSeatSlot(player) {
     }
     for (let i = 0; i < 20; i++) {
         if (!reservedSlots.has(i)) {
+            const before = player.getSlot();
             player.switchSlot(i);
+            const after = player.getSlot();
+            console.log(`moveNewPlayerToNonSeatSlot: ${before} -> ${after}`);
             return;
         }
     }
