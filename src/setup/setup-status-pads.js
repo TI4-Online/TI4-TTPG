@@ -42,6 +42,7 @@ class SetupStatusPads extends AbstractSetup {
             if (nsid !== STATUS_PAD.nsid) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

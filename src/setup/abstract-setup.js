@@ -112,6 +112,7 @@ class AbstractSetup {
         mergeDeckNsids.forEach((mergeDeckNsid) => {
             const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
             if (deck) {
+                mergeDeck.setTags(["DELETED_ITEMS_IGNORE"]);
                 deck.addCards(mergeDeck);
             } else {
                 deck = mergeDeck;

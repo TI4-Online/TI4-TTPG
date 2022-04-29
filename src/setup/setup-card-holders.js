@@ -38,6 +38,10 @@ class SetupCardHolders extends AbstractSetup {
         const playerSlot = this.playerDesk.playerSlot;
         const cardHolder = CardUtil.getCardHolder(playerSlot);
         if (cardHolder) {
+            for (const card of cardHolder.getCards()) {
+                card.removeFromHolder();
+            }
+            cardHolder.setTags(["DELETED_ITEMS_IGNORE"]);
             cardHolder.destroy();
         }
     }

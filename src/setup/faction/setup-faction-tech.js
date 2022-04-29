@@ -72,6 +72,7 @@ class SetupFactionTech extends AbstractSetup {
             return factionType === matchFactionName;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

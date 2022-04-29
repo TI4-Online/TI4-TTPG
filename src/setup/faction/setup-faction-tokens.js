@@ -77,6 +77,7 @@ class SetupFactionTokens extends AbstractSetup {
             if (!deleSet.has(nsid)) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }
@@ -114,6 +115,7 @@ class SetupFactionTokens extends AbstractSetup {
         if (bag.getType() !== tokenData.bagType) {
             bag.setType(tokenData.bagType);
             const json = bag.toJSONString();
+            bag.setTags(["DELETED_ITEMS_IGNORE"]);
             bag.destroy();
             bag = world.createObjectFromJSON(json, pos);
             bag.setRotation(rot);

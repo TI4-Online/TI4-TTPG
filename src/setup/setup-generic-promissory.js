@@ -41,6 +41,7 @@ class SetupGenericPromissory extends AbstractSetup {
         };
         const cards = CardUtil.gatherCards(filter);
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

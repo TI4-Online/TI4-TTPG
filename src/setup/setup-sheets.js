@@ -51,6 +51,7 @@ class SetupSheets extends AbstractSetup {
     _cleanSheet(sheetData) {
         const obj = this.findObjectOwnedByPlayerDesk(sheetData.nsid);
         if (obj) {
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

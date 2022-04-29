@@ -46,6 +46,7 @@ class SetupFactionAlliance extends AbstractSetup {
             return name === this.faction.nsidName;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

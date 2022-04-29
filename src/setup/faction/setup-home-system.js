@@ -113,6 +113,7 @@ class SetupHomeSystem extends AbstractSetup {
             if (nsid === replaceNsid) {
                 replacePos = obj.getPosition();
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
 
@@ -169,6 +170,7 @@ class SetupHomeSystem extends AbstractSetup {
             return closestDesk === this.playerDesk;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

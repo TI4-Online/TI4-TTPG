@@ -59,6 +59,7 @@ class SetupFactionPromissory extends AbstractSetup {
             return true;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

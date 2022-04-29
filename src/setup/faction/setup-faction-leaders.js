@@ -78,6 +78,7 @@ class SetupFactionLeaders extends AbstractSetup {
             return acceptNames.has(parsed.name);
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

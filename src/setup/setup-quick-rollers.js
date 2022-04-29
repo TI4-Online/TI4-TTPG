@@ -40,6 +40,7 @@ class SetupQuickRollers extends AbstractSetup {
             }
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === QUICK_ROLLER.nsid) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             }
         }

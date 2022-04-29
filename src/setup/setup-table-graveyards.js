@@ -36,6 +36,7 @@ class SetupTableGraveyards extends AbstractSetup {
             if (nsid !== "bag:base/garbage") {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

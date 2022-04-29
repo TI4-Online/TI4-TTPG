@@ -85,6 +85,7 @@ class SetupSecretHolders extends AbstractSetup {
             if (!nsid.startsWith("cardholder:")) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

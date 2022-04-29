@@ -74,6 +74,7 @@ class SetupStrategyCards extends AbstractSetup {
     clean() {
         for (const obj of world.getAllObjects()) {
             if (ObjectNamespace.isStrategyCard(obj)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             }
         }

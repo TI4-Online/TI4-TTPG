@@ -95,6 +95,7 @@ class SetupTableMats extends AbstractSetup {
             if (!destroyNsids.has(nsid)) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }
