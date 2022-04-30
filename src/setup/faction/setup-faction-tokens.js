@@ -122,8 +122,8 @@ class SetupFactionTokens extends AbstractSetup {
         }
 
         const tokenNsid = `${tokenData.tokenNsidType}:${this.faction.nsidSource}/${this.faction.nsidName}`;
-        const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.tokenCount; i++) {
+            const above = pos.add([0, 0, 10 + i * 3]);
             const token = Spawn.spawn(tokenNsid, above, rot);
             token.setOwningPlayerSlot(playerSlot);
             token.setPrimaryColor(color);

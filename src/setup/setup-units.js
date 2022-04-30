@@ -133,7 +133,7 @@ class SetupUnits extends AbstractSetup {
         bag.setPrimaryColor(color); // setting owning slot applies default, set again paranoia
 
         for (let i = 0; i < unitData.unitCount; i++) {
-            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i]);
+            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i * 3]);
             const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
@@ -142,5 +142,5 @@ class SetupUnits extends AbstractSetup {
         }
     }
 }
-
+//
 module.exports = { SetupUnits, UNIT_DATA };

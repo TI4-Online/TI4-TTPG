@@ -134,6 +134,10 @@ class GameWorld {
         return result;
     }
 
+    nextTurn() {}
+
+    previousTurn() {}
+
     removeUI(index) {
         this._uis.splice(index, 1);
     }
