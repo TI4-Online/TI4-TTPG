@@ -38,6 +38,7 @@ class SetupPlayerMats extends AbstractSetup {
             obj.setObjectType(ObjectType.Ground);
         });
     }
+
     clean() {
         const destroyNsids = new Set();
         MATS.forEach((matData) => {

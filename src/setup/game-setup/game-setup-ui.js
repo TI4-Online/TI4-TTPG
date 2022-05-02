@@ -15,7 +15,21 @@ const {
     world,
 } = require("../../wrapper/api");
 
+let _playerCountSlider = undefined;
+
 class GameSetupUI {
+    static disablePlayerCountSlider() {
+        if (_playerCountSlider) {
+            _playerCountSlider.setEnabled(false);
+        }
+    }
+
+    static enablePlayerCountSlider() {
+        if (_playerCountSlider) {
+            _playerCountSlider.setEnabled(true);
+        }
+    }
+
     constructor(callbacks) {
         this._callbacks = callbacks;
     }
@@ -38,15 +52,15 @@ class GameSetupUI {
             .addChild(title)
             .addChild(colsPanel);
 
-        col1Panel.addChild(
-            this._createSlider(
-                "ui.setup.player_count",
-                2,
-                8,
-                world.TI4.config.playerCount,
-                this._callbacks.onPlayerCountChanged
-            )
+        _playerCountSlider = this._createSlider(
+            "ui.setup.player_count",
+            2,
+            8,
+            world.TI4.config.playerCount,
+            this._callbacks.onPlayerCountChanged
         );
+
+        col1Panel.addChild(_playerCountSlider);
         col1Panel.addChild(
             this._createSlider(
                 "ui.setup.game_points",

@@ -19,6 +19,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
 
 const TAKE_SEAT_CAMERA = {
     pos: { x: -90, y: 0, z: 70 },
@@ -86,32 +87,57 @@ globalEvents.TI4.onGameSetup.add((state, player) => {
 });
 
 globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
-    // Clean any existing desks.
+    if (world.__isMock) {
+        _playerDesks = false;
+        return;
+    }
+
+    // Lock in player count until finished.
+    GameSetupUI.disablePlayerCountSlider();
+
+    // Remove any desk UIs.
     if (_playerDesks) {
         for (const playerDesk of _playerDesks) {
             assert(playerDesk instanceof PlayerDesk);
             playerDesk.removeUI();
-            if (!world.__isMock) {
-                new PlayerDeskSetup(playerDesk).cleanGeneric();
-            }
         }
+    }
+
+    // Clean any existing desks, reset desks list.
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).cleanGenericAsync();
+        }
+    }
+
+    const setup = () => {
+        // Reset to new count.
         _playerDesks = false;
-    }
-    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-        assert(playerDesk instanceof PlayerDesk);
-        if (!world.__isMock) {
-            new PlayerDeskSetup(playerDesk).setupGeneric();
+
+        // Add UIs to new desks.
+        PlayerDesk.resetUIs();
+
+        // Redo setup for all desks.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).setupGenericAsync();
         }
-        playerDesk.addUI();
-    }
-    PlayerDesk.resetUIs();
+
+        // Re-enable player count changes.
+        PlayerDeskSetup.getSharedAsyncTaskQueue().add(() => {
+            GameSetupUI.enablePlayerCountSlider();
+        });
+    };
+
+    // Leverage the shared task queue to make sure all cleanup tasks finish
+    // before resetting desks.
+    PlayerDeskSetup.getSharedAsyncTaskQueue().add(setup);
 });
 
 // Unseat host when first loading game.
 const isRescriptReload = world.getExecutionReason() === "ScriptReload";
 const runOnce = () => {
-    globalEvents.onTick.remove(runOnce);
-
     // If not reloading scripts move the host to a non-seat slot.
     if (!isRescriptReload) {
         for (const player of world.getAllPlayers()) {
@@ -122,7 +148,9 @@ const runOnce = () => {
     // Reset "take a seat" UI.
     PlayerDesk.resetUIs();
 };
-globalEvents.onTick.add(runOnce);
+if (!world.__isMock) {
+    process.nextTick(runOnce);
+}
 
 // ----------------------------------------------------------------------------
 
@@ -258,6 +286,7 @@ class PlayerDesk {
         // Pos is center, but allow for non-center pos.
         this._center = this._pos.clone();
 
+        this._factionSetupInProgress = false;
         this._ready = false;
     }
 
@@ -307,7 +336,8 @@ class PlayerDesk {
         const config = {
             isReady,
             isOccupied,
-            canFaction: world.TI4.config.timestamp > 0,
+            canFaction:
+                world.TI4.config.timestamp > 0 && !this._factionSetupInProgress,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot)
                 ? true
                 : false,
@@ -336,10 +366,16 @@ class PlayerDesk {
                 this.resetUI();
             },
             onSetupFaction: (button, player) => {
-                new PlayerDeskSetup(this).setupFaction();
+                this._factionSetupInProgress = true;
+                const onFinished = () => {
+                    this._factionSetupInProgress = false;
+                    this.resetUI();
+                };
+                new PlayerDeskSetup(this).setupFactionAsync(false, onFinished);
                 this.resetUI();
             },
             onCleanFaction: (button, player) => {
+                this._factionSetupInProgress = false;
                 new PlayerDeskSetup(this).cleanFaction();
                 this.resetUI();
             },
