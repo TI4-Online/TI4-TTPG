@@ -45,8 +45,25 @@ class MiltyFactionGenerator {
         });
         factions = Shuffle.shuffle(factions);
 
-        // Only use one Keleres, do not mix with conflicting home system.
         const rejectSet = new Set();
+
+        // Only consider one Keleres, random for fair position in shuffled.
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
+                rejectSet.add("keleres_mentak");
+                rejectSet.add("keleres_xxcha");
+                break;
+            case 1:
+                rejectSet.add("keleres_argent");
+                rejectSet.add("keleres_xxcha");
+                break;
+            case 2:
+                rejectSet.add("keleres_argent");
+                rejectSet.add("keleres_mentak");
+                break;
+        }
+
+        // Do not mix Keleres with conflicting faction
         factions = factions.filter((faction) => {
             const nsidName = faction.nsidName;
             if (rejectSet.has(nsidName)) {

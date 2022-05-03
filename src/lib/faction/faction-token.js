@@ -1,6 +1,8 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
-const { world } = require("../../wrapper/api");
+const { Spawn } = require("../../setup/spawn/spawn");
+const { Position, Rotator, world } = require("../../wrapper/api");
 
 /**
  * "Faction Token" and/or "Faction Reference" cards.
@@ -46,6 +48,30 @@ class FactionToken {
         }
 
         return best;
+    }
+
+    static findOrSpawnFactionReference(nsidName) {
+        assert(typeof nsidName === "string");
+
+        const faction = world.TI4.getFactionByNsidName(nsidName);
+        assert(faction);
+
+        const cardNsid = `card.faction_reference:${faction.nsidSource}/${faction.nsidName}`;
+
+        // Look for existing card.
+        const gather = CardUtil.gatherCards((nsid) => {
+            return nsid === cardNsid;
+        });
+        if (gather.length > 0) {
+            return gather[0];
+        }
+
+        // Spawn a new one.
+        const pos = new Position(0, 0, world.getTableHeight() + 10);
+        const rot = new Rotator(0, 0, 0);
+        const card = Spawn.spawn(cardNsid, pos, rot);
+        assert(card);
+        return card;
     }
 }
 

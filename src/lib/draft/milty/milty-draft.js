@@ -3,15 +3,15 @@ const locale = require("../../locale");
 const { Broadcast } = require("../../broadcast");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
+const { FactionToken } = require("../../faction/faction-token");
 const { MapStringLoad } = require("../../map-string/map-string-load");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
 const { ObjectNamespace } = require("../../object-namespace");
-const { PlayerDeskSetup } = require("../../player-desk/player-desk-setup");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
-const { Player, UIElement, world } = require("../../../wrapper/api");
+const { Player, Rotator, UIElement, world } = require("../../../wrapper/api");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -198,8 +198,18 @@ class MiltyDraft {
         const sliceStr = sliceData.slice.join(" ");
         MiltySliceLayout.doLayout(sliceStr, playerSlot);
 
-        // Unpack faction.
-        new PlayerDeskSetup(playerDesk).setupFactionAsync(factionData.nsidName);
+        // Unpack faction?  No, just place the token and let players click the
+        // unpack button.  This is also a pause for Keleres to change flavors.
+        // Old way: "new PlayerDeskSetup(playerDesk).setupFactionAsync(factionData.nsidName);"
+        const factionReference = FactionToken.findOrSpawnFactionReference(
+            factionData.nsidName
+        );
+        factionReference.setPosition(playerDesk.center.add([0, 0, 10]));
+        factionReference.setRotation(
+            new Rotator(0, 0, 180).compose(playerDesk.rot)
+        );
+        playerDesk.setReady(false);
+        playerDesk.resetUI();
     }
 
     applyChoices(player) {
