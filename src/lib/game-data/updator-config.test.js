@@ -7,7 +7,17 @@ it("config", () => {
     world.TI4.reset();
     let data = {};
     updatorConfig(data);
-    assert.deepEqual(data, { isPoK: true, scoreboard: 10, setupTimestamp: 0 });
+    assert.deepEqual(data, {
+        config: {
+            codex1: true,
+            codex2: true,
+            codex3: true,
+            omega: true,
+        },
+        isPoK: true,
+        scoreboard: 10,
+        setupTimestamp: 0,
+    });
 
     world.TI4.config.setPoK(false);
     world.TI4.config.setGamePoints(12);
@@ -15,5 +25,15 @@ it("config", () => {
 
     data = {};
     updatorConfig(data);
-    assert.deepEqual(data, { isPoK: false, scoreboard: 12, setupTimestamp: 1 });
+    assert.deepEqual(data, {
+        config: {
+            codex1: true,
+            codex2: true,
+            codex3: true,
+            omega: true,
+        },
+        isPoK: false,
+        scoreboard: 12,
+        setupTimestamp: 1,
+    });
 });

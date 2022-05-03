@@ -13,7 +13,5 @@ module.exports = (data) => {
         codex2: world.TI4.config.codex2,
         codex3: world.TI4.config.codex3,
         omega: world.TI4.config.omega,
-        pok: world.TI4.config.pok,
-        gamePoints: world.TI4.config.gamePoints,
     };
 };
