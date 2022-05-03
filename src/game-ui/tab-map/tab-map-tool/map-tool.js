@@ -53,6 +53,9 @@ class MapTool {
             placeHyperlanes: () => {
                 this.placeHyperlanes();
             },
+            toggleBorders: (checkBox, player, isChecked) => {
+                this.toggleBorders(isChecked);
+            },
         };
         this._ui = new MapToolUI(onButtonCallbacks);
     }
@@ -253,6 +256,11 @@ class MapTool {
         if (mapString) {
             MapStringLoad.load(mapString);
         }
+    }
+
+    toggleBorders(isChecked) {
+        console.log(`MapTool.toggleBorders ${isChecked}`);
+        world.TI4.borders.setEnabled(isChecked);
     }
 }
 

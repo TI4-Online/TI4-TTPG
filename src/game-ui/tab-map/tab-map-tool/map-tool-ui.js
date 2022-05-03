@@ -3,6 +3,7 @@ const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
 const {
     Button,
+    CheckBox,
     HorizontalBox,
     LayoutBox,
     MultilineTextBox,
@@ -26,7 +27,7 @@ class MapToolUI extends VerticalBox {
             .setMaxLength(1000);
         const mapStringLayoutBox = new LayoutBox()
             .setChild(this._mapStringTextBox)
-            .setMinimumHeight(CONFIG.fontSize * 4);
+            .setMinimumHeight(CONFIG.fontSize * 3);
         this.addChild(mapStringLayoutBox);
 
         let panel = false;
@@ -46,6 +47,16 @@ class MapToolUI extends VerticalBox {
             panel.addChild(button, 1);
         };
 
+        const addCheckbox = (localeText, onCheckStateChangedHandler) => {
+            assert(typeof localeText === "string");
+            assert(typeof onCheckStateChangedHandler === "function");
+            const checkbox = new CheckBox()
+                .setText(locale(localeText))
+                .setFontSize(CONFIG.fontSize);
+            checkbox.onCheckStateChanged.add(onCheckStateChangedHandler);
+            panel.addChild(checkbox, 1);
+        };
+
         const f = onButtonCallbacks;
 
         addRow();
@@ -63,6 +74,9 @@ class MapToolUI extends VerticalBox {
         addRow();
         addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
         addButton("ui.maptool.clear", f.clear);
+
+        addRow();
+        addCheckbox("ui.maptool.faction_borders", f.toggleBorders);
     }
 
     getMapString() {

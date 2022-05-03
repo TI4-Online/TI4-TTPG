@@ -1,10 +1,11 @@
 const locale = require("../../lib/locale");
 const { MapTool } = require("./tab-map-tool/map-tool");
 const { MiltyDraftSettings } = require("./tab-milty/milty-draft-settings");
+const { PremadeMap } = require("./tab-premade/premade-map");
 const { SCPTDraftSettings } = require("./tab-scpt/scpt-draft-settings");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { PremadeMap } = require("./tab-premade/premade-map");
+const { Border } = require("../../wrapper/api");
 
 class TabMap {
     constructor() {
@@ -32,6 +33,8 @@ class TabMap {
             locale("ui.tab.map.scpt_draft"),
             scptDraftSettings.getUI()
         );
+
+        //this._tabbedPanel.addTab("Fog", new Border());
     }
 
     getUI() {
