@@ -45,6 +45,7 @@ class MapToolUI extends VerticalBox {
                 .setFontSize(CONFIG.fontSize);
             button.onClicked.add(onClickHandler);
             panel.addChild(button, 1);
+            return button;
         };
 
         const addCheckbox = (localeText, onCheckStateChangedHandler) => {
@@ -55,6 +56,7 @@ class MapToolUI extends VerticalBox {
                 .setFontSize(CONFIG.fontSize);
             checkbox.onCheckStateChanged.add(onCheckStateChangedHandler);
             panel.addChild(checkbox, 1);
+            return checkbox;
         };
 
         const f = onButtonCallbacks;
@@ -76,7 +78,9 @@ class MapToolUI extends VerticalBox {
         addButton("ui.maptool.clear", f.clear);
 
         addRow();
-        addCheckbox("ui.maptool.faction_borders", f.toggleBorders);
+        addCheckbox("ui.maptool.faction_borders", f.toggleBorders).setEnabled(
+            false
+        );
     }
 
     getMapString() {
