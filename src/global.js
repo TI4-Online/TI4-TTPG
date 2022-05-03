@@ -89,6 +89,7 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const { Borders } = require("./lib/borders/borders");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
@@ -99,6 +100,7 @@ const { Turns } = require("./lib/turns");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    borders: new Borders(),
     config: new GameSetupConfig(),
     fogOfWar: new FogOfWar(),
     gameData: new GameData(),

@@ -196,6 +196,7 @@
     "ui.maptool.place_frontier_tokens": "Place Frontier Tokens",
     "ui.maptool.clear_frontier_tokens": "Clear Frontier Tokens",
     "ui.maptool.place_hyperlanes": "Place Hyperlanes",
+    "ui.maptool.faction_borders": "Faction borders",
 
     "ui.build.cost": "Cost: {cost}",
     "ui.build.resources": "Resources: {resources}",
