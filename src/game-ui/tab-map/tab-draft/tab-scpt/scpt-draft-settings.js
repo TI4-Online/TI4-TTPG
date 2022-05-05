@@ -1,12 +1,12 @@
-const assert = require("../../../wrapper/assert-wrapper");
-const { Broadcast } = require("../../../lib/broadcast");
-const { MiltyDraft } = require("../../../lib/draft/milty/milty-draft");
-const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
+const assert = require("../../../../wrapper/assert-wrapper");
+const { Broadcast } = require("../../../../lib/broadcast");
+const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
+const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
 const {
     FACTION_NAME_TO_NSID_NAME,
-} = require("../../../lib/draft/scpt/scpt-draft.data");
-const { world } = require("../../../wrapper/api");
+} = require("../../../../lib/draft/scpt/scpt-draft.data");
+const { world } = require("../../../../wrapper/api");
 
 class SCPTDraftSettings {
     constructor() {

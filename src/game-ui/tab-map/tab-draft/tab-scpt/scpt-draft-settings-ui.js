@@ -1,7 +1,7 @@
-const locale = require("../../../lib/locale");
-const { SCPT_DRAFTS } = require("../../../lib/draft/scpt/scpt-draft.data");
-const CONFIG = require("../../game-ui-config");
-const { Button, LayoutBox, VerticalBox } = require("../../../wrapper/api");
+const locale = require("../../../../lib/locale");
+const { SCPT_DRAFTS } = require("../../../../lib/draft/scpt/scpt-draft.data");
+const CONFIG = require("../../../game-ui-config");
+const { Button, LayoutBox, VerticalBox } = require("../../../../wrapper/api");
 
 class SCPTDraftSettingsUI extends VerticalBox {
     constructor(onClickHandlers) {
