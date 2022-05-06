@@ -12,8 +12,8 @@ class TabBordersUI extends VerticalBox {
         const enableBorders = new CheckBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.borders.enable"));
-        assert(typeof onClickHandlers.toggleEnable === "function");
-        enableBorders.onCheckStateChanged.add(onClickHandlers.toggleEnable);
+        assert(typeof onClickHandlers.toggleBorders === "function");
+        enableBorders.onCheckStateChanged.add(onClickHandlers.toggleBorders);
 
         this.addChild(enableBorders);
     }
