@@ -7,10 +7,19 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../object-namespace");
+const { Polygon } = require("../polygon");
 const PositionToPlanet = require("../system/position-to-planet");
 const { UnitAttrsSet } = require("../unit/unit-attrs-set");
 const { UnitPlastic } = require("../unit/unit-plastic");
-const { GameObject, world } = require("../../wrapper/api");
+const {
+    DrawingLine,
+    GameObject,
+    Vector,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
+
+const DEFAULT_THICKNESS = 0.2;
 
 const AREA = {
     PLANET: 1,
@@ -169,46 +178,248 @@ class Borders {
     }
 
     static linkLineSegments(segments) {
+        assert(Array.isArray(segments));
+        assert(segments.length > 0);
+
         const result = [];
 
-        for (const segment of segments) {
-            const [a, b] = segment.line;
-            let found = false;
-            for (const candidate of result) {
-                if (candidate.playerSlot != segment.playerSlot) {
-                    continue;
-                }
-                const line = candidate.line;
-                const last = line[line.length - 1];
-                const d = last.subtract(a).magnitudeSquared();
-                if (d > 0.1) {
-                    continue;
-                }
-                found = true;
-                line.push(b);
-                break;
+        let watchdog = 0;
+
+        let grow;
+        let found = false;
+        while (segments.length > 0) {
+            watchdog += 1;
+            if (watchdog > 100000) {
+                throw new Error("stuck?");
             }
+            // If the last loop failed, start a new segment.
             if (!found) {
-                result.push(segment);
+                grow = segments.shift();
+                result.push(grow);
+            }
+            found = false;
+
+            const growHead = grow.line[0];
+            const growTail = grow.line[grow.line.length - 1];
+
+            // Keep growing.
+            for (let i = 0; i < segments.length; i++) {
+                const segment = segments[i];
+                if (grow.playerSlot !== segment.playerSlot) {
+                    continue;
+                }
+                assert(segment.line.length === 2);
+                const [a, b] = segment.line;
+
+                let d = growHead.subtract(b).magnitudeSquared();
+                if (d < 0.1) {
+                    // Prepend
+                    grow.line.unshift(a);
+                    found = true;
+                    segments.splice(i, 1);
+                    break;
+                }
+
+                d = growHead.subtract(a).magnitudeSquared();
+                if (d < 0.1) {
+                    // Prepend
+                    grow.line.unshift(b);
+                    found = true;
+                    segments.splice(i, 1);
+                    break;
+                }
+
+                d = growTail.subtract(a).magnitudeSquared();
+                if (d < 0.1) {
+                    // Append
+                    grow.line.push(b);
+                    found = true;
+                    segments.splice(i, 1);
+                    break;
+                }
+
+                d = growTail.subtract(b).magnitudeSquared();
+                if (d < 0.1) {
+                    // Append
+                    grow.line.push(a);
+                    found = true;
+                    segments.splice(i, 1);
+                    break;
+                }
             }
         }
+
         return result;
+    }
+
+    static createDrawingLine(segment, thickness) {
+        assert(segment.line.length >= 2);
+        assert(typeof thickness === "number");
+
+        const drawingLine = new DrawingLine();
+
+        for (const desk of world.TI4.getAllPlayerDesks()) {
+            if (desk.playerSlot === segment.playerSlot) {
+                drawingLine.color = desk.color;
+                break;
+            }
+        }
+
+        // Polygon does not want closed.
+        const head = segment.line[0];
+        const tail = segment.line[segment.line.length - 1];
+        const closed = head.subtract(tail).magnitudeSquared() < 0.1;
+        if (closed) {
+            segment.line.pop();
+        }
+
+        const z = world.getTableHeight() + 0.13;
+        const points = new Polygon(segment.line)
+            .inset(thickness / 2)
+            .getPoints()
+            .map((p) => {
+                return new Vector(p.x, p.y, z);
+            });
+
+        // Apply the closing segment.
+        if (closed) {
+            const head = points[0];
+            points.push(head.clone());
+        }
+
+        drawingLine.points = points; // set AFTER applying closed, not mutable
+        drawingLine.rounded = false;
+        drawingLine.thickness = thickness;
+
+        return drawingLine;
+    }
+
+    static isSameDrawingLine(a, b) {
+        assert(a instanceof DrawingLine);
+        assert(b instanceof DrawingLine);
+
+        if (a.points.length !== b.points.length) {
+            return false;
+        }
+        if (a.rounded !== b.rounded) {
+            return false;
+        }
+
+        const dt = Math.abs(a.thickness - b.thickness);
+        if (dt > 0.01) {
+            return false;
+        }
+
+        const dr = Math.abs(a.color.r - b.color.r);
+        const dg = Math.abs(a.color.g - b.color.g);
+        const db = Math.abs(a.color.b - b.color.b);
+        const da = Math.abs(a.color.a - b.color.a);
+        if (dr + dg + db + da > 0.01) {
+            return false;
+        }
+
+        for (let i = 0; i < a.points.length; i++) {
+            const ap = a.points[i];
+            const bp = b.points[i];
+            if (ap.subtract(bp).magnitudeSquared() > 0.1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     constructor() {
         this._enabled = false;
         this._lines = undefined;
+        this._thickness = DEFAULT_THICKNESS;
+
+        this._doUpdate = () => {
+            this.drawLinesAsync();
+        };
     }
 
     setEnabled(value) {
         assert(typeof value === "boolean");
         this._enabled = value;
         if (this._enabled) {
-            this.update();
-        } else if (this._lines) {
-            // TODO XXX REMOVE LINES
-            this._lines = undefined;
+            this.drawLinesAsync();
+            globalEvents.TI4.onTurnChanged.add(this._doUpdate);
+        } else {
+            this.clearLines();
+            globalEvents.TI4.onTurnChanged.remove(this._doUpdate);
         }
+    }
+
+    _getDrawLinesTasks() {
+        let controlEntries;
+        let hexToControlSummary;
+        let lineSegments;
+        let linkedSegments;
+
+        return [
+            () => {
+                controlEntries = Borders.getAllControlEntries();
+            },
+            () => {
+                hexToControlSummary =
+                    Borders.getHexToControlSummary(controlEntries);
+            },
+            () => {
+                lineSegments =
+                    Borders.getSpaceLineSegments(hexToControlSummary);
+            },
+            () => {
+                linkedSegments = Borders.linkLineSegments(lineSegments);
+            },
+            () => {
+                this.clearLines();
+            },
+            () => {
+                if (!this._enabled) {
+                    return;
+                }
+                this.clearLines(); // just in case added between frames
+                this._lines = [];
+                for (const linkedSegment of linkedSegments) {
+                    const line = Borders.createDrawingLine(
+                        linkedSegment,
+                        this._thickness
+                    );
+                    world.addDrawingLine(line);
+                    this._lines.push(line);
+                }
+            },
+        ];
+    }
+
+    drawLines() {
+        for (const task of this._getDrawLinesTasks()) {
+            task();
+        }
+    }
+
+    drawLinesAsync() {
+        for (const task of this._getDrawLinesTasks()) {
+            world.TI4.asyncTaskQueue.add(task);
+        }
+    }
+
+    clearLines() {
+        if (!this._lines) {
+            return;
+        }
+        for (const candidate of this._lines) {
+            const allDrawingLines = world.getDrawingLines();
+            for (let i = 0; i < allDrawingLines.length; i++) {
+                const drawingLine = allDrawingLines[i];
+                if (Borders.isSameDrawingLine(drawingLine, candidate)) {
+                    world.removeDrawingLine(i);
+                    break;
+                }
+            }
+        }
+        this._lines = undefined;
     }
 }
 

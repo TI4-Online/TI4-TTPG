@@ -97,9 +97,11 @@ const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
+const { AsyncTaskQueue } = require("./lib/async-task-queue/async-task-queue");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    asyncTaskQueue: new AsyncTaskQueue(),
     borders: new Borders(),
     config: new GameSetupConfig(),
     fogOfWar: new FogOfWar(),
