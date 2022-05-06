@@ -1,4 +1,3 @@
-const locale = require("../../../../lib/locale");
 const CONFIG = require("../../../game-ui-config");
 const { Text, VerticalBox } = require("../../../../wrapper/api");
 

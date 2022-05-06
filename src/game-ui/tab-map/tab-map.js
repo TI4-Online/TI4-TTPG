@@ -1,10 +1,11 @@
 const locale = require("../../lib/locale");
 const { MapTool } = require("./tab-map-tool/map-tool");
 const { PremadeMap } = require("./tab-premade/premade-map");
-const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
+const { TabBorders } = require("./tab-border/tab-border");
 const { TabDraft } = require("./tab-draft/tab-draft");
+const { TabFogOfWar } = require("./tab-fog/tab-fog");
+const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Border } = require("../../wrapper/api");
 
 class TabMap {
     constructor() {
@@ -24,8 +25,11 @@ class TabMap {
         const draft = new TabDraft();
         this._tabbedPanel.addTab(locale("ui.tab.map.draft"), draft.getUI());
 
-        this._tabbedPanel.addTab("Borders", new Border());
-        this._tabbedPanel.addTab("Fog", new Border());
+        const borders = new TabBorders();
+        this._tabbedPanel.addTab(locale("ui.tab.map.borders"), borders.getUI());
+
+        const fog = new TabFogOfWar();
+        this._tabbedPanel.addTab(locale("ui.tab.map.fog"), fog.getUI());
     }
 
     getUI() {
