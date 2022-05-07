@@ -1,5 +1,5 @@
-const { world } = require("@tabletop-playground/api");
 const { TabFogOfWarUI } = require("./tab-fog-ui");
+const { world } = require("../../../wrapper/api");
 
 class TabFogOfWar {
     constructor() {

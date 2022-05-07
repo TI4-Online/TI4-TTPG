@@ -12,13 +12,13 @@ const PositionToPlanet = require("../system/position-to-planet");
 const { UnitAttrsSet } = require("../unit/unit-attrs-set");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const {
+    Color,
     DrawingLine,
     GameObject,
     Vector,
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Color } = require("@tabletop-playground/api");
 
 const PLANET_POINTS = 16;
 const DEFAULT_THICKNESS = 0.2;
