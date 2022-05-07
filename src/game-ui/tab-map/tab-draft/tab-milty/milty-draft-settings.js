@@ -1,17 +1,17 @@
-const assert = require("../../../wrapper/assert-wrapper");
-const locale = require("../../../lib/locale");
-const { Broadcast } = require("../../../lib/broadcast");
-const { MiltyDraft } = require("../../../lib/draft/milty/milty-draft");
+const assert = require("../../../../wrapper/assert-wrapper");
+const locale = require("../../../../lib/locale");
+const { Broadcast } = require("../../../../lib/broadcast");
+const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyDraftSettingsUI } = require("./milty-draft-settings-ui");
 const {
     MiltyFactionGenerator,
-} = require("../../../lib/draft/milty/milty-faction-generator");
+} = require("../../../../lib/draft/milty/milty-faction-generator");
 const {
     MiltySliceGenerator,
-} = require("../../../lib/draft/milty/milty-slice-generator");
-const { MiltyUtil } = require("../../../lib/draft/milty/milty-util");
-const { Player, world } = require("../../../wrapper/api");
-const { TURN_ORDER_TYPE } = require("../../../lib/turns");
+} = require("../../../../lib/draft/milty/milty-slice-generator");
+const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
+const { Player, world } = require("../../../../wrapper/api");
+const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
 
 class MiltyDraftSettings {
     constructor() {

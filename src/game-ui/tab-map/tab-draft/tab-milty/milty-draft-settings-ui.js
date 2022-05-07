@@ -1,12 +1,12 @@
-const assert = require("../../../wrapper/assert-wrapper");
-const locale = require("../../../lib/locale");
+const assert = require("../../../../wrapper/assert-wrapper");
+const locale = require("../../../../lib/locale");
 const {
     MiltyFactionGenerator,
-} = require("../../../lib/draft/milty/milty-faction-generator");
+} = require("../../../../lib/draft/milty/milty-faction-generator");
 const {
     MiltySliceGenerator,
-} = require("../../../lib/draft/milty/milty-slice-generator");
-const CONFIG = require("../../game-ui-config");
+} = require("../../../../lib/draft/milty/milty-slice-generator");
+const CONFIG = require("../../../game-ui-config");
 const {
     Button,
     CheckBox,
@@ -16,7 +16,7 @@ const {
     Text,
     MultilineTextBox,
     VerticalBox,
-} = require("../../../wrapper/api");
+} = require("../../../../wrapper/api");
 
 class MiltyDraftSettingsUI extends VerticalBox {
     constructor(sliceGenerator, factionGenerator, callbacks) {
@@ -36,7 +36,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
         const customInput = new MultilineTextBox().setMaxLength(1000);
         const customInputBox = new LayoutBox()
             .setChild(customInput)
-            .setMinimumHeight(CONFIG.fontSize * 4);
+            .setMinimumHeight(CONFIG.fontSize * 3);
         this.addChild(customInputBox);
 
         const extraLegendariesAndWormholes = new CheckBox()

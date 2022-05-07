@@ -10,8 +10,9 @@ class GameWorld {
     constructor(data) {
         this._allObjects = data ? data.allObjects : [];
         this._allPlayers = data ? data.allPlayers : [];
-        this._tableHeight = data ? data.tableHeight : 1;
+        this._drawingLines = data ? data.drawingLines : [];
         this._savedData = data ? data.savedData : "";
+        this._tableHeight = data ? data.tableHeight : 1;
         this._uis = data && data.uis ? data.uis : [];
     }
 
@@ -41,11 +42,16 @@ class GameWorld {
         });
         this._allObjects = [];
         this._allPlayers = [];
+        this._drawingLines = [];
         this._uis = [];
     }
 
     static getExecutionReason() {
         return "ScriptReload";
+    }
+
+    addDrawingLine(value) {
+        this._allDrawingLines.push(value);
     }
 
     addUI(uiElement) {
@@ -89,6 +95,10 @@ class GameWorld {
 
     getAllZones() {
         return [];
+    }
+
+    getDrawingLines() {
+        return this._drawingLines;
     }
 
     // TTPG exposes this both static and per-instance.
@@ -137,6 +147,10 @@ class GameWorld {
     nextTurn() {}
 
     previousTurn() {}
+
+    removeDrawingLine(index) {
+        this._drawingLines.splice(index, 1);
+    }
 
     removeUI(index) {
         this._uis.splice(index, 1);

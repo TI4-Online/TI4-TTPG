@@ -1,11 +1,11 @@
 const locale = require("../../lib/locale");
 const { MapTool } = require("./tab-map-tool/map-tool");
-const { MiltyDraftSettings } = require("./tab-milty/milty-draft-settings");
 const { PremadeMap } = require("./tab-premade/premade-map");
-const { SCPTDraftSettings } = require("./tab-scpt/scpt-draft-settings");
+const { TabBorders } = require("./tab-border/tab-border");
+const { TabDraft } = require("./tab-draft/tab-draft");
+const { TabFogOfWar } = require("./tab-fog/tab-fog");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const CONFIG = require("../game-ui-config");
-const { Border } = require("../../wrapper/api");
 
 class TabMap {
     constructor() {
@@ -22,19 +22,14 @@ class TabMap {
         const premade = new PremadeMap();
         this._tabbedPanel.addTab(locale("ui.tab.map.premade"), premade.getUI());
 
-        const miltyDraftSettings = new MiltyDraftSettings();
-        this._tabbedPanel.addTab(
-            locale("ui.tab.map.milty_draft"),
-            miltyDraftSettings.getUI()
-        );
+        const draft = new TabDraft();
+        this._tabbedPanel.addTab(locale("ui.tab.map.draft"), draft.getUI());
 
-        const scptDraftSettings = new SCPTDraftSettings();
-        this._tabbedPanel.addTab(
-            locale("ui.tab.map.scpt_draft"),
-            scptDraftSettings.getUI()
-        );
+        const borders = new TabBorders();
+        this._tabbedPanel.addTab(locale("ui.tab.map.borders"), borders.getUI());
 
-        //this._tabbedPanel.addTab("Fog", new Border());
+        const fog = new TabFogOfWar();
+        this._tabbedPanel.addTab(locale("ui.tab.map.fog"), fog.getUI());
     }
 
     getUI() {

@@ -10,6 +10,10 @@
 // Requires correct unit placement, dropping a unit on a system by mistake may reveal fog.
 
 const assert = require("../../wrapper/assert-wrapper");
+const { AdjacencyHyperlane } = require("../system/adjacency-hyperlane");
+const { AdjacencyNeighbor } = require("../system/adjacency-neighbor");
+const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
+const { Borders } = require("../borders/borders");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const {
@@ -23,14 +27,14 @@ const {
     world,
 } = require("../../wrapper/api");
 
-let FOG_ENABLED = false;
-
 const ZONE_HEIGHT = 10;
 const SYSTEM_UI_STAND_IN_SHRINK = 0.5;
 
 // Zones persist across save/load.
 const ZONE_ID_PREFIX = "__fog__";
 let _zoneIdToZone = undefined;
+
+let _hexToFogOfWarZone = undefined;
 
 /**
  * Manage the zone and stand-in UI for a single system tile.
@@ -42,12 +46,13 @@ class FogOfWarZone {
             for (const zone of world.getAllZones()) {
                 const thisZoneId = zone.getSavedData();
                 if (thisZoneId.startsWith(ZONE_ID_PREFIX)) {
-                    zone.destroy();
-                    //_zoneIdToZone[thisZoneId] = zone;
+                    //zone.destroy();
+                    _zoneIdToZone[thisZoneId] = zone;
                 }
             }
         }
     }
+
     static getZoneById(zoneId, pos) {
         FogOfWarZone.buildZoneIdToZone();
         let zone = _zoneIdToZone[zoneId];
@@ -116,6 +121,7 @@ class FogOfWarZone {
 
             // Update hex to zone.
             this._hex = Hex.fromPosition(this._systemTileObj.getPosition());
+            _hexToFogOfWarZone[this._hex] = this;
         };
         systemTileObj.onMovementStopped.add(updateStuff);
         updateStuff();
@@ -135,12 +141,29 @@ class FogOfWarZone {
     getSystemStandInUiPos() {
         return this._systemTileObj.getPosition();
     }
+
+    setOwners(playerSlotSet) {
+        // Add new owners.
+        for (const playerSlot of playerSlotSet) {
+            this._zone.setSlotOwns(playerSlot, true);
+        }
+        // Remove any extra.
+        for (const playerSlot of this._zone.getOwningSlots()) {
+            if (!playerSlotSet.has(playerSlot)) {
+                this._zone.setSlotOwns(playerSlot, false);
+            }
+        }
+    }
 }
 
+/**
+ * Manage the overall fog-of-war system.
+ */
 class FogOfWar {
     constructor() {
         this._enabled = false; // TODO STORE IN GLOBAL DATA
         this._fogOfWarZones = undefined;
+        this._specatorsCanSeePlayerIndicies = new Set();
 
         this._maybeAddFogHandler = (obj) => {
             if (!this.isEnabled()) {
@@ -160,6 +183,14 @@ class FogOfWar {
         };
     }
 
+    setEnabled(value) {
+        if (value) {
+            this.enable();
+        } else {
+            this.disable();
+        }
+    }
+
     isEnabled() {
         return this._enabled;
     }
@@ -174,10 +205,13 @@ class FogOfWar {
         }
         this._fogOfWarZones = [];
         this._enabled = true; // TODO UPDATE IN GLOBAL DATA
+        _hexToFogOfWarZone = {};
         for (const obj of world.getAllObjects()) {
             this._maybeAddFogHandler(obj);
         }
         globalEvents.onObjectCreated.add(this._maybeAddFogHandler);
+
+        this.update();
     }
 
     disable() {
@@ -187,7 +221,7 @@ class FogOfWar {
         // Remove system UI.
         if (this._fogOfWarZones) {
             for (const fogOfWarZone of this._fogOfWarZones) {
-                world.removeUI(fogOfWarZone._standInUi);
+                world.removeUIElement(fogOfWarZone._standInUi);
             }
             this._fogOfWarZones = undefined;
         }
@@ -198,6 +232,70 @@ class FogOfWar {
             zone.destroy();
         }
         _zoneIdToZone = undefined;
+        _hexToFogOfWarZone = undefined;
+    }
+
+    update() {
+        // Create sets.
+        const hexToAdjacent = {};
+        const hexToOwners = {};
+        const hexToOwnersWithAdjacent = {};
+        for (const hex of Object.keys(_hexToFogOfWarZone)) {
+            hexToAdjacent[hex] = new Set();
+            hexToOwners[hex] = new Set();
+            hexToOwnersWithAdjacent[hex] = new Set();
+        }
+
+        for (const [hex, adjHexes] of Object.entries(hexToAdjacent)) {
+            new AdjacencyHyperlane(hex).getAdjacent();
+            const adjNeighbor = new AdjacencyNeighbor(hex);
+            for (const adjHex of adjNeighbor.getAdjacent()) {
+                adjHexes.add(adjHex);
+            }
+
+            const playerSlot = -1; // from player perspective TODO XXX GHOSTS
+            const adjWormhole = new AdjacencyWormhole(hex, playerSlot);
+            for (const adjHex of adjWormhole.getAdjacent()) {
+                adjHexes.add(adjHex);
+            }
+
+            const adjHyperlane = new AdjacencyHyperlane(hex);
+            for (const adjHex of adjHyperlane.getAdjacent()) {
+                adjHexes.add(adjHex);
+            }
+
+            // This hex is not considered adjacent here, even if wormhole, etc.
+            adjHexes.delete(hex);
+        }
+
+        // Compute owners.
+        const controlEntries = Borders.getAllControlEntries();
+        for (const controlEntry of controlEntries) {
+            assert(typeof controlEntry.hex === "string");
+            assert(typeof controlEntry.playerSlot === "number");
+            const owners = hexToOwners[controlEntry.hex];
+            owners.add(controlEntry.playerSlot);
+        }
+
+        // Expand to adjacent.
+        for (const [hex, owners] of Object.entries(hexToOwners)) {
+            for (const owner of owners) {
+                hexToOwnersWithAdjacent[hex].add(owner);
+                for (const adjHex of hexToAdjacent[hex]) {
+                    if (hexToOwnersWithAdjacent[adjHex]) {
+                        hexToOwnersWithAdjacent[adjHex].add(owner);
+                    }
+                }
+            }
+        }
+
+        // Set owners.
+        for (const [hex, owners] of Object.entries(hexToOwnersWithAdjacent)) {
+            const fogOfWarZone = _hexToFogOfWarZone[hex];
+            if (fogOfWarZone) {
+                fogOfWarZone.setOwners(owners);
+            }
+        }
     }
 }
 
