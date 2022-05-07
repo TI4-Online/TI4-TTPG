@@ -4,11 +4,12 @@ const { AdjacencyNeighbor } = require("./adjacency-neighbor");
 const { Facing } = require("../facing");
 const { GameObject, world } = require("../../wrapper/api");
 
+let _hexToSystemObj = undefined;
+let _hexToSystemObjLastUpdateTimestamp = 0;
+
 /**
  * Get adjacent-via-hyperlane hexes.
- *
  */
-
 class AdjacencyHyperlane {
     /**
      * Constructor.
@@ -34,11 +35,24 @@ class AdjacencyHyperlane {
             adjacentHexes.add(adjacentHex);
         }
 
+        // Cache hex to system tile object, periodically invalidate.
+        const now = Date.now() / 1000;
+        if (now - _hexToSystemObjLastUpdateTimestamp > 5) {
+            _hexToSystemObj = undefined;
+        }
+        if (!_hexToSystemObj) {
+            _hexToSystemObj = {};
+            for (const systemObj of world.TI4.getAllSystemTileObjects()) {
+                const pos = systemObj.getPosition();
+                const hex = Hex.fromPosition(pos);
+                _hexToSystemObj[hex] = systemObj; // pick one if stacked
+            }
+        }
+
         const adjacentHyperlanes = [];
         var hexSideIndex = 0;
         adjacentHexes.forEach((hex) => {
-            const pos = Hex.toPosition(hex);
-            const systemObj = world.TI4.getSystemTileObjectByPosition(pos);
+            const systemObj = _hexToSystemObj[hex];
             if (systemObj) {
                 const system = world.TI4.getSystemBySystemTileObject(systemObj);
                 if (system.raw.hyperlane) {
