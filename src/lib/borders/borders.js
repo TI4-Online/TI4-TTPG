@@ -18,7 +18,9 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { Color } = require("@tabletop-playground/api");
 
+const PLANET_POINTS = 16;
 const DEFAULT_THICKNESS = 0.2;
 
 const AREA = {
@@ -70,6 +72,7 @@ class Borders {
             controlEntries.push({
                 obj,
                 hex,
+                systemObj,
                 areaType,
                 planet,
                 playerSlot,
@@ -131,7 +134,9 @@ class Borders {
 
             let summary = hexToControlSummary[hex];
             if (!summary) {
-                summary = {};
+                summary = {
+                    systemObj: controlEntry.systemObj,
+                };
                 hexToControlSummary[hex] = summary;
             }
             const area = controlEntry.planet
@@ -175,6 +180,36 @@ class Borders {
             }
         }
         return segments;
+    }
+
+    static getPlanetLineSegments(systemObj, planet, playerSlot) {
+        assert(systemObj instanceof GameObject);
+        assert(typeof playerSlot === "number");
+        assert(playerSlot >= 0);
+
+        const pos = PositionToPlanet.getWorldPosition(
+            systemObj,
+            planet.position
+        );
+        const r = planet.radius * Hex.SCALE - 0.2;
+
+        // Build the fully assembled line, no need to link.
+        // As such, add these AFTER linking space line segments.
+        const points = [];
+        for (let i = 0; i < PLANET_POINTS; i++) {
+            const phi = (Math.PI * 2 * i) / (PLANET_POINTS - 1);
+            points.push(
+                new Vector(
+                    pos.x + Math.cos(phi) * r,
+                    pos.y + Math.sin(phi) * r,
+                    0
+                )
+            );
+        }
+        return {
+            line: points,
+            playerSlot,
+        };
     }
 
     static linkLineSegments(segments) {
@@ -256,13 +291,15 @@ class Borders {
         assert(segment.line.length >= 2);
         assert(typeof thickness === "number");
 
-        const drawingLine = new DrawingLine();
-
+        let color = undefined;
         for (const desk of world.TI4.getAllPlayerDesks()) {
             if (desk.playerSlot === segment.playerSlot) {
-                drawingLine.color = desk.color;
+                color = desk.color;
                 break;
             }
+        }
+        if (!color) {
+            color = new Color(0.5, 0.5, 0.5, 1);
         }
 
         // Polygon does not want closed.
@@ -273,13 +310,14 @@ class Borders {
             segment.line.pop();
         }
 
-        const z = world.getTableHeight() + 0.13;
         const points = new Polygon(segment.line)
             .inset(thickness / 2)
-            .getPoints()
-            .map((p) => {
-                return new Vector(p.x, p.y, z);
-            });
+            .getPoints();
+
+        const z = world.getTableHeight() + 0.13;
+        points.forEach((p) => {
+            p.z = z;
+        });
 
         // Apply the closing segment.
         if (closed) {
@@ -287,6 +325,8 @@ class Borders {
             points.push(head.clone());
         }
 
+        const drawingLine = new DrawingLine();
+        drawingLine.color = color;
         drawingLine.points = points; // set AFTER applying closed, not mutable
         drawingLine.rounded = false;
         drawingLine.thickness = thickness;
@@ -371,6 +411,26 @@ class Borders {
             },
             () => {
                 linkedSegments = Borders.linkLineSegments(lineSegments);
+            },
+            () => {
+                for (const summary of Object.values(hexToControlSummary)) {
+                    const systemObj = summary.systemObj;
+                    const system =
+                        world.TI4.getSystemBySystemTileObject(systemObj);
+                    for (let i = 0; i < system.planets.length; i++) {
+                        const planet = system.planets[i];
+                        const playerSlot = summary[i];
+                        if (playerSlot && playerSlot >= 0) {
+                            linkedSegments.push(
+                                Borders.getPlanetLineSegments(
+                                    systemObj,
+                                    planet,
+                                    playerSlot
+                                )
+                            );
+                        }
+                    }
+                }
             },
             () => {
                 this.clearLines();
