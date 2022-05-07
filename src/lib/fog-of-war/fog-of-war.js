@@ -181,6 +181,20 @@ class FogOfWar {
             const fogOfWarZone = new FogOfWarZone(obj);
             this._fogOfWarZones.push(fogOfWarZone);
         };
+
+        this._onSystemActivatedHandler = (systemObj, player) => {
+            const pos = systemObj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            const fogOfWarZone = _hexToFogOfWarZone[hex];
+            if (fogOfWarZone && player) {
+                const playerSlot = player.getSlot();
+                fogOfWarZone._zone.setSlotOwns(playerSlot, true);
+            }
+        };
+
+        this._onTurnChangedHandler = () => {
+            this.update();
+        };
     }
 
     setEnabled(value) {
@@ -209,6 +223,8 @@ class FogOfWar {
         for (const obj of world.getAllObjects()) {
             this._maybeAddFogHandler(obj);
         }
+        globalEvents.TI4.onSystemActivated.add(this._onSystemActivatedHandler);
+        globalEvents.TI4.onTurnChanged.add(this._onTurnChangedHandler);
         globalEvents.onObjectCreated.add(this._maybeAddFogHandler);
 
         this.update();
@@ -216,6 +232,10 @@ class FogOfWar {
 
     disable() {
         this._enabled = false; // TODO UPDATE IN GLOBAL DATA
+        globalEvents.TI4.onSystemActivated.remove(
+            this._onSystemActivatedHandler
+        );
+        globalEvents.TI4.onTurnChanged.remove(this._onTurnChangedHandler);
         globalEvents.onObjectCreated.remove(this._maybeAddFogHandler);
 
         // Remove system UI.
