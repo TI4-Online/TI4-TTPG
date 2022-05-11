@@ -1,7 +1,7 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
-const { CheckBox, VerticalBox } = require("../../../wrapper/api");
+const { CheckBox, Text, VerticalBox } = require("../../../wrapper/api");
 
 class TabFogOfWarUI extends VerticalBox {
     constructor(onClickHandlers) {
@@ -16,6 +16,13 @@ class TabFogOfWarUI extends VerticalBox {
         enableFog.onCheckStateChanged.add(onClickHandlers.toggleEnable);
 
         this.addChild(enableFog);
+
+        this.addChild(
+            new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setText(locale("ui.tab.map.fog.description"))
+                .setAutoWrap(true)
+        );
     }
 }
 

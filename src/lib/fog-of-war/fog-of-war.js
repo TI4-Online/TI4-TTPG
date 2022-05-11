@@ -163,7 +163,7 @@ class FogOfWar {
     constructor() {
         this._enabled = false; // TODO STORE IN GLOBAL DATA
         this._fogOfWarZones = undefined;
-        this._specatorsCanSeePlayerIndicies = new Set();
+        this._slotToSpecators = {};
 
         this._maybeAddFogHandler = (obj) => {
             if (!this.isEnabled()) {
@@ -255,37 +255,35 @@ class FogOfWar {
         _hexToFogOfWarZone = undefined;
     }
 
+    /**
+     * Let the spectator view as if the given slot.
+     *
+     * @param {number} spectatorSlot
+     * @param {number} viewAsSlot
+     */
+    setViewAs(spectatorSlot, viewAsSlot) {
+        assert(typeof spectatorSlot === "number");
+        assert(typeof viewAsSlot === "number");
+        for (const spectators of Object.values(this._slotToSpecators)) {
+            spectators.delete(spectatorSlot);
+        }
+        let spectators = this._slotToSpecators[viewAsSlot];
+        if (!spectators) {
+            spectators = new Set();
+            this._slotToSpecators[viewAsSlot] = spectators;
+        }
+        spectators.add(spectatorSlot);
+    }
+
     update() {
         // Create sets.
-        const hexToAdjacent = {};
         const hexToOwners = {};
         const hexToOwnersWithAdjacent = {};
+        const hexToAdjacentCommon = {};
         for (const hex of Object.keys(_hexToFogOfWarZone)) {
-            hexToAdjacent[hex] = new Set();
             hexToOwners[hex] = new Set();
             hexToOwnersWithAdjacent[hex] = new Set();
-        }
-
-        for (const [hex, adjHexes] of Object.entries(hexToAdjacent)) {
-            new AdjacencyHyperlane(hex).getAdjacent();
-            const adjNeighbor = new AdjacencyNeighbor(hex);
-            for (const adjHex of adjNeighbor.getAdjacent()) {
-                adjHexes.add(adjHex);
-            }
-
-            const playerSlot = -1; // from player perspective TODO XXX GHOSTS
-            const adjWormhole = new AdjacencyWormhole(hex, playerSlot);
-            for (const adjHex of adjWormhole.getAdjacent()) {
-                adjHexes.add(adjHex);
-            }
-
-            const adjHyperlane = new AdjacencyHyperlane(hex);
-            for (const adjHex of adjHyperlane.getAdjacent()) {
-                adjHexes.add(adjHex);
-            }
-
-            // This hex is not considered adjacent here, even if wormhole, etc.
-            adjHexes.delete(hex);
+            hexToAdjacentCommon[hex] = new Set();
         }
 
         // Compute owners.
@@ -297,15 +295,65 @@ class FogOfWar {
             owners.add(controlEntry.playerSlot);
         }
 
-        // Expand to adjacent.
+        // Compute adjacency.  Do wormholes on a per-player basis.
+        for (const [hex, adjHexes] of Object.entries(hexToAdjacentCommon)) {
+            const adjNeighbor = new AdjacencyNeighbor(hex);
+            for (const adjHex of adjNeighbor.getAdjacent()) {
+                if (hexToAdjacentCommon[adjHex]) {
+                    adjHexes.add(adjHex);
+                }
+            }
+
+            const adjHyperlane = new AdjacencyHyperlane(hex);
+            for (const adjHex of adjHyperlane.getAdjacent()) {
+                if (hexToAdjacentCommon[adjHex]) {
+                    adjHexes.add(adjHex);
+                }
+            }
+
+            // This hex is not considered adjacent here, even if wormhole, etc.
+            adjHexes.delete(hex);
+        }
+
+        // Fold in adjacency.  Compute wormhole adjacency on a
+        // per-player basis as they may have different connectivity (Ghosts).
         for (const [hex, owners] of Object.entries(hexToOwners)) {
+            const adjacentCommon = hexToAdjacentCommon[hex];
             for (const owner of owners) {
+                // Copy owner to current hex.
                 hexToOwnersWithAdjacent[hex].add(owner);
-                for (const adjHex of hexToAdjacent[hex]) {
+
+                // Copy owner to common adjacent hexes.
+                for (const adjHex of adjacentCommon) {
                     if (hexToOwnersWithAdjacent[adjHex]) {
                         hexToOwnersWithAdjacent[adjHex].add(owner);
                     }
                 }
+
+                // Copy owner to wormhole adjacent hexes.
+                const adjWormhole = new AdjacencyWormhole(hex, owner);
+                for (const adjHex of adjWormhole.getAdjacent()) {
+                    if (hexToOwnersWithAdjacent[adjHex]) {
+                        hexToOwnersWithAdjacent[adjHex].add(owner);
+                    }
+                }
+            }
+        }
+
+        // Add spectators.  Spectators are manually registered, not just
+        // unseated players because players may disconnect and re-join.
+        for (const owners of Object.values(hexToOwnersWithAdjacent)) {
+            const addSet = new Set();
+            for (const owner of owners) {
+                const spectators = this._slotToSpecators[owner];
+                if (spectators) {
+                    for (const specator of spectators) {
+                        addSet.add(specator);
+                    }
+                }
+            }
+            for (const add of addSet) {
+                owners.add(add);
             }
         }
 
@@ -316,6 +364,9 @@ class FogOfWar {
                 fogOfWarZone.setOwners(owners);
             }
         }
+
+        // Return owners for testing.
+        return hexToOwnersWithAdjacent;
     }
 }
 

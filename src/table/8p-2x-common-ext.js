@@ -87,7 +87,7 @@ module.exports = {
             plasticHexColor: "#C1C1C1",
             pos: { x: -116.636, y: 84.7411 },
             yaw: -126,
-            defaultPlayerSlot: 8, // want 18 but zone bug prevents ownership, use very light blue for "white",
+            defaultPlayerSlot: 18,
             playerCounts: [4, 5, 6, 7, 8],
         },
     ],

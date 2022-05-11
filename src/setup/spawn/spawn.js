@@ -153,12 +153,16 @@ class Spawn {
         }
 
         if (parsedNsid.type === "token.command") {
-            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
-            return locale("token.command", { faction: factionAbbr });
+            const faction = world.TI4.getFactionByNsidName(parsedNsid.name);
+            if (faction) {
+                return locale("token.command", { faction: faction.nameAbbr });
+            }
         }
         if (parsedNsid.type === "token.control") {
-            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
-            return locale("token.control", { faction: factionAbbr });
+            const faction = world.TI4.getFactionByNsidName(parsedNsid.name);
+            if (faction) {
+                return locale("token.control", { faction: faction.nameAbbr });
+            }
         }
 
         // Try "token.{name}"?

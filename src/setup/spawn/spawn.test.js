@@ -1,3 +1,4 @@
+require("../../global"); // define world.TI4
 const assert = require("assert");
 const locale = require("../../lib/locale");
 const { Spawn } = require("./spawn");
@@ -24,4 +25,18 @@ it("static suggestName deck", () => {
     let name = Spawn.suggestName("card.action:base/whatever");
     assert.equal(name, locale("deck.action"));
     assert(name !== "deck.action"); // locale has the translation
+});
+
+it("static suggestName command token", () => {
+    let name = Spawn.suggestName("token.command:base/arborec");
+    const abbr = locale("faction.abbr.arborec");
+    const cmp = locale("token.command", { faction: abbr });
+    assert.equal(name, cmp);
+});
+
+it("static suggestName control token", () => {
+    let name = Spawn.suggestName("token.control:base/arborec");
+    const abbr = locale("faction.abbr.arborec");
+    const cmp = locale("token.control", { faction: abbr });
+    assert.equal(name, cmp);
 });

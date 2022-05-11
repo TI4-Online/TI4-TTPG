@@ -34,4 +34,8 @@ const locale = (key, replacement = {}) => {
         });
 };
 
+locale.inject = (key, replacement) => {
+    lang[key] = replacement;
+};
+
 module.exports = locale;

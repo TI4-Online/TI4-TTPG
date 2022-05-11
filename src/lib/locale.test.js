@@ -28,3 +28,16 @@ it("empty replace string", () => {
         " has run this script 2 times"
     );
 });
+
+it("missing", () => {
+    const s = "test.does_not_exist.foo.bar.baz";
+    assert.equal(locale(s), s);
+});
+
+it("inject", () => {
+    const s = "test.my_test_inject";
+    assert.equal(locale(s), s);
+    const v = "my_new_value";
+    locale.inject(s, v);
+    assert.equal(locale(s), v);
+});
