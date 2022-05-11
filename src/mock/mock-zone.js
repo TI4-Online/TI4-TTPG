@@ -13,10 +13,14 @@ class Zone {
     getOverlappingObjects() {
         return this._overlappingObjects;
     }
+    getOwningSlots() {
+        return [];
+    }
     getSavedData(value) {}
 
     setAlwaysVisible(value) {}
     setColor(value) {}
+    setObjectVisibility(value) {}
     setPosition(value) {}
     setRotation(value) {}
     setSavedData(value) {}
