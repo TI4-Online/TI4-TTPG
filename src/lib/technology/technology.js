@@ -14,10 +14,7 @@ TECHNOLOGY_DATA.forEach((tech) => {
 
 let _technologies;
 let _technologiesByFaction = {};
-let _settings = {
-    pok: world.TI4.config.pok,
-    codex3: world.TI4.config.codex3,
-};
+let _settings = undefined; // filled by checkCache
 const types = ["Red", "Yellow", "Green", "Blue", "unitUpgrade"];
 
 const isSourceEnabled = (source) => {
@@ -54,11 +51,10 @@ const invalidateCache = () => {
 const checkCache = () => {
     const pok = world.TI4.config.pok;
     const codex3 = world.TI4.config.codex3;
-    if (_settings.pok !== pok || _settings.codex3 !== codex3) {
+    if (!_settings || _settings.pok !== pok || _settings.codex3 !== codex3) {
         invalidateCache();
     }
-    _settings.pok = pok;
-    _settings.codex3 = codex3;
+    _settings = { pok, codex3 };
 };
 
 const getTechnologiesMap = (factionName) => {

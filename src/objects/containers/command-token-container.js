@@ -50,8 +50,9 @@ function getFactionName(obj) {
     // cant get the faction name from the container because the container has name "*"
     // therefore get it from the command token object
     assert(ObjectNamespace.isCommandToken(obj));
-    const factionName = ObjectNamespace.parseCommandToken(obj).name;
-    return locale("faction.full." + factionName);
+    const nsidName = ObjectNamespace.parseCommandToken(obj).name;
+    const faction = world.TI4.getFactionByNsidName(nsidName);
+    return faction ? faction.nameFull() : nsidName;
 }
 
 class Reporter {

@@ -89,15 +89,16 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const { AsyncTaskQueue } = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
+const { Homebrew } = require("./lib/homebrew/homebrew");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
-const { AsyncTaskQueue } = require("./lib/async-task-queue/async-task-queue");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -106,6 +107,7 @@ world.TI4 = {
     config: new GameSetupConfig(),
     fogOfWar: new FogOfWar(),
     gameData: new GameData(),
+    homebrew: new Homebrew(),
     turns: new Turns(true),
 
     getActiveSystemTileObject: () => {
