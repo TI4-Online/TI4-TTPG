@@ -207,8 +207,12 @@ class FogOfWar {
             if (!ObjectNamespace.isSystemTile(obj)) {
                 return;
             }
-            if (!world.TI4.getSystemBySystemTileObject(obj)) {
+            const system = world.TI4.getSystemBySystemTileObject(obj);
+            if (!system) {
                 return; // anonymous home system tile
+            }
+            if (system.hyperlane) {
+                return;
             }
             const fogOfWarZone = new FogOfWarZone(obj);
             this._fogOfWarZones.push(fogOfWarZone);
@@ -222,8 +226,13 @@ class FogOfWar {
             if (fogOfWarZone && player) {
                 const playerSlot = player.getSlot();
                 fogOfWarZone._zone.setSlotOwns(playerSlot, true);
+                const spectators = this._slotToSpecators[playerSlot];
+                if (spectators) {
+                    for (const spectator of spectators) {
+                        fogOfWarZone._zone.setSlotOwns(spectator, true);
+                    }
+                }
                 // do NOT call this.update, that would clobber this temporary owner
-                // TODO XXX SPECATORS
             }
         };
 
