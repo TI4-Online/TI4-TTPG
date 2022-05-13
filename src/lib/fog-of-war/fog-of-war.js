@@ -10,13 +10,17 @@
 // Requires correct unit placement, dropping a unit on a system by mistake may reveal fog.
 
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
 const { AdjacencyHyperlane } = require("../system/adjacency-hyperlane");
 const { AdjacencyNeighbor } = require("../system/adjacency-neighbor");
 const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
 const { Borders } = require("../borders/borders");
+const { CommandToken } = require("../../lib/command-token/command-token");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const {
+    Button,
+    Canvas,
     ImageWidget,
     UIElement,
     Vector,
@@ -73,20 +77,39 @@ class FogOfWarZone {
         return zone;
     }
 
-    static createSystemStandInUi(system, pos) {
+    static createSystemStandInUi(systemTileObj, system, pos) {
         assert(typeof system.tile === "number");
 
         const resolutionScale = 4;
         const imgPath = system.raw.img;
-        const size = 115 * SYSTEM_UI_STAND_IN_SHRINK * resolutionScale;
+        const hexSize = 115 * Hex.SCALE * resolutionScale;
+        const imgSize = hexSize * SYSTEM_UI_STAND_IN_SHRINK;
         const img = new ImageWidget()
             .setImage(imgPath, refPackageId)
-            .setImageSize(size * Hex.SCALE, size * Hex.SCALE);
+            .setImageSize(imgSize, imgSize);
+
+        const buttonW = imgSize / 2;
+        const buttonH = imgSize / 8;
+        const buttonLeft = (imgSize - buttonW) / 2;
+        const buttonTop = (imgSize - buttonH) / 2;
+        const activateButton = new Button()
+            .setFontSize(20)
+            .setText(locale("ui.action.system.activate"));
+        activateButton.onClicked.add((button, player) => {
+            CommandToken.activateSystem(systemTileObj, player);
+        });
+
+        const canvas = new Canvas()
+            .addChild(img, 0, 0, imgSize, imgSize)
+            .addChild(activateButton, buttonLeft, buttonTop, buttonW, buttonH);
 
         const uiElement = new UIElement();
         uiElement.position = pos;
-        uiElement.widget = img;
+        uiElement.useWidgetSize = false;
+        uiElement.width = imgSize;
+        uiElement.height = imgSize;
         uiElement.scale = 1 / resolutionScale;
+        uiElement.widget = canvas;
 
         // Attach as world UI so remains visible when system tile is hidden.
         world.addUI(uiElement);
@@ -109,7 +132,16 @@ class FogOfWarZone {
 
         const system = this._system;
         const uiPos = this.getSystemStandInUiPos();
-        this._standInUi = FogOfWarZone.createSystemStandInUi(system, uiPos);
+        this._standInUi = FogOfWarZone.createSystemStandInUi(
+            systemTileObj,
+            system,
+            uiPos
+        );
+
+        systemTileObj.onDestroyed.add(() => {
+            this._zone.destroy();
+            delete _hexToFogOfWarZone[this._hex];
+        });
 
         const updateStuff = () => {
             // Move zone.
@@ -183,16 +215,20 @@ class FogOfWar {
         };
 
         this._onSystemActivatedHandler = (systemObj, player) => {
+            console.log("FogOfWar._onSystemActivatedHandler");
             const pos = systemObj.getPosition();
             const hex = Hex.fromPosition(pos);
             const fogOfWarZone = _hexToFogOfWarZone[hex];
             if (fogOfWarZone && player) {
                 const playerSlot = player.getSlot();
                 fogOfWarZone._zone.setSlotOwns(playerSlot, true);
+                // do NOT call this.update, that would clobber this temporary owner
+                // TODO XXX SPECATORS
             }
         };
 
-        this._onTurnChangedHandler = () => {
+        this._doUpdateHandler = () => {
+            console.log("FogOfWar._doUpdateHandler");
             this.update();
         };
     }
@@ -224,7 +260,8 @@ class FogOfWar {
             this._maybeAddFogHandler(obj);
         }
         globalEvents.TI4.onSystemActivated.add(this._onSystemActivatedHandler);
-        globalEvents.TI4.onTurnChanged.add(this._onTurnChangedHandler);
+        globalEvents.TI4.onFactionChanged.add(this._doUpdateHandler);
+        globalEvents.TI4.onTurnChanged.add(this._doUpdateHandler);
         globalEvents.onObjectCreated.add(this._maybeAddFogHandler);
 
         this.update();
@@ -235,7 +272,8 @@ class FogOfWar {
         globalEvents.TI4.onSystemActivated.remove(
             this._onSystemActivatedHandler
         );
-        globalEvents.TI4.onTurnChanged.remove(this._onTurnChangedHandler);
+        globalEvents.TI4.onFactionChanged.remove(this._doUpdateHandler);
+        globalEvents.TI4.onTurnChanged.remove(this._doUpdateHandler);
         globalEvents.onObjectCreated.remove(this._maybeAddFogHandler);
 
         // Remove system UI.
