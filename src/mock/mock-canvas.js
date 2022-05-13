@@ -1,5 +1,7 @@
 class Canvas {
-    addChild() {}
+    addChild() {
+        return this;
+    }
 }
 
 module.exports = Canvas;
