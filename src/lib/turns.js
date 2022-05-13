@@ -120,6 +120,7 @@ class Turns {
             turnOrder: colorOrder.join(", "),
         });
         Broadcast.chatAll(msg);
+        console.log(`Turns.setTurnOrder: ${msg} snake=${this._isSnake}`);
 
         // Update persistent state *before* event.
         if (this._persistent) {
