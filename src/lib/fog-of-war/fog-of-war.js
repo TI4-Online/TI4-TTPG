@@ -93,7 +93,7 @@ class FogOfWarZone {
         const buttonLeft = (imgSize - buttonW) / 2;
         const buttonTop = (imgSize - buttonH) / 2;
         const activateButton = new Button()
-            .setFontSize(20)
+            .setFontSize(16)
             .setText(locale("ui.action.system.activate"));
         activateButton.onClicked.add((button, player) => {
             CommandToken.activateSystem(systemTileObj, player);
