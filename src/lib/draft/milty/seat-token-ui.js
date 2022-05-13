@@ -13,14 +13,11 @@ const {
 class SeatTokenUI {
     static getSeatDataArray(speakerIndex) {
         assert(typeof speakerIndex === "number");
+
         const result = [];
 
         const playerCount = world.TI4.config.playerCount;
-        if (speakerIndex === -1) {
-            speakerIndex = Math.floor(Math.random() * playerCount);
-        }
-
-        assert(speakerIndex < playerCount);
+        assert(0 <= speakerIndex && speakerIndex < playerCount);
 
         for (let i = 0; i < playerCount; i++) {
             let orderIndex = i - speakerIndex;
