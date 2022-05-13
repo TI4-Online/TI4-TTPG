@@ -1,8 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { AbstractSetup } = require("../../setup/abstract-setup");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
-const { Spawn } = require("../../setup/spawn/spawn");
-const { Position, Rotator, world } = require("../../wrapper/api");
+const { Rotator, Vector, world } = require("../../wrapper/api");
 
 /**
  * "Faction Token" and/or "Faction Reference" cards.
@@ -56,20 +56,39 @@ class FactionToken {
         const faction = world.TI4.getFactionByNsidName(nsidName);
         assert(faction);
 
-        const cardNsid = `card.faction_reference:${faction.nsidSource}/${faction.nsidName}`;
-
+        // Careful, with Codex 3 these might be omega AND have a different source.
         // Look for existing card.
-        const gather = CardUtil.gatherCards((nsid) => {
-            return nsid === cardNsid;
-        });
-        if (gather.length > 0) {
-            return gather[0];
+        const filterNsid = (nsid) => {
+            if (!nsid.startsWith("card.faction_reference")) {
+                return false;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name.split(".")[0]; // omega
+            return name === nsidName;
+        };
+
+        const gather = CardUtil.gatherCards(filterNsid);
+        let card = gather[0];
+        if (card) {
+            console.log(
+                `FactionToken.findOrSpawnFactionReference found ${nsidName}`
+            );
+            return card;
         }
 
         // Spawn a new one.
-        const pos = new Position(0, 0, world.getTableHeight() + 10);
+        console.log(
+            `FactionToken.findOrSpawnFactionReference spawning ${nsidName}`
+        );
+        const pos = new Vector(0, 0, world.getTableHeight() + 10);
         const rot = new Rotator(0, 0, 0);
-        const card = Spawn.spawn(cardNsid, pos, rot);
+        const nsidPrefix = "card.faction_reference";
+        card = new AbstractSetup(undefined, undefined).spawnDecksThenFilter(
+            pos,
+            rot,
+            nsidPrefix,
+            filterNsid
+        );
         assert(card);
         return card;
     }
