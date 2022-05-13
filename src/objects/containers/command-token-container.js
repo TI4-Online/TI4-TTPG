@@ -52,7 +52,7 @@ function getFactionName(obj) {
     assert(ObjectNamespace.isCommandToken(obj));
     const nsidName = ObjectNamespace.parseCommandToken(obj).name;
     const faction = world.TI4.getFactionByNsidName(nsidName);
-    return faction ? faction.nameFull() : nsidName;
+    return faction ? faction.nameFull : nsidName;
 }
 
 class Reporter {
