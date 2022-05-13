@@ -121,7 +121,7 @@ class PlayerDeskSetup {
 
         const faction = this._getFactionToUnpack(factionNsidName);
         console.log(
-            `setupFactionAsync: ${faction.nameAbbr} for ${this._playerDesk.colorName}`
+            `setupFactionAsync: starting ${faction.nameAbbr} for ${this._playerDesk.colorName}`
         );
         const setups = this._getFactionSetups(faction);
         setups.forEach((setup) => {
@@ -130,6 +130,9 @@ class PlayerDeskSetup {
             });
         });
         _sharedAsyncTaskQueue.add(() => {
+            console.log(
+                `setupFactionAsync: finished ${faction.nameAbbr} for ${this._playerDesk.colorName}`
+            );
             const playerSlot = this._playerDesk.playerSlot;
             const player = world.getPlayerBySlot(playerSlot);
             globalEvents.TI4.onFactionChanged.trigger(playerSlot, player);
