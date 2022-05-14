@@ -11,7 +11,13 @@ const { MiltyUtil } = require("./milty-util");
 const { ObjectNamespace } = require("../../object-namespace");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
-const { Player, Rotator, UIElement, world } = require("../../../wrapper/api");
+const {
+    Player,
+    Rotator,
+    UIElement,
+    globalEvents,
+    world,
+} = require("../../../wrapper/api");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -23,6 +29,7 @@ class MiltyDraft {
         this._factionDataArray = [];
         this._seatDataArray = [];
         this._uis = [];
+        this._updateWaitingFor = [];
         this._scale = DEFAULT_SLICE_SCALE;
 
         this._draftSelectionManager = new DraftSelectionManager()
@@ -121,7 +128,7 @@ class MiltyDraft {
             this.applyChoices(player);
         });
 
-        const { widget, w, h } = new MiltyDraftUI(this._scale)
+        const { widget, w, h, updateWaitingFor } = new MiltyDraftUI(this._scale)
             .addSlices(this._sliceDataArray)
             .addFactions(this._factionDataArray)
             .addSeats(this._seatDataArray)
@@ -137,6 +144,8 @@ class MiltyDraft {
         ui.widget = widget;
         ui.scale = 1 / this._scale;
 
+        this._updateWaitingFor.push(updateWaitingFor);
+
         return ui;
     }
 
@@ -149,12 +158,20 @@ class MiltyDraft {
             this._uis.push(ui);
             world.addUI(ui);
         }
+        this._updateWaitingFor.forEach((handler) => {
+            globalEvents.TI4.onTurnOrderChanged.add(handler);
+            globalEvents.TI4.onTurnChanged.add(handler);
+        });
         return this;
     }
 
     clearPlayerUIs() {
         this._uis.forEach((ui) => {
             world.removeUIElement(ui);
+        });
+        this._updateWaitingFor.forEach((handler) => {
+            globalEvents.TI4.onTurnOrderChanged.remove(handler);
+            globalEvents.TI4.onTurnChanged.remove(handler);
         });
         return this;
     }
