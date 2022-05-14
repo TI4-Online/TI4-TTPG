@@ -16,17 +16,20 @@ const {
 } = require("../../wrapper/api");
 
 let _playerCountSlider = undefined;
+let _setupButton = undefined;
 
 class GameSetupUI {
     static disablePlayerCountSlider() {
         if (_playerCountSlider) {
             _playerCountSlider.setEnabled(false);
+            _setupButton.setEnabled(false);
         }
     }
 
     static enablePlayerCountSlider() {
         if (_playerCountSlider) {
             _playerCountSlider.setEnabled(true);
+            _setupButton.setEnabled(true);
         }
     }
 
@@ -121,13 +124,13 @@ class GameSetupUI {
             )
         );
 
-        fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space
-        fullPanel.addChild(
-            this._createButton(
-                "ui.setup.do_setup",
-                this._callbacks.onSetupClicked
-            )
+        _setupButton = this._createButton(
+            "ui.setup.do_setup",
+            this._callbacks.onSetupClicked
         );
+
+        fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space
+        fullPanel.addChild(_setupButton);
 
         return fullPanel;
     }

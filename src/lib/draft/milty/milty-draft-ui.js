@@ -4,7 +4,16 @@ const { ColorUtil } = require("../../color/color-util");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
-const { Border, Button, Canvas } = require("../../../wrapper/api");
+const {
+    Border,
+    Button,
+    Canvas,
+    HorizontalAlignment,
+    LayoutBox,
+    Text,
+    VerticalAlignment,
+    world,
+} = require("../../../wrapper/api");
 
 const NUM_SLICE_ROWS = 2;
 const NUM_FACTION_ROWS = 4;
@@ -24,7 +33,6 @@ const DEFAULT_SLICE_COLORS = [
 
 /**
  * Strategy cards are using 833 width, follow that convention.
- *
  */
 class MiltyDraftUI {
     constructor(scale) {
@@ -35,6 +43,8 @@ class MiltyDraftUI {
         this._sliceSize = MiltySliceUI.getSize(this._scale);
         this._pad = Math.floor(this._sliceSize.tileH / 3);
 
+        this._waitingFor = new Text().setText("<>");
+
         // Fix height.
         const pad = this._pad;
         const sliceH = this._sliceSize.sliceH;
@@ -43,6 +53,19 @@ class MiltyDraftUI {
         // Grow when adding things.
         this._nextX = pad;
         this._w = pad;
+
+        this._updateWaitingFor = () => {
+            const currentDesk = world.TI4.turns.getCurrentTurn();
+            if (!currentDesk) {
+                return;
+            }
+            const playerName = currentDesk.colorName;
+            this._waitingFor.setText(
+                locale("ui.agenda.clippy.waiting_for_player_name", {
+                    playerName,
+                })
+            );
+        };
     }
 
     /**
@@ -55,25 +78,39 @@ class MiltyDraftUI {
 
         const { sliceW, tileH } = this._sliceSize;
 
-        // Add button to the bottom
         const w = sliceW * 3 + this._pad * 2;
         const h = tileH;
         const x = (this._w - w) / 2;
-        const y = this._h;
+        let y = this._h;
+        const fontSize = Math.min(255, Math.floor(h * 0.3));
+
+        // Add "waiting for player".
+        const waitingForBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(this._waitingFor);
+        this._canvas.addChild(waitingForBox, 0, y, this._w, h);
+        this._h += tileH + this._pad;
+        this._waitingFor.setFontSize(fontSize);
+
+        // Add "ready" button.
+        y = this._h;
         this._canvas.addChild(onFinishedButton, x, y, w, h);
         this._h += tileH + this._pad;
 
         // Set it up here, as part of UI.
-        const fontSize = Math.min(255, Math.floor(h * 0.3));
         onFinishedButton
             .setText(locale("ui.button.ready"))
             .setFontSize(fontSize)
             .setEnabled(false);
 
+        this._updateWaitingFor();
+
         return {
             widget: new Border().setChild(this._canvas),
             w: this._w,
             h: this._h,
+            updateWaitingFor: this._updateWaitingFor,
         };
     }
 

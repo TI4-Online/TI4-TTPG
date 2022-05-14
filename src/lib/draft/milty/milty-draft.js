@@ -11,7 +11,13 @@ const { MiltyUtil } = require("./milty-util");
 const { ObjectNamespace } = require("../../object-namespace");
 const { SeatTokenUI } = require("./seat-token-ui");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
-const { Player, Rotator, UIElement, world } = require("../../../wrapper/api");
+const {
+    Player,
+    Rotator,
+    UIElement,
+    globalEvents,
+    world,
+} = require("../../../wrapper/api");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -23,6 +29,7 @@ class MiltyDraft {
         this._factionDataArray = [];
         this._seatDataArray = [];
         this._uis = [];
+        this._updateWaitingFor = [];
         this._scale = DEFAULT_SLICE_SCALE;
 
         this._draftSelectionManager = new DraftSelectionManager()
@@ -90,6 +97,12 @@ class MiltyDraft {
     setSpeakerIndex(speakerIndex) {
         assert(typeof speakerIndex === "number");
 
+        const playerCount = world.TI4.config.playerCount;
+        if (speakerIndex === -1) {
+            speakerIndex = Math.floor(Math.random() * playerCount);
+        }
+
+        this._speakerIndex = speakerIndex;
         this._seatDataArray = SeatTokenUI.getSeatDataArray(speakerIndex);
 
         const seatCategoryName = locale("ui.draft.category.seat");
@@ -115,7 +128,7 @@ class MiltyDraft {
             this.applyChoices(player);
         });
 
-        const { widget, w, h } = new MiltyDraftUI(this._scale)
+        const { widget, w, h, updateWaitingFor } = new MiltyDraftUI(this._scale)
             .addSlices(this._sliceDataArray)
             .addFactions(this._factionDataArray)
             .addSeats(this._seatDataArray)
@@ -131,6 +144,8 @@ class MiltyDraft {
         ui.widget = widget;
         ui.scale = 1 / this._scale;
 
+        this._updateWaitingFor.push(updateWaitingFor);
+
         return ui;
     }
 
@@ -143,12 +158,20 @@ class MiltyDraft {
             this._uis.push(ui);
             world.addUI(ui);
         }
+        this._updateWaitingFor.forEach((handler) => {
+            globalEvents.TI4.onTurnOrderChanged.add(handler);
+            globalEvents.TI4.onTurnChanged.add(handler);
+        });
         return this;
     }
 
     clearPlayerUIs() {
         this._uis.forEach((ui) => {
             world.removeUIElement(ui);
+        });
+        this._updateWaitingFor.forEach((handler) => {
+            globalEvents.TI4.onTurnOrderChanged.remove(handler);
+            globalEvents.TI4.onTurnChanged.remove(handler);
         });
         return this;
     }
@@ -201,13 +224,21 @@ class MiltyDraft {
         // Unpack faction?  No, just place the token and let players click the
         // unpack button.  This is also a pause for Keleres to change flavors.
         // Old way: "new PlayerDeskSetup(playerDesk).setupFactionAsync(factionData.nsidName);"
+        console.log(
+            `MiltyDraft._applyPlayerChoices: ${playerDesk.colorName} faction ${factionData.nsidName}`
+        );
         const factionReference = FactionToken.findOrSpawnFactionReference(
             factionData.nsidName
         );
-        factionReference.setPosition(playerDesk.center.add([0, 0, 10]));
-        factionReference.setRotation(
-            new Rotator(0, 0, 180).compose(playerDesk.rot)
-        );
+        if (factionReference) {
+            factionReference.setPosition(playerDesk.center.add([0, 0, 10]));
+            factionReference.setRotation(
+                new Rotator(0, 0, 180).compose(playerDesk.rot)
+            );
+        } else {
+            `MiltyDraft._applyPlayerChoices: NO FACTION REFERENCE`;
+        }
+
         playerDesk.setReady(false);
         playerDesk.resetUI();
     }
@@ -237,20 +268,15 @@ class MiltyDraft {
         }
 
         // Set turn order.
+        const playerCount = world.TI4.config.playerCount;
+        const playerDesks = world.TI4.getAllPlayerDesks();
         let order = [];
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const playerSlot = playerDesk.playerSlot;
-            const seatCategoryName = locale("ui.draft.category.seat");
-            const seatData = this._draftSelectionManager.getSelectionData(
-                playerSlot,
-                seatCategoryName
-            );
-            assert(seatData);
-            order[seatData.orderIndex] = playerDesk;
+        for (let i = 0; i < playerCount; i++) {
+            const nextIdx = (this._speakerIndex + i) % playerCount;
+            const nextDesk = playerDesks[nextIdx];
+            assert(nextDesk);
+            order.push(nextDesk);
         }
-        order = order.filter((entry) => {
-            return entry ? true : false;
-        });
         if (order.length > 0) {
             world.TI4.turns.setTurnOrder(order, player);
         }

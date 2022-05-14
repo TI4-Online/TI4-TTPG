@@ -24,7 +24,16 @@ class ControlToken {
             return;
         }
         const tokenNsid = `token.control:${faction.nsidSource}/${faction.nsidName}`;
-        return Spawn.spawn(tokenNsid, pos, rot);
+        const token = Spawn.spawn(tokenNsid, pos, rot);
+
+        token.setOwningPlayerSlot(playerSlot);
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            token.setPrimaryColor(playerDesk.plasticColor);
+        }
+
+        return token;
     }
 
     static spawnOnSystem(systemTileObj, player) {

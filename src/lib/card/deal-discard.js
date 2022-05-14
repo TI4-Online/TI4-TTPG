@@ -354,6 +354,44 @@ class DealDiscard {
             }
         }
 
+        // Move faction reference and token cards back to decks.
+        if (
+            nsid.startsWith("card.faction_reference") ||
+            nsid.startsWith("card.faction_token")
+        ) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const type = parsed.type;
+            for (const candidate of world.getAllObjects()) {
+                if (candidate.getContainer()) {
+                    continue;
+                }
+                if (!(candidate instanceof Card)) {
+                    continue;
+                }
+                if (candidate.getStackSize() <= 1) {
+                    continue; // look for decks, not cards
+                }
+                const nsids = ObjectNamespace.getDeckNsids(candidate);
+                let found = true;
+                for (const candidateNsid of nsids) {
+                    if (!candidateNsid.startsWith(type)) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    // All cards in deck are of this type.  Hopefully it is the right one!
+                    obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                    const toFront = true;
+                    const offset = 0;
+                    const animate = true;
+                    const flipped = false;
+                    candidate.addCards(obj, toFront, offset, animate, flipped);
+                    return true;
+                }
+            }
+        }
+
         if (!DealDiscard.isKnownDeck(nsid)) {
             // Otherwise discard to a known deck.
             return false;
