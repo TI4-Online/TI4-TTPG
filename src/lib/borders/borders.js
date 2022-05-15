@@ -310,9 +310,9 @@ class Borders {
             segment.line.pop();
         }
 
-        const points = new Polygon(segment.line)
-            .inset(thickness / 2)
-            .getPoints();
+        // Inset a little extra so outside edges do no touch.
+        const inset = thickness / 2 + DEFAULT_THICKNESS / 2;
+        const points = new Polygon(segment.line).inset(inset).getPoints();
 
         const z = world.getTableHeight() + 0.13;
         points.forEach((p) => {
