@@ -468,7 +468,7 @@ module.exports = [
         cardNsid: "card.technology.yellow.l1z1x:base/inheritance_systems",
         type: "Yellow",
         requirements: {
-            Yellow: 1,
+            Yellow: 2,
         },
         abbrev: "Inherit. Systems",
         faction: "l1z1x",
