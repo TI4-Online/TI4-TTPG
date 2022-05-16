@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Facing } = require("../facing");
 const { ObjectNamespace } = require("../object-namespace");
+const { SystemSchema } = require("./system.schema");
 const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 
@@ -91,9 +92,13 @@ class Planet {
         return _planetLocaleNameToPlanet[localeName];
     }
 
-    constructor(attrs, system, standardPosition, standardRadius) {
+    constructor(attrs, system, planetIndex, standardPosition, standardRadius) {
+        assert(typeof planetIndex === "number");
+        assert(typeof standardRadius === "number");
+
         this._attrs = attrs;
         this._system = system;
+        this._planetIndex = planetIndex;
         this._attachments = [];
 
         // if the given system attributes does not contain radius
@@ -135,6 +140,10 @@ class Planet {
         return this.raw.localeName;
     }
 
+    get planetIndex() {
+        return this._planetIndex;
+    }
+
     get position() {
         return this.raw.position;
     }
@@ -145,6 +154,10 @@ class Planet {
 
     get system() {
         return this._system;
+    }
+
+    get traits() {
+        return this.raw.trait ? this.raw.trait : [];
     }
 
     getNameStr() {
@@ -160,6 +173,12 @@ class Planet {
             );
         }
         return m[1];
+    }
+
+    getPlanetCardNsid() {
+        const source = this.system.raw.source;
+        const name = this.getPlanetNsidName();
+        return `card.planet:${source}/${name}`;
     }
 }
 
@@ -251,6 +270,52 @@ class System {
         return result;
     }
 
+    static summarize(tiles) {
+        assert(Array.isArray(tiles));
+        let res = 0;
+        let inf = 0;
+        let tech = [];
+        let wormholes = [];
+
+        for (const tile of tiles) {
+            const system = System.getByTileNumber(tile);
+            assert(system);
+            for (const planet of system.planets) {
+                res += planet.raw.resources;
+                inf += planet.raw.influence;
+                if (planet.raw.tech) {
+                    for (const planetTech of planet.raw.tech) {
+                        tech.push(planetTech.substring(0, 1).toUpperCase());
+                    }
+                }
+            }
+            for (const wormhole of system.wormholes) {
+                switch (wormhole) {
+                    case "alpha":
+                        wormholes.push("α");
+                        break;
+                    case "beta":
+                        wormholes.push("β");
+                        break;
+                    case "gamma":
+                        wormholes.push("γ");
+                        break;
+                    case "delta":
+                        wormholes.push("δ");
+                        break;
+                }
+            }
+        }
+        const result = [`${res}/${inf}`];
+        if (tech.length > 0) {
+            result.push(tech.sort().join(""));
+        }
+        if (wormholes.length > 0) {
+            result.push(wormholes.sort().join(""));
+        }
+        return result.join(" ");
+    }
+
     /**
      * Get the currently active system tile.  Note that a competing
      * globalEvents.TI4.onSystemActivated handler might be called first,
@@ -260,6 +325,15 @@ class System {
      */
     static getActiveSystemTileObject() {
         return _activeSystemGameObject;
+    }
+
+    static injectSystem(rawSystem) {
+        assert(rawSystem);
+        SystemSchema.validate(rawSystem, (err) => {
+            throw new Error('System.injectSystem "${err}"');
+        });
+        SYSTEM_ATTRS.push(rawSystem);
+        _tileToSystem = undefined;
     }
 
     constructor(systemAttrs) {
@@ -273,6 +347,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             ONE_PLANET_HOME_POSITION,
                             ONE_PLANET_HOME_RADIUS
                         );
@@ -280,6 +355,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             TWO_PLANET_HOME_POSITION[index],
                             TWO_PLANET_HOME_RADIUS[index]
                         );
@@ -287,6 +363,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             ONE_PLANET_POSITION,
                             ONE_PLANET_RADIUS
                         );
@@ -294,6 +371,7 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             TWO_PLANET_POSITION[index],
                             TWO_PLANET_RADIUS[index]
                         );
@@ -301,11 +379,12 @@ class System {
                         return new Planet(
                             planetAttrs,
                             this,
+                            index,
                             THREE_PLANET_POSITION[index],
                             THREE_PLANET_RADIUS[index]
                         );
                     } else {
-                        return new Planet(planetAttrs, this);
+                        return new Planet(planetAttrs, this, index);
                     }
                 })
             );
@@ -333,6 +412,10 @@ class System {
 
     get home() {
         return this._attrs.home;
+    }
+
+    get hyperlane() {
+        return this.raw.hyperlane;
     }
 
     get planets() {

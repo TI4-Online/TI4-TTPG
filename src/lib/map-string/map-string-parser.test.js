@@ -7,12 +7,24 @@ it("validate with numeric only", () => {
     assert.equal(validate("7 18 23"), true);
 });
 
+it("validate with 0 and -1", () => {
+    assert.equal(validate("7 0 -1"), true);
+});
+
+it("validate with only mecatol", () => {
+    assert.equal(validate(""), true);
+});
+
 it("validate with custom home tile", () => {
     assert.equal(validate("{4} 7 18 23"), true);
 });
 
 it("validate with side and rotation", () => {
     assert.equal(validate("7 83b2"), true);
+});
+
+it("validate start with side and rotation", () => {
+    assert.equal(validate("83b2"), true);
 });
 
 it("validate supports multiple and mixed delimiters", () => {
@@ -41,6 +53,15 @@ it("parse with numeric only", () => {
     ]);
 });
 
+it("parse with 0 and -1", () => {
+    assert.deepEqual(parse("7 0 -1"), [
+        { tile: 18 },
+        { tile: 7 },
+        { tile: 0 },
+        { tile: -1 },
+    ]);
+});
+
 it("parse with custom home tile", () => {
     assert.deepEqual(parse("{4} 7 18 23"), [
         { tile: 4 },
@@ -56,6 +77,9 @@ it("parse with side and rotation", () => {
         { tile: 7 },
         { tile: 83, side: "b", rotation: 2 },
     ]);
+});
+it("parse start with side and rotation", () => {
+    assert.deepEqual(parse("{83b2}"), [{ tile: 83, side: "b", rotation: 2 }]);
 });
 
 it("parse supports multiple and mixed delimiters", () => {

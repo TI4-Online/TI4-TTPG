@@ -10,6 +10,7 @@ Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-unit.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-card.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-card-holder.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-mat.json"));
+Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-other.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-sheet.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-strategy.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-system.json"));
@@ -152,12 +153,16 @@ class Spawn {
         }
 
         if (parsedNsid.type === "token.command") {
-            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
-            return locale("token.command", { faction: factionAbbr });
+            const faction = world.TI4.getFactionByNsidName(parsedNsid.name);
+            if (faction) {
+                return locale("token.command", { faction: faction.nameAbbr });
+            }
         }
         if (parsedNsid.type === "token.control") {
-            const factionAbbr = locale(`faction.abbr.${parsedNsid.name}`);
-            return locale("token.control", { faction: factionAbbr });
+            const faction = world.TI4.getFactionByNsidName(parsedNsid.name);
+            if (faction) {
+                return locale("token.control", { faction: faction.nameAbbr });
+            }
         }
 
         // Try "token.{name}"?
@@ -212,7 +217,7 @@ class Spawn {
         // If this is a system tile, scale it to match Hex size.
         if (ObjectNamespace.isSystemTile(obj)) {
             const scale = Hex.SCALE * 0.995;
-            obj.setScale([scale, scale, 1]);
+            obj.setScale([scale, scale, scale]);
         }
 
         return obj;
@@ -224,6 +229,24 @@ class Spawn {
         bag.setRotation(rotation);
         bag.setMaxItems(500);
         return bag;
+    }
+
+    /**
+     * Register a template ID for spawn.  Template IDs need to be unique across packages,
+     * additive loading the homebrew package is sufficient, no need to specify package id.
+     *
+     * @param {string} nsid
+     * @param {string} templateId
+     */
+    static injectNsidToTemplate(nsid, templateId) {
+        assert(typeof nsid === "string");
+        assert(typeof templateId === "string");
+        if (NSID_TO_TEMPLATE[nsid]) {
+            throw new Error(
+                `Spawn.injectNsidToTemplate: nsid "${nsid}" already registered`
+            );
+        }
+        NSID_TO_TEMPLATE[nsid] = templateId;
     }
 }
 

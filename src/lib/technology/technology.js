@@ -5,6 +5,7 @@ const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
 const { world } = require("../../wrapper/api");
+const { TechnologySchema } = require("./technology.schema");
 
 TECHNOLOGY_DATA.forEach((tech) => {
     tech.name = locale(tech.localeName);
@@ -13,36 +14,47 @@ TECHNOLOGY_DATA.forEach((tech) => {
 
 let _technologies;
 let _technologiesByFaction = {};
-let _settings = {
-    pok: world.TI4.config.pok,
-};
+let _settings = undefined; // filled by checkCache
 const types = ["Red", "Yellow", "Green", "Blue", "unitUpgrade"];
 
 const isSourceEnabled = (source) => {
     return (
         source === undefined || // base technology
-        (source === "PoK" && world.TI4.config.pok)
-    ); // PoK technology
+        (source === "PoK" && world.TI4.config.pok) ||
+        (source === "Codex 3" && world.TI4.config.codex3)
+    );
 };
 
 const getTechnologiesRawArray = (factionName) => {
     return TECHNOLOGY_DATA.filter((tech) => {
+        if (!isSourceEnabled(tech.source)) {
+            return false;
+        }
+        if (!factionName) {
+            return true; // no filtering for factions
+        }
+        if (!tech.faction && !tech.factions) {
+            return true; // not a faction technology
+        }
         return (
-            isSourceEnabled(tech.source) &&
-            (!factionName || // no filtering for factions
-                !tech.faction || // not a faction technology
-                tech.faction === factionName) // matching faction
-        );
+            tech.faction === factionName ||
+            (tech.factions && tech.factions.includes(factionName))
+        ); // matching faction
     });
+};
+
+const invalidateCache = () => {
+    _technologies = undefined;
+    _technologiesByFaction = {};
 };
 
 const checkCache = () => {
     const pok = world.TI4.config.pok;
-    if (_settings.pok !== pok) {
-        _technologies = undefined;
-        _technologiesByFaction = {};
+    const codex3 = world.TI4.config.codex3;
+    if (!_settings || _settings.pok !== pok || _settings.codex3 !== codex3) {
+        invalidateCache();
     }
-    _settings.pok = pok;
+    _settings = { pok, codex3 };
 };
 
 const getTechnologiesMap = (factionName) => {
@@ -74,6 +86,19 @@ const getTechnologies = (factionName) => {
 };
 
 class Technology {
+    static injectTechnology(rawTechnology) {
+        assert(rawTechnology);
+        TechnologySchema.validate(rawTechnology, (err) => {
+            throw new Error(
+                `Technology.injectTechnology "${JSON.stringify(
+                    rawTechnology
+                )}" error "${err}"`
+            );
+        });
+        TECHNOLOGY_DATA.push(rawTechnology);
+        invalidateCache();
+    }
+
     static getOwnedPlayerTechnologies(playerSlot) {
         assert(Number.isInteger(playerSlot));
 
@@ -84,8 +109,8 @@ class Technology {
             if (!nsid.startsWith("card.technology")) {
                 continue;
             }
-            if (!CardUtil.isLooseCard(obj, false)) {
-                continue; // not a lone, faceup card on the table
+            if (!CardUtil.isLooseCard(obj, false, true)) {
+                continue; // not a lone card on the table (it may be face down!)
             }
             const ownerPlayerSlot = world.TI4.getClosestPlayerDesk(
                 obj.getPosition()
@@ -105,23 +130,21 @@ class Technology {
     }
 
     static getTechnologies(playerSlot) {
-        if (!playerSlot) {
-            return getTechnologies().all;
+        let factionNsidName = false;
+        if (playerSlot) {
+            const faction = Faction.getByPlayerSlot(playerSlot);
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
-
-        const factionName = Faction.getByPlayerSlot(playerSlot).raw.faction;
-        assert(factionName); // a faction was identified
-        return getTechnologies(factionName).all;
+        return getTechnologies(factionNsidName).all;
     }
 
     static getTechnologiesByType(playerSlot) {
-        if (!playerSlot) {
-            return getTechnologies().byType;
+        let factionNsidName = false;
+        if (playerSlot) {
+            const faction = Faction.getByPlayerSlot(playerSlot);
+            factionNsidName = faction ? faction.raw.faction : "N/A";
         }
-
-        const factionName = Faction.getByPlayerSlot(playerSlot).raw.faction;
-        assert(factionName); // a faction was identified
-        return getTechnologies(factionName).byType;
+        return getTechnologies(factionNsidName).byType;
     }
 
     static getTechnologiesOfType(type, playerSlot) {

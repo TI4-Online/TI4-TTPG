@@ -4,7 +4,7 @@ const { SetupCardHolders } = require("./setup-card-holders");
 const { SetupSecretHolders } = require("./setup-secret-holders");
 const { SetupSheets } = require("./setup-sheets");
 const { SetupStrategyCards } = require("./setup-strategy-cards");
-const { SetupSupplyBoxes } = require("./setup-supply-boxes");
+const { SetupSupplyBoxesDesks } = require("./setup-supply-boxes-desks");
 const { SetupSystemTiles } = require("./setup-system-tiles");
 const { SetupTableDecks } = require("./setup-table-decks");
 const { SetupTableGraveyards } = require("./setup-table-graveyards");
@@ -46,8 +46,6 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     console.log(`${player.getName()} selected ${actionName}`);
     console.log(`isDown: ${player.isScriptKeyDown(10)}`);
 
-    console.log(`zone: ${world.getZoneById("yiv")}`);
-
     const setups = [];
 
     if (actionName === ACTION.GIZMO_DESKS) {
@@ -69,7 +67,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         }
     } else if (actionName === ACTION.SUPPLY) {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            setups.push(new SetupSupplyBoxes(playerDesk));
+            setups.push(new SetupSupplyBoxesDesks(playerDesk));
         }
     } else if (actionName === ACTION.SHEETS) {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {

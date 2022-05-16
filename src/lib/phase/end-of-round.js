@@ -2,15 +2,22 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
+const { CommandToken } = require("../command-token/command-token");
 const { DealDiscard } = require("../card/deal-discard");
 const { Faction } = require("../faction/faction");
 const { FindTurnOrder } = require("./find-turn-order");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
-const { System } = require("../system/system");
 const { STRATEGY_CARDS } = require("../../setup/setup-strategy-cards");
-const { world, Vector, Rotator, Card } = require("../../wrapper/api");
-const { CommandToken } = require("../command-token/command-token");
+const {
+    world,
+    Card,
+    Container,
+    GameObject,
+    Rotator,
+    Vector,
+} = require("../../wrapper/api");
+const { PlayerDesk } = require("../player-desk/player-desk");
 
 const ANIMATION_SPEED = 1;
 
@@ -61,7 +68,8 @@ class DealActionCards {
             ])
         );
 
-        for (const playerSlot of FindTurnOrder.order()) {
+        for (const playerDesk of FindTurnOrder.order()) {
+            const playerSlot = playerDesk.playerSlot;
             const count =
                 DealActionCards.getNumberActionCardsToDeal(playerSlot);
             const message = locale("ui.message.deal_action_cards", {
@@ -108,21 +116,28 @@ class EndStatusPhase {
         ) {
             dealNTokens += 1;
         }
-        if (
-            CardUtil.hasCard(
-                playerSlot,
-                "card.promissory.l1z1x:base/cybernetic_enhancements"
-            )
-        ) {
-            dealNTokens += 1;
-        }
-        if (
-            CardUtil.hasCard(
-                playerSlot,
-                "card.promissory.l1z1x:base/cybernetic_enhancements.omega"
-            )
-        ) {
-            dealNTokens += 1;
+
+        const cyberneticEnhancements1 = CardUtil.hasCard(
+            playerSlot,
+            "card.promissory.l1z1x:base/cybernetic_enhancements",
+            true
+        );
+        const cyberneticEnhancements2 = CardUtil.hasCard(
+            playerSlot,
+            "card.promissory.l1z1x:base/cybernetic_enhancements.omega",
+            true
+        );
+        if (cyberneticEnhancements1 || cyberneticEnhancements2) {
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (faction.nsidName !== "l1zix") {
+                dealNTokens += 1;
+                if (cyberneticEnhancements1) {
+                    DealDiscard.discard(cyberneticEnhancements1);
+                }
+                if (cyberneticEnhancements2) {
+                    DealDiscard.discard(cyberneticEnhancements2);
+                }
+            }
         }
 
         return dealNTokens;
@@ -161,6 +176,7 @@ class EndStatusPhase {
             hexSet.add(hex);
         }
 
+        const playerSlotToCommandTokens = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
@@ -177,11 +193,25 @@ class EndStatusPhase {
             if (playerSlot < 0) {
                 continue;
             }
+            let commandTokens = playerSlotToCommandTokens[playerSlot];
+            if (!commandTokens) {
+                commandTokens = [];
+                playerSlotToCommandTokens[playerSlot] = commandTokens;
+            }
+            commandTokens.push(obj);
+        }
+
+        for (const [playerSlot, commandTokens] of Object.entries(
+            playerSlotToCommandTokens
+        )) {
             const bag = playerSlotToCommandTokenBag[playerSlot];
             if (!bag) {
                 continue;
             }
-            bag.addObjects([obj]);
+            assert(bag instanceof Container);
+            assert(Array.isArray(commandTokens));
+            const animate = true;
+            bag.addObjects(commandTokens, 0, animate);
         }
     }
 
@@ -219,32 +249,50 @@ class EndStatusPhase {
                     break;
                 } else {
                     const dropPosition = playerDesk.localPositionToWorld(
-                        new Vector(5, 20 + i * 1, 0)
+                        new Vector(32, 16 + i * 2, 0)
                     );
+                    dropPosition.z = world.getTableHeight() + 1 + i;
                     commandTokenBag.takeAt(0, dropPosition, true);
                 }
             }
         }
     }
 
-    /**
-     * Returns all strategy cards to their proper position and rotation.
-     */
-    static returnStrategyCards() {
-        const strategyCards = [];
-        let strategyCardMat = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            if (ObjectNamespace.isStrategyCard(obj)) {
-                strategyCards.push(obj);
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "mat:base/strategy_card") {
-                strategyCardMat = obj;
-            }
+    static returnStrategyCard(strategyCardObj) {
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
+
+        if (!FindTurnOrder.isStrategyCardPicked(strategyCardObj)) {
+            return; // already on (a) home spot, leave it alone
         }
+
+        // check if the player holding the current strategy card has played
+        // political stability, if yes return political stability instead of
+        // the strategy card
+        const desk = PlayerDesk.getClosest(strategyCardObj.getPosition());
+        const politicalStability = CardUtil.hasCard(
+            desk.playerSlot,
+            "card.action:base/political_stability",
+            true
+        );
+        if (politicalStability) {
+            const playerName = world.getPlayerBySlot(desk.playerSlot).getName();
+            const nsid = ObjectNamespace.getNsid(strategyCardObj);
+            const strategyCardName = nsid.split("/").slice(-1)[0].split(".")[0];
+            const strategyCard = locale(
+                "strategy_card." + strategyCardName + ".text"
+            );
+            Broadcast.broadcastAll(
+                locale("ui.message.political_stability", {
+                    playerName,
+                    strategyCard,
+                })
+            );
+            DealDiscard.discard(politicalStability);
+            return;
+        }
+
+        const strategyCardMat = FindTurnOrder.getStrategyCardMat();
         assert(strategyCardMat);
 
         const snapPoints = strategyCardMat.getAllSnapPoints();
@@ -255,15 +303,30 @@ class EndStatusPhase {
             nsidToSnapPoint[cardData.nsid] = snapPoint;
         }
 
-        for (const obj of strategyCards) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            const snapPoint = nsidToSnapPoint[nsid];
-            assert(snapPoint);
-            const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
-            const yaw = snapPoint.getSnapRotation();
-            const rot = new Rotator(0, yaw, 0);
-            obj.setPosition(pos, ANIMATION_SPEED);
-            obj.setRotation(rot, ANIMATION_SPEED);
+        const nsid = ObjectNamespace.getNsid(strategyCardObj);
+        const snapPoint = nsidToSnapPoint[nsid];
+        assert(snapPoint);
+        const pos = snapPoint.getGlobalPosition().add([0, 0, 3]);
+        const yaw = snapPoint.getSnapRotation();
+        const rot = new Rotator(0, yaw, 0).compose(
+            strategyCardMat.getRotation()
+        );
+        strategyCardObj.setPosition(pos, ANIMATION_SPEED);
+        strategyCardObj.setRotation(rot, ANIMATION_SPEED);
+    }
+
+    /**
+     * Returns all strategy cards to their proper position and rotation.
+     */
+    static returnStrategyCards() {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!ObjectNamespace.isStrategyCard(obj)) {
+                continue;
+            }
+            EndStatusPhase.returnStrategyCard(obj);
         }
     }
 
@@ -285,37 +348,69 @@ class EndStatusPhase {
      * and relics.
      */
     static refreshCards() {
+        const systemHexes = new Set();
+        for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+            const pos = systemTileObj.getPosition();
+            const hex = Hex.fromPosition(pos);
+            systemHexes.add(hex);
+        }
+
         for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj, false)) {
-                continue; // we only want to refresh solo cards
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            if (obj.getStackSize() > 1) {
+                continue;
+            }
+            if (obj.isHeld() || obj.isInHolder()) {
+                continue;
+            }
+            if (obj.isFaceUp()) {
+                continue; // already face up
             }
 
-            const card = ObjectNamespace.parseCard(obj);
+            const parsed = ObjectNamespace.parseCard(obj);
 
             // refresh planets and legendary planet cards
-            if (card.deck.includes("planet")) {
+            if (parsed.deck.includes("planet")) {
+                // Ignore cards on system tiles.
                 const pos = obj.getPosition();
-                const systemObj = System.getSystemTileObjectByPosition(pos);
-                // planet cards on map are unowned planets therefore don't refresh
-                if (!systemObj) {
+                const hex = Hex.fromPosition(pos);
+                if (!systemHexes.has(hex)) {
                     EndStatusPhase.makeFaceUp(obj);
                 }
             }
 
             // refresh technology
-            if (card.deck.includes("technology")) {
+            if (parsed.deck.includes("technology")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
 
             // refresh relics: crown of emphidia, maw of worlds etc.
-            if (card.deck.includes("relic")) {
+            if (parsed.deck.includes("relic")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
 
             // refresh agents
-            if (card.deck.includes("agent")) {
+            if (parsed.deck.includes("agent")) {
                 EndStatusPhase.makeFaceUp(obj);
             }
+        }
+    }
+
+    static resetPassedFlags(player) {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "pad:base/status") {
+                continue;
+            }
+            obj.__setPass(false);
         }
     }
 }

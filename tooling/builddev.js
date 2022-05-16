@@ -18,9 +18,9 @@ if (!fs.existsSync("./config/local.json")) {
     process.exit(1);
 }
 
-const buildLangFile = (config) => {
+const buildLangFile = (config, variant) => {
     return Promise.all(
-        config.variants[config.defaultVariant].lang.map((lang) =>
+        config.variants[variant].lang.map((lang) =>
             fs.readJson(`lang/${lang}.json`)
         )
     )
@@ -41,16 +41,14 @@ const buildLangFile = (config) => {
         });
 };
 
-const spawnDependencyDeploy = (config) => {
+const spawnDependencyDeploy = (config, variant) => {
     return new Promise((resolve, reject) => {
         const child = spawn.spawn(
             "yarn",
             [
                 "install",
                 "--modules-folder",
-                `dev/${
-                    config.variants[config.defaultVariant].slug
-                }_dev/Scripts/node_modules`,
+                `dev/${config.variants[variant].slug}_dev/Scripts/node_modules`,
                 "--prod",
             ],
             { stdio: "pipe" }
@@ -59,7 +57,7 @@ const spawnDependencyDeploy = (config) => {
     });
 };
 
-const spawnBuilder = (config) => {
+const spawnBuilder = (config, variant) => {
     if (config.transpile) {
         return new Promise((resolve, reject) => {
             const child = spawn.spawn(
@@ -67,9 +65,7 @@ const spawnBuilder = (config) => {
                 [
                     "src",
                     "-d",
-                    `dev/${
-                        config.variants[config.defaultVariant].slug
-                    }_dev/Scripts`,
+                    `dev/${config.variants[variant].slug}_dev/Scripts`,
                 ],
                 { stdio: "pipe" }
             );
@@ -78,7 +74,7 @@ const spawnBuilder = (config) => {
     } else {
         return fs.copy(
             "./src",
-            `dev/${config.variants[config.defaultVariant].slug}_dev/Scripts`,
+            `dev/${config.variants[variant].slug}_dev/Scripts`,
             {
                 filter: EXCLUDE_MOCK,
             }
@@ -88,14 +84,17 @@ const spawnBuilder = (config) => {
 
 fs.readJson("./config/project.json")
     .then((config) => {
-        return buildLangFile(config).then(() => {
-            return spawnBuilder(config).then(() => {
-                return spawnDependencyDeploy(config).then(() => {
+        console.log(process.argv[2] ?? config.defaultVariant);
+        const theVariant = process.argv[2] ?? config.defaultVariant;
+        if (!(theVariant in config.variants)) {
+            return Promise.reject(`No such variant '${theVariant}' found`);
+        }
+        return buildLangFile(config, theVariant).then(() => {
+            return spawnBuilder(config, theVariant).then(() => {
+                return spawnDependencyDeploy(config, theVariant).then(() => {
                     console.log(
                         chalk.white(
-                            `Done building: ${
-                                config.variants[config.defaultVariant].name
-                            } (Dev)`
+                            `Done building: ${config.variants[theVariant].name} (Dev)`
                         )
                     );
                 });

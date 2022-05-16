@@ -3,12 +3,15 @@ const locale = require("../locale");
 const { ColorUtil } = require("../color/color-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskSetup } = require("./player-desk-setup");
+const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
 const { PlayerDeskUI } = require("./player-desk-ui");
+const { TableLayout } = require("../../table/table-layout");
 const {
     GlobalSavedData,
     GLOBAL_SAVED_DATA_KEY,
 } = require("../saved-data/global-saved-data");
 const {
+    CardHolder,
     Color,
     Player,
     Rotator,
@@ -16,92 +19,10 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
 
-/**
- * Desk positions in cm and rotation in degrees.  Z ignored.
- * First is "right", the counterclockwise about the table.
- */
-const PLAYER_DESKS = [
-    // East
-    {
-        colorName: "pink",
-        hexColor: "#FF84D6",
-        plasticHexColor: "#F46FCD",
-        pos: { x: 0, y: 160 },
-        yaw: 180.0,
-        defaultPlayerSlot: 5,
-        playerCounts: [7, 8],
-    },
-    // North (right to left)
-    {
-        colorName: "green",
-        hexColor: "#5AE35A",
-        plasticHexColor: "#00A306",
-        pos: { x: 102.4, y: 100.8 },
-        yaw: 120,
-        defaultPlayerSlot: 1,
-        playerCounts: [3, 4, 5, 6, 7, 8],
-    },
-    {
-        colorName: "red",
-        hexColor: "#FF2417",
-        plasticHexColor: "#CB0000",
-        pos: { x: 129.4, y: 0 },
-        yaw: 90.0,
-        defaultPlayerSlot: 16,
-        playerCounts: [2, 5, 6, 7, 8],
-    },
-    {
-        colorName: "yellow",
-        hexColor: "#FFDA00",
-        plasticHexColor: "#FFDA00",
-        pos: { x: 102.4, y: -100.8 },
-        yaw: 60,
-        defaultPlayerSlot: 9,
-        playerCounts: [3, 4, 5, 6, 7, 8],
-    },
-    // West
-    {
-        colorName: "orange",
-        hexColor: "#FF932B",
-        plasticHexColor: "#FF7603",
-        pos: { x: 0, y: -160 },
-        yaw: 0,
-        defaultPlayerSlot: 6,
-        playerCounts: [8],
-    },
-    // South (left to right)
-    {
-        colorName: "purple",
-        hexColor: "#C800FF",
-        plasticHexColor: "#5E219C",
-        pos: { x: -102.4, y: -100.8 },
-        yaw: -60,
-        defaultPlayerSlot: 4,
-        playerCounts: [4, 5, 6, 7, 8],
-    },
-    {
-        colorName: "blue",
-        hexColor: "#07B2FF",
-        plasticHexColor: "#07B2FF",
-        pos: { x: -129.4, y: 0 },
-        yaw: -90.0,
-        defaultPlayerSlot: 15,
-        playerCounts: [1, 2, 3, 6, 7, 8],
-    },
-    {
-        colorName: "white",
-        hexColor: "#BABABA",
-        plasticHexColor: "#C1C1C1",
-        pos: { x: -102.4, y: 100.8 },
-        yaw: -120,
-        defaultPlayerSlot: 18,
-        playerCounts: [4, 5, 6, 7, 8],
-    },
-];
-
-const SEAT_CAMERA = {
-    pos: { x: -90, y: -6, z: 100 },
+const TAKE_SEAT_CAMERA = {
+    pos: { x: -90, y: 0, z: 70 },
 };
 
 let _playerDesks = false;
@@ -132,7 +53,10 @@ function moveNewPlayerToNonSeatSlot(player) {
     }
     for (let i = 0; i < 20; i++) {
         if (!reservedSlots.has(i)) {
+            const before = player.getSlot();
             player.switchSlot(i);
+            const after = player.getSlot();
+            console.log(`moveNewPlayerToNonSeatSlot: ${before} -> ${after}`);
             return;
         }
     }
@@ -143,7 +67,10 @@ function moveNewPlayerToNonSeatSlot(player) {
 
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
-    moveNewPlayerToNonSeatSlot(player);
+    // Wait a tick to make sure player is fully set up.
+    process.nextTick(() => {
+        moveNewPlayerToNonSeatSlot(player);
+    });
 });
 
 // Release seat when someone leaves.
@@ -160,31 +87,57 @@ globalEvents.TI4.onGameSetup.add((state, player) => {
 });
 
 globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
-    // Clean any existing desks.
+    if (world.__isMock) {
+        _playerDesks = false;
+        return;
+    }
+
+    // Lock in player count until finished.
+    GameSetupUI.disablePlayerCountSlider();
+
+    // Remove any desk UIs.
     if (_playerDesks) {
         for (const playerDesk of _playerDesks) {
             assert(playerDesk instanceof PlayerDesk);
             playerDesk.removeUI();
-            if (!world.__isMock) {
-                new PlayerDeskSetup(playerDesk).cleanGeneric();
-            }
         }
+    }
+
+    // Clean any existing desks, reset desks list.
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).cleanGenericAsync();
+        }
+    }
+
+    const setup = () => {
+        // Reset to new count.
         _playerDesks = false;
-    }
-    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-        assert(playerDesk instanceof PlayerDesk);
-        if (!world.__isMock) {
-            new PlayerDeskSetup(playerDesk).setupGeneric();
+
+        // Add UIs to new desks.
+        PlayerDesk.resetUIs();
+
+        // Redo setup for all desks.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).setupGenericAsync();
         }
-        playerDesk.addUI();
-    }
+
+        // Re-enable player count changes.
+        PlayerDeskSetup.getSharedAsyncTaskQueue().add(() => {
+            GameSetupUI.enablePlayerCountSlider();
+        });
+    };
+
+    // Leverage the shared task queue to make sure all cleanup tasks finish
+    // before resetting desks.
+    PlayerDeskSetup.getSharedAsyncTaskQueue().add(setup);
 });
 
 // Unseat host when first loading game.
 const isRescriptReload = world.getExecutionReason() === "ScriptReload";
 const runOnce = () => {
-    globalEvents.onTick.remove(runOnce);
-
     // If not reloading scripts move the host to a non-seat slot.
     if (!isRescriptReload) {
         for (const player of world.getAllPlayers()) {
@@ -195,7 +148,9 @@ const runOnce = () => {
     // Reset "take a seat" UI.
     PlayerDesk.resetUIs();
 };
-globalEvents.onTick.add(runOnce);
+if (!world.__isMock) {
+    process.nextTick(runOnce);
+}
 
 // ----------------------------------------------------------------------------
 
@@ -211,13 +166,14 @@ class PlayerDesk {
      */
     static getAllPlayerDesks() {
         if (_playerDesks) {
-            return _playerDesks;
+            return [..._playerDesks]; // copy in case caller mutates order
         }
         const playerCount = world.TI4.config.playerCount;
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
-        for (let i = PLAYER_DESKS.length - 1; i >= 0; i--) {
-            const attrs = PLAYER_DESKS[i];
+        const tableDesks = TableLayout.desks();
+        for (let i = tableDesks.length - 1; i >= 0; i--) {
+            const attrs = tableDesks[i];
             if (!attrs.playerCounts.includes(playerCount)) {
                 continue;
             }
@@ -293,7 +249,26 @@ class PlayerDesk {
         }
     }
 
+    static createDummy(index, playerSlot) {
+        assert(typeof index === "number");
+        assert(typeof playerSlot === "number");
+
+        return new PlayerDesk(
+            {
+                colorName: "black",
+                hexColor: "#000000",
+                plasticHexColor: "#000000",
+                pos: { x: 0, y: 0 },
+                yaw: 0,
+                defaultPlayerSlot: playerSlot,
+            },
+            index
+        );
+    }
+
     constructor(attrs, index) {
+        assert(typeof index === "number");
+
         this._index = index;
         this._colorName = attrs.colorName;
         this._color = ColorUtil.colorFromHex(attrs.hexColor);
@@ -306,10 +281,12 @@ class PlayerDesk {
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
         this._ui = false;
+        this._nameUI = false;
 
         // Pos is center, but allow for non-center pos.
         this._center = this._pos.clone();
 
+        this._factionSetupInProgress = false;
         this._ready = false;
     }
 
@@ -344,17 +321,26 @@ class PlayerDesk {
     }
 
     addUI() {
-        // Do not apply UI once "ready".
-        if (this._ready) {
+        // Always add name, even after ready.
+        this._nameUI = new PlayerDeskPlayerNameUI(this);
+        this._nameUI.addUI();
+
+        const playerSlot = this.playerSlot;
+        const isOccupied = world.getPlayerBySlot(playerSlot);
+        const isReady = this.isDeskReady();
+        // No UI once "ready" (unless not seated, show for "take seat")
+        if (isOccupied && isReady) {
             return;
         }
         const colorOptions = this.getColorOptions();
-        const playerSlot = this.playerSlot;
         const config = {
-            isReady: this.isDeskReady(),
-            isOccupied: world.getPlayerBySlot(playerSlot),
-            canFaction: world.TI4.config.timestamp > 0,
-            hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot),
+            isReady,
+            isOccupied,
+            canFaction:
+                world.TI4.config.timestamp > 0 && !this._factionSetupInProgress,
+            hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot)
+                ? true
+                : false,
         };
         assert(!this._ui);
         this._ui = new PlayerDeskUI(this, colorOptions, {
@@ -363,6 +349,9 @@ class PlayerDesk {
                 this.resetUI();
             },
             onLeaveSeat: (button, player) => {
+                if (player.getSlot() !== this.playerSlot) {
+                    return;
+                }
                 moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
@@ -377,10 +366,16 @@ class PlayerDesk {
                 this.resetUI();
             },
             onSetupFaction: (button, player) => {
-                new PlayerDeskSetup(this).setupFaction();
+                this._factionSetupInProgress = true;
+                const onFinished = () => {
+                    this._factionSetupInProgress = false;
+                    this.resetUI();
+                };
+                new PlayerDeskSetup(this).setupFactionAsync(false, onFinished);
                 this.resetUI();
             },
             onCleanFaction: (button, player) => {
+                this._factionSetupInProgress = false;
                 new PlayerDeskSetup(this).cleanFaction();
                 this.resetUI();
             },
@@ -396,6 +391,10 @@ class PlayerDesk {
         if (this._ui) {
             world.removeUIElement(this._ui);
             this._ui = false;
+        }
+        if (this._nameUI) {
+            this._nameUI.removeUI();
+            this._nameUI = false;
         }
     }
 
@@ -432,11 +431,51 @@ class PlayerDesk {
         assert(player instanceof Player);
         player.switchSlot(this.playerSlot);
 
+        // Link the hand.
+        let cardHolder = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot !== this.playerSlot) {
+                continue;
+            }
+            if (!(obj instanceof CardHolder)) {
+                continue;
+            }
+            cardHolder = obj;
+            break;
+        }
+        player.setHandHolder(cardHolder);
+
         // Careful, need to look at a position on the top surface of
         // the table or else the camera can bug out and fall below table.
-        const pos = this.localPositionToWorld(SEAT_CAMERA.pos);
-        const rot = pos.findLookAtRotation([0, 0, world.getTableHeight()]);
+        const pos = this.localPositionToWorld(TAKE_SEAT_CAMERA.pos);
+        const rot = pos.findLookAtRotation(
+            new Vector(0, 0, world.getTableHeight())
+        );
         player.setPositionAndRotation(pos, rot);
+
+        // HACK HACK HACK
+        // Player.getSlot() sometimes returns -1 (and Player.getName() is empty).
+        // Temporarily interpose so it returns the correct value.
+        if (!player.__origGetSlot) {
+            player.__origGetSlot = player.getSlot;
+        }
+        player.getSlot = () => {
+            let result = player.__origGetSlot();
+            if (result < 0) {
+                result = this.playerSlot;
+            }
+            return result;
+        };
+    }
+
+    unseatPlayer() {
+        const player = world.getPlayerBySlot(this.playerSlot);
+        if (player) {
+            moveNewPlayerToNonSeatSlot(player);
+        }
     }
 
     /**
@@ -445,16 +484,13 @@ class PlayerDesk {
      * @returns {Array.{colorName:string,color:Color,plasticColor:Color}}
      */
     getColorOptions() {
-        const result = [];
-        for (let i = 0; i < PLAYER_DESKS.length; i++) {
-            const attrs = PLAYER_DESKS[i];
-            result.push({
+        return TableLayout.desks().map((attrs) => {
+            return {
                 colorName: attrs.colorName,
                 colorTint: ColorUtil.colorFromHex(attrs.hexColor),
                 plasticColorTint: ColorUtil.colorFromHex(attrs.plasticHexColor),
-            });
-        }
-        return result;
+            };
+        });
     }
 
     /**
@@ -471,8 +507,10 @@ class PlayerDesk {
         assert(ColorUtil.isColor(colorTint));
         assert(ColorUtil.isColor(plasticColorTint));
 
+        const tableDesks = TableLayout.desks();
+
         let legalColorName = false;
-        for (const deskAttrs of PLAYER_DESKS) {
+        for (const deskAttrs of tableDesks) {
             if (deskAttrs.colorName === colorName) {
                 legalColorName = true;
                 break;
@@ -507,7 +545,7 @@ class PlayerDesk {
             dstFaction = world.TI4.getFactionByPlayerSlot(dstPlayerSlot);
         } else {
             // Not swapping with an active seat.  Lookup from unused seats.
-            for (const deskAttrs of PLAYER_DESKS) {
+            for (const deskAttrs of tableDesks) {
                 if (deskAttrs.colorName === colorName) {
                     dstPlayerSlot = deskAttrs.defaultPlayerSlot;
                     break;
@@ -558,7 +596,7 @@ class PlayerDesk {
         this._plasticColor = dstPlasticColorTint;
         this._playerSlot = dstPlayerSlot;
 
-        // Desks are reset.  Move players to desks.
+        // Desks are reset. Move players to desks.
         if (srcPlayer) {
             srcPlayer.switchSlot(dstPlayerSlot);
         }
@@ -601,6 +639,7 @@ class PlayerDesk {
     setReady(value) {
         this._ready = value;
         this.saveDesksState();
+        this.resetUI();
     }
 
     saveDesksState() {

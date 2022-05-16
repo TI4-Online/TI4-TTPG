@@ -1,8 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const {
-    Border,
     Button,
     HorizontalBox,
+    LayoutBox,
     VerticalBox,
     Widget,
 } = require("../../wrapper/api");
@@ -10,12 +10,14 @@ const {
 /**
  * Wrap Widgets inside a panet with top-row of tabs to select between them.
  */
-class TabbedPanel extends Border {
+class TabbedPanel extends LayoutBox {
     /**
      * Constructor.
      */
     constructor(includeCollapseButton) {
         super();
+
+        this._fontSize = undefined;
 
         this._verticalBox = new VerticalBox();
         super.setChild(this._verticalBox);
@@ -40,8 +42,27 @@ class TabbedPanel extends Border {
         }
     }
 
-    _selectTab(label) {
-        console.log(`TabbedPanel._selectTab("${label}")`);
+    setFontSize(value) {
+        assert(typeof value === "number");
+        this._fontSize = value;
+
+        for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
+            const tabButton = this._tabButtons.getChildAt(i);
+            if (!tabButton) {
+                break;
+            }
+            tabButton.setFontSize(this._fontSize);
+        }
+        return this;
+    }
+
+    setSpacing(value) {
+        this._verticalBox.setChildDistance(value);
+        this._tabButtons.setChildDistance(value);
+        return this;
+    }
+
+    selectTab(label) {
         const tab = this._labelToTabData[label];
         assert(tab);
 
@@ -55,7 +76,7 @@ class TabbedPanel extends Border {
             this._verticalBox.removeChildAt(1);
         }
         assert(tab.widget);
-        this._verticalBox.addChild(tab.widget);
+        this._verticalBox.addChild(tab.widget, 1);
     }
 
     addTab(label, widget, selectThisTab) {
@@ -63,8 +84,11 @@ class TabbedPanel extends Border {
         assert(widget instanceof Widget);
 
         const tabButton = new Button().setText(label);
+        if (this._fontSize) {
+            tabButton.setFontSize(this._fontSize);
+        }
         tabButton.onClicked.add((button, player) => {
-            this._selectTab(label);
+            this.selectTab(label);
         });
 
         const weight = 1; // make all same width
@@ -80,7 +104,7 @@ class TabbedPanel extends Border {
         };
 
         if (selectThisTab) {
-            this._selectTab(label);
+            this.selectTab(label);
         }
 
         return this;

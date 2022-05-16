@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 1,
 	"NumVertical": 1,
 	"Width": 6.3,

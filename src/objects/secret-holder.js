@@ -9,9 +9,11 @@ globalEvents.TI4.onPlayerColorChanged.add((playerColor, deskIndex) => {
     assert(ColorUtil.isColor(playerColor));
     assert(typeof deskIndex === "number");
 
+    // Always reset color when a player changes color (paranoia).
     const myDeskIndex = ObjectSavedData.get(refObject, DESK_INDEX_KEY, -1);
-    if (myDeskIndex >= 0 && myDeskIndex === deskIndex) {
-        refObject.setPrimaryColor(playerColor);
+    const playerDesk = world.TI4.getAllPlayerDesks()[myDeskIndex];
+    if (playerDesk) {
+        refObject.setPrimaryColor(playerDesk.color);
     }
 });
 

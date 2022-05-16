@@ -126,23 +126,24 @@ describe("when the close button is clicked in a players selection", () => {
         expect(globalEventTriggerSpy).toHaveBeenCalledTimes(1);
     });
 
-    it("in case the another player clicked the button, then the global event does not trigger", () => {
-        card = new MockGameObject();
-        const globalEventTriggerSpy = jest.spyOn(
-            globalEvents.TI4.onStrategyCardSelectionDone,
-            "trigger"
-        );
-        new RegisterStrategyCardUI()
-            .setCard(card)
-            .setWidgetFactory(widgetFactory)
-            .setHeight(100)
-            .register();
-        globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
+    // For the moment anyone can close a strategy card window.  Enable this test if that changes.
+    // it("in case the another player clicked the button, then the global event does not trigger", () => {
+    //     card = new MockGameObject();
+    //     const globalEventTriggerSpy = jest.spyOn(
+    //         globalEvents.TI4.onStrategyCardSelectionDone,
+    //         "trigger"
+    //     );
+    //     new RegisterStrategyCardUI()
+    //         .setCard(card)
+    //         .setWidgetFactory(widgetFactory)
+    //         .setHeight(100)
+    //         .register();
+    //     globalEvents.TI4.onStrategyCardPlayed.trigger(card, player1);
 
-        onUiClosedClicked(buttons[0], player2);
+    //     onUiClosedClicked(buttons[0], player2);
 
-        expect(globalEventTriggerSpy).toHaveBeenCalledTimes(0);
-    });
+    //     expect(globalEventTriggerSpy).toHaveBeenCalledTimes(0);
+    // });
 
     it("in case all players have resolved the strategy card, a message is broadcast", () => {
         card = new MockGameObject();
@@ -184,6 +185,7 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the play button is pressed as well as a player UI is closed", () => {
+        const before = globalEvents.TI4.onStrategyCardPlayed._delegates.length;
         new RegisterStrategyCardUI()
             .setCard(card)
             .setWidgetFactory(widgetFactory)
@@ -193,7 +195,9 @@ describe("when registering a strategy card", () => {
             .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
             .register();
 
-        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(1);
+        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(
+            before + 1
+        );
         expect(
             globalEvents.TI4.onStrategyCardSelectionDone._delegates.length
         ).toBe(1);
@@ -213,6 +217,7 @@ describe("when registering a strategy card", () => {
     });
 
     it("and the object is destroyed", () => {
+        const before = globalEvents.TI4.onStrategyCardPlayed._delegates.length;
         new RegisterStrategyCardUI()
             .setCard(card)
             .setWidgetFactory(widgetFactory)
@@ -224,7 +229,9 @@ describe("when registering a strategy card", () => {
 
         card.destroy();
 
-        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(0);
+        expect(globalEvents.TI4.onStrategyCardPlayed._delegates.length).toBe(
+            before
+        );
         expect(
             globalEvents.TI4.onStrategyCardSelectionDone._delegates.length
         ).toBe(0);

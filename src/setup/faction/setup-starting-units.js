@@ -11,8 +11,12 @@ class SetupStartingUnits extends AbstractSetup {
     }
 
     setup() {
+        const tile = this.faction.raw.home;
+        const system = world.TI4.getSystemByTileNumber(tile);
+        const source = system.raw.source;
+
         const playerSlot = this.playerDesk.playerSlot;
-        const homeSystemNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
+        const homeSystemNsid = `tile.system:${source}/${this.faction.raw.home}`;
         const startingUnits = this.faction.raw.startingUnits;
 
         let homeSystemObj = false;
@@ -35,9 +39,14 @@ class SetupStartingUnits extends AbstractSetup {
         // Make sure all bags exist before doing anything.
         const units = UnitAttrs.getAllUnitTypes();
         for (const unit of units) {
+            if (unit == "mech" && !world.TI4.config.pok) {
+                continue;
+            }
             const bag = unitToBag[unit];
             if (!bag) {
-                console.warn("SetupStartingUnits: missing unit bags");
+                console.warn(
+                    `SetupStartingUnits: missing unit bag for ${unit}`
+                );
                 return;
             }
             if (bag.getNumItems() < (startingUnits[unit] || 0)) {

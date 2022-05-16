@@ -5,6 +5,7 @@ class Card extends GameObject {
     constructor(data) {
         super(data);
         this._allCardDetails = (data && data.allCardDetails) || [];
+        this._holder = data && data.holder;
         this._stackSize = (data && data.stackSize) || 1;
         this._faceUp = data && data.faceUp !== undefined ? data.faceUp : true;
 
@@ -23,6 +24,10 @@ class Card extends GameObject {
 
     getAllCardDetails() {
         return this._allCardDetails;
+    }
+
+    getHolder() {
+        return this._holder;
     }
 
     getStackSize() {

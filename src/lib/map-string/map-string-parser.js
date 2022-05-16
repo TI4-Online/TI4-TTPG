@@ -14,7 +14,9 @@ const MECATOL_REX_SYSTEM_TILE = 18;
  * @returns {boolean} true if the map string is valid and can be parsed, otherwise false
  */
 const validate = function (mapString) {
-    return /^\s*(?:\{\d+\})?(?:\s*,?\s*\d+(?:[abAB]\d)?)+\s*$/.test(mapString);
+    return /^\s*(?:\{\d+([abAB]\d)*\})?(?:\s*,?\s*[-]*\d+(?:[abAB]\d)?)*\s*$/.test(
+        mapString
+    );
 };
 
 /**
@@ -37,7 +39,7 @@ const parse = function (mapString) {
     }
     const tiles = Array.from(
         mapString.matchAll(
-            /\{?(?<tile>\d+)\}?(?:(?<side>[abAB])(?<rotation>\d))?/g
+            /\{?(?<tile>[-]*\d+)\}?(?:(?<side>[abAB])(?<rotation>\d))?/g
         )
     ).map((match) => {
         const tile = { tile: parseInt(match.groups.tile) };

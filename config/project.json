@@ -25,6 +25,22 @@
             },
             "assets": [{ "from": "Textures/en", "to": "Textures/locale" }],
             "lang": ["en"]
+        },
+        "primary-it": {
+            "version": "0.0.1a",
+            "transpile": false,
+            "name": "Twilight Imperium 4 (IT)",
+            "slug": "ti4_it",
+            "guid": {
+                "dev": "DEE44C689452447E8ED6FDDBEB19BB23",
+                "prd": "5DBBB11FB3CB4CA2BC11A3F0C978E8C8"
+            },
+            "modId": {
+                "dev": 0,
+                "prd": 0
+            },
+            "assets": [{ "from": "Textures/it", "to": "Textures/it" }],
+            "lang": ["it"]
         }
     }
 }

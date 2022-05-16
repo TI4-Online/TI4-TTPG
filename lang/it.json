@@ -1,0 +1,4 @@
+{
+    "example.helloworld": "Hello World!",
+    "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}"
+}

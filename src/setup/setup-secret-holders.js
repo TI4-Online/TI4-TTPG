@@ -3,6 +3,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const {
     CardHolder,
     HiddenCardsType,
@@ -12,10 +13,10 @@ const {
     world,
 } = require("../wrapper/api");
 
-const X0 = -29;
-const Y0 = -66;
-const DY = -10;
-const YAW = 90;
+const Y0 = -33;
+const XCENTER = 0;
+const DX = -10;
+const YAW = 0;
 const DESK_INDEX_KEY = "deskIndex";
 
 class SetupSecretHolders extends AbstractSetup {
@@ -28,24 +29,34 @@ class SetupSecretHolders extends AbstractSetup {
         assert(playerCount > 0);
 
         const numLeft = Math.floor(playerCount / 2);
+        const x0 = XCENTER + ((playerCount - numLeft - 1) * DX) / 2;
 
-        const positions = [];
-        const rotations = [];
+        let positions = [];
+        let rotations = [];
         const z = world.getTableHeight();
         for (let i = 0; i < playerCount; i++) {
             if (i < numLeft) {
-                const x = X0;
-                const y = Y0 + i * DY;
+                const y = Y0;
+                const x = x0 - i * DX;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             } else {
                 const iRight = playerCount - i - 1;
-                const x = -X0;
-                const y = Y0 + iRight * DY;
+                const y = -Y0;
+                const x = x0 - iRight * DX;
                 positions.push(new Vector(x, y, z));
                 rotations.push(new Rotator(0, YAW, 0));
             }
         }
+
+        // Move to anchor.
+        positions = positions.map((pos) => {
+            return this.anchorPositionToWorld(TableLayout.anchor.score, pos);
+        });
+        rotations = rotations.map((rot) => {
+            return this.anchorRotationToWorld(TableLayout.anchor.score, rot);
+        });
+
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             const nsid = "cardholder:base/small";
             const pos = positions[playerDesk.index];
@@ -74,6 +85,7 @@ class SetupSecretHolders extends AbstractSetup {
             if (!nsid.startsWith("cardholder:")) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

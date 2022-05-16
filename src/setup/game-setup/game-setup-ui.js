@@ -1,122 +1,145 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-
+const { Hex } = require("../../lib/hex");
+const CONFIG = require("../../game-ui/game-ui-config");
 const {
-    Border,
     Button,
     CheckBox,
-    Rotator,
+    HorizontalBox,
+    LayoutBox,
     Slider,
     Text,
     TextJustification,
-    UIElement,
-    Vector,
     VerticalBox,
+    refPackageId,
     world,
 } = require("../../wrapper/api");
 
-const GAME_SETUP_UI = {
-    pos: { x: 0, y: 0, z: world.getTableHeight() + 5 },
-    rot: { pitch: 0, yaw: 0, roll: 0 },
-};
-
-// Large font size affects text but checkboxes don't scale with it.
-const UI_SCALE = 1.25;
-const UI_FONT_SIZE = 24 / UI_SCALE;
+let _playerCountSlider = undefined;
+let _setupButton = undefined;
 
 class GameSetupUI {
+    static disablePlayerCountSlider() {
+        if (_playerCountSlider) {
+            _playerCountSlider.setEnabled(false);
+            _setupButton.setEnabled(false);
+        }
+    }
+
+    static enablePlayerCountSlider() {
+        if (_playerCountSlider) {
+            _playerCountSlider.setEnabled(true);
+            _setupButton.setEnabled(true);
+        }
+    }
+
     constructor(callbacks) {
         this._callbacks = callbacks;
     }
 
     create() {
-        const panel = new VerticalBox().setChildDistance(5);
-
-        const randomTemplateId = "B67A7E0A478E39D9CE13CDA81BC1A9EF";
-        const packageId = world.getTemplatePackageId(randomTemplateId);
         const title = new Text()
-            .setFontSize(UI_FONT_SIZE * 1.2)
+            .setFontSize(CONFIG.fontSize * 3.8)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
-            .setFont("ambroise_firmin_bold.otf", packageId);
-        panel.addChild(title);
+            .setFont("ambroise_firmin_bold.otf", refPackageId);
 
-        const subtitle = new Text()
-            .setFontSize(UI_FONT_SIZE * 0.6)
-            .setText(locale("ui.setup.subtitle"))
-            .setJustification(TextJustification.Center);
-        panel.addChild(subtitle);
+        const col1Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const col2Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const colsPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing * 4)
+            .addChild(col1Panel, 1)
+            .addChild(col2Panel, 1);
+        const fullPanel = new VerticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(title)
+            .addChild(colsPanel);
 
-        panel.addChild(
-            this._createSlider(
-                "ui.setup.player_count",
-                2,
-                8,
-                world.TI4.config.playerCount,
-                this._callbacks.onPlayerCountChanged
-            )
+        _playerCountSlider = this._createSlider(
+            "ui.setup.player_count",
+            2,
+            8,
+            world.TI4.config.playerCount,
+            this._callbacks.onPlayerCountChanged
         );
 
-        panel.addChild(
+        col1Panel.addChild(_playerCountSlider);
+        col1Panel.addChild(
             this._createSlider(
                 "ui.setup.game_points",
-                10,
+                8,
                 14,
                 world.TI4.config.gamePoints,
                 this._callbacks.onGamePointsChanged
             )
         );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.larger_hexes",
+                Hex.getLargerScale(),
+                this._callbacks.onUseLargerHexes
+            )
+        );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_game_data",
+                false,
+                this._callbacks.onUseGameDataChanged
+            )
+        );
 
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_pok",
                 world.TI4.config.pok,
                 this._callbacks.onUsePokChanged
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_omega",
                 world.TI4.config.omega,
                 this._callbacks.onUseOmegaChanged
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_codex1",
                 world.TI4.config.codex1,
                 this._callbacks.onUseCodex1Changed
             )
         );
-        panel.addChild(
+        col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_codex2",
                 world.TI4.config.codex2,
                 this._callbacks.onUseCodex2Changed
             )
         );
-        panel.addChild(
-            this._createButton(
-                "ui.setup.do_setup",
-                this._callbacks.onSetupClicked
+        col2Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_codex3",
+                world.TI4.config.codex3,
+                this._callbacks.onUseCodex3Changed
             )
         );
 
-        const pos = GAME_SETUP_UI.pos;
-        const rot = GAME_SETUP_UI.rot;
-        const ui = new UIElement();
-        ui.position = new Vector(pos.x, pos.y, pos.z);
-        ui.rotation = new Rotator(rot.pitch, rot.yaw, rot.roll);
-        ui.scale = UI_SCALE;
-        ui.widget = new Border().setChild(panel);
-        return ui;
+        _setupButton = this._createButton(
+            "ui.setup.do_setup",
+            this._callbacks.onSetupClicked
+        );
+
+        fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space
+        fullPanel.addChild(_setupButton);
+
+        return fullPanel;
     }
 
     _createText(localeText) {
         assert(typeof localeText === "string");
 
         const labelText = locale(localeText);
-        const text = new Text().setFontSize(UI_FONT_SIZE).setText(labelText);
+        const text = new Text().setFontSize(CONFIG.fontSize).setText(labelText);
         return text;
     }
 
@@ -126,7 +149,7 @@ class GameSetupUI {
 
         const labelText = locale(localeLabel);
         const button = new Button()
-            .setFontSize(UI_FONT_SIZE)
+            .setFontSize(CONFIG.fontSize)
             .setText(labelText);
         button.onClicked.add(onClicked);
         return button;
@@ -139,7 +162,7 @@ class GameSetupUI {
 
         const labelText = locale(localeLabel);
         const checkBox = new CheckBox()
-            .setFontSize(UI_FONT_SIZE)
+            .setFontSize(CONFIG.fontSize)
             .setText(labelText)
             .setIsChecked(isChecked);
         checkBox.onCheckStateChanged.add(onCheckStateChanged);
@@ -154,14 +177,16 @@ class GameSetupUI {
         assert(typeof onValueChanged === "function");
 
         const labelText = locale(localeLabel);
-        const label = new Text().setFontSize(UI_FONT_SIZE).setText(labelText);
+        const label = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(labelText);
 
         const slider = new Slider()
-            .setFontSize(UI_FONT_SIZE)
+            .setFontSize(CONFIG.fontSize)
+            .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(minValue)
             .setMaxValue(maxValue)
             .setStepSize(1)
-            .setTextBoxWidth(UI_FONT_SIZE * 3)
             .setValue(value);
 
         slider.onValueChanged.add(onValueChanged);

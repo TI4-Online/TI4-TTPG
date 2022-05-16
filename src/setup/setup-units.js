@@ -1,9 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { Layout } = require("../lib/layout");
-const { Spawn } = require("./spawn/spawn");
-const { ObjectType, world } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { Spawn } = require("./spawn/spawn");
+const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
@@ -53,10 +53,8 @@ const UNIT_DATA = [
     },
 ];
 
-const SHELF_CENTER_LOCAL_OFFSET = { x: 0.03, y: -49, z: 5 };
-const ARC_ORIGIN_LOCAL_OFFSET = { x: 0, y: 0, z: 5 };
+const EDGE_YAW = 18;
 const DISTANCE_BETWEEN_UNITS = 5.7;
-
 const UNIT_SCALE = 0.8;
 
 class SetupUnits extends AbstractSetup {
@@ -66,11 +64,22 @@ class SetupUnits extends AbstractSetup {
     }
 
     setup() {
-        const shelfCenter = this.playerDesk.localPositionToWorld(
-            SHELF_CENTER_LOCAL_OFFSET
+        // Compute center by rotating the desk center to match desk edge.
+        let shelfCenter = this.playerDesk.center
+            .multiply(1.03)
+            .rotateAngleAxis(EDGE_YAW, [0, 0, 1]);
+
+        // Move it closer to desk center.
+        shelfCenter = Vector.interpolateTo(
+            shelfCenter,
+            this.playerDesk.center,
+            1,
+            DISTANCE_BETWEEN_UNITS * 0.02
         );
-        const arcOrigin = this.playerDesk.localPositionToWorld(
-            ARC_ORIGIN_LOCAL_OFFSET
+
+        //.add([0, DISTANCE_BETWEEN_UNITS * 0.5 + 2, 0]);
+        const rot = new Rotator(0, EDGE_YAW - 90, 0).compose(
+            this.playerDesk.rot
         );
 
         // Use layout to find positions and rotations along an arc.
@@ -78,7 +87,7 @@ class SetupUnits extends AbstractSetup {
             .setCount(UNIT_DATA.length)
             .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
             .setCenter(shelfCenter)
-            .layoutArc(arcOrigin)
+            .layoutLinear(rot.yaw)
             .getPoints();
 
         assert(UNIT_DATA.length == pointPosRots.length);
@@ -96,7 +105,15 @@ class SetupUnits extends AbstractSetup {
             if (obj.getOwningPlayerSlot() !== playerSlot) {
                 continue;
             }
-            if (ObjectNamespace.isUnit(obj) || ObjectNamespace.isUnitBag(obj)) {
+            if (ObjectNamespace.isUnitBag(obj)) {
+                for (const inner of obj.getItems()) {
+                    inner.setTags(["DELETED_ITEMS_IGNORE"]);
+                }
+                obj.clear();
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                obj.destroy();
+            } else if (ObjectNamespace.isUnit(obj)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             }
         }
@@ -116,7 +133,7 @@ class SetupUnits extends AbstractSetup {
         bag.setPrimaryColor(color); // setting owning slot applies default, set again paranoia
 
         for (let i = 0; i < unitData.unitCount; i++) {
-            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i]);
+            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i * 3]);
             const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
@@ -125,5 +142,5 @@ class SetupUnits extends AbstractSetup {
         }
     }
 }
-
-module.exports = { SetupUnits };
+//
+module.exports = { SetupUnits, UNIT_DATA };

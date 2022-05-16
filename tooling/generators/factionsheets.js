@@ -2,12 +2,20 @@ const fs = require("fs-extra");
 const crypto = require("crypto");
 
 const modSet =
-    process.argv.length > 2 ? process.argv.slice(2) : ["base", "pok"];
+    process.argv.length > 2
+        ? process.argv.slice(2)
+        : ["base", "pok", "codex.vigil"];
 
 const generateFactionSheet = (guid, mod, name, slug) => {
     const nsid = `sheet.faction:${mod}/${slug}`;
+
+    // Use a common image for Keleres *AFTER* minting NSID
+    if (slug.startsWith("keleres_")) {
+        slug = "keleres";
+    }
+
     return {
-        Type: "Generic",
+        Type: "Card",
         GUID: guid,
         Name: `Faction Sheet (${name})`,
         Metadata: nsid,
@@ -33,84 +41,37 @@ const generateFactionSheet = (guid, mod, name, slug) => {
         ShouldSnap: false,
         ScriptName: "",
         Blueprint: "",
-        Models: [
-            {
-                Model: "utility/factionsheet.obj",
-                Offset: {
-                    X: 0,
-                    Y: 0,
-                    Z: 0,
-                },
-                Scale: {
-                    X: 1,
-                    Y: 1,
-                    Z: 0.399984,
-                },
-                Rotation: {
-                    X: 0,
-                    Y: 0,
-                    Z: 0,
-                },
-                Texture: `locale/factionsheets/${mod}/${slug}.face.jpg`,
-                NormalMap: "",
-                ExtraMap: "",
-                IsTransparent: false,
-                CastShadow: true,
-                UseOverrides: false,
-                Roughness: 1,
-                Metallic: 0,
-                PrimaryColor: {
-                    R: 255,
-                    G: 255,
-                    B: 255,
-                },
-                SecondaryColor: {
-                    R: 0,
-                    G: 0,
-                    B: 0,
-                },
-                SurfaceType: "Cardboard",
-            },
-            {
-                Model: "utility/factionsheet.obj",
-                Offset: {
-                    X: 0,
-                    Y: 0,
-                    Z: 0,
-                },
-                Scale: {
-                    X: 1,
-                    Y: 1,
-                    Z: 0.399984,
-                },
-                Rotation: {
-                    X: 180,
-                    Y: 0,
-                    Z: 0,
-                },
-                Texture: `locale/factionsheets/${mod}/${slug}.back.jpg`,
-                NormalMap: "",
-                ExtraMap: "",
-                IsTransparent: false,
-                CastShadow: true,
-                UseOverrides: false,
-                Roughness: 1,
-                Metallic: 0,
-                PrimaryColor: {
-                    R: 255,
-                    G: 255,
-                    B: 255,
-                },
-                SecondaryColor: {
-                    R: 0,
-                    G: 0,
-                    B: 0,
-                },
-                SurfaceType: "Cardboard",
-            },
-        ],
+        Models: [],
         Collision: [],
         SnapPointsGlobal: false,
+        ZoomViewDirection: {
+            X: 0,
+            Y: 0,
+            Z: 0,
+        },
+        Tags: [],
+        FrontTexture: `locale/factionsheets/${mod}/${slug}.back.jpg`,
+        BackTexture: `locale/factionsheets/${mod}/${slug}.face.jpg`,
+        HiddenTexture: "",
+        BackIndex: -2,
+        HiddenIndex: -1,
+        NumHorizontal: 1,
+        NumVertical: 1,
+        Width: 28,
+        Height: 19.002,
+        Thickness: 0.1,
+        HiddenInHand: false,
+        UsedWithCardHolders: false,
+        CanStack: false,
+        UsePrimaryColorForSide: false,
+        FrontTextureOverrideExposed: false,
+        AllowFlippedInStack: false,
+        MirrorBack: true,
+        Model: "Square",
+        Indices: [0],
+        CardNames: { 0: `Faction Sheet (${name})` },
+        CardMetadata: { 0: nsid },
+        CardTags: {},
         SnapPoints: [
             {
                 X: -7.05,
@@ -201,11 +162,6 @@ const generateFactionSheet = (guid, mod, name, slug) => {
                 RotationOffset: 0,
             },
         ],
-        ZoomViewDirection: {
-            X: 0,
-            Y: 0,
-            Z: 0,
-        },
     };
 };
 
@@ -284,6 +240,17 @@ const FACTIONS = {
         },
         vuilraith: {
             name: "Vuil-Raith",
+        },
+    },
+    "codex.vigil": {
+        keleres_argent: {
+            name: "Council Keleres",
+        },
+        keleres_mentak: {
+            name: "Council Keleres",
+        },
+        keleres_xxcha: {
+            name: "Council Keleres",
         },
     },
 };

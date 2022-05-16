@@ -20,12 +20,26 @@ class ActiveIdle {
     }
 
     /**
+     * Remove toggle-active button.
+     *
+     * @param {GameObject} obj
+     */
+    static removeToggleActiveButton(obj) {
+        // Don't be clever (yet), just remove all UI.
+        for (const ui of obj.getUIs()) {
+            obj.removeUIElement(ui);
+        }
+    }
+
+    /**
      * Add a toggle-active button to the object.
      *
      * @param {GameObject} obj
      */
     static addToggleActiveButton(obj) {
         assert(obj instanceof GameObject);
+
+        ActiveIdle.removeToggleActiveButton(obj);
 
         const button = new Button().setFontSize(10).setText("<???>");
 

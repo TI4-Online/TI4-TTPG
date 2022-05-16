@@ -19,6 +19,7 @@ class GameSetupConfig {
             omega: true,
             codex1: true,
             codex2: true,
+            codex3: true,
             franken: false,
             timestamp: 0,
         });
@@ -41,6 +42,9 @@ class GameSetupConfig {
     }
     get codex2() {
         return this._state.codex2;
+    }
+    get codex3() {
+        return this._state.codex3;
     }
     get franken() {
         return this._state.franken;
@@ -85,6 +89,12 @@ class GameSetupConfig {
     setCodex2(value) {
         assert(typeof value === "boolean");
         this._state.codex2 = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setCodex3(value) {
+        assert(typeof value === "boolean");
+        this._state.codex3 = value;
         GlobalSavedData.set(KEY, this._state);
     }
 

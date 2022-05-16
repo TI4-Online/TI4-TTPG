@@ -3,6 +3,7 @@ const locale = require("../locale");
 const { ActiveIdle } = require("./active-idle");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const { UnitModifierSchema } = require("./unit-modifier.schema");
 const { GameObject, world } = require("../../wrapper/api");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
 
@@ -86,9 +87,11 @@ class UnitModifier {
      */
     static sortPriorityOrder(unitModifierArray) {
         unitModifierArray.sort((a, b) => {
-            return (
-                PRIORITY[a._modifier.priority] - PRIORITY[b._modifier.priority]
-            );
+            a = PRIORITY[a._modifier.priority];
+            b = PRIORITY[b._modifier.priority];
+            assert(typeof a === "number");
+            assert(typeof b === "number");
+            return a - b;
         });
         return unitModifierArray;
     }
@@ -119,9 +122,24 @@ class UnitModifier {
         assert(OWNER[withOwner]);
 
         _maybeInit();
+
+        const unlockedCommanders = [];
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj)) {
+                continue;
+            }
+            const objNsid = ObjectNamespace.getNsid(obj);
+            if (objNsid.startsWith("card.leader.commander")) {
+                const parsed = ObjectNamespace.parseNsid(objNsid);
+                const factionNsidName = parsed.type.split(".")[3];
+                unlockedCommanders.push(factionNsidName);
+            }
+        }
+
         const unitModifiers = [];
         for (const obj of world.getAllObjects()) {
             const objNsid = ObjectNamespace.getNsid(obj);
+
             const unitModifier = _triggerNsidToUnitModifier[objNsid];
             if (!unitModifier) {
                 continue;
@@ -139,7 +157,7 @@ class UnitModifier {
             }
 
             // Enfoce modifier type (self, opponent, any).
-            if (unitModifier.raw !== "any") {
+            if (unitModifier.raw.owner !== "any") {
                 // Not an "any", require it be of "withType".
                 if (unitModifier.raw.owner !== withOwner) {
                     continue;
@@ -154,6 +172,36 @@ class UnitModifier {
                 }
                 if (ownerSlot !== playerSlot) {
                     continue; // different owner
+                }
+            }
+
+            // Alliance only available if linked commander is unlocked.
+            // Only looks for registered faction alliance cards, NOT the
+            // generic "Alliance (White)" type cards.
+            if (objNsid.startsWith("card.alliance")) {
+                const parsed = ObjectNamespace.parseNsid(objNsid);
+                const factionNsidName = parsed.name.split(".")[0];
+                if (!unlockedCommanders.includes(factionNsidName)) {
+                    // Have an alliance, but commander is locked.
+                    continue;
+                }
+            }
+
+            // Promissory notes in play area should ignore if the owning faction.
+            // E.g. "card.promissory.nomad:pok/the_cavalry".
+            if (objNsid.startsWith("card.promissory")) {
+                const parts =
+                    ObjectNamespace.parseNsid(objNsid).type.split(".");
+                const factionNsid = parts[2];
+                const objFaction = world.TI4.getFactionByNsidName(factionNsid);
+
+                const pos = obj.getPosition();
+                const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+                const ownerSlot = playerDesk.playerSlot;
+                const slotFaction = world.TI4.getFactionByPlayerSlot(ownerSlot);
+
+                if (objFaction === slotFaction) {
+                    continue; // players may advertise their promissory notes in play area
                 }
             }
 
@@ -244,6 +292,18 @@ class UnitModifier {
         assert(typeof unitAbility === "string");
         _maybeInit();
         return _unitAbilityToUnitModifier[unitAbility];
+    }
+
+    static injectUnitModifier(rawModifier) {
+        assert(rawModifier);
+        UnitModifierSchema.validate(rawModifier, (err) => {
+            throw new Error(
+                `UnitModifier.injectUnitModifier schema error "${err}"`
+            );
+        });
+
+        UNIT_MODIFIERS.push(rawModifier);
+        _triggerNsidToUnitModifier = undefined;
     }
 
     // ------------------------------------------------------------------------

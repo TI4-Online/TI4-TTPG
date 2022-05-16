@@ -183,7 +183,6 @@ class SimpleDie {
             const delayedDelete = () => {
                 if (this._die.isValid()) {
                     this._die.destroy();
-                    delete this._die;
                 }
             };
             setTimeout(delayedDelete, builder._deleteAfterSeconds * 1000);

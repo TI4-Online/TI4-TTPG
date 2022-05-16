@@ -1,9 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
-const { world } = require("../wrapper/api");
+const { Vector, world } = require("../wrapper/api");
 
-const TECH_DECK_LOCAL_OFFSET = { x: 11, y: -18, z: 0 };
+const TECH_DECK_LOCAL_OFFSET = { x: 2, y: 8 };
 
 class SetupGenericTech extends AbstractSetup {
     constructor(playerDesk) {
@@ -13,7 +13,7 @@ class SetupGenericTech extends AbstractSetup {
 
     setup() {
         const pos = this.playerDesk.localPositionToWorld(
-            TECH_DECK_LOCAL_OFFSET
+            new Vector(TECH_DECK_LOCAL_OFFSET.x, TECH_DECK_LOCAL_OFFSET.y, 2)
         );
         const rot = this.playerDesk.rot;
 
@@ -35,6 +35,7 @@ class SetupGenericTech extends AbstractSetup {
             return closestDesk === this.playerDesk;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

@@ -1,5 +1,9 @@
 const { Vector } = require("../wrapper/api");
 const assert = require("../wrapper/assert-wrapper");
+const {
+    GlobalSavedData,
+    GLOBAL_SAVED_DATA_KEY,
+} = require("./saved-data/global-saved-data");
 
 // Transforms for flat-top hex grid.
 const LAYOUT_FLAT = {
@@ -36,13 +40,43 @@ const LAYOUT_POINTY = {
 
 const M = LAYOUT_POINTY;
 
+// SCALE sizes the hex grid, but is also used when spawning system tiles to match.
+// 1.667 corresponds to hex size from the *other* simulator wrt unit scale 1.
+// 1.5 with unit scale 0.8.
+const SCALE_DEFAULT = 1.5;
+const SCALE_LARGER = 2.0;
+const HALF_SIZE_UNSCALED = 5.77735;
+
 /**
  * Heavily distilled hex math based on RedBlobGames excellent hex docs.
  * "Hex" values are strings for easy use as keys and comparison.
  * @author Darrell
  */
 class Hex {
-    static SCALE = 1.5; // 1.667 reflects the unit size : hex size from the *other* simulator.
+    static getLargerScale() {
+        const config = GlobalSavedData.get(GLOBAL_SAVED_DATA_KEY.HEX, {});
+        return config.lg ? true : false;
+    }
+
+    /**
+     * Use larger hexes?  This is persistent across save/load.
+     *
+     * @param {boolean} useLarger
+     */
+    static setLargerScale(useLarger) {
+        assert(typeof useLarger === "boolean");
+
+        const config = GlobalSavedData.get(GLOBAL_SAVED_DATA_KEY.HEX, {});
+        config.lg = useLarger;
+        GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.HEX, config);
+
+        Hex.SCALE = useLarger ? SCALE_LARGER : SCALE_DEFAULT;
+        Hex.HALF_SIZE = HALF_SIZE_UNSCALED * Hex.SCALE;
+    }
+
+    // Consumers beware, this may change during pre-setup time.  It remains fixed
+    // once committed to a game configuration.
+    static SCALE = Hex.getLargerScale() ? SCALE_LARGER : SCALE_DEFAULT;
     static HALF_SIZE = 5.77735 * Hex.SCALE; // Half of hex width, 11.547cm
 
     // TTPG hex grid parameters:
@@ -64,8 +98,9 @@ class Hex {
         const q = parseFloat(m[1]);
         const r = parseFloat(m[2]);
         const s = parseFloat(m[3]);
-        assert(Math.round(q + r + s) == 0, "q + r + s must be 0");
-
+        if (Math.round(q + r + s) !== 0) {
+            throw new Error(`q + r + s must be 0 ("${hex}")`);
+        }
         return [q, r, s];
     }
 

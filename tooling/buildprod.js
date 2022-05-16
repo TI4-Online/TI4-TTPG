@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const chalk = require("colorette");
+const klaw = require("klaw"); // walk file system
 const spawn = require("cross-spawn");
 
 console.log(chalk.yellow("Good Morning, Captain"));
@@ -67,6 +68,11 @@ const setupWorkspace = () => {
 
                 return Promise.all(
                     assetListing.map(({ from, to }) => {
+                        /*
+                        if (from.toLowerCase().endsWith(".ds_store")) {
+                            return Promise.resolve();
+                        }
+                        */
                         console.log(
                             `./assets/${from}`,
                             "->",
@@ -78,6 +84,24 @@ const setupWorkspace = () => {
                         );
                     })
                 );
+            })
+            .then(() => {
+                console.log("Copying Thumbnail");
+                return Promise.all([
+                    fs.pathExists(`./config/Thumbnail.png`),
+                    fs.pathExists(`./config/Thumbnail.jpg`),
+                ]).then(([png, jpg]) => {
+                    const ext = png ? "png" : jpg ? "jpg" : false;
+                    if (ext) {
+                        return fs.copy(
+                            `./config/Thumbnail.${ext}`,
+                            `./prd/${variantConfig.slug}/Thumbnail.${ext}`
+                        );
+                    } else {
+                        console.log("No thumbnail found. skipping");
+                        return Promise.resolve();
+                    }
+                });
             })
             .then(() => {
                 console.log("symlinking to Tabletop Playground");
@@ -93,6 +117,22 @@ const setupWorkspace = () => {
                             "Tabletop Playground is now aware of this production bundle. Huzzah."
                         );
                     });
+            })
+            .then(() => {
+                console.log("rewriting States GUIDs");
+                const oldStr = `${variantConfig.guid.dev}`;
+                const newStr = `${variantConfig.guid.prd}`;
+                const re = new RegExp(oldStr, "g");
+                klaw(`./prd/${variantConfig.slug}/States`).on(
+                    "data",
+                    (item) => {
+                        if (item.path.endsWith(".vts")) {
+                            let content = fs.readFileSync(item.path).toString();
+                            content = content.replace(re, newStr);
+                            fs.writeFileSync(item.path, content);
+                        }
+                    }
+                );
             });
     });
 };

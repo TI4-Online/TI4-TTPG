@@ -1,0 +1,76 @@
+{
+	"Type": "Card",
+	"GUID": "ECBEEC17D15DEE5FD0B3F94F92D6C6CD",
+	"Name": "Alliance (codex.vigil)",
+	"Metadata": "card.alliance:codex.vigil/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/alliance/codex/vigil/0.face.jpg",
+	"BackTexture": "locale/card/alliance/codex/vigil/0.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 5,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4
+	],
+	"CardNames": {
+		"0": "Keleres Alliance",
+		"1": "Keleres Alliance",
+		"2": "Keleres Alliance",
+		"3": "Naalu Alliance Ω",
+		"4": "Yin Alliance Ω"
+	},
+	"CardMetadata": {
+		"0": "card.alliance:codex.vigil/keleres_argent",
+		"1": "card.alliance:codex.vigil/keleres_mentak",
+		"2": "card.alliance:codex.vigil/keleres_xxcha",
+		"3": "card.alliance:codex.vigil/naalu.omega",
+		"4": "card.alliance:codex.vigil/yin.omega"
+	}
+}

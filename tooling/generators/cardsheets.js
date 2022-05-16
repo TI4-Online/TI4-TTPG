@@ -328,7 +328,7 @@ class AssetFilenames {
      * @param {string} locale - localization
      * @returns {string} image filename, relative to package root.
      */
-    static cardImage(nsid, side, locale) {
+    static cardImage(nsid, side, locale, recursed = false) {
         assert(typeof nsid === "string");
         assert(nsid.startsWith("card"));
         assert(side === "face" || side == "back");
@@ -385,6 +385,15 @@ class AssetFilenames {
         for (const candidate of candidates) {
             if (fs.existsSync(candidate)) {
                 return candidate;
+            }
+        }
+
+        // Try some alternates if not found.
+        if (!recursed) {
+            // If nsid ends with ".omega" also check for _omega named file.
+            if (nsid.endsWith(".omega")) {
+                const omegaNsid = nsid.replace(/.omega$/, "_omega");
+                return AssetFilenames.cardImage(omegaNsid, side, locale, true);
             }
         }
 
@@ -743,9 +752,10 @@ async function writeDeckTemplate(
     const deckNsid = `${deckNsidType}:${deckNsidSource}/${cardSheetIndex}`;
 
     // Generate a deterministic guid.
+    const forwardSlashPath = outputFilename.split(path.sep).join("/");
     const guid = crypto
         .createHash("sha256")
-        .update(outputFilename)
+        .update(forwardSlashPath)
         .digest("hex")
         .substring(0, 32)
         .toUpperCase();
@@ -790,7 +800,7 @@ async function writeDeckTemplate(
         BackTexture: backFilename,
         HiddenTexture: "",
         BackIndex: backIndex,
-        HiddenIndex: 0, // 0 = use back, -1 = blur, -2 = separate file
+        HiddenIndex: -3, // 0 = use front, -1 = blur, -2 = separate file, -3 = use back
         NumHorizontal: layout.numCols,
         NumVertical: layout.numRows,
         Width: cardSize.w,

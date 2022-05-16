@@ -1,14 +1,16 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 const { Spawn } = require("../spawn/spawn");
-const { Container, ObjectType, world } = require("../../wrapper/api");
+const { Container, ObjectType, Rotator, world } = require("../../wrapper/api");
 
 const COMMAND_TOKENS = {
     tokenNsidType: "token.command",
     tokenCount: 16,
     bagNsid: "bag.token.command:base/*",
-    bagPos: { x: -10.34, y: 39, z: 0 },
+    bagPos: { x: 8.028, y: 38.895, z: 0 },
+    bagYaw: 72,
     bagType: 2, // regular
     commandSheetLocalOffsets: [
         // Tactic
@@ -30,7 +32,12 @@ const CONTROL_TOKENS = {
     tokenCount: 1,
     bagNsid: "bag.token.control:base/*",
     bagType: 1, // infinite
-    bagPos: { x: -4.94, y: 40, z: 0 },
+    bagPos: {
+        x: 13.449,
+        y: 37.134,
+        z: 0,
+    },
+    bagYaw: COMMAND_TOKENS.bagYaw,
 };
 
 class SetupFactionTokens extends AbstractSetup {
@@ -40,7 +47,8 @@ class SetupFactionTokens extends AbstractSetup {
     }
 
     setup() {
-        this._spawnFactionTokensAndBag(CONTROL_TOKENS);
+        const controlTokensBag = this._spawnFactionTokensAndBag(CONTROL_TOKENS);
+        this._placeScoreboradControlToken(controlTokensBag);
         const commandTokensBag = this._spawnFactionTokensAndBag(COMMAND_TOKENS);
         this._placeInitialCommandTokens(commandTokensBag);
     }
@@ -66,9 +74,11 @@ class SetupFactionTokens extends AbstractSetup {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (deleSet.has(nsid)) {
-                obj.destroy();
+            if (!deleSet.has(nsid)) {
+                continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
         }
     }
 
@@ -87,9 +97,11 @@ class SetupFactionTokens extends AbstractSetup {
      */
     _spawnFactionTokensAndBag(tokenData) {
         const pos = this.playerDesk.localPositionToWorld(tokenData.bagPos);
-        const rot = this.playerDesk.rot;
+        const rot = new Rotator(0, tokenData.bagYaw, 0).compose(
+            this.playerDesk.rot
+        );
         const playerSlot = this.playerDesk.playerSlot;
-        const color = this.playerDesk.color;
+        const color = this.playerDesk.plasticColor;
 
         // Spawn bag.
         const bagNsid = tokenData.bagNsid;
@@ -103,14 +115,15 @@ class SetupFactionTokens extends AbstractSetup {
         if (bag.getType() !== tokenData.bagType) {
             bag.setType(tokenData.bagType);
             const json = bag.toJSONString();
+            bag.setTags(["DELETED_ITEMS_IGNORE"]);
             bag.destroy();
             bag = world.createObjectFromJSON(json, pos);
             bag.setRotation(rot);
         }
 
         const tokenNsid = `${tokenData.tokenNsidType}:${this.faction.nsidSource}/${this.faction.nsidName}`;
-        const above = pos.add([0, 0, 10]);
         for (let i = 0; i < tokenData.tokenCount; i++) {
+            const above = pos.add([0, 0, 10 + i * 3]);
             const token = Spawn.spawn(tokenNsid, above, rot);
             token.setOwningPlayerSlot(playerSlot);
             token.setPrimaryColor(color);
@@ -118,6 +131,27 @@ class SetupFactionTokens extends AbstractSetup {
         }
 
         return bag;
+    }
+
+    _placeScoreboradControlToken() {
+        const scoreboard = Scoreboard.getScoreboard();
+        const score = 0;
+        const playerSlot = this.playerDesk.playerSlot;
+        const posRot = Scoreboard.getTokenScoreboardPosRot(
+            scoreboard,
+            score,
+            playerSlot
+        );
+        if (!posRot) {
+            return;
+        }
+
+        const tokenNsid = `token.control:${this.faction.nsidSource}/${this.faction.nsidName}`;
+        const token = Spawn.spawn(tokenNsid, posRot.pos, posRot.rot);
+
+        const color = this.playerDesk.color;
+        token.setOwningPlayerSlot(playerSlot);
+        token.setPrimaryColor(color);
     }
 
     _placeInitialCommandTokens(commandTokensBag) {
@@ -151,4 +185,4 @@ class SetupFactionTokens extends AbstractSetup {
     }
 }
 
-module.exports = { SetupFactionTokens };
+module.exports = { SetupFactionTokens, COMMAND_TOKENS };

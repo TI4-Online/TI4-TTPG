@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/faction_token.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 2,
 	"Width": 6.3,

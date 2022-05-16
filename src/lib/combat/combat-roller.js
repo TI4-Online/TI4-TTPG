@@ -1,10 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { AuxData } = require("../unit/auxdata");
+const { Broadcast } = require("../broadcast");
 const { RollGroup } = require("../dice/roll-group");
 const { UnitDieBuilder } = require("../dice/unit-die");
 const { Player } = require("../../wrapper/api");
-const { Broadcast } = require("../broadcast");
+const { world } = require("../../wrapper/api");
 
 /**
  * Let players manually enter unit counts.
@@ -18,6 +19,11 @@ class CombatRoller {
         this._auxData = auxData;
         this._rollType = rollType;
         this._player = player;
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+            player.getSlot()
+        );
+        this._color = playerDesk ? playerDesk.color : undefined;
     }
 
     /**
@@ -25,8 +31,9 @@ class CombatRoller {
      *
      * @returns {string}
      */
-    getModifiersReport(combatOnly) {
-        let unitModifiers = this._auxData.unitModifiers;
+    static getModifiersReport(unitModifiers, combatOnly) {
+        assert(Array.isArray(unitModifiers));
+        assert(typeof combatOnly === "boolean");
 
         if (combatOnly) {
             unitModifiers = unitModifiers.filter((unitModifier) => {
@@ -58,7 +65,8 @@ class CombatRoller {
         const unitMessages = [];
         for (const [unit, dice] of Object.entries(unitToDice)) {
             const unitAttrs = this._auxData.unitAttrsSet.get(unit);
-            const rollAttrs = unitAttrs.raw[this._rollType];
+            const rollAttrs =
+                unitAttrs.raw[this._rollType] || unitAttrs.raw["spaceCombat"];
             const unitMessage = [
                 locale(unitAttrs.raw.localeName),
                 " [",
@@ -121,11 +129,24 @@ class CombatRoller {
     getUnitToDiceCount() {
         const unitToDiceCount = {};
 
+        const faction = world.TI4.getFactionByPlayerSlot(
+            this._player.getSlot()
+        );
+        const hasAmbush = faction && faction.raw.abilities.includes("ambush");
+        if (this._rollType === "ambush" && !hasAmbush) {
+            return unitToDiceCount;
+        }
+
         for (const unitAttrs of this._auxData.unitAttrsSet.values()) {
             const unit = unitAttrs.raw.unit;
-            const rollAttrs = unitAttrs.raw[this._rollType];
+            let rollAttrs = unitAttrs.raw[this._rollType];
             if (!rollAttrs) {
-                continue; // unit does not have this roll type
+                const ambushUnit = unit === "cruiser" || unit === "destroyer";
+                if (!(this._rollType === "ambush" && ambushUnit)) {
+                    continue; // unit does not have this roll type
+                } else {
+                    rollAttrs = unitAttrs.raw["spaceCombat"];
+                }
             }
 
             let count = 0;
@@ -149,6 +170,25 @@ class CombatRoller {
             if (count > 0) {
                 const extraDice = rollAttrs.extraDice || 0;
                 unitToDiceCount[unit] = count + extraDice;
+            }
+        }
+
+        if (this._rollType === "ambush") {
+            // double check only two dice are being rolled
+            // prioitize keeping cruisers if we need to remove dice
+            let totalDice = Object.values(unitToDiceCount).reduce(
+                (a, b) => a + b
+            );
+            while (totalDice > 2) {
+                if (Object.keys(unitToDiceCount).includes("destroyer")) {
+                    unitToDiceCount["destroyer"] -= 1;
+                    if (unitToDiceCount["destroyer"] === 0) {
+                        delete unitToDiceCount["destroyer"];
+                    }
+                } else {
+                    unitToDiceCount["cruiser"] -= 1;
+                }
+                totalDice -= 1;
             }
         }
 
@@ -198,27 +238,32 @@ class CombatRoller {
     roll(dicePos) {
         assert(typeof dicePos.x === "number");
 
+        let rollTypeLocalized = locale(`rollType.${this._rollType}`);
+
+        Broadcast.broadcastAll(
+            locale("ui.message.player_rolling_for", {
+                playerName: this._player.getName(),
+                rollType: rollTypeLocalized,
+            }),
+            this._color
+        );
+
+        const unitModifiers = this._auxData.unitModifiers;
+        const report = CombatRoller.getModifiersReport(unitModifiers, true);
+        Broadcast.chatAll(report, this._color);
+
         const unitToDice = this.spawnDice(dicePos);
         const dice = [];
         for (const unitDice of Object.values(unitToDice)) {
             dice.push(...unitDice);
         }
 
-        Broadcast.broadcastAll(
-            locale("ui.message.player_rolling_for", {
-                playerName: this._player.getName(),
-                rollType: this._rollType,
-            })
-        );
-        const report = this.getModifiersReport(true);
-        Broadcast.chatAll(report);
-
         if (dice.length === 0) {
-            Broadcast.broadcastAll(locale("ui.message.no_units"));
+            Broadcast.broadcastAll(locale("ui.message.no_units"), this._color);
         } else {
             RollGroup.roll(dice, () => {
                 const report = this.getRollReport(unitToDice);
-                Broadcast.broadcastAll(report);
+                Broadcast.broadcastAll(report, this._color);
             });
         }
 

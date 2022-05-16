@@ -50,11 +50,16 @@ class SetupHomeSystem extends AbstractSetup {
             break;
         }
 
+        const tile = this.faction.raw.home;
+        const system = world.TI4.getSystemByTileNumber(tile);
+        const source = system.raw.source;
+        assert(source);
+
         const nsidToPosition = {};
-        const homeNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
-        let surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
+        const homeNsid = `tile.system:${source}/${this.faction.raw.home}`;
+        let surrogateNsid = `tile.system:${source}/${this.faction.raw.homeSurrogate}`;
         if (this._faction.raw.homeSurrogate) {
-            surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
+            surrogateNsid = `tile.system:${source}/${this.faction.raw.homeSurrogate}`;
             nsidToPosition[homeNsid] = offMapPos;
             nsidToPosition[surrogateNsid] = onMapPos;
         } else {
@@ -73,8 +78,13 @@ class SetupHomeSystem extends AbstractSetup {
     _cleanHomeSystemTile() {
         let replacePos = false;
 
-        const homeNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.home}`;
-        let surrogateNsid = `tile.system:${this.faction.nsidSource}/${this.faction.raw.homeSurrogate}`;
+        const tile = this.faction.raw.home;
+        const system = world.TI4.getSystemByTileNumber(tile);
+        const source = system.raw.source;
+        assert(source);
+
+        const homeNsid = `tile.system:${source}/${this.faction.raw.home}`;
+        let surrogateNsid = `tile.system:${source}/${this.faction.raw.homeSurrogate}`;
 
         const deleSet = new Set();
         let replaceNsid;
@@ -103,6 +113,7 @@ class SetupHomeSystem extends AbstractSetup {
             if (nsid === replaceNsid) {
                 replacePos = obj.getPosition();
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
 
@@ -159,6 +170,7 @@ class SetupHomeSystem extends AbstractSetup {
             return closestDesk === this.playerDesk;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

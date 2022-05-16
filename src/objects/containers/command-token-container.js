@@ -1,40 +1,58 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { refContainer, Container } = require("../../wrapper/api");
-const {
-    getRejectReason,
-    REJECT_REASON,
-} = require("../../global/patch-exclusive-bags");
-const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Broadcast } = require("../../lib/broadcast");
 const locale = require("../../lib/locale");
+const { Broadcast } = require("../../lib/broadcast");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { COMMAND_TOKENS } = require("../../setup/faction/setup-faction-tokens");
+const {
+    Border,
+    Color,
+    Container,
+    GameObject,
+    Rotator,
+    UIElement,
+    Vector,
+    VerticalBox,
+    globalEvents,
+    refContainer,
+    world,
+} = require("../../wrapper/api");
+
+const BOX = {
+    height: 4,
+    width: 14,
+    gap: 1,
+    x: -3.8,
+};
 
 const DELAY = 5000; // delay in milliseconds before reporting
 
-function holdsObject(container, object) {
-    const rejectReason = getRejectReason(container, object);
+function holdsObject(container, obj) {
+    assert(container instanceof Container);
+    assert(obj instanceof GameObject);
 
-    // command token bags have name "*", but command tokens have the name of the
-    // faction, therefore getRejectReason will always return MISMATCH_NAME error
-    // ignore the error if the container and object are the proper type and are
-    // owned by the same player
-    if (rejectReason === REJECT_REASON.MISMATCH_NAME) {
-        const isCommandTokenBag = ObjectNamespace.isCommandTokenBag(container);
-        const isCommandToken = ObjectNamespace.isCommandToken(object);
-        const sameOwner =
-            object.getOwningPlayerSlot() === container.getOwningPlayerSlot();
-        if (isCommandTokenBag && isCommandToken && sameOwner) {
-            return true;
-        }
+    if (!ObjectNamespace.isCommandTokenBag(container)) {
+        return false;
     }
-    return !rejectReason;
+    if (!ObjectNamespace.isCommandToken(obj)) {
+        return false;
+    }
+    const bagOwner = container.getOwningPlayerSlot();
+    const tokenOwner = obj.getOwningPlayerSlot();
+    if (bagOwner != tokenOwner) {
+        return false;
+    }
+    return true;
 }
 
-function getFactionName(object) {
+function getFactionName(obj) {
+    assert(obj instanceof GameObject);
+
     // cant get the faction name from the container because the container has name "*"
     // therefore get it from the command token object
-    assert(ObjectNamespace.isCommandToken(object));
-    const factionName = ObjectNamespace.parseCommandToken(object).name;
-    return locale("faction.full." + factionName);
+    assert(ObjectNamespace.isCommandToken(obj));
+    const nsidName = ObjectNamespace.parseCommandToken(obj).name;
+    const faction = world.TI4.getFactionByNsidName(nsidName);
+    return faction ? faction.nameFull : nsidName;
 }
 
 class Reporter {
@@ -108,4 +126,126 @@ class Reporter {
     }
 }
 
-new Reporter(refContainer);
+class CommandTokenBag {
+    constructor(container) {
+        assert(container instanceof Container);
+        assert(ObjectNamespace.isCommandTokenBag(container));
+
+        this._container = container;
+        this._UIElement = false;
+        this._boxes = [];
+
+        this._capacity = COMMAND_TOKENS.tokenCount;
+
+        this.createUI();
+        this.updateUI();
+
+        // Watch for player-driven events.
+        container.onInserted.add((container, insertObjs, player) => {
+            this.onInserted(container, insertObjs, player);
+            this.updateUI();
+        });
+        container.onRemoved.add((container, removedObj, player) => {
+            this.updateUI();
+        });
+
+        // Patch mutators.  When a script adds or removes it does not trigger
+        // the onInserted/onRemoved events.
+        container._addObjects = container.addObjects;
+        container.addObjects = (...args) => {
+            const r = container._addObjects(...args);
+            this.updateUI();
+            return r;
+        };
+        container._clear = container.clear;
+        container.clear = (...args) => {
+            const r = container._clear(...args);
+            this.updateUI();
+            return r;
+        };
+        container._insert = container.insert;
+        container.insert = (...args) => {
+            const r = container._insert(...args);
+            this.updateUI();
+            return r;
+        };
+        container._remove = container.remove;
+        container.remove = (...args) => {
+            const r = container._remove(...args);
+            this.updateUI();
+            return r;
+        };
+        container._removeAt = container.removeAt;
+        container.removeAt = (...args) => {
+            const r = container._removeAt(...args);
+            this.updateUI();
+            return r;
+        };
+        container._take = container.take;
+        container.take = (...args) => {
+            const r = container._take(...args);
+            this.updateUI();
+            return r;
+        };
+        container._takeAt = container.takeAt;
+        container.takeAt = (...args) => {
+            const r = container._takeAt(...args);
+            this.updateUI();
+            return r;
+        };
+    }
+
+    createUI() {
+        const boxPanel = new VerticalBox().setChildDistance(BOX.gap);
+        this._boxes = [];
+        for (let i = 0; i < this._capacity; i++) {
+            const box = new Border();
+            boxPanel.addChild(box, 1);
+            this._boxes.push(box);
+        }
+
+        this._UIElement = new UIElement();
+        this._UIElement.useWidgetSize = false;
+        this._UIElement.height =
+            (BOX.height + BOX.gap) * this._boxes.length - BOX.gap;
+        this._UIElement.width = BOX.width;
+        this._UIElement.position = new Vector(BOX.x, 0, 0.1);
+        this._UIElement.rotation = new Rotator(0, 90, 0);
+        this._UIElement.widget = boxPanel;
+
+        this._container.addUI(this._UIElement);
+    }
+
+    updateUI() {
+        const currentNumber = this._container.getNumItems();
+        const emptyColor = new Color(0.2, 0.2, 0.2);
+        const fullColor = this._container.getPrimaryColor();
+        this._boxes.forEach((box, index) => {
+            const color = index < currentNumber ? fullColor : emptyColor;
+            box.setColor(color);
+        });
+    }
+
+    onInserted(container, insertObjs, player) {
+        const rejectedObjs = insertObjs.filter((obj) => {
+            return !holdsObject(this._container, obj);
+        });
+        if (rejectedObjs.length > 0) {
+            globalEvents.TI4.onContainerRejected.trigger(
+                container,
+                rejectedObjs,
+                player
+            );
+        }
+    }
+}
+
+refContainer.onCreated.add((obj) => {
+    new CommandTokenBag(obj);
+    new Reporter(obj);
+});
+
+if (world.getExecutionReason() === "ScriptReload") {
+    new CommandTokenBag(refContainer);
+    new Reporter(refContainer);
+}

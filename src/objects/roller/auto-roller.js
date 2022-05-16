@@ -26,7 +26,7 @@ class AutoRoller {
         assert(!gameObject || gameObject instanceof GameObject);
         this._activeSystem = false;
         this._activeHex = false;
-        this._activatingPlayerSlot = false;
+        this._activatingPlayerSlot = -1;
         this._firstBombardmentPlanet = false;
         this._playerSlotToDice = {};
 
@@ -49,9 +49,18 @@ class AutoRoller {
             this.onSystemActivated(systemTile, player);
         };
         globalEvents.TI4.onSystemActivated.add(handler);
+
+        // New turn handler.
+        const newTurnHandler = () => {
+            assert(this instanceof AutoRoller);
+            this.getUI().resetAwaitingSystemActivation();
+        };
+        globalEvents.TI4.onTurnChanged.add(newTurnHandler);
+
         if (gameObject) {
             gameObject.onDestroyed.add((obj) => {
                 globalEvents.TI4.onSystemActivated.remove(handler);
+                globalEvents.TI4.onTurnChanged.remove(newTurnHandler);
             });
         }
 
@@ -97,7 +106,65 @@ class AutoRoller {
         assert(!planet || planet instanceof Planet);
         assert(player instanceof Player);
 
-        if (!this._activeHex) {
+        const isEndTurn = rollType === "endTurn";
+        if (isEndTurn) {
+            world.TI4.turns.endTurn(player);
+            return;
+        }
+
+        const isFinMove = rollType === "finishMove";
+        if (isFinMove) {
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.finalize_movement", {
+                    playerName: player.getName(),
+                }),
+                color
+            );
+            return;
+        }
+
+        const isAnnounceRetreat = rollType === "announceRetreat";
+        if (isAnnounceRetreat) {
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.announce_retreat", {
+                    playerName: player.getName(),
+                }),
+                color
+            );
+            return;
+        }
+
+        const isProduction = rollType === "production";
+        if (isProduction) {
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                player.getSlot()
+            );
+            const color = playerDesk ? playerDesk.color : undefined;
+
+            Broadcast.broadcastAll(
+                locale("ui.message.production", {
+                    playerName: player.getName(),
+                    systemTile: this._activeSystem.tile,
+                    systemName: this._activeSystem.getSummaryStr(),
+                }),
+                color
+            );
+            return;
+        }
+
+        const isReportModifiers = rollType === "reportModifiers";
+
+        if (!this._activeHex && !isReportModifiers) {
             Broadcast.broadcastAll(locale("ui.error.no_active_system"));
             return;
         }
@@ -120,6 +187,11 @@ class AutoRoller {
         }
         const isFirstBombardmentPlanet =
             this._firstBombardmentPlanet === planet;
+
+        // Clear first bombarded on ground combat for future bombards (Harrow).
+        if (rollType === "groundCombat") {
+            this._firstBombardmentPlanet = false;
+        }
 
         // Build self.
         let faction = world.TI4.getFactionByPlayerSlot(player.getSlot());
@@ -154,7 +226,18 @@ class AutoRoller {
             .setRollType(rollType)
             .build();
 
-        new AuxDataPair(aux1, aux2).fillPairSync();
+        const auxDataPair = new AuxDataPair(aux1, aux2);
+        if (isReportModifiers) {
+            auxDataPair.disableModifierFiltering();
+        }
+        auxDataPair.fillPairSync();
+
+        if (isReportModifiers) {
+            const unitModifiers = aux1.unitModifiers;
+            const report = CombatRoller.getModifiersReport(unitModifiers, true);
+            Broadcast.chatAll(report, this._color);
+            return;
+        }
 
         const playerSlot = player.getSlot();
         let dicePos = new Vector(20, -60, world.getTableHeight());

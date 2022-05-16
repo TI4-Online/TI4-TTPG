@@ -4,14 +4,20 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 
+const PLANETS_X = -7;
+const PLANETS_Y = -7;
 const MATS = [
     {
         nsid: "mat:base/planets",
-        pos: { x: 38.5, y: 15.74 },
+        pos: { x: PLANETS_X, y: PLANETS_Y },
     },
     {
         nsid: "mat:base/tech",
-        pos: { x: 42.62, y: -12.34 },
+        pos: { x: PLANETS_X - 4.12, y: PLANETS_Y + 28 },
+    },
+    {
+        nsid: "mat:base/build_area",
+        pos: { x: PLANETS_X - 4.12, y: PLANETS_Y - 20 },
     },
 ];
 
@@ -23,16 +29,16 @@ class SetupPlayerMats extends AbstractSetup {
 
     setup() {
         MATS.forEach((matData) => {
-            const nsid = matData.nsid;
-            const pos = this.playerDesk.localPositionToWorld(
-                new Vector(matData.pos.x, matData.pos.y, 0)
-            );
-            pos.z = world.getTableHeight() + 3;
+            let pos = new Vector(matData.pos.x, matData.pos.y, 2);
+            pos = this.playerDesk.localPositionToWorld(pos);
             const rot = this.playerDesk.rot;
+
+            const nsid = matData.nsid;
             const obj = Spawn.spawn(nsid, pos, rot);
             obj.setObjectType(ObjectType.Ground);
         });
     }
+
     clean() {
         const destroyNsids = new Set();
         MATS.forEach((matData) => {
@@ -51,6 +57,7 @@ class SetupPlayerMats extends AbstractSetup {
             if (closestDesk !== this.playerDesk) {
                 continue;
             }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
     }

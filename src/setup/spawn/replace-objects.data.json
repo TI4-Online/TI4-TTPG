@@ -10,5 +10,21 @@
     "card.promissory.winnu:base/acquiescence": "card.promissory.winnu:base/acquiescence.omega",
 
     "tile.strategy:base/construction": "tile.strategy:base/construction.errata",
-    "tile.strategy:base/diplomacy": "tile.strategy:base/diplomacy.errata"
+    "tile.strategy:base/diplomacy": "tile.strategy:base/diplomacy.errata",
+
+    "card.leader.hero.xxcha:pok/xxekir_grom": "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega",
+    "card.leader.agent.yin:pok/brother_milor": "card.leader.agent.yin:codex.vigil/brother_milor.omega",
+    "card.leader.agent.naalu:pok/zeu": "card.leader.agent.naalu:codex.vigil/zeu.omega",
+    "card.leader.commander.yin:pok/brother_omar": "card.leader.commander.yin:codex.vigil/brother_omar.omega",
+    "card.leader.commander.naalu:pok/maban": "card.leader.commander.naalu:codex.vigil/maban.omega",
+    "card.leader.hero.yin:pok/dannel_of_the_tenth": "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega",
+    "card.leader.mech.naalu:pok/iconoclast": "card.leader.mech.naalu:codex.vigil/iconoclast.omega",
+    "card.objective.secret:pok/fight_with_precision": "card.objective.secret:codex.vigil/fight_with_precision.omega",
+    "card.objective.secret:base/turn_their_fleets_to_dust": "card.objective.secret:codex.vigil/turn_their_fleets_to_dust.omega",
+    "card.objective.secret:base/make_an_example_of_their_world": "card.objective.secret:codex.vigil/make_an_example_of_their_world.omega",
+    "card.faction_reference:base/yin": "card.faction_reference:codex.vigil/yin.omega",
+    "card.faction_reference:base/xxcha": "card.faction_reference:codex.vigil/xxcha.omega",
+    "card.faction_reference:base/naalu": "card.faction_reference:codex.vigil/naalu.omega",
+    "card.alliance:pok/naalu": "card.alliance:codex.vigil/naalu.omega",
+    "card.alliance:pok/yin": "card.alliance:codex.vigil/yin.omega"
 }

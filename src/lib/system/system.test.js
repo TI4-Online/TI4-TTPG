@@ -89,3 +89,40 @@ it("wormholes", () => {
     assert.equal(system.wormholes.length, 1);
     assert.equal(system.wormholes[0], "alpha");
 });
+
+it("summarize", () => {
+    let tiles, summary;
+
+    tiles = [25, 26, 27]; // quann, lodor, new albion
+    summary = System.summarize(tiles);
+    assert.equal(summary, "9/4 G αβ");
+
+    tiles = [25];
+    summary = System.summarize(tiles);
+    assert.equal(summary, "2/1 β");
+
+    tiles = [27];
+    summary = System.summarize(tiles);
+    assert.equal(summary, "4/2 G");
+});
+
+it("inject", () => {
+    assert(!System.getByTileNumber(12349431));
+
+    System.injectSystem({
+        tile: 12349431,
+        source: "homebrew",
+        home: true,
+        planets: [
+            {
+                localeName: "face_name",
+                resources: 4,
+                influence: 2,
+            },
+        ],
+        img: "path/tile.png",
+    });
+
+    const system = System.getByTileNumber(12349431);
+    assert.equal(system.tile, 12349431);
+});

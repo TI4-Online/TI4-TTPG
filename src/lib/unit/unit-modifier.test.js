@@ -9,7 +9,14 @@ const { UnitModifier, PRIORITY, OWNER } = require("./unit-modifier");
 const { UnitAttrs } = require("./unit-attrs");
 const { UnitAttrsSet } = require("./unit-attrs-set");
 const UNIT_MODIFIERS = require("./unit-modifier.data");
-const { world, MockCard, MockCardDetails } = require("../../mock/mock-api");
+const {
+    globalEvents,
+    world,
+    MockCard,
+    MockCardDetails,
+    MockGameObject,
+    MockPlayer,
+} = require("../../mock/mock-api");
 
 it("UNIT_MODIFIERS schema", () => {
     for (const rawModifier of UNIT_MODIFIERS) {
@@ -224,4 +231,73 @@ it("applyAll", () => {
     unitModifier.apply(unitAttrsSet, unitModifier);
     assert.equal(unitAttrsSet.get("fighter").raw.spaceCombat.hit, 8);
     assert.equal(unitAttrsSet.get("infantry").raw.groundCombat.hit, 7);
+});
+
+it("alliance", () => {
+    const desks = world.TI4.getAllPlayerDesks();
+
+    world.__clear();
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: "card.leader.commander.winnu:pok/rickar_rickani",
+            }),
+            position: desks[0].center,
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "sheet.faction:base/winnu",
+            position: desks[0].center,
+        })
+    );
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: "card.alliance:pok/winnu",
+            }),
+            position: desks[1].center,
+        })
+    );
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: `card.promissory.${desks[0].colorName}:base/alliance`,
+            }),
+            position: desks[2].center,
+        })
+    );
+
+    // Tell Faction to invalidate any caches.
+    const player = new MockPlayer();
+    globalEvents.TI4.onFactionChanged.trigger(desks[0].playerSlot, player);
+
+    const result0 = UnitModifier.getPlayerUnitModifiers(
+        desks[0].playerSlot,
+        "self"
+    );
+    const result1 = UnitModifier.getPlayerUnitModifiers(
+        desks[1].playerSlot,
+        "self"
+    );
+    const result2 = UnitModifier.getPlayerUnitModifiers(
+        desks[2].playerSlot,
+        "self"
+    );
+    world.__clear();
+
+    assert.equal(result0.length, 1);
+    assert.equal(
+        result0[0].raw.localeName,
+        "unit_modifier.name.rickar_rickani"
+    );
+
+    assert.equal(result1.length, 1);
+    assert.equal(
+        result1[0].raw.localeName,
+        "unit_modifier.name.rickar_rickani"
+    );
+
+    // The generic alliance promissory DOES NOT register.
+    assert.equal(result2.length, 0);
 });

@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "",
+	"ScriptName": "objects/containers/unit-bag.js",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -105,7 +105,7 @@
 				"Y": 20,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/units/base/flagship.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,

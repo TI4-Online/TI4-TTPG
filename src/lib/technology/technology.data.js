@@ -216,6 +216,7 @@ module.exports = [
             Green: 2,
         },
         abbrev: "Infantry II",
+        unitPosition: 10,
     },
     {
         localeName: "unit.destroyer_2",
@@ -225,6 +226,7 @@ module.exports = [
             Red: 2,
         },
         abbrev: "Destroyer II",
+        unitPosition: 5,
     },
     {
         localeName: "unit.carrier_2",
@@ -234,6 +236,7 @@ module.exports = [
             Blue: 2,
         },
         abbrev: "Carrier II",
+        unitPosition: 8,
     },
     {
         localeName: "unit.space_dock_2",
@@ -243,6 +246,7 @@ module.exports = [
             Yellow: 2,
         },
         abbrev: "Space Dock II",
+        unitPosition: 11,
     },
     {
         localeName: "unit.fighter_2",
@@ -253,6 +257,7 @@ module.exports = [
             Green: 1,
         },
         abbrev: "Fighter II",
+        unitPosition: 9,
     },
     {
         localeName: "unit.pds_2",
@@ -263,6 +268,7 @@ module.exports = [
             Yellow: 1,
         },
         abbrev: "PDS II",
+        unitPosition: 6,
     },
     {
         localeName: "unit.cruiser_2",
@@ -274,6 +280,7 @@ module.exports = [
             Green: 1,
         },
         abbrev: "Cruiser II",
+        unitPosition: 1,
     },
     {
         localeName: "unit.dreadnought_2",
@@ -284,6 +291,7 @@ module.exports = [
             Yellow: 1,
         },
         abbrev: "Dread II",
+        unitPosition: 4,
     },
     {
         localeName: "unit.war_sun",
@@ -294,6 +302,7 @@ module.exports = [
             Yellow: 1,
         },
         abbrev: "War Sun",
+        unitPosition: 0,
     },
 
     {
@@ -305,6 +314,7 @@ module.exports = [
         },
         abbrev: "Letani II",
         faction: "arborec",
+        unitPosition: 10,
     },
     {
         localeName: "technology.name.bioplasmosis",
@@ -355,6 +365,7 @@ module.exports = [
         },
         abbrev: " FF II",
         faction: "saar",
+        unitPosition: 11,
     },
     {
         localeName: "unit.war_sun.prototype_war_sun_2",
@@ -366,6 +377,7 @@ module.exports = [
         },
         abbrev: " PWS II",
         faction: "muaat",
+        unitPosition: 0,
     },
     {
         localeName: "technology.name.magmus_reactor",
@@ -406,6 +418,7 @@ module.exports = [
         },
         abbrev: "Spec Ops II",
         faction: "sol",
+        unitPosition: 10,
     },
     {
         localeName: "unit.carrier.advanced_carrier_2",
@@ -416,6 +429,7 @@ module.exports = [
         },
         abbrev: "Adv Carrier II",
         faction: "sol",
+        unitPosition: 8,
     },
     {
         localeName: "technology.name.wormhole_generator",
@@ -447,6 +461,7 @@ module.exports = [
         },
         abbrev: "SuperDread II",
         faction: "l1z1x",
+        unitPosition: 4,
     },
     {
         localeName: "technology.name.inheritance_systems",
@@ -489,6 +504,7 @@ module.exports = [
         },
         abbrev: " HCF II",
         faction: "naalu",
+        unitPosition: 9,
     },
     {
         localeName: "technology.name.neuroglaive",
@@ -526,6 +542,7 @@ module.exports = [
         },
         abbrev: "Exotrireme II",
         faction: "norr",
+        unitPosition: 4,
     },
     {
         localeName: "technology.name.valkyrie_particle_weave",
@@ -661,6 +678,7 @@ module.exports = [
         abbrev: "Memoria II",
         faction: "nomad",
         source: "PoK",
+        unitPosition: -4,
     },
     {
         localeName: "technology.name.vortex",
@@ -684,6 +702,7 @@ module.exports = [
         abbrev: "Dim Tear II",
         faction: "vuilraith",
         source: "PoK",
+        unitPosition: 11,
     },
     {
         localeName: "technology.name.aerie_hololattice",
@@ -703,9 +722,10 @@ module.exports = [
         requirements: {
             Red: 2,
         },
-        abbrev: "String Wing II",
+        abbrev: "Strike Wing II",
         faction: "argent",
         source: "PoK",
+        unitPosition: 5,
     },
     {
         localeName: "unit.cruiser.saturn_engine_2",
@@ -719,6 +739,7 @@ module.exports = [
         abbrev: "Sat Eng II",
         faction: "ul",
         source: "PoK",
+        unitPosition: 1,
     },
     {
         localeName: "unit.pds.hel_titan_2",
@@ -731,6 +752,7 @@ module.exports = [
         abbrev: "Hel-Titan II",
         faction: "ul",
         source: "PoK",
+        unitPosition: 6,
     },
     {
         localeName: "technology.name.aetherstream",
@@ -766,6 +788,7 @@ module.exports = [
         abbrev: "Crimson Legin II",
         faction: "mahact",
         source: "PoK",
+        unitPosition: 10,
     },
     {
         localeName: "technology.name.genetic_recombination",
@@ -803,12 +826,14 @@ module.exports = [
 
     {
         localeName: "technology.name.redacted",
+        cardNsid: "card.technology.unit_upgrade.nekro:codex.ordinian/redacted",
         type: "SCENARIO unitUpgrade",
         requirements: {
             Red: 2,
         },
         abbrev: "Scenario Destroyer",
         source: "Codex 1",
+        unitPosition: 5,
     },
     {
         localeName: "technology.name.exception_no_id",
@@ -819,5 +844,38 @@ module.exports = [
         },
         abbrev: "Scenario Tech",
         source: "Codex 1",
+    },
+    {
+        localeName: "strategy_card.technology.button.nekro",
+        cardNsid: "does_not_exist",
+        type: "unitUpgrade",
+        requirements: {},
+        abbrev: "Singularity Button",
+        faction: "nekro",
+        unitPosition: 3,
+    },
+    {
+        localeName: "technology.name.iihq_modernization",
+        cardNsid:
+            "card.technology.yellow.keleres:codex.vigil/iihq_modernization",
+        type: "Yellow",
+        requirements: {
+            Yellow: 1,
+        },
+        abbrev: "IIQH Modern",
+        factions: ["keleres_argent", "keleres_mentak", "keleres_xxcha"],
+        source: "Codex 3",
+    },
+    {
+        localeName: "technology.name.agency_supply_network",
+        cardNsid:
+            "card.technology.yellow.keleres:codex.vigil/agency_supply_network",
+        type: "Yellow",
+        requirements: {
+            Yellow: 2,
+        },
+        abbrev: "Agency Supply",
+        factions: ["keleres_argent", "keleres_mentak", "keleres_xxcha"],
+        source: "Codex 3",
     },
 ];

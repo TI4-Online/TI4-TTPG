@@ -37,6 +37,9 @@
     "token.command:pok/nomad": "A2A499832CB74349964431C208E0BD2F",
     "token.command:pok/ul": "AA0D94CC53004E6E9EA7703EDDFB9E33",
     "token.command:pok/vuilraith": "F698C0B2F0BA460A949AC81BB1C10D69",
+    "token.command:codex.vigil/keleres_argent": "943CD74201B24A6E9C56D236515ADFB0",
+    "token.command:codex.vigil/keleres_mentak": "2F6FA211A89B48B3908C07E18F5847B0",
+    "token.command:codex.vigil/keleres_xxcha": "1E0315C9C0B4430E88E24E3A73DB0410",
     "token.control:base/arborec": "D0E7337CA6914EF2BBE7BD9DBC6FAFEB",
     "token.control:base/creuss": "27AC26A9CE08479B980CB0C7D9A295B7",
     "token.control:base/hacan": "CB14F397225640FDB483FD67D1A1BDE1",
@@ -61,6 +64,9 @@
     "token.control:pok/nomad": "4B1382D778764F8E95E476C34DC72CB8",
     "token.control:pok/ul": "C437D1017ACA4C4EB6264B03C05AE2E6",
     "token.control:pok/vuilraith": "9A27D698099742E6980EF14947C3533B",
+    "token.control:codex.vigil/keleres_argent": "CEDE596203A04AA99AB82EA42E4FBBE0",
+    "token.control:codex.vigil/keleres_mentak": "C16E6D0F4D3746F19FAB69E304C9A700",
+    "token.control:codex.vigil/keleres_xxcha": "931435667E0B44C88B09039627C95E70",
     "token.exploration:pok/ion_storm": "2EBCA9924B511E6083C89FA16A0F6B5F",
     "token.exploration:pok/mirage": "0B5BB3D24144BC83CC0AC8A7D95A1278",
     "token.exploration:pok/stellar_converter": "BAFAAA7B47B61276E1F4D2B38C20191A",
@@ -82,5 +88,6 @@
     "token:base/speaker": "81F04C6F435D849CF50424B59E7E2F42",
     "token:base/tradegood_commodity_1": "2DB5DA894C75645C65F9CD86BFAEA211",
     "token:base/tradegood_commodity_3": "7E9C62F84C1DB934463888A52B748DF5",
-    "token:pok/frontier": "AB1E6E5C4A860EDEEC83FDA1991A1EC7"
+    "token:pok/frontier": "AB1E6E5C4A860EDEEC83FDA1991A1EC7",
+    "token:base/custodians": "09DF69524B6B7064D2CD6D8A0F7ADA59"
 }

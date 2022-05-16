@@ -1,62 +1,41 @@
-const { refObject, world, GameObject, Vector } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
-const locale = require("../../lib/locale");
-const { getClosestPlanet } = require("../../lib/system/position-to-planet");
 const assert = require("../../wrapper/assert-wrapper");
+const {
+    AbstractSystemAttachment,
+} = require("../attachments/abstract-system-attachment");
+const {
+    refObject,
+    GameObject,
+    ObjectType,
+    Vector,
+} = require("../../wrapper/api");
 
-let _stellarConvertorTileNumber = 0;
-let _stellarConvertorPlanet = "";
-
-function unStellarConvertPlanet() {
-    if (_stellarConvertorTileNumber) {
-        const prevSystem = world.TI4.getSystemByTileNumber(
-            _stellarConvertorTileNumber
-        );
-
-        for (const planet of prevSystem.planets) {
-            if (planet.localeName === _stellarConvertorPlanet) {
-                planet.destroyed = false;
-                break;
-            }
-        }
-
-        _stellarConvertorTileNumber = 0;
-        _stellarConvertorPlanet = "";
+class StellarConverter extends AbstractSystemAttachment {
+    constructor(gameObject) {
+        assert(gameObject instanceof GameObject);
+        const isPlanetBased = true;
+        const localeName = "token.exploration.stellar_converter";
+        super(gameObject, isPlanetBased, localeName);
+        this._attachLocaleMessage = "ui.message.stellar_converter"; // see super
+        this.attachIfOnSystem();
     }
-}
 
-function stellarConvertPlanet(obj) {
-    assert(obj instanceof GameObject);
-    const pos = obj.getPosition();
-    const planet = getClosestPlanet(pos);
-    if (planet) {
-        unStellarConvertPlanet();
-
-        const message = locale("ui.message.stellar_converter", {
-            planetName: planet.getNameStr(),
-        });
-        Broadcast.chatAll(message);
-
+    place(system, planet, systemTileObj) {
         planet.destroyed = true;
 
-        _stellarConvertorPlanet = planet.localeName;
-        _stellarConvertorTileNumber = planet.system.tile;
-
-        const systemObject = world.TI4.getSystemTileObjectByPosition(pos);
-        const attachmentPosition = systemObject
+        const attachmentPosition = systemTileObj
             .localPositionToWorld(planet.position)
-            .add(new Vector(0, 0, systemObject.getSize().z));
+            .add(new Vector(0, 0, systemTileObj.getSize().z));
 
-        obj.setPosition(attachmentPosition);
-        obj.setScale(systemObject.getScale());
-        obj.setObjectType(1); // ground i.e. locked
+        const tokenObj = this.getAttachTokenObj();
+        tokenObj.setObjectType(ObjectType.Regular); // paranoia
+        tokenObj.setPosition(attachmentPosition);
+        tokenObj.setScale(systemTileObj.getScale());
+        tokenObj.setObjectType(ObjectType.Ground); // ground i.e. locked
+    }
+
+    remove(system, planet, systemTileObj) {
+        planet.destroyed = false;
     }
 }
 
-refObject.onReleased.add(stellarConvertPlanet);
-refObject.onGrab.add(unStellarConvertPlanet);
-refObject.onCreated.add(stellarConvertPlanet);
-
-if (world.getExecutionReason() === "ScriptReload") {
-    stellarConvertPlanet(refObject);
-}
+new StellarConverter(refObject);

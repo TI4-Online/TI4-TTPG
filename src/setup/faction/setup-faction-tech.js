@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { world } = require("../../wrapper/api");
 
 const { TECH_DECK_LOCAL_OFFSET } = require("../setup-generic-tech");
 
@@ -22,11 +23,16 @@ class SetupFactionTech extends AbstractSetup {
         this._faction.raw.techs.forEach((name) => acceptNames.add(name));
         this._faction.raw.units.forEach((name) => acceptNames.add(name));
 
+        let matchFactionName = this._faction.raw.faction;
+        if (matchFactionName.startsWith("keleres_")) {
+            matchFactionName = "keleres";
+        }
+
         const nsidPrefix = "card.technology";
         this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.technology.red", "card.technology.red.muaat"
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
-            if (factionName !== this._faction.raw.faction) {
+            if (factionName !== matchFactionName) {
                 return false;
             }
             // Check if legal name.  Include "name.omega", etc versions.
@@ -47,15 +53,26 @@ class SetupFactionTech extends AbstractSetup {
     }
 
     clean() {
+        let matchFactionName = this._faction.raw.faction;
+        if (matchFactionName.startsWith("keleres_")) {
+            matchFactionName = "keleres";
+        }
+
         const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
             if (!nsid.startsWith("card.technology")) {
                 return false;
             }
+            const pos = cardOrDeck.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
+                return false;
+            }
             const parsed = ObjectNamespace.parseNsid(nsid);
             const factionType = parsed.type.split(".")[3];
-            return factionType === this.faction.nsidName;
+            return factionType === matchFactionName;
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

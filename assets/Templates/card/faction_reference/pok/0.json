@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/faction_reference.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 2,
 	"Width": 8.8,

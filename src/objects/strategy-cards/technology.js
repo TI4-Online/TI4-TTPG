@@ -9,61 +9,37 @@ const {
     ImageWidget,
     Text,
     refObject,
+    world,
 } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
+const assert = require("../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../../lib/color/color-util");
 
 const imageSize = 30;
 
-const factionIcons = {
-    arborec: "global/factions/arborec_icon.png",
-    argent: "global/factions/argent_icon.png",
-    creuss: "global/factions/creuss_icon.png",
-    empyrean: "global/factions/empyrean_icon.png",
-    hacan: "global/factions/hacan_icon.png",
-    jolnar: "global/factions/jolnar_icon.png",
-    l1z1x: "global/factions/l1z1x_icon.png",
-    letnev: "global/factions/letnev_icon.png",
-    mahact: "global/factions/mahact_icon.png",
-    mentak: "global/factions/mentak_icon.png",
-    muaat: "global/factions/muaat_icon.png",
-    naalu: "global/factions/naalu_icon.png",
-    naazrokha: "global/factions/naazrokha_icon.png",
-    nekro: "global/factions/nekro_icon.png",
-    nomad: "global/factions/nomad_icon.png",
-    norr: "global/factions/norr_icon.png",
-    saar: "global/factions/saar_icon.png",
-    sol: "global/factions/sol_icon.png",
-    ul: "global/factions/ul_icon.png",
-    vuilraith: "global/factions/vuilraith_icon.png",
-    winnu: "global/factions/winnu_icon.png",
-    xxcha: "global/factions/xxcha_icon.png",
-    yin: "global/factions/yin_icon.png",
-    yssaril: "global/factions/yssaril_icon.png",
-};
-
 const techIcons = {
     unitUpgrade: {
-        color: new Color(1, 1, 1),
+        color: ColorUtil.colorFromHex("#ffffff"),
     },
     Red: {
-        color: new Color(1, 0, 0),
+        color: ColorUtil.colorFromHex("#cc0000"),
         activeIcon: "global/technology/warfare_tech_icon.png",
         disabledIcon: "global/technology/warfare_tech_disabled_icon.png",
     },
     Yellow: {
-        color: new Color(1, 1, 0),
+        color: ColorUtil.colorFromHex("#e5e500"),
         activeIcon: "global/technology/cybernetic_tech_icon.png",
         disabledIcon: "global/technology/cybernetic_tech_disabled_icon.png",
     },
     Green: {
-        color: new Color(0, 1, 0),
+        color: ColorUtil.colorFromHex("#008000"),
         activeIcon: "global/technology/biotic_tech_icon.png",
         disabledIcon: "global/technology/biotic_tech_disabled_icon.png",
     },
     Blue: {
-        color: new Color(0, 0, 1),
+        color: ColorUtil.colorFromHex("#3232ff"),
         activeIcon: "global/technology/propulsion_tech_icon.png",
         disabledIcon: "global/technology/propulsion_tech_disabled_icon.png",
     },
@@ -74,20 +50,35 @@ function drawTechButton(
     xOffset,
     yOffset,
     tech,
+    playerSlot,
     playerTechnologies,
     ownedTechnologies,
     packageId
 ) {
+    assert(typeof packageId === "string");
+
     let techButton = new Button()
         .setText(tech.name)
         .setTextColor(techIcons[tech.type].color)
         .setEnabled(!ownedTechnologies.includes(tech));
-    techButton.onClicked.add(onTechResearched);
+    techButton.onClicked.add((button, player) => {
+        const techName = button.getText();
+        onTechResearched(techName, playerSlot);
+    });
     canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
-    if (tech.faction) {
+    let factionNsidName = tech.faction;
+    if (tech.factions) {
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        factionNsidName = faction.nsidName;
+    }
+
+    if (factionNsidName) {
         let factionIcon = new ImageWidget()
-            .setImage(factionIcons[tech.faction], packageId)
+            .setImage(
+                world.TI4.getFactionByNsidName(factionNsidName).icon,
+                packageId
+            )
             .setImageSize(imageSize, imageSize);
         canvas.addChild(
             factionIcon,
@@ -142,12 +133,26 @@ const countPlayerTechsByType = (playerSlot) => {
     return playerTechnologies;
 };
 
-const onTechResearched = (button, player) => {
-    const technologyName = button.getText();
-    const playerSlot = player.getSlot();
+const onTechResearched = (technologyName, playerSlot) => {
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    const player = world.getPlayerBySlot(playerSlot);
+
     const technology = Technology.getTechnologies(playerSlot).find(
         (tech) => tech.name === technologyName
     );
+
+    if (technology.localeName == "strategy_card.technology.button.nekro") {
+        let messageKey = "strategy_card.technology.message.nekro";
+        let messageParameters = {
+            playerName: player ? player.getName() : playerDesk.colorName,
+        };
+        Broadcast.chatAll(
+            locale(messageKey, messageParameters),
+            playerDesk.color
+        );
+        return;
+    }
+
     const ownedTechnologies = countPlayerTechsByType(playerSlot);
     const skippedTechs = {};
 
@@ -162,7 +167,7 @@ const onTechResearched = (button, player) => {
 
     let messageKey = "strategy_card.technology.message.researched";
     let messageParameters = {
-        playerName: player.getName(),
+        playerName: player ? player.getName() : playerDesk.colorName,
         technologyName: technologyName,
         skips: "",
     };
@@ -185,13 +190,12 @@ const onTechResearched = (button, player) => {
         );
     }
 
-    Broadcast.chatAll(
-        locale(messageKey, messageParameters),
-        player.getPlayerColor()
-    );
+    Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
 };
 
 function widgetFactory(playerDesk, packageId) {
+    assert(typeof packageId === "string");
+
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -216,14 +220,17 @@ function widgetFactory(playerDesk, packageId) {
                 xOffset,
                 yOffset,
                 tech,
+                playerSlot,
                 playerTechnologies,
                 ownedTechnologies,
                 packageId
             );
 
-            if (Object.keys(tech.requirements).length > 0) {
-                yOffset += 15;
-            }
+            // Always add offset for consistent layout
+            //if (Object.keys(tech.requirements).length > 0) {
+            //   yOffset += 15;
+            //}
+            yOffset += 15;
 
             yOffset += 40;
         });
@@ -233,8 +240,9 @@ function widgetFactory(playerDesk, packageId) {
 
     technologies.unitUpgrade.forEach((tech, index) => {
         let techButton = new Button().setText(tech.name);
-        const xOffset = (index % 4) * 210;
-        const yOffset = yOffsetMax + 20 + Math.floor(index / 4) * 60;
+        const xOffset = (tech.unitPosition % 4) * 210;
+        const yOffset =
+            yOffsetMax + 20 + Math.floor(tech.unitPosition / 4) * 60;
         canvas.addChild(techButton, xOffset, yOffset, 200, 35);
 
         drawTechButton(
@@ -242,6 +250,7 @@ function widgetFactory(playerDesk, packageId) {
             xOffset,
             yOffset,
             tech,
+            playerSlot,
             playerTechnologies,
             ownedTechnologies,
             packageId
@@ -269,7 +278,7 @@ const calculateHeight = (playerSlot) => {
         .map((type) => technologies[type].length)
         .reduce((a, b) => Math.max(a, b));
     const unitUpgradeRows = Math.ceil(technologies.unitUpgrade.length / 4);
-    return (techRows + unitUpgradeRows) * 55 + 100;
+    return (techRows + unitUpgradeRows) * 55 + 130;
 };
 
 new RegisterStrategyCardUI()

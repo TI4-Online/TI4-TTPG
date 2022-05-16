@@ -44,6 +44,13 @@ it("codex2", () => {
     assert.equal(config.codex2, false);
 });
 
+it("codex3", () => {
+    const config = new GameSetupConfig();
+    assert.equal(config.codex3, true);
+    config.setCodex3(false);
+    assert.equal(config.codex3, false);
+});
+
 it("franken", () => {
     const config = new GameSetupConfig();
     assert.equal(config.franken, false);

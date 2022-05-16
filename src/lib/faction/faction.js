@@ -1,4 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const lodash = require("lodash");
+const { FactionSchema } = require("./faction.schema");
 const { ObjectNamespace } = require("../object-namespace");
 const { FACTION_DATA } = require("./faction.data");
 const { globalEvents, world } = require("../../wrapper/api");
@@ -18,6 +21,19 @@ function _maybeInit() {
     if (!_nsidNameToFaction) {
         _nsidNameToFaction = {};
         FACTION_DATA.forEach((factionAttrs) => {
+            // "merge" copies the named faction and applies local updates.
+            if (factionAttrs.merge) {
+                let newFactionAttrs = undefined;
+                for (const faction of FACTION_DATA) {
+                    if (faction.faction === factionAttrs.merge) {
+                        newFactionAttrs = lodash.cloneDeep(faction);
+                        delete newFactionAttrs.abstract;
+                        break;
+                    }
+                }
+                assert(newFactionAttrs);
+                factionAttrs = lodash.merge(newFactionAttrs, factionAttrs);
+            }
             const faction = new Faction(factionAttrs);
             _nsidNameToFaction[faction.raw.faction] = faction;
         });
@@ -60,6 +76,10 @@ function _maybeInit() {
                 throw new Error(`unknown faction from sheet "${nsid}"`);
             }
             _playerSlotToFaction[slot] = faction;
+
+            // Remember the last player slot associated with the faction.
+            // This breaks if more than one player is using this faction.
+            faction._playerSlot = slot;
         }
     }
 }
@@ -67,7 +87,19 @@ function _maybeInit() {
 class Faction {
     static getAllFactions() {
         _maybeInit();
-        return [...Object.values(_nsidNameToFaction)];
+        // Restrict to available factions.
+        return [...Object.values(_nsidNameToFaction)].filter((faction) => {
+            if (faction.nsidSource === "pok" && !world.TI4.config.pok) {
+                return false;
+            }
+            if (
+                faction.nsidSource === "codex.vigil" &&
+                !world.TI4.config.codex3
+            ) {
+                return false;
+            }
+            return true;
+        });
     }
 
     static getByPlayerSlot(playerSlot) {
@@ -82,6 +114,16 @@ class Faction {
         return _nsidNameToFaction[nsidName];
     }
 
+    static injectFaction(factionAttrs) {
+        assert(factionAttrs);
+        FactionSchema.validate(factionAttrs, (err) => {
+            throw new Error(`Faction.injectFaction schema error "${err}"`);
+        });
+        assert(Array.isArray(FACTION_DATA));
+        FACTION_DATA.push(factionAttrs);
+        _nsidNameToFaction = undefined;
+    }
+
     constructor(factionAttrs) {
         this._factionAttrs = factionAttrs;
     }
@@ -90,12 +132,36 @@ class Faction {
         return this._factionAttrs;
     }
 
+    get home() {
+        return this._factionAttrs.home;
+    }
+
     get nsidName() {
         return this._factionAttrs.faction;
     }
 
+    get icon() {
+        return this._factionAttrs.icon;
+    }
+
     get nsidSource() {
         return this._factionAttrs.source;
+    }
+
+    get nameAbbr() {
+        return locale("faction.abbr." + this.nsidName);
+    }
+
+    get nameFull() {
+        return locale("faction.full." + this.nsidName);
+    }
+
+    get homeNsid() {
+        return `tile.system:${this.nsidSource}/${this.home}`;
+    }
+
+    get playerSlot() {
+        return this._playerSlot;
     }
 }
 

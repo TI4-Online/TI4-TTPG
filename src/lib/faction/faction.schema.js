@@ -1,4 +1,4 @@
-const Ajv = require("../../wrapper/ajv-wrapper");
+const Ajv = require("ajv");
 
 const FACTION_SCHEMA = {
     type: "object",
@@ -8,6 +8,9 @@ const FACTION_SCHEMA = {
         // Locale keys "faction.abbr.{x}" and "faction.full.{x}".
         faction: { type: "string" },
         source: { type: "string" },
+
+        // Copy the merge faction, overlay this factionAttrs over it.
+        merge: { type: "string" },
 
         // Faction abilities, e.g. "fragile".
         // UnitModifier.triggerFactionAbility="{x}"
@@ -31,6 +34,9 @@ const FACTION_SCHEMA = {
         // Promissory notes e.g. "fires_of_the_gashlai".
         // Just NSID name ("card.promissory.muaat:base/fires_of_the_gashlai").
         promissoryNotes: { type: "array", items: { type: "string" } },
+
+        // Image file of the faction eg. "global/factions/muaat_icon.png"
+        icon: { type: "string" },
 
         // Faction tech, but not unit upgrades e.g. "magmus_reator".
         // Just NSID name ("card.technology.red.muaat:base/magmus_reator").
@@ -69,6 +75,7 @@ const FACTION_SCHEMA = {
             items: {
                 type: "object",
                 properties: {
+                    cardNsid: { type: "string" },
                     tokenNsid: { type: "string" }, // "token.wormhole.creuss:base/alpha"
                     tokenCount: { type: "integer" },
                     bagNsid: { type: "string" }, // optinal, if given make token bag

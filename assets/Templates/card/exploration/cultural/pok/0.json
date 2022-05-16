@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/exploration/cultural.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 4,
 	"NumVertical": 5,
 	"Width": 4.2,

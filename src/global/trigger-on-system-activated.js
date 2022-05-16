@@ -9,7 +9,6 @@
 const { globalEvents, world } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { Turns } = require("../lib/turns");
 const locale = require("../lib/locale");
 
 // Register a listener to report (as well as test) system activation.
@@ -24,14 +23,14 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
 });
 
 // Called when a player drops a command token.
-function onCommandTokenReleased(
+const onCommandTokenReleased = (
     obj,
     player,
     thrown,
     grabPosition,
     grabRotation
-) {
-    if (!Turns.isActivePlayer(player)) {
+) => {
+    if (!world.TI4.turns.isActivePlayer(player)) {
         return; // not the active player
     }
     if (player.getSlot() !== obj.getOwningPlayerSlot()) {
@@ -46,7 +45,7 @@ function onCommandTokenReleased(
     if (systemTile) {
         globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
     }
-}
+};
 
 // Add our listener to future objects.
 globalEvents.onObjectCreated.add((obj) => {

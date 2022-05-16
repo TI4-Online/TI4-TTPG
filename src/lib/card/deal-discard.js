@@ -127,12 +127,24 @@ class DealDiscard {
             : deckData.deckSnapPointIndex;
         const snapPoint = snapPoints[index];
 
+        if (index == -1) {
+            return; // asked for the discard pile when there is no discard pile
+        }
+        if (!snapPoint) {
+            throw new Error(
+                `_getDeck: no snap point [${index}] on "${nsidOrPrefix}"`
+            );
+        }
+
         // getSnappedObject isn't reliable.  Try, then fallback to cast.
         let deck = snapPoint.getSnappedObject();
+        if (!(deck instanceof Card)) {
+            deck = false; // non-card snapped?
+        }
         if (deck && deck.isInHolder()) {
             deck = false; // already dealt, but not moved yet
         }
-        if (!deck || !(deck instanceof Card)) {
+        if (!deck) {
             const pos = snapPoint.getGlobalPosition();
             const src = pos.subtract([0, 0, 50]);
             const dst = pos.add([0, 0, 50]);
@@ -277,10 +289,15 @@ class DealDiscard {
             return false;
         }
 
-        const fromFront = false; // "front" is bottom
-        const offset = 0;
-        const keep = false;
-        const card = deck.takeCards(count, fromFront, offset, keep);
+        let card;
+        if (deck.getStackSize() == 1) {
+            card = deck;
+        } else {
+            const fromFront = false; // "front" is bottom
+            const offset = 0;
+            const keep = false;
+            card = deck.takeCards(count, fromFront, offset, keep);
+        }
         card.setPosition(position, 1);
         card.setRotation(rotation, 1);
 
@@ -322,6 +339,59 @@ class DealDiscard {
             }
         }
 
+        // Return alliance to player.
+        if (nsid.startsWith("card.alliance")) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const factionNsidName = parsed.name.split(".")[0];
+            const faction = world.TI4.getFactionByNsidName(factionNsidName);
+            if (faction && faction.playerSlot) {
+                const count = 1;
+                const slots = [faction.playerSlot];
+                const faceDown = false;
+                const dealToAllHolders = true;
+                obj.deal(count, slots, faceDown, dealToAllHolders);
+                return true;
+            }
+        }
+
+        // Move faction reference and token cards back to decks.
+        if (
+            nsid.startsWith("card.faction_reference") ||
+            nsid.startsWith("card.faction_token")
+        ) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const type = parsed.type;
+            for (const candidate of world.getAllObjects()) {
+                if (candidate.getContainer()) {
+                    continue;
+                }
+                if (!(candidate instanceof Card)) {
+                    continue;
+                }
+                if (candidate.getStackSize() <= 1) {
+                    continue; // look for decks, not cards
+                }
+                const nsids = ObjectNamespace.getDeckNsids(candidate);
+                let found = true;
+                for (const candidateNsid of nsids) {
+                    if (!candidateNsid.startsWith(type)) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    // All cards in deck are of this type.  Hopefully it is the right one!
+                    obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                    const toFront = true;
+                    const offset = 0;
+                    const animate = true;
+                    const flipped = false;
+                    candidate.addCards(obj, toFront, offset, animate, flipped);
+                    return true;
+                }
+            }
+        }
+
         if (!DealDiscard.isKnownDeck(nsid)) {
             // Otherwise discard to a known deck.
             return false;
@@ -332,7 +402,8 @@ class DealDiscard {
         let deck = DealDiscard._getDeck(nsid, getDiscard);
         if (deck) {
             // Add to existing discard pile.
-            const toFront = false;
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            const toFront = true;
             const offset = 0;
             const animate = true;
             const flipped = false;
@@ -353,7 +424,7 @@ class DealDiscard {
             }
             const snapPoint = snapPoints[index];
             assert(snapPoint);
-            const pos = snapPoint.getGlobalPosition();
+            const pos = snapPoint.getGlobalPosition().add([0, 0, 5]);
             const yaw = snapPoint.getSnapRotation();
             const rot = new Rotator(0, yaw, roll).compose(parent.getRotation());
             deck.setPosition(pos, 1);

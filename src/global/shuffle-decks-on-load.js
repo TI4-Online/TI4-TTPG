@@ -1,4 +1,3 @@
-const assert = require("../wrapper/assert-wrapper");
 const { Broadcast } = require("../lib/broadcast");
 const { DealDiscard } = require("../lib/card/deal-discard");
 const locale = require("../lib/locale");
@@ -30,8 +29,11 @@ function shuffleAllDecks() {
         }
         //console.log(`shuffling ${deckNsidPrefix}`);
         const deck = DealDiscard.getDeckWithReshuffle(deckNsidPrefix);
-        assert(deck);
-        deck.shuffle();
+        if (deck) {
+            deck.shuffle();
+        } else {
+            console.error(`shuffleAllDecks: missing ${deckNsidPrefix}`);
+        }
         process.nextTick(shuffleNext);
     };
     shuffleNext();

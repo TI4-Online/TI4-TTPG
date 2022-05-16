@@ -26,6 +26,8 @@ class Player {
         return this._slot;
     }
 
+    setHandHolder(cardHolder) {}
+
     switchSlot(slot) {
         this._slot = slot;
     }

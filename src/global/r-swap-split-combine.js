@@ -2,11 +2,18 @@
  * Press the R key on a relevant object (potentially with other selected
  * objects) to swap, split, or combine.
  */
-const { Container, Rotator, globalEvents, world } = require("../wrapper/api");
+const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
 const { Facing } = require("../lib/facing");
 const { Spawn } = require("../setup/spawn/spawn");
-const locale = require("../lib/locale");
-const assert = require("../wrapper/assert-wrapper");
+const {
+    Container,
+    GameObject,
+    Player,
+    Rotator,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
 
 // NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {
@@ -203,44 +210,11 @@ function applyRule(objs, rule) {
     };
 }
 
-const _ignoreSet = new Set();
+function doSwapSplitCombine(objs, player) {
+    assert(Array.isArray(objs));
+    assert(player instanceof Player);
 
-function onR(obj, player) {
     const playerSlot = player.getSlot();
-
-    // Only seated players may use R.
-    let found = false;
-    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-        if (playerDesk.playerSlot === playerSlot) {
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
-        const msg = locale("ui.error.only_seated_players_may_r");
-        player.sendChatMessage(msg, [1, 0, 0]);
-        return;
-    }
-
-    // Careful, if multiple objects selected ALL get a separate call!
-    // Pressing "R" outside any selected object still calls for each.
-    // Process the group only for the first call, ignore others.
-    const guid = obj.getId();
-    if (_ignoreSet.has(guid)) {
-        _ignoreSet.delete(guid);
-        return;
-    }
-    for (const selectedObj of player.getSelectedObjects()) {
-        const selectedObjGuid = selectedObj.getId();
-        if (selectedObjGuid != guid) {
-            _ignoreSet.add(selectedObjGuid);
-        }
-    }
-
-    // Collect the objects to process.
-    let objs = player.getSelectedObjects();
-    objs = objs.length > 0 ? objs : [obj];
-
     // Discard any objects owned by another player (tokens always match).
     // All objects owned by a player should have owning player slot set.
     objs = objs.filter((obj) => {
@@ -293,7 +267,6 @@ function onR(obj, player) {
         const consumeBag = getBag(consumeNsid, playerSlot);
         if (isInfiniteContainer(consumeBag)) {
             // See global/patch-infinite-container.js
-            // consumeBag.addObjectsEnforceSingleton([obj], 0, true);
             // Instead of returning to infinite bag, destroy (no need to find closest).
             obj.destroy();
         } else {
@@ -305,7 +278,6 @@ function onR(obj, player) {
         let obj;
         if (isInfiniteContainer(produceBag)) {
             // See global/patch-infinite-container.js
-            // obj = produceBag.takeAtEnforceSingleton(0, pos, true);
             // Instead of taking from infinite bag, spawn (no need to find closest).
             obj = Spawn.spawn(match.produce.nsid, pos, new Rotator(0, 0, 0));
         } else {
@@ -313,6 +285,43 @@ function onR(obj, player) {
         }
         obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0]);
         pos = pos.add(obj.getExtent().multiply(2));
+    }
+}
+
+const _playerSlotToObjs = {};
+
+function onR(obj, player) {
+    assert(obj instanceof GameObject);
+    assert(player instanceof Player);
+
+    // Only seated players may use R.
+    const playerSlot = player.getSlot();
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    if (!playerDesk) {
+        const msg = locale("ui.error.only_seated_players_may_r");
+        player.sendChatMessage(msg, [1, 0, 0]);
+        return;
+    }
+
+    // Careful, if multiple objects selected ALL get a separate call!
+    // Pressing "R" outside any selected object still calls for each.
+    // Moreover, player.getSelectedObjects seems to fail for non-host?
+    // Queue objects individually, process gathered set next frame.
+    let objs = _playerSlotToObjs[playerSlot];
+    let needsProcessing = false;
+    if (!objs) {
+        objs = [];
+        _playerSlotToObjs[playerSlot] = objs;
+        needsProcessing = true;
+    }
+    objs.push(obj);
+
+    if (needsProcessing) {
+        process.nextTick(() => {
+            const objs = _playerSlotToObjs[playerSlot];
+            delete _playerSlotToObjs[playerSlot];
+            doSwapSplitCombine(objs, player);
+        });
     }
 }
 

@@ -1,15 +1,18 @@
-const assert = require("assert");
+const assert = require("../wrapper/assert-wrapper");
 const Dice = require("./mock-dice");
+const CardHolder = require("./mock-card-holder");
 const GameObject = require("./mock-game-object");
 const Player = require("./mock-player");
 const UIElement = require("./mock-ui-element");
+const Zone = require("./mock-zone");
 
 class GameWorld {
     constructor(data) {
         this._allObjects = data ? data.allObjects : [];
         this._allPlayers = data ? data.allPlayers : [];
-        this._tableHeight = data ? data.tableHeight : 1;
+        this._drawingLines = data ? data.drawingLines : [];
         this._savedData = data ? data.savedData : "";
+        this._tableHeight = data ? data.tableHeight : 1;
         this._uis = data && data.uis ? data.uis : [];
     }
 
@@ -34,13 +37,21 @@ class GameWorld {
     }
 
     __clear() {
+        this._allObjects.forEach((obj) => {
+            obj.destroy(); // mark as not valid
+        });
         this._allObjects = [];
         this._allPlayers = [];
+        this._drawingLines = [];
         this._uis = [];
     }
 
     static getExecutionReason() {
         return "ScriptReload";
+    }
+
+    addDrawingLine(value) {
+        this._allDrawingLines.push(value);
     }
 
     addUI(uiElement) {
@@ -55,13 +66,23 @@ class GameWorld {
 
     createObjectFromTemplate(templateId, position) {
         let result;
-        if (templateId === "9065AC5141F87F8ADE1F5AB6390BBEE4") {
-            result = new Dice();
-        } else {
-            result = new GameObject();
+        switch (templateId) {
+            case "9065AC5141F87F8ADE1F5AB6390BBEE4":
+                result = new Dice();
+                break;
+            case "2E3F63984DBE5B704482D3A732F28BF5":
+            case "BFC565AE79373881585937D70241A1DF":
+                result = new CardHolder();
+                break;
+            default:
+                result = new GameObject();
         }
         result.setPosition(position);
         return result;
+    }
+
+    createZone(position) {
+        return new Zone();
     }
 
     getAllObjects() {
@@ -70,6 +91,14 @@ class GameWorld {
 
     getAllPlayers() {
         return this._allPlayers;
+    }
+
+    getAllZones() {
+        return [];
+    }
+
+    getDrawingLines() {
+        return this._drawingLines;
     }
 
     // TTPG exposes this both static and per-instance.
@@ -113,6 +142,14 @@ class GameWorld {
             }
         }
         return result;
+    }
+
+    nextTurn() {}
+
+    previousTurn() {}
+
+    removeDrawingLine(index) {
+        this._drawingLines.splice(index, 1);
     }
 
     removeUI(index) {

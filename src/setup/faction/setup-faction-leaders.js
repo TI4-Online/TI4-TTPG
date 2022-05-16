@@ -3,7 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
-const { Card, Rotator, Vector } = require("../../wrapper/api");
+const { Card, Rotator, Vector, world } = require("../../wrapper/api");
 
 const LEADERS = {
     agent: {
@@ -32,6 +32,10 @@ class SetupFactionLeaders extends AbstractSetup {
     }
 
     setup() {
+        if (!world.TI4.config.pok) {
+            return;
+        }
+
         // Arbitrary, will move to leader sheet later.
         const pos = this.playerDesk.pos.add([0, 0, 5]);
         const rot = this.playerDesk.rot;
@@ -61,14 +65,20 @@ class SetupFactionLeaders extends AbstractSetup {
 
     clean() {
         const acceptNames = this._getLeaderNsidNames();
-        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+        const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
             if (!nsid.startsWith("card.leader")) {
+                return false;
+            }
+            const pos = cardOrDeck.getPosition();
+            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (closestDesk !== this.playerDesk) {
                 return false;
             }
             const parsed = ObjectNamespace.parseNsid(nsid);
             return acceptNames.has(parsed.name);
         });
         for (const card of cards) {
+            card.setTags(["DELETED_ITEMS_IGNORE"]);
             card.destroy();
         }
     }

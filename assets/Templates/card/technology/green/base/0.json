@@ -38,7 +38,7 @@
 	"BackTexture": "global/card/technology/green.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
-	"HiddenIndex": 0,
+	"HiddenIndex": -3,
 	"NumHorizontal": 5,
 	"NumVertical": 3,
 	"Width": 6.3,

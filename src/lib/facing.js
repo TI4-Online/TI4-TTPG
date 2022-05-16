@@ -1,3 +1,5 @@
+const { Card } = require("../wrapper/api");
+
 /**
  * TTPG doesn't have GameObject.isFaceUp.
  * DO NOT USE THIS ON CARDS!  Use `Card.isFaceUp()`.
@@ -11,6 +13,10 @@ class Facing {
     }
 
     static isFaceUp(obj) {
+        if (obj instanceof Card) {
+            return obj.isFaceUp();
+        }
+
         // roll is 0 for faceup, -180 or 180 when flipped.
         let roll = obj.getRotation().roll % 360; // [-360:360]
         roll = (roll + 360) % 360; // [0:360]
