@@ -7,6 +7,13 @@ function consider(player, message) {
     assert(player instanceof Player);
     assert(typeof message === "string");
 
+    // Game timestamp.
+    if (message === "!timestamp") {
+        const timestamp = world.TI4.config.timestamp;
+        Broadcast.chatAll(`${timestamp}`);
+        return;
+    }
+
     // Shortcut for TI4 streamer buddy.
     if (message === "!buddy") {
         consider(player, "!gamedata buddy");
