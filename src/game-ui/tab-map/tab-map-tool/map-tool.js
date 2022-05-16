@@ -1,5 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { DealDiscard } = require("../../../lib/card/deal-discard");
+const { Hex } = require("../../../lib/hex");
 const { Hyperlane } = require("../../../lib/map-string/hyperlane");
 const { MapStringLoad } = require("../../../lib/map-string/map-string-load");
 const { MapStringSave } = require("../../../lib/map-string/map-string-save");
@@ -220,7 +221,8 @@ class MapTool {
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
             if (system.planets.length === 0 && !system.hyperlane) {
-                emptyPositions.push(obj.getPosition().add([0, 0, 1]));
+                const dy = -2.5 * Hex.SCALE;
+                emptyPositions.push(obj.getPosition().add([0, dy, 1]));
             }
         }
 

@@ -3,6 +3,7 @@ const Dice = require("./mock-dice");
 const CardHolder = require("./mock-card-holder");
 const GameObject = require("./mock-game-object");
 const Player = require("./mock-player");
+const Sound = require("./mock-sound");
 const UIElement = require("./mock-ui-element");
 const Zone = require("./mock-zone");
 
@@ -126,6 +127,10 @@ class GameWorld {
 
     getUIs() {
         return this._uis;
+    }
+
+    importSound(path, packageId, useCache) {
+        return new Sound();
     }
 
     lineTrace(src, dst) {

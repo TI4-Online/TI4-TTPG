@@ -175,6 +175,7 @@ require("./global/gamedata-key");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
+require("./global/on-turn-changed-sound");
 require("./global/patch-infinite-container");
 require("./global/planet-card-attachments");
 require("./global/r-swap-split-combine");

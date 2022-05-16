@@ -101,6 +101,7 @@ passButton.onClicked = (btn, player) => {
     const newValue = !getPass();
     setPass(newValue);
     if (newValue) {
+        // Announce pass.
         const playerSlot = obj.getOwningPlayerSlot();
         const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
@@ -108,6 +109,12 @@ passButton.onClicked = (btn, player) => {
         const color = playerDesk ? playerDesk.color : player.getPlayerColor();
         const msg = locale("ui.message.player_pass", { playerName });
         Broadcast.broadcastAll(msg, color);
+
+        // Since this was a player click, also end turn.
+        const currentDesk = TP.world.TI4.turns.getCurrentTurn();
+        if (currentDesk === playerDesk) {
+            TP.world.TI4.turns.endTurn(player);
+        }
     }
 };
 

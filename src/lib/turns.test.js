@@ -220,3 +220,46 @@ it("snake", () => {
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
 });
+
+it("getAllStatusPads", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks();
+
+    const mockStatusPad = new MockGameObject({
+        templateMetadata: "pad:base/status",
+        owningPlayerSlot: playerDesks[1].playerSlot,
+    });
+    mockStatusPad.__getPass = () => {
+        return true;
+    };
+
+    world.__clear();
+    world.__addObject(mockStatusPad);
+
+    const all = world.TI4.turns.getAllStatusPads();
+    world.__clear();
+
+    assert.equal(all.length, 1);
+    assert.equal(all[0], mockStatusPad);
+});
+
+it("getAllStatusPad", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks();
+
+    const mockStatusPad = new MockGameObject({
+        templateMetadata: "pad:base/status",
+        owningPlayerSlot: playerDesks[1].playerSlot,
+    });
+    mockStatusPad.__getPass = () => {
+        return true;
+    };
+
+    world.__clear();
+    world.__addObject(mockStatusPad);
+
+    const padNo = world.TI4.turns.getStatusPad(-1);
+    const padYes = world.TI4.turns.getStatusPad(playerDesks[1].playerSlot);
+    world.__clear();
+
+    assert.equal(padNo, undefined);
+    assert.equal(padYes, mockStatusPad);
+});

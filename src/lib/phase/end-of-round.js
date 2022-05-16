@@ -402,14 +402,7 @@ class EndStatusPhase {
     }
 
     static resetPassedFlags(player) {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== "pad:base/status") {
-                continue;
-            }
+        for (const obj of world.TI4.turns.getAllStatusPads()) {
             obj.__setPass(false);
         }
     }

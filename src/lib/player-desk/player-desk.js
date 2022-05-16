@@ -20,6 +20,7 @@ const {
     world,
 } = require("../../wrapper/api");
 const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
+const { FactionToken } = require("../faction/faction-token");
 
 const TAKE_SEAT_CAMERA = {
     pos: { x: -90, y: 0, z: 70 },
@@ -366,6 +367,12 @@ class PlayerDesk {
                 this.resetUI();
             },
             onSetupFaction: (button, player) => {
+                if (!FactionToken.getByPlayerDesk(this)) {
+                    // No faction token, show faction selector.
+                    // TODO XXX
+                    // For now fall through and unpack a random one.
+                }
+                // Have a faction token, use it.
                 this._factionSetupInProgress = true;
                 const onFinished = () => {
                     this._factionSetupInProgress = false;
