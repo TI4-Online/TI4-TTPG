@@ -50,23 +50,6 @@ const KEY_DELAY_MSECS = 45 * 1000;
 const TI4_STREAMER_BUDDY_KEY = "buddy";
 const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 5 * 1000;
 
-const REQUIRED_COLORS = [
-    "White",
-    "Blue",
-    "Purple",
-    "Yellow",
-    "Red",
-    "Green",
-    "Pink",
-    "Orange",
-];
-
-// TIER 1:
-// score
-// objectives
-// TIER 2:
-// tech
-
 /**
  * Periodic upload of (normally) anonymized game state.
  * When used with streamer mode will include player names.
@@ -89,6 +72,7 @@ class GameData {
         this._extraData = false;
 
         this._lastPostString = false;
+        this._history = [];
 
         // Update on game end (throttle).
         this._onGameEndLastSendTimestamp = 0;
@@ -171,6 +155,7 @@ class GameData {
      */
     setStreamerOverlayKey(key) {
         assert(!key || (typeof key === "string" && key.length > 0));
+        assert(!key || key.length < 32); // cap length
         this._key = key;
         return this;
     }
@@ -205,6 +190,7 @@ class GameData {
             updator(data);
         }
 
+        this._maybeUpdateHistory(data);
         this._post(data, endpoint);
     }
 
@@ -225,6 +211,7 @@ class GameData {
             }
             const updator = updators.shift();
             if (!updator) {
+                this._maybeUpdateHistory(data);
                 this._post(data, endpoint);
                 return;
             }
@@ -249,13 +236,6 @@ class GameData {
             platform: "ttpg",
         };
 
-        // Root's overlay requires colors in order.  Give "required" color
-        // as well as actual color.
-        data.players.forEach((playerData, index) => {
-            playerData.actualColor = playerData.color;
-            playerData.color = REQUIRED_COLORS[index];
-        });
-
         // Streamer data includes player names.
         if (this._key) {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -268,6 +248,43 @@ class GameData {
             data.extra = this._extraData;
         }
         return data;
+    }
+
+    _maybeUpdateHistory(data) {
+        const round = data.round;
+        assert(typeof round === "number");
+
+        let prevRound = 0; // start history with round 1
+        if (this._history.length > 0) {
+            const prev = this._history[this._history.length - 1];
+            prevRound = prev.round;
+        }
+        if (round > prevRound) {
+            // Make a copy, strip out and/or condense some values.
+            const copy = JSON.parse(JSON.stringify(data));
+            delete copy.config;
+            delete copy.isFranken;
+            delete copy.isPoK;
+            delete copy.mapString;
+            delete copy.objectives;
+            delete copy.platform;
+            delete copy.setup;
+            delete copy.scoreboard;
+            delete copy.turn;
+            for (const playerData of copy.players) {
+                delete playerData.steamName;
+                delete playerData.factionName;
+                delete playerData.factionShort;
+                delete playerData.team;
+                delete playerData.active;
+                delete playerData.strategyCardsFaceDown;
+                playerData.technologies = playerData.technologies.length;
+            }
+            this._history.push(copy);
+        }
+
+        // Add to record.
+        data.history = this._history;
     }
 
     _getUrl(endpoint) {

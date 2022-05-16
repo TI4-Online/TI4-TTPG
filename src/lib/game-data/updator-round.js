@@ -1,5 +1,5 @@
 const { ObjectNamespace } = require("../object-namespace");
-const { world } = require("../../wrapper/api");
+const { Card, world } = require("../../wrapper/api");
 
 /**
  * Reading objects on snap points says not to trust it.  Use bounding boxes.
@@ -37,6 +37,12 @@ module.exports = (data) => {
         let count = 0;
         const extent = mat.getExtent();
         for (const card of cards) {
+            if (!(card instanceof Card)) {
+                continue;
+            }
+            if (!card.isFaceUp()) {
+                continue;
+            }
             let pos = card.getPosition();
             pos = mat.worldPositionToLocal(pos);
             if (Math.abs(pos.x) < extent.x && Math.abs(pos.y) < extent.y) {
