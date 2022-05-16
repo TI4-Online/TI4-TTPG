@@ -320,6 +320,7 @@ class GameData {
         // Post.
         const url = this._getUrl(endpoint);
         const fetchOptions = {
+            headers: { "Content-type": "application/json;charset=UTF-8" },
             body: JSON.stringify(data),
             method: "POST",
         };
