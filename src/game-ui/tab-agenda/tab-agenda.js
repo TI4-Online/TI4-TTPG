@@ -18,23 +18,6 @@ const {
 } = require("../../wrapper/api");
 
 class TabAgenda {
-    static getStatusPad(playerDesk) {
-        const playerSlot = playerDesk.playerSlot;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== "pad:base/status") {
-                continue;
-            }
-            if (obj.getOwningPlayerSlot() != playerSlot) {
-                continue;
-            }
-            return obj;
-        }
-    }
-
     constructor() {
         this._widget = new LayoutBox();
         this._stateMachine = undefined;
@@ -81,10 +64,7 @@ class TabAgenda {
             this.updateUI();
 
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const statusPad = TabAgenda.getStatusPad(playerDesk);
-                if (statusPad.__getPass()) {
-                    statusPad.__setPass(false);
-                }
+                world.TI4.turns.setPassed(playerDesk.playerSlot, false);
             }
         });
 
@@ -102,10 +82,7 @@ class TabAgenda {
                     (this._stateMachine.main === "AFTER.MAIN" &&
                         this._noAftersSet.has(index))
                 ) {
-                    const statusPad = TabAgenda.getStatusPad(currentDesk);
-                    if (!statusPad.__getPass()) {
-                        statusPad.__setPass(true);
-                    }
+                    world.TI4.turns.setPassed(currentDesk.playerSlot, true);
                     world.TI4.turns.endTurn();
                 }
 
@@ -490,11 +467,10 @@ class TabAgenda {
                             this._stateMachine &&
                             this._stateMachine.main === "WHEN.MAIN"
                         ) {
-                            const statusPad =
-                                TabAgenda.getStatusPad(playerDesk);
-                            if (!statusPad.__getPass()) {
-                                statusPad.__setPass(true);
-                            }
+                            world.TI4.turns.setPassed(
+                                playerDesk.playerSlot,
+                                true
+                            );
                             world.TI4.turns.endTurn();
                         }
                     }
@@ -514,11 +490,10 @@ class TabAgenda {
                             this._stateMachine &&
                             this._stateMachine.main === "AFTER.MAIN"
                         ) {
-                            const statusPad =
-                                TabAgenda.getStatusPad(playerDesk);
-                            if (!statusPad.__getPass()) {
-                                statusPad.__setPass(true);
-                            }
+                            world.TI4.turns.setPassed(
+                                playerDesk.playerSlot,
+                                true
+                            );
                             world.TI4.turns.endTurn();
                         }
                     }
@@ -558,10 +533,7 @@ class TabAgenda {
                 ).attach();
                 this._deskUIs.push(deskVote);
                 deskVote.commitButton.onClicked.add((button, player) => {
-                    const statusPad = TabAgenda.getStatusPad(playerDesk);
-                    if (!statusPad.__getPass()) {
-                        statusPad.__setPass(true);
-                    }
+                    world.TI4.turns.setPassed(playerDesk.playerSlot, true);
                     world.TI4.turns.endTurn();
                 });
             }

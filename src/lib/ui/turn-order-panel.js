@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Border,
     Button,
@@ -67,16 +66,9 @@ class TurnOrderPanel extends VerticalBox {
         const playerDeskOrder = world.TI4.turns.getTurnOrder();
         assert(Array.isArray(playerDeskOrder));
 
-        // Get passed players.
+        // Get passed players.  This is a single world scan vs once per player.
         const passedPlayerSlotSet = new Set();
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== "pad:base/status") {
-                continue;
-            }
+        for (const obj of world.TI4.turns.getAllStatusPads()) {
             const playerSlot = obj.getOwningPlayerSlot();
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
             if (!playerDesk) {

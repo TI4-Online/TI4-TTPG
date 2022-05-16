@@ -120,7 +120,9 @@ class Turns {
             turnOrder: colorOrder.join(", "),
         });
         Broadcast.chatAll(msg);
-        console.log(`Turns.setTurnOrder: ${msg} snake=${this._isSnake}`);
+        if (!world.__isMock) {
+            console.log(`Turns.setTurnOrder: ${msg} snake=${this._isSnake}`);
+        }
 
         // Update persistent state *before* event.
         if (this._persistent) {
@@ -310,6 +312,59 @@ class Turns {
         const playerSlot = player.getSlot();
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         return this._currentTurn === playerDesk;
+    }
+
+    getStatusPad(playerSlot) {
+        assert(typeof playerSlot === "number");
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "pad:base/status") {
+                continue;
+            }
+            if (obj.getOwningPlayerSlot() != playerSlot) {
+                continue;
+            }
+            return obj;
+        }
+    }
+
+    getAllStatusPads() {
+        const result = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "pad:base/status") {
+                continue;
+            }
+            result.push(obj);
+        }
+        return result;
+    }
+
+    getPassed(playerSlot) {
+        assert(typeof playerSlot === "number");
+        const statusPad = this.getStatusPad(playerSlot);
+        if (!statusPad) {
+            return false;
+        }
+        return statusPad.__getPass();
+    }
+
+    setPassed(playerSlot, value) {
+        assert(typeof playerSlot === "number");
+        const statusPad = this.getStatusPad(playerSlot);
+        if (!statusPad) {
+            return;
+        }
+        if (statusPad.__getPass() === value) {
+            return;
+        }
+        statusPad.__setPass(value);
     }
 }
 
