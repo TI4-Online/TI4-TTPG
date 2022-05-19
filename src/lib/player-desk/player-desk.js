@@ -603,14 +603,6 @@ class PlayerDesk {
         this._plasticColor = dstPlasticColorTint;
         this._playerSlot = dstPlayerSlot;
 
-        // Desks are reset. Move players to desks.
-        if (srcPlayer) {
-            srcPlayer.switchSlot(dstPlayerSlot);
-        }
-        if (dstPlayer) {
-            dstPlayer.switchSlot(srcPlayerSlot);
-        }
-
         // Recreate initial setup/faction state.
         if (srcSetup) {
             new PlayerDeskSetup(this).setupGeneric();
@@ -623,6 +615,15 @@ class PlayerDesk {
         }
         if (dstFaction) {
             new PlayerDeskSetup(swapWith).setupFaction();
+        }
+
+        // Desks are reset. Move players to desks.
+        // DO THIS AFTER RECREATING so hand has owner before player sits.
+        if (srcPlayer) {
+            srcPlayer.switchSlot(dstPlayerSlot);
+        }
+        if (dstPlayer) {
+            dstPlayer.switchSlot(srcPlayerSlot);
         }
 
         this.resetUI();
