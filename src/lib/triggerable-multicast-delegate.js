@@ -15,9 +15,7 @@ class TriggerableMulticastDelegate {
     constructor(exceptionHandler) {
         assert(!exceptionHandler || typeof exceptionHandler === "function");
         this._delegates = [];
-        this._exceptionHandler = exceptionHandler
-            ? exceptionHandler
-            : console.warn;
+        this._exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -66,7 +64,11 @@ class TriggerableMulticastDelegate {
             try {
                 f(...args);
             } catch (exception) {
-                this._exceptionHandler(exception);
+                if (this._exceptionHandler) {
+                    this._exceptionHandler(exception);
+                } else {
+                    console.warn(exception.stack);
+                }
             }
         }
     }

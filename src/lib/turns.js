@@ -366,6 +366,14 @@ class Turns {
         }
         statusPad.__setPass(value);
     }
+
+    clearAllPassed() {
+        for (const statusPad of this.getAllStatusPads()) {
+            if (statusPad.__getPass()) {
+                statusPad.__setPass(false);
+            }
+        }
+    }
 }
 
 module.exports = {

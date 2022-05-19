@@ -86,15 +86,25 @@ class AgendaLawsMat {
     }
 
     _triggerEvent() {
-        const agendaCards = this._zone.getOverlappingObjects().filter((obj) => {
+        let agendaCards = this._zone.getOverlappingObjects();
+        if (!agendaCards) {
+            return;
+        }
+
+        agendaCards = agendaCards.filter((obj) => {
             const nsid = ObjectNamespace.getNsid(obj);
             return nsid.startsWith("card.agenda");
         });
-        if (agendaCards.length <= 1) {
-            const agendaCard = agendaCards[0]; // might be undefined
-            //console.log(`AgendaLawsMat.onAgendaChanged ${agendaCard}`);
-            globalEvents.TI4.onAgendaChanged.trigger(agendaCard);
+        if (agendaCards.length > 1) {
+            return;
         }
+
+        const agendaCard = agendaCards[0];
+        const nsid = agendaCard
+            ? ObjectNamespace.getNsid(agendaCard)
+            : "<none>";
+        console.log(`AgendaLawsMat.onAgendaChanged ${nsid}`);
+        globalEvents.TI4.onAgendaChanged.trigger(agendaCard);
     }
 }
 

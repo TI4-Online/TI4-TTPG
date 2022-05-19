@@ -78,13 +78,18 @@ class GameUI {
     createNopeZone() {
         const anchor = TableLayout.anchor.gameUI;
 
+        const zoneHeight = 0.5;
         const zonePos = new Vector(
             anchor.pos.x,
             anchor.pos.y,
-            world.getTableHeight() + 1
+            world.getTableHeight() + zoneHeight / 2
         );
         const zoneRot = new Rotator(0, anchor.yaw, 0);
-        const zoneScale = new Vector(anchor.height / 10, anchor.width / 10, 2);
+        const zoneScale = new Vector(
+            anchor.height / 10,
+            anchor.width / 10,
+            zoneHeight
+        );
         const zone = world.createZone(zonePos);
         zone.setSavedData("game-ui-nope-zone");
         zone.setRotation(zoneRot);

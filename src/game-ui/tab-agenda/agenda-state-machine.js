@@ -17,23 +17,23 @@ const STATES = {
     },
     WHEN: {
         main: "WHEN.MAIN",
-        desk: "WHEN-AFTER.DESK",
+        desk: "WHEN-AFTER-VOTE.DESK",
         next: "AFTER",
     },
     AFTER: {
         main: "AFTER.MAIN",
-        desk: "WHEN-AFTER.DESK",
+        desk: "WHEN-AFTER-VOTE.DESK",
         next: "VOTE",
     },
     VOTE: {
         main: "VOTE.MAIN",
-        desk: "VOTE.DESK",
-        next: "POST",
+        desk: "WHEN-AFTER-VOTE.DESK",
+        next: "FINISH", // skip the post window, let players handle it
     },
     POST: {
         // bribery window
         main: "POST.MAIN",
-        desk: "VOTE.DESK",
+        desk: "WHEN-AFTER-VOTE.DESK",
         next: "FINISH",
     },
     FINISH: {

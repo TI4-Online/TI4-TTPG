@@ -44,7 +44,13 @@ class PlayerDeskPlayerNameUI {
 
         this._update();
         this._eventHandler = () => {
-            this._update();
+            if (!world.__isMock) {
+                // Let other handlers finish, system process.  When a player
+                // joins they may not have a name yet.
+                process.nextTick(() => {
+                    this._update();
+                });
+            }
         };
     }
 
