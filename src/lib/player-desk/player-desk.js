@@ -66,6 +66,7 @@ function moveNewPlayerToNonSeatSlot(player) {
 
 // ----------------------------------------------------------------------------
 
+/* DISABLE THIS FOR NOW, MAY BE INTERFERING WITH TTPG JOIN HANDLING
 // Bounce joining players to unseated.
 globalEvents.onPlayerJoined.add((player) => {
     // Wait a tick to make sure player is fully set up.
@@ -73,6 +74,7 @@ globalEvents.onPlayerJoined.add((player) => {
         moveNewPlayerToNonSeatSlot(player);
     });
 });
+*/
 
 // Release seat when someone leaves.
 globalEvents.onPlayerLeft.add((player) => {
