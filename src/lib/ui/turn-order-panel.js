@@ -22,7 +22,13 @@ class TurnOrderPanel extends VerticalBox {
         this._fontSize = undefined;
 
         const update = () => {
-            this.update();
+            // Let other handlers finish, system process.  When a player joins
+            // they may not have a name yet.
+            if (!world.__isMock) {
+                process.nextTick(() => {
+                    this.update();
+                });
+            }
         };
 
         // Register listeners.
