@@ -281,7 +281,7 @@ class AgendaUiDesk extends Border {
             this._createOutcomesWidget(outcomeNames, outcomeNamesMutable)
         );
         this._lockVoteButton = new Button()
-            .setFontSize(CONFIG.fontSize)
+            .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.lock_vote"));
         this._lockVoteButton.onClicked.add((button, player) => {
             this._voteLocked = !this._voteLocked;
