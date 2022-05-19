@@ -19,19 +19,19 @@ it("transitions", () => {
 
     asm.next();
     assert.equal(asm.main, "WHEN.MAIN");
-    assert.equal(asm.desk, "WHEN-AFTER.DESK");
+    assert.equal(asm.desk, "WHEN-AFTER-VOTE.DESK");
 
     asm.next();
     assert.equal(asm.main, "AFTER.MAIN");
-    assert.equal(asm.desk, "WHEN-AFTER.DESK");
+    assert.equal(asm.desk, "WHEN-AFTER-VOTE.DESK");
 
     asm.next();
     assert.equal(asm.main, "VOTE.MAIN");
-    assert.equal(asm.desk, "VOTE.DESK");
+    assert.equal(asm.desk, "WHEN-AFTER-VOTE.DESK");
 
-    asm.next();
-    assert.equal(asm.main, "POST.MAIN");
-    assert.equal(asm.desk, "VOTE.DESK");
+    //asm.next();
+    //assert.equal(asm.main, "POST.MAIN");
+    //assert.equal(asm.desk, "WHEN-AFTER-VOTE.DESK");
 
     asm.next();
     assert.equal(asm.main, "FINISH.MAIN");
