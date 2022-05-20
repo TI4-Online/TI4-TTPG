@@ -137,6 +137,8 @@ class GameObject {
         });
     }
 
+    setHiddenCardsType(value) {}
+
     setName(value) {
         this._name = value;
     }
@@ -144,6 +146,8 @@ class GameObject {
     setObjectType(value) {
         this._objectType = value;
     }
+
+    setOnlyOwnerTakesCards(value) {}
 
     setOwningPlayerSlot(value) {
         this._owningPlayerSlot = value;
