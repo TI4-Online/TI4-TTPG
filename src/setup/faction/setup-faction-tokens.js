@@ -63,13 +63,25 @@ class SetupFactionTokens extends AbstractSetup {
         deleSet.add(
             `token.control:${this.faction.nsidSource}/${this.faction.nsidName}`
         );
+
+        // Delete tokens first (may be inside bags).
+        for (const obj of world.getAllObjects()) {
+            if (obj.getOwningPlayerSlot() !== playerSlot) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!deleSet.has(nsid)) {
+                continue;
+            }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
+        }
+
+        // Now delete bags.
         deleSet.add(`bag.token.command:base/*`);
         deleSet.add(`bag.token.control:base/*`);
 
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
             if (obj.getOwningPlayerSlot() !== playerSlot) {
                 continue;
             }
