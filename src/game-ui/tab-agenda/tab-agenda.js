@@ -331,17 +331,19 @@ class TabAgenda {
                 break;
             case "FINISH.MAIN":
                 summary = AgendaUiDesk.summarizeVote(this._deskUIs);
+                summary = locale("ui.agenda.clippy.outcome", {
+                    outcome: summary,
+                });
                 this._stateMachine = undefined;
                 this.updateDeskUI();
                 this._widget.setChild(
                     AgendaUiMain.simpleButton(
-                        locale("ui.agenda.clippy.outcome", {
-                            outcome: summary,
-                        }),
+                        summary,
                         locale("ui.agenda.clippy.reset_cards"),
                         onResetPlanetCards
                     )
                 );
+                Broadcast.chatAll(summary);
                 break;
             default:
                 throw new Error(`unknown state "${this._stateMachine.main}"`);
