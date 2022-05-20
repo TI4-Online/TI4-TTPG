@@ -382,7 +382,7 @@ class Turns {
     }
 }
 
-if (world.getExecutionReason() === "ScriptReload") {
+if (world.getExecutionReason() === "ScriptReload" && !world.__isMock) {
     process.nextTick(() => {
         const turns = world.TI4.turns;
         const order = turns.getTurnOrder().map((desk) => {

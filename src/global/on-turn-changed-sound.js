@@ -7,8 +7,6 @@ const SOUND_ASSET = "beep_ramp_up.wav";
 let _sound = undefined;
 
 function playTurnChangedSound() {
-    console.log("playTurnChangedSound");
-
     if (!_sound) {
         _sound = world.importSound(SOUND_ASSET, refPackageId);
         assert(_sound);
