@@ -226,6 +226,7 @@ class HexItems {
         assert(obj instanceof GameObject);
 
         const nsid = ObjectNamespace.getNsid(obj);
+
         const typeAndCode = ATTACHMENT_NSID_TO_TYPE_AND_CODE[nsid];
         if (!typeAndCode) {
             return;
@@ -331,8 +332,8 @@ class HexItems {
         result.push(`${tile}${ab}${rot}`);
 
         const pos = this._systemTileObj.getPosition();
-        const scaleW = Hex.HALF_SIZE;
-        const scaleH = Hex.HALF_SIZE * (Math.sqrt(3) / 3);
+        const scaleW = (Hex.HALF_SIZE * Math.sqrt(3)) / 2;
+        const scaleH = Hex.HALF_SIZE * Math.sqrt(3);
         const y = Math.round(pos.x / scaleW);
         const x = Math.round(pos.y / scaleH);
         result.push(`${x >= 0 ? "+" : ""}${x}${y >= 0 ? "+" : ""}${y}`);
