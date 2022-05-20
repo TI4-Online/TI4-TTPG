@@ -9,7 +9,7 @@ function updateMyColor() {
     const myDeskIndex = ObjectSavedData.get(refObject, DESK_INDEX_KEY, -1);
     const playerDesk = world.TI4.getAllPlayerDesks()[myDeskIndex];
     if (playerDesk) {
-        refObject.setPrimaryColor(playerDesk.color);
+        refObject.setSecondaryColor(playerDesk.color);
     }
 }
 

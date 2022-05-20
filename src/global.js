@@ -171,6 +171,7 @@ world.TI4 = {
 
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
+require("./global/chat-commands");
 require("./global/gamedata-key");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");

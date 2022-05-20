@@ -36,7 +36,16 @@ class Mirage extends AbstractSystemAttachment {
     }
 
     place(system, planet, systemTileObj) {
-        const mirage = new Planet(MIRAGE_ATTRS, system);
+        const planetIndex = 0;
+        const planetPos = { x: -2, y: 1 };
+        const planetRadius = 2;
+        const mirage = new Planet(
+            MIRAGE_ATTRS,
+            system,
+            planetIndex,
+            planetPos,
+            planetRadius
+        );
         system.planets.push(mirage);
 
         // place and lock the mirage token in the right location
@@ -74,6 +83,9 @@ class Mirage extends AbstractSystemAttachment {
     remove(system, planet, systemTileObj) {
         // mirage only goes in 0 planet systems so removing the first planet
         // will remove mirage
+        if (system.planets.length === 0) {
+            return; // something is wrong, abort
+        }
         assert(system.planets[0].raw.localeName === "planet.mirage");
         system.planets.splice(0, 1);
     }

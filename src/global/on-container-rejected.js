@@ -61,7 +61,33 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
 
         // TODO XXX Attachment token
 
-        // TODO XXX Faction Extra
+        // Faction Extras
+        const nsidToFactionDesk = {};
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const playerSlot = playerDesk.playerSlot;
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (!faction) {
+                continue;
+            }
+            const unpackExtra = faction.raw.unpackExtra;
+            if (!unpackExtra) {
+                continue;
+            }
+            for (const extra of unpackExtra) {
+                if (extra.tokenNsid) {
+                    nsidToFactionDesk[extra.tokenNsid] = playerDesk;
+                }
+            }
+        }
+        const factionDesk = nsidToFactionDesk[nsid];
+        if (factionDesk) {
+            if (container) {
+                const pos = container.getPosition().add([10, 0, 10]);
+                container.take(rejectedObj, pos, false, false);
+            }
+            rejectedObj.setPosition(factionDesk.center.add([0, 0, 10]));
+            continue;
+        }
 
         // Try to find a home (bag with NSID bag.$type and $name).
         if (parsed.type == "token.command") {
