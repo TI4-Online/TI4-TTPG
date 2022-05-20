@@ -27,6 +27,7 @@ class SetupStatusPads extends AbstractSetup {
         const obj = Spawn.spawn(nsid, pos, rot);
         obj.setOwningPlayerSlot(playerSlot);
         obj.setObjectType(ObjectType.Ground);
+        obj.setPrimaryColor(this.playerDesk.color);
     }
 
     clean() {

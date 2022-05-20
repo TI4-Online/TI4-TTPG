@@ -14,8 +14,8 @@ btnUI.widget = new TP.LayoutBox();
 
 btnUI.widget.setVerticalAlignment(0);
 btnUI.widget.setHorizontalAlignment(0);
-btnUI.widget.setMinimumWidth(400);
-btnUI.widget.setMinimumHeight(120);
+btnUI.widget.setMinimumWidth(600);
+btnUI.widget.setMinimumHeight(200);
 
 pnlUI.position = new TP.Vector(-0.5, 0, 0.8);
 pnlUI.rotation = new TP.Rotator(15, 0, 0);
@@ -42,10 +42,12 @@ const awayImage = new TP.ImageWidget();
 const passImage = new TP.ImageWidget();
 
 btnUI.widget.setChild(
-    new TP.HorizontalBox()
-        .addChild(awayButton, 1)
-        .addChild(passButton, 1)
-        .setChildDistance(10)
+    new TP.Border().setChild(
+        new TP.HorizontalBox()
+            .addChild(awayButton, 1)
+            .addChild(passButton, 1)
+            .setChildDistance(10)
+    )
 );
 
 pnlUI.widget.setChild(
