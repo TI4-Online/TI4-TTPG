@@ -23,8 +23,8 @@ class Turns {
         assert(!isPersistent || typeof isPersistent === "boolean");
         this._turnOrder = [];
         this._currentTurn = undefined;
-        this._isForward = undefined;
-        this._isSnake = undefined;
+        this._isForward = true;
+        this._isSnake = false;
 
         this._persistent = isPersistent ? true : false;
         this._needsLoad = true;
@@ -54,6 +54,8 @@ class Turns {
     _load() {
         // Load defaults.
         this._turnOrder = world.TI4.getAllPlayerDesks();
+        this._isForward = true;
+        this._isSnake = false;
         this._currentTurn = this._turnOrder[0];
 
         if (!this._persistent) {
@@ -84,7 +86,11 @@ class Turns {
 
             // This happens exactly once.
             const onChangedHandler = () => {
-                this.setTurnOrder(world.TI4.getAllPlayerDesks(), undefined);
+                this.setTurnOrder(
+                    world.TI4.getAllPlayerDesks(),
+                    undefined,
+                    TURN_ORDER_TYPE.FORWARD
+                );
             };
             globalEvents.TI4.onPlayerCountChanged.add(onChangedHandler);
             globalEvents.TI4.onGameSetup.add(onChangedHandler);
@@ -374,6 +380,20 @@ class Turns {
             }
         }
     }
+}
+
+if (world.getExecutionReason() === "ScriptReload") {
+    process.nextTick(() => {
+        const turns = world.TI4.turns;
+        const order = turns.getTurnOrder().map((desk) => {
+            return desk.colorName;
+        });
+        console.log(
+            `Turn order: ${order.join(", ")}, forward=${
+                turns._isForward
+            }, snake=${turns._isSnake}`
+        );
+    });
 }
 
 module.exports = {
