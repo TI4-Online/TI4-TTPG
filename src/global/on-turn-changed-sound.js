@@ -7,26 +7,9 @@ const SOUND_ASSET = "beep_ramp_up.wav";
 let _sound = undefined;
 
 function playTurnChangedSound() {
-    // Load sound.
     if (!_sound) {
         _sound = world.importSound(SOUND_ASSET, refPackageId);
         assert(_sound);
-    }
-
-    // If still loading call again when load finishes.
-    if (_sound.isLoaded()) {
-        _sound.onLoadComplete.add((success) => {
-            if (!success) {
-                return; // error, give up
-            }
-            playTurnChangedSound();
-        });
-        return; // try again when load completes
-    }
-
-    // Sound exists and is loaded.
-    if (_sound.isPlaying()) {
-        _sound.stop();
     }
 
     const startTime = 0;
