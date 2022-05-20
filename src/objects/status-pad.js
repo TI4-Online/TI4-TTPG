@@ -14,7 +14,7 @@ btnUI.widget = new TP.LayoutBox();
 
 btnUI.widget.setVerticalAlignment(0);
 btnUI.widget.setHorizontalAlignment(0);
-btnUI.widget.setMinimumWidth(300);
+btnUI.widget.setMinimumWidth(400);
 btnUI.widget.setMinimumHeight(120);
 
 pnlUI.position = new TP.Vector(-0.5, 0, 0.8);
@@ -24,19 +24,19 @@ pnlUI.widget = new TP.LayoutBox();
 pnlUI.useTransparency = true;
 
 pnlUI.widget.setVerticalAlignment(0);
-pnlUI.widget.setHorizontalAlignment(0);
-pnlUI.widget.setMinimumWidth(400);
-pnlUI.widget.setMinimumHeight(300);
+pnlUI.widget.setHorizontalAlignment(2);
+pnlUI.widget.setMinimumWidth(600);
+pnlUI.widget.setMinimumHeight(450);
 
 const obj = TP.refObject; // get reference now, cannot use later
 const packageId = TP.refPackageId;
 
 const awayButton = new TP.Button()
     .setText(locale("ui.button.away"))
-    .setFontSize(32);
+    .setFontSize(48);
 const passButton = new TP.Button()
     .setText(locale("ui.button.pass"))
-    .setFontSize(32);
+    .setFontSize(48);
 
 const awayImage = new TP.ImageWidget();
 const passImage = new TP.ImageWidget();
