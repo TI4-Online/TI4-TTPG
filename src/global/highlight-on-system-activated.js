@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ColorUtil } = require("../lib/color/color-util");
+const { Hex } = require("../lib/hex");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Color,
@@ -14,7 +15,7 @@ const {
 } = require("../wrapper/api");
 
 const OVERLAY_PNG = "global/ui/hex_highlight_notched.png";
-const OVERLAY_PNG_SIZE = 115;
+const OVERLAY_PNG_SIZE = 110; // 115 for full, make a little smaller to allow for borders
 const OVERLAY_SCALE = 4;
 
 const PULSE_SECONDS = 3; // from 0->1->0
