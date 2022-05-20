@@ -203,9 +203,9 @@ class AgendaUiDesk extends Border {
 
         const result = [];
         for (const outcome of agendaUiDesk._outcomeData) {
-            result.push(
-                `"${outcome.nameText.getText()}": ${outcome.voteTotalText.getText()}`
-            );
+            let voteTotalText = outcome.voteTotalText.getText();
+            voteTotalText = voteTotalText.replace(/[^0-9]/g, "");
+            result.push(`"${outcome.nameText.getText()}": ${voteTotalText}`);
         }
         return result.join(", ");
     }
@@ -474,14 +474,23 @@ class AgendaUiDesk extends Border {
             const nameText = outcomeNamesMutable ? new TextBox() : new Text();
             nameText.setFontSize(CONFIG.fontSize).setText(outcomeName);
             if (outcomeNamesMutable) {
+                let lazyUpdateTimeoutHandle = undefined;
+                const lazyUpdate = () => {
+                    lazyUpdateTimeoutHandle = undefined;
+                    const value = nameText.getText();
+                    for (const peer of this._peers) {
+                        if (peer !== this) {
+                            peer._outcomeData[i].nameText.setText(value);
+                        }
+                    }
+                };
                 // Updating text on one propogates to peers.  Player is undefined for setText.
                 nameText.onTextChanged.add((textBox, player, value) => {
                     if (player) {
-                        for (const peer of this._peers) {
-                            if (peer !== this) {
-                                peer._outcomeData[i].nameText.setText(value);
-                            }
+                        if (lazyUpdateTimeoutHandle) {
+                            clearTimeout(lazyUpdateTimeoutHandle);
                         }
+                        lazyUpdateTimeoutHandle = setTimeout(lazyUpdate, 50);
                     }
                 });
             }

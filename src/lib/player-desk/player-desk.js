@@ -621,11 +621,28 @@ class PlayerDesk {
 
         // Desks are reset. Move players to desks.
         // DO THIS AFTER RECREATING so hand has owner before player sits.
+        const reassignCardHolder = (player, slot) => {
+            for (const obj of world.getAllObjects()) {
+                if (obj.getContainer()) {
+                    continue;
+                }
+                if (!(obj instanceof CardHolder)) {
+                    continue;
+                }
+                if (obj.getOwningPlayerSlot() !== slot) {
+                    continue;
+                }
+                player.setHandHolder(obj);
+                break;
+            }
+        };
         if (srcPlayer) {
             srcPlayer.switchSlot(dstPlayerSlot);
+            reassignCardHolder(srcPlayer, dstPlayerSlot);
         }
         if (dstPlayer) {
             dstPlayer.switchSlot(srcPlayerSlot);
+            reassignCardHolder(dstPlayer, srcPlayerSlot);
         }
 
         this.resetUI();
