@@ -1,6 +1,5 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ColorUtil } = require("../lib/color/color-util");
-const { Hex } = require("../lib/hex");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Color,

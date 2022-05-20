@@ -314,7 +314,7 @@ class Borders {
         const inset = thickness / 2 + DEFAULT_THICKNESS / 2;
         const points = new Polygon(segment.line).inset(inset).getPoints();
 
-        const z = world.getTableHeight() + 0.13;
+        const z = world.getTableHeight() + 0.01 * Hex.SCALE;
         points.forEach((p) => {
             p.z = z;
         });
@@ -323,6 +323,12 @@ class Borders {
         if (closed) {
             const head = points[0];
             points.push(head.clone());
+        }
+
+        // Extend one futher to avoid "pac-man" artifact where lines meet.
+        if (points.length > 1) {
+            const second = points[1];
+            points.push(second.clone());
         }
 
         const drawingLine = new DrawingLine();
