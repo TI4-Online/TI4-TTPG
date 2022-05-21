@@ -2,11 +2,15 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, Player, globalEvents, world } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 
 const REPORT_REMAINING_NSID_PREFIXES = ["card.exploration", "card.relic"];
 
 function isReportRemaining(obj) {
     if (!(obj instanceof Card)) {
+        return false;
+    }
+    if (obj.getStackSize() <= 1) {
         return false;
     }
     // ALL cards must belong to add option (otherwise dropping a secret on the
@@ -57,7 +61,14 @@ function doReportRemaining(cardOrDeck, player) {
     result = result.join(", ");
     result = `${locale("ui.context.report_remaining")}: ${result}`;
 
-    player.sendChatMessage(result);
+    Broadcast.chatOne(player, result);
+}
+
+function maybeDoReportRemaining(obj, player, selectedActionName) {
+    const actionName = "*" + locale("ui.context.report_remaining");
+    if (selectedActionName === actionName) {
+        doReportRemaining(obj, player);
+    }
 }
 
 function addRightClickReportRemaining(cardOrDeck) {
@@ -70,11 +81,7 @@ function addRightClickReportRemaining(cardOrDeck) {
     // Add right-click option.
     const actionName = "*" + locale("ui.context.report_remaining");
     cardOrDeck.addCustomAction(actionName);
-    cardOrDeck.onCustomAction.add((obj, player, selectedActionName) => {
-        if (selectedActionName === actionName) {
-            doReportRemaining(obj, player);
-        }
-    });
+    cardOrDeck.onCustomAction.add(maybeDoReportRemaining);
     cardOrDeck.__hasRightClickReportRemaining = true;
 }
 
@@ -83,20 +90,19 @@ function removeRightReportRemaining(cardOrDeck) {
 
     const actionName = "*" + locale("ui.context.report_remaining");
     cardOrDeck.removeCustomAction(actionName);
+    cardOrDeck.onCustomAction.remove(maybeDoReportRemaining);
     cardOrDeck.__hasRightClickReportRemaining = false;
 }
 
 globalEvents.TI4.onSingletonCardCreated.add((card) => {
     assert(card instanceof Card);
-    if (isReportRemaining(card)) {
-        addRightClickReportRemaining(card);
-    }
+    removeRightReportRemaining(card);
 });
 
 globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     assert(card instanceof Card);
-    if (card.__hasRightClickAgendaOptions) {
-        removeRightReportRemaining(card);
+    if (isReportRemaining(card)) {
+        addRightClickReportRemaining(card);
     }
 });
 
