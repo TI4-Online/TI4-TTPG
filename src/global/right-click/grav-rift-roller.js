@@ -126,15 +126,17 @@ class AutoGravRiftRoller {
 
         const diceObjects = [];
         plasticWithMovement.forEach((unit) => {
-            const yaw = Math.random() * 360;
-            const d = new Vector(5, 0, 10).rotateAngleAxis(yaw, [0, 0, 1]);
-            const pos = systemTileObj.getPosition().add(d);
-            const die = new SimpleDieBuilder()
-                .setDeleteAfterSeconds(DELETE_DIE_AFTER_N_SECONDS)
-                .setHitValue(GRAV_RIFT_SUCCCESS)
-                .setSpawnPosition(pos)
-                .build(player);
-            diceObjects.push([die, unit]);
+            for (var i = 0; i < unit._count; i++) {
+                const yaw = Math.random() * 360;
+                const d = new Vector(5, 0, 10).rotateAngleAxis(yaw, [0, 0, 1]);
+                const pos = systemTileObj.getPosition().add(d);
+                const die = new SimpleDieBuilder()
+                    .setDeleteAfterSeconds(DELETE_DIE_AFTER_N_SECONDS)
+                    .setHitValue(GRAV_RIFT_SUCCCESS)
+                    .setSpawnPosition(pos)
+                    .build(player);
+                diceObjects.push([die, unit, i]);
+            }
         });
         FancyRollGroup.roll(diceObjects, (diceObjects) => {
             AutoGravRiftRoller.onRollFinished(diceObjects, player);
@@ -150,8 +152,8 @@ class AutoGravRiftRoller {
         const color = playerDesk ? playerDesk.color : player.getPlayerColor();
 
         const parts = [];
-        for (const [die, unit] of diceObjects) {
-            AutoGravRiftRoller.addLabel(die, unit, player);
+        for (const [die, unit, index] of diceObjects) {
+            AutoGravRiftRoller.addLabel(die, unit, index, player);
             if (die.isHit()) {
                 parts.push(
                     locale("ui.message.roll.autoGravRiftSuccess", {
@@ -173,11 +175,11 @@ class AutoGravRiftRoller {
         Broadcast.broadcastAll(msg, color);
     }
 
-    static addLabel(die, unit, player) {
+    static addLabel(die, unit, index, player) {
         const gameObject = unit.gameObject;
         const label = new UIElement();
         label.widget = new Border();
-        label.position = new Vector(0, 0, 1.5);
+        label.position = new Vector(index * 2.5, 0, 1.5);
         if (die.isHit()) {
             const msg = locale("ui.message.roll.autoGravRiftSuccess", {
                 value: die.getValue(),
