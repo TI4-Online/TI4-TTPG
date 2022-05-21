@@ -14,11 +14,11 @@ class DimensionalTear extends AbstractSystemAttachment {
     }
 
     place(system, planet, systemTileObj) {
-        system.anomalies.push("gravity_rift");
+        system.anomalies.push("gravity rift");
     }
 
     remove(system, planet, systemTileObj) {
-        const index = system.anomalies.indexOf("gravity_rift");
+        const index = system.anomalies.indexOf("gravity rift");
         system.anomalies.splice(index, 1);
     }
 }
