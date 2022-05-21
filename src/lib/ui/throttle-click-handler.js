@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Button, Player } = require("../../wrapper/api");
 
-const THROTTLE_MSECS = 500;
+const THROTTLE_MSECS = 2000;
 
 /**
  * Reject repeat clicks if too soon since last click.

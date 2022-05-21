@@ -56,6 +56,16 @@ const NAMES_AND_ACTIONS = [
     },
 ];
 
+function onCustomActionHandler(obj, player, selectedActionName) {
+    for (const nameAndAction of NAMES_AND_ACTIONS) {
+        const actionName = "*" + locale(nameAndAction.localeName);
+        if (selectedActionName === actionName) {
+            _placeAgenda(obj, nameAndAction.placeTop);
+            break;
+        }
+    }
+}
+
 function addRightClickOptions(agendaCard) {
     assert(agendaCard instanceof Card);
 
@@ -64,15 +74,7 @@ function addRightClickOptions(agendaCard) {
         const actionName = "*" + locale(nameAndAction.localeName);
         agendaCard.addCustomAction(actionName);
     }
-    agendaCard.onCustomAction.add((obj, player, selectedActionName) => {
-        for (const nameAndAction of NAMES_AND_ACTIONS) {
-            const actionName = "*" + locale(nameAndAction.localeName);
-            if (selectedActionName === actionName) {
-                _placeAgenda(agendaCard, nameAndAction.placeTop);
-                break;
-            }
-        }
-    });
+    agendaCard.onCustomAction.add(onCustomActionHandler);
     agendaCard.__hasRightClickAgendaOptions = true;
 }
 
@@ -80,6 +82,7 @@ function removeRightClickOptions(agendaCard) {
     for (const nameAndAction of NAMES_AND_ACTIONS) {
         const actionName = "*" + locale(nameAndAction.localeName);
         agendaCard.removeCustomAction(actionName);
+        agendaCard.onCustomAction.remove(onCustomActionHandler);
     }
     agendaCard.__hasRightClickAgendaOptions = false;
 }

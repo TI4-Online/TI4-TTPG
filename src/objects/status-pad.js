@@ -7,15 +7,15 @@ const TP = require("../wrapper/api");
 const btnUI = new TP.UIElement();
 const pnlUI = new TP.UIElement();
 
-btnUI.position = new TP.Vector(1.5, 0, 0.2);
+btnUI.position = new TP.Vector(2, 0, 0.2);
 btnUI.rotation = new TP.Rotator(0, 0, 180);
 btnUI.scale = 0.1;
 btnUI.widget = new TP.LayoutBox();
 
 btnUI.widget.setVerticalAlignment(0);
 btnUI.widget.setHorizontalAlignment(0);
-btnUI.widget.setMinimumWidth(600);
-btnUI.widget.setMinimumHeight(200);
+btnUI.widget.setMinimumWidth(800);
+btnUI.widget.setMinimumHeight(300);
 
 pnlUI.position = new TP.Vector(-0.5, 0, 0.8);
 pnlUI.rotation = new TP.Rotator(15, 0, 0);

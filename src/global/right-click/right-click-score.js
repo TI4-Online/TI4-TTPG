@@ -218,15 +218,18 @@ function score(scoreableObj, player) {
     advanceScoreboardToken(player, points);
 }
 
+function maybeScore(obj, player, selectedActionName) {
+    const actionName = "*" + locale("ui.menu.score");
+    if (selectedActionName === actionName) {
+        score(obj, player);
+    }
+}
+
 function addRightClickOptions(scoreableObj) {
     assert(scoreableObj instanceof GameObject);
     const actionName = "*" + locale("ui.menu.score");
     scoreableObj.addCustomAction(actionName);
-    scoreableObj.onCustomAction.add((obj, player, selectedActionName) => {
-        if (selectedActionName === actionName) {
-            score(scoreableObj, player);
-        }
-    });
+    scoreableObj.onCustomAction.add(maybeScore);
     scoreableObj.__hasRightClickScoreOption = true;
 }
 
@@ -234,6 +237,7 @@ function removeRightClickOptions(scoreableObj) {
     assert(scoreableObj instanceof GameObject);
     const actionName = "*" + locale("ui.menu.score");
     scoreableObj.removeCustomAction(actionName);
+    scoreableObj.onCustomAction.remove(maybeScore);
     scoreableObj.__hasRightClickScoreOption = false;
 }
 

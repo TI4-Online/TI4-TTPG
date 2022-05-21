@@ -42,6 +42,13 @@ function purge(card) {
     purgeContainer.addObjects([card], true);
 }
 
+function maybePurge(card, player, selectedActionName) {
+    const actionName = "*" + locale("ui.menu.purge");
+    if (selectedActionName === actionName) {
+        purge(card);
+    }
+}
+
 /**
  * Adds the right click option to purge a card.
  *
@@ -51,16 +58,13 @@ function addRightClickOption(card) {
     assert(card instanceof Card);
     const actionName = "*" + locale("ui.menu.purge");
     card.addCustomAction(actionName);
-    card.onCustomAction.add((card, _player, actionName) => {
-        if (actionName === actionName) {
-            purge(card);
-        }
-    });
+    card.onCustomAction.add(maybePurge);
 }
 
 function removeRightClickOption(card) {
     const actionName = "*" + locale("ui.menu.purge");
     card.removeCustomAction(actionName);
+    card.onCustomAction.remove(maybePurge);
 }
 
 const PURGABLE_ATTACHMENTS = [
