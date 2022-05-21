@@ -97,28 +97,19 @@ class GameUI {
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
-            // The strategy card mat seems to trigger this even though not overlapping.
             const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid.startsWith("mat")) {
-                return;
-            }
+            console.log(`GameUI.onBeginOverlap: "${nsid}"`);
 
-            //console.log("onBeginOverlap");
-
-            const above = obj.getPosition().add([0, 0, 10]);
-            obj.setPosition(above);
-
-            const container = undefined;
-            const rejectedObjs = [obj];
-            const player = undefined;
-            globalEvents.TI4.onContainerRejected.trigger(
-                container,
-                rejectedObjs,
-                player
-            );
+            // Move to outside zone.
+            const x = 25 + Math.random() * 5;
+            const y = 70 + Math.random() * 5;
+            const z = world.getTableHeight() + 20 + Math.random() * 3;
+            const outside = new Vector(x, y, z);
+            obj.setPosition(outside, 1);
         });
         zone.onEndOverlap.add((zone, obj) => {
-            //console.log("onEndOverlap");
+            const nsid = ObjectNamespace.getNsid(obj);
+            console.log(`GameUI.onEndOverlap: "${nsid}"`);
         });
     }
 

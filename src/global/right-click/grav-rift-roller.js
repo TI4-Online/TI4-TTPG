@@ -7,21 +7,12 @@ const { Hex } = require("../../lib/hex");
 const { RollGroup, FancyRollGroup } = require("../../lib/dice/roll-group");
 const { SimpleDieBuilder } = require("../../lib/dice/simple-die");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
-const {
-    Border,
-    Color,
-    DrawingLine,
-    Text,
-    UIElement,
-    Vector,
-    world,
-} = require("../../wrapper/api");
+const { Color, DrawingLine, Vector, world } = require("../../wrapper/api");
 
 const DELETE_DIE_AFTER_N_SECONDS = 10;
-const DELETE_LABEL_AFTER_N_MSECS = 20 * 1000;
+const DELETE_LABEL_AFTER_N_MSECS = 15 * 1000;
 const WAIT_MSECS_BEFORE_ROLL = 2500;
 const GRAV_RIFT_SUCCCESS = 4;
-const LABEL_FONT_SIZE = 8;
 
 class SimpleGravRiftRoller {
     static {
@@ -237,9 +228,13 @@ class AutoGravRiftRoller {
         gameObject.addDrawingLine(drawingLine);
 
         // Remove after a moment.
+        let delay = DELETE_LABEL_AFTER_N_MSECS;
+        if (!die.isHit()) {
+            delay *= 2; // keep lines longer for removed ships
+        }
         setTimeout(() => {
             removeLines();
-        }, DELETE_LABEL_AFTER_N_MSECS);
+        }, delay);
     }
 }
 
