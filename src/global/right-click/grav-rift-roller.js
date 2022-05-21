@@ -163,7 +163,6 @@ class AutoGravRiftRoller {
         const parts = [];
         for (const [die, unit, index] of diceObjects) {
             assert(typeof index === "number");
-            //AutoGravRiftRoller.addLabel(die, unit, index, player);
             AutoGravRiftRoller.addLines(die, unit);
             if (die.isHit()) {
                 parts.push(
@@ -184,39 +183,6 @@ class AutoGravRiftRoller {
         const prefix = locale("ui.message.roll.gravRift", { playerName });
         const msg = prefix + parts.join(" ");
         Broadcast.broadcastAll(msg, color);
-    }
-
-    static addLabel(die, unit, index, player) {
-        const gameObject = unit.gameObject;
-        const label = new UIElement();
-        label.widget = new Border();
-        label.position = new Vector(index * 2.5, 0, 1.5);
-        if (die.isHit()) {
-            const msg = locale("ui.message.roll.autoGravRiftSuccess", {
-                value: die.getValue(),
-                unit: unit.unit,
-            });
-            label.widget.setChild(
-                new Text().setText(msg).setFontSize(LABEL_FONT_SIZE)
-            );
-        } else {
-            const msg = locale("ui.message.roll.autoGravRiftFailure", {
-                value: die.getValue(),
-                unit: unit.unit,
-            });
-            label.widget.setChild(
-                new Text()
-                    .setText(msg)
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setTextColor(new Color(255, 0, 0))
-            );
-        }
-        const localRot = gameObject.worldRotationToLocal(player.getRotation());
-        label.rotation.yaw = localRot.yaw;
-        gameObject.addUI(label);
-        setTimeout(() => {
-            gameObject.removeUIElement(label);
-        }, DELETE_LABEL_AFTER_N_MSECS);
     }
 
     static addLines(die, unit) {
