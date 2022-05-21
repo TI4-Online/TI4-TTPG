@@ -63,6 +63,11 @@
     "ui.message.player_landed_hits": "{playerName} landed {hits} {#hits|hit|hits}",
     "ui.message.roll.hit": "HIT",
     "ui.message.roll.crit": "CRIT",
+    "ui.message.roll.gravRift": "{playerName} rolling for gravity rift: ",
+    "ui.message.roll.gravRiftSuccess": "{value}: Ship survives!",
+    "ui.message.roll.gravRiftFailure": "{value}: Ship is removed!",
+    "ui.message.roll.autoGravRiftSuccess": "{value}: {unit} survives!",
+    "ui.message.roll.autoGravRiftFailure": "{value}: {unit} is removed!",
 
     "ui.message.command_tokens_removed": "{factionName} withdrew {count} command {#count|token|tokens}",
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",
@@ -105,6 +110,8 @@
     "ui.action.system.control": "Control Token",
     "ui.action.system.explore": "Explore {planetName}",
     "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
+    "ui.action.system.rift_roll": "Roll for Gravity Rift",
+    "ui.action.system.auto_rift_roll": "Grav Rift all ships in system",
     "ui.button.end_turn": "END TURN",
 
     "ui.label.speaker": "Speaker",

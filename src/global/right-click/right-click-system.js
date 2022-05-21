@@ -6,6 +6,10 @@ const { Explore } = require("../../lib/explore/explore");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
 const {
+    SimpleGravRiftRoller,
+    AutoGravRiftRoller,
+} = require("./grav-rift-roller");
+const {
     GameObject,
     Player,
     Vector,
@@ -38,6 +42,23 @@ function getNamesAndActions(player, systemTileObj) {
             },
         },
     ];
+
+    const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+    if (system && system.anomalies.includes("gravity rift")) {
+        namesAndActions.push({
+            name: locale("ui.action.system.rift_roll"),
+            action: (player) => {
+                SimpleGravRiftRoller.roll(systemTileObj, player);
+            },
+            delayedHide: true,
+        });
+        namesAndActions.push({
+            name: locale("ui.action.system.auto_rift_roll"),
+            action: (player) => {
+                AutoGravRiftRoller.roll(systemTileObj, player);
+            },
+        });
+    }
 
     const exploreNamesAndActions = Explore.getExploreActionNamesAndActions(
         systemTileObj,
@@ -89,11 +110,15 @@ function addRightClickOptions(systemTileObj) {
     popupPanel.onShow.add((obj, player, popupPanel) => {
         popupPanel.reset();
         const namesAndActions = getNamesAndActions(player, systemTileObj);
-        for (const { name, action } of namesAndActions) {
-            popupPanel.addAction(name, (obj, player, actionName) => {
-                assert(player instanceof Player);
-                action(player);
-            });
+        for (const nameAndAction of namesAndActions) {
+            popupPanel.addAction(
+                nameAndAction.name,
+                (obj, player, actionName) => {
+                    assert(player instanceof Player);
+                    nameAndAction.action(player);
+                },
+                nameAndAction.delayedHide
+            );
         }
     });
 }

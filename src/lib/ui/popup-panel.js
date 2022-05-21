@@ -15,6 +15,7 @@ const {
 
 const POPUP_HEIGHT = 3;
 const POPUP_CHILD_DISTANCE = 5; // consistent look
+const DELAYED_HIDE_MSECS = 2500;
 
 /**
  * Popup "panel" (Border) with custom actions.
@@ -104,10 +105,11 @@ class PopupPanel extends Border {
      * @param {function} onActionCallback - f(gameObject, player, actionName)
      * @returns {PopupPanel} self, for chaining
      */
-    addAction(actionName, onActionCallback) {
+    addAction(actionName, onActionCallback, delayedHide) {
         this._namesAndActions.push({
             name: actionName,
             action: onActionCallback,
+            delayedHide: delayedHide,
         });
         return this;
     }
@@ -124,10 +126,16 @@ class PopupPanel extends Border {
 
         // Add owner-specified actions, followed by cancel.
         const panel = new VerticalBox().setChildDistance(POPUP_CHILD_DISTANCE);
-        for (const { name, action } of this._namesAndActions) {
+        for (const { name, action, delayedHide } of this._namesAndActions) {
             const button = new Button().setText(name);
             button.onClicked.add((button, player) => {
-                this._hide();
+                if (delayedHide) {
+                    setTimeout(() => {
+                        this._hide();
+                    }, DELAYED_HIDE_MSECS);
+                } else {
+                    this._hide();
+                }
                 action(this._obj, player, name);
             });
             panel.addChild(button);
