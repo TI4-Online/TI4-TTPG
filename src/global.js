@@ -173,6 +173,7 @@ require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/chat-commands");
 require("./global/gamedata-key");
+require("./global/highlight-active-turn");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
