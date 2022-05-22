@@ -46,6 +46,9 @@
     "ui.message.detach_token": "Detaching {attachmentName} from {planetName}",
     "ui.message.score": "{playerName} scoring {scoredName}",
     "ui.message.purge": "Purging {objectName} card from the game.",
+    "ui.message.trade_agreement": "{receiver} cashing in {owner}'s Trade Agreement for {x} commodities.",
+    "ui.message.trade_agreement_has_no_owner": "Trade Agreement has no owner, can't cash it in.",
+    "ui.message.trade_agreement_has_no_faction": "Trade Agreement owner has no faction, can't cash it in.",
 
     "ui.message.stellar_converter": "Destroying {planetName} with Stellar Converter",
 
@@ -132,6 +135,7 @@
     "ui.menu.purge": "Purge",
     "ui.menu.score": "Score",
     "ui.menu.fetch_planet": "Fetch {planetName}",
+    "ui.menu.trade_agreement": "Return trade agreement and gain commodities",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
