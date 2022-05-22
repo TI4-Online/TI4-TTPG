@@ -135,6 +135,7 @@
     "ui.menu.purge": "Purge",
     "ui.menu.score": "Score",
     "ui.menu.fetch_planet": "Fetch {planetName}",
+    "ui.menu.fetch_custodia_vigilia": "Fetch Custodia Vigilia planet card and legendary card",
     "ui.menu.trade_agreement": "Return trade agreement and gain commodities",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
