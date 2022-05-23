@@ -9,13 +9,27 @@ const PLANET_NSID = "card.planet:codex.vigil/custodia_vigilia";
 
 function fetchCustodiaVigilia(player) {
     var pos = player.getCursorPosition().add([0, 0, 5]);
-    const cards = CardUtil.gatherCards((nsid, _cardOrDeck) => {
-        return nsid === PLANET_NSID || nsid === LEGENDARY_NSID;
-    });
-    cards.forEach((card) => {
-        card.setPosition(pos);
-        pos = pos.add([2, 2, 0]);
-    });
+    const planetCard = CardUtil.gatherCards((nsid, _cardOrDeck) => {
+        return nsid === PLANET_NSID;
+    })[0];
+    planetCard.setPosition(pos);
+
+    // planet is gained exhausted, ensure the card comes face down
+    const planetCardRot = planetCard.getRotation();
+    if (planetCard.isFaceUp()) {
+        planetCard.setRotation(planetCardRot.compose([0, 0, 180]));
+    }
+
+    const legendaryCard = CardUtil.gatherCards((nsid, _cardOrDeck) => {
+        return nsid === LEGENDARY_NSID;
+    })[0];
+    legendaryCard.setPosition(pos.add([1, 1, 5]));
+
+    // legendary card is not exhaustable, ensure it comes face up
+    const legendaryCardRot = legendaryCard.getRotation();
+    if (!legendaryCard.isFaceUp()) {
+        legendaryCard.setRotation(legendaryCardRot.compose([0, 0, 180]));
+    }
 }
 
 function maybeFetchCustodiaVigilia(_card, player, selectedActionName) {
