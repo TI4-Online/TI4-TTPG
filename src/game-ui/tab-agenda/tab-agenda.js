@@ -296,8 +296,7 @@ class TabAgenda {
                 );
                 order = AgendaTurnOrder.getResolveOrder();
                 world.TI4.turns.setTurnOrder(order);
-                world.TI4.turns.setCurrentTurn(order[0], undefined);
-                this.updatePassedForNewPhase();
+                this.updatePassedForNewPhase(); // sets turn
                 this.updateDeskUI();
                 break;
             case "AFTER.MAIN":
@@ -306,8 +305,7 @@ class TabAgenda {
                 );
                 order = AgendaTurnOrder.getResolveOrder();
                 world.TI4.turns.setTurnOrder(order);
-                world.TI4.turns.setCurrentTurn(order[0], undefined);
-                this.updatePassedForNewPhase();
+                this.updatePassedForNewPhase(); // sets turn
                 this.updateDeskUI();
                 break;
             case "VOTE.MAIN":
@@ -316,8 +314,7 @@ class TabAgenda {
                 );
                 order = AgendaTurnOrder.getVoteOrder();
                 world.TI4.turns.setTurnOrder(order);
-                world.TI4.turns.setCurrentTurn(order[0], undefined);
-                this.updatePassedForNewPhase();
+                this.updatePassedForNewPhase(); // sets turn
                 this.updateDeskUI();
                 break;
             case "POST.MAIN":
@@ -453,9 +450,12 @@ class TabAgenda {
             return;
         }
 
+        // Players can click "no whens", etc, early.  Mark them as passed when
+        // changing to a new state.
         console.log(
             "TabAgenda.updatePassedForNewPhase: " + this._stateMachine.main
         );
+        const passedSlotSet = new Set();
         for (const deskUi of this._deskUIs) {
             let active = true;
             assert(typeof deskUi._noWhens === "boolean");
@@ -474,14 +474,29 @@ class TabAgenda {
                 console.log(
                     `TabAgenda.updatePassedForNewPhase: ${deskUi._playerDesk.colorName} passing`
                 );
-                world.TI4.turns.setPassed(deskUi._playerDesk.playerSlot, true);
+                const playerSlot = deskUi._playerDesk.playerSlot;
+                passedSlotSet.add(playerSlot);
+                world.TI4.turns.setPassed(playerSlot, true);
             }
         }
 
-        const currentSlot = world.TI4.turns.getCurrentTurn().playerSlot;
-        if (world.TI4.turns.getPassed(currentSlot)) {
-            world.TI4.turns.endTurn(undefined);
+        // Set turn to first unpassed player.
+        const order = world.TI4.turns.getTurnOrder();
+        for (const desk of order) {
+            if (passedSlotSet.has(desk.playerSlot)) {
+                continue;
+            }
+            world.TI4.turns.setCurrentTurn(desk, undefined);
+            return;
         }
+
+        // If we get here all players have passed.
+        this._stateMachine.next();
+        console.log(
+            "TabAgenda.updatePassedForNewPhase: entering " +
+                this._stateMachine.main
+        );
+        this.updateMainUI();
     }
 }
 

@@ -18,7 +18,7 @@ const {
     world,
 } = require("../../wrapper/api");
 
-const ANYONE_CAN_CLICK = true;
+const ANYONE_CAN_CLICK = false;
 const BUTTON_SCALE = 0.75;
 
 function capitalizeFirstLetter(string) {
@@ -284,6 +284,9 @@ class AgendaUiDesk extends Border {
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.lock_vote"));
         this._lockVoteButton.onClicked.add((button, player) => {
+            if (!this.allowClick(player)) {
+                return;
+            }
             this._voteLocked = !this._voteLocked;
             AgendaUiDesk.updateVoteAndPredictionCounts(this._peers);
             this._callbacks.onVoteLocked(
