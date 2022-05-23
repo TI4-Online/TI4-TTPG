@@ -117,11 +117,12 @@ class AutoGravRiftRoller {
             (plastic) => plastic.hex === hex
         );
 
+        // Fighters need to roll in some cases like skilled retreat, etc.
+        // Don't get clever, just always roll for ships.
         const plasticWithMovement = hexPlastic.filter((plastic) => {
             const unit = plastic.unit;
             const attrs = auxData.unitAttrsSet.get(unit);
-            console.log(`${unit} ${attrs.raw.move}`);
-            return attrs.raw.move > 0 || unit === "war_sun"; // include war sun even if not researched
+            return attrs.raw.move > 0 || attrs.raw.ship;
         });
 
         const diceObjects = [];
@@ -205,6 +206,7 @@ class AutoGravRiftRoller {
         normals.push(normals[0].clone());
 
         const color = die.isHit() ? new Color(0, 1, 0) : new Color(1, 0, 0);
+        const thickness = die.isHit() ? 0.3 : 0.6;
 
         // Pointing outward.
         let drawingLine = new DrawingLine();
@@ -212,7 +214,7 @@ class AutoGravRiftRoller {
         drawingLine.points = points;
         drawingLine.normals = normals;
         drawingLine.rounded = false;
-        drawingLine.thickness = 0.5;
+        drawingLine.thickness = thickness;
         gameObject.addDrawingLine(drawingLine);
 
         // Pointing inward.
@@ -224,7 +226,7 @@ class AutoGravRiftRoller {
         drawingLine.points = points;
         drawingLine.normals = flipped;
         drawingLine.rounded = false;
-        drawingLine.thickness = 0.5;
+        drawingLine.thickness = thickness;
         gameObject.addDrawingLine(drawingLine);
 
         // Remove after a moment.
