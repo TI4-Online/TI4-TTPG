@@ -52,7 +52,7 @@ class GameWorld {
     }
 
     addDrawingLine(value) {
-        this._allDrawingLines.push(value);
+        this._drawingLines.push(value);
     }
 
     addUI(uiElement) {
