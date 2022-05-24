@@ -43,6 +43,10 @@ globalEvents.TI4 = {
     // <(playerCount: number, player: Player|undefined) => void>
     onPlayerCountChanged: new TriggerableMulticastDelegate(),
 
+    // Called immediately before the player count changes (setup not finished).
+    // <(playerCount: incoming number, player: Player|undefined) => void>
+    onPlayerCountAboutToChange: new TriggerableMulticastDelegate(),
+
     // Called when a singleton card is created, or when a deck is reduced to
     // a single card it is called on the "deck" (now a single card).
     // <(card: Card) => void>
