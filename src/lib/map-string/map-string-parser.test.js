@@ -20,7 +20,7 @@ it("validate with custom home tile", () => {
 });
 
 it("validate with side and rotation", () => {
-    assert.equal(validate("7 83b2"), true);
+    assert.equal(validate("7 83B2"), true);
 });
 
 it("validate start with side and rotation", () => {
@@ -36,7 +36,7 @@ it("validate supports upper or lower case side values", () => {
 });
 
 it("validate does not support invalid map string", () => {
-    assert.notEqual(validate("7 83b2 75b"), true);
+    assert.notEqual(validate("7 83B2 75B"), true);
 });
 
 it("validate does not support invalid characters", () => {
@@ -100,7 +100,7 @@ it("validate supports upper or lower case side values", () => {
 });
 
 it("parse throws for invalid map string", () => {
-    assert.throws(() => parse("7 83b2 75b"));
+    assert.throws(() => parse("7 83B2 75B"));
 });
 
 it("parse throws for support invalid characters", () => {
@@ -129,7 +129,7 @@ it("format with side and rotation", () => {
             { tile: 7 },
             { tile: 83, side: "b", rotation: 2 },
         ]),
-        "7 83b2"
+        "7 83B2"
     );
 });
 

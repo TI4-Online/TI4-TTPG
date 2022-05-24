@@ -9,6 +9,7 @@ const {
     world,
 } = require("../../wrapper/api");
 const { AuxDataBuilder } = require("./auxdata");
+const { Hex } = require("../hex");
 
 it("getPairSync", () => {
     world.__clear();
@@ -221,4 +222,102 @@ it("filtering", () => {
     assert(modifierNames.includes("unit_modifier.name.morale_boost"));
 
     world.__clear();
+});
+
+it("pds 2", () => {
+    world.__clear();
+
+    const desk = world.TI4.getAllPlayerDesks()[0];
+
+    // Place pds2 and system tile.
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/pds",
+            owningPlayerSlot: desk.playerSlot,
+            position: Hex.toPosition("<1,0,-1>"), // adjacent
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "tile.system:base/28",
+            position: Hex.toPosition("<1,0,-1>"), // adjacent
+        })
+    );
+
+    // Unit upgrade.
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: "card.technology.unit_upgrade:base/pds_2",
+            }),
+            position: desk.center,
+        })
+    );
+
+    const aux1 = new AuxDataBuilder()
+        .setPlayerSlot(desk.playerSlot)
+        .setHex("<0,0,0>")
+        .setRollType("spaceCannon")
+        .build();
+    const aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).disableModifierFiltering().fillPairSync();
+    world.__clear();
+
+    assert.equal(aux1.playerSlot, desk.playerSlot);
+    assert.equal(aux2.playerSlot, -1);
+
+    // Found the unit upgrade.
+    assert.equal(aux1.unitAttrsSet.get("pds").raw.spaceCannon.range, 1);
+
+    // Found the adjacent unit.
+    assert.equal(aux1.adjacentCount("pds"), 1);
+});
+
+it("hel titan 2", () => {
+    world.__clear();
+
+    const desk = world.TI4.getAllPlayerDesks()[0];
+
+    // Place pds2 and system tile.
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "unit:base/pds",
+            owningPlayerSlot: desk.playerSlot,
+            position: Hex.toPosition("<1,0,-1>"), // adjacent
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "tile.system:base/28",
+            position: Hex.toPosition("<1,0,-1>"), // adjacent
+        })
+    );
+
+    // Unit upgrade.
+    world.__addObject(
+        new MockCard({
+            cardDetails: new MockCardDetails({
+                metadata: "card.technology.unit_upgrade.ul:pok/heltitan_2",
+            }),
+            position: desk.center,
+        })
+    );
+
+    const aux1 = new AuxDataBuilder()
+        .setPlayerSlot(desk.playerSlot)
+        .setHex("<0,0,0>")
+        .setRollType("spaceCannon")
+        .build();
+    const aux2 = new AuxDataBuilder().build();
+    new AuxDataPair(aux1, aux2).disableModifierFiltering().fillPairSync();
+    world.__clear();
+
+    assert.equal(aux1.playerSlot, desk.playerSlot);
+    assert.equal(aux2.playerSlot, -1);
+
+    // Found the unit upgrade.
+    assert.equal(aux1.unitAttrsSet.get("pds").raw.spaceCannon.range, 1);
+
+    // Found the adjacent unit.
+    assert.equal(aux1.adjacentCount("pds"), 1);
 });

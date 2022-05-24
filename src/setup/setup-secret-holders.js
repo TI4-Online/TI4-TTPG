@@ -91,8 +91,10 @@ class SetupSecretHolders extends AbstractSetup {
     }
 }
 
-globalEvents.TI4.onPlayerCountChanged.add((playerCount, player) => {
+globalEvents.TI4.onPlayerCountAboutToChange.add((playerCount, player) => {
     new SetupSecretHolders().clean();
+});
+globalEvents.TI4.onPlayerCountChanged.add((playerCount, player) => {
     new SetupSecretHolders().setup();
 });
 

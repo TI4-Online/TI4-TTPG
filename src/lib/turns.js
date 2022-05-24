@@ -77,6 +77,13 @@ class Turns {
             return playerDesks[index];
         });
         this._currentTurn = playerDesks[currentTurnDeskIndex]; // might be -1, fine
+
+        // If the player count is wrong throw away the state.
+        if (this._turnOrder.length != world.TI4.config.playerCount) {
+            console.log("Turns._load: wrong count, resetting");
+            this._turnOrder = world.TI4.getAllPlayerDesks();
+            this._currentTurn = this._turnOrder[0];
+        }
     }
 
     _maybeLoad() {
@@ -95,6 +102,10 @@ class Turns {
             globalEvents.TI4.onPlayerCountChanged.add(onChangedHandler);
             globalEvents.TI4.onGameSetup.add(onChangedHandler);
         }
+    }
+
+    invalidate() {
+        this._needsLoad = true;
     }
 
     getTurnOrder() {

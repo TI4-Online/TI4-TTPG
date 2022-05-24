@@ -1,7 +1,9 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { Hex } = require("../../hex");
+const { Hyperlane } = require("../../map-string/hyperlane");
 const MapStringHex = require("../../map-string/map-string-hex");
 const { MapStringLoad } = require("../../map-string/map-string-load");
+const MapStringParser = require("../../map-string/map-string-parser");
 const { ObjectNamespace } = require("../../object-namespace");
 const {
     SetupGenericHomeSystems,
@@ -104,20 +106,81 @@ class MiltySliceLayout {
                 mapStringArray[i] = -1;
             }
         }
-        mapStringArray[0] = "{0}";
+        mapStringArray[0] = "{-1}";
+
+        // Shift for hyperlanes.
 
         return mapStringArray.join(" ");
+    }
+
+    static _addHyperlanes(mapString) {
+        assert(typeof mapString === "string");
+
+        const playerCount = world.TI4.config.playerCount;
+        assert(typeof playerCount === "number");
+        if (playerCount >= 6) {
+            console.log("MiltySliceLayout._addHyperlanes: >= 6 players");
+            return mapString; // do not try to massage for more than 6 (not standard shape)
+        }
+        const hyperlanesString = Hyperlane.getMapString(playerCount);
+        if (!hyperlanesString) {
+            console.log("MiltySliceLayout._addHyperlanes: no hyperlanes");
+            return mapString;
+        }
+
+        const mapStringArray = MapStringParser.parse(mapString);
+        const hyperlaneArray = MapStringParser.parse(hyperlanesString);
+
+        const open = [];
+        const move = [];
+        hyperlaneArray.forEach((entry, index) => {
+            const mapStringEntry = mapStringArray[index];
+            // Add hyperlane to map string.  If there is a tile there mark for move.
+            if (index > 0 && entry.tile > 0) {
+                if (mapStringEntry && mapStringEntry.tile > 0) {
+                    move.push({ index, entry: mapStringEntry });
+                }
+                mapStringArray[index] = entry;
+            }
+            // Keep track of open slots in the second ring.
+            if (
+                index >= 7 &&
+                index <= 18 &&
+                entry.tile <= 0 &&
+                (!mapStringEntry || mapStringEntry.tile <= 0)
+            ) {
+                open.push(index);
+            }
+        });
+
+        // Rather than hard-coding shifts, move to next slot in center ring.
+        for (const moveItem of move) {
+            let nextIndex = moveItem.index + 1;
+            if (nextIndex === 19) {
+                nextIndex = 7;
+            }
+            if (!open.includes(nextIndex)) {
+                console.log(
+                    "MiltySliceLayout._addHyperlanes: expected open failed, aborting"
+                );
+                return mapString;
+            }
+            mapStringArray[nextIndex] = moveItem.entry;
+        }
+
+        return MapStringParser.format(mapStringArray);
     }
 
     static doLayout(miltySliceString, playerSlot) {
         assert(typeof miltySliceString === "string");
         assert(typeof playerSlot === "number");
 
-        const mapString = MiltySliceLayout._toMapString(
+        let mapString = MiltySliceLayout._toMapString(
             miltySliceString,
             playerSlot
         );
-        console.log(mapString);
+        console.log(`${playerSlot}: ${mapString}`);
+
         MapStringLoad.load(mapString, true);
     }
 }

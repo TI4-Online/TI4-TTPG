@@ -773,6 +773,7 @@ module.exports = [
                 let has = auxData.self.has(unitAttrs.raw.unit);
                 if (!has && auxData.self.hasAdjacent(unitAttrs.raw.unit)) {
                     has =
+                        unitAttrs.raw.spaceCannon &&
                         unitAttrs.raw.spaceCannon.range &&
                         unitAttrs.raw.spaceCannon.range > 0;
                 }

@@ -9,6 +9,7 @@ const { ObjectNamespace } = require("../../../lib/object-namespace");
 const PositionToPlanet = require("../../../lib/system/position-to-planet");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { Card, Rotator, world } = require("../../../wrapper/api");
+const { Broadcast } = require("../../../lib/broadcast");
 
 class MapTool {
     static getMapTilesContainer() {
@@ -84,6 +85,7 @@ class MapTool {
     save() {
         const mapString = MapStringSave.save();
         console.log(`MapTool.save: "${mapString}"`);
+        Broadcast.chatAll(mapString);
         this._ui.setMapString(mapString);
     }
 

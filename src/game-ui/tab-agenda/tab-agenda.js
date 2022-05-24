@@ -132,7 +132,7 @@ class TabAgenda {
                 const pos = obj.getPosition();
                 const closestDesk = world.TI4.getClosestPlayerDesk(pos);
                 xxchaCommanderIndex = closestDesk.index;
-            } else if (nsid === "card.alliance:base/xxcha") {
+            } else if (nsid === "card.alliance:pok/xxcha") {
                 const pos = obj.getPosition();
                 const closestDesk = world.TI4.getClosestPlayerDesk(pos);
                 xxchaAllianceIndex = closestDesk.index;
@@ -156,9 +156,27 @@ class TabAgenda {
     refreshAvailableVotes() {
         const deskIndexToPerPlanetBonus = this.getDeskIndexToPerPlanetBonus();
 
-        this._deskIndexToAvailableVotes = {};
+        const gromOmegaNsid =
+            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
+        let gromOmegaDeskIndex = -1;
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === gromOmegaNsid) {
+                const pos = obj.getPosition();
+                const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+                gromOmegaDeskIndex = closestDesk.index;
+            }
+        }
+
+        this._deskIndexToAvailableVotes = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
@@ -183,6 +201,10 @@ class TabAgenda {
 
             const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
             newValue += bonus;
+
+            if (deskIndex === gromOmegaDeskIndex) {
+                newValue += planet.raw.resources;
+            }
 
             this._deskIndexToAvailableVotes[deskIndex] = newValue;
         }

@@ -56,6 +56,7 @@ class GameSetupConfig {
     setPlayerCount(value, player) {
         assert(typeof value === "number");
         assert(1 <= value && value <= 8);
+        globalEvents.TI4.onPlayerCountAboutToChange.trigger(value, player);
         this._state.playerCount = value;
         GlobalSavedData.set(KEY, this._state);
         globalEvents.TI4.onPlayerCountChanged.trigger(value, player);

@@ -81,6 +81,7 @@ function addRightClickReportRemaining(cardOrDeck) {
     // Add right-click option.
     const actionName = "*" + locale("ui.context.report_remaining");
     cardOrDeck.addCustomAction(actionName);
+    cardOrDeck.onCustomAction.remove(maybeDoReportRemaining);
     cardOrDeck.onCustomAction.add(maybeDoReportRemaining);
     cardOrDeck.__hasRightClickReportRemaining = true;
 }

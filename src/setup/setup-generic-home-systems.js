@@ -29,7 +29,7 @@ const HEX = {
 const HOME_SYSTEM_POSITIONS = {
     1: [HEX.S],
     2: [HEX.S, HEX.N],
-    3: [HEX.SE, HEX.NW, HEX.NE],
+    3: [HEX.S, HEX.NW, HEX.NE],
     4: [HEX.SE, HEX.SW, HEX.NW, HEX.NE],
     5: [HEX.SE, HEX.SW, HEX.NW, HEX.N, HEX.NE],
     6: [HEX.SE, HEX.S, HEX.SW, HEX.NW, HEX.N, HEX.NE],
