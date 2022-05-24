@@ -5,6 +5,7 @@ const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { FactionToken } = require("../../faction/faction-token");
 const { MapStringLoad } = require("../../map-string/map-string-load");
+const { MapStringSave } = require("../../map-string/map-string-save");
 const { MiltyDraftUI } = require("./milty-draft-ui");
 const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
@@ -265,6 +266,30 @@ class MiltyDraft {
             const playerSlot = playerDesk.playerSlot;
             const player = playerSlotToChooserPlayer[playerSlot];
             this._applyPlayerChoices(playerSlot, player);
+        }
+
+        // Apply hyperlanes.
+        const mapStringBefore = MapStringSave.save();
+        const mapStringAfter = MiltySliceLayout._addHyperlanes(mapStringBefore);
+        if (mapStringAfter !== mapStringBefore) {
+            console.log(
+                `MiltyDraft.applyChoices: adding hyperlanes:\n${mapStringBefore}\n${mapStringAfter}`
+            );
+            for (const obj of world.getAllObjects()) {
+                if (obj.getContainer()) {
+                    continue;
+                }
+                if (!ObjectNamespace.isSystemTile(obj)) {
+                    continue;
+                }
+                const tile = ObjectNamespace.parseSystemTile(obj).tile;
+                if (tile <= 0) {
+                    continue;
+                }
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                obj.destroy();
+            }
+            MapStringLoad.load(mapStringAfter);
         }
 
         // Set turn order.

@@ -421,14 +421,40 @@ class MiltySliceGenerator {
     }
 
     generate() {
-        return miltyslices(
-            this._count,
-            this._extraLegendariesAndWormholes,
-            this._minInf,
-            this._minRes,
-            this._minTot,
-            this._maxTot
-        );
+        const isGood = (slices) => {
+            if (slices.length != this._count) {
+                return false;
+            }
+            for (const slice of slices) {
+                if (slice.length !== 5) {
+                    return false;
+                }
+                for (const tile of slice) {
+                    if (typeof tile !== "number") {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+
+        let result = false;
+        while (!result) {
+            result = miltyslices(
+                this._count,
+                this._extraLegendariesAndWormholes,
+                this._minInf,
+                this._minRes,
+                this._minTot,
+                this._maxTot
+            );
+            // It fails sometimes, yuck.
+            if (!isGood(result)) {
+                console.log("MiltySliceGenerator.generate: err, trying again");
+                result = false;
+            }
+        }
+        return result;
     }
 }
 
