@@ -57,6 +57,7 @@ function maybePurge(card, player, selectedActionName) {
 function addRightClickOption(card) {
     assert(card instanceof Card);
     const actionName = "*" + locale("ui.menu.purge");
+    card.removeCustomAction(actionName);
     card.addCustomAction(actionName);
     card.onCustomAction.add(maybePurge);
 }

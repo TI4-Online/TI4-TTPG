@@ -74,6 +74,7 @@ function addRightClickOptions(agendaCard) {
         const actionName = "*" + locale(nameAndAction.localeName);
         agendaCard.addCustomAction(actionName);
     }
+    agendaCard.onCustomAction.remove(onCustomActionHandler);
     agendaCard.onCustomAction.add(onCustomActionHandler);
     agendaCard.__hasRightClickAgendaOptions = true;
 }

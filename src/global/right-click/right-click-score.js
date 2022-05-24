@@ -219,6 +219,10 @@ function score(scoreableObj, player) {
 }
 
 function maybeScore(obj, player, selectedActionName) {
+    assert(obj instanceof Card);
+    if (!obj.isInHolder() && !obj.isFaceUp()) {
+        return;
+    }
     const actionName = "*" + locale("ui.menu.score");
     if (selectedActionName === actionName) {
         score(obj, player);
@@ -229,6 +233,7 @@ function addRightClickOptions(scoreableObj) {
     assert(scoreableObj instanceof GameObject);
     const actionName = "*" + locale("ui.menu.score");
     scoreableObj.addCustomAction(actionName);
+    scoreableObj.onCustomAction.remove(maybeScore);
     scoreableObj.onCustomAction.add(maybeScore);
     scoreableObj.__hasRightClickScoreOption = true;
 }
