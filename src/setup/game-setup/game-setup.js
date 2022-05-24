@@ -11,6 +11,7 @@ const { globalEvents, world } = require("../../wrapper/api");
 let _useGameData = false;
 
 function onPlayerCountChanged(slider, player, value) {
+    world.TI4.turns.invalidate();
     world.TI4.config.setPlayerCount(value, player);
 }
 

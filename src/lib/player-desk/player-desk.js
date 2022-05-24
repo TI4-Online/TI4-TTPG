@@ -89,14 +89,11 @@ globalEvents.TI4.onGameSetup.add((state, player) => {
     PlayerDesk.resetUIs();
 });
 
-globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
+globalEvents.TI4.onPlayerCountAboutToChange.add((newPlayerCount, player) => {
     if (world.__isMock) {
         _playerDesks = false;
         return;
     }
-
-    // Lock in player count until finished.
-    GameSetupUI.disablePlayerCountSlider();
 
     // Remove any desk UIs.
     if (_playerDesks) {
@@ -107,13 +104,28 @@ globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
     }
 
     // Clean any existing desks, reset desks list.
+    // USE SYNCHRONOUS VERSION, DESKS ARRAY WILL CHANGE!
     if (_playerDesks) {
         for (const playerDesk of _playerDesks) {
             assert(playerDesk instanceof PlayerDesk);
-            new PlayerDeskSetup(playerDesk).cleanGenericAsync();
+            new PlayerDeskSetup(playerDesk).cleanGeneric();
         }
     }
+    _playerDesks = false;
+});
 
+globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
+    if (world.__isMock) {
+        _playerDesks = false;
+        return;
+    }
+
+    assert(!_playerDesks);
+
+    // Lock in player count until finished.
+    GameSetupUI.disablePlayerCountSlider();
+
+    // Use async setup to spread out load.
     const setup = () => {
         // Reset to new count.
         _playerDesks = false;
@@ -168,10 +180,18 @@ class PlayerDesk {
      * @returns {Array.{PlayerDesk}}
      */
     static getAllPlayerDesks() {
+        const playerCount = world.TI4.config.playerCount;
+
+        // Sanity check player count.
+        if (_playerDesks && _playerDesks.length != playerCount) {
+            _playerDesks = undefined;
+        }
+
+        // Use cached version if available.
         if (_playerDesks) {
             return [..._playerDesks]; // copy in case caller mutates order
         }
-        const playerCount = world.TI4.config.playerCount;
+
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
         const tableDesks = TableLayout.desks();
