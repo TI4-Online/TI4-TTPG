@@ -169,7 +169,7 @@ it("isFactionLeaderNsid", () => {
 });
 
 it("isFactionAlliance", () => {
-    assert.equal(Gather.isFactionAlliance("card.alliance:base/norr"), "norr");
+    assert.equal(Gather.isFactionAlliance("card.alliance:pok/norr"), "norr");
     assert(!Gather.isFactionAlliance("unit:base/fighter"));
 });
 
