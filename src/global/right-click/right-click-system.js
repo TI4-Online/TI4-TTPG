@@ -18,7 +18,7 @@ const {
 } = require("../../wrapper/api");
 
 function getNamesAndActions(player, systemTileObj) {
-    assert(player instanceof Player);
+    assert(!player || player instanceof Player);
     assert(systemTileObj instanceof GameObject);
 
     const namesAndActions = [

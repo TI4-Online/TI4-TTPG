@@ -69,6 +69,8 @@
     "ui.message.roll.gravRift": "{playerName} rolling for gravity rift: ",
     "ui.message.roll.gravRiftSuccess": "{value}: Ship survives!",
     "ui.message.roll.gravRiftFailure": "{value}: Ship removed!",
+    "ui.message.roll.autoGravRiftSuccess": "{value}: {unit} survives!",
+    "ui.message.roll.autoGravRiftFailure": "{value}: {unit} removed!",
 
     "ui.message.command_tokens_removed": "{factionName} withdrew {count} command {#count|token|tokens}",
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",

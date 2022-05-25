@@ -158,16 +158,16 @@ class AutoGravRiftRoller {
             AutoGravRiftRoller.addLines(die, unit);
             if (die.isHit()) {
                 parts.push(
-                    locale("ui.message.roll.gravRiftSuccess", {
+                    locale("ui.message.roll.autoGravRiftSuccess", {
                         value: die.getValue(),
-                        unit: unit.unit,
+                        unit: locale("unit." + unit.unit),
                     })
                 );
             } else {
                 parts.push(
-                    locale("ui.message.roll.gravRiftFailure", {
+                    locale("ui.message.roll.autoGravRiftFailure", {
                         value: die.getValue(),
-                        unit: unit.unit,
+                        unit: locale("unit." + unit.unit),
                     })
                 );
             }
