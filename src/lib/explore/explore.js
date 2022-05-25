@@ -27,6 +27,7 @@ const { Hex } = require("../hex");
  */
 class Explore {
     static getDistantSunsPlanets(systemTileObj, player) {
+        assert(systemTileObj instanceof GameObject);
         if (!player) {
             return;
         }
@@ -44,8 +45,8 @@ class Explore {
         const hex = Hex.fromPosition(systemTileObj.getPosition());
         const allPlastic = UnitPlastic.getAll();
         const hexPlastic = allPlastic.filter((plastic) => plastic.hex === hex);
-        const mechPlastic = hexPlastic.filter((plastic) =>
-            plastic.unit.includes("mech")
+        const mechPlastic = hexPlastic.filter(
+            (plastic) => plastic.unit === "mech"
         );
         const playersMechs = mechPlastic.filter(
             (plastic) => plastic.owningPlayerSlot === slot
@@ -63,9 +64,12 @@ class Explore {
 
     static getExploreActionNamesAndActions(systemTileObj, player) {
         assert(systemTileObj instanceof GameObject);
+        assert(!player || player instanceof Player);
 
         const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
-        assert(system);
+        if (!system) {
+            return;
+        }
 
         const distantSunsPlanets = Explore.getDistantSunsPlanets(
             systemTileObj,
