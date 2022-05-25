@@ -18,6 +18,9 @@ const {
 } = require("../../wrapper/api");
 
 function getNamesAndActions(player, systemTileObj) {
+    assert(player instanceof Player);
+    assert(systemTileObj instanceof GameObject);
+
     const namesAndActions = [
         {
             name: locale("ui.action.system.activate"),
