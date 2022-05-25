@@ -190,6 +190,8 @@ require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-purge");
 require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
+require("./global/right-click/right-click-trade-agreement");
+require("./global/right-click/right-click-iihq-modernization");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
