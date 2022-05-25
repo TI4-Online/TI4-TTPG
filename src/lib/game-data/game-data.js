@@ -50,6 +50,10 @@ const KEY_DELAY_MSECS = 45 * 1000;
 const TI4_STREAMER_BUDDY_KEY = "buddy";
 const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 5 * 1000;
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 /**
  * Periodic upload of (normally) anonymized game state.
  * When used with streamer mode will include player names.
@@ -246,7 +250,7 @@ class GameData {
     _createGameDataShell() {
         const data = {
             players: world.TI4.getAllPlayerDesks().map((desk) => {
-                return { color: desk.colorName };
+                return { color: capitalizeFirstLetter(desk.colorName) };
             }),
             platform: "ttpg",
         };
