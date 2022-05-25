@@ -7,7 +7,6 @@ const {
     globalEvents,
     world,
     Rotator,
-    Vector,
 } = require("../../wrapper/api");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -39,6 +38,7 @@ function getCommoditiesAndReturnTradeAgreement(card, player) {
         Broadcast.broadcastAll(
             locale("ui.message.trade_agreement_has_no_faction")
         );
+        return;
     }
 
     const commodities = faction.raw.commodities;
@@ -93,7 +93,7 @@ function removeRightClickOption(card) {
 function isTradeAgreement(obj) {
     assert(obj instanceof GameObject);
 
-    if (!obj instanceof Card) {
+    if (!(obj instanceof Card)) {
         return false;
     }
 
