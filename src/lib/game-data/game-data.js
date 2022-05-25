@@ -71,14 +71,14 @@ class GameData {
         this._intervalHandleKey = false;
         this._extraData = false;
 
-        this._lastPostString = false;
+        this._endpointToLastPostString = {};
         this._history = [];
 
         // Update on game end (throttle).
         this._onGameEndLastSendTimestamp = 0;
         globalEvents.TI4.onGameEnded.add((player) => {
             const timestamp = Date.now() / 1000;
-            if (timestamp > this._onGameEndLastSendTimestamp + 60) {
+            if (timestamp > this._onGameEndLastSendTimestamp + 10) {
                 this._onGameEndLastSendTimestamp = timestamp;
                 this._asyncUpdate(POSTTIMESTAMP);
             }
@@ -100,6 +100,9 @@ class GameData {
         this.disable(); // cancel if currently active
         this._enabled = true;
         this.updatePersistentConfig();
+
+        // Reset cache.
+        this._endpointToLastPostString = {};
 
         // Update immediately to pop-up authorization dialog(s).
         this._asyncUpdate(POSTTIMESTAMP);
@@ -160,6 +163,10 @@ class GameData {
         return this;
     }
 
+    getStreamerOverlayKey() {
+        return this._key;
+    }
+
     /**
      * Add 'extra' data component.  Overwrites existing if present.
      *
@@ -181,7 +188,11 @@ class GameData {
         assert(typeof endpoint == "string");
 
         // Abort normal (timestamp) reporting if only one player in game.
-        if (endpoint === POSTTIMESTAMP && world.getAllPlayers().length <= 1) {
+        if (
+            endpoint === POSTTIMESTAMP &&
+            world.getAllPlayers().length <= 1 &&
+            this._key !== "localhost"
+        ) {
             return;
         }
 
@@ -198,7 +209,11 @@ class GameData {
         assert(typeof endpoint == "string");
 
         // Abort normal (timestamp) reporting if only one player in game.
-        if (endpoint === POSTTIMESTAMP && world.getAllPlayers().length <= 1) {
+        if (
+            endpoint === POSTTIMESTAMP &&
+            world.getAllPlayers().length <= 1 &&
+            this._key !== "localhost"
+        ) {
             return;
         }
 
@@ -291,28 +306,33 @@ class GameData {
         assert(typeof endpoint == "string");
         assert(endpoint === POSTKEY || endpoint === POSTTIMESTAMP);
 
+        // Set to localhost for certain reserved keys.
         let host = this._key === "localhost" ? LOCALHOST : DEFAULT_HOST;
         if (this._key === TI4_STREAMER_BUDDY_KEY && endpoint === POSTKEY) {
             host = LOCALHOST;
         }
+
+        // Always send timestamp.
         const urlArgs = [`timestamp=${world.TI4.config.timestamp}`];
-        if (this._key) {
+
+        // Only add key for the key endpoint, otherwise data is not archived.
+        if (endpoint === POSTKEY && this._key) {
             urlArgs.push(`key=${this._key}`);
         }
+
         return `http://${host}/${endpoint}?${urlArgs.join("&")}`;
     }
 
     _post(data, endpoint) {
         assert(typeof endpoint == "string");
 
-        //console.log(`XXX GAME DATA XXX\n${JSON.stringify(data)}`);
-
         // Drop if nothing changed.  No native digest, just keep whole string.
         const thisPostStr = JSON.stringify(data);
-        if (this._lastPostString === thisPostStr) {
+        const lastPostStr = this._endpointToLastPostString[endpoint];
+        if (lastPostStr === thisPostStr) {
             return; // nothing changed
         }
-        this._lastPostString = thisPostStr;
+        this._endpointToLastPostString[endpoint] = thisPostStr;
 
         // Add current timestamp.
         data.timestamp = Date.now() / 1000;
@@ -321,7 +341,7 @@ class GameData {
         const url = this._getUrl(endpoint);
         const fetchOptions = {
             headers: { "Content-type": "application/json;charset=UTF-8" },
-            body: JSON.stringify(data),
+            body: JSON.stringify(data), // timestamp got added
             method: "POST",
         };
         const promise = fetch(url, fetchOptions);

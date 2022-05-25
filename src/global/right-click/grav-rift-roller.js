@@ -160,14 +160,14 @@ class AutoGravRiftRoller {
                 parts.push(
                     locale("ui.message.roll.autoGravRiftSuccess", {
                         value: die.getValue(),
-                        unit: unit.unit,
+                        unit: locale("unit." + unit.unit),
                     })
                 );
             } else {
                 parts.push(
                     locale("ui.message.roll.autoGravRiftFailure", {
                         value: die.getValue(),
-                        unit: unit.unit,
+                        unit: locale("unit." + unit.unit),
                     })
                 );
             }

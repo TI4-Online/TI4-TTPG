@@ -38,7 +38,10 @@ function consider(player, message) {
     if (key) {
         world.TI4.gameData.setStreamerOverlayKey(key);
         world.TI4.gameData.enable();
-        Broadcast.chatAll(locale("ui.message.enabling_game_data"));
+        const sanityCheck = world.TI4.gameData.getStreamerOverlayKey();
+        Broadcast.chatAll(
+            locale("ui.message.enabling_game_data", { key: sanityCheck })
+        );
     } else {
         world.TI4.gameData.setStreamerOverlayKey();
         world.TI4.gameData.enable();

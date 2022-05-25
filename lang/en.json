@@ -33,7 +33,7 @@
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.no_system_activated": "No system activated",
     "ui.message.shuffling_all_decks": "Shuffling all decks",
-    "ui.message.enabling_game_data": "Enabling game data",
+    "ui.message.enabling_game_data": "Enabling game data ('{key}')",
     "ui.message.disabling_game_data": "Disabling game data",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
@@ -69,6 +69,8 @@
     "ui.message.roll.gravRift": "{playerName} rolling for gravity rift: ",
     "ui.message.roll.gravRiftSuccess": "{value}: Ship survives!",
     "ui.message.roll.gravRiftFailure": "{value}: Ship removed!",
+    "ui.message.roll.autoGravRiftSuccess": "{value}: {unit} survives!",
+    "ui.message.roll.autoGravRiftFailure": "{value}: {unit} removed!",
 
     "ui.message.command_tokens_removed": "{factionName} withdrew {count} command {#count|token|tokens}",
     "ui.message.command_tokens_inserted": "{factionName} deposited {count} command {#count|token|tokens}",

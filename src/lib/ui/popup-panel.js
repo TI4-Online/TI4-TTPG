@@ -105,7 +105,11 @@ class PopupPanel extends Border {
      * @param {function} onActionCallback - f(gameObject, player, actionName)
      * @returns {PopupPanel} self, for chaining
      */
-    addAction(actionName, onActionCallback, delayedHide) {
+    addAction(actionName, onActionCallback, delayedHide = false) {
+        assert(typeof actionName === "string");
+        assert(typeof onActionCallback === "function");
+        assert(typeof delayedHide === "boolean");
+
         this._namesAndActions.push({
             name: actionName,
             action: onActionCallback,
