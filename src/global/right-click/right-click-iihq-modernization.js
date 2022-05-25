@@ -41,6 +41,7 @@ function maybeFetchCustodiaVigilia(_card, player, selectedActionName) {
 
 function addRightClickOption(card) {
     assert(card instanceof Card);
+    removeRightClickOption(card);
     const actionName = "*" + locale("ui.menu.fetch_custodia_vigilia");
     card.addCustomAction(actionName);
     card.onCustomAction.add(maybeFetchCustodiaVigilia);

@@ -43,7 +43,7 @@ function getCommoditiesAndReturnTradeAgreement(card, player) {
 
     const commodities = faction.raw.commodities;
     const ownerPlayer = world.getPlayerBySlot(cardOwnerSlot);
-    var owner = cardColorName;
+    let owner = cardColorName;
     if (ownerPlayer) {
         owner = ownerPlayer.getName();
     }
@@ -61,12 +61,11 @@ function getCommoditiesAndReturnTradeAgreement(card, player) {
 
     // give commodities to the player holding the trade agreement
     const nsid = "token:base/tradegood_commodity_1";
-    var pos = player.getCursorPosition().add([0, 0, 5]);
-    const offset = new Vector(-1, 1, 0);
-    const rot = new Rotator(0, 0, 0);
-    for (var i = 0; i < commodities; i++) {
-        Spawn.spawn(nsid, pos, rot);
-        pos = pos.add(offset);
+    let pos = player.getCursorPosition().add([0, 0, 10]);
+    let obj;
+    for (let i = 0; i < commodities; i++) {
+        obj = Spawn.spawn(nsid, pos, new Rotator(0, 0, 0));
+        pos = pos.add(obj.getExtent().multiply(2));
     }
 }
 
@@ -79,6 +78,7 @@ function maybeTradeAgreement(card, player, selectedActionName) {
 
 function addRightClickOption(card) {
     assert(card instanceof Card);
+    removeRightClickOption(card);
     const actionName = "*" + locale("ui.menu.trade_agreement");
     card.addCustomAction(actionName);
     card.onCustomAction.add(maybeTradeAgreement);
