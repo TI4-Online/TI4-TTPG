@@ -102,6 +102,8 @@
     "ui.button.cancel": "CANCEL",
     "ui.button.ready": "READY",
     "ui.button.resolve_explore": "Resolve",
+    "ui.button.collapse": "Collapse",
+    "ui.button.expand": "Expand",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Diplomacy System",

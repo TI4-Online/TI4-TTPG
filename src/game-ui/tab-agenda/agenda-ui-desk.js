@@ -295,10 +295,19 @@ class AgendaUiDesk extends Border {
                 this._voteLocked
             );
         });
+        const collapseButton = new Button()
+            .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
+            .setText(locale("ui.button.collapse"));
+
         panel.addChild(
             new LayoutBox()
                 .setHorizontalAlignment(HorizontalAlignment.Center)
-                .setChild(this._lockVoteButton)
+                .setChild(
+                    new HorizontalBox()
+                        .setChildDistance(CONFIG.spacing)
+                        .addChild(this._lockVoteButton)
+                        .addChild(collapseButton)
+                )
         );
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
 
@@ -321,6 +330,42 @@ class AgendaUiDesk extends Border {
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
+
+        collapseButton.onClicked.add((button, player) => {
+            console.log("AgendaDeskUI.collapse");
+            if (!this.allowClick(player)) {
+                return;
+            }
+            const expandButton = new Button()
+                .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
+                .setText(locale("ui.button.expand"));
+            const expandButtonBox = new LayoutBox()
+                .setPadding(
+                    CONFIG.padding,
+                    CONFIG.padding,
+                    CONFIG.padding,
+                    CONFIG.padding
+                )
+                .setChild(expandButton);
+            expandButton.onClicked.add((button, player) => {
+                console.log("AgendaDeskUI.expand");
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                world.removeUIElement(this._ui);
+                this._ui = new UIElement();
+                this._ui.position = playerDesk.localPositionToWorld(localPos);
+                this._ui.rotation = playerDesk.localRotationToWorld(localRot);
+                this._ui.widget = this;
+                world.addUI(this._ui);
+            });
+            world.removeUIElement(this._ui);
+            this._ui = new UIElement();
+            this._ui.position = playerDesk.localPositionToWorld(localPos);
+            this._ui.rotation = playerDesk.localRotationToWorld(localRot);
+            this._ui.widget = new Border().setChild(expandButtonBox);
+            world.addUI(this._ui);
+        });
     }
 
     setPeers(peers) {
