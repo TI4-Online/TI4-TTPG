@@ -33,7 +33,7 @@
     "ui.message.system_activated": "{playerName} activated System {systemTile}: {systemName}",
     "ui.message.no_system_activated": "No system activated",
     "ui.message.shuffling_all_decks": "Shuffling all decks",
-    "ui.message.enabling_game_data": "Enabling game data",
+    "ui.message.enabling_game_data": "Enabling game data ('{key}')",
     "ui.message.disabling_game_data": "Disabling game data",
 
     "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
