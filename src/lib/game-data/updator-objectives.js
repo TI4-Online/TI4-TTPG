@@ -172,4 +172,19 @@ module.exports = (data) => {
             playerData.objectives = objectives;
         }
     });
+
+    // Strip off omega suffix.
+    for (const [k, v] of Object.entries(data.objectives)) {
+        data.objectives[k] = v.map((name) => {
+            return name.replace(/ Ω$/, "");
+        });
+    }
+    for (const playerData of data.players) {
+        if (!playerData.objectives) {
+            continue;
+        }
+        playerData.objectives = playerData.objectives.map((name) => {
+            return name.replace(/ Ω$/, "");
+        });
+    }
 };

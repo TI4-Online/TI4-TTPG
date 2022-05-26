@@ -83,3 +83,42 @@ it("objectives (holder)", () => {
     });
     assert.deepEqual(data.players[0].objectives, ["Become a Martyr"]);
 });
+
+it("strip off omega", () => {
+    // overlay does not recognize omega objective names, strip the suffix
+    const playerDesks = world.TI4.getAllPlayerDesks();
+    const data = {
+        players: playerDesks.map((desk) => {
+            return { color: desk.colorName };
+        }),
+    };
+
+    const holder = new MockCardHolder({
+        savedData: `{"deskIndex":"${playerDesks[0].index}"}`,
+    });
+
+    world.__clear();
+    world.__addObject(
+        new MockCard({
+            allCardDetails: [
+                new MockCardDetails({
+                    name: "Fight with Precision Ω",
+                    metadata:
+                        "card.objective.secret:codex.vigil/fight_with_precision.omega",
+                }),
+            ],
+            holder: holder,
+        })
+    );
+    UPDATOR(data);
+    world.__clear();
+
+    assert.deepEqual(data.objectives, {
+        Agenda: [],
+        "Public Objectives I": [],
+        "Public Objectives II": [],
+        Relics: [],
+        "Secret Objectives": ["Fight with Precision"],
+    });
+    assert.deepEqual(data.players[0].objectives, ["Fight with Precision"]);
+});
