@@ -219,8 +219,9 @@ function score(scoreableObj, player) {
 }
 
 function maybeScore(obj, player, selectedActionName) {
-    assert(obj instanceof Card);
-    if (!obj.isInHolder() && !obj.isFaceUp()) {
+    // Cards outside a hand must be face up to be scorable.
+    // (Careful, custodians token is not a card.)
+    if (obj instanceof Card && !obj.isInHolder() && !obj.isFaceUp()) {
         return;
     }
     const actionName = "*" + locale("ui.menu.score");

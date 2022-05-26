@@ -1,7 +1,13 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { Facing } = require("../facing");
-const { GameObject, Rotator, Vector, world } = require("../../wrapper/api");
+const {
+    DrawingLine,
+    GameObject,
+    Rotator,
+    Vector,
+    world,
+} = require("../../wrapper/api");
 
 const SCOREBOARD_LOCAL_WIDTH = 43;
 const SCOREBOARD_LOCAL_HEIGHT = 6.3;
@@ -36,10 +42,15 @@ class Scoreboard {
             dir = -1;
             slotCount = 15;
         }
-        const slotWidth = SCOREBOARD_LOCAL_WIDTH / slotCount;
 
-        const mid = (slotCount - 1) / 2;
+        // Tweak values very slighly for more precise centers, accounting
+        // for one side of the scoreboard extending slightly.
+        const slotWidth = (SCOREBOARD_LOCAL_WIDTH - 0.5) / slotCount;
+        let mid = (slotCount - 1) / 2;
+        mid -= 0.03;
+
         const dLeft = (mid - score) * slotWidth * dir;
+
         return new Vector(dLeft, 0, 0);
     }
 
@@ -72,7 +83,7 @@ class Scoreboard {
         row -= (numRows - 1) / 2;
         col -= 0.5;
 
-        const x = localPos.x - col * 2.1;
+        const x = localPos.x - col * 1.5; //2.1
         const y = localPos.y - row * 2.3;
         //console.log(`[${index}]: (${col}, ${row}) => (${x}, ${y})`);
         let pos = new Vector(x, y, 0);
@@ -167,6 +178,32 @@ class Scoreboard {
             }
         }
         return playerSlotToScore;
+    }
+
+    static drawDebug() {
+        const scoreboard = Scoreboard.getScoreboard();
+        assert(scoreboard);
+        while (scoreboard.getDrawingLines().length > 0) {
+            scoreboard.removeDrawingLine(0);
+        }
+        const isFaceUp = Facing.isFaceUp(scoreboard);
+        const max = isFaceUp ? 10 : 14;
+        const z = isFaceUp ? 0.3 : -0.01;
+        const normal = new Vector(0, 0, isFaceUp ? 1 : -1);
+        for (let i = 0; i <= max; i++) {
+            const pos = Scoreboard.getScoreLocalPos(scoreboard, i);
+            pos.z = z;
+            const drawingLine = new DrawingLine();
+            drawingLine.points = [
+                pos.add([1, 0, 0]),
+                pos.add([-1, 0, 0]),
+                pos.add([0, 1, 0]),
+                pos.add([0, -1, 0]),
+            ];
+            drawingLine.normals = [normal, normal, normal, normal];
+            drawingLine.thickness = 0.1;
+            scoreboard.addDrawingLine(drawingLine);
+        }
     }
 }
 
