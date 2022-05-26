@@ -22,6 +22,7 @@ const {
 
 const PLANET_POINTS = 16;
 const DEFAULT_THICKNESS = 0.2;
+const BORDER_DRAWING_LINE_TAG = "__border_line__";
 
 const AREA = {
     PLANET: 1,
@@ -314,7 +315,7 @@ class Borders {
         const inset = thickness / 2 + DEFAULT_THICKNESS / 2;
         const points = new Polygon(segment.line).inset(inset).getPoints();
 
-        const z = world.getTableHeight() + 0.01 * Hex.SCALE;
+        const z = world.getTableHeight() + 0.3 * Hex.SCALE + 0.01;
         points.forEach((p) => {
             p.z = z;
         });
@@ -336,43 +337,9 @@ class Borders {
         drawingLine.points = points; // set AFTER applying closed, not mutable
         drawingLine.rounded = false;
         drawingLine.thickness = thickness;
+        drawingLine.tag = BORDER_DRAWING_LINE_TAG;
 
         return drawingLine;
-    }
-
-    static isSameDrawingLine(a, b) {
-        assert(a instanceof DrawingLine);
-        assert(b instanceof DrawingLine);
-
-        if (a.points.length !== b.points.length) {
-            return false;
-        }
-        if (a.rounded !== b.rounded) {
-            return false;
-        }
-
-        const dt = Math.abs(a.thickness - b.thickness);
-        if (dt > 0.01) {
-            return false;
-        }
-
-        const dr = Math.abs(a.color.r - b.color.r);
-        const dg = Math.abs(a.color.g - b.color.g);
-        const db = Math.abs(a.color.b - b.color.b);
-        const da = Math.abs(a.color.a - b.color.a);
-        if (dr + dg + db + da > 0.01) {
-            return false;
-        }
-
-        for (let i = 0; i < a.points.length; i++) {
-            const ap = a.points[i];
-            const bp = b.points[i];
-            if (ap.subtract(bp).magnitudeSquared() > 0.1) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     constructor() {
@@ -440,12 +407,9 @@ class Borders {
             },
             () => {
                 this.clearLines();
-            },
-            () => {
                 if (!this._enabled) {
                     return;
                 }
-                this.clearLines(); // just in case added between frames
                 this._lines = [];
                 for (const linkedSegment of linkedSegments) {
                     const line = Borders.createDrawingLine(
@@ -472,18 +436,14 @@ class Borders {
     }
 
     clearLines() {
-        if (!this._lines) {
-            return;
-        }
-        for (const candidate of this._lines) {
-            const allDrawingLines = world.getDrawingLines();
-            for (let i = 0; i < allDrawingLines.length; i++) {
-                const drawingLine = allDrawingLines[i];
-                if (Borders.isSameDrawingLine(drawingLine, candidate)) {
-                    world.removeDrawingLine(i);
-                    break;
-                }
+        const dele = [];
+        for (const candidate of world.getDrawingLines()) {
+            if (candidate.tag === BORDER_DRAWING_LINE_TAG) {
+                dele.push(candidate);
             }
+        }
+        for (const candidate of dele) {
+            world.removeDrawingLineObject(candidate);
         }
         this._lines = undefined;
     }
