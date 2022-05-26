@@ -4,10 +4,23 @@ const { DrawingLine, Vector, globalEvents, world } = require("../wrapper/api");
 
 const LENGTH = 40;
 const THICKNESS = 1;
+const TURN_DRAWING_LINE_TAG = "__turn_line__";
 
 let _turnHighlight = undefined;
 
 class TurnHighlight {
+    static removeAllTurnHighlightLines() {
+        const dele = [];
+        for (const candidate of world.getDrawingLines()) {
+            if (candidate.tag === TURN_DRAWING_LINE_TAG) {
+                dele.push(candidate);
+            }
+        }
+        for (const candidate of dele) {
+            world.removeLineObject(candidate);
+        }
+    }
+
     constructor(playerDesk) {
         assert(playerDesk);
 
@@ -26,6 +39,8 @@ class TurnHighlight {
         this._drawingLine.points = points;
         this._drawingLine.rounded = true;
         this._drawingLine.thickness = THICKNESS;
+        // TODO XXX WHEN READY
+        //this._drawingLine.tag = TURN_DRAWING_LINE_TAG;
     }
 
     attachUI() {
@@ -35,6 +50,8 @@ class TurnHighlight {
     }
 
     detachUI() {
+        // TODO XXX WHEN READY
+        //world.removeLineObject(this._drawingLine);
         const allDrawingLines = world.getDrawingLines();
         for (let i = 0; i < allDrawingLines.length; i++) {
             const drawingLine = allDrawingLines[i];
@@ -43,6 +60,7 @@ class TurnHighlight {
                 break;
             }
         }
+        return this;
     }
 }
 
