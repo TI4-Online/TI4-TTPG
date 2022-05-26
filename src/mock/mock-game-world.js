@@ -157,6 +157,12 @@ class GameWorld {
         this._drawingLines.splice(index, 1);
     }
 
+    removeDrawingLineObject(value) {
+        this._drawingLines = this._drawingLines.filter((x) => {
+            return x !== value;
+        });
+    }
+
     removeUI(index) {
         this._uis.splice(index, 1);
     }

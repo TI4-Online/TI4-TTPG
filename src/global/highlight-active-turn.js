@@ -1,5 +1,4 @@
 const assert = require("../wrapper/assert-wrapper");
-const { Borders } = require("../lib/borders/borders");
 const { DrawingLine, Vector, globalEvents, world } = require("../wrapper/api");
 
 const LENGTH = 40;
@@ -17,14 +16,14 @@ class TurnHighlight {
             }
         }
         for (const candidate of dele) {
-            world.removeLineObject(candidate);
+            world.removeDrawingLineObject(candidate);
         }
     }
 
     constructor(playerDesk) {
         assert(playerDesk);
 
-        const z = world.getTableHeight() - 0.1;
+        const z = world.getTableHeight() + 0.1;
         const points = [
             new Vector(42, -LENGTH / 2, 0),
             new Vector(42, LENGTH / 2, 0),
@@ -39,27 +38,16 @@ class TurnHighlight {
         this._drawingLine.points = points;
         this._drawingLine.rounded = true;
         this._drawingLine.thickness = THICKNESS;
-        // TODO XXX WHEN READY
-        //this._drawingLine.tag = TURN_DRAWING_LINE_TAG;
+        this._drawingLine.tag = TURN_DRAWING_LINE_TAG;
     }
 
     attachUI() {
-        this.detachUI();
         world.addDrawingLine(this._drawingLine);
         return this;
     }
 
     detachUI() {
-        // TODO XXX WHEN READY
-        //world.removeLineObject(this._drawingLine);
-        const allDrawingLines = world.getDrawingLines();
-        for (let i = 0; i < allDrawingLines.length; i++) {
-            const drawingLine = allDrawingLines[i];
-            if (Borders.isSameDrawingLine(drawingLine, this._drawingLine)) {
-                world.removeDrawingLine(i);
-                break;
-            }
-        }
+        world.removeDrawingLineObject(this._drawingLine);
         return this;
     }
 }
@@ -67,6 +55,9 @@ class TurnHighlight {
 globalEvents.TI4.onTurnChanged.add((currentDesk, previousDesk, player) => {
     if (_turnHighlight) {
         _turnHighlight.detachUI();
+    } else {
+        // The first time called scrub the world of these lines.
+        TurnHighlight.removeAllTurnHighlightLines();
     }
     _turnHighlight = new TurnHighlight(currentDesk).attachUI();
 });
