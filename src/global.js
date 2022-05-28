@@ -193,6 +193,7 @@ require("./global/right-click/right-click-score");
 require("./global/right-click/right-click-trade-agreement");
 require("./global/right-click/right-click-iihq-modernization");
 require("./global/right-click/heroes/helio-command-array");
+require("./global/right-click/heroes/dimensional-anchor");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
