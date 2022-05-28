@@ -1,11 +1,15 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { CommandToken } = require("../../../lib/command-token/command-token");
-const { Card, world } = require("../../../wrapper/api");
+const {
+    Card,
+    world,
+    GameObject,
+    globalEvents,
+} = require("../../../wrapper/api");
 const { Broadcast } = require("../../../lib/broadcast");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const { Hex } = require("../../../lib/hex");
 const locale = require("../../../lib/locale");
-const { GameObject, globalEvents } = require("@tabletop-playground/api");
 
 const CARD_NAME = "jace_x_4th_air_legion";
 const PURGE_CONTAINER_NAME = "bag.purge";
@@ -22,8 +26,6 @@ function helioCommandArray(card) {
     let cardOwnerSlot = -1;
     for (const desk of world.TI4.getAllPlayerDesks()) {
         const faction = world.TI4.getFactionByPlayerSlot(desk.playerSlot);
-        if (faction) {
-        }
         if (faction && faction.raw.leaders.heroes.includes(CARD_NAME)) {
             cardOwnerSlot = desk.playerSlot;
             break;
