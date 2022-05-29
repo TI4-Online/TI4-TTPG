@@ -33,7 +33,7 @@ function helioCommandArray(card) {
     }
 
     if (cardOwnerSlot === -1) {
-        Broadcast.chatAll(
+        Broadcast.broadcastAll(
             locale("ui.message_helio_command_array_has_no_owner")
         );
         return;
@@ -41,7 +41,9 @@ function helioCommandArray(card) {
 
     const playerName = world.TI4.getNameByPlayerSlot(cardOwnerSlot);
 
-    Broadcast.chatAll(locale("ui.message.helio_command_array", { playerName }));
+    Broadcast.broadcastAll(
+        locale("ui.message.helio_command_array", { playerName })
+    );
 
     const commandTokens = [];
     for (const obj of world.getAllObjects()) {

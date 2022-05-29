@@ -55,7 +55,7 @@ function dimensionalAnchor(card, player) {
 
     if (cardOwnerSlot === -1) {
         Broadcast.broadcastAll(
-            locale("ui.message.dimensional_anchor_has_no_error")
+            locale("ui.message.dimensional_anchor_has_no_owner")
         );
         return;
     }
