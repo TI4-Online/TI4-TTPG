@@ -20,7 +20,6 @@ const PURGE_CONTAINER_NAME = "bag.purge";
  * from the game board.
  */
 function helioCommandArray(card) {
-    console.log(ACTION_NAME, ACTION_NAME, ACTION_NAME);
     assert(card instanceof Card);
     const cardName = ObjectNamespace.parseCard(card).name;
     assert(cardName === CARD_NAME);
