@@ -2,8 +2,8 @@ const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-deleg
 const { fetch, world } = require("../wrapper/api");
 const assert = require("../wrapper/assert-wrapper");
 
-//const REPORT_URL = "https://ti4-game-data.appspot.com/reporterror";
-const REPORT_URL = "http://localhost:8080/reporterror";
+const REPORT_URL = "https://ti4-game-data.appspot.com/reporterror";
+//const REPORT_URL = "http://localhost:8080/reporterror";
 
 // Send error reports to an external site
 class ErrorReporting {
