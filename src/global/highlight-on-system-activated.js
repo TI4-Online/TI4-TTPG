@@ -22,11 +22,10 @@ const DISPLAY_SECONDS_APPROX = 15; // 30 in TTS
 const DISPLAY_SECONDS =
     Math.ceil(DISPLAY_SECONDS_APPROX / PULSE_SECONDS) * PULSE_SECONDS; // complete last pulse
 
-let _img = undefined;
 let _systemHighlight = undefined;
 
 class SystemHighlight {
-    constructor(obj, color) {
+    constructor(obj, color, infinite) {
         assert(obj instanceof GameObject);
         assert(ColorUtil.isColor(color));
 
@@ -36,7 +35,7 @@ class SystemHighlight {
         this._ui = new UIElement();
         this._updateHandler = () => {
             const age = Date.now() - this._mintTimeMsecs;
-            if (age / 1000 > DISPLAY_SECONDS) {
+            if (age / 1000 > DISPLAY_SECONDS && !infinite) {
                 this.detachUI();
                 return;
             }
@@ -48,16 +47,11 @@ class SystemHighlight {
     }
 
     attachUI() {
-        // Keep image around for future use.
-        if (!_img) {
-            _img = new ImageWidget()
-                .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
-                .setImage(OVERLAY_PNG, refPackageId);
-        }
-
         this._ui.position = new Vector(0, 0, 0.13);
         this._ui.rotation = new Rotator(0, 0, 0);
-        this._ui.widget = _img;
+        this._ui.widget = new ImageWidget()
+            .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
+            .setImage(OVERLAY_PNG, refPackageId);
         this._ui.useTransparency = true;
         this._ui.scale = 1 / OVERLAY_SCALE;
         this._obj.addUI(this._ui);
@@ -77,7 +71,7 @@ class SystemHighlight {
         const phi = u * Math.PI * 2;
         this._color.a = 1 - (Math.cos(phi) + 1) / 2;
         assert(this._color.a >= 0 && this._color.a <= 1);
-        _img.setTintColor(this._color);
+        this._ui.widget.setTintColor(this._color);
     }
 }
 
@@ -97,3 +91,5 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
     const color = currentDesk ? currentDesk.plasticColor : new Color(1, 1, 0);
     applyHighlight(obj, color);
 });
+
+module.exports = { SystemHighlight };

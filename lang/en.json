@@ -50,6 +50,16 @@
     "ui.message.trade_agreement_has_no_owner": "Trade Agreement has no owner, can't cash it in.",
     "ui.message.trade_agreement_has_no_faction": "Trade Agreement owner has no faction, can't cash it in.",
 
+    "ui.message.helio_command_array": "{playerName} using Helio Command Array to remove each of their command tokens from the game board.",
+    "ui.message.helio_command_array_has_no_owner": "No faction has Jace X. 4th Air Legion as a hero, cannot perform Helio Command Array.",
+    "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens.",
+    "ui.message.multiverse_shift_has_no_owner": "No faction has Conservator Procyon as a her, cannot Multiverse Shift.",
+    "ui.message.dimensional_anchor": "{playerName} using Dimensional Anchor to capture ships.",
+    "ui.message.dimensional_anchor_has_no_owner": "No faction has It Feeds on Carrion as a hero, cannot perform Dimensional Anchor.",
+    "ui.message.roll.dimensional_anchor": "{playerName} rolling for Dimensional Anchor! Red ships are captured.\n",
+    "ui.message.roll.dimensional_anchor_capture": "{value}: {unit} is captured!",
+    "ui.message.roll.dimensional_anchor_miss": "{value}: {unit} survives!",
+
     "ui.message.stellar_converter": "Destroying {planetName} with Stellar Converter",
 
     "ui.message.announce_retreat": "{playerName} announcing retreat.",
@@ -139,6 +149,9 @@
     "ui.menu.fetch_planet": "Fetch {planetName}",
     "ui.menu.fetch_custodia_vigilia": "Fetch Custodia Vigilia planet card and legendary card",
     "ui.menu.trade_agreement": "Return trade agreement and gain commodities",
+    "ui.menu.dimensional_anchor": "Dimensional Anchor",
+    "ui.menu.helio_command_array": "Helio Command Array",
+    "ui.menu.multiverse_shift": "Multiverse shift",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
