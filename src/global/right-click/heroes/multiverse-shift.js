@@ -96,7 +96,11 @@ function multiverseShift(card) {
         }
 
         const ownersShipsInHex = UnitPlastic.getAll().filter((plastic) => {
-            return plastic.hex === hex && SHIPS.includes(plastic.unit);
+            return (
+                plastic.hex === hex &&
+                SHIPS.includes(plastic.unit) &&
+                plastic.owningPlayerSlot === cardOwnerSlot
+            );
         });
 
         if (ownersShipsInHex.length > 0) {
