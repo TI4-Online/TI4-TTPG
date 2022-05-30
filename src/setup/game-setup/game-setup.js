@@ -49,6 +49,11 @@ function onUseGameDataChanged(checkBox, player, isChecked) {
     _useGameData = isChecked;
 }
 
+function onReportErrorsChanged(checkBox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    world.TI4.config.setReportErrors(isChecked);
+}
+
 function onUseLargerHexes(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
 
@@ -100,6 +105,7 @@ class GameSetup {
         this._ui = new GameSetupUI({
             onPlayerCountChanged,
             onGamePointsChanged,
+            onReportErrorsChanged,
             onUseLargerHexes,
             onUsePokChanged,
             onUseOmegaChanged,

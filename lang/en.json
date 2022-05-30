@@ -164,6 +164,7 @@
     "ui.setup.use_codex2": "Codex 2: Affinity",
     "ui.setup.use_codex3": "Codex 3: Vigil",
     "ui.setup.use_game_data": "Send anonymized game data",
+    "ui.setup.report_errors": "Send error reports",
     "ui.setup.do_setup": "START GAME",
 
     "ui.desk.take_seat": "TAKE SEAT",
