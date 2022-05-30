@@ -23,6 +23,7 @@ const {
 } = require("../../../global/right-click/grav-rift-roller");
 
 const CARD_NAME = "it_feeds_on_carrion";
+const ACTION_NAME = "*" + locale("ui.menu.dimensional_anchor");
 const PURGE_CONTAINER_NAME = "bag.purge";
 const DELETE_DIE_AFTER_N_SECONDS = 30;
 const DIMENSIONAL_TEAR_MISS = 4;
@@ -204,8 +205,7 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
 }
 
 function maybeDimensionalAnchor(card, player, selectedActionName) {
-    const actionName = "*" + locale("ui.menu.dimensional_anchor");
-    if (selectedActionName === actionName) {
+    if (selectedActionName === ACTION_NAME) {
         dimensionalAnchor(card, player);
     }
 }
@@ -213,14 +213,12 @@ function maybeDimensionalAnchor(card, player, selectedActionName) {
 function addRightClickOption(card) {
     assert(card instanceof Card);
     removeRightClickOption(card);
-    const actionName = "*" + locale("ui.menu.dimensional_anchor");
-    card.addCustomAction(actionName);
+    card.addCustomAction(ACTION_NAME);
     card.onCustomAction.add(maybeDimensionalAnchor);
 }
 
 function removeRightClickOption(card) {
-    const actionName = "*" + locale("ui.menu.dimensional_anchor");
-    card.removeCustomAction(actionName);
+    card.removeCustomAction(ACTION_NAME);
     card.onCustomAction.remove(maybeDimensionalAnchor);
 }
 

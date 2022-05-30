@@ -12,6 +12,7 @@ const { Hex } = require("../../../lib/hex");
 const locale = require("../../../lib/locale");
 
 const CARD_NAME = "jace_x_4th_air_legion";
+const ACTION_NAME = "*" + locale("ui.menu.helio_command_array");
 const PURGE_CONTAINER_NAME = "bag.purge";
 
 /**
@@ -19,6 +20,7 @@ const PURGE_CONTAINER_NAME = "bag.purge";
  * from the game board.
  */
 function helioCommandArray(card) {
+    console.log(ACTION_NAME, ACTION_NAME, ACTION_NAME);
     assert(card instanceof Card);
     const cardName = ObjectNamespace.parseCard(card).name;
     assert(cardName === CARD_NAME);
@@ -94,9 +96,8 @@ function helioCommandArray(card) {
     }
 }
 
-function maybeHeliosCommandArray(card, _player, selectedActionName) {
-    const actionName = "*" + locale("ui.menu.helios_command_array");
-    if (selectedActionName === actionName) {
+function maybeHelioCommandArray(card, _player, selectedActionName) {
+    if (selectedActionName === ACTION_NAME) {
         helioCommandArray(card);
     }
 }
@@ -104,15 +105,13 @@ function maybeHeliosCommandArray(card, _player, selectedActionName) {
 function addRightClickOption(card) {
     assert(card instanceof Card);
     removeRightClickOption(card);
-    const actionName = "*" + locale("ui.menu.helios_command_array");
-    card.addCustomAction(actionName);
-    card.onCustomAction.add(maybeHeliosCommandArray);
+    card.addCustomAction(ACTION_NAME);
+    card.onCustomAction.add(maybeHelioCommandArray);
 }
 
 function removeRightClickOption(card) {
-    const actionName = "*" + locale("ui.menu.helios_command_array");
-    card.removeCustomAction(actionName);
-    card.onCustomAction.remove(maybeHeliosCommandArray);
+    card.removeCustomAction(ACTION_NAME);
+    card.onCustomAction.remove(maybeHelioCommandArray);
 }
 
 function isJaceX4thAirLegion(obj) {
@@ -135,20 +134,20 @@ function isJaceX4thAirLegion(obj) {
 globalEvents.TI4.onSingletonCardCreated.add((obj) => {
     if (isJaceX4thAirLegion(obj)) {
         addRightClickOption(obj);
-        obj.__hasRightClickHeliosCommandArray = true;
+        obj.__hasRightClickHelioCommandArray = true;
     }
 });
 
 globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickHeliosCommandArray) {
+    if (obj.__hasRightClickHelioCommandArray) {
         removeRightClickOption(obj);
-        delete obj.__hasRightClickHeliosCommandArray;
+        delete obj.__hasRightClickHelioCommandArray;
     }
 });
 
 for (const obj of world.getAllObjects()) {
     if (isJaceX4thAirLegion(obj)) {
         addRightClickOption(obj);
-        obj.__hasRightClickHeliosCommandArray = true;
+        obj.__hasRightClickHelioCommandArray = true;
     }
 }
