@@ -1,88 +1,92 @@
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 const { globalEvents, world } = require("./wrapper/api");
 
+const onErr = (exception) => {
+    world.TI4.errorReporting.error(exception.stack);
+};
+
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
     // Called when an ageda card enters or leaves the "agenda spot" on the mat.
     // <(agendaCard: GameObject|undefined) => void>
-    onAgendaChanged: new TriggerableMulticastDelegate(),
+    onAgendaChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called when a script broadcasts a message to all players (either as broadcast or chat window only).
     // <(message: string, color: Color) => void>
-    onBroadcast: new TriggerableMulticastDelegate(),
+    onBroadcast: new TriggerableMulticastDelegate(onErr),
 
     // Called when container rejects an added object.
     // Object is still inside container when this event fires, handlers should
     // verify object.getContainer matches in case multiple act on it.
     // <(container: Container, rejectedObjects: Array.{GameObject}, player: Player) => void>
-    onContainerRejected: new TriggerableMulticastDelegate(),
+    onContainerRejected: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player unpacks (or re-packs!) a faction.
     // Note the the "player" is the player who clicked the button, they
     // might not be seated at the given desk.
     // <(deskPlayerSlot: number, player: Player|undefined) => void>
-    onFactionChanged: new TriggerableMulticastDelegate(),
+    onFactionChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player drops a control token on the final scoreboard slot.
     // <(player: Player|undefined) => void>
-    onGameEnded: new TriggerableMulticastDelegate(),
+    onGameEnded: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player clicks the initial game "setup" button.
     // <(state: object, player: Player) => void>
-    onGameSetup: new TriggerableMulticastDelegate(),
+    onGameSetup: new TriggerableMulticastDelegate(onErr),
 
     // Called when a player flips a planet card.
     // <(card: Card, isFaceUp: boolean) => void>
-    onPlanetCardFlipped: new TriggerableMulticastDelegate(),
+    onPlanetCardFlipped: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player color changes (setup not finished).
     // <(playerColor: Color, deskIndex: number) => void>
-    onPlayerColorChanged: new TriggerableMulticastDelegate(),
+    onPlayerColorChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called after the player count changes (setup not finished).
     // <(playerCount: number, player: Player|undefined) => void>
-    onPlayerCountChanged: new TriggerableMulticastDelegate(),
+    onPlayerCountChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called immediately before the player count changes (setup not finished).
     // <(playerCount: incoming number, player: Player|undefined) => void>
-    onPlayerCountAboutToChange: new TriggerableMulticastDelegate(),
+    onPlayerCountAboutToChange: new TriggerableMulticastDelegate(onErr),
 
     // Called when a singleton card is created, or when a deck is reduced to
     // a single card it is called on the "deck" (now a single card).
     // <(card: Card) => void>
-    onSingletonCardCreated: new TriggerableMulticastDelegate(),
+    onSingletonCardCreated: new TriggerableMulticastDelegate(onErr),
 
     // Called when a singleton card is converted into a deck.
     // <(card: Card) => void>
-    onSingletonCardMadeDeck: new TriggerableMulticastDelegate(),
+    onSingletonCardMadeDeck: new TriggerableMulticastDelegate(onErr),
 
     // Called when the active player dropped a command token on a system.
     // <(systemTile: GameObject, player: Player) => void>
-    onSystemActivated: new TriggerableMulticastDelegate(),
+    onSystemActivated: new TriggerableMulticastDelegate(onErr),
 
     // Called when an attachment mutates a system (probably a planet).
     // <(systemTile: GameObject) => void>
-    onSystemChanged: new TriggerableMulticastDelegate(),
+    onSystemChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
-    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
+    onStrategyCardPlayed: new TriggerableMulticastDelegate(onErr),
 
     // Called when a Strategy Card selection is done by a player
     // <(strategyCard: card, player:Player, owningPlayerSlot: number) => void>
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(),
+    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(onErr),
 
     // Called when turn changes.
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
-    onTurnChanged: new TriggerableMulticastDelegate(),
+    onTurnChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called when setting turn order.
     // <(playerDeskOrder: Array.{PlayerDesk}, player: Player|undefined) => void>
-    onTurnOrderChanged: new TriggerableMulticastDelegate(),
+    onTurnOrderChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called when all players have passed.
     // <(player: Player|undefined) => void>
-    onTurnOrderEmpty: new TriggerableMulticastDelegate(),
+    onTurnOrderEmpty: new TriggerableMulticastDelegate(onErr),
 };
 
 // Some naughty scripts register global event listeners.
@@ -95,6 +99,7 @@ if (!world.__isMock) {
 
 const { AsyncTaskQueue } = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
+const { ErrorReporting } = require("./global/error-reporting");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
@@ -109,6 +114,7 @@ world.TI4 = {
     asyncTaskQueue: new AsyncTaskQueue(),
     borders: new Borders(),
     config: new GameSetupConfig(),
+    errorReporting: new ErrorReporting(),
     fogOfWar: new FogOfWar(),
     gameData: new GameData(),
     homebrew: new Homebrew(),

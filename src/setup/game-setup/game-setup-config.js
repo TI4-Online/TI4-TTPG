@@ -21,6 +21,7 @@ class GameSetupConfig {
             codex2: true,
             codex3: true,
             franken: false,
+            reportErrors: true,
             timestamp: 0,
         });
     }
@@ -48,6 +49,9 @@ class GameSetupConfig {
     }
     get franken() {
         return this._state.franken;
+    }
+    get reportErrors() {
+        return this._state.reportErrors;
     }
     get timestamp() {
         return this._state.timestamp;
@@ -102,6 +106,12 @@ class GameSetupConfig {
     setFranken(value) {
         assert(typeof value === "boolean");
         this._state.franken = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setReportErrors(value) {
+        assert(typeof value === "boolean");
+        this._state.reportErrors = value;
         GlobalSavedData.set(KEY, this._state);
     }
 

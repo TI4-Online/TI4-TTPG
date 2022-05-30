@@ -39,7 +39,7 @@ class GameSetupUI {
 
     create() {
         const title = new Text()
-            .setFontSize(CONFIG.fontSize * 3.8)
+            .setFontSize(CONFIG.fontSize * 3)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
             .setFont("ambroise_firmin_bold.otf", refPackageId);
@@ -85,6 +85,13 @@ class GameSetupUI {
                 "ui.setup.use_game_data",
                 false,
                 this._callbacks.onUseGameDataChanged
+            )
+        );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.report_errors",
+                world.TI4.config.reportErrors,
+                this._callbacks.onReportErrorsChanged
             )
         );
 
