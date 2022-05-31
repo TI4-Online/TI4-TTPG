@@ -21,20 +21,13 @@ const { FancyRollGroup } = require("../../../lib/dice/roll-group");
 const {
     AutoGravRiftRoller,
 } = require("../../../global/right-click/grav-rift-roller");
+const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
 
 const CARD_NAME = "it_feeds_on_carrion";
 const ACTION_NAME = "*" + locale("ui.menu.dimensional_anchor");
 const PURGE_CONTAINER_NAME = "bag.purge";
 const DELETE_DIE_AFTER_N_SECONDS = 30;
 const DIMENSIONAL_TEAR_MISS = 4;
-const SHIPS = [
-    "carrier",
-    "cruiser",
-    "destroyer",
-    "dreadnought",
-    "flagship",
-    "war_sun",
-];
 
 /**
  * Roll a die for all non-fighter ships in or adjacent to systems that contain
@@ -127,11 +120,12 @@ function dimensionalAnchor(card, player) {
         trueHexes.has(plastic.hex)
     );
 
+    const unitAttrsSet = new UnitAttrsSet();
     const ships = plastic.filter((plastic) => {
-        return (
-            SHIPS.includes(plastic.unit) &&
-            plastic.owningPlayerSlot !== cardOwnerSlot
-        );
+        const isShip = unitAttrsSet.get(plastic.unit).raw.ship;
+        const isFighter = plastic.unit == "fighter";
+        const isOwnedByCardOwner = plastic.owningPlayerSlot === cardOwnerSlot;
+        return isShip && !isFighter && !isOwnedByCardOwner;
     });
 
     // roll grav rift for each ship

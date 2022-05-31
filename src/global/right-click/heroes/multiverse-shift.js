@@ -6,6 +6,7 @@ const { ObjectNamespace } = require("../../../lib/object-namespace");
 const { UnitPlastic } = require("../../../lib/unit/unit-plastic");
 const { SystemHighlight } = require("../../highlight-on-system-activated");
 const { Spawn } = require("../../../setup/spawn/spawn");
+const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
 const {
     Card,
     world,
@@ -18,14 +19,6 @@ const CARD_NAME = "conservator_procyon";
 const PURGE_CONTAINER_NAME = "bag.purge";
 const ACTION_NAME = "*" + locale("ui.menu.multiverse_shift");
 const FRONTIER_TOKEN_NSID = "token:pok/frontier";
-const SHIPS = [
-    "carrier",
-    "cruiser",
-    "destroyer",
-    "dreadnought",
-    "flagship",
-    "war_sun",
-];
 
 function multiverseShift(card) {
     assert(card instanceof Card);
@@ -95,12 +88,13 @@ function multiverseShift(card) {
             frontierTokenObj = hexToExistingFrontierTokens[hex];
         }
 
+        const unitAttrsSet = new UnitAttrsSet();
         const ownersShipsInHex = UnitPlastic.getAll().filter((plastic) => {
-            return (
-                plastic.hex === hex &&
-                SHIPS.includes(plastic.unit) &&
-                plastic.owningPlayerSlot === cardOwnerSlot
-            );
+            const isInHex = plastic.hex == hex;
+            const isShip = unitAttrsSet.get(plastic.unit).raw.ship;
+            const isOwnedByCardOwner =
+                plastic.owningPlayerSlot === cardOwnerSlot;
+            return isInHex && isShip && isOwnedByCardOwner;
         });
 
         if (ownersShipsInHex.length > 0) {
