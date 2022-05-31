@@ -177,7 +177,7 @@ class AutoGravRiftRoller {
         Broadcast.broadcastAll(msg, color);
     }
 
-    static addLines(die, unit) {
+    static addLines(die, unit, startTimeoutOnGrabbed) {
         const gameObject = unit.gameObject;
 
         const removeLines = () => {
@@ -185,6 +185,13 @@ class AutoGravRiftRoller {
                 gameObject.removeDrawingLine(0);
             }
         };
+
+        const delayedRemoveLines = () => {
+            setTimeout(() => {
+                removeLines();
+            }, delay);
+        };
+
         removeLines();
 
         const extent = gameObject.getExtent();
@@ -234,9 +241,14 @@ class AutoGravRiftRoller {
         if (!die.isHit()) {
             delay *= 2; // keep lines longer for removed ships
         }
-        setTimeout(() => {
-            removeLines();
-        }, delay);
+
+        if (!startTimeoutOnGrabbed) {
+            delayedRemoveLines();
+        } else {
+            gameObject.onGrab.add(() => {
+                delayedRemoveLines();
+            });
+        }
     }
 }
 

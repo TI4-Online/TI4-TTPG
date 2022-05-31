@@ -26,7 +26,7 @@ const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
 const CARD_NAME = "it_feeds_on_carrion";
 const ACTION_NAME = "*" + locale("ui.menu.dimensional_anchor");
 const PURGE_CONTAINER_NAME = "bag.purge";
-const DELETE_DIE_AFTER_N_SECONDS = 30;
+const DELETE_DIE_AFTER_N_SECONDS = 10;
 const DIMENSIONAL_TEAR_MISS = 4;
 
 /**
@@ -174,7 +174,9 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
     const parts = [];
     for (const [die, unit, index] of diceObjects) {
         assert(typeof index === "number");
-        AutoGravRiftRoller.addLines(die, unit);
+        // start countdown to remove lines on units that are captured once they are grabbed
+        // start countdown for non-captured units right away
+        AutoGravRiftRoller.addLines(die, unit, !die.isHit());
         if (!die.isHit()) {
             parts.push(
                 locale("ui.message.roll.dimensional_anchor_capture", {
