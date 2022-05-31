@@ -157,7 +157,11 @@ class Faction {
     }
 
     get homeNsid() {
-        return `tile.system:${this.nsidSource}/${this.home}`;
+        // Codex 3 uses home systems from a different source than faction.
+        // Get source from system tile.
+        const system = world.TI4.getSystemByTileNumber(this.home);
+        assert(system);
+        return `tile.system:${system.raw.source}/${this.home}`;
     }
 
     get playerSlot() {

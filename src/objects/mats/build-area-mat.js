@@ -64,15 +64,22 @@ class BuildAreaMat {
         assert(typeof playerSlot === "number");
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         if (!faction) {
+            console.log("BuildAreaMat.getHomeSystem: no faction");
             return;
         }
         const homeNsid = faction.homeNsid;
         for (const obj of world.TI4.getAllSystemTileObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === homeNsid) {
                 return obj;
             }
         }
+        console.log(
+            `BuildAreaMat.getHomeSystem: no system tile object (${homeNsid})`
+        );
     }
 
     static getProduceEntry(obj) {

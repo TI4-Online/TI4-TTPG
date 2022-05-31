@@ -58,7 +58,14 @@ class MiltyDraftSettings {
                     this._miltyDraft.resetSlices();
                     for (let i = 0; i < custom.slices.length; i++) {
                         const slice = custom.slices[i];
-                        const label = custom.labels[i];
+                        let label = "x";
+                        if (custom.labels && custom.labels[i]) {
+                            label = custom.labels[i];
+                        } else {
+                            label = locale("ui.draft.slice_label", {
+                                index: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i],
+                            });
+                        }
                         this._miltyDraft.addSlice(slice, false, label);
                     }
                     if (custom.factions) {
@@ -82,7 +89,9 @@ class MiltyDraftSettings {
             onCancel: (player) => {
                 assert(player instanceof Player);
                 console.log("MiltyDraft.Settings.onCancel");
-                this._miltyDraft.cancel();
+                if (this._miltyDraft) {
+                    this._miltyDraft.cancel();
+                }
                 this._miltyDraft = undefined;
             },
         };

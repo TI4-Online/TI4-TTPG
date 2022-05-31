@@ -17,6 +17,9 @@ const {
     world,
 } = require("../../wrapper/api");
 
+// Do not offer these as right click actions until able to right click ground-mode objects with regular cursor.
+const ADD_CUSTOM_ACTIONS = false;
+
 function getNamesAndActions(player, systemTileObj) {
     assert(!player || player instanceof Player);
     assert(systemTileObj instanceof GameObject);
@@ -91,19 +94,21 @@ function addRightClickOptions(systemTileObj) {
     // Might want to reset after adding mirage?
     // distant suns ability through right-click is awkward because we need
     // to know what all the options are before the player right-clicks
-    const namesAndActions = getNamesAndActions(null, systemTileObj);
-    for (const nameAndAction of namesAndActions) {
-        systemTileObj.addCustomAction("*" + nameAndAction.name);
-    }
-    systemTileObj.onCustomAction.add((obj, player, actionName) => {
-        assert(player instanceof Player);
+    if (ADD_CUSTOM_ACTIONS) {
+        const namesAndActions = getNamesAndActions(null, systemTileObj);
         for (const nameAndAction of namesAndActions) {
-            if ("*" + nameAndAction.name === actionName) {
-                nameAndAction.action(player);
-                break;
-            }
+            systemTileObj.addCustomAction("*" + nameAndAction.name);
         }
-    });
+        systemTileObj.onCustomAction.add((obj, player, actionName) => {
+            assert(player instanceof Player);
+            for (const nameAndAction of namesAndActions) {
+                if ("*" + nameAndAction.name === actionName) {
+                    nameAndAction.action(player);
+                    break;
+                }
+            }
+        });
+    }
 
     // Also offer via a popup.
     // Mallice needs to be flipped to see button, that's ok.

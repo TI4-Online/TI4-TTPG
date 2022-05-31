@@ -129,7 +129,10 @@ class MiltyDraft {
             this.applyChoices(player);
         });
 
-        const { widget, w, h, updateWaitingFor } = new MiltyDraftUI(this._scale)
+        const { widget, w, h, updateWaitingFor } = new MiltyDraftUI(
+            playerDesk,
+            this._scale
+        )
             .addSlices(this._sliceDataArray)
             .addFactions(this._factionDataArray)
             .addSeats(this._seatDataArray)

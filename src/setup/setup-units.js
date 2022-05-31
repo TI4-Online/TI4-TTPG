@@ -138,6 +138,15 @@ class SetupUnits extends AbstractSetup {
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
             unit.setScale([UNIT_SCALE, UNIT_SCALE, UNIT_SCALE]);
+            if (
+                unitNsid === "unit:base/infantry" ||
+                unitNsid === "unit:base/fighter"
+            ) {
+                // Units most likely to be dropped on stacks of tokens.
+                // The default value (0.3) seems fine, but higher values
+                // definitely bounce off -- make these not bouncy.
+                unit.setBounciness(0);
+            }
             bag.addObjects([unit]);
         }
     }

@@ -280,6 +280,7 @@
     "ui.agenda.clippy.lock_vote": "Lock-in vote",
     "ui.agenda.clippy.unlock_vote": "Click to unlock",
     "ui.agenda.clippy.finish": "Finish",
+    "ui.agenda.clippy.your_turn": "YOUR TURN!",
     "ui.agenda.clippy.waiting_for_player_name": "Waiting for {playerName}",
     "ui.agenda.clippy.waiting_whens": "Any whens, {playerName}?",
     "ui.agenda.clippy.waiting_afters": "Any afters, {playerName}?",

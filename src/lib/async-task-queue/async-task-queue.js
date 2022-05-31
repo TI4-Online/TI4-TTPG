@@ -1,11 +1,17 @@
 const assert = require("../../wrapper/assert-wrapper");
 
+const DEFAULT_ASYNC_DELAY = 100;
+
 /**
  * Run tasks gradually, spreading load over time.
  */
 class AsyncTaskQueue {
-    constructor(delayMsecs) {
-        this._delayMsecs = delayMsecs ? delayMsecs : 100;
+    constructor(delayMsecs, exceptionHandler) {
+        assert(!delayMsecs || typeof delayMsecs === "number");
+        assert(!exceptionHandler || typeof exceptionHandler === "function");
+
+        this._delayMsecs = delayMsecs ? delayMsecs : DEFAULT_ASYNC_DELAY;
+        this._exceptionHandler = exceptionHandler;
         this._queue = [];
         this._processNextHandle = undefined;
     }
@@ -39,9 +45,17 @@ class AsyncTaskQueue {
         if (!task) {
             return;
         }
-        task();
+        try {
+            task();
+        } catch (exception) {
+            if (this._exceptionHandler) {
+                this._exceptionHandler(exception);
+            } else {
+                console.warn(exception.stack);
+            }
+        }
         this._scheduleService();
     }
 }
 
-module.exports = { AsyncTaskQueue };
+module.exports = { AsyncTaskQueue, DEFAULT_ASYNC_DELAY };

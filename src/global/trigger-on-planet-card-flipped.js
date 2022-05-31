@@ -32,7 +32,7 @@ globalEvents.TI4.onSingletonCardCreated.add((card) => {
 globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     assert(card instanceof Card);
     if (card.__hasPlanetCardFlipListener) {
-        card.onMotionStopped.remove(onPlanetCardMovementStopped);
+        card.onMovementStopped.remove(onPlanetCardMovementStopped);
     }
 });
 

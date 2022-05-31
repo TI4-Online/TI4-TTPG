@@ -14,22 +14,37 @@ it("wrap", () => {
     assert.equal(wrapped, "test longer slice\nname");
 });
 
-it("parseCustomConfig", () => {
-    let sliceString = "1 2 3 4 5";
-    let parsed = MiltyUtil.parseCustomConfig(sliceString);
+it("parseCustomConfig (simple slice)", () => {
+    const sliceString = "1 2 3 4 5";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
     assert.deepEqual(parsed.slices, [[1, 2, 3, 4, 5]]);
+});
 
-    sliceString = "1 2 3 4 5|6 7 8 9 10";
-    parsed = MiltyUtil.parseCustomConfig(sliceString);
+it("parseCustomConfig (multiple slices)", () => {
+    const sliceString = "1 2 3 4 5|6 7 8 9 10";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
     assert.deepEqual(parsed.slices, [
         [1, 2, 3, 4, 5],
         [6, 7, 8, 9, 10],
     ]);
-    sliceString = "1 2 3 4 5|6 7 8 9 10&labels=a|b";
-    parsed = MiltyUtil.parseCustomConfig(sliceString);
+});
+
+it("parseCustomConfig (labels)", () => {
+    const sliceString = "1 2 3 4 5|6 7 8 9 10&labels=a|b";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
     assert.deepEqual(parsed.slices, [
         [1, 2, 3, 4, 5],
         [6, 7, 8, 9, 10],
     ]);
     assert.deepEqual(parsed.labels, ["a", "b"]);
+});
+
+it("parseCustomConfig (factions)", () => {
+    const sliceString = "1 2 3 4 5|6 7 8 9 10&factions=arborec|ul";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10],
+    ]);
+    assert.deepEqual(parsed.factions, ["arborec", "ul"]);
 });
