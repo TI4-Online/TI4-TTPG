@@ -410,6 +410,9 @@ class Borders {
                 if (!this._enabled) {
                     return;
                 }
+                if (!linkedSegments) {
+                    return; // seen in one error report, how can this happen?
+                }
                 this._lines = [];
                 for (const linkedSegment of linkedSegments) {
                     const line = Borders.createDrawingLine(
