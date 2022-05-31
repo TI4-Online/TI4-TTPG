@@ -97,7 +97,10 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
-const { AsyncTaskQueue } = require("./lib/async-task-queue/async-task-queue");
+const {
+    AsyncTaskQueue,
+    DEFAULT_ASYNC_DELAY,
+} = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
 const { ErrorReporting } = require("./global/error-reporting");
 const { Faction } = require("./lib/faction/faction");
@@ -111,7 +114,7 @@ const { Turns } = require("./lib/turns");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
-    asyncTaskQueue: new AsyncTaskQueue(),
+    asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
     borders: new Borders(),
     config: new GameSetupConfig(),
     errorReporting: new ErrorReporting(),
