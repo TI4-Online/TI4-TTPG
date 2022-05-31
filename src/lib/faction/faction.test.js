@@ -124,3 +124,11 @@ it("static inject", () => {
     faction = Faction.getByPlayerSlot(desk.playerSlot);
     assert.equal(faction.raw.faction, "my_faction");
 });
+
+it("faction home nsid keleres", () => {
+    const faction = Faction.getByNsidName("keleres_mentak");
+    assert(faction);
+
+    const homeNsid = faction.homeNsid;
+    assert.equal(homeNsid, "tile.system:base/2");
+});
