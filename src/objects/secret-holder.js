@@ -22,7 +22,11 @@ globalEvents.TI4.onPlayerColorChanged.add((playerColor, deskIndex) => {
 });
 
 refObject.onCreated.add((obj) => {
-    updateMyColor();
+    // Creator has not yet had a chance to edit our state.
+    // Give them until next frame.
+    process.nextTick(() => {
+        updateMyColor();
+    });
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
