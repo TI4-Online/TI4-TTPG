@@ -2,137 +2,185 @@ const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
-const TP = require("../wrapper/api");
+const {
+    Border,
+    Button,
+    GameObject,
+    HorizontalBox,
+    ImageWidget,
+    LayoutBox,
+    Player,
+    Rotator,
+    UIElement,
+    Vector,
+    globalEvents,
+    refObject,
+    refPackageId,
+    world,
+} = require("../wrapper/api");
 
-const btnUI = new TP.UIElement();
-const pnlUI = new TP.UIElement();
+class StatusPad {
+    constructor(gameObject) {
+        assert(gameObject instanceof GameObject);
 
-btnUI.position = new TP.Vector(2, 0, 0.2);
-btnUI.rotation = new TP.Rotator(0, 0, 180);
-btnUI.scale = 0.1;
-btnUI.widget = new TP.LayoutBox();
+        this._obj = gameObject;
+        this._awayImages = [];
+        this._passImages = [];
 
-btnUI.widget.setVerticalAlignment(0);
-btnUI.widget.setHorizontalAlignment(0);
-btnUI.widget.setMinimumWidth(800);
-btnUI.widget.setMinimumHeight(300);
+        this._obj.addUI(this.createForwardUi());
+        this._obj.addUI(this.createReverseUi());
 
-pnlUI.position = new TP.Vector(-0.5, 0, 0.8);
-pnlUI.rotation = new TP.Rotator(15, 0, 0);
-pnlUI.scale = 0.1;
-pnlUI.widget = new TP.LayoutBox();
-pnlUI.useTransparency = true;
+        // Give creator a frame to finish setting state.
+        process.nextTick(() => {
+            this.updateUi();
+        });
+    }
 
-pnlUI.widget.setVerticalAlignment(0);
-pnlUI.widget.setHorizontalAlignment(2);
-pnlUI.widget.setMinimumWidth(600);
-pnlUI.widget.setMinimumHeight(450);
+    getPass() {
+        return ObjectSavedData.get(this._obj, "isPass", false);
+    }
 
-const obj = TP.refObject; // get reference now, cannot use later
-const packageId = TP.refPackageId;
+    setPass(value) {
+        assert(typeof value === "boolean");
+        ObjectSavedData.set(this._obj, "isPass", value);
+        this.updateUi();
+    }
 
-const awayButton = new TP.Button()
-    .setText(locale("ui.button.away"))
-    .setFontSize(48);
-const passButton = new TP.Button()
-    .setText(locale("ui.button.pass"))
-    .setFontSize(48);
+    getAway() {
+        return ObjectSavedData.get(this._obj, "isAway", false);
+    }
 
-const awayImage = new TP.ImageWidget();
-const passImage = new TP.ImageWidget();
+    setAway(value) {
+        assert(typeof value === "boolean");
+        ObjectSavedData.set(this._obj, "isAway", value);
+        this.updateUi();
+    }
 
-btnUI.widget.setChild(
-    new TP.Border().setChild(
-        new TP.HorizontalBox()
-            .addChild(awayButton, 1)
-            .addChild(passButton, 1)
-            .setChildDistance(10)
-    )
-);
+    _onClickedAway(player) {
+        assert(player instanceof Player);
 
-pnlUI.widget.setChild(
-    new TP.HorizontalBox().addChild(passImage).addChild(awayImage)
-);
+        const newValue = !this.getAway();
+        this.setAway(newValue);
 
-TP.refObject.addUI(btnUI);
-TP.refObject.addUI(pnlUI);
-
-function getAway() {
-    return ObjectSavedData.get(obj, "isAway", false);
-}
-
-function setAway(value) {
-    assert(typeof value === "boolean");
-    ObjectSavedData.set(obj, "isAway", value);
-    awayImage.setImage(
-        value ? "locale/ui/panel_away_on.png" : "locale/ui/panel_away_off.png",
-        packageId
-    );
-}
-
-function getPass() {
-    return ObjectSavedData.get(obj, "isPass", false);
-}
-
-function setPass(value) {
-    assert(typeof value === "boolean");
-    ObjectSavedData.set(obj, "isPass", value);
-    passImage.setImage(
-        value ? "locale/ui/panel_pass_on.png" : "locale/ui/panel_pass_off.png",
-        packageId
-    );
-}
-
-awayButton.onClicked = (btn, player) => {
-    const newValue = !getAway();
-    setAway(newValue);
-
-    const playerSlot = obj.getOwningPlayerSlot();
-    const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-    const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
-    const playerName = faction ? faction.nameFull : playerDesk.colorName;
-    const localeMsg = newValue
-        ? "ui.message.player_away"
-        : "ui.message.player_here";
-    const msg = locale(localeMsg, { playerName });
-    const color = playerDesk ? playerDesk.color : player.getPlayerColor();
-    Broadcast.broadcastAll(msg, color);
-};
-
-passButton.onClicked = (btn, player) => {
-    const newValue = !getPass();
-    setPass(newValue);
-    if (newValue) {
-        // Announce pass.
-        const playerSlot = obj.getOwningPlayerSlot();
-        const playerDesk = TP.world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        const faction = TP.world.TI4.getFactionByPlayerSlot(playerSlot);
-        const playerName = faction ? faction.nameFull : playerDesk.colorName;
+        const playerSlot = this._obj.getOwningPlayerSlot();
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const localeMsg = newValue
+            ? "ui.message.player_away"
+            : "ui.message.player_here";
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const color = playerDesk ? playerDesk.color : player.getPlayerColor();
-        const msg = locale("ui.message.player_pass", { playerName });
+        const msg = locale(localeMsg, { playerName });
         Broadcast.broadcastAll(msg, color);
+    }
 
-        // Since this was a player click, also end turn.
-        const currentDesk = TP.world.TI4.turns.getCurrentTurn();
-        if (currentDesk === playerDesk) {
-            TP.world.TI4.turns.endTurn(player);
+    _onClickedPass(player) {
+        assert(player instanceof Player);
+
+        const newValue = !this.getPass();
+        this.setPass(newValue);
+
+        if (newValue) {
+            // Announce pass.
+            const playerSlot = this._obj.getOwningPlayerSlot();
+            const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+            const color = playerDesk
+                ? playerDesk.color
+                : player.getPlayerColor();
+            const msg = locale("ui.message.player_pass", { playerName });
+            Broadcast.broadcastAll(msg, color);
+
+            // Since this was a player click, also end turn.
+            const currentDesk = world.TI4.turns.getCurrentTurn();
+            if (currentDesk === playerDesk) {
+                world.TI4.turns.endTurn(player);
+            }
         }
     }
-};
 
-TP.globalEvents.TI4.onTurnOrderEmpty.add((player) => {
-    setPass(false);
+    createForwardUi() {
+        const imageSize = 150;
+        const imageAway = new ImageWidget().setImageSize(imageSize);
+        const imagePass = new ImageWidget().setImageSize(imageSize);
+
+        this._awayImages.push(imageAway);
+        this._passImages.push(imagePass);
+
+        const panel = new HorizontalBox()
+            .setChildDistance(10)
+            .addChild(imagePass)
+            .addChild(imageAway);
+
+        const ui = new UIElement();
+        ui.position = new Vector(-1.75, 0, 0.8);
+        ui.rotation = new Rotator(15, 0, 0);
+        ui.useTransparency = true;
+        ui.scale = 0.2;
+        ui.widget = panel;
+
+        return ui;
+    }
+
+    createReverseUi() {
+        const fontSize = 32;
+        const buttonAway = new Button()
+            .setFontSize(fontSize)
+            .setText(locale("ui.button.away"));
+        const buttonPass = new Button()
+            .setFontSize(fontSize)
+            .setText(locale("ui.button.pass"));
+
+        buttonAway.onClicked.add((button, player) => {
+            this._onClickedAway(player);
+        });
+        buttonPass.onClicked.add((button, player) => {
+            this._onClickedPass(player);
+        });
+
+        const panel = new HorizontalBox()
+            .setChildDistance(10)
+            .addChild(buttonAway, 1)
+            .addChild(buttonPass, 1);
+
+        const layoutBox = new LayoutBox()
+            .setChild(panel)
+            .setMinimumHeight(150)
+            .setMinimumWidth(310)
+            .setPadding(10, 10, 10, 10);
+
+        const ui = new UIElement();
+        ui.position = new Vector(1.5, 0, 0.2);
+        ui.rotation = new Rotator(0, 0, 180);
+        ui.scale = 0.2;
+        ui.widget = new Border().setChild(layoutBox);
+
+        return ui;
+    }
+
+    updateUi() {
+        const awayImgPath = this.getAway()
+            ? "locale/ui/panel_away_on.png"
+            : "locale/ui/panel_away_off.png";
+        for (const awayImage of this._awayImages) {
+            awayImage.setImage(awayImgPath, refPackageId);
+        }
+
+        const passImgPath = this.getPass()
+            ? "locale/ui/panel_pass_on.png"
+            : "locale/ui/panel_pass_off.png";
+        for (const passImage of this._passImages) {
+            passImage.setImage(passImgPath, refPackageId);
+        }
+    }
+}
+
+const statusPad = new StatusPad(refObject);
+globalEvents.TI4.onTurnOrderEmpty.add((player) => {
+    statusPad.setPass(false);
 });
-
-TP.refObject.__getPass = () => {
-    return getPass();
+refObject.__getPass = () => {
+    return statusPad.getPass();
 };
-
-TP.refObject.__setPass = (value) => {
-    assert(typeof value === "boolean");
-    setPass(value);
+refObject.__setPass = (value) => {
+    statusPad.setPass(value);
 };
-
-// "Set" the current values to update UI.
-setPass(getPass());
-setAway(getAway());
