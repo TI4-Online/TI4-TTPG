@@ -35,11 +35,13 @@ const DEFAULT_SLICE_COLORS = [
  * Strategy cards are using 833 width, follow that convention.
  */
 class MiltyDraftUI {
-    constructor(scale) {
+    constructor(playerDesk, scale) {
+        assert(playerDesk);
         assert(typeof scale === "number" && scale >= 1);
 
-        this._canvas = new Canvas();
+        this._playerDesk = playerDesk;
         this._scale = scale;
+        this._canvas = new Canvas();
         this._sliceSize = MiltySliceUI.getSize(this._scale);
         this._pad = Math.floor(this._sliceSize.tileH / 3);
 
@@ -59,12 +61,16 @@ class MiltyDraftUI {
             if (!currentDesk) {
                 return;
             }
-            const playerName = currentDesk.colorName;
-            this._waitingFor.setText(
-                locale("ui.agenda.clippy.waiting_for_player_name", {
+            let value;
+            if (currentDesk === this._playerDesk) {
+                value = locale("ui.agenda.clippy.your_turn");
+            } else {
+                const playerName = currentDesk.colorName;
+                value = locale("ui.agenda.clippy.waiting_for_player_name", {
                     playerName,
-                })
-            );
+                });
+            }
+            this._waitingFor.setText(value);
         };
     }
 
