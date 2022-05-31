@@ -82,7 +82,9 @@ class MiltyDraftSettings {
             onCancel: (player) => {
                 assert(player instanceof Player);
                 console.log("MiltyDraft.Settings.onCancel");
-                this._miltyDraft.cancel();
+                if (this._miltyDraft) {
+                    this._miltyDraft.cancel();
+                }
                 this._miltyDraft = undefined;
             },
         };
