@@ -185,13 +185,6 @@ class AutoGravRiftRoller {
                 gameObject.removeDrawingLine(0);
             }
         };
-
-        const delayedRemoveLines = (delay) => {
-            setTimeout(() => {
-                removeLines();
-            }, delay);
-        };
-
         removeLines();
 
         const extent = gameObject.getExtent();
@@ -254,11 +247,17 @@ class AutoGravRiftRoller {
             delay *= 2; // keep lines longer for removed ships
         }
 
+        const delayedRemoveLines = () => {
+            setTimeout(() => {
+                removeLines();
+            }, delay);
+        };
+
         if (!startTimeoutOnGrabbed) {
-            delayedRemoveLines(delay);
+            delayedRemoveLines();
         } else {
             gameObject.onGrab.add(() => {
-                delayedRemoveLines(delay);
+                delayedRemoveLines();
             });
         }
     }
