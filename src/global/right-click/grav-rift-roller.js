@@ -212,7 +212,19 @@ class AutoGravRiftRoller {
         points.push(points[0].clone());
         normals.push(normals[0].clone());
 
-        const color = die.isHit() ? new Color(0, 1, 0) : new Color(1, 0, 0);
+        const ownerColor = world.TI4.getPlayerDeskByPlayerSlot(
+            unit.owningPlayerSlot
+        ).colorName;
+        const surviveColor =
+            ownerColor === "green"
+                ? new Color(0, 205 / 255, 188 / 255)
+                : new Color(0, 1, 0);
+        const destroyColor =
+            ownerColor === "red"
+                ? new Color(255 / 255, 105 / 255, 30 / 255)
+                : new Color(1, 0, 0);
+
+        const color = die.isHit() ? surviveColor : destroyColor;
         const thickness = die.isHit() ? 0.3 : 0.6;
 
         // Pointing outward.
