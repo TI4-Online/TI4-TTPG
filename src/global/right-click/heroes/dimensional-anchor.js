@@ -62,10 +62,13 @@ function dimensionalAnchor(card, player) {
 
     // Get all hexes with a system tile (much cheaper than getSystemTileObjectByPosition).
     const hexSet = new Set();
+    const hexToSystemTile = {};
     for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
         const pos = systemTileObj.getPosition();
         const hex = Hex.fromPosition(pos);
         hexSet.add(hex);
+        hexToSystemTile[hex] =
+            world.TI4.getSystemBySystemTileObject(systemTileObj).tile;
     }
 
     // get all systems with dimensional tears
@@ -139,7 +142,8 @@ function dimensionalAnchor(card, player) {
             .setHitValue(DIMENSIONAL_TEAR_MISS)
             .setSpawnPosition(pos)
             .build(player);
-        diceObjects.push([die, unit, 0]);
+        const systemTile = hexToSystemTile[unit.hex];
+        diceObjects.push([die, unit, systemTile]);
     });
 
     FancyRollGroup.roll(diceObjects, (diceObjects) => {
@@ -170,8 +174,21 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
     const color = playerDesk ? playerDesk.color : player.getPlayerColor();
 
     const parts = [];
-    for (const [die, unit, index] of diceObjects) {
-        assert(typeof index === "number");
+    // sort dice objects by owner, system tile, then isHit to make the logs easier to parse
+    diceObjects.sort(
+        ([dieA, unitA, systemTileA], [dieB, unitB, systemTileB]) => {
+            if (unitA.owningPlayerSlot == unitB.owningPlayerSlot) {
+                if (systemTileA === systemTileB) {
+                    return dieA.isHit() - dieB.isHit();
+                } else {
+                    return systemTileA - systemTileB;
+                }
+            } else {
+                return unitA.owningPlayerSlot - unitB.owningPlayerSlot;
+            }
+        }
+    );
+    for (const [die, unit, systemTile] of diceObjects) {
         // start countdown to remove lines on units that are captured once they are grabbed
         // start countdown for non-captured units right away
         AutoGravRiftRoller.addLines(die, unit, !die.isHit());
@@ -180,6 +197,8 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
                 locale("ui.message.roll.dimensional_anchor_capture", {
                     value: die.getValue(),
                     unit: locale("unit." + unit.unit),
+                    owner: world.TI4.getNameByPlayerSlot(unit.owningPlayerSlot),
+                    system: systemTile,
                 })
             );
         } else {
@@ -187,15 +206,18 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
                 locale("ui.message.roll.dimensional_anchor_miss", {
                     value: die.getValue(),
                     unit: locale("unit." + unit.unit),
+                    owner: world.TI4.getNameByPlayerSlot(unit.owningPlayerSlot),
+                    system: systemTile,
                 })
             );
         }
     }
-    const prefix = locale("ui.message.roll.dimensional_anchor", {
-        playerName,
-    });
-    const msg = prefix + parts.join("\n");
-    Broadcast.broadcastAll(msg, color);
+    Broadcast.broadcastAll(
+        locale("ui.message.roll.dimensional_anchor", {
+            playerName,
+        })
+    );
+    Broadcast.chatAll(parts.join("\n"), color);
 }
 
 function maybeDimensionalAnchor(card, player, selectedActionName) {
