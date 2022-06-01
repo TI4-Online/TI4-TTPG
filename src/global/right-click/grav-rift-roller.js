@@ -186,7 +186,7 @@ class AutoGravRiftRoller {
             }
         };
 
-        const delayedRemoveLines = () => {
+        const delayedRemoveLines = (delay) => {
             setTimeout(() => {
                 removeLines();
             }, delay);
@@ -243,10 +243,10 @@ class AutoGravRiftRoller {
         }
 
         if (!startTimeoutOnGrabbed) {
-            delayedRemoveLines();
+            delayedRemoveLines(delay);
         } else {
             gameObject.onGrab.add(() => {
-                delayedRemoveLines();
+                delayedRemoveLines(delay);
             });
         }
     }
