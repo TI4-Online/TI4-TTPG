@@ -166,9 +166,7 @@ function dimensionalAnchor(card, player) {
 function dimensionalAnchorRollFinished(diceObjects, player) {
     const playerSlot = player.getSlot();
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-    const deskName = playerDesk ? playerDesk.colorName : player.getName();
-    const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
-    const playerName = faction ? faction.nameFull : deskName;
+    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
     const color = playerDesk ? playerDesk.color : player.getPlayerColor();
 
     const parts = [];
