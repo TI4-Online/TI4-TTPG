@@ -1,6 +1,5 @@
-require("../../global"); // create world.TI4
 const assert = require("../../wrapper/assert-wrapper");
-const { world } = require("../../wrapper/api");
+const { Faction } = require("../faction/faction");
 
 // Some external tools use these "TTS Token Names" for factions.
 // These probably belong in the faction definitions, but this
@@ -26,19 +25,16 @@ class FactionAliases {
         alias = alias.toLowerCase();
 
         // Most are the same as the nsid name.
-        if (world.TI4.getFactionByNsidName(alias)) {
-            return alias;
+        if (Faction.getByNsidName(alias)) {
+            return alias; // alias was nsidName
         }
 
         // Not this one.  Check the lookaside table.
         const nsidName = FACTION_NAME_TO_NSID_NAME[alias];
         if (nsidName) {
-            return nsidName;
+            return nsidName; // found an alias
         }
 
-        if (!world.__isMock) {
-            console.log(`FactionAliases.getNsid: unknown ${alias}`);
-        }
         return false;
     }
 }

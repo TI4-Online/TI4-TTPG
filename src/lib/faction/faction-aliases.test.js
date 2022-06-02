@@ -1,3 +1,4 @@
+require("../../global"); // create world.TI4
 const assert = require("assert");
 const { FactionAliases } = require("./faction-aliases");
 
