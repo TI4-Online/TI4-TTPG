@@ -49,6 +49,16 @@ it("parseCustomConfig (factions)", () => {
     assert.deepEqual(parsed.factions, ["arborec", "ul"]);
 });
 
+it("parseCustomConfig (factions with spaces)", () => {
+    const sliceString = "1 2 3 4 5|6 7 8 9 10&factions=arborec | ul";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10],
+    ]);
+    assert.deepEqual(parsed.factions, ["arborec", "ul"]);
+});
+
 it("parseCustomConfig (faction aliases)", () => {
     const sliceString =
         "1 2 3 4 5|6 7 8 9 10&factions=Jol-Nar|Naaz-Rokha|not-a-faction-name";
