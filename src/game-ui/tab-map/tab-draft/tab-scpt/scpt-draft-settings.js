@@ -1,11 +1,9 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const { Broadcast } = require("../../../../lib/broadcast");
+const { FactionAliases } = require("../../../../lib/faction/faction-aliases");
 const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
-const {
-    FACTION_NAME_TO_NSID_NAME,
-} = require("../../../../lib/draft/scpt/scpt-draft.data");
 const { world } = require("../../../../wrapper/api");
 
 class SCPTDraftSettings {
@@ -13,8 +11,8 @@ class SCPTDraftSettings {
         this._miltyDraft = false;
 
         const onClickHandlers = {
-            start: (scptDraftData) => {
-                this._start(scptDraftData);
+            start: (scptDraftData, index) => {
+                this._start(scptDraftData, index);
             },
             cancel: () => {
                 this._cancel();
@@ -27,8 +25,10 @@ class SCPTDraftSettings {
         return this._ui;
     }
 
-    _start(scptDraftData) {
-        console.log(`SCPTDraft._start: ${scptDraftData.name}`);
+    _start(scptDraftData, factionSetIndex = -1) {
+        console.log(
+            `SCPTDraft._start: ${scptDraftData.name}, ${factionSetIndex}`
+        );
         if (this._miltyDraft) {
             console.log("SCPTDraft._start: in progress, aborting");
             return;
@@ -45,16 +45,20 @@ class SCPTDraftSettings {
         }
 
         // Factions.
-        const factionSetIndex = Math.floor(
-            Math.random() * scptDraftData.factionSets.length
+        if (factionSetIndex < 0) {
+            factionSetIndex = Math.floor(
+                Math.random() * scptDraftData.factionSets.length
+            );
+        }
+        Broadcast.chatAll(
+            `"${scptDraftData.name}", faction set ${factionSetIndex + 1}`
         );
-        Broadcast.chatAll(`Faction set ${factionSetIndex}`);
         const factionSet = scptDraftData.factionSets[factionSetIndex];
         assert(factionSet);
         factionSet
             .split("|")
             .map((name) => {
-                return FACTION_NAME_TO_NSID_NAME[name];
+                return FactionAliases.getNsid(name);
             })
             .forEach((name) => {
                 this._miltyDraft.addFaction(name);
