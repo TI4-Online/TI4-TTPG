@@ -1,6 +1,7 @@
 require("../../../global"); // declare world.TI4
-const assert = require("../../../wrapper/assert-wrapper");
-const { SCPT_DRAFTS, FACTION_NAME_TO_NSID_NAME } = require("./scpt-draft.data");
+const assert = require("assert");
+const { FactionAliases } = require("../../faction/faction-aliases");
+const { SCPT_DRAFTS } = require("./scpt-draft.data");
 const { world } = require("../../../wrapper/api");
 
 it("faction names", () => {
@@ -8,7 +9,7 @@ it("faction names", () => {
         for (const factionSet of scptDraft.factionSets) {
             const factionNames = factionSet.split("|");
             for (const factionName of factionNames) {
-                const nsidName = FACTION_NAME_TO_NSID_NAME[factionName];
+                const nsidName = FactionAliases.getNsid(factionName);
                 assert(nsidName);
                 const faction = world.TI4.getFactionByNsidName(nsidName);
                 assert(faction);

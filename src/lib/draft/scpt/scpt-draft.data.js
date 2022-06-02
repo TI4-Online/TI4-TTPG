@@ -47,34 +47,4 @@ const SCPT_DRAFTS = [
     },
 ];
 
-const FACTION_NAME_TO_NSID_NAME = {
-    Arborec: "arborec",
-    Argent: "argent",
-    Creuss: "creuss",
-    Empyrean: "empyrean",
-    Hacan: "hacan",
-    "Jol-Nar": "jolnar",
-    L1Z1X: "l1z1x",
-    Letnev: "letnev",
-    Mahact: "mahact",
-    Mentak: "mentak",
-    Muaat: "muaat",
-    "N'orr": "norr",
-    Naalu: "naalu",
-    "Naaz-Rokha": "naazrokha",
-    Nekro: "nekro",
-    Nomad: "nomad",
-    Saar: "saar",
-    Sol: "sol",
-    Ul: "ul",
-    "Vuil'raith": "vuilraith",
-    Winnu: "winnu",
-    Xxcha: "xxcha",
-    Yin: "yin",
-    Yssaril: "yssaril",
-
-    Sardakk: "norr",
-    Titans: "ul",
-};
-
-module.exports = { SCPT_DRAFTS, FACTION_NAME_TO_NSID_NAME };
+module.exports = { SCPT_DRAFTS };

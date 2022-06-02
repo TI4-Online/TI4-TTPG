@@ -1,4 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { FactionAliases } = require("../../faction/faction-aliases");
+const { world } = require("../../../wrapper/api");
 
 const DEFAULT_WRAP_AT = 20;
 
@@ -73,6 +75,22 @@ class MiltyUtil {
                 const partParts = part.split("=");
                 if (partParts.length > 1) {
                     result.factions = partParts[1].split("|");
+
+                    // Update for aliases (used by miltydraft.com).
+                    // Strip out any unrecognized strings.
+                    result.factions = result.factions
+                        .map((name) => {
+                            const nsidName = FactionAliases.getNsid(name);
+                            if (!nsidName && !world.__isMock) {
+                                console.log(
+                                    `MiltyUtil.parseCustomConfig: unknown faction "${name}"`
+                                );
+                            }
+                            return nsidName;
+                        })
+                        .filter((nsidName) => {
+                            return nsidName;
+                        });
                 }
             }
         }
