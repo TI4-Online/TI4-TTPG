@@ -67,5 +67,9 @@ it("parseCustomConfig (faction aliases)", () => {
         [1, 2, 3, 4, 5],
         [6, 7, 8, 9, 10],
     ]);
-    assert.deepEqual(parsed.factions, ["jolnar", "naazrokha"]);
+    assert.deepEqual(parsed.factions, [
+        "jolnar",
+        "naazrokha",
+        "not-a-faction-name",
+    ]);
 });
