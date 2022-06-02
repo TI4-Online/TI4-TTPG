@@ -45,6 +45,28 @@ const SCPT_DRAFTS = [
             "Hacan|Mentak|Muaat|Naalu|Xxcha|Winnu|Yssaril",
         ],
     },
+    {
+        name: "SCPT 2022 Semi-Finals",
+        slices: "48,25,70,67,28|23,64,33,78,65|21,40,69,50,38|35,39,34,44,61|41,26,30,77,73|72,79,32,22,66",
+        labels: [
+            "Rift of the Valkyries",
+            "Drunken Sailor",
+            "Jeol Ir: The Entertainer",
+            "Public Domain Smooth",
+            "Mellon Tell Lodorture",
+            "In the Hall of the Asteroid King",
+        ].join("|"),
+        clock: 28800,
+        chooseFactionSet: true,
+        factionSets: [
+            "Saar|Mentak|L1Z1X|Naaz-Rokha|Sol|Xxcha|Winnu",
+            "Yssaril|Empyrean|Sol|Yin|Nekro|Letnev|Creuss",
+            "Ul|Empyrean|Arborec|L1Z1X|Muaat|Naalu|Vuil'raith",
+            "Jol-Nar|N'orr|Argent|Arborec|Mentak|Nekro|Yin",
+            "Nomad|Argent|Creuss|Hacan|Naaz-Rokha|Vuil'raith|Xxcha",
+            "Mahact|Winnu|Hacan|Letnev|Muaat|Naalu|N'orr",
+        ],
+    },
 ];
 
 module.exports = { SCPT_DRAFTS };

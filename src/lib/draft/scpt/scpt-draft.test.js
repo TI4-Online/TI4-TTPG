@@ -10,6 +10,9 @@ it("faction names", () => {
             const factionNames = factionSet.split("|");
             for (const factionName of factionNames) {
                 const nsidName = FactionAliases.getNsid(factionName);
+                if (!nsidName) {
+                    console.log("bad name: " + factionName);
+                }
                 assert(nsidName);
                 const faction = world.TI4.getFactionByNsidName(nsidName);
                 assert(faction);
