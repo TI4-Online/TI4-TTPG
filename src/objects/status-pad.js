@@ -13,6 +13,7 @@ const {
     Rotator,
     UIElement,
     Vector,
+    VerticalBox,
     globalEvents,
     refObject,
     refPackageId,
@@ -112,7 +113,8 @@ class StatusPad {
             .addChild(imageAway);
 
         const ui = new UIElement();
-        ui.position = new Vector(-1.75, 0, 0.8);
+        ui.anchorY = 0;
+        ui.position = new Vector(0, 0, 1.2);
         ui.rotation = new Rotator(15, 0, 0);
         ui.useTransparency = true;
         ui.scale = 0.2;
@@ -129,6 +131,9 @@ class StatusPad {
         const buttonPass = new Button()
             .setFontSize(fontSize)
             .setText(locale("ui.button.pass"));
+        const buttonEndTurn = new Button()
+            .setFontSize(fontSize)
+            .setText(locale("ui.button.end_turn"));
 
         buttonAway.onClicked.add((button, player) => {
             this._onClickedAway(player);
@@ -136,11 +141,30 @@ class StatusPad {
         buttonPass.onClicked.add((button, player) => {
             this._onClickedPass(player);
         });
+        buttonEndTurn.onClicked.add((button, player) => {
+            const active = world.TI4.turns.isActivePlayer(player);
+            if (active) {
+                world.TI4.turns.endTurn(player);
+            }
+        });
+        const updateEndTurnActive = () => {
+            const playerSlot = this._obj.getOwningPlayerSlot();
+            const currentDesk = world.TI4.turns.getCurrentTurn();
+            const active = currentDesk && currentDesk.playerSlot === playerSlot;
+            buttonEndTurn.setEnabled(active);
+        };
+        globalEvents.TI4.onTurnChanged.add(updateEndTurnActive);
+        updateEndTurnActive();
 
-        const panel = new HorizontalBox()
+        const topPart = new HorizontalBox()
             .setChildDistance(10)
             .addChild(buttonAway, 1)
             .addChild(buttonPass, 1);
+
+        const panel = new VerticalBox()
+            .setChildDistance(10)
+            .addChild(topPart)
+            .addChild(buttonEndTurn);
 
         const layoutBox = new LayoutBox()
             .setChild(panel)
@@ -149,7 +173,8 @@ class StatusPad {
             .setPadding(10, 10, 10, 10);
 
         const ui = new UIElement();
-        ui.position = new Vector(1.5, 0, 0.2);
+        ui.anchorY = 0;
+        ui.position = new Vector(0, 0, 0.2);
         ui.rotation = new Rotator(0, 0, 180);
         ui.scale = 0.2;
         ui.widget = new Border().setChild(layoutBox);
