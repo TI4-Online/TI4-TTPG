@@ -42,7 +42,7 @@
     "minimatch": "^3.0.4",
     "prettier": "^2.5.1",
     "regenerator-runtime": "^0.13.9",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.5",
     "uuid": "^8.3.2"
   },
   "dependencies": {

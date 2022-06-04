@@ -215,7 +215,6 @@ class Borders {
 
     static linkLineSegments(segments) {
         assert(Array.isArray(segments));
-        assert(segments.length > 0);
 
         const result = [];
 
