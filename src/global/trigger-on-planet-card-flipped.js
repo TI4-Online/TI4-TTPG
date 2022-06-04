@@ -14,6 +14,7 @@ function onPlanetCardMovementStopped(card) {
 
 function addListener(card) {
     assert(card instanceof Card);
+    card.onMovementStopped.remove(onPlanetCardMovementStopped);
     card.onMovementStopped.add(onPlanetCardMovementStopped);
     card.__hasPlanetCardFlipListener = true;
 

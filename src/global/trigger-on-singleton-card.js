@@ -17,6 +17,7 @@ onInsertedHandler = (deck, insertedCard, position, player) => {
     assert(deck instanceof Card);
     assert(deck.getStackSize() > 1);
     deck.onInserted.remove(onInsertedHandler);
+    deck.onRemoved.remove(onRemovedHandler);
     deck.onRemoved.add(onRemovedHandler);
     globalEvents.TI4.onSingletonCardMadeDeck.trigger(deck);
 };
@@ -26,6 +27,7 @@ onRemovedHandler = (deck, removedCard, position, player) => {
     assert(deck instanceof Card);
     if (deck.getStackSize() === 1) {
         deck.onRemoved.remove(onRemovedHandler);
+        deck.onInserted.remove(onInsertedHandler);
         deck.onInserted.add(onInsertedHandler);
         globalEvents.TI4.onSingletonCardCreated.trigger(deck);
     }
@@ -39,9 +41,11 @@ globalEvents.onObjectCreated.add((obj) => {
     process.nextTick(() => {
         if (obj.getStackSize() > 1) {
             // deck
+            obj.onRemoved.remove(onRemovedHandler);
             obj.onRemoved.add(onRemovedHandler);
         } else {
             // singleton card
+            obj.onInserted.remove(onInsertedHandler);
             obj.onInserted.add(onInsertedHandler);
             globalEvents.TI4.onSingletonCardCreated.trigger(obj);
         }
@@ -54,8 +58,10 @@ if (world.getExecutionReason() === "ScriptReload") {
             continue;
         }
         if (obj.getStackSize() > 1) {
+            obj.onRemoved.remove(onRemovedHandler);
             obj.onRemoved.add(onRemovedHandler);
         } else {
+            obj.onInserted.remove(onInsertedHandler);
             obj.onInserted.add(onInsertedHandler);
         }
     }
