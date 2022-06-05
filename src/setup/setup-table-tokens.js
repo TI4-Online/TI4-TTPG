@@ -24,7 +24,7 @@ const GENERIC_TOKENS = [
     {
         tokenNsid: "token:pok/frontier",
         bagNsid: "bag.token:pok/frontier",
-        bagType: 2,
+        bagType: 1, // infinite
         bagScale: { x: 0.8, y: 0.8, z: 0.8 },
         anchor: TableLayout.anchor.score,
         pos: { x: -59, y: 0, z: 3 },
