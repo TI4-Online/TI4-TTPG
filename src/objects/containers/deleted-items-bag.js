@@ -32,6 +32,9 @@ globalEvents.onObjectDestroyed.add((obj) => {
         _ignoreNsidSet.delete(nsid);
         return;
     }
+    if (nsid.startsWith("token.control:")) {
+        return;
+    }
 
     //if (world.TI4.config.timestamp <= 0) {
     //    return; // not set up yet
