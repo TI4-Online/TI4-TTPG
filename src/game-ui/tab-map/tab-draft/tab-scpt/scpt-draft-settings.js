@@ -4,7 +4,7 @@ const { FactionAliases } = require("../../../../lib/faction/faction-aliases");
 const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
-const { world } = require("../../../../wrapper/api");
+const { refPackageId, world } = require("../../../../wrapper/api");
 
 class SCPTDraftSettings {
     constructor() {
@@ -70,6 +70,16 @@ class SCPTDraftSettings {
         this._miltyDraft.setSpeakerIndex(speakerIndex);
 
         this._miltyDraft.createPlayerUIs();
+
+        // Sound effects for slice pick
+        let sounds = scptDraftData.sounds;
+        if (sounds) {
+            sounds = sounds.split("|");
+            for (let i = 0; i < sounds.length; i++) {
+                const sound = world.importSound(sound, refPackageId);
+                this._miltyDraft.setSound(i, sound);
+            }
+        }
     }
 
     _cancel() {
