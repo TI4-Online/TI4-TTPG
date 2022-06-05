@@ -1,11 +1,13 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
+const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
+const { Technology } = require("../../lib/technology/technology");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const {
     Border,
@@ -21,13 +23,12 @@ const {
     UIElement,
     Vector,
     VerticalAlignment,
+    Zone,
     ZonePermission,
     globalEvents,
     refObject,
     world,
 } = require("../../wrapper/api");
-const { Technology } = require("../../lib/technology/technology");
-const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 
 const MAT_WIDTH = 18.4;
 const MAT_HEIGHT = 18.4;
@@ -311,16 +312,10 @@ class BuildAreaMat {
         this._zone.setColor([c, c, c, 0.1]);
         this._zone.setAlwaysVisible(false);
         this._zone.onBeginOverlap.add((zone, obj) => {
-            if (obj === this._obj) {
-                return;
-            }
-            this.scheduleUpdate();
+            this.maybeScheduleUpdate(zone, obj);
         });
         this._zone.onEndOverlap.add((zone, obj) => {
-            if (obj === this._obj) {
-                return;
-            }
-            this.scheduleUpdate();
+            this.maybeScheduleUpdate(zone, obj);
         });
     }
 
@@ -338,6 +333,28 @@ class BuildAreaMat {
         });
         let value = updates.length;
         return locale("ui.build.ai_dev_abbr", { value });
+    }
+
+    maybeScheduleUpdate(zone, obj) {
+        assert(zone instanceof Zone);
+        assert(obj instanceof GameObject);
+
+        if (obj === this._obj) {
+            return;
+        }
+        if (!obj.isValid()) {
+            return;
+        }
+        if (!this._obj.isValid()) {
+            return;
+        }
+        if (zone !== this._zone) {
+            return;
+        }
+        if (!zone.isValid()) {
+            return;
+        }
+        this.scheduleUpdate();
     }
 
     scheduleUpdate() {
