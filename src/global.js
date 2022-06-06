@@ -51,6 +51,10 @@ globalEvents.TI4 = {
     // <(playerCount: incoming number, player: Player|undefined) => void>
     onPlayerCountAboutToChange: new TriggerableMulticastDelegate(onErr),
 
+    // Called shortly after a player joins.  (Trying to do less work on immediate join.)
+    // <(player: Player) => void>
+    onPlayerJoinedDelayed: new TriggerableMulticastDelegate(onErr),
+
     // Called when a singleton card is created, or when a deck is reduced to
     // a single card it is called on the "deck" (now a single card).
     // <(card: Card) => void>
@@ -88,6 +92,15 @@ globalEvents.TI4 = {
     // <(player: Player|undefined) => void>
     onTurnOrderEmpty: new TriggerableMulticastDelegate(onErr),
 };
+
+globalEvents.onPlayerJoined.add((player) => {
+    setTimeout(() => {
+        console.log(
+            `globalEvents.TI4.onPlayerJoinedDelayed: "${player.getName()}`
+        );
+        globalEvents.TI4.onPlayerJoinedDelayed.trigger(player);
+    }, 500);
+});
 
 // Some naughty scripts register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");

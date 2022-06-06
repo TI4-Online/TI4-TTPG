@@ -32,7 +32,6 @@ let _playerDesks = false;
 
 /**
  * Move newly joined players to a non-seat player slot.
- * This should be called from a globalEvents.onPlayerJoined handler.
  *
  * @param {Player} player
  */
@@ -68,13 +67,37 @@ function moveNewPlayerToNonSeatSlot(player) {
 
 /* DISABLE THIS FOR NOW, MAY BE INTERFERING WITH TTPG JOIN HANDLING
 // Bounce joining players to unseated.
-globalEvents.onPlayerJoined.add((player) => {
+globalEvents.TI4.onPlayerJoinedDelayed.add((player) => {
     // Wait a tick to make sure player is fully set up.
     process.nextTick(() => {
         moveNewPlayerToNonSeatSlot(player);
     });
 });
+
+// Unseat host when first loading game.
+const isRescriptReload = world.getExecutionReason() === "ScriptReload";
+const runOnce = () => {
+    // If not reloading scripts move the host to a non-seat slot.
+    if (!isRescriptReload) {
+        for (const player of world.getAllPlayers()) {
+            moveNewPlayerToNonSeatSlot(player);
+        }
+    }
+
+    // Reset "take a seat" UI.
+    PlayerDesk.resetUIs();
+};
+if (!world.__isMock) {
+    process.nextTick(runOnce);
+}
 */
+
+// Reset on load.
+if (!world.__isMock) {
+    process.nextTick(() => {
+        PlayerDesk.resetUIs();
+    });
+}
 
 // Release seat when someone leaves.
 globalEvents.onPlayerLeft.add((player) => {
@@ -149,23 +172,6 @@ globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
     // before resetting desks.
     PlayerDeskSetup.getSharedAsyncTaskQueue().add(setup);
 });
-
-// Unseat host when first loading game.
-const isRescriptReload = world.getExecutionReason() === "ScriptReload";
-const runOnce = () => {
-    // If not reloading scripts move the host to a non-seat slot.
-    if (!isRescriptReload) {
-        for (const player of world.getAllPlayers()) {
-            moveNewPlayerToNonSeatSlot(player);
-        }
-    }
-
-    // Reset "take a seat" UI.
-    PlayerDesk.resetUIs();
-};
-if (!world.__isMock) {
-    process.nextTick(runOnce);
-}
 
 // ----------------------------------------------------------------------------
 
