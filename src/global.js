@@ -99,7 +99,7 @@ globalEvents.onPlayerJoined.add((player) => {
             `globalEvents.TI4.onPlayerJoinedDelayed: "${player.getName()}"`
         );
         globalEvents.TI4.onPlayerJoinedDelayed.trigger(player);
-    }, 500);
+    }, 1000);
 });
 
 // Some naughty scripts register global event listeners.
