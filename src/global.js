@@ -96,7 +96,7 @@ globalEvents.TI4 = {
 globalEvents.onPlayerJoined.add((player) => {
     setTimeout(() => {
         console.log(
-            `globalEvents.TI4.onPlayerJoinedDelayed: "${player.getName()}`
+            `globalEvents.TI4.onPlayerJoinedDelayed: "${player.getName()}"`
         );
         globalEvents.TI4.onPlayerJoinedDelayed.trigger(player);
     }, 500);
