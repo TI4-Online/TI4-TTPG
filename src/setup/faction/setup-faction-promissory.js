@@ -24,7 +24,7 @@ class SetupFactionPromissory extends AbstractSetup {
         );
 
         const nsidPrefix = "card.promissory";
-        const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        let deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.promissory.jolnar" (careful about "card.promissory.blue").
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             if (factionName !== this._faction.raw.faction) {
@@ -40,6 +40,17 @@ class SetupFactionPromissory extends AbstractSetup {
             }
             return true;
         });
+
+        // These promissory notes seem to appear with the wrong image
+        // (usually as the Aborec one, the first image in the deck).
+        // That may be due to forming the deck and deleting cards same frame.
+        // Pulling the card from the hand and putting it back seems to fix it.
+        // Try making a copy to see if that resets it.
+        const json = deck.toJSONString();
+        const above = deck.getPosition().add([0, 0, 5]);
+        deck.setTags(["DELETED_ITEMS_IGNORE"]);
+        deck.destroy();
+        deck = world.createObjectFromJSON(json, above);
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
