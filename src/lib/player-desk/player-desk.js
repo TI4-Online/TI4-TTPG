@@ -31,148 +31,44 @@ let _playerDesks = false;
 // ----------------------------------------------------------------------------
 
 /**
- * Move newly joined players to a non-seat player slot.
- * This should be called from a globalEvents.onPlayerJoined handler.
- *
- * @param {Player} player
- */
-function moveNewPlayerToNonSeatSlot(player) {
-    assert(player instanceof Player);
-
-    const reservedSlots = new Set();
-    for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
-        reservedSlots.add(playerDesk.playerSlot);
-    }
-    for (const otherPlayer of world.getAllPlayers()) {
-        if (otherPlayer == player) {
-            continue;
-        }
-        reservedSlots.add(otherPlayer.getSlot());
-    }
-    if (!reservedSlots.has(player.getSlot())) {
-        return; // player is in a safe slot
-    }
-    for (let i = 0; i < 20; i++) {
-        if (!reservedSlots.has(i)) {
-            const before = player.getSlot();
-            player.switchSlot(i);
-            const after = player.getSlot();
-            console.log(`moveNewPlayerToNonSeatSlot: ${before} -> ${after}`);
-            return;
-        }
-    }
-    throw new Error("unable to find open slot");
-}
-
-// ----------------------------------------------------------------------------
-
-/* DISABLE THIS FOR NOW, MAY BE INTERFERING WITH TTPG JOIN HANDLING
-// Bounce joining players to unseated.
-globalEvents.onPlayerJoined.add((player) => {
-    // Wait a tick to make sure player is fully set up.
-    process.nextTick(() => {
-        moveNewPlayerToNonSeatSlot(player);
-    });
-});
-*/
-
-// Release seat when someone leaves.
-globalEvents.onPlayerLeft.add((player) => {
-    PlayerDesk.resetUIs();
-});
-
-globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
-    PlayerDesk.resetUIs();
-});
-
-globalEvents.TI4.onGameSetup.add((state, player) => {
-    PlayerDesk.resetUIs();
-});
-
-globalEvents.TI4.onPlayerCountAboutToChange.add((newPlayerCount, player) => {
-    if (world.__isMock) {
-        _playerDesks = false;
-        return;
-    }
-
-    // Remove any desk UIs.
-    if (_playerDesks) {
-        for (const playerDesk of _playerDesks) {
-            assert(playerDesk instanceof PlayerDesk);
-            playerDesk.removeUI();
-        }
-    }
-
-    // Clean any existing desks, reset desks list.
-    // USE SYNCHRONOUS VERSION, DESKS ARRAY WILL CHANGE!
-    if (_playerDesks) {
-        for (const playerDesk of _playerDesks) {
-            assert(playerDesk instanceof PlayerDesk);
-            new PlayerDeskSetup(playerDesk).cleanGeneric();
-        }
-    }
-    _playerDesks = false;
-});
-
-globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
-    if (world.__isMock) {
-        _playerDesks = false;
-        return;
-    }
-
-    assert(!_playerDesks);
-
-    // Lock in player count until finished.
-    GameSetupUI.disablePlayerCountSlider();
-
-    // Use async setup to spread out load.
-    const setup = () => {
-        // Reset to new count.
-        _playerDesks = false;
-
-        // Add UIs to new desks.
-        PlayerDesk.resetUIs();
-
-        // Redo setup for all desks.
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            assert(playerDesk instanceof PlayerDesk);
-            new PlayerDeskSetup(playerDesk).setupGenericAsync();
-        }
-
-        // Re-enable player count changes.
-        PlayerDeskSetup.getSharedAsyncTaskQueue().add(() => {
-            GameSetupUI.enablePlayerCountSlider();
-        });
-    };
-
-    // Leverage the shared task queue to make sure all cleanup tasks finish
-    // before resetting desks.
-    PlayerDeskSetup.getSharedAsyncTaskQueue().add(setup);
-});
-
-// Unseat host when first loading game.
-const isRescriptReload = world.getExecutionReason() === "ScriptReload";
-const runOnce = () => {
-    // If not reloading scripts move the host to a non-seat slot.
-    if (!isRescriptReload) {
-        for (const player of world.getAllPlayers()) {
-            moveNewPlayerToNonSeatSlot(player);
-        }
-    }
-
-    // Reset "take a seat" UI.
-    PlayerDesk.resetUIs();
-};
-if (!world.__isMock) {
-    process.nextTick(runOnce);
-}
-
-// ----------------------------------------------------------------------------
-
-/**
  * The player desk represents a player's private area.
  */
 class PlayerDesk {
+    /**
+     * Move newly joined players to a non-seat player slot.
+     *
+     * @param {Player} player
+     */
+    static moveNewPlayerToNonSeatSlot(player) {
+        assert(player instanceof Player);
+
+        const reservedSlots = new Set();
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            reservedSlots.add(playerDesk.playerSlot);
+        }
+        for (const otherPlayer of world.getAllPlayers()) {
+            if (otherPlayer === player) {
+                continue;
+            }
+            reservedSlots.add(otherPlayer.getSlot());
+        }
+        if (!reservedSlots.has(player.getSlot())) {
+            return; // player is in a safe slot
+        }
+        for (let i = 0; i < 20; i++) {
+            if (!reservedSlots.has(i)) {
+                const before = player.getSlot();
+                player.switchSlot(i);
+                const after = player.getSlot();
+                console.log(
+                    `moveNewPlayerToNonSeatSlot: ${before} -> ${after}`
+                );
+                return;
+            }
+        }
+        throw new Error("unable to find open slot");
+    }
+
     /**
      * Get all player desks, accounting for current player count.
      * Player desks are read-only and shared, DO NOT MUTATE!
@@ -375,7 +271,7 @@ class PlayerDesk {
                 if (player.getSlot() !== this.playerSlot) {
                     return;
                 }
-                moveNewPlayerToNonSeatSlot(player);
+                PlayerDesk.moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
             onChangeColor: (colorOption, player) => {
@@ -503,7 +399,7 @@ class PlayerDesk {
     unseatPlayer() {
         const player = world.getPlayerBySlot(this.playerSlot);
         if (player) {
-            moveNewPlayerToNonSeatSlot(player);
+            PlayerDesk.moveNewPlayerToNonSeatSlot(player);
         }
     }
 
@@ -607,10 +503,10 @@ class PlayerDesk {
         const srcPlayer = world.getPlayerBySlot(srcPlayerSlot);
         const dstPlayer = world.getPlayerBySlot(dstPlayerSlot);
         if (srcPlayer) {
-            moveNewPlayerToNonSeatSlot(srcPlayer);
+            PlayerDesk.moveNewPlayerToNonSeatSlot(srcPlayer);
         }
         if (dstPlayer) {
-            moveNewPlayerToNonSeatSlot(dstPlayer);
+            PlayerDesk.moveNewPlayerToNonSeatSlot(dstPlayer);
         }
 
         if (swapWith) {
@@ -757,5 +653,115 @@ class PlayerDesk {
         );
     }
 }
+
+// ----------------------------------------------------------------------------
+
+/* DISABLE THIS FOR NOW, MAY BE INTERFERING WITH TTPG JOIN HANDLING
+// Bounce joining players to unseated.
+globalEvents.TI4.onPlayerJoinedDelayed.add((player) => {
+    // Wait a tick to make sure player is fully set up.
+    process.nextTick(() => {
+        moveNewPlayerToNonSeatSlot(player);
+    });
+});
+
+// Unseat host when first loading game.
+const isRescriptReload = world.getExecutionReason() === "ScriptReload";
+const runOnce = () => {
+    // If not reloading scripts move the host to a non-seat slot.
+    if (!isRescriptReload) {
+        for (const player of world.getAllPlayers()) {
+            moveNewPlayerToNonSeatSlot(player);
+        }
+    }
+
+    // Reset "take a seat" UI.
+    PlayerDesk.resetUIs();
+};
+if (!world.__isMock) {
+    process.nextTick(runOnce);
+}
+*/
+
+// Reset on load.
+if (!world.__isMock) {
+    process.nextTick(() => {
+        PlayerDesk.resetUIs();
+    });
+}
+
+globalEvents.TI4.onPlayerJoinedDelayed.add((player) => {
+    PlayerDesk.resetUIs();
+});
+globalEvents.onPlayerLeft.add((player) => {
+    PlayerDesk.resetUIs();
+});
+globalEvents.onPlayerSwitchedSlots.add((player, oldPlayerSlot) => {
+    PlayerDesk.resetUIs();
+});
+globalEvents.TI4.onGameSetup.add((state, player) => {
+    PlayerDesk.resetUIs();
+});
+
+globalEvents.TI4.onPlayerCountAboutToChange.add((newPlayerCount, player) => {
+    if (world.__isMock) {
+        _playerDesks = false;
+        return;
+    }
+
+    // Remove any desk UIs.
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            assert(playerDesk instanceof PlayerDesk);
+            playerDesk.removeUI();
+        }
+    }
+
+    // Clean any existing desks, reset desks list.
+    // USE SYNCHRONOUS VERSION, DESKS ARRAY WILL CHANGE!
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).cleanGeneric();
+        }
+    }
+    _playerDesks = false;
+});
+
+globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
+    if (world.__isMock) {
+        _playerDesks = false;
+        return;
+    }
+
+    assert(!_playerDesks);
+
+    // Lock in player count until finished.
+    GameSetupUI.disablePlayerCountSlider();
+
+    // Use async setup to spread out load.
+    const setup = () => {
+        // Reset to new count.
+        _playerDesks = false;
+
+        // Add UIs to new desks.
+        PlayerDesk.resetUIs();
+
+        // Redo setup for all desks.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            assert(playerDesk instanceof PlayerDesk);
+            new PlayerDeskSetup(playerDesk).setupGenericAsync();
+        }
+
+        // Re-enable player count changes.
+        PlayerDeskSetup.getSharedAsyncTaskQueue().add(() => {
+            GameSetupUI.enablePlayerCountSlider();
+        });
+    };
+
+    // Leverage the shared task queue to make sure all cleanup tasks finish
+    // before resetting desks.
+    PlayerDeskSetup.getSharedAsyncTaskQueue().add(setup);
+});
 
 module.exports = { PlayerDesk };

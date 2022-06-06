@@ -42,16 +42,17 @@ class PlayerDeskPlayerNameUI {
 
         this._createName(new Rotator(0, 0, 0));
 
-        this._update();
         this._eventHandler = () => {
-            if (!world.__isMock) {
-                // Let other handlers finish, system process.  When a player
-                // joins they may not have a name yet.
-                process.nextTick(() => {
-                    this._update();
-                });
+            if (world.__isMock) {
+                return;
             }
+            // Let other handlers finish, system process.  When a player
+            // joins they may not have a name yet.
+            process.nextTick(() => {
+                this._update();
+            });
         };
+        this._eventHandler();
     }
 
     addUI() {
@@ -60,7 +61,7 @@ class PlayerDeskPlayerNameUI {
         });
         globalEvents.TI4.onTurnChanged.add(this._eventHandler);
         globalEvents.TI4.onTurnOrderChanged.add(this._eventHandler);
-        globalEvents.onPlayerJoined.add(this._eventHandler);
+        globalEvents.TI4.onPlayerJoinedDelayed.add(this._eventHandler); // do less work on immediate join
         globalEvents.onPlayerSwitchedSlots.add(this._eventHandler);
     }
 
@@ -70,7 +71,7 @@ class PlayerDeskPlayerNameUI {
         });
         globalEvents.TI4.onTurnChanged.remove(this._eventHandler);
         globalEvents.TI4.onTurnOrderChanged.remove(this._eventHandler);
-        globalEvents.onPlayerJoined.remove(this._eventHandler);
+        globalEvents.TI4.onPlayerJoinedDelayed.remove(this._eventHandler);
         globalEvents.onPlayerSwitchedSlots.remove(this._eventHandler);
     }
 
