@@ -167,6 +167,8 @@ class SimpleDie {
         this._preRerollValue = false;
         this._callback = false;
 
+        this._rollTimeoutHandle = false;
+
         // TTPG D10.
         const templateId = "9065AC5141F87F8ADE1F5AB6390BBEE4";
         let pos = builder._spawnPosition;
@@ -255,6 +257,23 @@ class SimpleDie {
 
         this._callback = callback;
 
+        // Got a report of a roll than never triggered finish.  In addition to
+        // the normal roll mechanism, also set a strict timeout to finish.
+        if (this._rollTimeoutHandle) {
+            clearTimeout(this._rollTimeoutHandle);
+            this._rollTimeoutHandle = undefined;
+        }
+        const handler = () => {
+            console.log(`SimpleDie.roll: timeout, forcing finish`);
+            if (_rollInProgressDieGuidToSimpleDie[guid]) {
+                this.finishRoll();
+            }
+        };
+        if (!world.__isMock) {
+            this._rollTimeoutHandle = setTimeout(handler, 5000);
+        }
+
+        // Register for the normal roll mechanism.
         const guid = this._die.getId();
         assert(!_rollInProgressDieGuidToSimpleDie[guid]); // roll in progress
         _rollInProgressDieGuidToSimpleDie[guid] = this;
@@ -272,6 +291,11 @@ class SimpleDie {
         const guid = this._die.getId();
         assert(_rollInProgressDieGuidToSimpleDie[guid]); // roll in progress
         delete _rollInProgressDieGuidToSimpleDie[guid];
+
+        if (this._rollTimeoutHandle) {
+            clearTimeout(this._rollTimeoutHandle);
+            this._rollTimeoutHandle = undefined;
+        }
 
         this._value = this._die.isValid()
             ? this._die.getCurrentFaceIndex() + 1

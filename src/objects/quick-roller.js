@@ -31,9 +31,9 @@ class QuickRoller {
         this._pendingRollHandle = undefined;
 
         const scale = 8;
-        const w = 47 * scale;
+        const w = 85 * scale;
         const h = w;
-        const buttonW = 8 * scale;
+        const buttonW = 15 * scale;
         const buttonH = buttonW;
         const canvas = new Canvas();
 
@@ -41,7 +41,7 @@ class QuickRoller {
         ui.useWidgetSize = false;
         ui.width = w;
         ui.height = h;
-        ui.position = new Vector(0, 0, 0.26);
+        ui.position = new Vector(0, 0, 0.5);
         ui.rotation = new Rotator(0, 0, 0);
         ui.scale = 1 / scale;
         ui.widget = canvas;
@@ -52,7 +52,7 @@ class QuickRoller {
             const phi = (Math.PI / 5) * i;
             const x = Math.sin(phi) * r + w / 2 - buttonW / 2;
             const y = -Math.cos(phi) * r + h / 2 - buttonH / 2;
-            const button = new Button().setFontSize(30).setText(i);
+            const button = new Button().setFontSize(60).setText(i);
             button.onClicked.add((button, player) => {
                 this.onClickedValue(i, player);
             });
@@ -65,7 +65,7 @@ class QuickRoller {
         }
 
         const s = w * 0.4;
-        const rollButton = new Button().setFontSize(70).setText("@");
+        const rollButton = new Button().setFontSize(140).setText("@");
         rollButton.onClicked.add((button, player) => {
             this.onClickedRoll(player);
         });
@@ -92,7 +92,7 @@ class QuickRoller {
 
     onClickedRoll(player) {
         const yaw = Math.random() * 360;
-        const d = new Vector(5, 0, 10).rotateAngleAxis(yaw, [0, 0, 1]);
+        const d = new Vector(7, 0, 10).rotateAngleAxis(yaw, [0, 0, 1]);
         const pos = this._obj.getPosition().add(d);
         const simpleDie = new SimpleDieBuilder()
             .setDeleteAfterSeconds(DELETE_AFTER_N_SECONDS)

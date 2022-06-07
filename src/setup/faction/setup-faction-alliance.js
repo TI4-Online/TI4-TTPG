@@ -20,12 +20,19 @@ class SetupFactionAlliance extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.alliance";
-        const card = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        let card = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
             // "card.alliance:pok/faction"
             const parsed = ObjectNamespace.parseNsid(nsid);
             const name = parsed.name.split(".")[0];
             return name === this.faction.nsidName;
         });
+
+        // Saw wrong image, try clone workaround.
+        const json = card.toJSONString();
+        const above = card.getPosition().add([0, 0, 5]);
+        card.setTags(["DELETED_ITEMS_IGNORE"]);
+        card.destroy();
+        card = world.createObjectFromJSON(json, above);
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(card, playerSlot);
