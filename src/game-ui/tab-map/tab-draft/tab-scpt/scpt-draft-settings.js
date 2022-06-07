@@ -5,7 +5,7 @@ const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
 const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
-const { refPackageId, world } = require("../../../../wrapper/api");
+const { world } = require("../../../../wrapper/api");
 
 class SCPTDraftSettings {
     constructor() {
