@@ -269,7 +269,9 @@ class SimpleDie {
                 this.finishRoll();
             }
         };
-        this._rollTimeoutHandle = setTimeout(handler, 5000);
+        if (!world.__isMock) {
+            this._rollTimeoutHandle = setTimeout(handler, 5000);
+        }
 
         // Register for the normal roll mechanism.
         const guid = this._die.getId();
