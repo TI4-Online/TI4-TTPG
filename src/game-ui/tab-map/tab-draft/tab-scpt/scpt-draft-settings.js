@@ -70,16 +70,6 @@ class SCPTDraftSettings {
         const speakerIndex = Math.floor(Math.random() * playerCount);
         this._miltyDraft.setSpeakerIndex(speakerIndex);
 
-        // Sound effects for slice pick
-        let sounds = scptDraftData.sounds;
-        if (sounds) {
-            sounds = sounds.split("|");
-            for (let i = 0; i < sounds.length; i++) {
-                const sound = world.importSound(sound, refPackageId);
-                this._miltyDraft.setSound(i, sound);
-            }
-        }
-
         const playerDesks = world.TI4.getAllPlayerDesks();
         const player = undefined;
         world.TI4.turns.randomizeTurnOrder(

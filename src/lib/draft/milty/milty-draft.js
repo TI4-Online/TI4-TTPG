@@ -15,7 +15,6 @@ const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const {
     Player,
     Rotator,
-    Sound,
     UIElement,
     globalEvents,
     world,
@@ -116,16 +115,6 @@ class MiltyDraft {
                     seatData
                 );
         });
-        return this;
-    }
-
-    setSound(sliceIndex, sound) {
-        assert(typeof sliceIndex === "number");
-        assert(sound instanceof Sound);
-
-        // Must add slices first.
-        assert(this._sliceDataArray.length > sliceIndex);
-        this._sliceDataArray[sliceIndex].sound = sound;
         return this;
     }
 
