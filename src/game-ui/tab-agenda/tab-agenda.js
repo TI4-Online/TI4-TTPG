@@ -76,7 +76,7 @@ class TabAgenda {
             assert(planet);
             let influence = planet.raw.influence;
 
-            // Add resources to influence value.
+            // If xxcha hero add resources to influence value.
             const playerSlot = closestDesk.playerSlot;
             const gromOmegaNsid =
                 "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
@@ -84,25 +84,35 @@ class TabAgenda {
                 influence += planet.raw.resources;
             }
 
+            // Apply bonus votes.
             const deskIndexToPerPlanetBonus =
                 this.getDeskIndexToPerPlanetBonus();
             const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
             influence += bonus;
-
             const deltaValue = influence * (isFaceUp ? -1 : 1);
+
             console.log(
                 `TabAgenda.onPlanetCardFlipped: ${deltaValue} for ${closestDesk.colorName}`
             );
 
+            let foundDeskUi = undefined;
             for (const deskUi of this._deskUIs) {
-                if (
-                    deskUi._playerDesk === closestDesk &&
-                    deskUi._votedOutcomeIndex >= 0
-                ) {
-                    deskUi.addVotes(deltaValue);
+                if (deskUi._playerDesk === closestDesk) {
+                    foundDeskUi = deskUi;
                     break;
                 }
             }
+            if (foundDeskUi._votedOutcomeIndex < 0) {
+                console.log(
+                    "TabAgenda.onPlanetCardFlipped: no outcome selected"
+                );
+                return;
+            }
+            if (foundDeskUi._voteLocked) {
+                console.log("TabAgenda.onPlanetCardFlipped: vote locked");
+                return;
+            }
+            foundDeskUi.addVotes(deltaValue);
         });
 
         this.updateUI();
