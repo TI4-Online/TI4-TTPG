@@ -4,6 +4,7 @@ const { FactionAliases } = require("../../../../lib/faction/faction-aliases");
 const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
+const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
 const { refPackageId, world } = require("../../../../wrapper/api");
 
 class SCPTDraftSettings {
@@ -69,8 +70,6 @@ class SCPTDraftSettings {
         const speakerIndex = Math.floor(Math.random() * playerCount);
         this._miltyDraft.setSpeakerIndex(speakerIndex);
 
-        this._miltyDraft.createPlayerUIs();
-
         // Sound effects for slice pick
         let sounds = scptDraftData.sounds;
         if (sounds) {
@@ -80,6 +79,16 @@ class SCPTDraftSettings {
                 this._miltyDraft.setSound(i, sound);
             }
         }
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const player = undefined;
+        world.TI4.turns.randomizeTurnOrder(
+            playerDesks,
+            player,
+            TURN_ORDER_TYPE.SNAKE
+        );
+
+        this._miltyDraft.createPlayerUIs();
     }
 
     _cancel() {
