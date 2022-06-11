@@ -348,7 +348,7 @@ class BuildAreaMat {
         if (!this._obj.isValid()) {
             return;
         }
-        if (zone !== this._zone) {
+        if (!this._zone || zone !== this._zone) {
             return;
         }
         if (!zone.isValid()) {
@@ -369,7 +369,10 @@ class BuildAreaMat {
     }
 
     update() {
-        assert(this._zone);
+        if (!this._zone) {
+            return;
+        }
+        assert(this._zone instanceof Zone);
         let consumeExtras = [];
 
         // What's inside area?

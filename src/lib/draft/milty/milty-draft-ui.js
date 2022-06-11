@@ -20,14 +20,14 @@ const NUM_FACTION_ROWS = 4;
 const NUM_SEAT_ROWS = 6;
 
 const DEFAULT_SLICE_COLORS = [
-    "#FF2417", // red
-    "#5AE35A", // green
-    "#FF932B", // orange
-    "#FF84D6", // pink
-    "#FFDA00", // yellow
-    "#C800FF", // purple
+    "#CB0000", // red
+    "#007306", // green
+    "#FF4500", // orange
+    "#F46FCD", // pink
+    "#D6B700", // yellow
+    "#7400B7", // purple
     "#07B2FF", // blue
-    "#BABABA", // white
+    "#8B8B8B", // white
     "#00CAB1", // teal
 ];
 
