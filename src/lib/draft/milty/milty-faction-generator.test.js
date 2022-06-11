@@ -12,7 +12,7 @@ it("generate", () => {
 // it("keleres frequency", () => {
 //     const factionGenerator = new MiltyFactionGenerator().setCount(8);
 
-//     const iterations = 1000;
+//     const iterations = 10000000;
 //     const nsidToCount = {};
 //     for (let i = 0; i < iterations; i++) {
 //         const factions = factionGenerator.generate();
