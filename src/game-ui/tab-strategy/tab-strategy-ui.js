@@ -1,6 +1,6 @@
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { Button, VerticalBox } = require("../../wrapper/api");
+const { Button, LayoutBox, VerticalBox } = require("../../wrapper/api");
 
 class TabStrategyUI extends VerticalBox {
     constructor(onButtonCallbacks) {
@@ -15,7 +15,11 @@ class TabStrategyUI extends VerticalBox {
             onButtonCallbacks.placeTradeGoodsAndSetTurns
         );
 
-        this.addChild(placeTgsButton);
+        const box = new LayoutBox()
+            .setMinimumHeight(CONFIG.fontSize * 4)
+            .setChild(placeTgsButton);
+
+        this.addChild(box);
     }
 }
 
