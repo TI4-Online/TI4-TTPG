@@ -26,6 +26,7 @@ const UPDATORS = [
     require("./updator-player-active"),
     require("./updator-player-alliances"),
     require("./updator-player-command-tokens"),
+    require("./updator-player-custodians"),
     require("./updator-player-faction-name"),
     require("./updator-player-hand-summary"),
     require("./updator-player-leaders"),
