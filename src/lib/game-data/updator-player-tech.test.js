@@ -22,6 +22,17 @@ it("player.tech", () => {
             position: playerDesks[0].center,
         })
     );
+    // dup
+    world.__addObject(
+        new MockCard({
+            allCardDetails: [
+                new MockCardDetails({
+                    metadata: "card.technology.red:base/plasma_scoring",
+                }),
+            ],
+            position: playerDesks[0].center,
+        })
+    );
 
     UPDATOR(data);
     world.__clear();

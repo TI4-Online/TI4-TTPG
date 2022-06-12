@@ -53,4 +53,13 @@ module.exports = (data) => {
         assert(playerData.technologies);
         playerData.technologies.push(name);
     });
+
+    // Unique.
+    data.players.forEach((playerData) => {
+        playerData.technologies = playerData.technologies.filter(
+            (value, index, self) => {
+                return self.indexOf(value) === index;
+            }
+        );
+    });
 };
