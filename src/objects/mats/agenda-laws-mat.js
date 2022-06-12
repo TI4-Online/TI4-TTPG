@@ -13,7 +13,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const ZONE = {
     X: 5,
     Y: 7,
-    Z: 2,
+    Z: 20,
 };
 
 // place cards on game setup
