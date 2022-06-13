@@ -18,7 +18,7 @@ globalEvents.TI4 = {
     // Called when container rejects an added object.
     // Object is still inside container when this event fires, handlers should
     // verify object.getContainer matches in case multiple act on it.
-    // <(container: Container, rejectedObjects: Array.{GameObject}, player: Player) => void>
+    // <(container: Container, rejectedObjects: Array.{GameObject}, player: Player|undefined) => void>
     onContainerRejected: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player unpacks (or re-packs!) a faction.
@@ -204,7 +204,6 @@ require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
 require("./global/on-turn-changed-sound");
-require("./global/patch-infinite-container");
 require("./global/planet-card-attachments");
 require("./global/r-swap-split-combine");
 require("./global/right-click/right-click-system");
