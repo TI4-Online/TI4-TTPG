@@ -97,8 +97,9 @@ class BuildAreaMat {
         }
     }
 
-    static getConsumeEntry(obj) {
+    static getConsumeEntry(obj, hasXxchaHeroCodex3) {
         assert(obj instanceof GameObject);
+        assert(typeof hasXxchaHeroCodex3 === "boolean");
 
         const nsid = ObjectNamespace.getNsid(obj);
 
@@ -122,7 +123,10 @@ class BuildAreaMat {
 
         const planet = obj instanceof Card && world.TI4.getPlanetByCard(obj);
         if (planet) {
-            const value = planet.raw.resources || 0;
+            let value = planet.raw.resources || 0;
+            if (hasXxchaHeroCodex3) {
+                value += planet.raw.influence || 0;
+            }
             return {
                 obj,
                 type: TYPE.PLANET,
@@ -375,6 +379,15 @@ class BuildAreaMat {
         assert(this._zone instanceof Zone);
         let consumeExtras = [];
 
+        // Check for Xxcha hero codex 3 before gathering consume entries.
+        const playerSlot = this._getPlayerSlot();
+        const xxchaHeroCodex3Nsid =
+            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
+        let hasXxchaHeroCodex3 = CardUtil.hasCard(
+            playerSlot,
+            xxchaHeroCodex3Nsid
+        );
+
         // What's inside area?
         const produce = [];
         const consume = [];
@@ -387,7 +400,10 @@ class BuildAreaMat {
             if (produceEntry) {
                 produce.push(produceEntry);
             }
-            const consumeEntry = BuildAreaMat.getConsumeEntry(obj);
+            const consumeEntry = BuildAreaMat.getConsumeEntry(
+                obj,
+                hasXxchaHeroCodex3
+            );
             if (consumeEntry) {
                 consume.push(consumeEntry);
             }
@@ -437,7 +453,6 @@ class BuildAreaMat {
         }
 
         // Get per-unit data.
-        const playerSlot = this._getPlayerSlot();
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         const auxData = new AuxDataBuilder()
             .setPlayerSlot(playerSlot)
