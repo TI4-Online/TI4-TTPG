@@ -1,6 +1,3 @@
-// Container must have "bag.x" NSID, content "x".
-// Protect against accidental right-click empty with periodic fill?
-
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
@@ -9,10 +6,11 @@ const {
     Player,
     globalEvents,
     refObject,
+    world,
 } = require("../../wrapper/api");
 const { Spawn } = require("../../setup/spawn/spawn");
 
-class SingletonInfiniteContainer {
+class ControlTokenContainer {
     constructor(gameObject) {
         assert(gameObject);
         assert(gameObject instanceof GameObject);
@@ -22,11 +20,9 @@ class SingletonInfiniteContainer {
         //assert(gameObject.getType() === 1); // 3 technically ok
 
         const nsid = ObjectNamespace.getNsid(gameObject);
-        const prefix = "bag.";
-        assert(nsid.startsWith(prefix));
+        assert(nsid === "bag.token.control:base/*");
 
         this._container = gameObject;
-        this._contentNsid = nsid.slice(prefix.length);
 
         const doUpdate = () => {
             if (!this._container.isValid()) {
@@ -58,10 +54,14 @@ class SingletonInfiniteContainer {
 
         const rejectedObjs = [];
         for (const obj of this._container.getItems()) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== this._contentNsid) {
+            if (
+                !ObjectNamespace.isControlToken(obj) ||
+                obj.getOwningPlayerSlot() !==
+                    this._container.getOwningPlayerSlot()
+            ) {
+                const nsid = ObjectNamespace.getNsid(obj);
                 console.log(
-                    `SingletonInfiniteContainer.rejectMismatched: rejecting "${nsid}"`
+                    `ControlTokenContainer.rejectMismatched: rejecting "${nsid}"`
                 );
                 rejectedObjs.push(obj);
             }
@@ -84,12 +84,16 @@ class SingletonInfiniteContainer {
             assert(typeof index === "number");
 
             // Call `rejectMismatched` first to enforce content type.
-            const nsid = ObjectNamespace.getNsid(obj);
-            assert(nsid === this._contentNsid);
+            assert(ObjectNamespace.isControlToken(obj));
+            assert(
+                obj.getOwningPlayerSlot() ===
+                    this._container.getOwningPlayerSlot()
+            );
 
             if (index > 0) {
+                const nsid = ObjectNamespace.getNsid(obj);
                 console.log(
-                    `SingletonInfiniteContainer.removeExtras: removing extra "${nsid}"`
+                    `ControlTokenContainer.removeExtras: removing extra "${nsid}"`
                 );
                 this._container.remove(obj);
             }
@@ -104,17 +108,23 @@ class SingletonInfiniteContainer {
             return;
         }
 
-        console.log(
-            `SingletonInfiniteContainer.refill: adding "${this._contentNsid}"`
-        );
+        const playerSlot = this._container.getOwningPlayerSlot();
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        if (!faction) {
+            console.log("ControlTokenContainer.refill: no faction");
+            return;
+        }
+
+        const tokenNsid = `token.control:${faction.nsidSource}/${faction.nsidName}`;
+        console.log(`ControlTokenContainer.refill: adding "${tokenNsid}"`);
 
         const pos = this._container.getPosition().add([0, 0, 10]);
         const rot = this._container.getRotation();
-        const obj = Spawn.spawn(this._contentNsid, pos, rot);
+        const obj = Spawn.spawn(tokenNsid, pos, rot);
         assert(obj);
 
         this._container.addObjects([obj]);
     }
 }
 
-new SingletonInfiniteContainer(refObject);
+new ControlTokenContainer(refObject);
