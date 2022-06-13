@@ -122,16 +122,7 @@ class SetupFactionTokens extends AbstractSetup {
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(playerSlot);
         bag.setPrimaryColor(color);
-
-        // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
-        if (bag.getType() !== tokenData.bagType) {
-            bag.setType(tokenData.bagType);
-            const json = bag.toJSONString();
-            bag.setTags(["DELETED_ITEMS_IGNORE"]);
-            bag.destroy();
-            bag = world.createObjectFromJSON(json, pos);
-            bag.setRotation(rot);
-        }
+        bag.setType(tokenData.bagType);
 
         const tokenNsid = `${tokenData.tokenNsidType}:${this.faction.nsidSource}/${this.faction.nsidName}`;
         for (let i = 0; i < tokenData.tokenCount; i++) {
