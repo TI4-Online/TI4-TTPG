@@ -13,7 +13,6 @@ const OTHER_SCORABLE_NSIDS = new Set([
     "card.agenda:pok/political_censure",
     "card.relic:pok/shard_of_the_throne",
     "card.relic:pok/the_crown_of_emphidia",
-    "token:base/custodians",
 ]);
 
 module.exports = (data) => {

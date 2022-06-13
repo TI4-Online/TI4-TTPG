@@ -13,7 +13,7 @@ function playTurnChangedSound() {
     }
 
     const startTime = 0;
-    const volume = 1; // [0:2] range
+    const volume = 0.8; // [0:2] range
     const loop = false;
     _sound.play(startTime, volume, loop);
 }

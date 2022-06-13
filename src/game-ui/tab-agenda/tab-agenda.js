@@ -226,11 +226,49 @@ class TabAgenda {
     }
 
     updateMainUI() {
+        const onResetPlanetCards = () => {
+            const checkIsDiscardPile = false;
+            const allowFaceDown = true;
+            for (const obj of world.getAllObjects()) {
+                if (
+                    !CardUtil.isLooseCard(
+                        obj,
+                        checkIsDiscardPile,
+                        allowFaceDown
+                    )
+                ) {
+                    continue;
+                }
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (
+                    !nsid.startsWith("card.planet") &&
+                    !nsid.startsWith("card.legendary_planet")
+                ) {
+                    continue;
+                }
+                if (!obj.isFaceUp()) {
+                    const pos = obj.getPosition().add([0, 0, 3]);
+                    obj.setPosition(pos);
+
+                    const rotation = obj.getRotation();
+                    const newRotation = new Rotator(
+                        rotation.pitch,
+                        rotation.yaw,
+                        -180
+                    );
+                    obj.setRotation(newRotation, 1);
+                }
+            }
+            this.updateUI();
+        };
+
         // Abort if not active.
         if (!this._stateMachine) {
             this._widget.setChild(
-                AgendaUiMain.simpleNoMechy(
-                    locale("ui.agenda.clippy.place_agenda_to_start")
+                AgendaUiMain.simpleButton(
+                    locale("ui.agenda.clippy.place_agenda_to_start"),
+                    locale("ui.agenda.clippy.reset_cards"),
+                    onResetPlanetCards
                 )
             );
             return;
@@ -250,35 +288,6 @@ class TabAgenda {
                 AgendaOutcome.getDefaultOutcomeNames(outcomeType);
             this.updateDeskUI();
             this._stateMachine.next();
-            this.updateUI();
-        };
-        const onResetPlanetCards = () => {
-            const checkIsDiscardPile = false;
-            const allowFaceDown = true;
-            for (const obj of world.getAllObjects()) {
-                if (
-                    !CardUtil.isLooseCard(
-                        obj,
-                        checkIsDiscardPile,
-                        allowFaceDown
-                    )
-                ) {
-                    continue;
-                }
-                const nsid = ObjectNamespace.getNsid(obj);
-                if (!nsid.startsWith("card.planet")) {
-                    continue;
-                }
-                if (!obj.isFaceUp()) {
-                    const rotation = obj.getRotation();
-                    const newRotation = new Rotator(
-                        rotation.pitch,
-                        rotation.yaw,
-                        -180
-                    );
-                    obj.setRotation(newRotation, 1);
-                }
-            }
             this.updateUI();
         };
         const outcomeButtonTextsAndOnClicks = [

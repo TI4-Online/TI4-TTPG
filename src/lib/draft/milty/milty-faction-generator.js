@@ -40,58 +40,87 @@ class MiltyFactionGenerator {
     }
 
     generate() {
-        let factions = world.TI4.getAllFactions().filter((faction) => {
-            return !faction.raw.abstract;
+        // Get available factions.
+        const nsidNameToFaction = {};
+        let nsidNames = [];
+        world.TI4.getAllFactions()
+            .filter((faction) => {
+                return !faction.raw.abstract;
+            })
+            .forEach((faction) => {
+                const nsidName = faction.nsidName;
+                nsidNameToFaction[nsidName] = faction;
+                nsidNames.push(nsidName);
+            });
+
+        let keleresFlavors = [
+            "keleres_argent",
+            "keleres_mentak",
+            "keleres_xxcha",
+        ];
+
+        // Use a generic Keleres.
+        nsidNames = nsidNames.filter((nsidName) => {
+            return !keleresFlavors.includes(nsidName);
         });
-        factions = Shuffle.shuffle(factions);
+        nsidNames.push("keleres");
 
-        const rejectSet = new Set();
-
-        // Only consider one Keleres, random for fair position in shuffled.
-        switch (Math.floor(Math.random() * 3)) {
-            case 0:
-                rejectSet.add("keleres_mentak");
-                rejectSet.add("keleres_xxcha");
-                break;
-            case 1:
-                rejectSet.add("keleres_argent");
-                rejectSet.add("keleres_xxcha");
-                break;
-            case 2:
-                rejectSet.add("keleres_argent");
-                rejectSet.add("keleres_mentak");
-                break;
-        }
+        nsidNames = Shuffle.shuffle(nsidNames);
 
         // Do not mix Keleres with conflicting faction
-        factions = factions.filter((faction) => {
-            const nsidName = faction.nsidName;
-            if (rejectSet.has(nsidName)) {
-                return false;
-            }
-            if (nsidName === "argent") {
-                rejectSet.add("keleres_argent");
-            } else if (nsidName === "mentak") {
-                rejectSet.add("keleres_mentak");
-            } else if (nsidName === "xxcha") {
-                rejectSet.add("keleres_xxcha");
-            } else if (nsidName === "keleres_argent") {
-                rejectSet.add("keleres_mentak");
-                rejectSet.add("keleres_xxcha");
-                rejectSet.add("argent");
-            } else if (nsidName === "keleres_mentak") {
-                rejectSet.add("keleres_argent");
-                rejectSet.add("keleres_xxcha");
-                rejectSet.add("mentak");
-            } else if (nsidName === "keleres_xxcha") {
-                rejectSet.add("keleres_argent");
-                rejectSet.add("keleres_mentak");
-                rejectSet.add("xxcha");
-            }
-            return true;
+        const rejectSet = new Set();
+        let chosenKeleres = undefined;
+        nsidNames = nsidNames
+            .filter((nsidName) => {
+                if (rejectSet.has(nsidName)) {
+                    return false;
+                }
+
+                // When encountering a Keleres flavor remove it from the set.
+                if (nsidName === "argent") {
+                    keleresFlavors = keleresFlavors.filter((nsidName) => {
+                        return nsidName !== "keleres_argent";
+                    });
+                } else if (nsidName === "mentak") {
+                    keleresFlavors = keleresFlavors.filter((nsidName) => {
+                        return nsidName !== "keleres_mentak";
+                    });
+                } else if (nsidName === "xxcha") {
+                    keleresFlavors = keleresFlavors.filter((nsidName) => {
+                        return nsidName !== "keleres_xxcha";
+                    });
+                }
+
+                // On Keleres choose an available flavor.
+                if (nsidName === "keleres") {
+                    assert(!chosenKeleres);
+                    if (keleresFlavors.length === 0) {
+                        return false; // all base factions already picked
+                    }
+                    chosenKeleres = Shuffle.shuffle(keleresFlavors)[0];
+                    assert(chosenKeleres);
+                    if (chosenKeleres === "keleres_argent") {
+                        rejectSet.add("argent");
+                    } else if (chosenKeleres === "keleres_mentak") {
+                        rejectSet.add("mentak");
+                    } else if (chosenKeleres === "keleres_xxcha") {
+                        rejectSet.add("xxcha");
+                    }
+                }
+                return true;
+            })
+            .map((nsidName) => {
+                return nsidName === "keleres" ? chosenKeleres : nsidName;
+            });
+
+        assert(nsidNames.length >= this._count);
+        nsidNames = nsidNames.slice(0, this._count);
+
+        const factions = nsidNames.map((nsidName) => {
+            return nsidNameToFaction[nsidName];
         });
 
-        return factions.slice(0, this._count);
+        return factions;
     }
 }
 

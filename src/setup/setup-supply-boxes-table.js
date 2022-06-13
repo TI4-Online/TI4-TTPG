@@ -81,21 +81,9 @@ class SetupSupplyBoxesTable extends AbstractSetup {
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
         bag.setScale(new Vector(SCALE, SCALE, SCALE));
+        bag.setType(1);
 
-        // Bag needs to have the correct type at create time.  If not infinite, fix and respawn.
-        if (bag.getType() !== 1) {
-            bag.setType(1);
-            const json = bag.toJSONString();
-            bag.setTags(["DELETED_ITEMS_IGNORE"]);
-            bag.destroy();
-            bag = world.createObjectFromJSON(json, pos);
-            bag.setRotation(rot);
-        }
-
-        const aboveBag = pos.add([0, 0, 10]);
-        const token = Spawn.spawn(tokenNsid, aboveBag, rot);
-        assert(token);
-        bag.addObjects([token]);
+        // Supply box script now takes care of filling them.
     }
 }
 

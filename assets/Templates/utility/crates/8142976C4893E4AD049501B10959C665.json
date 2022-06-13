@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/containers/singleton-infinite-container.js",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -51,6 +51,7 @@
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/crate_x.png",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -79,6 +80,7 @@
 			"Texture": "global/tokens/base/commodity_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/commodity_3_x.png",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -121,6 +123,7 @@
 			"Texture": "global/tokens/base/tradegood_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/tradegood_3_x.png",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -149,5 +152,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

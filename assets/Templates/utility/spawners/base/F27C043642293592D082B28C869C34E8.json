@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "",
+	"ScriptName": "objects/containers/control-token-container.js",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -51,6 +51,7 @@
 			"Texture": "global/utility/holotank_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/holotank_x.png",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -79,6 +80,7 @@
 			"Texture": "global/utility/tanktube_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/tanktube_x.png",
+			"EmissiveMap": "",
 			"IsTransparent": true,
 			"Alpha": 1,
 			"CastShadow": false,
@@ -108,6 +110,7 @@
 			"Texture": "global/tokens/faction_c.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": true,
@@ -145,5 +148,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

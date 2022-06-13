@@ -171,16 +171,7 @@ class SetupTableTokens extends AbstractSetup {
             bag = Spawn.spawn(tokenData.bagNsid, pos, rot);
             bag.clear(); // paranoia
             bag.setObjectType(ObjectType.Ground);
-
-            // Bag needs to have the correct type at create time.
-            if (bag.getType() !== tokenData.bagType) {
-                bag.setType(tokenData.bagType);
-                const json = bag.toJSONString();
-                bag.setTags(["DELETED_ITEMS_IGNORE"]);
-                bag.destroy();
-                bag = world.createObjectFromJSON(json, pos);
-                bag.setRotation(rot);
-            }
+            bag.setType(tokenData.bagType);
 
             if (tokenData.bagScale) {
                 bag.setScale(

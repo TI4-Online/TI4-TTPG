@@ -63,7 +63,6 @@ class SetupSecretHolders extends AbstractSetup {
             const rot = rotations[playerDesk.index];
             assert(pos && rot);
             const obj = Spawn.spawn(nsid, pos, rot);
-            obj.setPrimaryColor(playerDesk.color);
             obj.setHiddenCardsType(HiddenCardsType.Front);
             obj.setOnlyOwnerTakesCards(false);
             ObjectSavedData.set(obj, DESK_INDEX_KEY, playerDesk.index);

@@ -4,7 +4,12 @@ const UPDATOR = require("./updator-laws");
 const { MockCard, MockCardDetails, world } = require("../../wrapper/api");
 
 it("laws", () => {
-    const data = {};
+    const playerDesks = world.TI4.getAllPlayerDesks();
+    const data = {
+        players: playerDesks.map((desk) => {
+            return { color: desk.colorName };
+        }),
+    };
 
     world.__clear();
     world.__addObject(
