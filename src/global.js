@@ -164,7 +164,7 @@ world.TI4 = {
         return (
             world.TI4.getFactionByPlayerSlot(playerSlot)?.nameFull ||
             world.TI4.getPlayerDeskByPlayerSlot(playerSlot)?.colorName ||
-            world.getPlayerBySlot(playerSlot).getName() ||
+            world.getPlayerBySlot(playerSlot)?.getName() ||
             "<???>"
         );
     },
