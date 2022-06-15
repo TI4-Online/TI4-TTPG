@@ -2,6 +2,7 @@ const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrs } = require("./unit-attrs");
 const { world } = require("../../wrapper/api");
+const { Hex } = require("../hex");
 
 // This is not JSON because `modify = function(unitAttrs, auxData)` functions.
 module.exports = [
@@ -246,8 +247,28 @@ module.exports = [
             if (auxData.rollType !== "spaceCannon") {
                 return false;
             }
-            // Only applies to Mecatol Rex.
-            return auxData.activeSystem && auxData.activeSystem.tile === 18;
+            // Only applies to Mecatol Rex
+            if (!auxData.activeSystem || auxData.activeSystem.tile !== 18) {
+                return false;
+            }
+            // Only applies to Mecatol Rex WHEN THE PLAYER CONTROLS IT!
+            // Look for the attachment token on the system.
+            for (const obj of world.getAllObjects()) {
+                if (obj.getContainer()) {
+                    continue;
+                }
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (nsid !== "token.keleres:codex.vigil/custodia_vigilia") {
+                    continue;
+                }
+                const pos = obj.getPosition();
+                const hex = Hex.fromPosition(pos);
+                if (hex !== auxData.hex) {
+                    continue;
+                }
+                return true;
+            }
+            return false;
         },
         applyAll: (unitAttrsSet, auxData) => {
             unitAttrsSet.addSpecialUnit(
