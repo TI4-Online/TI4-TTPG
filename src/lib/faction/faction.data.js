@@ -198,6 +198,11 @@ const FACTION_DATA = [
         },
         techs: ["iihq_modernization", "agency_supply_network"],
         units: ["artemiris", "omniopiares"],
+        unpackExtra: [
+            {
+                tokenNsid: "token.keleres:codex.vigil/custodia_vigilia",
+            },
+        ],
     },
     {
         faction: "keleres_argent",

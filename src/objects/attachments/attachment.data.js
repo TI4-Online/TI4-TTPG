@@ -60,6 +60,15 @@ const ATTACHMENTS = [
         },
     },
     {
+        // Unit modifier handles space cannon.
+        localeName: "token.attachment.custodia_vigilia",
+        cardNsid: "card.legendary_planet:codex.vigil/custodia_vigilia",
+        tokenNsid: "token.keleres:codex.vigil/custodia_vigilia",
+        faceUp: {
+            image: "global/tokens/codex/vigil/keleres_mecatol_token.png",
+        },
+    },
+    {
         localeName: "token.attachment.lazax_survivors",
         cardNsid: "card.exploration.hazardous:pok/lazax_survivors",
         tokenNsid: "token.attachment.exploration:pok/lazax_survivors",

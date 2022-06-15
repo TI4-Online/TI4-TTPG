@@ -182,6 +182,10 @@ class Spawn {
                 return candidateResult;
             }
         }
+
+        if (nsid === "token.keleres:codex.vigil/custodia_vigilia") {
+            return locale("token.attachment.custodia_vigilia");
+        }
     }
 
     /**
