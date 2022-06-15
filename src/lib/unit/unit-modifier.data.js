@@ -235,6 +235,32 @@ module.exports = [
         },
     },
     {
+        // "SPACE CANNON 5, +3 prod",
+        isCombat: true,
+        localeName: "token.attachment.custodia_vigilia",
+        localeDescription: "unit_modifier.desc.custodia_vigilia",
+        owner: "self",
+        priority: "mutate",
+        triggerNsid: "card.legendary_planet:codex.vigil/custodia_vigilia",
+        filter: (auxData) => {
+            if (auxData.rollType !== "spaceCannon") {
+                return false;
+            }
+            // Only applies to Mecatol Rex.
+            return auxData.activeSystem && auxData.activeSystem.tile === 18;
+        },
+        applyAll: (unitAttrsSet, auxData) => {
+            unitAttrsSet.addSpecialUnit(
+                new UnitAttrs({
+                    unit: "custodia_vigilia",
+                    localeName: "token.attachment.custodia_vigilia",
+                    spaceCannon: { hit: 5, dice: 1 },
+                })
+            );
+            auxData.self.overrideCount("custodia_vigilia", 1);
+        },
+    },
+    {
         // "Opponent PDS lose PLANETARY SHIELD and SPACE CANNON DEFENSE",
         isCombat: true,
         localeName: "unit_modifier.name.disable",

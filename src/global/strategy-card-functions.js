@@ -5,18 +5,23 @@
  * play button.
  */
 
+const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
+const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Button,
+    GameObject,
     Rotator,
     UIElement,
     Vector,
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { ObjectNamespace } = require("../lib/object-namespace");
-const locale = require("../lib/locale");
 
 function setupStrategyCard(card) {
+    assert(card instanceof GameObject);
+
     const playButtonName = locale("ui.button.strategy_card_play");
     const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
 
@@ -28,6 +33,16 @@ function setupStrategyCard(card) {
         .setText(playButtonName)
         .setFontSize(10);
     card.play_button.widget.onClicked.add((button, player) => {
+        // Report.
+        const parsed = ObjectNamespace.parseStrategyCard(card);
+        const cardName = parsed && locale(`tile.strategy.${parsed.card}`);
+        const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
+        const msg = locale("ui.message.strategy_card_play", {
+            playerName,
+            cardName,
+        });
+        Broadcast.broadcastAll(msg);
+
         // The event is the button, so getOwningObject gets the card itself.
         globalEvents.TI4.onStrategyCardPlayed.trigger(
             button.getOwningObject(),

@@ -1,14 +1,12 @@
 require("../global"); // create globalEvents.TI4
 const assert = require("assert");
-const { globalEvents, MockGameObject } = require("../mock/mock-api");
-const { setupStrategyCard } = require("./strategy-card-functions");
-const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 const locale = require("../lib/locale");
-
-// mock global.js event registration
-globalEvents.TI4 = {
-    onStrategyCardPlayed: new TriggerableMulticastDelegate(),
-};
+const { setupStrategyCard } = require("./strategy-card-functions");
+const {
+    globalEvents,
+    MockGameObject,
+    MockPlayer,
+} = require("../mock/mock-api");
 
 it("setupStrategyCard creates a play button and a custom action", () => {
     let card = new MockGameObject();
@@ -47,7 +45,7 @@ describe("on actions", () => {
 
     it("the button triggers the global event on click", (done) => {
         let card = new MockGameObject();
-        const player = {};
+        const player = new MockPlayer();
         globalEvents.TI4.onStrategyCardPlayed.add(
             (owningObject, clickingPlayer) => {
                 done();
