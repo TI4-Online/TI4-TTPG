@@ -3,6 +3,7 @@ const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrs } = require("./unit-attrs");
 const { world } = require("../../wrapper/api");
 const { Hex } = require("../hex");
+const { Facing } = require("../facing");
 
 // This is not JSON because `modify = function(unitAttrs, auxData)` functions.
 module.exports = [
@@ -266,7 +267,7 @@ module.exports = [
                 if (hex !== auxData.hex) {
                     continue;
                 }
-                return true;
+                return Facing.isFaceUp(obj);
             }
             return false;
         },

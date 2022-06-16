@@ -15,6 +15,18 @@ const ATTACHMENTS = [
         },
     },
     {
+        // Unit modifier handles space cannon, checks token for face up.
+        localeName: "token.attachment.custodia_vigilia",
+        cardNsid: "card.legendary_planet:codex.vigil/custodia_vigilia",
+        tokenNsid: "token.keleres:codex.vigil/custodia_vigilia",
+        faceUp: {
+            image: "global/tokens/codex/vigil/custodia_vigilia.face.png",
+        },
+        faceDown: {
+            image: "global/tokens/codex/vigil/custodia_vigilia.back.png",
+        },
+    },
+    {
         localeName: "token.attachment.cybernetic_facility",
         cardNsid:
             "card.exploration.industrial:pok/cybernetic_research_facility",
@@ -57,15 +69,6 @@ const ATTACHMENTS = [
             resources: 3,
             influence: 3,
             image: "global/tokens/pok/exploration/geoform.png",
-        },
-    },
-    {
-        // Unit modifier handles space cannon.
-        localeName: "token.attachment.custodia_vigilia",
-        cardNsid: "card.legendary_planet:codex.vigil/custodia_vigilia",
-        tokenNsid: "token.keleres:codex.vigil/custodia_vigilia",
-        faceUp: {
-            image: "global/tokens/codex/vigil/keleres_mecatol_token.png",
         },
     },
     {
