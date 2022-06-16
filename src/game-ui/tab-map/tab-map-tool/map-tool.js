@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { Broadcast } = require("../../../lib/broadcast");
 const { DealDiscard } = require("../../../lib/card/deal-discard");
 const { Hex } = require("../../../lib/hex");
 const { Hyperlane } = require("../../../lib/map-string/hyperlane");
@@ -8,8 +9,7 @@ const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const PositionToPlanet = require("../../../lib/system/position-to-planet");
 const { Spawn } = require("../../../setup/spawn/spawn");
-const { Card, Rotator, world } = require("../../../wrapper/api");
-const { Broadcast } = require("../../../lib/broadcast");
+const { Card, GameObject, Rotator, world } = require("../../../wrapper/api");
 
 class MapTool {
     static getMapTilesContainer() {
@@ -118,14 +118,14 @@ class MapTool {
                     obj,
                     planet.position
                 );
-                nsidTypeAndNameToPos[key] = pos.add([0, 0, 2]);
+                nsidTypeAndNameToPos[key] = pos.add([0, 0, 4]);
 
                 if (planet.raw.legendary) {
                     const nsid = planet.raw.legendaryCard;
                     const parsed = ObjectNamespace.parseNsid(nsid);
                     assert(parsed.type === "card.legendary_planet");
                     key = `${parsed.type}/${parsed.name}`;
-                    nsidTypeAndNameToPos[key] = pos.add([0, 0, 1]);
+                    nsidTypeAndNameToPos[key] = pos.add([0, 0, 3]);
                 }
             }
         }
@@ -141,6 +141,7 @@ class MapTool {
 
         const rot = new Rotator(0, 0, 0);
         const movePlanetCard = (cardObj, pos) => {
+            assert(cardObj instanceof Card);
             cardObj.setPosition(pos, 1);
             cardObj.setRotation(rot);
         };
@@ -175,6 +176,26 @@ class MapTool {
                     movePlanetCard(obj, pos);
                 }
             }
+        }
+
+        // Custodians token.
+        let mecatolSystemTile = false;
+        let custodiansToken = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside containers
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "tile.system:base/18") {
+                mecatolSystemTile = obj;
+            } else if (nsid === "token:base/custodians") {
+                custodiansToken = obj;
+            }
+        }
+        if (mecatolSystemTile && custodiansToken) {
+            console.log("MapTool.placeCards: placing custodians token");
+            const pos = mecatolSystemTile.getPosition().add([0, 0, 5]);
+            custodiansToken.setPosition(pos, 1);
         }
     }
 

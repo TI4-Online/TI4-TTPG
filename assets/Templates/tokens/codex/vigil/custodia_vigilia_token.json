@@ -22,7 +22,7 @@
 		"G": 0,
 		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
 	"ScriptName": "objects/attachments/custodia-vigilia.js",
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/codex/vigil/keleres_mecatol_token.png",
+			"Texture": "global/tokens/codex/vigil/custodia_vigilia.face.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"EmissiveMap": "",
@@ -73,11 +73,11 @@
 			},
 			"Rotation":
 			{
-				"X": 180,
+				"X": -180,
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/tokens/codex/vigil/keleres_mecatol_token.png",
+			"Texture": "global/tokens/codex/vigil/custodia_vigilia.back.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"EmissiveMap": "",
