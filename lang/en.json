@@ -3,6 +3,7 @@
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
     "ui.error.not_owner": "That is not yours, {playerName}",
+    "ui.error.commander_locked": "Commander is locked",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",

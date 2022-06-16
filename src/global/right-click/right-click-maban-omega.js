@@ -51,15 +51,38 @@ class MabanOmega {
         assert(mabanCard instanceof Card); // might be alliance
         assert(player instanceof Player);
 
+        // Make sure card is in player area.
         const pos = mabanCard.getPosition();
         const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-        if (closestDesk && closestDesk.playerSlot === player.getSlot()) {
-            return true;
+        if (!closestDesk || closestDesk.playerSlot !== player.getSlot()) {
+            const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
+            const msg = locale("ui.error.not_owner", { playerName });
+            Broadcast.chatOne(player, msg);
+            return false;
         }
-        const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
-        const msg = locale("ui.error.not_owner", { playerName });
-        Broadcast.chatOne(player, msg);
-        return false;
+
+        // Make sure commander is unlocked.
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!(obj instanceof Card)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (
+                nsid !== "card.leader.commander.naalu:codex.vigil/maban.omega"
+            ) {
+                continue;
+            }
+            if (!obj.isFaceUp()) {
+                const msg = locale("ui.error.commander_locked");
+                Broadcast.chatOne(player, msg);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static getNeighbors(playerSlot) {
