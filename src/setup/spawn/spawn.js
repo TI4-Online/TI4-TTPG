@@ -208,7 +208,9 @@ class Spawn {
 
         const obj = world.createObjectFromTemplate(templateId, position);
         if (!obj) {
-            throw new Error(`spawn failed for "${nsid}"`);
+            throw new Error(
+                `spawn failed for "${nsid}" (template id "${templateId}")`
+            );
         }
 
         obj.setRotation(rotation);
