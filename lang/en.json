@@ -3,6 +3,7 @@
     "example.replaced": "{player} has run this script {x} {#x|time|times|times... newb}",
 
     "ui.error.not_owner": "That is not yours, {playerName}",
+    "ui.error.commander_locked": "Commander is locked",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",
@@ -97,6 +98,9 @@
 
     "ui.movement.finish_movement": "Finalize Movement",
 
+    "ui.message.maban_omega_promissory": "PROMISSORIES: {content}",
+    "ui.message.maban_omega_agent": "AGENDA DECK top: “{top}”, bottom: “{bottom}”",
+
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
@@ -152,6 +156,8 @@
     "ui.menu.dimensional_anchor": "Dimensional Anchor",
     "ui.menu.helio_command_array": "Helio Command Array",
     "ui.menu.multiverse_shift": "Multiverse shift",
+    "ui.menu.maban_omega_promissory": "View neighbors’ promissories",
+    "ui.menu.maban_omega_agent": "View agenda top/bottom",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
