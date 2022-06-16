@@ -9,7 +9,7 @@ const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const PositionToPlanet = require("../../../lib/system/position-to-planet");
 const { Spawn } = require("../../../setup/spawn/spawn");
-const { Card, GameObject, Rotator, world } = require("../../../wrapper/api");
+const { Card, Rotator, world } = require("../../../wrapper/api");
 
 class MapTool {
     static getMapTilesContainer() {
