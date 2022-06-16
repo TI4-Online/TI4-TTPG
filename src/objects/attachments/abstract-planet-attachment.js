@@ -53,6 +53,7 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         this._obj = gameObject;
         this._attrs = attrs;
         this._originallyLegendary = false;
+        this._slot = -1;
     }
 
     getAttrs() {
@@ -72,24 +73,45 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         assert(typeof faceUp === "boolean");
 
         this._positionOnPlanet(planet, systemTileObj);
-        this._addPlanetAttrs(planet, faceUp);
+        this._addPlanetAttrs(planet, faceUp); // adds to planet.attachments
     }
 
     remove(system, planet, systemTileObj, faceUp) {
         assert(typeof faceUp === "boolean");
 
+        this._slot = -1;
         this._delPlanetAttrs(planet, faceUp);
     }
 
     _positionOnPlanet(planet, systemTileObj) {
         assert(systemTileObj instanceof GameObject);
 
-        let numAttachments = planet.attachments.length;
-        const steps = Math.floor(numAttachments / 3);
-        if (steps % 2 === 1) {
-            numAttachments += 0.5;
+        const slotted = new Set();
+        for (const attachment of planet.attachments) {
+            const slot = attachment._slot;
+            assert(typeof slot === "number");
+            if (slot >= 0) {
+                slotted.add(slot);
+            }
         }
-        const phi = (numAttachments * 120 * Math.PI) / 180;
+
+        // Look for an empty slot, note <= for considering next.
+        let slot = -1;
+        for (let i = 0; i <= planet.attachments.length; i++) {
+            if (!slotted.has(i)) {
+                slot = i;
+                break;
+            }
+        }
+        assert(slot >= 0);
+        this._slot = slot;
+
+        let slotExtra = 0;
+        const steps = Math.floor(slot / 3);
+        if (steps % 2 === 1) {
+            slotExtra = 0.5;
+        }
+        const phi = ((slot + slotExtra) * 120 * Math.PI) / 180;
         const r = 1.05;
         const attachmentPosition = new Vector(
             planet.position.x - Math.sin(phi) * r,
