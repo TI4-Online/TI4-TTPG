@@ -125,6 +125,12 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
 
         this._obj.setObjectType(ObjectType.Regular);
         this._obj.setPosition(worldPosition, 0);
+
+        // Fix yaw to match system tile.
+        const rot = this._obj.getRotation();
+        rot.yaw = systemTileObj.getRotation().yaw;
+        this._obj.setRotation(rot);
+
         this._obj.setObjectType(ObjectType.Ground);
     }
 
