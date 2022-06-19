@@ -1,11 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { AdjacencyHyperlane } = require("../../lib/system/adjacency-hyperlane");
-const { AdjacencyNeighbor } = require("../../lib/system/adjacency-neighbor");
-const { AdjacencyWormhole } = require("../../lib/system/adjacency-wormhole");
-const { Borders } = require("../../lib/borders/borders");
 const { Broadcast } = require("../../lib/broadcast");
 const { DealDiscard } = require("../../lib/card/deal-discard");
+const { Neighbors } = require("../../lib/borders/neighbors");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Card,
@@ -85,70 +82,6 @@ class MabanOmega {
         return true;
     }
 
-    static getNeighbors(playerSlot) {
-        assert(typeof playerSlot === "number");
-
-        // Who has control in each hex?
-        const hexToPlayerSlotSet = {};
-        Borders.getAllControlEntries().forEach((controlEntry) => {
-            const entryHex = controlEntry.hex;
-            const entryPlayerSlot = controlEntry.playerSlot;
-            assert(typeof entryHex === "string");
-            assert(typeof entryPlayerSlot === "number");
-            let playerSlotSet = hexToPlayerSlotSet[entryHex];
-            if (!playerSlotSet) {
-                playerSlotSet = new Set();
-                hexToPlayerSlotSet[entryHex] = playerSlotSet;
-            }
-            playerSlotSet.add(entryPlayerSlot);
-        });
-
-        // Which hexes does this player have control?
-        const playerHexes = Object.entries(hexToPlayerSlotSet)
-            .filter(([hex, playerSlotSet]) => {
-                return playerSlotSet.has(playerSlot);
-            })
-            .map(([hex, playerSlotSet]) => {
-                return hex;
-            });
-        console.log(`ME ${JSON.stringify(playerHexes)}`);
-
-        // Get neighbor hexes (as well as original hexes).
-        const allHexes = new Set();
-        for (const hex of playerHexes) {
-            allHexes.add(hex); // applies to ships *in* or adjacent to
-
-            const adjNeighbor = new AdjacencyNeighbor(hex);
-            for (const adjHex of adjNeighbor.getAdjacent()) {
-                allHexes.add(adjHex);
-            }
-
-            const adjWormhole = new AdjacencyWormhole(hex, playerSlot);
-            for (const adjHex of adjWormhole.getAdjacent()) {
-                allHexes.add(adjHex);
-            }
-
-            const adjHyperlane = new AdjacencyHyperlane(hex);
-            for (const adjHex of adjHyperlane.getAdjacent()) {
-                allHexes.add(adjHex);
-            }
-        }
-
-        // Ok, get all neighbors.
-        const neighborPlayerSlots = new Set();
-        for (const hex of allHexes) {
-            const playerSlotSet = hexToPlayerSlotSet[hex];
-            if (!playerSlotSet) {
-                continue;
-            }
-            for (const neighbor of playerSlotSet) {
-                neighborPlayerSlots.add(neighbor);
-            }
-        }
-        neighborPlayerSlots.delete(playerSlot);
-        return [...neighborPlayerSlots];
-    }
-
     static reportNeighborsPromissoryNotes(mabanCard, player) {
         console.log("MabanOmega.reportNeighborsPromissoryNotes");
         if (!MabanOmega.canUse(mabanCard, player)) {
@@ -156,7 +89,7 @@ class MabanOmega {
         }
 
         // Get promissories by neighbor slot.
-        const neighborPlayerSlots = MabanOmega.getNeighbors(player.getSlot());
+        const neighborPlayerSlots = Neighbors.getNeighbors(player.getSlot());
         const slotToPromissories = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {

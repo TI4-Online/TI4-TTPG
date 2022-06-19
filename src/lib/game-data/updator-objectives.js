@@ -29,6 +29,11 @@ module.exports = (data) => {
             continue;
         }
 
+        // Watch out for objects currently being moved.
+        if (obj.isHeld()) {
+            continue;
+        }
+
         // Find control tokens.
         if (ObjectNamespace.isControlToken(obj)) {
             controlTokens.push(obj);

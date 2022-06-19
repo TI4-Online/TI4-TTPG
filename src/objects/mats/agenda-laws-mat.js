@@ -78,33 +78,42 @@ class AgendaLawsMat {
         this._zone.setColor([1, 0, 0, 0.1]);
         this._zone.setAlwaysVisible(false);
         this._zone.onBeginOverlap.add((zone, obj) => {
-            this._triggerEvent();
+            this._triggerEvent(obj, true);
         });
         this._zone.onEndOverlap.add((zone, obj) => {
-            this._triggerEvent();
+            this._triggerEvent(obj, false);
         });
     }
 
-    _triggerEvent() {
-        let agendaCards = this._zone.getOverlappingObjects();
-        if (!agendaCards) {
+    _triggerEvent(movingObject, isEntering) {
+        assert(movingObject instanceof GameObject);
+        assert(typeof isEntering === "boolean");
+
+        // Ignore non-agendas moving into/out of zone.
+        const movingObjectNsid = ObjectNamespace.getNsid(movingObject);
+        if (!movingObjectNsid.startsWith("card.agenda")) {
             return;
         }
 
-        agendaCards = agendaCards.filter((obj) => {
+        const overlapping = this._zone.getOverlappingObjects() || [];
+        const agendaCards = overlapping.filter((obj) => {
             const nsid = ObjectNamespace.getNsid(obj);
             return nsid.startsWith("card.agenda");
         });
-        if (agendaCards.length > 1) {
-            return;
+
+        // First agenda entered?
+        if (isEntering && agendaCards.length === 1) {
+            const agendaCard = agendaCards[0];
+            const nsid = ObjectNamespace.getNsid(agendaCard);
+            console.log(`AgendaLawsMat.onAgendaChanged ${nsid}`);
+            globalEvents.TI4.onAgendaChanged.trigger(agendaCard);
         }
 
-        const agendaCard = agendaCards[0];
-        const nsid = agendaCard
-            ? ObjectNamespace.getNsid(agendaCard)
-            : "<none>";
-        console.log(`AgendaLawsMat.onAgendaChanged ${nsid}`);
-        globalEvents.TI4.onAgendaChanged.trigger(agendaCard);
+        // Last agenda left?
+        if (!isEntering && agendaCards.length === 0) {
+            console.log(`AgendaLawsMat.onAgendaChanged <none>`);
+            globalEvents.TI4.onAgendaChanged.trigger(undefined);
+        }
     }
 }
 
