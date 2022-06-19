@@ -78,14 +78,22 @@ class AgendaLawsMat {
         this._zone.setColor([1, 0, 0, 0.1]);
         this._zone.setAlwaysVisible(false);
         this._zone.onBeginOverlap.add((zone, obj) => {
-            this._triggerEvent();
+            this._triggerEvent(obj);
         });
         this._zone.onEndOverlap.add((zone, obj) => {
-            this._triggerEvent();
+            this._triggerEvent(obj);
         });
     }
 
-    _triggerEvent() {
+    _triggerEvent(movingObject) {
+        assert(movingObject instanceof GameObject);
+
+        // Ignore non-agendas moving into/out of zone.
+        const movingObjectNsid = ObjectNamespace.getNsid(movingObject);
+        if (!movingObjectNsid.startsWith("card.agenda")) {
+            return;
+        }
+
         let agendaCards = this._zone.getOverlappingObjects();
         if (!agendaCards) {
             return;
