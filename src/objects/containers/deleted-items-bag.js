@@ -20,9 +20,12 @@ const IGNORE_TAG = "DELETED_ITEMS_IGNORE";
  *
  * @param {Card} card
  */
-function delayedProcessCard(cardNsid, cardJson) {
-    assert(typeof cardNsid === "string");
+function delayedProcessCard(destroyedNsids, cardJson) {
+    assert(Array.isArray(destroyedNsids));
     assert(typeof cardJson === "string");
+
+    // Scan for all nsids in the deck.
+    const destroyedNsidSet = new Set(destroyedNsids);
 
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
@@ -34,13 +37,16 @@ function delayedProcessCard(cardNsid, cardJson) {
         // Look for nsid anywhere in stack (might be singleton).
         const deckNsids = ObjectNamespace.getDeckNsids(obj);
         for (const deckNsid of deckNsids) {
-            if (deckNsid === cardNsid) {
-                return; // found a copy somewhere, ignore this destroy
-            }
+            destroyedNsidSet.delete(deckNsid);
         }
     }
+    if (destroyedNsidSet.size === 0) {
+        // All cards accounted for.
+        return;
+    }
 
-    // If we get here card is missing.  Add a copy to self.
+    // If we get here at least one card of the deck is missing.
+    // Do not get clever, just add the whole deck to self.
     const pos = refObject.getPosition().add([0, 0, 10]);
     const clone = world.createObjectFromJSON(cardJson, pos);
     refObject.addObjects([clone]);
@@ -79,9 +85,10 @@ globalEvents.onObjectDestroyed.add((obj) => {
     // Cards moving into decks get destroyed.  Using onInserted to detect this
     // does not appear to always work, instead wait a frame and check if the
     // card exists before getting destroy treatment.
-    if (obj instanceof Card && obj.getStackSize() === 1) {
+    if (obj instanceof Card) {
+        const destroyedNsids = ObjectNamespace.getDeckNsids(obj);
         process.nextTick(() => {
-            delayedProcessCard(nsid, json);
+            delayedProcessCard(destroyedNsids, json);
         });
         return;
     }
