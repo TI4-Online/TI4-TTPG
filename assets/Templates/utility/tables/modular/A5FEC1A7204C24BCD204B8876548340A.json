@@ -48,9 +48,10 @@
 				"Y": 0,
 				"Z": -90
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -58,9 +59,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 68,
-				"G": 68,
-				"B": 68
+				"R": 73,
+				"G": 73,
+				"B": 73
 			},
 			"SecondaryColor":
 			{
@@ -90,9 +91,10 @@
 				"Y": 0,
 				"Z": -90
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -100,9 +102,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 68,
-				"G": 68,
-				"B": 68
+				"R": 73,
+				"G": 73,
+				"B": 73
 			},
 			"SecondaryColor":
 			{
@@ -132,9 +134,10 @@
 				"Y": 0,
 				"Z": -36
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -142,9 +145,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -174,9 +177,10 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -184,9 +188,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -216,9 +220,10 @@
 				"Y": 0,
 				"Z": 36
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -226,9 +231,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -258,9 +263,10 @@
 				"Y": 0,
 				"Z": 72
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -268,9 +274,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -300,9 +306,10 @@
 				"Y": 0,
 				"Z": 108
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -310,9 +317,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -342,9 +349,10 @@
 				"Y": 0,
 				"Z": 144
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -352,9 +360,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -382,11 +390,12 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 180
+				"Z": -180
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -394,9 +403,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -426,9 +435,10 @@
 				"Y": 0,
 				"Z": -144
 			},
-			"Texture": "",
+			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"EmissiveMap": "",
 			"IsTransparent": false,
 			"CastShadow": true,
 			"UseOverrides": false,
@@ -436,9 +446,9 @@
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 51,
-				"G": 51,
-				"B": 51
+				"R": 56,
+				"G": 56,
+				"B": 56
 			},
 			"SecondaryColor":
 			{
@@ -502,5 +512,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
