@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { Spawn } = require("../spawn/spawn");
@@ -135,7 +136,7 @@ class SetupHomeSystem extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         // Spawn the decks, combine into one.
-        const deck = this.spawnDecksThenFilter(
+        let deck = this.spawnDecksThenFilter(
             pos,
             rot,
             "card.planet",
@@ -144,6 +145,9 @@ class SetupHomeSystem extends AbstractSetup {
                 return planetNsidNames.has(parsed.name);
             }
         );
+
+        deck = CloneReplace.cloneReplace(deck);
+
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
     }

@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
 
@@ -27,12 +28,8 @@ class SetupFactionAlliance extends AbstractSetup {
             return name === this.faction.nsidName;
         });
 
-        // Saw wrong image, try clone workaround.
-        const json = card.toJSONString();
-        const above = card.getPosition().add([0, 0, 5]);
-        card.setTags(["DELETED_ITEMS_IGNORE"]);
-        card.destroy();
-        card = world.createObjectFromJSON(json, above);
+        // See the comment in CloneReplace for why.
+        card = CloneReplace.cloneReplace(card);
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(card, playerSlot);

@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
 
@@ -33,7 +34,8 @@ class SetupStartingTech extends AbstractSetup {
             );
             return;
         }
-        const deck = CardUtil.makeDeck(cards);
+        let deck = CardUtil.makeDeck(cards);
+        deck = CloneReplace.cloneReplace(deck);
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
     }
