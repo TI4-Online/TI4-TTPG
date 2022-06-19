@@ -13,9 +13,9 @@ class SetupFactionTech extends AbstractSetup {
     }
 
     setup() {
-        const pos = this.playerDesk.localPositionToWorld(
-            TECH_DECK_LOCAL_OFFSET
-        );
+        const pos = this.playerDesk
+            .localPositionToWorld(TECH_DECK_LOCAL_OFFSET)
+            .add([0, 0, 10]);
         const rot = this.playerDesk.rot;
 
         // Only use items listed in faction tables, not just because in deck.
@@ -45,6 +45,7 @@ class SetupFactionTech extends AbstractSetup {
             }
             return true;
         });
+        // Cards get added to deck, no need for clone replace.
 
         // Remove generic unit upgrades if faction tech has overrides?
         // Need to be sure clean restores them (or a higher level reset happens).

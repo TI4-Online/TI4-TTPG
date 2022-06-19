@@ -33,7 +33,7 @@ class SetupStartingTech extends AbstractSetup {
             );
             return;
         }
-        const deck = CardUtil.makeDeck(cards);
+        const deck = CardUtil.makeDeck(cards); // cards were found, not spawned, no need for clone replace
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
     }

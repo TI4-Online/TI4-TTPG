@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
 const { world } = require("../../wrapper/api");
@@ -41,16 +42,8 @@ class SetupFactionPromissory extends AbstractSetup {
             return true;
         });
 
-        // These promissory notes seem to appear with the wrong image
-        // (usually as the Aborec one, the first image in the deck).
-        // That may be due to forming the deck and deleting cards same frame.
-        // Pulling the card from the hand and putting it back seems to fix it.
-        // Try making a copy to see if that resets it.
-        const json = deck.toJSONString();
-        const above = deck.getPosition().add([0, 0, 5]);
-        deck.setTags(["DELETED_ITEMS_IGNORE"]);
-        deck.destroy();
-        deck = world.createObjectFromJSON(json, above);
+        // See the comment in CloneReplace for why.
+        deck = CloneReplace.cloneReplace(deck);
 
         const playerSlot = this.playerDesk.playerSlot;
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
