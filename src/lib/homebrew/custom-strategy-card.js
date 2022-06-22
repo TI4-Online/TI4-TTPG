@@ -9,6 +9,7 @@ const {
     Vector,
     refObject,
     refPackageId,
+    world,
 } = require("../../wrapper/api");
 
 const KEY = {
@@ -24,6 +25,7 @@ class CustomStrategyCard {
     constructor(gameObject) {
         assert(gameObject instanceof GameObject);
         this._obj = gameObject;
+        this._ui = undefined;
 
         const editActionName = "*" + locale("ui.menu.edit");
         const saveActionName = "*" + locale("ui.menu.save");
@@ -37,7 +39,6 @@ class CustomStrategyCard {
                 this.reset(false);
             }
         });
-
         this.reset(false);
     }
 
@@ -45,8 +46,9 @@ class CustomStrategyCard {
         assert(typeof isEdit === "boolean");
         console.log("CustomStrategyCard.reset");
 
-        for (const ui of this._obj.getUIs()) {
-            this._obj.removeUIElement(ui);
+        if (this._ui) {
+            this._obj.removeUIElement(this._ui);
+            this._ui = undefined;
         }
 
         const scale = 8;
@@ -169,7 +171,8 @@ class CustomStrategyCard {
         );
 
         value =
-            this._obj.getSavedData(KEY.PRIMARY_BODY) || "> Secondary ability.";
+            this._obj.getSavedData(KEY.SECONDARY_BODY) ||
+            "> Secondary ability.";
         text = isEdit ? new TextBox().setMaxLength(255) : new Text();
         text.setFont("MyriadProSemibold.otf", refPackageId)
             .setFontSize(2.4 * scale)
@@ -193,15 +196,20 @@ class CustomStrategyCard {
             });
         }
 
-        let ui = new UIElement();
-        ui.width = 66 * scale; // 66
-        ui.height = 83 * scale;
-        ui.scale = 1 / scale;
-        ui.position = new Vector(0, 0, 0.17);
-        ui.useWidgetSize = false;
-        ui.widget = canvas;
-        this._obj.addUI(ui);
+        this._ui = new UIElement();
+        this._ui.width = 66 * scale; // 66
+        this._ui.height = 83 * scale;
+        this._ui.scale = 1 / scale;
+        this._ui.position = new Vector(0, 0, 0.17);
+        this._ui.useWidgetSize = false;
+        this._ui.widget = canvas;
+        this._obj.addUI(this._ui);
     }
 }
 
-new CustomStrategyCard(refObject);
+refObject.onCreated.add((obj) => {
+    new CustomStrategyCard(obj);
+});
+if (world.getExecutionReason() === "ScriptReload") {
+    new CustomStrategyCard(refObject);
+}
