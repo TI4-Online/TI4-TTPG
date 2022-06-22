@@ -256,6 +256,20 @@ class GameData {
             platform: "ttpg",
         };
 
+        // Overlay cannot handle custom colors.
+        const requiredColor = [
+            "White",
+            "Blue",
+            "Purple",
+            "Yellow",
+            "Red",
+            "Green",
+        ];
+        data.players.forEach((player, index) => {
+            player.colorActual = player.color;
+            player.color = requiredColor[index] || `seat${index + 1}`;
+        });
+
         // Streamer data includes player names.
         if (this._key) {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
