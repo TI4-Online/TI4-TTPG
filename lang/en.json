@@ -150,6 +150,8 @@
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
     "ui.menu.purge": "Purge",
     "ui.menu.score": "Score",
+    "ui.menu.edit": "Edit",
+    "ui.menu.save": "Save",
     "ui.menu.fetch_planet": "Fetch {planetName}",
     "ui.menu.fetch_custodia_vigilia": "Fetch Custodia Vigilia planet card and legendary card",
     "ui.menu.trade_agreement": "Return trade agreement and gain commodities",

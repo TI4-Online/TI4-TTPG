@@ -111,7 +111,19 @@ class FindTurnOrder {
 
             // Now we have a strategy card considered to be chosen by a player.
             const parsed = ObjectNamespace.parseStrategyCard(obj);
-            const initiative = STRATEGY_CARD_INITIATIVE[parsed.card];
+            let initiative = STRATEGY_CARD_INITIATIVE[parsed.card];
+
+            // Custom homebrew strategy card.
+            if (
+                parsed.card === "custom" &&
+                typeof obj.__initiative === "number"
+            ) {
+                initiative = obj.__initiative;
+                console.log(
+                    `FindTurnOrder.order: custom initiative ${initiative}`
+                );
+            }
+
             assert(typeof initiative === "number");
             assert(obj instanceof GameObject);
             initiativeObjects.push({
