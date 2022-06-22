@@ -60,11 +60,18 @@ function createStrategyCardUi(card, widgetFactory, height, width, color) {
 function removeUi(border) {
     const cardId = border.card.getId();
     const playerSlot = border.desk.playerSlot;
-    openSelections[cardId].splice(openSelections[cardId].indexOf(border), 1);
-    playerUis[playerSlot].splice(playerUis[playerSlot].indexOf(border), 1);
-    playerUis[playerSlot].forEach((ui, index) => {
-        ui.positionUi(index);
-    });
+    if (openSelections[cardId]) {
+        openSelections[cardId].splice(
+            openSelections[cardId].indexOf(border),
+            1
+        );
+    }
+    if (playerUis[playerSlot]) {
+        playerUis[playerSlot].splice(playerUis[playerSlot].indexOf(border), 1);
+        playerUis[playerSlot].forEach((ui, index) => {
+            ui.positionUi(index);
+        });
+    }
     world.removeUIElement(border.ui);
 }
 
