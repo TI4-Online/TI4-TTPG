@@ -28,11 +28,11 @@ class SingletonInfiniteContainer {
         this._container = gameObject;
         this._contentNsid = nsid.slice(prefix.length);
 
-        const doUpdate = () => {
+        const doUpdate = (player) => {
             if (!this._container.isValid()) {
                 return;
             }
-            this.rejectMismatched();
+            this.rejectMismatched(player);
             this.removeExtras();
             this.refill();
         };

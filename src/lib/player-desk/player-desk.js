@@ -497,8 +497,9 @@ class PlayerDesk {
             new PlayerDeskSetup(swapWith).cleanGeneric();
         }
 
-        // At this point all src/dst values are known.  Remove any players from
-        // slots and swap things around.
+        // At this point all src/dst values are known.  Move players to free
+        // slots then to destination slots.  We want players in the final slot
+        // during desk setup to make sure the card holder gets linked.
         assert(dstPlayerSlot >= 0);
         const srcPlayer = world.getPlayerBySlot(srcPlayerSlot);
         const dstPlayer = world.getPlayerBySlot(dstPlayerSlot);
@@ -507,6 +508,14 @@ class PlayerDesk {
         }
         if (dstPlayer) {
             PlayerDesk.moveNewPlayerToNonSeatSlot(dstPlayer);
+        }
+        if (srcPlayer) {
+            console.log(`PlayerDesk.changeColor: src -> ${dstPlayerSlot}`);
+            srcPlayer.switchSlot(dstPlayerSlot);
+        }
+        if (dstPlayer) {
+            console.log(`PlayerDesk.changeColor: dst -> ${srcPlayerSlot}`);
+            dstPlayer.switchSlot(srcPlayerSlot);
         }
 
         if (swapWith) {
@@ -533,32 +542,6 @@ class PlayerDesk {
         }
         if (dstFaction) {
             new PlayerDeskSetup(swapWith).setupFaction();
-        }
-
-        // Desks are reset. Move players to desks.
-        // DO THIS AFTER RECREATING so hand has owner before player sits.
-        const reassignCardHolder = (player, slot) => {
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
-                if (!(obj instanceof CardHolder)) {
-                    continue;
-                }
-                if (obj.getOwningPlayerSlot() !== slot) {
-                    continue;
-                }
-                player.setHandHolder(obj);
-                break;
-            }
-        };
-        if (srcPlayer) {
-            srcPlayer.switchSlot(dstPlayerSlot);
-            reassignCardHolder(srcPlayer, dstPlayerSlot);
-        }
-        if (dstPlayer) {
-            dstPlayer.switchSlot(srcPlayerSlot);
-            reassignCardHolder(dstPlayer, srcPlayerSlot);
         }
 
         this.resetUI();
