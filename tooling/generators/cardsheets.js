@@ -16,6 +16,8 @@ const SRC_TEXTURES_DIR = path.normalize("prebuild/Textures/");
 const DST_TEXTURES_DIR = path.normalize("assets/Textures/");
 const DST_TEMPLATES_DIR = path.normalize("assets/Templates/");
 
+const CARD_SCALE = 0.68;
+
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
 const MAX_SHEET_DIMENSION = 4096;
 
@@ -269,10 +271,12 @@ class CardData {
             const imgFile = this.face();
             const stats = await sharp(imgFile).metadata();
             assert(stats);
+            const w = Math.floor(stats.width * CARD_SCALE);
+            const h = Math.floor(stats.height * CARD_SCALE);
             this._size = {
-                w: stats.width,
-                h: stats.height,
-                str: `${stats.width}x${stats.height}`,
+                w,
+                h,
+                str: `${w}x${h}`,
             };
         }
         return this._size;
@@ -629,8 +633,8 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
     assert(outputFilename.endsWith(".jpg"));
 
     const stats = await sharp(cardFilenames[0]).metadata();
-    const w = stats.width;
-    const h = stats.height;
+    const w = Math.floor(stats.width * CARD_SCALE);
+    const h = Math.floor(stats.height * CARD_SCALE);
 
     const numCards = cardFilenames.length;
     const layout = CardsheetLayout.getLayout(numCards, w, h);
@@ -650,6 +654,15 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
             top: top,
             left: left,
         });
+    }
+
+    // Composite input can be filename, but if scaling replace with scaled image.
+    if (CARD_SCALE !== 1) {
+        for (const entry of composite) {
+            entry.input = await sharp(entry.input)
+                .resize({ width: w, height: h })
+                .toBuffer();
+        }
     }
 
     console.log(
@@ -673,6 +686,7 @@ async function writeCardsheetImage(cardFilenames, outputFilename) {
         .toFile(outputFilename, (err) => {
             console.log(err);
         });
+
     return layout;
 }
 
