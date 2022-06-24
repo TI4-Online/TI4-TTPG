@@ -289,13 +289,16 @@ class SimpleDie {
      */
     finishRoll() {
         const guid = this._die.getId();
-        assert(_rollInProgressDieGuidToSimpleDie[guid]); // roll in progress
-        delete _rollInProgressDieGuidToSimpleDie[guid];
 
         if (this._rollTimeoutHandle) {
             clearTimeout(this._rollTimeoutHandle);
             this._rollTimeoutHandle = undefined;
         }
+
+        if (!_rollInProgressDieGuidToSimpleDie[guid]) {
+            return; // already finished or otherwise unregistered?
+        }
+        delete _rollInProgressDieGuidToSimpleDie[guid];
 
         this._value = this._die.isValid()
             ? this._die.getCurrentFaceIndex() + 1
