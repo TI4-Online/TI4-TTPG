@@ -51,9 +51,9 @@ it("CardData en face with shared back", async () => {
     assert(cardData.isSharedBack());
 
     const size = await cardData.size();
-    assert.equal(size.w, 500);
-    assert.equal(size.h, 750);
-    assert.equal(size.str, "500x750");
+    assert.equal(size.w, 340);
+    assert.equal(size.h, 510);
+    assert.equal(size.str, "340x510");
 });
 
 // ----------------------------------------------------------------------------
@@ -192,10 +192,10 @@ it("CardsheetLayout.groupBySize", async () => {
     const sizeStrToCardDataArrays = await CardsheetLayout.groupBySize(
         cardDataArray
     );
-    assert.equal(sizeStrToCardDataArrays["500x750"].length, 1);
-    assert.equal(sizeStrToCardDataArrays["500x750"][0].nsid(), tall);
-    assert.equal(sizeStrToCardDataArrays["750x500"].length, 1);
-    assert.equal(sizeStrToCardDataArrays["750x500"][0].nsid(), wide);
+    assert.equal(sizeStrToCardDataArrays["340x510"].length, 1);
+    assert.equal(sizeStrToCardDataArrays["340x510"][0].nsid(), tall);
+    assert.equal(sizeStrToCardDataArrays["510x340"].length, 1);
+    assert.equal(sizeStrToCardDataArrays["510x340"][0].nsid(), wide);
 });
 
 it("CardsheetLayout.sort", () => {
@@ -227,13 +227,13 @@ it("CardsheetLayout.sort", () => {
 
 it("CardsheetLayout.splitIntoSheets", async () => {
     const cardDataArray = [];
-    while (cardDataArray.length < 41) {
+    while (cardDataArray.length < 97) {
         const cardData = new CardData("card.action:base/ghost_ship", "en");
         cardDataArray.push(cardData);
     }
     const cardDataSheets = await CardsheetLayout.splitIntoSheets(cardDataArray);
     assert.equal(cardDataSheets.length, 2);
-    assert.equal(cardDataSheets[0].length, 40);
+    assert.equal(cardDataSheets[0].length, 96);
     assert.equal(cardDataSheets[1].length, 1);
 
     assert.equal(cardDataSheets[0][0].extra.cardSheetIndex, 0);
