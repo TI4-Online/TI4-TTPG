@@ -15,6 +15,7 @@ const {
 
 const POPUP_HEIGHT = 3;
 const POPUP_CHILD_DISTANCE = 5; // consistent look
+const POPUP_FONT_SIZE = 10;
 const DELAYED_HIDE_MSECS = 2500;
 
 /**
@@ -45,10 +46,19 @@ class PopupPanel extends Border {
         this._namesAndActions = [];
         this._isShowing = false;
 
+        this._popupScale = 1;
+
         // <(gameObject: GameObject, player: Player, popupPanel: PopupPanel) => void>
         this.onShow = new TriggerableMulticastDelegate();
 
         this.reset();
+    }
+
+    setPopupScale(value) {
+        assert(typeof value === "number");
+        assert(0.1 <= value && value <= 10);
+        this._popupScale = value;
+        return this;
     }
 
     setMatchPlayerYaw(value) {
@@ -129,9 +139,13 @@ class PopupPanel extends Border {
         this.onShow.trigger(this._obj, player, this);
 
         // Add owner-specified actions, followed by cancel.
-        const panel = new VerticalBox().setChildDistance(POPUP_CHILD_DISTANCE);
+        const panel = new VerticalBox().setChildDistance(
+            POPUP_CHILD_DISTANCE * this._popupScale
+        );
         for (const { name, action, delayedHide } of this._namesAndActions) {
-            const button = new Button().setText(name);
+            const button = new Button()
+                .setFontSize(POPUP_FONT_SIZE * this._popupScale)
+                .setText(name);
             button.onClicked.add((button, player) => {
                 if (delayedHide) {
                     setTimeout(() => {
@@ -144,7 +158,9 @@ class PopupPanel extends Border {
             });
             panel.addChild(button);
         }
-        const cancelButton = new Button().setText(locale("ui.button.cancel"));
+        const cancelButton = new Button()
+            .setFontSize(POPUP_FONT_SIZE * this._popupScale)
+            .setText(locale("ui.button.cancel"));
         cancelButton.onClicked.add((button, player) => {
             this._hide();
         });
