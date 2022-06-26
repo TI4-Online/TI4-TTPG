@@ -118,9 +118,23 @@ class AdjacencyHyperlane {
         const system = world.TI4.getSystemBySystemTileObject(systemObj);
         var hyperlanes = [];
         if (Facing.isFaceUp(systemObj)) {
-            hyperlanes = [...system.raw.hyperlaneFaceUp[hyperlaneAlignment]];
+            if (
+                system.raw.hyperlaneFaceUp &&
+                system.raw.hyperlaneFaceUp[hyperlaneAlignment]
+            ) {
+                hyperlanes = [
+                    ...system.raw.hyperlaneFaceUp[hyperlaneAlignment],
+                ];
+            }
         } else {
-            hyperlanes = [...system.raw.hyperlaneFaceDown[hyperlaneAlignment]];
+            if (
+                system.raw.hyperlaneFaceDown &&
+                system.raw.hyperlaneFaceDown[hyperlaneAlignment]
+            ) {
+                hyperlanes = [
+                    ...system.raw.hyperlaneFaceDown[hyperlaneAlignment],
+                ];
+            }
         }
 
         // data in the hyperlane array assumes no rotation, so we

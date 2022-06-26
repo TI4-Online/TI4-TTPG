@@ -250,7 +250,7 @@ function onUiClosedClicked(button, player) {
     removeUi(border);
 
     // send notifications in case all have responded
-    if (openSelections[cardId].length === 0) {
+    if (openSelections[cardId] && openSelections[cardId].length === 0) {
         delete openSelections[border.card.getId()];
         Broadcast.broadcastAll(locale("strategy_card.message.all_resolved"));
     }

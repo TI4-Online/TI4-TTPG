@@ -3,6 +3,7 @@
 
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { Spawn } = require("../../setup/spawn/spawn");
 const {
     Container,
     GameObject,
@@ -10,7 +11,6 @@ const {
     globalEvents,
     refObject,
 } = require("../../wrapper/api");
-const { Spawn } = require("../../setup/spawn/spawn");
 
 class SingletonInfiniteContainer {
     constructor(gameObject) {
@@ -28,36 +28,46 @@ class SingletonInfiniteContainer {
         this._container = gameObject;
         this._contentNsid = nsid.slice(prefix.length);
 
-        const doUpdate = (player) => {
+        this._container.onInserted.add((container, insertedObjects, player) => {
+            assert(container instanceof Container);
+            assert(Array.isArray(insertedObjects));
+            assert(player instanceof Player);
+
             if (!this._container.isValid()) {
                 return;
             }
-            this.rejectMismatched(player);
+            this.rejectMismatched(insertedObjects, player);
             this.removeExtras();
             this.refill();
-        };
-
-        this._container.onInserted.add((container, insertedObjects, player) => {
-            doUpdate(player);
         });
+
         this._container.onRemoved.add((container, removedObject, player) => {
-            doUpdate(player);
+            assert(container instanceof Container);
+            assert(removedObject instanceof GameObject);
+            assert(player instanceof Player);
+
+            if (!this._container.isValid()) {
+                return;
+            }
+            this.removeExtras(removedObject);
+            this.refill(removedObject);
         });
 
         // On construction give caller a moment to finish setup.
         process.nextTick(() => {
-            doUpdate(undefined);
+            this.refill();
         });
     }
 
     /**
-     * Scan content, use onContainerRejected event to remove mismatched items.
+     * Scan added items, use onContainerRejected event to remove mismatched items.
      */
-    rejectMismatched(player) {
-        assert(!player || player instanceof Player);
+    rejectMismatched(insertedObjects, player) {
+        assert(Array.isArray(insertedObjects));
+        assert(player instanceof Player);
 
         const rejectedObjs = [];
-        for (const obj of this._container.getItems()) {
+        for (const obj of insertedObjects) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== this._contentNsid) {
                 console.log(
@@ -78,29 +88,40 @@ class SingletonInfiniteContainer {
     /**
      * Keep at most one item.
      */
-    removeExtras() {
-        this._container.getItems().forEach((obj, index) => {
-            assert(obj instanceof GameObject);
-            assert(typeof index === "number");
+    removeExtras(removedObject) {
+        assert(!removedObject || removedObject instanceof GameObject);
 
-            // Call `rejectMismatched` first to enforce content type.
+        // Get remaining correct objects.
+        const matchingObjs = this._container.getItems().filter((obj) => {
             const nsid = ObjectNamespace.getNsid(obj);
-            assert(nsid === this._contentNsid);
+            return obj !== removedObject && nsid === this._contentNsid;
+        });
 
-            if (index > 0) {
-                console.log(
-                    `SingletonInfiniteContainer.removeExtras: removing extra "${nsid}"`
-                );
-                this._container.remove(obj);
-            }
+        // Keep one (if there is one).
+        matchingObjs.shift();
+
+        // Remove extra.
+        matchingObjs.forEach((obj) => {
+            console.log(
+                `SingletonInfiniteContainer.removeExtras: removing extra "${this._contentNsid}"`
+            );
+            this._container.remove(obj);
         });
     }
 
     /**
      * Fill with an item if empty.
      */
-    refill() {
-        if (this._container.getNumItems() >= 1) {
+    refill(removedObject) {
+        assert(!removedObject || removedObject instanceof GameObject);
+
+        // Get correct objects.
+        const matchingObjs = this._container.getItems().filter((obj) => {
+            const nsid = ObjectNamespace.getNsid(obj);
+            return obj !== removedObject && nsid === this._contentNsid;
+        });
+
+        if (matchingObjs.length >= 1) {
             return;
         }
 

@@ -153,7 +153,9 @@ class FogOfWarZone {
 
             // Update hex to zone.
             this._hex = Hex.fromPosition(this._systemTileObj.getPosition());
-            _hexToFogOfWarZone[this._hex] = this;
+            if (_hexToFogOfWarZone) {
+                _hexToFogOfWarZone[this._hex] = this;
+            }
         };
         systemTileObj.onMovementStopped.add(updateStuff);
         updateStuff();

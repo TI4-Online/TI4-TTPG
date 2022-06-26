@@ -146,7 +146,8 @@ class Turns {
             this._save();
         }
 
-        world.nextTurn();
+        // Turn off nextTurn treatment for now.
+        //world.nextTurn();
 
         // Tell any listeners.
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
@@ -311,7 +312,10 @@ class Turns {
             const isActive = !passedPlayerSlots.has(candidateSlot);
             if (isActive) {
                 this.setCurrentTurn(candidate, clickingPlayer);
-                world.nextTurn();
+
+                // Turn off nextTurn treatment for now.
+                //world.nextTurn();
+
                 break;
             }
             remaining -= 1;
