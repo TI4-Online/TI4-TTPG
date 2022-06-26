@@ -133,15 +133,15 @@ class GameUI {
         const tabbedPanel = new TabbedPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
-        panel.addChild(tabbedPanel, 4);
-
-        // Line between main UI and turn order.
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
 
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
+
+        // Line between main UI and turn order.
         panel.addChild(turnOrderPanel, 1);
+        panel.addChild(new Border().setColor(CONFIG.spacerColor));
+        panel.addChild(tabbedPanel, 4);
 
         const tabHelp = new TabHelpUI();
         tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
