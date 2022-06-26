@@ -1027,7 +1027,7 @@ module.exports = [
                 auxData.self.has("mech") &&
                 infantryAttrs.raw.groundCombat
             ) {
-                infantryAttrs.raw.groundCombat -= 1;
+                infantryAttrs.raw.groundCombat.hit -= 1;
             }
         },
     },
