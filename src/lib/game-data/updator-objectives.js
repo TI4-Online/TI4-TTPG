@@ -1,8 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
-const { Card, world } = require("../../wrapper/api");
-const { GameObject } = require("@tabletop-playground/api");
+const { Card, GameObject, world } = require("../../wrapper/api");
 
 const OTHER_SCORABLE_NSIDS = new Set([
     "card.action:base/imperial_rider",
