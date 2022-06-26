@@ -227,6 +227,7 @@ require("./global/trigger-on-system-activated");
 require("./global/whisper-message");
 
 if (!world.__isMock) {
+    world.setShowDiceRollMessages(false);
     GameData.maybeRestartGameData();
     world.TI4.fogOfWar.maybeEnable();
 }
