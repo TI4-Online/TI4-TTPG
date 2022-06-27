@@ -9,6 +9,9 @@ const { ObjectNamespace } = require("./object-namespace");
 const { Player, globalEvents, world } = require("../wrapper/api");
 const { Shuffle } = require("./shuffle");
 
+// Only positions from the previous turn are kept.
+const ADVANCE_TTPG_TURNS = true;
+
 const TURN_ORDER_TYPE = {
     FORWARD: 1,
     REVERSE: 2,
@@ -146,8 +149,9 @@ class Turns {
             this._save();
         }
 
-        // Turn off nextTurn treatment for now.
-        //world.nextTurn();
+        if (ADVANCE_TTPG_TURNS) {
+            world.nextTurn();
+        }
 
         // Tell any listeners.
         globalEvents.TI4.onTurnOrderChanged.trigger(this._turnOrder, player);
@@ -166,6 +170,67 @@ class Turns {
     getCurrentTurn() {
         this._maybeLoad();
         return this._currentTurn;
+    }
+
+    getNextTurn() {
+        // Careful, the "current" player may have passed during their turn.
+        const currentIdx = this._turnOrder.indexOf(this._currentTurn);
+        if (currentIdx === -1) {
+            console.log("getNextTurn: current turn not in list");
+            return;
+        }
+
+        // Get passed players.  (Safter than getting active in case not using status pads)
+        const passedPlayerSlots = new Set();
+        for (const obj of this.getAllStatusPads()) {
+            if (!obj.__getPass()) {
+                continue; // active
+            }
+            const owningPlayerSlot = obj.getOwningPlayerSlot();
+            assert(owningPlayerSlot >= 0);
+            passedPlayerSlots.add(owningPlayerSlot);
+        }
+
+        // Scan for next active, respecting order and snaking.
+        // Set scan limit 2x size for snaking, harmless for normal.
+        let dir = this._isForward ? 1 : -1;
+        let candidateIdx = currentIdx;
+        let remaining = this._turnOrder.length * 2;
+        while (remaining > 0) {
+            // Move to next.  If snaking, end slots get 2x turns.
+            if (this._isSnake) {
+                if (this._isForward) {
+                    if (candidateIdx === this._turnOrder.length - 1) {
+                        this._isForward = !this._isForward;
+                        dir = this._isForward ? 1 : -1;
+                        // Continue leaving current candidate in place.
+                    } else {
+                        candidateIdx += dir;
+                    }
+                } else {
+                    if (candidateIdx === 0) {
+                        this._isForward = !this._isForward;
+                        dir = this._isForward ? 1 : -1;
+                        // Continue leaving current candidate in place.
+                    } else {
+                        candidateIdx += dir;
+                    }
+                }
+            } else {
+                candidateIdx =
+                    (candidateIdx + this._turnOrder.length + dir) %
+                    this._turnOrder.length;
+            }
+
+            const candidate = this._turnOrder[candidateIdx];
+            assert(candidate);
+            const candidateSlot = candidate.playerSlot;
+            const isActive = !passedPlayerSlots.has(candidateSlot);
+            if (isActive) {
+                return candidate;
+            }
+            remaining -= 1;
+        }
     }
 
     setCurrentTurn(playerDesk, clickingPlayer) {
@@ -234,14 +299,7 @@ class Turns {
 
         // Get passed players.  (Safter than getting active in case not using status pads)
         const passedPlayerSlots = new Set();
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid !== "pad:base/status") {
-                continue;
-            }
+        for (const obj of this.getAllStatusPads()) {
             if (!obj.__getPass()) {
                 continue; // active
             }
@@ -268,57 +326,12 @@ class Turns {
             return;
         }
 
-        // Careful, the "current" player may have passed during their turn.
-        const currentIdx = this._turnOrder.indexOf(this._currentTurn);
-        if (currentIdx === -1) {
-            console.log("endTurn: current turn not in list");
-            return;
-        }
-
-        // Scan for next active, respecting order and snaking.
-        // Set scan limit 2x size for snaking, harmless for normal.
-        let dir = this._isForward ? 1 : -1;
-        let candidateIdx = currentIdx;
-        let remaining = this._turnOrder.length * 2;
-        while (remaining > 0) {
-            // Move to next.  If snaking, end slots get 2x turns.
-            if (this._isSnake) {
-                if (this._isForward) {
-                    if (candidateIdx === this._turnOrder.length - 1) {
-                        this._isForward = !this._isForward;
-                        dir = this._isForward ? 1 : -1;
-                        // Continue leaving current candidate in place.
-                    } else {
-                        candidateIdx += dir;
-                    }
-                } else {
-                    if (candidateIdx === 0) {
-                        this._isForward = !this._isForward;
-                        dir = this._isForward ? 1 : -1;
-                        // Continue leaving current candidate in place.
-                    } else {
-                        candidateIdx += dir;
-                    }
-                }
-            } else {
-                candidateIdx =
-                    (candidateIdx + this._turnOrder.length + dir) %
-                    this._turnOrder.length;
+        const next = this.getNextTurn();
+        if (next) {
+            this.setCurrentTurn(next, clickingPlayer);
+            if (ADVANCE_TTPG_TURNS) {
+                world.nextTurn();
             }
-
-            const candidate = this._turnOrder[candidateIdx];
-            assert(candidate);
-            const candidateSlot = candidate.playerSlot;
-            const isActive = !passedPlayerSlots.has(candidateSlot);
-            if (isActive) {
-                this.setCurrentTurn(candidate, clickingPlayer);
-
-                // Turn off nextTurn treatment for now.
-                //world.nextTurn();
-
-                break;
-            }
-            remaining -= 1;
         }
     }
 

@@ -198,8 +198,9 @@ world.TI4 = {
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/chat-commands");
+require("./global/desk-turn-order");
 require("./global/gamedata-key");
-require("./global/highlight-active-turn");
+//require("./global/highlight-active-turn"); // desk-turn-order does this now
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
@@ -230,4 +231,10 @@ if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
     GameData.maybeRestartGameData();
     world.TI4.fogOfWar.maybeEnable();
+
+    // TEMPORARY HACK: getTableHeight currently detects ground mode objects.
+    // Until the fix goes in return the expected value.
+    world.getTableHeight(() => {
+        return 20;
+    });
 }
