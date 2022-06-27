@@ -190,6 +190,8 @@ const onTechResearched = (technologyName, playerSlot) => {
         );
     }
 
+    Technology.drawTechnologyCard(technologyName, playerSlot);
+
     Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
 };
 
