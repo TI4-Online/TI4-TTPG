@@ -166,27 +166,35 @@ it("forward", () => {
     turns.setTurnOrder(playerDesks, clickingPlayer, TURN_ORDER_TYPE.FORWARD);
     turns.setCurrentTurn(playerDesks[0], clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert(turns.getNextTurn(), playerDesks[1]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[2]);
+    assert(turns.getNextTurn(), playerDesks[0]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert(turns.getNextTurn(), playerDesks[1]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[2]);
+    assert(turns.getNextTurn(), playerDesks[0]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert(turns.getNextTurn(), playerDesks[1]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 });
 
 it("snake", () => {
@@ -201,24 +209,31 @@ it("snake", () => {
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[2]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[2]);
+    assert(turns.getNextTurn(), playerDesks[1]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[0]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert(turns.getNextTurn(), playerDesks[0]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[0]);
+    assert(turns.getNextTurn(), playerDesks[1]);
 
     turns.endTurn(clickingPlayer);
     assert(turns.getCurrentTurn(), playerDesks[1]);
+    assert(turns.getNextTurn(), playerDesks[2]);
 });
 
 it("getAllStatusPads", () => {
