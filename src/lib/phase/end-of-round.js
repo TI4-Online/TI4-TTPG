@@ -410,9 +410,7 @@ class EndStatusPhase {
     }
 
     static resetPassedFlags(player) {
-        for (const obj of world.TI4.turns.getAllStatusPads()) {
-            obj.__setPass(false);
-        }
+        world.TI4.turns.clearAllPassed();
     }
 }
 

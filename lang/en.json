@@ -123,6 +123,8 @@
     "ui.button.resolve_explore": "Resolve",
     "ui.button.collapse": "Collapse",
     "ui.button.expand": "Expand",
+    "ui.button.current_and_next_turn": "{current}‘s turn, next {next}",
+    "ui.button.your_turn_end_turn": "YOUR TURN {current}, CLICK TO END TURN",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Diplomacy System",
@@ -184,7 +186,7 @@
     "ui.desk.clean_faction": "Clear faction",
     "ui.desk.color_in_use": "Color already in use",
 
-    "ui.button.deal_action_cards": "Deal Action Cards",
+    "ui.button.deal_action_cards": "Deal Action Cards, Command Tokens",
     "ui.button.place_trade_goods_and_set_turns": "Place Trade Goods and Set Turns",
     "ui.button.end_status_phase": "Return Strategy Cards and End Status Phase",
 

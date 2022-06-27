@@ -247,8 +247,8 @@ class MiltyDraft {
         playerDesk.resetUI();
     }
 
-    applyChoices(player) {
-        assert(player instanceof Player);
+    applyChoices(clickingPlayer) {
+        assert(clickingPlayer instanceof Player);
 
         // Position Mecatol and Mallice.
         MapStringLoad.load("{18}", false);
@@ -306,7 +306,7 @@ class MiltyDraft {
             order.push(nextDesk);
         }
         if (order.length > 0) {
-            world.TI4.turns.setTurnOrder(order, player);
+            world.TI4.turns.setTurnOrder(order, clickingPlayer);
         }
 
         // Move speaker token.
