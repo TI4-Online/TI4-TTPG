@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
-const { Card, world } = require("../../wrapper/api");
+const { Card, GameObject, world } = require("../../wrapper/api");
 
 const OTHER_SCORABLE_NSIDS = new Set([
     "card.action:base/imperial_rider",
@@ -122,6 +122,17 @@ module.exports = (data) => {
         }
     });
 
+    // Show objectives in snap-point order.
+    const sortBySnapPoints = (a, b) => {
+        assert(a instanceof GameObject);
+        assert(b instanceof GameObject);
+        const aSnap = a.getSnappedToPoint();
+        const bSnap = b.getSnappedToPoint();
+        const aIdx = aSnap ? aSnap.getIndex() : -1;
+        const bIdx = bSnap ? bSnap.getIndex() : -1;
+        return bIdx - aIdx;
+    };
+
     // Report all objectives, even those not scored.
     data.objectives = {
         "Public Objectives I": objectiveCards
@@ -129,6 +140,7 @@ module.exports = (data) => {
                 const nsid = ObjectNamespace.getNsid(obj);
                 return nsid.startsWith("card.objective.public_1");
             })
+            .sort(sortBySnapPoints)
             .map((obj) => {
                 return obj.getCardDetails().name;
             }),
@@ -137,6 +149,7 @@ module.exports = (data) => {
                 const nsid = ObjectNamespace.getNsid(obj);
                 return nsid.startsWith("card.objective.public_2");
             })
+            .sort(sortBySnapPoints)
             .map((obj) => {
                 return obj.getCardDetails().name;
             }),

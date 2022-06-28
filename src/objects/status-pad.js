@@ -13,7 +13,6 @@ const {
     Rotator,
     UIElement,
     Vector,
-    VerticalBox,
     globalEvents,
     refObject,
     refPackageId,
@@ -99,6 +98,11 @@ class StatusPad {
         }
     }
 
+    /**
+     * Create forward-facing UI, the semi-transparent afk/passed indicators.
+     *
+     * @returns {UIElement}
+     */
     createForwardUi() {
         const imageSize = 150;
         const imageAway = new ImageWidget().setImageSize(imageSize);
@@ -123,17 +127,19 @@ class StatusPad {
         return ui;
     }
 
+    /**
+     * Create player-facting UI, buttons to toggle status.
+     *
+     * @returns {UIElement}
+     */
     createReverseUi() {
-        const fontSize = 32;
+        const fontSize = 28;
         const buttonAway = new Button()
             .setFontSize(fontSize)
             .setText(locale("ui.button.away"));
         const buttonPass = new Button()
             .setFontSize(fontSize)
             .setText(locale("ui.button.pass"));
-        const buttonEndTurn = new Button()
-            .setFontSize(fontSize)
-            .setText(locale("ui.button.end_turn"));
 
         buttonAway.onClicked.add((button, player) => {
             this._onClickedAway(player);
@@ -141,33 +147,14 @@ class StatusPad {
         buttonPass.onClicked.add((button, player) => {
             this._onClickedPass(player);
         });
-        buttonEndTurn.onClicked.add((button, player) => {
-            const active = world.TI4.turns.isActivePlayer(player);
-            if (active) {
-                world.TI4.turns.endTurn(player);
-            }
-        });
-        const updateEndTurnActive = () => {
-            const playerSlot = this._obj.getOwningPlayerSlot();
-            const currentDesk = world.TI4.turns.getCurrentTurn();
-            const active = currentDesk && currentDesk.playerSlot === playerSlot;
-            buttonEndTurn.setEnabled(active);
-        };
-        globalEvents.TI4.onTurnChanged.add(updateEndTurnActive);
-        updateEndTurnActive();
 
-        const topPart = new HorizontalBox()
+        const awayPassButtons = new HorizontalBox()
             .setChildDistance(10)
             .addChild(buttonAway, 1)
             .addChild(buttonPass, 1);
 
-        const panel = new VerticalBox()
-            .setChildDistance(10)
-            .addChild(topPart)
-            .addChild(buttonEndTurn);
-
         const layoutBox = new LayoutBox()
-            .setChild(panel)
+            .setChild(awayPassButtons)
             .setMinimumHeight(150)
             .setMinimumWidth(310)
             .setPadding(10, 10, 10, 10);
