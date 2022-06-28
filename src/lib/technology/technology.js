@@ -151,41 +151,6 @@ class Technology {
         assert(types.includes(type));
         return Technology.getTechnologiesByType(playerSlot)[type];
     }
-
-    static drawTechnologyCard(technologyName, playerSlot) {
-        assert(typeof technologyName === "string");
-        assert(Number.isInteger(playerSlot));
-
-        let playerTechnologyCard;
-        let playerTechnologyOmegaCard;
-
-        for (const obj of world.getAllObjects()) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (!nsid.startsWith("card.technology")) {
-                continue;
-            }
-            const ownerPlayerSlot = world.TI4.getClosestPlayerDesk(
-                obj.getPosition()
-            ).playerSlot;
-
-            if (ownerPlayerSlot !== playerSlot) {
-                continue;
-            }
-
-            if (nsid.endsWith(technologyName)) {
-                playerTechnologyCard = obj;
-            }
-
-            if (nsid.endsWith(`${technologyName}.omega`)) {
-                playerTechnologyOmegaCard = obj;
-                break; // having the omega first is sufficient
-            }
-        }
-
-        const cardToBeDrawn = playerTechnologyOmegaCard || playerTechnologyCard;
-
-        CardUtil.moveCardsToCardHolder(cardToBeDrawn, playerSlot);
-    }
 }
 
 module.exports = { Technology };
