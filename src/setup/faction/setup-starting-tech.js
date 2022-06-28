@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
 
@@ -11,31 +12,10 @@ class SetupStartingTech extends AbstractSetup {
     }
 
     setup() {
-        const startingTechNsidNames = this._faction.raw.startingTech;
-        if (startingTechNsidNames.length === 0) {
-            return;
-        }
-        const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
-            if (!nsid.startsWith("card.technology")) {
-                return false;
-            }
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            if (!startingTechNsidNames.includes(parsed.name)) {
-                return false;
-            }
-            const pos = cardOrDeckObj.getPosition();
-            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-            return closestDesk === this.playerDesk;
-        });
-        if (cards.length === 0) {
-            console.warn(
-                `SetupStartingTech: missing tech cards "${this._faction.nameAbbr}`
-            );
-            return;
-        }
-        const deck = CardUtil.makeDeck(cards); // cards were found, not spawned, no need for clone replace
-        const playerSlot = this.playerDesk.playerSlot;
-        CardUtil.moveCardsToCardHolder(deck, playerSlot);
+        TechCardUtil.moveCardsToCardHolder(
+            this._faction.raw.startingTech,
+            this.playerDesk.playerSlot
+        );
     }
 
     clean() {

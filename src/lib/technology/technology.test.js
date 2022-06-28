@@ -13,6 +13,7 @@ const {
 
 const TECHNOLOGY_DATA = require("./technology.data");
 const { Technology } = require("./technology");
+const { CardUtil } = require("../card/card-util");
 const { TechnologySchema } = require("./technology.schema");
 
 // Clear/reset a `jest.spyOn` leaves the function gutted.  Remember original.
@@ -176,7 +177,7 @@ describe("getOwnedPlayerTechnologies", () => {
         expect(Technology.getOwnedPlayerTechnologies).toThrowError();
     });
 
-    it("without a playerSlot", () => {
+    it("with a playerSlot", () => {
         const _world_getAllObjects = world.getAllObjects;
         jest.spyOn(world, "getAllObjects").mockReturnValue([
             new MockCard({
