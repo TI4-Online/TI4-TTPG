@@ -17,7 +17,7 @@ class TechCardUtil {
         throw new Error("Static only");
     }
 
-    
+
     static moveCardsToCardHolder(techNsidNames, playerSlot) {
         assert(Array.isArray(techNsidNames));
         techNsidNames.forEach((nsid) => assert(typeof nsid === "string"));
@@ -42,7 +42,7 @@ class TechCardUtil {
             console.warn(`not all cards found (${techNsidNames.length - cards.length} missing)`);
             return;
         }
-        
+
         const deck = CardUtil.makeDeck(cards); // cards were found, not spawned, no need for clone replace
         CardUtil.moveCardsToCardHolder(deck, playerSlot);
     }

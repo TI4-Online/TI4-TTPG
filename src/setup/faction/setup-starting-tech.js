@@ -13,7 +13,7 @@ class SetupStartingTech extends AbstractSetup {
 
     setup() {
         TechCardUtil.moveCardsToCardHolder(
-            this._faction.raw.startingTech, 
+            this._faction.raw.startingTech,
             this.playerDesk.playerSlot
         );
     }
