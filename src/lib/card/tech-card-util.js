@@ -20,12 +20,12 @@ class TechCardUtil {
     /**
      * Searches for the nearest technology cards for a given nsid
      * and deals it to the player in the passed playerSlot.
-     * 
+     *
      * If not all cards were found, the missing number is mentioned as a warning.
-     * 
+     *
      * @param {string[]} techNsidNames - list of card nsids
-     * @param {number} playerSlot 
-     * @returns 
+     * @param {number} playerSlot
+     * @returns
      */
     static moveCardsToCardHolder(techNsidNames, playerSlot) {
         assert(Array.isArray(techNsidNames));
@@ -47,7 +47,11 @@ class TechCardUtil {
             return closestDesk.playerSlot === playerSlot;
         });
         if (cards.length !== techNsidNames.length) {
-            console.warn(`not all cards found (${techNsidNames.length - cards.length} missing)`);
+            console.warn(
+                `not all cards found (${
+                    techNsidNames.length - cards.length
+                } missing)`
+            );
             return;
         }
 
