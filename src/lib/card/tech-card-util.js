@@ -17,7 +17,16 @@ class TechCardUtil {
         throw new Error("Static only");
     }
 
-
+    /**
+     * Searches for the nearest technology cards for a given nsid
+     * and deals it to the player in the passed playerSlot.
+     * 
+     * If not all cards were found, the missing number is mentioned as a warning.
+     * 
+     * @param {string[]} techNsidNames - list of card nsids
+     * @param {number} playerSlot 
+     * @returns 
+     */
     static moveCardsToCardHolder(techNsidNames, playerSlot) {
         assert(Array.isArray(techNsidNames));
         techNsidNames.forEach((nsid) => assert(typeof nsid === "string"));
@@ -30,8 +39,7 @@ class TechCardUtil {
             if (!nsid.startsWith("card.technology")) {
                 return false;
             }
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            if (!techNsidNames.includes(parsed.name) && !techNsidNames.includes(nsid)) {
+            if (!techNsidNames.includes(nsid)) {
                 return false;
             }
             const pos = cardOrDeckObj.getPosition();
