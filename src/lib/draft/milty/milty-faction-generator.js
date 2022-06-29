@@ -117,7 +117,11 @@ class MiltyFactionGenerator {
         nsidNames = nsidNames.slice(0, this._count);
 
         const factions = nsidNames.map((nsidName) => {
-            return nsidNameToFaction[nsidName];
+            const faction = nsidNameToFaction[nsidName];
+            if (!faction) {
+                throw new Error(`bad faction "${nsidName}"`);
+            }
+            return faction;
         });
 
         return factions;

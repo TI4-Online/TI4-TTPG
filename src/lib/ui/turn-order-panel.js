@@ -35,6 +35,7 @@ class TurnOrderPanel extends VerticalBox {
         globalEvents.TI4.onTurnOrderChanged.add(update);
         globalEvents.TI4.onTurnOrderEmpty.add(update);
         globalEvents.TI4.onTurnChanged.add(update);
+        globalEvents.TI4.onTurnPassedChanged.add(update);
         globalEvents.TI4.onPlayerColorChanged.add(update);
         globalEvents.TI4.onPlayerCountChanged.add(update);
         globalEvents.TI4.onPlayerJoinedDelayed.add(update); // do less work on immediate join
@@ -46,6 +47,7 @@ class TurnOrderPanel extends VerticalBox {
                 globalEvents.TI4.onTurnOrderChanged.remove(update);
                 globalEvents.TI4.onTurnOrderEmpty.remove(update);
                 globalEvents.TI4.onTurnChanged.remove(update);
+                globalEvents.TI4.onTurnPassedChanged.remove(update);
                 globalEvents.TI4.onPlayerColorChanged.remove(update);
                 globalEvents.TI4.onPlayerCountChanged.remove(update);
                 globalEvents.TI4.onPlayerJoinedDelayed.remove(update);
@@ -73,17 +75,7 @@ class TurnOrderPanel extends VerticalBox {
         assert(Array.isArray(playerDeskOrder));
 
         // Get passed players.  This is a single world scan vs once per player.
-        const passedPlayerSlotSet = new Set();
-        for (const obj of world.TI4.turns.getAllStatusPads()) {
-            const playerSlot = obj.getOwningPlayerSlot();
-            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-            if (!playerDesk) {
-                continue;
-            }
-            if (obj.__getPass()) {
-                passedPlayerSlotSet.add(playerSlot);
-            }
-        }
+        const passedPlayerSlotSet = world.TI4.turns.getPassedPlayerSlotSet();
 
         this.removeAllChildren();
 

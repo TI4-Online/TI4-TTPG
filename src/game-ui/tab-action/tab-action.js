@@ -1,6 +1,6 @@
 const locale = require("../../lib/locale");
-const { AutoRoller } = require("../../objects/roller/auto-roller");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
+const { TabTactical } = require("./tab-tactical/tab-tactical");
 const CONFIG = require("../game-ui-config");
 const { Text, globalEvents } = require("../../wrapper/api");
 
@@ -9,8 +9,6 @@ class TabAction {
         const tabbedPanel = new TabbedPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
-
-        const autoRoller = new AutoRoller();
 
         // const systemImg = new ImageWidget().setImage(
         //     "locale/ui/tiles/base/special/tile_018.png",
@@ -24,9 +22,10 @@ class TabAction {
         //     .addChild(autoRoller.getUI())
         //     .addChild(systemBox);
 
+        const tabTactical = new TabTactical();
         tabbedPanel.addTab(
             locale("ui.tab.tactical_action"),
-            autoRoller.getUI(),
+            tabTactical.getUI(),
             true
         );
 

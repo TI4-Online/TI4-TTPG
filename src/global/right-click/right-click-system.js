@@ -112,7 +112,7 @@ function addRightClickOptions(systemTileObj) {
 
     // Also offer via a popup.
     // Mallice needs to be flipped to see button, that's ok.
-    const popupPanel = new PopupPanel(systemTileObj, new Vector(0, 4.6, 0.15))
+    const popupPanel = new PopupPanel(systemTileObj, new Vector(0, 4.6, 0.16))
         .setMatchPlayerYaw(true)
         .attachPopupButton(0.8);
     popupPanel.onShow.add((obj, player, popupPanel) => {
