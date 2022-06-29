@@ -79,9 +79,9 @@ class StatusPad {
         const newValue = !this.getPass();
         this.setPass(newValue);
 
+        const playerSlot = this._obj.getOwningPlayerSlot();
         if (newValue) {
             // Announce pass.
-            const playerSlot = this._obj.getOwningPlayerSlot();
             const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
             const color = playerDesk
@@ -96,6 +96,9 @@ class StatusPad {
                 world.TI4.turns.endTurn(player);
             }
         }
+
+        // Tell any listeners.
+        globalEvents.TI4.onTurnPassedChanged.trigger(playerSlot, player);
     }
 
     /**

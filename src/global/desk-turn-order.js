@@ -37,8 +37,9 @@ class DeskTurnOrder {
     }
 
     static updateAll(resetTurnOrder) {
+        const passedPlayerSlotSet = world.TI4.turns.getPassedPlayerSlotSet();
         for (const deskTurnOrder of _deskTurnOrders) {
-            deskTurnOrder.update(resetTurnOrder);
+            deskTurnOrder.update(resetTurnOrder, passedPlayerSlotSet);
         }
     }
 
@@ -106,12 +107,12 @@ class DeskTurnOrder {
         this._ui.widget = this._border.setChild(box);
 
         world.addUI(this._ui);
-        this.update(true);
         return this;
     }
 
-    update(resetTurnOrder) {
+    update(resetTurnOrder, passedPlayerSlotSet) {
         assert(typeof resetTurnOrder === "boolean");
+        assert(passedPlayerSlotSet instanceof Set);
 
         const current = world.TI4.turns.getCurrentTurn();
         const currentName = current ? current.colorName : "?";
@@ -145,12 +146,25 @@ class DeskTurnOrder {
                 this._turnOrderPanel.addChild(inner, 1);
             }
         }
+
+        // Passed?
+        const black = new Color(0, 0, 0, 1);
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const inner = this._turnOrderPanel.getChildAt(playerDesk.index);
+            if (!inner) {
+                continue;
+            }
+            const passed = passedPlayerSlotSet.has(playerDesk.playerSlot);
+            const color = passed ? black : playerDesk.plasticColor;
+            inner.setColor(color);
+        }
     }
 }
 
 const initHandler = () => {
     globalEvents.onTick.remove(initHandler);
     DeskTurnOrder.resetAll();
+    DeskTurnOrder.updateAll(true);
 };
 globalEvents.onTick.add(initHandler);
 
@@ -158,5 +172,8 @@ globalEvents.TI4.onTurnOrderChanged.add(() => {
     DeskTurnOrder.updateAll(true);
 });
 globalEvents.TI4.onTurnChanged.add(() => {
+    DeskTurnOrder.updateAll(false);
+});
+globalEvents.TI4.onTurnPassedChanged.add(() => {
     DeskTurnOrder.updateAll(false);
 });

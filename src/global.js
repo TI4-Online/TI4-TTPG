@@ -91,6 +91,10 @@ globalEvents.TI4 = {
     // Called when all players have passed.
     // <(player: Player|undefined) => void>
     onTurnOrderEmpty: new TriggerableMulticastDelegate(onErr),
+
+    // Called when a turn passed status changes.
+    // <(playerSlot: Number, clickingPlayer: Player) => void>
+    onTurnPassedChanged: new TriggerableMulticastDelegate(onErr),
 };
 
 globalEvents.onPlayerJoined.add((player) => {

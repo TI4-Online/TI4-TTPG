@@ -399,6 +399,13 @@ class Turns {
             return;
         }
         statusPad.__setPass(value);
+
+        // Tell world.
+        const clickingPlayer = undefined;
+        globalEvents.TI4.onTurnPassedChanged.trigger(
+            playerSlot,
+            clickingPlayer
+        );
     }
 
     clearAllPassed() {
@@ -407,6 +414,29 @@ class Turns {
                 statusPad.__setPass(false);
             }
         }
+
+        // Tell world.
+        const playerSlot = -1; // listener beware
+        const clickingPlayer = undefined;
+        globalEvents.TI4.onTurnPassedChanged.trigger(
+            playerSlot,
+            clickingPlayer
+        );
+    }
+
+    getPassedPlayerSlotSet() {
+        const passedPlayerSlotSet = new Set();
+        for (const obj of this.getAllStatusPads()) {
+            const playerSlot = obj.getOwningPlayerSlot();
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+            if (!playerDesk) {
+                continue;
+            }
+            if (obj.__getPass()) {
+                passedPlayerSlotSet.add(playerSlot);
+            }
+        }
+        return passedPlayerSlotSet;
     }
 }
 
