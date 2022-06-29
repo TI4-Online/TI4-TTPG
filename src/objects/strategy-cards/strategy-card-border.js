@@ -88,10 +88,11 @@ class StrategyCardBorder extends Border {
      * @param {Integer} index Position of the UI on the stack on the players desk
      */
     positionUi(index) {
+        this._ui.anchorY = 1;
         this._ui.position = this._desk.localPositionToWorld({
-            x: 30,
+            x: 10 + index * 2,
             y: 0,
-            z: 20 + index * -1,
+            z: 5,
         });
         world.updateUI(this._ui);
     }
@@ -105,10 +106,10 @@ class StrategyCardBorder extends Border {
         this._ui.widget = this;
         this._ui.height = this.height;
         this._ui.width = this.width;
-        this._ui.scale = 0.75;
+        this._ui.scale = 0.65;
         this.positionUi(index);
         this._ui.rotation = this._desk.localRotationToWorld(
-            new Rotator(25, 0, 0)
+            new Rotator(35, 0, 0)
         );
         world.addUI(this._ui);
     }
