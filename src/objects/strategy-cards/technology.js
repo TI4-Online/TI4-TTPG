@@ -15,6 +15,7 @@ const { Broadcast } = require("../../lib/broadcast");
 const { Technology } = require("../../lib/technology/technology");
 const locale = require("../../lib/locale");
 const assert = require("../../wrapper/assert-wrapper");
+const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ColorUtil } = require("../../lib/color/color-util");
 
 const imageSize = 30;
@@ -190,6 +191,7 @@ const onTechResearched = (technologyName, playerSlot) => {
         );
     }
 
+    TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
     Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
 };
 

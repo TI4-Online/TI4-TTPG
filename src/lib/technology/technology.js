@@ -4,7 +4,7 @@ const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
-const { world } = require("../../wrapper/api");
+const { Card, world } = require("../../wrapper/api");
 const { TechnologySchema } = require("./technology.schema");
 
 TECHNOLOGY_DATA.forEach((tech) => {
