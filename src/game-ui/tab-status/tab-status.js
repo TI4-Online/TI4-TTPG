@@ -10,12 +10,20 @@ class TabStatus {
         const onButtonCallbacks = {
             dealActionCards: (button, player) => {
                 DealActionCards.dealToAll();
+
+                // Mantis says: "the gain tokens should be part of the deal
+                // action cards button instead of the end status phase.  there
+                // are edge case scenarios where token allocation is based on
+                // expected strat card picks and technically tokens are
+                // allocated before the window for political stability.
+                // someone knowing they got to keep leadership might allocate
+                // differently than risking a sabo"
+                EndStatusPhase.distributeCommandTokens();
             },
             endStatusPhase: (button, player) => {
                 EndStatusPhase.returnCommandTokens();
                 EndStatusPhase.repairShips();
                 EndStatusPhase.refreshCards();
-                EndStatusPhase.distributeCommandTokens();
                 EndStatusPhase.returnStrategyCards();
                 EndStatusPhase.resetPassedFlags();
             },
