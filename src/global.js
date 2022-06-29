@@ -222,6 +222,7 @@ require("./global/right-click/right-click-trade-agreement");
 require("./global/right-click/heroes/helio-command-array");
 require("./global/right-click/heroes/dimensional-anchor");
 require("./global/right-click/heroes/multiverse-shift");
+//require("./global/screen-ui/end-turn"); // not ready
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");
@@ -235,10 +236,4 @@ if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
     GameData.maybeRestartGameData();
     world.TI4.fogOfWar.maybeEnable();
-
-    // TEMPORARY HACK: getTableHeight currently detects ground mode objects.
-    // Until the fix goes in return the expected value.
-    world.getTableHeight(() => {
-        return 20;
-    });
 }
