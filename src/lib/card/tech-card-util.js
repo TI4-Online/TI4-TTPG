@@ -35,11 +35,24 @@ class TechCardUtil {
         if (techNsidNames.length === 0) {
             return;
         }
+
+        // If the caller passed in full NSIDs convert to just names.
+        // The available NSIDs may have omega, etc.
+        techNsidNames = techNsidNames.map((maybeFullNsid) => {
+            const parsed = ObjectNamespace.parseNsid(maybeFullNsid);
+            if (!parsed) {
+                return maybeFullNsid; // looks like just the name
+            }
+            return parsed.name.split(".")[0];
+        });
+
         const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
             if (!nsid.startsWith("card.technology")) {
                 return false;
             }
-            if (!techNsidNames.includes(nsid)) {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name.split(".")[0];
+            if (!techNsidNames.includes(name)) {
                 return false;
             }
             const pos = cardOrDeckObj.getPosition();
@@ -48,7 +61,7 @@ class TechCardUtil {
         });
         if (cards.length !== techNsidNames.length) {
             console.warn(
-                `not all cards found (${
+                `TechCardUtil: not all cards found (${
                     techNsidNames.length - cards.length
                 } missing)`
             );
