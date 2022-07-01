@@ -1,13 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../../lib/card/card-util");
-const {
-    Card,
-    CardHolder,
-    GameObject,
-    Rotator,
-    world,
-} = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 
 class TechCardUtil {
     /**
