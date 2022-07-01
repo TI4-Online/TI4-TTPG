@@ -149,15 +149,14 @@ class DeskTurnOrder {
 
         // Passed?
         const black = new Color(0, 0, 0, 1);
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const inner = this._turnOrderPanel.getChildAt(playerDesk.index);
-            if (!inner) {
-                continue;
-            }
+        world.TI4.turns.getTurnOrder().forEach((playerDesk, index) => {
             const passed = passedPlayerSlotSet.has(playerDesk.playerSlot);
             const color = passed ? black : playerDesk.plasticColor;
-            inner.setColor(color);
-        }
+            const inner = this._turnOrderPanel.getChildAt(index);
+            if (inner) {
+                inner.setColor(color);
+            }
+        });
     }
 }
 
@@ -169,6 +168,7 @@ const initHandler = () => {
 globalEvents.onTick.add(initHandler);
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
+    console.log("globalEvents.TI4.onTurnOrderChanged");
     DeskTurnOrder.updateAll(true);
 });
 globalEvents.TI4.onTurnChanged.add(() => {
