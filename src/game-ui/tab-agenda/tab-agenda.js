@@ -6,6 +6,7 @@ const { AgendaTurnOrder } = require("./agenda-turn-order");
 const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { CardUtil } = require("../../lib/card/card-util");
+const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const {
     Card,
@@ -227,6 +228,13 @@ class TabAgenda {
 
     updateMainUI() {
         const onResetPlanetCards = () => {
+            const systemHexes = new Set();
+            for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+                const pos = systemTileObj.getPosition();
+                const hex = Hex.fromPosition(pos);
+                systemHexes.add(hex);
+            }
+
             const checkIsDiscardPile = false;
             const allowFaceDown = true;
             for (const obj of world.getAllObjects()) {
@@ -237,27 +245,32 @@ class TabAgenda {
                         allowFaceDown
                     )
                 ) {
-                    continue;
+                    continue; // not a loose card
                 }
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (
                     !nsid.startsWith("card.planet") &&
                     !nsid.startsWith("card.legendary_planet")
                 ) {
-                    continue;
+                    continue; // not a planet card
                 }
-                if (!obj.isFaceUp()) {
-                    const pos = obj.getPosition().add([0, 0, 3]);
-                    obj.setPosition(pos);
+                if (obj.isFaceUp()) {
+                    continue; // already face up
+                }
+                const pos = obj.getPosition();
+                const hex = Hex.fromPosition(pos);
+                if (systemHexes.has(hex)) {
+                    continue; // on a aystem tile
+                }
 
-                    const rotation = obj.getRotation();
-                    const newRotation = new Rotator(
-                        rotation.pitch,
-                        rotation.yaw,
-                        -180
-                    );
-                    obj.setRotation(newRotation, 1);
-                }
+                const rotation = obj.getRotation();
+                const newRotation = new Rotator(
+                    rotation.pitch,
+                    rotation.yaw,
+                    -180
+                );
+                obj.setPosition(pos.add([0, 0, 3]));
+                obj.setRotation(newRotation, 1);
             }
             this.updateUI();
         };
