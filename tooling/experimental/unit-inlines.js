@@ -4,9 +4,22 @@ const fs = require("fs-extra");
 const path = require("path");
 const sharp = require("sharp");
 
-const TEST = path.normalize("assets/Models/units/base/dreadnought.obj");
-//const TEST = path.normalize("assets/Models/units/base/fighter.obj");
-const TEST_OUT = "test.png";
+const UNITS = {
+    "base/carrier": {},
+    "base/cruiser": {},
+    "base/destroyer": {},
+    "base/dreadnought": {},
+    "base/fighter": {},
+    "base/flagship": {},
+    "base/infantry": { maxZ: 0 },
+    "base/pds": { maxZ: 0 },
+    "base/spacedock": {},
+    "base/warsun": {},
+    "pok/mech": {},
+};
+
+const SRC_DIR = path.normalize("./assets/Models/units/");
+const DST_DIR = path.normalize("./assets/Textures/global/units/");
 
 /**
  * Generate an emissive map of inset lines about a unit model.
@@ -154,19 +167,50 @@ class SoftwareRenderer {
             v[1] = z;
             v[2] = y;
         }
-        return this;
-    }
-
-    draw() {
-        console.log(`${Date.now()} draw`);
-        this._buf = {};
-        for (const f of this._f) {
-            this._drawTriangle(f);
+        for (const vn of this._vn) {
+            const [x, y, z] = vn;
+            assert(typeof x === "number");
+            assert(typeof y === "number");
+            assert(typeof z === "number");
+            vn[1] = z;
+            vn[2] = y;
         }
         return this;
     }
 
-    _drawTriangle(face) {
+    applyOptions(options) {
+        const pruneVertexIndexSet = new Set();
+        if (options.maxZ !== undefined) {
+            this._v.forEach((v, index) => {
+                if (v[2] > options.maxZ) {
+                    pruneVertexIndexSet.add(index);
+                }
+            });
+        }
+        const before = this._f.length;
+        this._f = this._f.filter((face) => {
+            for (const entry of face) {
+                if (pruneVertexIndexSet.has(entry.vIdx)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        const after = this._f.length;
+        console.log(`pruned from ${before} to ${after} faces`);
+
+        return this;
+    }
+
+    draw(addUVs) {
+        console.log(`${Date.now()} draw`);
+        for (const f of this._f) {
+            this._drawTriangle(f, addUVs);
+        }
+        return this;
+    }
+
+    _drawTriangle(face, addUVs) {
         assert(Array.isArray(face));
 
         const pts = [
@@ -273,6 +317,18 @@ class SoftwareRenderer {
                         bc[1] * norms[1][2] +
                         bc[2] * norms[2][2];
 
+                    // Throw out sideways facing triangles.
+                    // Dot with [0,0,1] which is just the nz value.
+                    // Should already be normalized, but do it again out of paranoia.
+                    const m = Math.sqrt(nx * nx + ny * ny + nz + nz);
+                    if (m === 0) {
+                        continue;
+                    }
+                    const dotUp = nz / m;
+                    if (Math.abs(dotUp) < 0.1) {
+                        continue; // sideways-ish facing, skip
+                    }
+
                     // Watch for wacky UVs, allow a little torance for pixel size overflow.
                     if (
                         uv[0] < -0.1 ||
@@ -289,21 +345,22 @@ class SoftwareRenderer {
                     uv[1] = Math.max(uv[1], 0);
                     uv[1] = Math.min(uv[1], 1);
 
-                    // Reject if normal not up/down?
-
                     const key = this._pixelKey(px, py);
                     let entry = this._buf[key];
                     if (!entry) {
                         entry = {
                             x: px,
                             y: py,
-                            normals: [],
                             uvs: [],
                         };
                         this._buf[key] = entry;
                     }
-                    entry.normals.push([nx, ny, nz]);
-                    entry.uvs.push(uv);
+
+                    // Only add UVs on request, and then only to the border pixels.
+                    // (saves a lot of memory).
+                    if (addUVs && entry.border) {
+                        entry.uvs.push(uv);
+                    }
                 }
 
                 // Step right
@@ -355,6 +412,7 @@ class SoftwareRenderer {
         let floodIterations = 0;
         while (active && floodIterations <= maxIterations) {
             floodIterations++;
+            console.log(`flood ${floodIterations}`);
             active = false;
             for (const entry of Object.values(this._buf)) {
                 const left = this._buf[this._pixelKey(entry.x - 1, entry.y)];
@@ -398,7 +456,12 @@ class SoftwareRenderer {
 
         for (const entry of Object.values(this._buf)) {
             if (entry.flood >= inset && entry.flood <= inset + width) {
-                entry.border = true;
+                // Fuzzy, smaller when near edge and increase to 1 further in.
+                // We might not want to use it, but compute it for tinkering.
+                const d = entry.flood - inset;
+                assert(d >= 0);
+                assert(d <= width);
+                entry.border = d / width;
             }
         }
 
@@ -468,14 +531,15 @@ class SoftwareRenderer {
             }
 
             let output = ".";
-            if (entry.flood && entry.flood < 10) {
-                //output = String(entry.flood);
-            }
+            //if (entry.flood && entry.flood < 10) {
+            //    output = String(entry.flood);
+            //}
             if (entry.border) {
-                output = "X";
+                assert(entry.border > 0 && entry.border <= 1);
+                output = Math.floor(9 * entry.border);
             }
             // Always keep the "border" value when scaling.
-            if (line[y] !== "X") {
+            if (line[y] !== ".") {
                 line[y] = output;
             }
         }
@@ -498,12 +562,12 @@ class SoftwareRenderer {
             channels: 4,
             background: { r: 0, g: 0, b: 0, alpha: 255 },
         };
-        const data = await sharp({
+        let data = await sharp({
             create: config,
         })
             .raw()
             .toBuffer();
-        const pixelArray = new Uint8ClampedArray(data.buffer); // RGBA
+        let pixelArray = new Uint8ClampedArray(data.buffer); // RGBA
 
         for (const entry of Object.values(this._buf)) {
             if (!entry.border) {
@@ -519,25 +583,60 @@ class SoftwareRenderer {
                 pixelArray[offset + 1] = 255;
                 pixelArray[offset + 2] = 255;
                 pixelArray[offset + 3] = 1;
+
+                // Emissive alpha is a multiplier: 0 is highest emmission,
+                // 1 uses 100% of the emmisive color and 0% of the underlying.
             }
         }
 
-        await sharp(pixelArray, { raw: config })
+        // Blur to smooth over raster pixelation artifacts (may bleed slightly
+        // into other parts of the model if UVs are packed tightly).
+        // Fix alpha values after.
+        data = await sharp(pixelArray, { raw: config })
             .blur(1)
-            .toFile(filename, (err) => {
-                console.log(err);
-            });
+            .raw()
+            .toBuffer();
+        pixelArray = new Uint8ClampedArray(data.buffer); // RGBA
+        for (let offset = 0; offset < size * size * 4; offset += 4) {
+            if (pixelArray[offset + 3] < 255) {
+                pixelArray[offset] = 255;
+                pixelArray[offset + 1] = 255;
+                pixelArray[offset + 2] = 255;
+                pixelArray[offset + 3] = 1;
+            }
+        }
+
+        await sharp(pixelArray, { raw: config }).toFile(filename, (err) => {
+            console.log(err);
+        });
     }
 }
 
-new SoftwareRenderer()
-    .load(TEST)
-    .verifyModel()
-    .scale(400)
-    .topDown()
-    .draw()
-    .floodDistanceToEdge(50)
-    .insetBorder(28, 14)
-    .printUvRaster()
-    .printXyRaster()
-    .writeBorderUv(TEST_OUT, 1024);
+const BORDER_WIDTH = 1;
+const EXTRA_SCALE = 2;
+
+// Extra scale: 1 for testing, higher number will fill in more small nooks (per-pixel raster).
+// Slowdown is worse than linear, as well as memory footprint.
+// At higher numbers give node more memory using "export NODE_OPTIONS="--max-old-space-size=32768"
+
+async function processUnits() {
+    for (const [unit, options] of Object.entries(UNITS)) {
+        const src = path.join(SRC_DIR, unit + ".obj");
+        const dst = path.join(DST_DIR, unit + "-emit.png");
+
+        await new SoftwareRenderer()
+            .load(src)
+            .verifyModel()
+            .scale(200 * EXTRA_SCALE)
+            .topDown()
+            .applyOptions(options)
+            .draw(false)
+            .floodDistanceToEdge(BORDER_WIDTH * EXTRA_SCALE)
+            .insetBorder(0, BORDER_WIDTH * EXTRA_SCALE)
+            .draw(true)
+            //.printUvRaster()
+            //.printXyRaster()
+            .writeBorderUv(dst, 1024);
+    }
+}
+processUnits();
