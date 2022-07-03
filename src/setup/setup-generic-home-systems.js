@@ -139,6 +139,19 @@ class SetupGenericHomeSystems extends AbstractSetup {
         const playerCount = world.TI4.config.playerCount;
         const hexDataArray = HOME_SYSTEM_POSITIONS[playerCount];
         const hexData = hexDataArray[index];
+
+        // Saw an error report where hexData was undefined in a stack trace
+        // coming from PlayerDesk.changeColor.  Have not been able to
+        // reproduce and added a unittest.  For now throw a better error.
+        if (!hexData) {
+            const report = {
+                playerSlot,
+                playerCount,
+                index,
+            };
+            throw new Error(`missing hexData: ${JSON.stringify(report)}`);
+        }
+
         const hex = offMap ? hexData.offMap : hexData.onMap;
 
         const pos = Hex.toPosition(hex);
