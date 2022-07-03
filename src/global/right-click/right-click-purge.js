@@ -34,10 +34,8 @@ function getPurgeContainer() {
  */
 function purge(card) {
     assert(card instanceof Card);
-    const objectName = ObjectNamespace.parseGeneric(card).name;
-    Broadcast.broadcastAll(
-        locale("ui.message.purge", { objectName: locale(objectName) })
-    );
+    const objectName = card.getCardDetails().name;
+    Broadcast.broadcastAll(locale("ui.message.purge", { objectName }));
     const purgeContainer = getPurgeContainer();
     purgeContainer.addObjects([card], true);
 }

@@ -4,7 +4,7 @@ const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
 const { Hex } = require("../../lib/hex");
-const { RollGroup, FancyRollGroup } = require("../../lib/dice/roll-group");
+const { RollGroup } = require("../../lib/dice/roll-group");
 const { SimpleDieBuilder } = require("../../lib/dice/simple-die");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const { Color, DrawingLine, Vector, world } = require("../../wrapper/api");
@@ -125,7 +125,7 @@ class AutoGravRiftRoller {
             return attrs.raw.move > 0 || attrs.raw.ship;
         });
 
-        const diceObjects = [];
+        const dice = [];
         plasticWithMovement.forEach((unit) => {
             for (var i = 0; i < unit._count; i++) {
                 const yaw = Math.random() * 360;
@@ -135,16 +135,17 @@ class AutoGravRiftRoller {
                     .setDeleteAfterSeconds(DELETE_DIE_AFTER_N_SECONDS)
                     .setHitValue(GRAV_RIFT_SUCCCESS)
                     .setSpawnPosition(pos)
+                    .setAuxObject(unit)
                     .build(player);
-                diceObjects.push([die, unit, i]);
+                dice.push(die);
             }
         });
-        FancyRollGroup.roll(diceObjects, (diceObjects) => {
-            AutoGravRiftRoller.onRollFinished(diceObjects, player);
+        RollGroup.roll(dice, (dice) => {
+            AutoGravRiftRoller.onRollFinished(dice, player);
         });
     }
 
-    static onRollFinished(diceObjects, player) {
+    static onRollFinished(dice, player) {
         const playerSlot = player.getSlot();
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const deskName = playerDesk ? playerDesk.colorName : player.getName();
@@ -153,8 +154,9 @@ class AutoGravRiftRoller {
         const color = playerDesk ? playerDesk.color : player.getPlayerColor();
 
         const parts = [];
-        for (const [die, unit, index] of diceObjects) {
-            assert(typeof index === "number");
+        for (const die of dice) {
+            const unit = die.getAuxObject();
+            assert(unit);
             AutoGravRiftRoller.addLines(die, unit);
             if (die.isHit()) {
                 parts.push(
