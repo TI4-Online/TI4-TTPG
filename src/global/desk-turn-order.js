@@ -168,7 +168,6 @@ const initHandler = () => {
 globalEvents.onTick.add(initHandler);
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
-    console.log("globalEvents.TI4.onTurnOrderChanged");
     DeskTurnOrder.updateAll(true);
 });
 globalEvents.TI4.onTurnChanged.add(() => {
