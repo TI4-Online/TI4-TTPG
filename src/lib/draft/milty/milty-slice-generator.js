@@ -422,6 +422,9 @@ class MiltySliceGenerator {
 
     generate() {
         const isGood = (slices) => {
+            if (!slices) {
+                return false;
+            }
             if (slices.length != this._count) {
                 return false;
             }
