@@ -238,6 +238,10 @@ class Turns {
         // playerDesk may be undefined
         assert(!clickingPlayer || clickingPlayer instanceof Player);
 
+        if (this._currentTurn === playerDesk) {
+            return; // already this turn!
+        }
+
         const playerSlot = playerDesk.playerSlot;
         const currentTurnPlayer = world.getPlayerBySlot(playerSlot);
         let name = currentTurnPlayer && currentTurnPlayer.getName();
@@ -346,6 +350,17 @@ class Turns {
         const playerSlot = player.getSlot();
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         return this._currentTurn === playerDesk;
+    }
+
+    /**
+     * Have all players passed?
+     *
+     * @returns {boolean}
+     */
+    isTurnOrderEmpty() {
+        return (
+            this.getPassedPlayerSlotSet().size === world.TI4.config.playerCount
+        );
     }
 
     getStatusPad(playerSlot) {
