@@ -107,6 +107,7 @@
     "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
     "ui.error.no_tactic_token": "No tactic token",
     "ui.error.diplomacy_no_token": "{name} does not have a command token in reinforcements",
+    "ui.error.missing_tile": "Missing map {#tileCount|tile|tiles}: {tileStr}",
 
     "ui.button.strategy_card_play": "Play",
     "ui.tooltip.strategy_card_play": "Play this strategy card for your turn",
