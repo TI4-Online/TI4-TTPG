@@ -574,6 +574,29 @@ class CardsheetLayout {
             } else if (a.nsidSource() > b.nsidSource()) {
                 return 1;
             }
+
+            // Group leaders by faction first for better sheet locality.
+            if (
+                a.nsidType().startsWith("card.leader") &&
+                b.nsidType().startsWith("card.leader")
+            ) {
+                const aParts = a.nsidType().split(".");
+                const bParts = b.nsidType().split(".");
+                aParts.splice(0, 2);
+                bParts.splice(0, 2);
+                const aType = aParts.shift();
+                const bType = bParts.shift();
+                const aFaction = aParts.shift();
+                const bFaction = bParts.shift();
+                const aValue = aFaction + "." + aType;
+                const bValue = bFaction + "." + bType;
+                if (aValue < bValue) {
+                    return -1;
+                } else if (aValue > bValue) {
+                    return 1;
+                }
+            }
+
             if (a.nsidType() < b.nsidType()) {
                 return -1;
             } else if (a.nsidType() > b.nsidType()) {
