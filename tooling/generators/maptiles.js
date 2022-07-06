@@ -267,9 +267,9 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
             B: 255,
         },
         SecondaryColor: {
-            R: 0,
-            G: 0,
-            B: 0,
+            R: 255,
+            G: 255,
+            B: 255,
         },
         Flippable: true,
         AutoStraighten: false,
