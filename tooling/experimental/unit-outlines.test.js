@@ -1,6 +1,6 @@
 require("regenerator-runtime"); // for async tests
 const assert = require("assert");
-const { UnitOutline } = require("./unitoutlines");
+const { UnitOutline } = require("./unit-outlines");
 
 it("constructor", () => {
     new UnitOutline();

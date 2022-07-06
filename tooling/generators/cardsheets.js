@@ -19,7 +19,7 @@ const DST_TEMPLATES_DIR = path.normalize("assets/Templates/");
 const CARD_SCALE = 0.68;
 
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
-const MAX_SHEET_DIMENSION = 4096;
+const MAX_SHEET_DIMENSION = 1024;
 
 // Do the work, but do not write any files.
 const TRIAL_RUN = false;
@@ -471,10 +471,15 @@ class AssetFilenames {
 }
 
 class CardsheetLayout {
-    static getLayout(numCards, cardW, cardH) {
+    static getLayout(
+        numCards,
+        cardW,
+        cardH,
+        maxDimension = MAX_SHEET_DIMENSION
+    ) {
         let best = false;
-        for (let pow2W = MAX_SHEET_DIMENSION; pow2W >= cardW; pow2W /= 2) {
-            for (let pow2H = MAX_SHEET_DIMENSION; pow2H >= cardH; pow2H /= 2) {
+        for (let pow2W = maxDimension; pow2W >= cardW; pow2W /= 2) {
+            for (let pow2H = maxDimension; pow2H >= cardH; pow2H /= 2) {
                 // Layout for max size but trim if fewer cards.
                 let layout = {
                     numCols: Math.min(Math.floor(pow2W / cardW), numCards),
@@ -833,6 +838,8 @@ async function writeDeckTemplate(
         CardMetadata: cardMetadata,
     };
 
+    console.log(`NSID-CARD: "${deckNsid}": "${guid}",`);
+
     console.log(
         `writeDeckTemplateJson: ${outputFilename} ${cardDataArray.length} cards`
     );
@@ -1008,14 +1015,20 @@ async function generateDecks(cardNsidTypePrefix, locale) {
     footprint = (footprint * 4) / (1024 * 1024);
     waste = (waste * 4) / (1024 * 1024);
     console.log(`footprint: ${footprint} MB, waste: ${waste} MB`);
+    return { footprint, waste };
 }
 
 async function buildAllDecks(deckNames) {
     console.log(`Building ${deckNames}`);
+    let footprint = 0;
+    let waste = 0;
     for (const deckName of deckNames) {
         console.log(`---------- BUILDING ${deckName} ----------`);
-        await generateDecks(deckName, "en");
+        const usage = await generateDecks(deckName, "en");
+        footprint += usage.footprint;
+        waste += usage.waste;
     }
+    console.log(`OVERALL footprint: ${footprint} MB, waste: ${waste} MB`);
 }
 
 async function main() {
