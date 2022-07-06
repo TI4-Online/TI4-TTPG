@@ -304,7 +304,7 @@
     "ui.agenda.clippy.outcome_category": "What kind of outcome is this?",
     "ui.agenda.clippy.whens": "Starting with the speaker and continuing clockwise, play “WHEN an agenda is revealed”?\n\nClick play for a WHEN, or No WHENs to pass.",
     "ui.agenda.clippy.afters": "Starting with the speaker and continuing clockwise, play “AFTER an agenda is revealed”?\n\nClick + for a rider, or No AFTERs to pass.",
-    "ui.agenda.clippy.voting": "Starting with the player left of the speaker and continuing clockwise, vote on the agenda.\n\nChoose vote, then flip planet cards and/or use +/- to vote.  Commit votes to move to next player.\n\nDoes not auto-skip in case other effects allow voting.",
+    "ui.agenda.clippy.voting": "Starting with the player left of the speaker and continuing clockwise, vote on the agenda.\n\nChoose vote, then use +/- to vote.  Commit votes to move to next player.\n\nDoes not auto-skip in case other effects allow voting.",
     "ui.agenda.clippy.vote_player_name": "Choose an outcome {playerName}, then flip planets and/or use +/- to vote.",
     "ui.agenda.clippy.pre": "Any ”at the start of an agenda phase“ (Ancient Burial Sites)?",
     "ui.agenda.clippy.post": "Play any ”after the speaker votes“ (Bribery), then proceed.",

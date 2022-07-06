@@ -130,87 +130,6 @@ class TabAgenda {
         return deskIndexToAvailableVotes;
     }
 
-    constructor() {
-        this._widget = new LayoutBox();
-        this._stateMachine = undefined;
-
-        this._outcomeType = undefined;
-        this._outcomeNames = undefined;
-        this._deskUIs = undefined;
-        this._deskIndexToAvailableVotes = undefined;
-
-        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
-            world.TI4.turns.clearAllPassed();
-            if (agendaCard) {
-                this._stateMachine = new AgendaStateMachine();
-            } else {
-                this._stateMachine = undefined;
-            }
-            this._outcomeType = undefined;
-            this._outcomeNames = undefined;
-            this._deskIndexToAvailableVotes =
-                TabAgenda.getDeskIndexToAvailableVotes();
-            this.resetForCurrentState();
-        });
-
-        globalEvents.TI4.onPlanetCardFlipped.add((card, isFaceUp) => {
-            assert(card instanceof Card);
-            assert(typeof isFaceUp === "boolean");
-
-            if (!this._stateMachine || !this._deskUIs) {
-                return;
-            }
-
-            const pos = card.getPosition();
-            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-            const deskIndex = closestDesk.index;
-
-            const planet = world.TI4.getPlanetByCard(card);
-            assert(planet);
-            let influence = planet.raw.influence;
-
-            // If xxcha hero add resources to influence value.
-            const playerSlot = closestDesk.playerSlot;
-            const gromOmegaNsid =
-                "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
-            if (CardUtil.hasCard(playerSlot, gromOmegaNsid, false)) {
-                influence += planet.raw.resources;
-            }
-
-            // Apply bonus votes.
-            const deskIndexToPerPlanetBonus =
-                TabAgenda.getDeskIndexToPerPlanetBonus();
-            const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
-            influence += bonus;
-            const deltaValue = influence * (isFaceUp ? -1 : 1);
-
-            console.log(
-                `TabAgenda.onPlanetCardFlipped: ${deltaValue} for ${closestDesk.colorName}`
-            );
-
-            let foundDeskUi = undefined;
-            for (const deskUi of this._deskUIs) {
-                if (deskUi._playerDesk === closestDesk) {
-                    foundDeskUi = deskUi;
-                    break;
-                }
-            }
-            if (foundDeskUi._votedOutcomeIndex < 0) {
-                console.log(
-                    "TabAgenda.onPlanetCardFlipped: no outcome selected"
-                );
-                return;
-            }
-            if (foundDeskUi._voteLocked) {
-                console.log("TabAgenda.onPlanetCardFlipped: vote locked");
-                return;
-            }
-            foundDeskUi.addVotes(deltaValue);
-        });
-
-        this.resetForCurrentState();
-    }
-
     static resetPlanetCards() {
         const systemHexes = new Set();
         for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
@@ -246,6 +165,90 @@ class TabAgenda {
             obj.setPosition(pos.add([0, 0, 3]));
             obj.setRotation(newRotation, 1);
         }
+    }
+
+    constructor() {
+        this._widget = new LayoutBox();
+        this._stateMachine = undefined;
+
+        this._outcomeType = undefined;
+        this._outcomeNames = undefined;
+        this._deskUIs = undefined;
+        this._deskIndexToAvailableVotes = undefined;
+
+        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
+            world.TI4.turns.clearAllPassed();
+            if (agendaCard) {
+                this._stateMachine = new AgendaStateMachine();
+            } else {
+                this._stateMachine = undefined;
+            }
+            this._outcomeType = undefined;
+            this._outcomeNames = undefined;
+            this._deskIndexToAvailableVotes =
+                TabAgenda.getDeskIndexToAvailableVotes();
+            this.resetForCurrentState();
+        });
+
+        // This is not working reliably.
+        //globalEvents.TI4.onPlanetCardFlipped.add((card, isFaceUp) => {
+        //    this._onPlanetCardFlipped(card, isFaceUp);
+        //});
+
+        this.resetForCurrentState();
+    }
+
+    _onPlanetCardFlipped(card, isFaceUp) {
+        assert(card instanceof Card);
+        assert(typeof isFaceUp === "boolean");
+
+        if (!this._stateMachine || !this._deskUIs) {
+            return;
+        }
+
+        const pos = card.getPosition();
+        const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+        const deskIndex = closestDesk.index;
+
+        const planet = world.TI4.getPlanetByCard(card);
+        assert(planet);
+        let influence = planet.raw.influence;
+
+        // If xxcha hero add resources to influence value.
+        const playerSlot = closestDesk.playerSlot;
+        const gromOmegaNsid =
+            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
+        if (CardUtil.hasCard(playerSlot, gromOmegaNsid, false)) {
+            influence += planet.raw.resources;
+        }
+
+        // Apply bonus votes.
+        const deskIndexToPerPlanetBonus =
+            TabAgenda.getDeskIndexToPerPlanetBonus();
+        const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
+        influence += bonus;
+        const deltaValue = influence * (isFaceUp ? -1 : 1);
+
+        console.log(
+            `TabAgenda.onPlanetCardFlipped: ${deltaValue} for ${closestDesk.colorName}`
+        );
+
+        let foundDeskUi = undefined;
+        for (const deskUi of this._deskUIs) {
+            if (deskUi._playerDesk === closestDesk) {
+                foundDeskUi = deskUi;
+                break;
+            }
+        }
+        if (foundDeskUi._votedOutcomeIndex < 0) {
+            console.log("TabAgenda.onPlanetCardFlipped: no outcome selected");
+            return;
+        }
+        if (foundDeskUi._voteLocked) {
+            console.log("TabAgenda.onPlanetCardFlipped: vote locked");
+            return;
+        }
+        foundDeskUi.addVotes(deltaValue);
     }
 
     getUI() {
