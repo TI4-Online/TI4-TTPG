@@ -155,9 +155,17 @@ class FindTurnOrder {
 
         // Order.
         const order = Object.keys(playerSlotToInitiative);
-        order.sort(
-            (a, b) => playerSlotToInitiative[a] - playerSlotToInitiative[b]
-        );
+        order.sort((a, b) => {
+            a = playerSlotToInitiative[a];
+            b = playerSlotToInitiative[b];
+            if (a === undefined) {
+                a = Number.MAX_SAFE_INTEGER;
+            }
+            if (b === undefined) {
+                b = Number.MAX_SAFE_INTEGER;
+            }
+            return a - b;
+        });
         // Boo, javascript makes these strings when used as keys.  Get numbers.
         return order.map((slotStr) => {
             return playerSlotToPlayerDesk[slotStr];

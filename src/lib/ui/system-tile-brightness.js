@@ -45,8 +45,9 @@ globalEvents.onObjectCreated.add((obj) => {
     SystemTileBrightness.maybeApply(obj);
 });
 
-if (world.getExecutionReason() === "ScriptReload") {
-    SystemTileBrightness.updateAll();
-}
+// No need to touch this during reload, this value is persistent.
+//if (world.getExecutionReason() === "ScriptReload") {
+//    SystemTileBrightness.updateAll();
+//}
 
 module.exports = { SystemTileBrightness };
