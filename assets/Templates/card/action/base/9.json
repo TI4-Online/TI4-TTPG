@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "AA7232DA81A571E163115A2F45ABC71B",
+	"Name": "Actions (base 10/14)",
+	"Metadata": "card.action:base/9",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/action/base/9.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Sabotage (1)",
+		"1": "Sabotage (2)",
+		"2": "Sabotage (3)",
+		"3": "Sabotage (4)",
+		"4": "Salvage",
+		"5": "Shields Holding (1)"
+	},
+	"CardMetadata": {
+		"0": "card.action:base/sabotage.1",
+		"1": "card.action:base/sabotage.2",
+		"2": "card.action:base/sabotage.3",
+		"3": "card.action:base/sabotage.4",
+		"4": "card.action:base/salvage",
+		"5": "card.action:base/shields_holding.1"
+	}
+}

@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "79AE03AF50430FBF22765C6CBC33A2B7",
-	"Name": "Technology (Yellow) (homebrew.discordant_stars)",
+	"Name": "Technology (Yellow) (homebrew.discordant_stars 1/2)",
 	"Metadata": "card.technology.yellow:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 4,
+	"NumHorizontal": 2,
 	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -58,13 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11
+		5
 	],
 	"CardNames": {
 		"0": "Emergency Deployment",
@@ -72,13 +66,7 @@
 		"2": "Impressment Programs",
 		"3": "Covert Strike Teams",
 		"4": "Sentient Datapool",
-		"5": "Seeker Drones",
-		"6": "Fabrication Grid",
-		"7": "Voidwake Missiles",
-		"8": "Sanctification Field",
-		"9": "Contractual Maintenance",
-		"10": "Daedalon Flight System",
-		"11": "Krovoz Strike Teams"
+		"5": "Seeker Drones"
 	},
 	"CardMetadata": {
 		"0": "card.technology.yellow.axis:homebrew.discordant_stars/emergency_deployment",
@@ -86,12 +74,6 @@
 		"2": "card.technology.yellow.dihmohn:homebrew.discordant_stars/impressment_programs",
 		"3": "card.technology.yellow.free_systems:homebrew.discordant_stars/covert_strike_teams",
 		"4": "card.technology.yellow.ilyxum:homebrew.discordant_stars/sentient_datapool",
-		"5": "card.technology.yellow.kollecc:homebrew.discordant_stars/seeker_drones",
-		"6": "card.technology.yellow.mortheus:homebrew.discordant_stars/fabrication_grid",
-		"7": "card.technology.yellow.nivyn:homebrew.discordant_stars/voidwake_missiles",
-		"8": "card.technology.yellow.rhodun:homebrew.discordant_stars/sanctification_field",
-		"9": "card.technology.yellow.rohdhna:homebrew.discordant_stars/contractual_maintenance",
-		"10": "card.technology.yellow.tnelis:homebrew.discordant_stars/daedalon_flight_system",
-		"11": "card.technology.yellow.vaden:homebrew.discordant_stars/krovoz_strike_teams"
+		"5": "card.technology.yellow.kollecc:homebrew.discordant_stars/seeker_drones"
 	}
 }

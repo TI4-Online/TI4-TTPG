@@ -1,0 +1,70 @@
+{
+	"Type": "Card",
+	"GUID": "4C1A178BB230D38BF279815A22304E4A",
+	"Name": "Technology (Blue) (base 2/2)",
+	"Metadata": "card.technology.blue:base/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/technology/blue/base/1.face.jpg",
+	"BackTexture": "global/card/technology/blue.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2
+	],
+	"CardNames": {
+		"0": "Spacial Conduit Cylinder",
+		"1": "Chaos Mapping",
+		"2": "Lazax Gate Folding"
+	},
+	"CardMetadata": {
+		"0": "card.technology.blue.jolnar:base/spacial_conduit_cylinder",
+		"1": "card.technology.blue.saar:base/chaos_mapping",
+		"2": "card.technology.blue.winnu:base/lazax_gate_folding"
+	}
+}

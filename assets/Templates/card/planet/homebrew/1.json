@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "992B9253D95387168DE44CA28E840043",
+	"Name": "Planets (homebrew 2/7)",
+	"Metadata": "card.planet:homebrew/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/planet/homebrew/1.face.jpg",
+	"BackTexture": "locale/card/planet/homebrew/1.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Bohl-Dhur",
+		"1": "Brthkul",
+		"2": "Chrion",
+		"3": "Cymiae",
+		"4": "Cyrra",
+		"5": "Delmor"
+	},
+	"CardMetadata": {
+		"0": "card.planet:homebrew/bohldhur",
+		"1": "card.planet:homebrew/brthkul",
+		"2": "card.planet:homebrew/chrion",
+		"3": "card.planet:homebrew/cymiae",
+		"4": "card.planet:homebrew/cyrra",
+		"5": "card.planet:homebrew/delmor"
+	}
+}

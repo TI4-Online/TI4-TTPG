@@ -1,0 +1,73 @@
+{
+	"Type": "Card",
+	"GUID": "6641EF0AEE1D42E3DAD185BA8934E81A",
+	"Name": "Public Objectives I (pok 2/2)",
+	"Metadata": "card.objective.public_1:pok/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/objective/public_1/pok/1.face.jpg",
+	"BackTexture": "global/card/objective/public_1.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3
+	],
+	"CardNames": {
+		"0": "Make History",
+		"1": "Populate the Outer Rim",
+		"2": "Push Boundaries",
+		"3": "Raise a Fleet"
+	},
+	"CardMetadata": {
+		"0": "card.objective.public_1:pok/make_history",
+		"1": "card.objective.public_1:pok/populate_the_outer_rim",
+		"2": "card.objective.public_1:pok/push_boundaries",
+		"3": "card.objective.public_1:pok/raise_a_fleet"
+	}
+}

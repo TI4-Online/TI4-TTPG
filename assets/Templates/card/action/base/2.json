@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "B75601A3E9BCE665E7C94D7C757E7D75",
+	"Name": "Actions (base 3/14)",
+	"Metadata": "card.action:base/2",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/action/base/2.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Direct Hit (4)",
+		"1": "Disable",
+		"2": "Distinguished Councilor",
+		"3": "Economic Initiative",
+		"4": "Emergency Repairs",
+		"5": "Experimental Battlestation"
+	},
+	"CardMetadata": {
+		"0": "card.action:base/direct_hit.4",
+		"1": "card.action:base/disable",
+		"2": "card.action:base/distinguished_councilor",
+		"3": "card.action:base/economic_initiative",
+		"4": "card.action:base/emergency_repairs",
+		"5": "card.action:base/experimental_battlestation"
+	}
+}

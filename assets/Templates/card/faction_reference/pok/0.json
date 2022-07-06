@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "02B9BAB1520F34B807492BF30F2C9DB2",
-	"Name": "Faction References (pok)",
+	"Name": "Faction References (pok 1/4)",
 	"Metadata": "card.faction_reference:pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 6,
+	"NumHorizontal": 1,
 	"NumVertical": 2,
 	"Width": 8.8,
 	"Height": 6.3,
@@ -54,29 +54,14 @@
 	"Model": "Rounded",
 	"Indices": [
 		0,
-		1,
-		2,
-		3,
-		4,
-		5,
-		6
+		1
 	],
 	"CardNames": {
 		"0": "Argent Flight Faction Token",
-		"1": "Empyrean Faction Token",
-		"2": "Mahact Gene-Sorcerers Faction Token",
-		"3": "Naaz-Rokha Alliance Faction Token",
-		"4": "Nomad Faction Token",
-		"5": "Titans of Ul Faction Token",
-		"6": "Vuil'raith Cabal Faction Token"
+		"1": "Empyrean Faction Token"
 	},
 	"CardMetadata": {
 		"0": "card.faction_reference:pok/argent",
-		"1": "card.faction_reference:pok/empyrean",
-		"2": "card.faction_reference:pok/mahact",
-		"3": "card.faction_reference:pok/naazrokha",
-		"4": "card.faction_reference:pok/nomad",
-		"5": "card.faction_reference:pok/ul",
-		"6": "card.faction_reference:pok/vuilraith"
+		"1": "card.faction_reference:pok/empyrean"
 	}
 }

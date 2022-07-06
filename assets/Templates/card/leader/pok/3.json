@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "C075A84CA4AE77DB94F00D4B9A368957",
+	"Name": "Leaders (pok 4/17)",
+	"Metadata": "card.leader:pok/3",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/pok/3.face.jpg",
+	"BackTexture": "locale/card/leader/pok/3.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Harrugh Gefhara",
+		"1": "Pride of Kenara",
+		"2": "Doctor Sucaban",
+		"3": "Ta Zern",
+		"4": "Rin, the Master's Legacy",
+		"5": "Shield Paling"
+	},
+	"CardMetadata": {
+		"0": "card.leader.hero.hacan:pok/harrugh_gefhara",
+		"1": "card.leader.mech.hacan:pok/pride_of_kenara",
+		"2": "card.leader.agent.jolnar:pok/doctor_sucaban",
+		"3": "card.leader.commander.jolnar:pok/ta_zern",
+		"4": "card.leader.hero.jolnar:pok/rin_the_masters_legacy",
+		"5": "card.leader.mech.jolnar:pok/shield_paling"
+	}
+}

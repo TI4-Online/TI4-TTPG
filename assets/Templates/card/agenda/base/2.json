@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "8FFD4D54E3263F32B77BF3EB924D375D",
+	"Name": "Agenda (base 3/7)",
+	"Metadata": "card.agenda:base/2",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/agenda/base/2.face.jpg",
+	"BackTexture": "global/card/agenda.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Homeland Defense Act",
+		"1": "Imperial Arbiter",
+		"2": "Incentive Program",
+		"3": "Ixthian Artifact",
+		"4": "Judicial Abolishment",
+		"5": "Minister of Commerce"
+	},
+	"CardMetadata": {
+		"0": "card.agenda:base/homeland_defense_act",
+		"1": "card.agenda:base/imperial_arbiter",
+		"2": "card.agenda:base/incentive_program",
+		"3": "card.agenda:base/ixthian_artifact",
+		"4": "card.agenda:base/judicial_abolishment",
+		"5": "card.agenda:base/minister_of_commerce"
+	}
+}

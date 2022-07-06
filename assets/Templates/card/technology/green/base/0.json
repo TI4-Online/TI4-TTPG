@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "97571A34F5BBF573C0132F32193A24D5",
-	"Name": "Technology (Green) (base)",
+	"Name": "Technology (Green) (base 1/3)",
 	"Metadata": "card.technology.green:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 8,
-	"NumVertical": 2,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -58,14 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11,
-		12
+		5
 	],
 	"CardNames": {
 		"0": "Dacxive Animators",
@@ -73,14 +66,7 @@
 		"2": "Neural Motivator",
 		"3": "X-89 Bacterial Weapon",
 		"4": "X-89 Bacterial Weapon Ω",
-		"5": "Bioplasmosis",
-		"6": "Production Biomes",
-		"7": "Neuroglaive",
-		"8": "Instinct Training",
-		"9": "Yin Spinner",
-		"10": "Yin Spinner Ω",
-		"11": "Mageon Implants",
-		"12": "Transparasteel Plating"
+		"5": "Bioplasmosis"
 	},
 	"CardMetadata": {
 		"0": "card.technology.green:base/dacxive_animators",
@@ -88,13 +74,6 @@
 		"2": "card.technology.green:base/neural_motivator",
 		"3": "card.technology.green:base/x89_bacterial_weapon",
 		"4": "card.technology.green:base/x89_bacterial_weapon.omega",
-		"5": "card.technology.green.arborec:base/bioplasmosis",
-		"6": "card.technology.green.hacan:base/production_biomes",
-		"7": "card.technology.green.naalu:base/neuroglaive",
-		"8": "card.technology.green.xxcha:base/instinct_training",
-		"9": "card.technology.green.yin:base/yin_spinner",
-		"10": "card.technology.green.yin:base/yin_spinner.omega",
-		"11": "card.technology.green.yssaril:base/mageon_implants",
-		"12": "card.technology.green.yssaril:base/transparasteel_plating"
+		"5": "card.technology.green.arborec:base/bioplasmosis"
 	}
 }

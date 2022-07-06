@@ -1,0 +1,67 @@
+{
+	"Type": "Card",
+	"GUID": "7C5A82A2C97AAE3608889916FC858BA6",
+	"Name": "Leaders (pok 17/17)",
+	"Metadata": "card.leader:pok/16",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/pok/16.face.jpg",
+	"BackTexture": "locale/card/leader/pok/16.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1
+	],
+	"CardNames": {
+		"0": "Kyver, Blade and Key",
+		"1": "Blackshade Infiltrator"
+	},
+	"CardMetadata": {
+		"0": "card.leader.hero.yssaril:pok/kyver_blade_and_key",
+		"1": "card.leader.mech.yssaril:pok/blackshade_infiltrator"
+	}
+}

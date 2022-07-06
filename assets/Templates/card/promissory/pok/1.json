@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "DDFEB22B127EDC618A6163D28D3858A1",
+	"Name": "Promissory (pok 2/3)",
+	"Metadata": "card.promissory:pok/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/promissory/pok/1.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Scepter of Dominion",
+		"1": "Black Market Forgery",
+		"2": "The Cavalry",
+		"3": "Alliance (Orange)",
+		"4": "Alliance (Pink)",
+		"5": "Alliance (Purple)"
+	},
+	"CardMetadata": {
+		"0": "card.promissory.mahact:pok/scepter_of_dominion",
+		"1": "card.promissory.naazrokha:pok/black_market_forgery",
+		"2": "card.promissory.nomad:pok/the_cavalry",
+		"3": "card.promissory.orange:pok/alliance",
+		"4": "card.promissory.pink:pok/alliance",
+		"5": "card.promissory.purple:pok/alliance"
+	}
+}

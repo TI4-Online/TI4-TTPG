@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "19F05D8EDB35C71BA73AA1EEFAE83C83",
+	"Name": "Technology (Unit Upgrade) (franken.base 3/5)",
+	"Metadata": "card.technology.unit_upgrade:franken.base/2",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/technology/unit_upgrade/franken/base/2.face.jpg",
+	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Matriarch",
+		"1": "The Alastor",
+		"2": "C'morran N'orr",
+		"3": "Exotrireme I",
+		"4": "Floating Factory I",
+		"5": "Son of Ragh"
+	},
+	"CardMetadata": {
+		"0": "card.technology.unit_upgrade.naalu:franken.base/matriarch",
+		"1": "card.technology.unit_upgrade.nekro:franken.base/the_alastor",
+		"2": "card.technology.unit_upgrade.norr:franken.base/cmorran_norr",
+		"3": "card.technology.unit_upgrade.norr:franken.base/exotrireme",
+		"4": "card.technology.unit_upgrade.saar:franken.base/floating_factory",
+		"5": "card.technology.unit_upgrade.saar:franken.base/son_of_ragh"
+	}
+}

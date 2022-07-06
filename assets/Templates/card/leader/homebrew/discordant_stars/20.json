@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "711EBF33260672AEACB6B6B95D0067AC",
+	"Name": "Leaders (homebrew.discordant_stars 21/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/20",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/20.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/20.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Daedalon",
+		"1": "Yudri Sukhov",
+		"2": "Komdar Borodin",
+		"3": "Krovoz Strike Teams",
+		"4": "Midas Turbine",
+		"5": "Putriv Sirvonsk"
+	},
+	"CardMetadata": {
+		"0": "card.leader.mech.tnelis:homebrew.discordant_stars/daedalon",
+		"1": "card.leader.agent.vaden:homebrew.discordant_stars/yudri_sukhov",
+		"2": "card.leader.commander.vaden:homebrew.discordant_stars/komdar_borodin",
+		"3": "card.leader.commander.vaden:homebrew.discordant_stars/krovoz_strike_teams",
+		"4": "card.leader.commander.vaden:homebrew.discordant_stars/midas_turbine",
+		"5": "card.leader.hero.vaden:homebrew.discordant_stars/putriv_sirvonsk"
+	}
+}

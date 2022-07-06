@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "EDC96C2AA199C7AF59A8962D2C976181",
+	"Name": "Promissory (base 2/10)",
+	"Metadata": "card.promissory:base/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/promissory/base/1.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Ceasefire (Brown)",
+		"1": "Political Secret (Brown)",
+		"2": "Support for the Throne (Brown)",
+		"3": "Trade Agreement (Brown)",
+		"4": "Creuss Iff",
+		"5": "Ceasefire (Green)"
+	},
+	"CardMetadata": {
+		"0": "card.promissory.brown:base/ceasefire",
+		"1": "card.promissory.brown:base/political_secret",
+		"2": "card.promissory.brown:base/support_for_the_throne",
+		"3": "card.promissory.brown:base/trade_agreement",
+		"4": "card.promissory.creuss:base/creuss_iff",
+		"5": "card.promissory.green:base/ceasefire"
+	}
+}

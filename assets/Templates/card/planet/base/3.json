@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "8D004CF4EFBBDAC789A6E3A0E24AD984",
+	"Name": "Planets (base 4/10)",
+	"Metadata": "card.planet:base/3",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/planet/base/3.face.jpg",
+	"BackTexture": "locale/card/planet/base/3.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Jol",
+		"1": "Jord",
+		"2": "Kamdorn",
+		"3": "Lazar",
+		"4": "Lirta IV",
+		"5": "Lisis II"
+	},
+	"CardMetadata": {
+		"0": "card.planet:base/jol",
+		"1": "card.planet:base/jord",
+		"2": "card.planet:base/kamdorn",
+		"3": "card.planet:base/lazar",
+		"4": "card.planet:base/lirta_iv",
+		"5": "card.planet:base/lisis_ii"
+	}
+}

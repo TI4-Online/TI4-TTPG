@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "5BAD4B1C6DC782FFF9DF152F8D76F4A3",
-	"Name": "Technology (Yellow) (base)",
+	"Name": "Technology (Yellow) (base 1/3)",
 	"Metadata": "card.technology.yellow:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 8,
-	"NumVertical": 2,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -58,14 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11,
-		12
+		5
 	],
 	"CardNames": {
 		"0": "Graviton Laser System",
@@ -73,14 +66,7 @@
 		"2": "Sarween Tools",
 		"3": "Transit Diodes",
 		"4": "Quantum Datahub Node",
-		"5": "E-res Siphons",
-		"6": "Inheritance Systems",
-		"7": "L4 Disruptors",
-		"8": "Mirror Computing",
-		"9": "Salvage Operations",
-		"10": "Hegemonic Trade Policy",
-		"11": "Nullification Field",
-		"12": "Impulse Core"
+		"5": "E-res Siphons"
 	},
 	"CardMetadata": {
 		"0": "card.technology.yellow:base/graviton_laser_system",
@@ -88,13 +74,6 @@
 		"2": "card.technology.yellow:base/sarween_tools",
 		"3": "card.technology.yellow:base/transit_diodes",
 		"4": "card.technology.yellow.hacan:base/quantum_datahub_node",
-		"5": "card.technology.yellow.jolnar:base/eres_siphons",
-		"6": "card.technology.yellow.l1z1x:base/inheritance_systems",
-		"7": "card.technology.yellow.letnev:base/l4_disruptors",
-		"8": "card.technology.yellow.mentak:base/mirror_computing",
-		"9": "card.technology.yellow.mentak:base/salvage_operations",
-		"10": "card.technology.yellow.winnu:base/hegemonic_trade_policy",
-		"11": "card.technology.yellow.xxcha:base/nullification_field",
-		"12": "card.technology.yellow.yin:base/impulse_core"
+		"5": "card.technology.yellow.jolnar:base/eres_siphons"
 	}
 }

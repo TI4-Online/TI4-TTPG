@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "7F49E3DEE6D9B5DFD5F910531E4AD5D4",
+	"Name": "Agenda (base 5/7)",
+	"Metadata": "card.agenda:base/4",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/agenda/base/4.face.jpg",
+	"BackTexture": "global/card/agenda.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Miscount Disclosed",
+		"1": "Mutiny",
+		"2": "New Constitution",
+		"3": "Prophecy of Ixth",
+		"4": "Public Execution",
+		"5": "Publicize Weapon Schematics"
+	},
+	"CardMetadata": {
+		"0": "card.agenda:base/miscount_disclosed",
+		"1": "card.agenda:base/mutiny",
+		"2": "card.agenda:base/new_constitution",
+		"3": "card.agenda:base/prophecy_of_ixth",
+		"4": "card.agenda:base/public_execution",
+		"5": "card.agenda:base/publicize_weapon_schematics"
+	}
+}

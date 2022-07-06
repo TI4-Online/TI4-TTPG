@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "6307A80227A20148C66E59C8DEA7AB58",
-	"Name": "Technology (Unit Upgrade) (franken.pok)",
+	"Name": "Technology (Unit Upgrade) (franken.pok 1/2)",
 	"Metadata": "card.technology.unit_upgrade:franken.pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 4,
+	"NumHorizontal": 2,
 	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -58,13 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11
+		5
 	],
 	"CardNames": {
 		"0": "Quetzecoatl",
@@ -72,13 +66,7 @@
 		"2": "Dynamo",
 		"3": "Arvicon Rex",
 		"4": "Crimson Legionnaire I",
-		"5": "Visz El Vir",
-		"6": "Memoria I",
-		"7": "Hel-Titan I",
-		"8": "Ouranos",
-		"9": "Saturn Engine I",
-		"10": "Dimensional Tear I",
-		"11": "The Terror Between"
+		"5": "Visz El Vir"
 	},
 	"CardMetadata": {
 		"0": "card.technology.unit_upgrade.argent:franken.pok/quetzecoatl",
@@ -86,12 +74,6 @@
 		"2": "card.technology.unit_upgrade.empyrean:franken.pok/dynamo",
 		"3": "card.technology.unit_upgrade.mahact:franken.pok/arvicon_rex",
 		"4": "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire",
-		"5": "card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir",
-		"6": "card.technology.unit_upgrade.nomad:franken.pok/memoria",
-		"7": "card.technology.unit_upgrade.ul:franken.pok/heltitan",
-		"8": "card.technology.unit_upgrade.ul:franken.pok/ouranos",
-		"9": "card.technology.unit_upgrade.ul:franken.pok/saturn_engine",
-		"10": "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear",
-		"11": "card.technology.unit_upgrade.vuilraith:franken.pok/the_terror_between"
+		"5": "card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir"
 	}
 }

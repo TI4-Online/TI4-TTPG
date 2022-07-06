@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "E5DF4FA1AD5F000143499DAD3BAF5338",
+	"Name": "Leaders (homebrew.discordant_stars 17/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/16",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/16.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/16.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Voidflare Warden I",
+		"1": "Baggil Wildpaw",
+		"2": "False Flag Operations",
+		"3": "Geosympathic Impeller",
+		"4": "Knak Half-Ear",
+		"5": "Pahn Silverfur"
+	},
+	"CardMetadata": {
+		"0": "card.leader.mech.nivyn:homebrew.discordant_stars/voidflare_warden_i",
+		"1": "card.leader.agent.olradin:homebrew.discordant_stars/baggil_wildpaw",
+		"2": "card.leader.commander.olradin:homebrew.discordant_stars/false_flag_operations",
+		"3": "card.leader.commander.olradin:homebrew.discordant_stars/geosympathic_impeller",
+		"4": "card.leader.commander.olradin:homebrew.discordant_stars/knak_halfear",
+		"5": "card.leader.hero.olradin:homebrew.discordant_stars/pahn_silverfur"
+	}
+}

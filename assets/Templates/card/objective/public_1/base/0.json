@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "8E14B7555B0020B4E80F42887117427D",
-	"Name": "Public Objectives I (base)",
+	"Name": "Public Objectives I (base 1/2)",
 	"Metadata": "card.objective.public_1:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 6,
+	"NumHorizontal": 3,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -58,11 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9
+		5
 	],
 	"CardNames": {
 		"0": "Corner the Market",
@@ -70,11 +66,7 @@
 		"2": "Diversify Research",
 		"3": "Erect a Monument",
 		"4": "Expand Borders",
-		"5": "Found Research Outposts",
-		"6": "Intimidate Council",
-		"7": "Lead From the Front",
-		"8": "Negotiate Trade Routes",
-		"9": "Sway the Council"
+		"5": "Found Research Outposts"
 	},
 	"CardMetadata": {
 		"0": "card.objective.public_1:base/corner_the_market",
@@ -82,10 +74,6 @@
 		"2": "card.objective.public_1:base/diversify_research",
 		"3": "card.objective.public_1:base/erect_a_monument",
 		"4": "card.objective.public_1:base/expand_borders",
-		"5": "card.objective.public_1:base/found_research_outposts",
-		"6": "card.objective.public_1:base/intimidate_council",
-		"7": "card.objective.public_1:base/lead_from_the_front",
-		"8": "card.objective.public_1:base/negotiate_trade_routes",
-		"9": "card.objective.public_1:base/sway_the_council"
+		"5": "card.objective.public_1:base/found_research_outposts"
 	}
 }

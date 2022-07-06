@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "F201D2FA3D23155777388DB7764B1A24",
+	"Name": "Promissory (homebrew.discordant_stars 2/5)",
+	"Metadata": "card.promissory:homebrew.discordant_stars/1",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/promissory/homebrew/discordant_stars/1.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Raid Leaders",
+		"1": "Read the Fates",
+		"2": "Stone Speakers",
+		"3": "AI Survey",
+		"4": "Blessing of the Queens",
+		"5": "Trusted Counselor"
+	},
+	"CardMetadata": {
+		"0": "card.promissory.ghemina:homebrew.discordant_stars/raid_leaders",
+		"1": "card.promissory.ilyxum:homebrew.discordant_stars/read_the_fates",
+		"2": "card.promissory.khrask:homebrew.discordant_stars/stone_speakers",
+		"3": "card.promissory.kollecc:homebrew.discordant_stars/ai_survey",
+		"4": "card.promissory.kortali:homebrew.discordant_stars/blessing_of_the_queens",
+		"5": "card.promissory.lizho:homebrew.discordant_stars/trusted_counselor"
+	}
+}

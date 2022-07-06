@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "0F7343CD0021C7493EEEADC219EDE794",
-	"Name": "Technology (Red) (base)",
+	"Name": "Technology (Red) (base 1/2)",
 	"Metadata": "card.technology.red:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 4,
+	"NumHorizontal": 2,
 	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -58,10 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8
+		5
 	],
 	"CardNames": {
 		"0": "Assault Cannon",
@@ -69,10 +66,7 @@
 		"2": "Magen Defense Grid",
 		"3": "Plasma Scoring",
 		"4": "Dimensional Splicer",
-		"5": "Non-Euclidean Shielding",
-		"6": "Magmus Reactor",
-		"7": "Magmus Reactor Ω",
-		"8": "Valkyrie Particle Weave"
+		"5": "Non-Euclidean Shielding"
 	},
 	"CardMetadata": {
 		"0": "card.technology.red:base/assault_cannon",
@@ -80,9 +74,6 @@
 		"2": "card.technology.red:base/magen_defense_grid",
 		"3": "card.technology.red:base/plasma_scoring",
 		"4": "card.technology.red.creuss:base/dimensional_splicer",
-		"5": "card.technology.red.letnev:base/noneuclidean_shielding",
-		"6": "card.technology.red.muaat:base/magmus_reactor",
-		"7": "card.technology.red.muaat:base/magmus_reactor.omega",
-		"8": "card.technology.red.norr:base/valkyrie_particle_weave"
+		"5": "card.technology.red.letnev:base/noneuclidean_shielding"
 	}
 }

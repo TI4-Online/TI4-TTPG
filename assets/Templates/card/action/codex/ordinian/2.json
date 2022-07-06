@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "F5E234B1B7B26B63A14CD2D2C868F6EE",
+	"Name": "Actions (codex.ordinian 3/4)",
+	"Metadata": "card.action:codex.ordinian/2",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/action/codex/ordinian/2.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Reflective Shielding",
+		"1": "Sanction",
+		"2": "Scramble Frequency",
+		"3": "Solar Flare",
+		"4": "War Machine (1)",
+		"5": "War Machine (2)"
+	},
+	"CardMetadata": {
+		"0": "card.action:codex.ordinian/reflective_shielding",
+		"1": "card.action:codex.ordinian/sanction",
+		"2": "card.action:codex.ordinian/scramble_frequency",
+		"3": "card.action:codex.ordinian/solar_flare",
+		"4": "card.action:codex.ordinian/war_machine.1",
+		"5": "card.action:codex.ordinian/war_machine.2"
+	}
+}

@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "880775278DE483BCE425587C9B54D4F5",
+	"Name": "Leaders (homebrew.discordant_stars 20/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/19",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/19.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/19.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Autofabricator",
+		"1": "Davish S'norri",
+		"2": "Blockade Runner II",
+		"3": "Daedalon Flight System",
+		"4": "Fillipo Rois",
+		"5": "Turra Sveyar"
+	},
+	"CardMetadata": {
+		"0": "card.leader.mech.rohdhna:homebrew.discordant_stars/autofabricator",
+		"1": "card.leader.agent.tnelis:homebrew.discordant_stars/davish_snorri",
+		"2": "card.leader.commander.tnelis:homebrew.discordant_stars/blockade_runner_ii",
+		"3": "card.leader.commander.tnelis:homebrew.discordant_stars/daedalon_flight_system",
+		"4": "card.leader.commander.tnelis:homebrew.discordant_stars/fillipo_rois",
+		"5": "card.leader.hero.tnelis:homebrew.discordant_stars/turra_sveyar"
+	}
+}
