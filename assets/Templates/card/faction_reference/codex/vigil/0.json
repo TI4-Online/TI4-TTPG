@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "774B500EF45F50210B2168F74E24F32A",
-	"Name": "Faction References (codex.vigil)",
+	"Name": "Faction References (codex.vigil 1/3)",
 	"Metadata": "card.faction_reference:codex.vigil/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 6,
-	"NumVertical": 1,
+	"NumHorizontal": 1,
+	"NumVertical": 2,
 	"Width": 8.8,
 	"Height": 6.3,
 	"Thickness": 0.05,
@@ -54,26 +54,14 @@
 	"Model": "Rounded",
 	"Indices": [
 		0,
-		1,
-		2,
-		3,
-		4,
-		5
+		1
 	],
 	"CardNames": {
 		"0": "Keleres-Argent Faction Token",
-		"1": "Keleres-Mentak Faction Token",
-		"2": "Keleres-Xxcha Faction Token",
-		"3": "Naalu Collective Faction Token Ω",
-		"4": "Xxcha Kingdom Faction Token Ω",
-		"5": "Yin Brotherhood Faction Token Ω"
+		"1": "Keleres-Mentak Faction Token"
 	},
 	"CardMetadata": {
 		"0": "card.faction_reference:codex.vigil/keleres_argent",
-		"1": "card.faction_reference:codex.vigil/keleres_mentak",
-		"2": "card.faction_reference:codex.vigil/keleres_xxcha",
-		"3": "card.faction_reference:codex.vigil/naalu.omega",
-		"4": "card.faction_reference:codex.vigil/xxcha.omega",
-		"5": "card.faction_reference:codex.vigil/yin.omega"
+		"1": "card.faction_reference:codex.vigil/keleres_mentak"
 	}
 }

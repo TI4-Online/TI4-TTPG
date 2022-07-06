@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "16C2FA2042150D488782EFB7E72EFBBD",
+	"Name": "Leaders (homebrew.discordant_stars 5/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/4",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/4.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/4.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Sal Gavda",
+		"1": "Blackmail Programs",
+		"2": "Corsair II",
+		"3": "Quaxdol Junitas",
+		"4": "Banua Gowen",
+		"5": "Privateer"
+	},
+	"CardMetadata": {
+		"0": "card.leader.agent.florzen:homebrew.discordant_stars/sal_gavda",
+		"1": "card.leader.commander.florzen:homebrew.discordant_stars/blackmail_programs",
+		"2": "card.leader.commander.florzen:homebrew.discordant_stars/corsair_ii",
+		"3": "card.leader.commander.florzen:homebrew.discordant_stars/quaxdol_junitas",
+		"4": "card.leader.hero.florzen:homebrew.discordant_stars/banua_gowen",
+		"5": "card.leader.mech.florzen:homebrew.discordant_stars/privateer"
+	}
+}

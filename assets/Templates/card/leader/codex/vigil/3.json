@@ -1,0 +1,64 @@
+{
+	"Type": "Card",
+	"GUID": "590B52276F6F27888E3E16958D742994",
+	"Name": "Leaders (codex.vigil 4/4)",
+	"Metadata": "card.leader:codex.vigil/3",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/codex/vigil/3.face.jpg",
+	"BackTexture": "locale/card/leader/codex/vigil/3.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0
+	],
+	"CardNames": {
+		"0": "Dannel of the Tenth Ω"
+	},
+	"CardMetadata": {
+		"0": "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega"
+	}
+}

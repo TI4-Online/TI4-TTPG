@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "7E98367581D0C99A0A9765E522D7062B",
+	"Name": "Actions (base 5/14)",
+	"Metadata": "card.action:base/4",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/action/base/4.face.jpg",
+	"BackTexture": "global/card/action.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Focused Research",
+		"1": "Frontline Deployment",
+		"2": "Ghost Ship",
+		"3": "Imperial Rider",
+		"4": "In the Silence of Space",
+		"5": "Industrial Initiative"
+	},
+	"CardMetadata": {
+		"0": "card.action:base/focused_research",
+		"1": "card.action:base/frontline_deployment",
+		"2": "card.action:base/ghost_ship",
+		"3": "card.action:base/imperial_rider",
+		"4": "card.action:base/in_the_silence_of_space",
+		"5": "card.action:base/industrial_initiative"
+	}
+}

@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "D420AA9CA4AE8125D4577C2C2B700C0C",
-	"Name": "Relics (pok)",
+	"Name": "Relics (pok 1/2)",
 	"Metadata": "card.relic:pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 6,
+	"NumHorizontal": 3,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -58,11 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9
+		5
 	],
 	"CardNames": {
 		"0": "Dominus Orb",
@@ -70,11 +66,7 @@
 		"2": "Scepter of Emelpar",
 		"3": "Shard of the Throne (PoK)",
 		"4": "Stellar Converter",
-		"5": "The Codex",
-		"6": "The Crown of Emphidia (PoK)",
-		"7": "The Crown of Thalnos (PoK)",
-		"8": "The Obsidian",
-		"9": "The Prophet's Tears"
+		"5": "The Codex"
 	},
 	"CardMetadata": {
 		"0": "card.relic:pok/dominus_orb",
@@ -82,10 +74,6 @@
 		"2": "card.relic:pok/scepter_of_emelpar",
 		"3": "card.relic:pok/shard_of_the_throne",
 		"4": "card.relic:pok/stellar_converter",
-		"5": "card.relic:pok/the_codex",
-		"6": "card.relic:pok/the_crown_of_emphidia",
-		"7": "card.relic:pok/the_crown_of_thalnos",
-		"8": "card.relic:pok/the_obsidian",
-		"9": "card.relic:pok/the_prophets_tears"
+		"5": "card.relic:pok/the_codex"
 	}
 }

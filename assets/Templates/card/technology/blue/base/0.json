@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "053FAD7341B712A291BE5D18BB899841",
-	"Name": "Technology (Blue) (base)",
+	"Name": "Technology (Blue) (base 1/2)",
 	"Metadata": "card.technology.blue:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 4,
+	"NumHorizontal": 2,
 	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -58,10 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8
+		5
 	],
 	"CardNames": {
 		"0": "Antimass Deflectors",
@@ -69,10 +66,7 @@
 		"2": "Gravity Drive",
 		"3": "Light-Wave Deflector",
 		"4": "Wormhole Generator",
-		"5": "Wormhole Generator Ω",
-		"6": "Spacial Conduit Cylinder",
-		"7": "Chaos Mapping",
-		"8": "Lazax Gate Folding"
+		"5": "Wormhole Generator Ω"
 	},
 	"CardMetadata": {
 		"0": "card.technology.blue:base/antimass_deflectors",
@@ -80,9 +74,6 @@
 		"2": "card.technology.blue:base/gravity_drive",
 		"3": "card.technology.blue:base/lightwave_deflector",
 		"4": "card.technology.blue.creuss:base/wormhole_generator",
-		"5": "card.technology.blue.creuss:base/wormhole_generator.omega",
-		"6": "card.technology.blue.jolnar:base/spacial_conduit_cylinder",
-		"7": "card.technology.blue.saar:base/chaos_mapping",
-		"8": "card.technology.blue.winnu:base/lazax_gate_folding"
+		"5": "card.technology.blue.creuss:base/wormhole_generator.omega"
 	}
 }

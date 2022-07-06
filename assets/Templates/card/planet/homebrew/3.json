@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "B2F40CA93740A58609979F9F29F2B67B",
+	"Name": "Planets (homebrew 4/7)",
+	"Metadata": "card.planet:homebrew/3",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/planet/homebrew/3.face.jpg",
+	"BackTexture": "locale/card/planet/homebrew/3.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Idyn",
+		"1": "Kroll",
+		"2": "Kyd",
+		"3": "Kyr",
+		"4": "Louk",
+		"5": "Norvus"
+	},
+	"CardMetadata": {
+		"0": "card.planet:homebrew/idyn",
+		"1": "card.planet:homebrew/kroll",
+		"2": "card.planet:homebrew/kyd",
+		"3": "card.planet:homebrew/kyr",
+		"4": "card.planet:homebrew/louk",
+		"5": "card.planet:homebrew/norvus"
+	}
+}

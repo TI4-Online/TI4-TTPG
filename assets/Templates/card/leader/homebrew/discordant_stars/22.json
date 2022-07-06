@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "5F0B8C3C26A7932C1AB8498B0E7A143C",
+	"Name": "Leaders (homebrew.discordant_stars 23/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/22",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/22.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/22.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Eclipse",
+		"1": "Solis Morden",
+		"2": "Lancer Dreadnought II",
+		"3": "SEIDR Project",
+		"4": "Vera Khage",
+		"5": "Auberon Elyrin"
+	},
+	"CardMetadata": {
+		"0": "card.leader.mech.vaylerian:homebrew.discordant_stars/eclipse",
+		"1": "card.leader.agent.veldyr:homebrew.discordant_stars/solis_morden",
+		"2": "card.leader.commander.veldyr:homebrew.discordant_stars/lancer_dreadnought_ii",
+		"3": "card.leader.commander.veldyr:homebrew.discordant_stars/seidr_project",
+		"4": "card.leader.commander.veldyr:homebrew.discordant_stars/vera_khage",
+		"5": "card.leader.hero.veldyr:homebrew.discordant_stars/auberon_elyrin"
+	}
+}

@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "BD98E5FF8F278A260269F2F0C60F4836",
+	"Name": "Leaders (homebrew.discordant_stars 7/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/6",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/6.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/6.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Skarvald & Torvar",
+		"1": "Combat Transport II",
+		"2": "Jarl Vel & Jarl Jotrun",
+		"3": "War Song Implants",
+		"4": "Kantrus, The Lord",
+		"5": "Korela, The Lady"
+	},
+	"CardMetadata": {
+		"0": "card.leader.agent.ghemina:homebrew.discordant_stars/skarvald_torvar",
+		"1": "card.leader.commander.ghemina:homebrew.discordant_stars/combat_transport_ii",
+		"2": "card.leader.commander.ghemina:homebrew.discordant_stars/jarl_vel_jarl_jotrun",
+		"3": "card.leader.commander.ghemina:homebrew.discordant_stars/war_song_implants",
+		"4": "card.leader.hero.ghemina:homebrew.discordant_stars/kantrus_the_lord",
+		"5": "card.leader.hero.ghemina:homebrew.discordant_stars/korela_the_lady"
+	}
+}

@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "AB665B9F7B0857DAF6194A51F6021322",
-	"Name": "Technology (Green) (homebrew.discordant_stars)",
+	"Name": "Technology (Green) (homebrew.discordant_stars 1/2)",
 	"Metadata": "card.technology.green:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 4,
-	"NumVertical": 2,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -58,8 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6
+		5
 	],
 	"CardNames": {
 		"0": "Blackmail Programs",
@@ -67,8 +66,7 @@
 		"2": "War Song Implants",
 		"3": "Psychographics",
 		"4": "Stone's Embrace",
-		"5": "Tempest Warheads",
-		"6": "Psychoactive Armaments"
+		"5": "Tempest Warheads"
 	},
 	"CardMetadata": {
 		"0": "card.technology.green.florzen:homebrew.discordant_stars/blackmail_programs",
@@ -76,7 +74,6 @@
 		"2": "card.technology.green.ghemina:homebrew.discordant_stars/war_song_implants",
 		"3": "card.technology.green.ilyxum:homebrew.discordant_stars/psychographics",
 		"4": "card.technology.green.khrask:homebrew.discordant_stars/stones_embrace",
-		"5": "card.technology.green.kortali:homebrew.discordant_stars/tempest_warheads",
-		"6": "card.technology.green.mori:homebrew.discordant_stars/psychoactive_armaments"
+		"5": "card.technology.green.kortali:homebrew.discordant_stars/tempest_warheads"
 	}
 }

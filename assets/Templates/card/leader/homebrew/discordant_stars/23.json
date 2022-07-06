@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "EA22BA9FB219FB4A40B325C8FE6C56F1",
+	"Name": "Leaders (homebrew.discordant_stars 24/25)",
+	"Metadata": "card.leader:homebrew.discordant_stars/23",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/leader/homebrew/discordant_stars/23.face.jpg",
+	"BackTexture": "locale/card/leader/homebrew/discordant_stars/23.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Aurora Stormcaller",
+		"1": "Zelian A",
+		"2": "Impactor II",
+		"3": "Shard Volley",
+		"4": "Zelian B",
+		"5": "Zelian R"
+	},
+	"CardMetadata": {
+		"0": "card.leader.mech.veldyr:homebrew.discordant_stars/aurora_stormcaller",
+		"1": "card.leader.agent.zelian:homebrew.discordant_stars/zelian_a",
+		"2": "card.leader.commander.zelian:homebrew.discordant_stars/impactor_ii",
+		"3": "card.leader.commander.zelian:homebrew.discordant_stars/shard_volley",
+		"4": "card.leader.commander.zelian:homebrew.discordant_stars/zelian_b",
+		"5": "card.leader.hero.zelian:homebrew.discordant_stars/zelian_r"
+	}
+}

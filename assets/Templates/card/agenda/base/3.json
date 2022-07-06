@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "0CE003AD5DCA833E5DE57979EC30DE1E",
+	"Name": "Agenda (base 4/7)",
+	"Metadata": "card.agenda:base/3",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/agenda/base/3.face.jpg",
+	"BackTexture": "global/card/agenda.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Minister of Exploration",
+		"1": "Minister of Industry",
+		"2": "Minister of Peace",
+		"3": "Minister of Policy",
+		"4": "Minister of Sciences",
+		"5": "Minister of War"
+	},
+	"CardMetadata": {
+		"0": "card.agenda:base/minister_of_exploration",
+		"1": "card.agenda:base/minister_of_industry",
+		"2": "card.agenda:base/minister_of_peace",
+		"3": "card.agenda:base/minister_of_policy",
+		"4": "card.agenda:base/minister_of_sciences",
+		"5": "card.agenda:base/minister_of_war"
+	}
+}

@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "F0C1BC21B22900E9E93899A66D7FAA8A",
-	"Name": "Agenda (pok)",
+	"Name": "Agenda (pok 1/3)",
 	"Metadata": "card.agenda:pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 12,
+	"NumHorizontal": 3,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -58,14 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11,
-		12
+		5
 	],
 	"CardNames": {
 		"0": "Armed Forces Standardization",
@@ -73,14 +66,7 @@
 		"2": "Checks and Balances",
 		"3": "Clandestine Operations",
 		"4": "Covert Legislation",
-		"5": "Galactic Crisis Pact",
-		"6": "Minister of Antiquities",
-		"7": "Nexus Sovereignty",
-		"8": "Political Censure",
-		"9": "Rearmament Agreement",
-		"10": "Representative Government",
-		"11": "Research Grant Reallocation",
-		"12": "Search Warrant"
+		"5": "Galactic Crisis Pact"
 	},
 	"CardMetadata": {
 		"0": "card.agenda:pok/armed_forces_standardization",
@@ -88,13 +74,6 @@
 		"2": "card.agenda:pok/checks_and_balances",
 		"3": "card.agenda:pok/clandestine_operations",
 		"4": "card.agenda:pok/covert_legislation",
-		"5": "card.agenda:pok/galactic_crisis_pact",
-		"6": "card.agenda:pok/minister_of_antiquities",
-		"7": "card.agenda:pok/nexus_sovereignty",
-		"8": "card.agenda:pok/political_censure",
-		"9": "card.agenda:pok/rearmament_agreement",
-		"10": "card.agenda:pok/representative_government",
-		"11": "card.agenda:pok/research_grant_reallocation",
-		"12": "card.agenda:pok/search_warrant"
+		"5": "card.agenda:pok/galactic_crisis_pact"
 	}
 }

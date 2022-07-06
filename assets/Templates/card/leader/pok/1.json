@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "D39001C11EC2159CF88F5B13041D1333",
-	"Name": "Leaders (pok 2/2)",
+	"Name": "Leaders (pok 2/17)",
 	"Metadata": "card.leader:pok/1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -40,7 +40,7 @@
 	"BackIndex": -3,
 	"HiddenIndex": -3,
 	"NumHorizontal": 2,
-	"NumVertical": 1,
+	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -54,14 +54,26 @@
 	"Model": "Rounded",
 	"Indices": [
 		0,
-		1
+		1,
+		2,
+		3,
+		4,
+		5
 	],
 	"CardNames": {
-		"0": "Moyin's Ashes",
-		"1": "Blackshade Infiltrator"
+		"0": "Mirik Aun Sissiri",
+		"1": "Aerie Sentinel",
+		"2": "Emissary Taivra",
+		"3": "Sai Seravus",
+		"4": "Riftwalker Meian",
+		"5": "Icarus Drive"
 	},
 	"CardMetadata": {
-		"0": "card.leader.mech.yin:pok/moyins_ashes",
-		"1": "card.leader.mech.yssaril:pok/blackshade_infiltrator"
+		"0": "card.leader.hero.argent:pok/mirik_aun_sissiri",
+		"1": "card.leader.mech.argent:pok/aerie_sentinel",
+		"2": "card.leader.agent.creuss:pok/emissary_taivra",
+		"3": "card.leader.commander.creuss:pok/sai_seravus",
+		"4": "card.leader.hero.creuss:pok/riftwalker_meian",
+		"5": "card.leader.mech.creuss:pok/icarus_drive"
 	}
 }

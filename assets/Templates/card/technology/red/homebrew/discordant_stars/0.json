@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "2712AC45E5CB3EEEE52260DB4A331251",
-	"Name": "Technology (Red) (homebrew.discordant_stars)",
+	"Name": "Technology (Red) (homebrew.discordant_stars 1/2)",
 	"Metadata": "card.technology.red:homebrew.discordant_stars/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 8,
-	"NumVertical": 1,
+	"NumHorizontal": 2,
+	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -58,9 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7
+		5
 	],
 	"CardNames": {
 		"0": "Emergency Mobilization",
@@ -68,9 +66,7 @@
 		"2": "Orbital Defense Grid",
 		"3": "Fractal Plating",
 		"4": "False Flag Operations",
-		"5": "Scavenger Exos",
-		"6": "SEIDR Project",
-		"7": "Shard Volley"
+		"5": "Scavenger Exos"
 	},
 	"CardMetadata": {
 		"0": "card.technology.red.celdauri:homebrew.discordant_stars/emergency_mobilization",
@@ -78,8 +74,6 @@
 		"2": "card.technology.red.mirveda:homebrew.discordant_stars/orbital_defense_grid",
 		"3": "card.technology.red.mortheus:homebrew.discordant_stars/fractal_plating",
 		"4": "card.technology.red.olradin:homebrew.discordant_stars/false_flag_operations",
-		"5": "card.technology.red.vaylerian:homebrew.discordant_stars/scavenger_exos",
-		"6": "card.technology.red.veldyr:homebrew.discordant_stars/seidr_project",
-		"7": "card.technology.red.zelian:homebrew.discordant_stars/shard_volley"
+		"5": "card.technology.red.vaylerian:homebrew.discordant_stars/scavenger_exos"
 	}
 }

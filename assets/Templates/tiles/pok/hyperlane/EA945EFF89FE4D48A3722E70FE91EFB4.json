@@ -16,9 +16,9 @@
 		"B": 255
 	},
 	"SecondaryColor": {
-		"R": 0,
-		"G": 0,
-		"B": 0
+		"R": 255,
+		"G": 255,
+		"B": 255
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
@@ -73,7 +73,7 @@
 			"ExtraMap": "global/tiles/obverse_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
+			"UseOverrides": true,
 			"Roughness": 1,
 			"Metallic": 0,
 			"PrimaryColor": {

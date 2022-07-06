@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "B385840CC606B3EAAA0A28992CBE6BFA",
-	"Name": "Agenda (base.only)",
+	"Name": "Agenda (base.only 1/3)",
 	"Metadata": "card.agenda:base.only/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -39,7 +39,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 12,
+	"NumHorizontal": 3,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -58,14 +58,7 @@
 		2,
 		3,
 		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-		10,
-		11,
-		12
+		5
 	],
 	"CardNames": {
 		"0": "Core Mining",
@@ -73,14 +66,7 @@
 		"2": "Holy Planet of Ixth",
 		"3": "Representative Government",
 		"4": "Research Team: Biotic",
-		"5": "Research Team: Cybernetic",
-		"6": "Research Team: Propulsion",
-		"7": "Research Team: Warfare",
-		"8": "Senate Sanctuary",
-		"9": "Shard of the Throne",
-		"10": "Terraforming Initiative",
-		"11": "The Crown of Emphidia",
-		"12": "The Crown of Thalnos"
+		"5": "Research Team: Cybernetic"
 	},
 	"CardMetadata": {
 		"0": "card.agenda:base.only/core_mining",
@@ -88,13 +74,6 @@
 		"2": "card.agenda:base.only/holy_planet_of_ixth",
 		"3": "card.agenda:base.only/representative_government",
 		"4": "card.agenda:base.only/research_team_biotic",
-		"5": "card.agenda:base.only/research_team_cybernetic",
-		"6": "card.agenda:base.only/research_team_propulsion",
-		"7": "card.agenda:base.only/research_team_warfare",
-		"8": "card.agenda:base.only/senate_sanctuary",
-		"9": "card.agenda:base.only/shard_of_the_throne",
-		"10": "card.agenda:base.only/terraforming_initiative",
-		"11": "card.agenda:base.only/the_crown_of_emphidia",
-		"12": "card.agenda:base.only/the_crown_of_thalnos"
+		"5": "card.agenda:base.only/research_team_cybernetic"
 	}
 }

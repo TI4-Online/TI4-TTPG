@@ -1,0 +1,79 @@
+{
+	"Type": "Card",
+	"GUID": "C782E2AA7226CCE837EA7E4DB57A3338",
+	"Name": "Promissory (homebrew.discordant_stars 3/5)",
+	"Metadata": "card.promissory:homebrew.discordant_stars/2",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/promissory/homebrew/discordant_stars/2.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
+	"CardNames": {
+		"0": "Rapid Excavation",
+		"1": "Gift of Insight",
+		"2": "Secrets of the Weave",
+		"3": "Nivyn Guidance",
+		"4": "Incite Revolution",
+		"5": "Favor of Rhodun"
+	},
+	"CardMetadata": {
+		"0": "card.promissory.mirveda:homebrew.discordant_stars/rapid_excavation",
+		"1": "card.promissory.mori:homebrew.discordant_stars/gift_of_insight",
+		"2": "card.promissory.mortheus:homebrew.discordant_stars/secrets_of_the_weave",
+		"3": "card.promissory.nivyn:homebrew.discordant_stars/nivyn_guidance",
+		"4": "card.promissory.olradin:homebrew.discordant_stars/incite_revolution",
+		"5": "card.promissory.rhodun:homebrew.discordant_stars/favor_of_rhodun"
+	}
+}

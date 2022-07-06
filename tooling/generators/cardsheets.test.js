@@ -225,6 +225,48 @@ it("CardsheetLayout.sort", () => {
     ]);
 });
 
+it("CardsheetLayout.sort leader locality", () => {
+    const cardDataArray = [
+        new CardData(
+            "card.leader.commander.yin:codex.vigil/brother_omar.omega",
+            "en"
+        ),
+        new CardData("card.leader.commander.yin:pok/brother_omar", "en"),
+        new CardData("card.leader.commander.arborec:pok/dirzuga_rophal", "en"),
+        new CardData("card.leader.agent.yin:pok/brother_milor", "en"),
+        new CardData(
+            "card.leader.agent.yin:codex.vigil/brother_milor.omega",
+            "en"
+        ),
+        new CardData("card.leader.agent.arborec:pok/letani_ospha", "en"),
+        new CardData(
+            "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega",
+            "en"
+        ),
+        new CardData("card.leader.hero.yin:pok/dannel_of_the_tenth", "en"),
+        new CardData("card.leader.hero.arborec:pok/letani_miasmiala", "en"),
+        new CardData("card.leader.mech.yin:pok/moyins_ashes", "en"),
+        new CardData("card.leader.mech.arborec:pok/letani_behemoth", "en"),
+    ];
+    let result = CardsheetLayout.sort(cardDataArray);
+    result = result.map((x) => x.nsid());
+    assert.deepEqual(result, [
+        // source first (different deck)
+        "card.leader.agent.yin:codex.vigil/brother_milor.omega",
+        "card.leader.commander.yin:codex.vigil/brother_omar.omega",
+        "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega",
+        // now by faction within pok
+        "card.leader.agent.arborec:pok/letani_ospha",
+        "card.leader.commander.arborec:pok/dirzuga_rophal",
+        "card.leader.hero.arborec:pok/letani_miasmiala",
+        "card.leader.mech.arborec:pok/letani_behemoth",
+        "card.leader.agent.yin:pok/brother_milor",
+        "card.leader.commander.yin:pok/brother_omar",
+        "card.leader.hero.yin:pok/dannel_of_the_tenth",
+        "card.leader.mech.yin:pok/moyins_ashes",
+    ]);
+});
+
 it("CardsheetLayout.splitIntoSheets", async () => {
     const cardDataArray = [];
     while (cardDataArray.length < 7) {

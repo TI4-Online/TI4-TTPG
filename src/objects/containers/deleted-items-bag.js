@@ -66,6 +66,9 @@ globalEvents.onObjectDestroyed.add((obj) => {
     if (nsid.startsWith("token.control:")) {
         return;
     }
+    if (nsid === "" && !(obj instanceof Card)) {
+        return; // ignore random spawned objects (won't have NSIDs)
+    }
 
     // This should no longer be needed, all setup should use deleted items ignore.
     //if (world.TI4.config.timestamp <= 0) {

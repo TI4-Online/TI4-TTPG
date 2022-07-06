@@ -1,0 +1,67 @@
+{
+	"Type": "Card",
+	"GUID": "6F82B2CA340E1508DC40F65598C7548B",
+	"Name": "Faction References (homebrew.discordant_stars 5/12)",
+	"Metadata": "card.faction_reference:homebrew.discordant_stars/4",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/faction_reference/homebrew/discordant_stars/4.face.jpg",
+	"BackTexture": "global/card/faction_reference.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 2,
+	"Width": 8.8,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1
+	],
+	"CardNames": {
+		"0": "Kortali Tribunal Faction Token",
+		"1": "Li-Zho Dynasty Faction Token"
+	},
+	"CardMetadata": {
+		"0": "card.faction_reference:homebrew.discordant_stars/kortali_tribunal",
+		"1": "card.faction_reference:homebrew.discordant_stars/lizho_dynasty"
+	}
+}
