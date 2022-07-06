@@ -5,13 +5,16 @@ class Text extends TextWidgetBase {
         super(data);
     }
 
+    setAutoWrap(value) {
+        return this;
+    }
     setFontSize(value) {
         return this;
     }
-    setText(value) {
+    setJustification(value) {
         return this;
     }
-    setJustification(value) {
+    setText(value) {
         return this;
     }
 }

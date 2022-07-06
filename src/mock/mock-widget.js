@@ -1,6 +1,7 @@
 class Widget {
     constructor(data) {
         this._owningObject = (data && data.owningObject) || undefined;
+        this._enabled = true;
     }
 
     getOwningObject() {
@@ -13,6 +14,15 @@ class Widget {
 
     getChild() {
         return this._child;
+    }
+
+    isEnabled() {
+        return this._enabled;
+    }
+
+    setEnabled(value) {
+        this._enabled = value;
+        return this;
     }
 }
 
