@@ -10,7 +10,7 @@ class Card extends GameObject {
         this._faceUp = data && data.faceUp !== undefined ? data.faceUp : true;
 
         if (this._allCardDetails.length == 0) {
-            if (data.cardDetails) {
+            if (data && data.cardDetails) {
                 this._allCardDetails.push(data.cardDetails);
             } else {
                 this._allCardDetails.push(new MockCardDetails());

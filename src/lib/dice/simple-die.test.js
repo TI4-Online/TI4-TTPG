@@ -71,6 +71,7 @@ it("getValueString miss", () => {
     assert.equal(simpleDie.getValue(), 4);
     assert.equal(simpleDie.getValueStr(), "4");
 });
+
 it("getValueString hit", () => {
     const player = new MockPlayer();
     const simpleDie = new SimpleDieBuilder()
@@ -87,6 +88,7 @@ it("getValueString hit", () => {
     assert.equal(simpleDie.countHits(), 1);
     assert.equal(simpleDie.getValueStr(), "6#");
 });
+
 it("getValueString crit", () => {
     const player = new MockPlayer();
     const simpleDie = new SimpleDieBuilder()
@@ -124,4 +126,11 @@ it("getValueString reroll", () => {
     assert.equal(simpleDie.getValue(), 3);
 
     assert.equal(simpleDie.getValueStr(), "2->3");
+});
+
+it("set/get auxObject", () => {
+    const aux = "foo";
+    const player = new MockPlayer();
+    const simpleDie = new SimpleDieBuilder().setAuxObject(aux).build(player);
+    assert.equal(simpleDie.getAuxObject(), aux);
 });

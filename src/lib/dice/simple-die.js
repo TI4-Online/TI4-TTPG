@@ -19,6 +19,7 @@ class SimpleDieBuilder {
      * Constructor.
      */
     constructor() {
+        this._auxObject = false;
         this._color = false;
         this._deleteAfterSeconds = -1;
         this._critCount = 1;
@@ -30,10 +31,21 @@ class SimpleDieBuilder {
     }
 
     /**
+     * Owner may link arbitraty data to each die.
+     *
+     * @param {?} opaque
+     * @returns {SimpleDieBuilder} self for chaining
+     */
+    setAuxObject(opaque) {
+        this._auxObject = opaque;
+        return this;
+    }
+
+    /**
      * Rolling a crit generates this many extra hits.
      *
      * @param {number} value
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setCritCount(value) {
         assert(typeof value === "number");
@@ -45,7 +57,7 @@ class SimpleDieBuilder {
      * Rolling this number or above is a crit.
      *
      * @param {number} value
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setCritValue(value) {
         assert(typeof value === "number");
@@ -57,7 +69,7 @@ class SimpleDieBuilder {
      * Die color.
      *
      * @param {Color} color
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setColor(color) {
         assert(ColorUtil.isColor(color));
@@ -70,7 +82,7 @@ class SimpleDieBuilder {
      * Set to negative to keep forever, default is keep forever.
      *
      * @param {number} value
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setDeleteAfterSeconds(value) {
         assert(typeof value === "number");
@@ -82,7 +94,7 @@ class SimpleDieBuilder {
      * Rolling this number or above is a hit.
      *
      * @param {number} value
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setHitValue(value) {
         assert(typeof value === "number");
@@ -94,7 +106,7 @@ class SimpleDieBuilder {
      * Die name.
      *
      * @param {string} name - localized name
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setName(name) {
         assert(typeof name === "string");
@@ -106,7 +118,7 @@ class SimpleDieBuilder {
      * Reroll once if first roll is below hit value.
      *
      * @param {boolean} value
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setReroll(value) {
         assert(typeof value === "boolean");
@@ -117,7 +129,7 @@ class SimpleDieBuilder {
     /**
      *
      * @param {Position} pos
-     * @returns {SimpleDie} self for chaining
+     * @returns {SimpleDieBuilder} self for chaining
      */
     setSpawnPosition(pos) {
         assert(typeof pos.x === "number");
@@ -157,6 +169,7 @@ class SimpleDie {
         assert(builder instanceof SimpleDieBuilder);
         assert(player instanceof Player);
 
+        this._auxObject = builder._auxObject;
         this._critCount = builder._critCount;
         this._critValue = builder._critValue;
         this._hitValue = builder._hitValue;
@@ -206,6 +219,15 @@ class SimpleDie {
             result += this.getCritCount();
         }
         return result;
+    }
+
+    /**
+     * Opaque linked data.
+     *
+     * @returns {?}
+     */
+    getAuxObject() {
+        return this._auxObject;
     }
 
     /**

@@ -278,3 +278,26 @@ it("getAllStatusPad", () => {
     assert.equal(padNo, undefined);
     assert.equal(padYes, mockStatusPad);
 });
+
+it("isTurnOrderEmpty", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks();
+
+    assert(!world.TI4.turns.isTurnOrderEmpty());
+
+    world.__clear();
+    for (const playerDesk of playerDesks) {
+        const mockStatusPad = new MockGameObject({
+            templateMetadata: "pad:base/status",
+            owningPlayerSlot: playerDesk.playerSlot,
+        });
+        mockStatusPad.__getPass = () => {
+            return true;
+        };
+
+        world.__addObject(mockStatusPad);
+    }
+    const empty = world.TI4.turns.isTurnOrderEmpty();
+    world.__clear();
+
+    assert(empty);
+});

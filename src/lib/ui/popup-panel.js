@@ -77,7 +77,10 @@ class PopupPanel extends Border {
         const ui = new UIElement();
         ui.widget = this.createPopupButton();
         ui.position = this._localPos;
-        ui.scale = 0.1 * scale;
+        ui.scale = 0.23 * scale;
+        ui.width = 64;
+        ui.height = 64;
+        ui.useWidgetSize = false;
         this._obj.addUI(ui);
         return this;
     }
@@ -88,9 +91,10 @@ class PopupPanel extends Border {
      * @returns {ImageButton}
      */
     createPopupButton() {
-        const button = new ImageButton()
-            .setImage("global/ui/menu_button_hex.png", refPackageId)
-            .setImageSize(150, 150);
+        const button = new ImageButton().setImage(
+            "global/ui/menu_button_hex.png",
+            refPackageId
+        );
         button.onClicked.add((button, player) => {
             assert(player instanceof Player);
             this._show(player);

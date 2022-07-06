@@ -68,6 +68,12 @@ class AgendaStateMachine {
         //console.log(`AgendaStateMachine: entering ${this._state.main}`);
         return this;
     }
+
+    setState(key) {
+        assert(STATES[key]);
+        this._state = STATES[key];
+        return this;
+    }
 }
 
 module.exports = { AgendaStateMachine };

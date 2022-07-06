@@ -28,6 +28,13 @@ class ErrorReporting {
             entry = {
                 stackTrace: err,
                 count: 0,
+                players: world.getAllPlayers().map((x) => {
+                    return x.getName() + (x.isHost() ? "*" : "");
+                }),
+                config: {
+                    playerCount: world.TI4.config.playerCount,
+                    setupTimestamp: world.TI4.config.timestamp,
+                },
                 timestamp: now,
             };
             this._stackToEntry[err] = entry;

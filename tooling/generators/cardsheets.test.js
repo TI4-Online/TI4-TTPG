@@ -139,11 +139,11 @@ it("AssetFilenames.templateJson", () => {
 
 // ----------------------------------------------------------------------------
 
-it("CardsheetLayout.getLayout 8x2", () => {
+it("CardsheetLayout.getLayout 3x2", () => {
     const numCards = 16;
     const cardW = 500;
     const cardH = 750;
-    const layout = CardsheetLayout.getLayout(numCards, cardW, cardH);
+    const layout = CardsheetLayout.getLayout(numCards, cardW, cardH, 4096);
     assert.equal(layout.numCols, 8);
     assert.equal(layout.numRows, 2);
     assert.equal(layout.footprint, 4096 * 2048);
@@ -154,7 +154,7 @@ it("CardsheetLayout.getLayout 4x5", () => {
     const numCards = 17; // with 17, more efficient with fewer columns
     const cardW = 500;
     const cardH = 750;
-    const layout = CardsheetLayout.getLayout(numCards, cardW, cardH);
+    const layout = CardsheetLayout.getLayout(numCards, cardW, cardH, 4096);
     assert.equal(layout.numCols, 4);
     assert.equal(layout.numRows, 5);
 });
@@ -227,13 +227,13 @@ it("CardsheetLayout.sort", () => {
 
 it("CardsheetLayout.splitIntoSheets", async () => {
     const cardDataArray = [];
-    while (cardDataArray.length < 97) {
+    while (cardDataArray.length < 7) {
         const cardData = new CardData("card.action:base/ghost_ship", "en");
         cardDataArray.push(cardData);
     }
     const cardDataSheets = await CardsheetLayout.splitIntoSheets(cardDataArray);
     assert.equal(cardDataSheets.length, 2);
-    assert.equal(cardDataSheets[0].length, 96);
+    assert.equal(cardDataSheets[0].length, 6);
     assert.equal(cardDataSheets[1].length, 1);
 
     assert.equal(cardDataSheets[0][0].extra.cardSheetIndex, 0);

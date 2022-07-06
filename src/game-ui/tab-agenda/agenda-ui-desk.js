@@ -384,7 +384,6 @@ class AgendaUiDesk extends Border {
         const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
         const msg = locale("ui.error.not_owner", { playerName });
         Broadcast.broadcastOne(player, msg);
-        player.showMessage("Not yours");
     }
 
     addVotes(deltaValue) {

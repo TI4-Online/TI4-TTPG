@@ -48,6 +48,7 @@ const { globalEvents, world } = require("../../wrapper/api");
 const assert = require("../../wrapper/assert-wrapper");
 const { AsyncTaskQueue } = require("../async-task-queue/async-task-queue");
 
+const DISCARD_FACTION_TOKENS = true;
 const ASYNC_DELAY_MSECS = 10;
 const _sharedAsyncTaskQueue = new AsyncTaskQueue(ASYNC_DELAY_MSECS);
 
@@ -203,6 +204,8 @@ class PlayerDeskSetup {
     }
 
     _getFactionToUnpack(factionNsidName) {
+        assert(!factionNsidName || typeof factionNsidName === "string");
+
         if (factionNsidName) {
             const faction = world.TI4.getFactionByNsidName(factionNsidName);
             assert(faction);
@@ -218,6 +221,18 @@ class PlayerDeskSetup {
             const nsidName = parsed.name.split(".")[0];
             const faction = world.TI4.getFactionByNsidName(nsidName);
             assert(faction);
+
+            if (DISCARD_FACTION_TOKENS) {
+                const container = undefined;
+                const rejectedObjects = [factionToken];
+                const player = undefined;
+                globalEvents.TI4.onContainerRejected.trigger(
+                    container,
+                    rejectedObjects,
+                    player
+                );
+            }
+
             return faction;
         }
 

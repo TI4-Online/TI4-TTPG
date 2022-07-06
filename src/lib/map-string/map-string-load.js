@@ -1,4 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -16,6 +18,30 @@ class MapStringLoad {
         assert(typeof mapString === "string");
 
         const parsedMapString = MapStringParser.parse(mapString);
+
+        // Verify systems exist.
+        const unknown = [];
+        for (let i = 0; i < parsedMapString.length; i++) {
+            const entry = parsedMapString[i];
+            if (entry.tile <= 0) {
+                continue;
+            }
+            const system = world.TI4.getSystemByTileNumber(entry.tile);
+            if (system) {
+                continue;
+            }
+            unknown.push(entry.tile);
+        }
+        if (unknown.length > 0) {
+            const msg = locale("ui.error.missing_tile", {
+                tileCount: unknown.length,
+                tileStr: unknown.join(", "),
+            });
+            const color = [1, 0, 0, 1];
+            Broadcast.chatAll(msg, color);
+            console.log(msg);
+            return false;
+        }
 
         // Find existing tiles (may be inside containers).
         const tileToSystemObj = {};
@@ -86,6 +112,7 @@ class MapStringLoad {
         if (world.TI4.config.pok && !skipMallice) {
             placeTile({ tile: 82 }, "<-4,5,-1>");
         }
+        return true;
     }
 
     static moveGenericHomeSystemTiles(mapString) {

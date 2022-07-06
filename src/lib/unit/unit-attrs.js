@@ -1,5 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
-const _ = require("../../wrapper/lodash-wrapper");
+const _ = require("lodash");
 const locale = require("../locale");
 const { CardUtil } = require("../card/card-util");
 const { Faction } = require("../faction/faction");

@@ -17,13 +17,13 @@ const {
 } = require("../../../wrapper/api");
 const { UnitPlastic } = require("../../../lib/unit/unit-plastic");
 const { SimpleDieBuilder } = require("../../../lib/dice/simple-die");
-const { FancyRollGroup } = require("../../../lib/dice/roll-group");
+const { RollGroup } = require("../../../lib/dice/roll-group");
 const {
     AutoGravRiftRoller,
 } = require("../../../global/right-click/grav-rift-roller");
 const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
 
-const CARD_NAME = "it_feeds_on_carrion";
+const CARD_NSID_NAME = "it_feeds_on_carrion";
 const ACTION_NAME = "*" + locale("ui.menu.dimensional_anchor");
 const PURGE_CONTAINER_NAME = "bag.purge";
 const DELETE_DIE_AFTER_N_SECONDS = 10;
@@ -35,13 +35,13 @@ const DIMENSIONAL_TEAR_MISS = 4;
  */
 function dimensionalAnchor(card, player) {
     assert(card instanceof Card);
-    const cardName = ObjectNamespace.parseCard(card).name;
-    assert(cardName === CARD_NAME);
+    const cardNsidName = ObjectNamespace.parseCard(card).name;
+    assert(cardNsidName === CARD_NSID_NAME);
 
     let cardOwnerSlot = -1;
     for (const desk of world.TI4.getAllPlayerDesks()) {
         const faction = world.TI4.getFactionByPlayerSlot(desk.playerSlot);
-        if (faction && faction.raw.leaders.heroes.includes(CARD_NAME)) {
+        if (faction && faction.raw.leaders.heroes.includes(CARD_NSID_NAME)) {
             cardOwnerSlot = desk.playerSlot;
             break;
         }
@@ -132,22 +132,23 @@ function dimensionalAnchor(card, player) {
     });
 
     // roll grav rift for each ship
-    const diceObjects = [];
+    const dice = [];
     ships.forEach((unit) => {
         const yaw = Math.random() * 360;
         const d = new Vector(5, 0, 10).rotateAngleAxis(yaw, [0, 0, 1]);
         const pos = player.getCursorPosition().add(d);
+        const systemTile = hexToSystemTile[unit.hex];
         const die = new SimpleDieBuilder()
             .setDeleteAfterSeconds(DELETE_DIE_AFTER_N_SECONDS)
             .setHitValue(DIMENSIONAL_TEAR_MISS)
             .setSpawnPosition(pos)
+            .setAuxObject({ unit, systemTile })
             .build(player);
-        const systemTile = hexToSystemTile[unit.hex];
-        diceObjects.push([die, unit, systemTile]);
+        dice.push(die);
     });
 
-    FancyRollGroup.roll(diceObjects, (diceObjects) => {
-        dimensionalAnchorRollFinished(diceObjects, player);
+    RollGroup.roll(dice, (dice) => {
+        dimensionalAnchorRollFinished(dice, player);
     });
 
     // purge the card
@@ -160,14 +161,13 @@ function dimensionalAnchor(card, player) {
     }
 
     if (purgeContainer) {
-        Broadcast.broadcastAll(
-            locale("ui.message.purge", { objectName: locale(cardName) })
-        );
+        const objectName = card.getCardDetails().name;
+        Broadcast.broadcastAll(locale("ui.message.purge", { objectName }));
         purgeContainer.addObjects([card], true);
     }
 }
 
-function dimensionalAnchorRollFinished(diceObjects, player) {
+function dimensionalAnchorRollFinished(dice, player) {
     const playerSlot = player.getSlot();
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
@@ -175,20 +175,24 @@ function dimensionalAnchorRollFinished(diceObjects, player) {
 
     const parts = [];
     // sort dice objects by owner, system tile, then isHit to make the logs easier to parse
-    diceObjects.sort(
-        ([dieA, unitA, systemTileA], [dieB, unitB, systemTileB]) => {
-            if (unitA.owningPlayerSlot == unitB.owningPlayerSlot) {
-                if (systemTileA === systemTileB) {
-                    return dieA.isHit() - dieB.isHit();
-                } else {
-                    return systemTileA - systemTileB;
-                }
+    dice.sort((dieA, dieB) => {
+        const unitA = dieA.getAuxObject().unit;
+        const systemTileA = dieA.getAuxObject().systemTile;
+        const unitB = dieB.getAuxObject().unit;
+        const systemTileB = dieB.getAuxObject().systemTile;
+        if (unitA.owningPlayerSlot == unitB.owningPlayerSlot) {
+            if (systemTileA === systemTileB) {
+                return dieA.isHit() - dieB.isHit();
             } else {
-                return unitA.owningPlayerSlot - unitB.owningPlayerSlot;
+                return systemTileA - systemTileB;
             }
+        } else {
+            return unitA.owningPlayerSlot - unitB.owningPlayerSlot;
         }
-    );
-    for (const [die, unit, systemTile] of diceObjects) {
+    });
+    for (const die of dice) {
+        const unit = die.getAuxObject().unit;
+        const systemTile = die.getAuxObject().systemTile;
         // start countdown to remove lines on units that are captured once they are grabbed
         // start countdown for non-captured units right away
         AutoGravRiftRoller.addLines(die, unit, !die.isHit());
@@ -250,7 +254,7 @@ function isItFeedsOnCarrion(obj) {
     }
 
     const parsedCard = ObjectNamespace.parseCard(obj);
-    if (parsedCard.name === CARD_NAME) {
+    if (parsedCard.name === CARD_NSID_NAME) {
         return true;
     }
 }
