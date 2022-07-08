@@ -79,7 +79,7 @@ class PremadeMapUI extends VerticalBox {
 
         const candidates = [];
         candidates.push(...MAP_STRING_DB);
-        //candidates.push(...MAP_ATLAS_DB);
+        candidates.push(...MAP_ATLAS_DB);
 
         for (const candidate of candidates) {
             let displayName = candidate.name;
