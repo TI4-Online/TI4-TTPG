@@ -54,9 +54,15 @@ class PopupPanel extends Border {
         this.reset();
     }
 
+    /**
+     * Set UI resolution, draw bigger then scale down for crispness.
+     *
+     * @param {number} value
+     * @returns {PopupPanel} self, for chaining
+     */
     setPopupScale(value) {
         assert(typeof value === "number");
-        assert(0.1 <= value && value <= 10);
+        assert(1 <= value && value <= 4);
         this._popupScale = value;
         return this;
     }
