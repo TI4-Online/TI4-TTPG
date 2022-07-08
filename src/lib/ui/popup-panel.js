@@ -14,8 +14,8 @@ const {
 } = require("../../wrapper/api");
 
 const POPUP_HEIGHT = 3;
-const POPUP_CHILD_DISTANCE = 5; // consistent look
-const POPUP_FONT_SIZE = 10;
+const POPUP_CHILD_DISTANCE = 3; // consistent look
+const POPUP_FONT_SIZE = 8;
 const DELAYED_HIDE_MSECS = 2500;
 
 /**
@@ -46,7 +46,7 @@ class PopupPanel extends Border {
         this._namesAndActions = [];
         this._isShowing = false;
 
-        this._popupScale = 1;
+        this._popupScale = 2;
 
         // <(gameObject: GameObject, player: Player, popupPanel: PopupPanel) => void>
         this.onShow = new TriggerableMulticastDelegate();
@@ -184,6 +184,7 @@ class PopupPanel extends Border {
             );
             this._ui.rotation.yaw = localRot.yaw;
         }
+        this._ui.scale = 1 / this._popupScale;
         this._obj.addUI(this._ui);
         this._isShowing = true;
     }
