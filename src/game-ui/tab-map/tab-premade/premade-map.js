@@ -3,6 +3,7 @@ const { MapStringLoad } = require("../../../lib/map-string/map-string-load");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const { PremadeMapUI } = require("./premade-map-ui");
 const { world } = require("../../../wrapper/api");
+const { Broadcast } = require("../../../lib/broadcast");
 
 class PremadeMap {
     constructor() {
@@ -51,6 +52,18 @@ class PremadeMap {
         const mapString = mapStringDbEntry.mapstring;
         assert(typeof mapString === "string");
         console.log(`PremadeMap._useMap`);
+
+        let name = `"${mapStringDbEntry.name}"`;
+        if (mapStringDbEntry.author && mapStringDbEntry.author.length > 0) {
+            name = `${name} (${mapStringDbEntry.author})`;
+        }
+
+        let msg = [name];
+        if (mapStringDbEntry.comments && mapStringDbEntry.comments.length > 0) {
+            msg.push(`"${mapStringDbEntry.comments}"`);
+        }
+        msg = msg.join("\n");
+        Broadcast.chatAll(msg, [1, 1, 0, 1]);
 
         // Clear now.  Wait a frame before building.
         this._clear();

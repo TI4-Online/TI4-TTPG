@@ -1,0 +1,742 @@
+[
+    {
+        "author": "Zippolin",
+        "name": "Poor Numbers, Rich Skips",
+        "mapstring": "62 40 61 26 36 24 75 42 65 34 49 47 76 70 64 72 66 79 0 21 63 0 73 68 0 74 22 0 48 45 0 59 19 0 46 77",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric, Sliceable",
+        "comments": "It's a very poor map with a high number of tech skips."
+    },
+    {
+        "author": "Leary93",
+        "name": "Pamdera",
+        "mapstring": "44 66 79 77 45 46 69 78 34 64 27 35 37 74 19 39 75 65 0 49 80 0 50 42 0 47 41 0 48 43 0 76 67 0 40 68",
+        "sliceNames": "Jeolly everra day; At my hope's end; Exiled at starpoint; Arinam for Meer, Meer for Rex; Wellonman; Hell's gate",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Low economy",
+        "comments": "A pretty rough map with slices roughly balanced but each being different, where succes will heavily depend on the faction playing in each. Ment for those willing to take on a challenge that pushes players to fight against eachother for both economy and control thanks to the 18 red tiles"
+    },
+    {
+        "author": "squirrelnest",
+        "name": "The Mahact Awaken",
+        "mapstring": "{43} 45 0 42 43 41 0 0 28 39 48 40 0 44 0 48 48 26 33 0 0 0 0 60 48 23 25 75 0 34 64 59 48 61",
+        "sliceNames": "Vuil'raith, Argent, Mahact, Creuss",
+        "playerCount": 4,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Lore-Inspired Scenario: thinking they would find a paradise world, the Creuss foolishly opened the gate to Ixth and woke the Mahact. As the Mahact fire up their ancient machines, a desperate contest is about to take place. The machines on Acheron tear space itself and a terrible new threat, the Vuil'raith emerge. The Argent scramble to fulfil their oaths as sacred guardians. Mahact prepares to propel Ixth back towards the center of the galaxy. The Creuss try to find a way to undo the ruin they've just unleashed, and prevent the Prophecy of Kings.  (Thematic note: in this scenario, points do not represent the will of the council, but progress with the understanding and use of the Acheron gates.)  Special Rules: Each player chooses one of the following races: Vuil'raith, Argent, Mahact, and Creuss. The races' starting locations can not be moved.  Mahact starts with the speaker token.  Remove the Trade and Warfare strategy cards from the game; they can never be chosen. Players will choose only one strategy card in the strategy phase.  Because there is no custodians token on this map, there will be no agenda phase. Any action card or secret objective that can only be used in the agenda phase gains the text 'ACTION: Discard this card to refresh your commodities.' (Note that this will allow Vuil'raith to use their agent.)  The first player to 8 points is the victor."
+    },
+    {
+        "author": "Spage",
+        "name": "Back2Back Teamwork",
+        "mapstring": "87A4 40 91A0 88A5 39 84B0 22 38 43 63 50 60 27 80 65 30 24 74 69 68 31 90A1 35 72 21 29 34 62 37 48 83A5 28 42 66 76 46 0 26 0 59 77 45 0 25 0 75 67 78 0 79 0 71 73 32 0 64 0 19 41 61",
+        "sliceNames": "",
+        "playerCount": 8,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Slice with the A warp in Asteroids gains the speaker first."
+    },
+    {
+        "author": "Luminous",
+        "name": "Twist and Turned",
+        "mapstring": "33 66 25 76 59 65 68 72 79 27 35 34 67 71 26 29 43 69 40 0 78 48 0 37 47 0 39 48 0 62 41 0 61 77 0 73",
+        "sliceNames": "Runaway Incursion, One Sided, Hello Neighbor, One Two Three, Take what you can(,) Give Nothing Back, The Long Road",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "I began the names of each slice with the Upper most slice that is clockwise from the furthest north tile location.   This map is intended to provide tension/conflict around Mecatol Rex, where each tile adjacent to the center is considered an equidistant system for 2 home system locations.   It is common for planetary systems of an individual slice to be adjacent to one another. As this results in a more center focused map, many of the empty space tiles were placed on the outer rim of the map.   There are very few anomalies on this map (a total of 5, 1 being a supernova), and Legendary planets are placed in a way that they are considered equidistant 2 or more slices (See wormholes).   Points of Conflict: * Any system adjacent to MR * Objectives that require Planetary types, like 4 of a type. * 1st and 2ndary tech skips have been placed in a way that some factions might need to fight one-another. * Control Objectives are much easier to disrupt do to the system adjacency of neighbors.  Starting Slices: *Factions have the option of taking systems that are equidistant to both their neighbors and can advantageous for factions that start with increased movement on ships with capacity. * I tried balancing each slice based on only the systems adjacent to the home system and what their 2 options were for systems adjacent to Mecatol Rex.  Strongest to Weakest Slice (in my opinion): 1. One Sided 2. Hello Neighbor 3. The Long Road 4. Runaway Incursion 5. One Two Three 6. Take What You Can, Give Nothing Back"
+    },
+    {
+        "author": "Jon",
+        "name": "Wargames 5 Player",
+        "mapstring": "69 33 76 -1 37 34 27 68 66 64 35 -1 65 -1 71 67 38 26 0 46 73 0 43 49 0 45 -1 -1 -1 39 0 50 25 0 44 47",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "Jon",
+        "name": "Balanced Spiral",
+        "mapstring": "34 46 68 39 76 45 42 26 65 35 29 27 43 66 67 30 69 64 28 0 19 44 0 21 48 0 25 24 0 32 73 0 49 22 0 50",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "Jon",
+        "name": "Equidistant Diplomacy",
+        "mapstring": "73 22 36 68 34 25 70 67 66 80 33 24 76 39 35 65 69 42 0 26 77 0 29 40 0 19 45 0 32 49 0 44 47 0 61 50",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Beginner",
+        "attributes": "PoK, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "Jon",
+        "name": "Pyrrhic Victory",
+        "mapstring": "46 76 37 73 25 29 64 35 45 65 67 26 44 75 48 66 39 68 -1 47 0 -1 -1 -1 -1 0 49 -1 34 0 -1 -1 -1 -1 0 74",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "Jon",
+        "name": "Bottlenecks",
+        "mapstring": "42 66 45 27 44 72 74 35 29 62 34 26 47 25 65 75 22 64 43 0 50 20 0 46 68 0 48 37 0 67 19 0 49 39 0 69",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "Dimble",
+        "name": "Timewarp",
+        "mapstring": "68 44 66 67 80 65 76 39 37 21 73 74 27 40 72 62 34 31 0 47 43 0 64 78 0 63 61 0 77 45 0 26 42 0 50 41",
+        "sliceNames": "RED - Hands on your hips GREEN - Jump to the left WHITE - Drives you insane BLUE - Step to the right PURPLE - Knees in tight YELLOW - The pelvic thrust",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "The goal of this map was to cram as many Tech Skips as I could into the map, while still making it reasonably balanced. The Red and Purple players are incentivised to fall onto the player in Yellow, and the same on the other side of the board with Green and Blue falling on White. "
+    },
+    {
+        "author": "Lohruin",
+        "name": "Tension",
+        "mapstring": "22 24 73 63 21 61 71 68 30 78 35 48 66 41 37 67 69 47 0 29 31 0 79 25 0 43 39 0 32 64 0 46 26 0 44 40",
+        "sliceNames": "belligerent boar ; ancient alligator ; bashful badger ; audacious armadillo ; blissful bat ; ambitious ape",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "In this balanced but tense map, each slice (except the 6 o' clock one) has access to 6 influence per round & has 3 planets of a given trait. The defining characteristic of ''Tension'' is every home system has a wormhole adjacent to it. Throughout the game, players will need to make difficult choices between contesting equidistant systems, reaching for Mecatol Rex, protecting their flank and attacking across the galaxy.   When playing this map, diplomatic relations will be necessary... up until everything implodes during the last round of play!  Have fun! Lohruin"
+    },
+    {
+        "author": "rex",
+        "name": "Triquetra",
+        "mapstring": "84B1 76 91A0 37 86B2 66 0 34 79 65 0 31 39 41 0 75 26 68 70 85A4 -1 50 -1 85A4 28 85A0 -1 78 -1 85A0 69 85A2 -1 77 -1 86A2",
+        "sliceNames": "",
+        "playerCount": 3,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "Lamyatt",
+        "name": "A Tight Belt",
+        "mapstring": "47 79 64 45 49 42 66 87A3 76 88A5 37 87A5 36 87A3 65 88A5 30 87A5 86A3 84A3 46 0 33 83A2 86A5 84A5 39 0 74 83A1 86A1 84A1 40 0 31 83A3",
+        "sliceNames": "",
+        "playerCount": 3,
+        "difficulty": "Intermediate",
+        "attributes": "Duplicates, PoK",
+        "comments": "This map was designed with an eye for balance whilst mimicking the 6 player layout, but with the primary goal to have as few planets in the central ring as possible and to place the legendary planets in the equidistants.  Conflict is encouraged with the majority of control objectives requiring players to enter opponents slices. The additional tiles in the central ring made accounting for all objectives far easier and prevents PDS2 breaking the game. All objectives should be scorable but being 3 player you always need a little flexibility with certain objectives."
+    },
+    {
+        "author": "Jon",
+        "name": "Expanse",
+        "mapstring": "44 65 61 42 34 73 59 37 68 39 49 62 22 35 47 66 50 26 -1 48 0 -1 -1 -1 -1 0 29 -1 43 0 -1 -1 -1 -1 0 76",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "Jon",
+        "name": "Big Tech",
+        "mapstring": "74 22 37 -1 72 62 35 24 66 40 27 -1 65 -1 26 42 64 68 0 49 45 0 69 80 0 48 -1 -1 -1 44 0 73 46 0 34 39",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Beginner",
+        "attributes": "PoK, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "Andromad",
+        "name": "Due in December",
+        "mapstring": "0 73 75 0 0 70 76 40 38 42 47 36 74 67 48 34 65 32 28 0 29 0 80 24 0 26 0 69 64 37 30 60 0 43 27 39 0 31 0 0 0 0 0 0 0 0 0 46 0 41 79 0 0 0 0 22 0 0 63 44",
+        "sliceNames": "Industrial Center, Build the Wall, You Guys are Getting Planets, Dubs, Hazardous Area, Grab Bag, Cultural Zone",
+        "playerCount": 7,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Fairly generic 7 player map with PoK tiles"
+    },
+    {
+        "author": "Andromad",
+        "name": "Crowded Quarters",
+        "mapstring": "64 73 71 26 33 32 74 45 76 80 61 44 36 43 62 41 22 42 0 46 39 0 72 30 0 49 40 0 37 28 0 47 48 0 35 69",
+        "sliceNames": "Brotherhood, Uncultured, it means Friend, Where's my Money, I'm Blue, One of a Kind",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Every player has empty spaces on one side and a crowded border on the other side"
+    },
+    {
+        "author": "Andromad",
+        "name": "Shakeup",
+        "mapstring": "24 25 65 28 33 64 66 41 69 39 62 40 31 49 37 44 27 46 0 34 47 0 75 35 0 45 76 0 50 42 0 26 78 0 29 48",
+        "sliceNames": "Don't Mind Me, Personal Space, Value?, Graveyard Shift, Cozy Blanket, See you Sunday",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Sliceable",
+        "comments": "Right side of the map has a lot of planets but also a lot of wormholes offer mobility to the other side. Top slice is safe and isolated."
+    },
+    {
+        "author": "Hornaday",
+        "name": "Risky Business",
+        "mapstring": "20 25 39 60 32 67 38 43 37 62 76 45 28 68 72 48 30 63 0 34 35 0 41 66 0 23 77 0 74 40 0 65 31 0 26 44",
+        "sliceNames": "'Into the Abyz' 'Meer and Far' 'Nope Friends' 'Teq Me Ran, Tor Kan Me' 'Campbell's Primordial Soup' 'Good luck!'",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Asymmetric, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "zombiebrains",
+        "name": "Hotline Mecatol",
+        "mapstring": "{83A5} 87A4 85A0 34 89A0 27 86A0 88A5 45 63 23 64 19 75 61 26 20 21 44 18 66 80 30 0 39 42 0 36 77 29 0 41 40 0 28 43 65",
+        "sliceNames": "Rooster, Tiger, Cobra, Locust",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Each slice has easy access to the legendaries and MR. The only problem is that there is no way to really score objectives without stepping on someone's toes. Each slice has a tech skip and a few planets to get started but resources are scarce and border diputes will be inevitable without shrewd negotiation. The wormholes allow for easy neighbors and easier rivals. Equidistants have a tech specialty and lucrative systems making them very valuable. "
+    },
+    {
+        "author": "zombiebrains, mtg.wiz[at]gmail.com",
+        "name": "Hurts Donut",
+        "mapstring": "34 83B3 76 85B2 37 88B1 90A0 41 0 78 86A5 79 0 40 91B0 42 0 39 66 48 26 24 43 75 77 50 36 59 47 38 65 49 32 62 45 69",
+        "sliceNames": "Bitey & Fightey, Mean & Lean, Push & Shove",
+        "playerCount": 3,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Before play begins, place 'Mirage' on the '77' Tile and purge the Mirage exploration card from the Frontier deck. All the legendary planets should be available and equidistant.   Each players starts off with a small slice but many opportunities to expand. Each player is presented 4 avenues, 2 to Mecatol Rex, and 2 to a legendary planet. Dividing each section is empty space or an anomaly separating each area of the map into a field rather than a slice. This map features asymmetrical warp zones on the outer ring and lots of chokepoints, but multiple avenues of attack. The center is interconnected and of very high value, making for a maelstrom of conflict around Mecatol Rex. "
+    },
+    {
+        "author": "zombiebrains , mtg.wiz[at]gmail.com",
+        "name": "Regicide",
+        "mapstring": "{87A4} 18 20 67 27 68 60 37 45 26 31 63 32 78 23 24 74 25 44 0 66 43 50 0 29 40 0 38 85A0 71 0 39 28 0 77 80 65",
+        "sliceNames": "Emperor, King, Lord, Duke, Prince",
+        "playerCount": 5,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "The Emperor starts off with a very significant advantage with both legendary planets, lots of influence, and being closer to Mecatol Rex but no way to reliably score victory points. In order to succeed, he must press outward much to the chagrin of the other players. The other slices feature resource heavy, interconnected slices, but petty infighting over objectives can quickly sour relationships. How can the other players work together to defeat the Emperor when only one of them can claim the throne?"
+    },
+    {
+        "author": "UEberMonster",
+        "name": "Gramsci",
+        "mapstring": "48,61,66,19,22,65,27,67,72,21,41,64,62,68,74,31,45,73,50,25,26,46,0,29,71,47,0,76,79,23,40,0,70,39,30,0",
+        "sliceNames": "Karl, Friedrich, Antonio, John Maynard",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "UEberMonster",
+        "name": "Paris Commune",
+        "mapstring": "46 54 38 40 35 17 65 79 76 41 21 58 66 52 73 44 25 43 85A3 84A0 78 0 29 47 0 69 83A0 86A0 84A0 46 0 26 77 0 37 83A0",
+        "sliceNames": "Dombroski, Louise Michel, Varlin, Jourde",
+        "playerCount": 4,
+        "difficulty": "Advanced",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "UEberMonster",
+        "name": "2vs2 Alliance Map",
+        "mapstring": "65,28,29,46,60,35,43,41,30,78,76,39,66,42,38,40,34,47,-1,-1,46,0,62,64,0,44,-1,-1,-1,46,0,37,46,0,26",
+        "sliceNames": "Luhmann, Elias, Bourdieu, Butler",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "Waffles",
+        "name": "W.A.R.P. Machine",
+        "mapstring": "43 62 77 68 72 26 71 91A2 79 30 65 59 76 84B2 37 41 66 22 47 64 73 61 0 40 85A5 48 0 46 39 42 49 0 25 86A2 78 0",
+        "sliceNames": "Planet Delta - Batman's Mellons - Quadruple Veil - Slingfluencer",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Poor Snowflake",
+        "mapstring": "-1 61 -1 65 -1 66 0 23 43 70 0 40 42 36 0 24 41 50 -1 73 79 -1 59 19 -1 45 60 -1 22 39 -1 44 25 -1 63 74",
+        "sliceNames": "Saudor's Kiss, Perimeter's Edge, Quan's Corner",
+        "playerCount": 3,
+        "difficulty": "Advanced",
+        "attributes": "PoK",
+        "comments": "The missing tiles are treated as not a part of the map. The tiles adjacent to them do not count as on the edge of the game board. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Rich Snowflake",
+        "mapstring": "-1 65 -1 62 -1 66 0 38 77 28 0 27 49 39 0 35 46 40 -1 69 79 -1 41 37 -1 45 50 -1 43 34 -1 29 42 -1 44 76",
+        "sliceNames": "The industrialist, Wormholes Optional, Bereg's Domain",
+        "playerCount": 3,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "The missing tiles in the center are not a part of the board and are completely impassible. The tiles adjacent to them do not count as being on the edge of the game board."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Legendary Chokepoints",
+        "mapstring": "42 20 21 80 73 49 65 72 39 64 29 27 66 35 40 26 44 38 67 34 0 -1 -1 -1 -1 0 78 68 24 0 -1 -1 -1 -1 0 37",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "The objective for empty spaces is VERY difficult on this map."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Total Asymmetry",
+        "mapstring": "65 49 79 66 78 50 42 38 71 69 77 28 64 37 24 35 48 74 26 32 0 44 39 41 59 0 34 80 47 0 73 40 45 70 0 36",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Outer Rim",
+        "mapstring": "40 42 50 47 79 48 65 70 39 35 78 74 44 33 77 37 36 43 45 24 0 22 41 80 26 0 63 66 21 0 68 49 46 19 0 59",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "6-6 All Around",
+        "mapstring": "21 61 25 78 26 47 65 71 79 19 23 27 66 49 69 63 44 35 39 80 0 37 40 45 34 0 43 22 42 0 62 41 46 64 0 73",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated. This map is meant to be a very basic map that is well balanced. It is meant to give all players access to 2 CTs and 6 resources per round."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Equidistant Wars",
+        "mapstring": "65 46 48 66 19 45 75 41 26 72 64 28 27 71 39 69 40 30 42 29 0 76 80 49 67 0 73 79 47 0 37 44 77 24 0 34",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Advanced",
+        "attributes": "PoK",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated. This map places the some of the best systems in the game as the equidistant systems. Players will be negotiating and in conflict right from the start."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The Great Divide",
+        "mapstring": "68 48 66 42 49 65 41 27 28 64 78 72 67 35 47 26 50 38 79 77 0 69 44 39 43 0 37 45 76 0 74 46 40 80 0 34",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated.   This map divides players with a wall of anomalies. This map is as experimental as they come. Both half's are connected by wormholes and have a gravity rift for risky plays to each other's home systems. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Warzone Rex",
+        "mapstring": "43 72 35 80 27 38 40 0 48 45 0 39 49 0 50 42 0 22 41 69 21 77 26 34 63 46 66 44 19 37 47 64 78 29 79 65",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Expert",
+        "attributes": "PoK",
+        "comments": "The map string may be a little wonky. I have it setup so the homesystems are in slightly different spots than a standard 4p map string. The map is functionally equivalent to a standard map in every way it is just rotated.   This map puts homesystems closer to the center. It also put's player's optimal forward dock locations adjacent to mecatol and 1 other player's optimal forward dock location to create a tense environment."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Quadrant",
+        "mapstring": "66 26 38 65 64 35 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 79 62 -1 -1 72 39 -1 -1 -1 25 45 -1 -1 34 40 -1 -1 -1 69 0 80 -1 -1 -1 78 0 20 -1 -1 -1 49 0 27 -1 -1 -1 44 0 28 -1 -1 -1 -1 46 61 -1 -1 -1 -1 -1 -1 73 42 -1 -1 -1 -1 -1 59 47 -1 -1 -1 -1 -1 -1 22 43",
+        "sliceNames": "Sem-Lore's Curse, The Lay of Lisis, Star's Point, Centari's Fall",
+        "playerCount": 4,
+        "difficulty": "Expert",
+        "attributes": "PoK",
+        "comments": "Hehe. This was fun to make.   When playing with this map, the enforced travel ban law should be removed from the deck."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Max's Dream 5p",
+        "mapstring": "44 39 50 85A0 45 77 66 19 64 63 26 88A6 25 87A0 30 23 74 21 69 42 46 72 43 47 71 80 83A0 90A6 84A0 49 38 79 40 27 41 48 0 24 20 73 0 28 32 37 0 62 91B4 86A0 -1 65 89B2 22 0 76 60 75 0 29 36 31",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "Money. Lot's of money."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Warpless Zone",
+        "mapstring": "45 78 22 21 61 46 25 33 34 59 71 65 38 66 27 19 77 72 41 32 0 79 50 69 0 43 37 0 40 42 0 29 48 39 0 28",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "This is a somewhat balanced 5 player map that doesn't use warp zones."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Equidistant++ 5p",
+        "mapstring": "40 39 45 86A0 79 48 72 61 71 19 69 88A6 73 87A6 27 21 35 63 0 77 76 0 42 37 0 44 83A6 89A5 84A0 29 0 78 31 0 49 34 -1 -1 65 -1 -1 -1 64 -1 -1 -1 -1 -1 66 -1 -1 -1 -1 -1 25 -1 -1 -1 26",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "A non-standard map layout that adds an extra equidistant tile between each set of adjacent players. It's a good layout for player's like me that like a little more money in their galaxy and to play 14 point games."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Outer Rim 5p",
+        "mapstring": "78 47 49 86A0 77 40 67 27 79 37 80 88A6 66 87A6 42 72 68 38 0 64 62 0 69 71 0 34 83A6 85A6 84A0 76 0 30 22 0 29 73",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Advanced",
+        "attributes": "PoK",
+        "comments": "This map forces action on the edge of the board and drives players away from the center."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Large BAT 5p",
+        "mapstring": "77 63 61 86A3 48 19 31 64 74 66 26 88A6 62 87A6 71 25 28 65 0 22 42 0 49 46 0 40 83A3 90A6 84A0 24 0 41 47 0 78 79 -1 50 20 29 -1 80 23 34 -1 45 91B4 85A6 -1 60 89B2 39 -1 73 32 44 -1 76 21 30",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Note on the Asymmetric comment. The map is actually decently balanced, but not everyone has access to the same stuff.   BAT stands for balance through asymmetry."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "All Lanes Closed",
+        "mapstring": "47 23 80 50 77 48 72 79 40 38 22 46 27 64 71 26 35 68 69 0 19 34 0 39 21 44 0 28 49 37 0 43 78 0 76 24",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "This is a non-standard 5 player map layout without hyperlanes."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Small and Rich 5p",
+        "mapstring": "48 34 47 85A0 46 75 69 66 35 26 38 88A0 68 87A0 27 65 71 64 0 79 77 0 44 76 0 40 84A2 86A6 83A1 37 0 42 39 0 41 72",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "A standard sized map with most of the best systems in play."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Teardrop",
+        "mapstring": "26 47 62 80 78 77 35 38 44 27 0 46 71 24 67 0 69 45 41 40 0 37 66 73 39 43 64 42 0 59 25 72 79 65 50 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 49 22 29",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "This map is weird."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The infamous Double Galaxy 5p",
+        "mapstring": "26 47 62 80 78 77 35 38 44 27 0 46 71 24 67 0 69 45 41 40 0 37 66 73 39 43 64 42 0 59 25 72 79 65 50 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 49 22 29",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map starts with a gamma wormhole on Mecatol Rex. This map is a trip and a half. For this map the wormhole nexus does not count as the edge of the game board and the central empty tiles in the mecatol galaxy are impassible and the adjacent systems are not treated as the edge of the game board.   When playing this map 1 of the 3 gamma wormhole tokens starts on Mecatol Rex. In addition, the agenda Nexus sovereignty and Enforced travel ban should be removed from the agenda deck."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The Infamous Double Galaxy",
+        "mapstring": "{-1} 47 -1 34 -1 37 0 59 -1 44 60 38 80 -1 -1 50 27 -1 77 -1 -1 -1 21 35 -1 73 0 -1 -1 -1 -1 -1 79 66 18 64 68 -1 -1 -1 -1 -1 0 69 24 42 46 -1 -1 -1 -1 -1 -1 -1 19 30 -1 65 -1 71 74 -1 -1 -1 -1 -1 -1 -1 49 40 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 78 0 75 39 63 0 45 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 48 41 -1 32 43",
+        "sliceNames": "",
+        "playerCount": 5,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map starts with a gamma wormhole on Mecatol Rex. When playing with this map the Nexus Sovereignty Agenda and Enforced Travel Ban Agendas must be removed at the start of the game and a gamma wormhole must be placed on Mecatol Rex.  I am submitting this a second time because I put in the wrong map string on the previous one. My bad."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Half-War Dogs",
+        "mapstring": "35 22 38 63 27 19 0 43 64 20 0 77 30 80 0 45 23 42 66 50 28 0 34 41 73 79 21 0 70 39 37 40 69 0 76 46",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Half of the homesystems start forward. This map is not balanced well and should be played with some sort of drafting method."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Max's Dream 6p",
+        "mapstring": "44 39 67 50 45 77 66 19 64 63 26 25 61 70 30 23 74 21 69 42 46 72 43 47 71 80 78 35 68 49 38 79 40 27 41 48 0 24 20 73 0 28 32 37 0 62 59 33 0 34 65 22 0 76 60 75 0 29 36 31",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "Big galaxy. Much money. Very wow."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Equidistant ++",
+        "mapstring": "40 39 45 47 79 48 72 61 71 19 69 22 38 73 27 21 35 63 0 77 76 0 42 37 0 41 28 0 44 29 0 78 31 0 49 34 -1 -1 65 -1 -1 -1 64 -1 -1 -1 26 -1 -1 -1 66 -1 -1 -1 25 -1 -1 -1 62",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Sliceable",
+        "comments": "Adds an extra equidistant between each pair of adjacent players."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Outer Rim 6p",
+        "mapstring": "78 47 49 39 77 40 67 27 79 37 80 66 43 35 42 72 68 38 0 64 62 0 69 71 0 34 74 0 28 76 0 30 22 0 29 73",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Sliceable",
+        "comments": "Pushes the action to the edge of the map and keeps people out of the center."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Boredom",
+        "mapstring": "75 73 64 31 66 28 72 46 38 42 71 45 35 44 74 43 27 41 0 50 34 0 49 76 0 79 24 0 78 37 0 40 29 0 39 69",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "Boring slices. Basically what happens if you do the standard map setup optimally and everyone gets equalish systems. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Unknown",
+        "mapstring": "46 47 25 63 45 26 31 20 33 66 74 23 36 65 28 60 30 61 0 64 79 0 22 49 0 48 29 0 43 77 0 21 80 0 50 41 -1 44 32 84B5 -1 24 42 85A5 -1 76 39 86A6 -1 78 73 89B2 -1 67 40 90A2 -1 19 59 87B2",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "A slightly larger than normal galaxy with a hyperlane to the right. There is an ever so slight asymmetry in the map between your left and right neighbor."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Lefty Lane",
+        "mapstring": "50 73 40 23 78 26 74 64 31 67 71 66 75 25 36 33 62 65 0 21 44 0 59 39 0 47 80 0 45 49 0 48 79 0 43 77 -1 86A3 30 60 -1 89B5 42 29 -1 85A5 19 22 -1 83B2 61 63 -1 84B5 70 24 -1 91B1 46 41",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "This is a slightly larger than normal map that has a hyper lane to the left. This causes a slight asymmetry between your left and right neighbors. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Small and Rich 6p",
+        "mapstring": "48 34 47 63 46 75 69 66 35 26 38 67 30 68 27 65 71 64 0 79 77 0 44 76 0 40 50 0 29 37 0 42 39 0 41 72",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "Standard map size with the best systems in play."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "All Lanes Lead to Rex",
+        "mapstring": "88A5 89B4 84A6 87A4 83A3 91B2 45 59 40 23 33 22 66 26 77 25 19 65 27 47 80 72 79 50 71 67 78 64 46 42 74 48 43 31 68 49 0 37 62 28 0 73 61 41 0 34 60 69 0 44 32 70 0 36 24 63 0 75 21 39",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "This is a slightly larger galaxy with increased distance between players. Good for a 14 point game."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The Infamous Double Galaxy 6p",
+        "mapstring": "{32} 47 -1 -1 -1 0 61 45 -1 -1 39 35 40 -1 -1 73 31 48 66 76 -1 -1 -1 29 41 -1 46 63 -1 -1 -1 43 64 68 18 25 20 -1 -1 -1 -1 -1 -1 0 72 37 71 0 -1 -1 -1 -1 -1 -1 24 28 78 50 67 23 0 -1 -1 -1 -1 -1 -1 -1 -1 22 77 -1 44 34 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 27 65 70 19 26 60 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 42 49 79 62 0 59 80",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map requires a gamma wormhole to be placed on Mecatol Rex during setup. In addition, the Nexus Sovereignty and Enforced Travel ban agendas must be removed from the agenda deck at the start of the game."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Diamond",
+        "mapstring": "64 45 40 39 48 41 66 69 72 22 71 80 65 42 38 20 30 36 47 79 0 50 43 78 29 0 21 67 77 0 37 49 44 74 0 46 -1 -1 -1 -1 -1 23 24 19 -1 -1 -1 -1 -1 -1 -1 -1 -1 73 59 61 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 25 35 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 27 26 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Why did I make this? What's the point? I don't know, but it looks cool."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Helix",
+        "mapstring": "27 75 71 38 69 72 0 -1 0 -1 0 -1 0 -1 0 -1 0 -1 36 59 26 34 45 73 61 24 44 35 39 78 37 47 50 29 79 46 -1 22 20 67 -1 48 25 77 -1 43 66 40 -1 41 62 23 -1 80 64 76 -1 49 65 42",
+        "sliceNames": "Biotic Beaver, Focal Fossa, Groovy Gorilla, Xenial Xerus, Trust Tahr, Hirsute Hippo",
+        "playerCount": 6,
+        "difficulty": "Expert",
+        "attributes": "PoK",
+        "comments": "This is probably my favorite of the maps I made. It creates a lot of tension over Mecatol Rex. It does this without making the home systems closer together as well. All forward docks are adjacent and closer to each other's homesystems. This map will severely weaken the blue tech tree in my estimation.   The systemless spaces in the middle are not a part of the map and are completely impassible. Tiles adjacent to them are not considered on the edge of the game board."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The Infamous Double Galaxy 7p",
+        "mapstring": "{0} 29 -1 -1 -1 44 38 76 -1 -1 -1 59 -1 -1 -1 83A0 88A6 77 64 0 -1 -1 -1 -1 50 33 68 39 -1 -1 -1 85A0 66 86A6 18 79 35 -1 -1 -1 -1 -1 -1 -1 0 72 -1 62 48 -1 -1 -1 -1 -1 84A6 87A0 78 45 46 65 43 -1 -1 -1 -1 -1 -1 -1 -1 -1 22 40 67 74 0 -1 -1 -1 -1 -1 -1 -1 -1 37 28 25 27 26 69 71 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 21 32 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 47 41 0 34 42 0",
+        "sliceNames": "",
+        "playerCount": 7,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map requires a gamma wormhole to be placed on Mecatol Rex during setup. The Nexus Sovereignty and Enforced Travel Ban Agendas should be purged during setup."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Laneless Double",
+        "mapstring": "{49} 45 -1 -1 -1 0 74 50 -1 -1 -1 77 40 -1 -1 63 30 48 66 20 -1 -1 -1 -1 0 38 68 69 -1 -1 -1 26 80 25 18 73 41 -1 -1 -1 -1 -1 -1 -1 37 67 -1 27 0 -1 -1 -1 -1 -1 78 31 42 47 64 72 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 22 76 35 62 21 -1 -1 -1 -1 -1 -1 -1 -1 0 33 65 44 71 39 61 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 23 79 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 34 43 46 59 0 29 60",
+        "sliceNames": "",
+        "playerCount": 7,
+        "difficulty": "Expert",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map requires a gamma wormhole to be placed on Mecatol Rex during setup. The Nexus Sovereignty and Enforced Travel Ban agendas must be purged during setup. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "El Ocho",
+        "mapstring": "23 48 60 20 44 62 22 32 75 49 38 45 61 50 30 21 34 25 35 65 31 41 28 77 63 36 64 27 66 70 33 74 71 78 72 26 0 37 79 0 76 59 0 24 29 0 46 42 0 69 39 0 19 40 0 43 47 0 73 80",
+        "sliceNames": "",
+        "playerCount": 8,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "A pretty basic 8 player map with no hyperlanes. Very beginner friendly."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "All Lanes Lead to Rex 8p",
+        "mapstring": "88A5 83A6 91B5 87A4 89B1 84A6 45 26 66 77 67 64 34 39 65 23 68 49 31 47 30 44 75 35 50 61 48 36 62 27 71 40 72 63 38 25 0 76 22 0 24 19 0 79 69 0 21 46 0 28 78 0 73 41 0 37 42 0 74 29",
+        "sliceNames": "",
+        "playerCount": 8,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": ""
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Winnarian Warground",
+        "mapstring": "44 78 45 25 37 35 71 47 65 73 21 39 36 49 50 0 68 46 0 41 69 80 75 42 29 0 22 48 30 26 27 43 77 63 33 79 64 59 20 0 72 76 0 31 60 38 40 67 32 0 74 24 0 28 66 62 61 0 70 19",
+        "sliceNames": "",
+        "playerCount": 8,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This map is almost certainly not balanced. The home systems are not in their standard locations. Who has the advantage? I have no clue."
+    },
+    {
+        "author": "DaveBot777",
+        "name": "Thin and Wild",
+        "mapstring": "27 66 41 24 47 48 0 78 44 23 71 0 80 65 40 26 69 46 21 39 70 74 29 31 79 62 61 64 35 22 77 38 45 0 20 30 -1 42 49 0 36 19 0 63 -1 -1 -1 -1 -1 37 0 50",
+        "sliceNames": "",
+        "playerCount": 7,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "With home systems in non-standard positions and a non-standard shape this map is sure to be weird and likely unbalanced. "
+    },
+    {
+        "author": "DaveBot777",
+        "name": "The Link",
+        "mapstring": "78 69 49 65 21 66 27 45 77 42 31 37 67 34 71 44 50 28 0 25 -1 -1 -1 26 0 40 -1 -1 -1 79 0 64 -1 -1 -1 39",
+        "sliceNames": "",
+        "playerCount": 3,
+        "difficulty": "Beginner",
+        "attributes": "PoK",
+        "comments": "A pretty standard 3 player map with wormholes linking the map together."
+    },
+    {
+        "author": "Jon",
+        "name": "Gravity",
+        "mapstring": "74 44 65 42 72 48 69 27 49 26 76 30 34 35 75 64 79 66 46 0 41 73 0 36 67 0 40 47 0 45 19 0 50 24 0 32",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Beginner",
+        "attributes": "PoK, Sliceable",
+        "comments": ""
+    },
+    {
+        "author": "Spage",
+        "name": "Twin Sun Portal",
+        "mapstring": "66 73 28 65 21 31 27 64 35 39 30 25 75 26 38 40 71 79 0 34 68 56 48 80 0 72 41 0 76 42 0 69 43 0 37 78",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Each equidistant has a wormhole, and each slice has at least 6 influence. Ideally this causes the players to brawl a bit more with each other."
+    },
+    {
+        "author": "bakajszamark",
+        "name": "Joint galaxies",
+        "mapstring": "{66} 88A2 26 47 25 59 48 68 90B5 63 43 27 31 18 79 75 80 21 87B1 46 74 -1 -1 -1 0 29 44 19 22 61 78 37 0 -1 -1 -1 77 65 34 40 -1 -1 -1 -1 -1 -1 42 71 39 35 41 69 67 -1 -1 -1 -1 -1 -1 62 76 45 30 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 72 20 0 24 73 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 64",
+        "sliceNames": "1o'clock green: another Vegas;  3o'clock orange: the Lair;   4o'clock white: the tournament standard;   6o'clock blue: It's not the brave men's choice;   8o'clock purple: No more Gravity;   9o'clock yellow: A-steroid B-tween Mecathol;   11o'clock red: PDS paradise",
+        "playerCount": 7,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Joint galaxies: fairly balanced, but a little bit assymetrical 7p map.  It's a 5p and a 2p galaxy's collision. And in the middle: there is Hope's end, Primor, and of course  Mecathol. The map is equadistant, but some non-standard positions, has to contest on the way to M.R.  Certainly, there are some good matches, like: Red-XXCHA, orange-Muaat, green-Sardak or yellow-Saar. And ofc, the southern 3 positions suits for the usual power-picks like Barony, L1Z1x, Hacan, Winnu or Titans. What if we have +1 player? No probleam! GL HF!   "
+    },
+    {
+        "author": "eMka",
+        "name": "Beltway",
+        "mapstring": "{89A6} 87B5 66 87B1 18 87B3 65 30 87B2 86A4 87B4 26 87B4 86A0 87B0 33 87B0 86A2 87B2 23 24 64 69 31 43 29 21 44 27 60 39 36 80 78 35 34 79 0 19 41 78 0 78 76 62 0 42 49 37 0 78 68 63 0 61 40 67 0 78 38 78",
+        "sliceNames": "",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "Duplicates, PoK",
+        "comments": ""
+    },
+    {
+        "author": "zombiebrains",
+        "name": "Regicide",
+        "mapstring": "{87A4} 18 62 20 67 23 48 34 43 74 49 27 75 77 37 40 31 26 80 0 66 44 64 0 29 39 0 63 85A0 38 0 59 28 0 24 45 65",
+        "sliceNames": "The Emperor, The Duke, The Prince, The Countess, The Bishop",
+        "playerCount": 5,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "I was going for an asymmetrical, almost 4 v 1 but not quite scenario. The Emperor has the strongest position with easy access to MR, 2 legendaries that produce GF, and a blue skip all in an easily defensible position. They are hindered however in the fact that they cannot score victory points without expanding which puts a lot of pressure on the other players to contain  them.   Each other slice has a wormhole with easy resources, a couple of tech skips, and a wormhole to trade. The excess should make VP's easy to score.   The Duke can score an easy 4 planet type point, but his tech skips being in danger make for a tenuous relation with the others.   The Bishop likewise suffers from proximity to the Emperor but is an a thankfully more guarded position. His RY techs might prove the difference in an all out war.   The Prince has the richest slice, and his 2 green skips allow for a potential counter to the Emperor's ground game. But who is willing to trade one tyrant for another?  The Countess's slice largely reflects the Emperor's and a BR tech path opens up options for a lot of factions. Efficient planets with lots of CC's could open up a lot of doors for potential plays.   The problem remains, with only 1 person able to claim the throne, can they work together to stop the looming threat?"
+    },
+    {
+        "author": "Reynevan",
+        "name": "Legends on the Horizon",
+        "mapstring": "{46} 27 67 76 75 41 73 44 39 62 48 64 18 26 47 20 40 80 24 0 19 43 0 30 42 66 37 69 65 68 31 0 45 63 0 36 33",
+        "sliceNames": "",
+        "playerCount": 4,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "This was my entry for the second Codex. It is a fun chaotic map, but can be a lot of res and inf for some groups. I enjoyed it with my casual TI4 group."
+    },
+    {
+        "author": "sarbor",
+        "name": "Choose Your Own Introvert-ture",
+        "mapstring": "68,49,64,77,47,24,21,40,38,37,61,44,74,22,35,63,78,34,0,39,19,0,48,23,0,46,59,0,25,20,0,43,66,0,42,26",
+        "sliceNames": "All Geared Up But Nowhere To Go / Gimme Arinam Meer / No, You Gimme Arinam Meer / Friends <3 / Split Decision / Cozy Corner",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK",
+        "comments": "Low resource map that minimizes the role of legendary planets and encourages player interaction in certain sectors."
+    },
+    {
+        "author": "FallenWaffle",
+        "name": "Mixed Player Experience Map",
+        "mapstring": "28 80 44 26 67 40 66 59 64 69 31 24 75 47 29 71 65 37 0 79 50 0 76 35 0 39 48 0 34 43 0 36 45 0 74 42",
+        "sliceNames": "2-3 games (Intermediate #1), 5+ games (Expert #1), 5+ games (Expert #2), 0 games (Newbie), 2-3 games (Intermediate #2), 2-3 games (Intermediate #3)",
+        "playerCount": 6,
+        "difficulty": "Intermediate",
+        "attributes": "PoK, Asymmetric",
+        "comments": "A map designed for players with imbalanced experience levels at TI 3 Slices are for people who have some skill with the game, and get a pretty normal setup 1 slice is for someone new, who gets a great first setup (blue skip adjacent to home, protected home system, options on how to expand with a wormhole) 2 slices are for experts (blockers to mecatol rex, and slices that lead both players to fight each other over equidistants like Joel /Accoen."
+    }
+]
