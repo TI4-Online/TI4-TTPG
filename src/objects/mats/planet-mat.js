@@ -19,7 +19,7 @@ class PlanetMat {
         this._actionNameToPlanet = {};
         this._popup = new PopupPanel(
             gameObject,
-            new Vector(13.5, 0, 0.26)
+            new Vector(13.5, 0, 0.28)
         ).attachPopupButton();
 
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {

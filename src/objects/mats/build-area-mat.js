@@ -188,7 +188,7 @@ class BuildAreaMat {
         const pos = new Vector(
             MAT_WIDTH / 2 - pad,
             -(MAT_HEIGHT / 2) + pad,
-            0.13
+            0.15
         );
 
         // Attach a canvas.
