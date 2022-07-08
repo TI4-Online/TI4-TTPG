@@ -1,5 +1,6 @@
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
+const MAP_ATLAS_DB = require("../../../lib/map-string/map-atlas-db.json");
 const MAP_STRING_DB = require("../../../lib/map-string/map-string-db.json");
 const {
     Button,
@@ -69,9 +70,6 @@ class PremadeMapUI extends VerticalBox {
             });
         const accept = (candidate) => {
             for (const searchPart of searchParts) {
-                if (!candidate._lowerName) {
-                    candidate._lowerName = candidate.name.toLowerCase();
-                }
                 if (!candidate._lowerName.includes(searchPart)) {
                     return false;
                 }
@@ -79,16 +77,31 @@ class PremadeMapUI extends VerticalBox {
             return true;
         };
 
+        const candidates = [];
+        candidates.push(...MAP_STRING_DB);
+        //candidates.push(...MAP_ATLAS_DB);
+
+        for (const candidate of candidates) {
+            let displayName = candidate.name;
+            const attributes = candidate.attributes;
+            const playerCount = candidate.playerCount;
+            if (attributes && playerCount !== undefined) {
+                displayName = `${displayName} [${playerCount}p, ${attributes}]`;
+            }
+            candidate._displayName = displayName;
+            candidate._lowerName = displayName.toLowerCase();
+        }
+
         const panel = new VerticalBox();
-        for (const candidate of MAP_STRING_DB) {
+        for (const candidate of candidates) {
             if (!accept(candidate)) {
                 continue;
             }
             const button = new Button()
                 .setFontSize(CONFIG.fontSize)
-                .setText(candidate.name);
+                .setText(candidate._displayName);
             button.onClicked.add((button, player) => {
-                console.log(`PremadeMapUI.onClicked ${candidate.name}`);
+                console.log(`PremadeMapUI.onClicked ${candidate._displayName}`);
                 this._onClickHandlers.useMap(candidate);
             });
             panel.addChild(button);

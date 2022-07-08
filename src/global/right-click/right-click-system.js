@@ -90,6 +90,9 @@ function addRightClickOptions(systemTileObj) {
         return;
     }
 
+    assert(!systemTileObj.__hasRightClickOptions);
+    systemTileObj.__hasRightClickOptions = true;
+
     // Add as right-click options.  Not ideal because ground mode.
     // Might want to reset after adding mirage?
     // distant suns ability through right-click is awkward because we need
@@ -112,7 +115,7 @@ function addRightClickOptions(systemTileObj) {
 
     // Also offer via a popup.
     // Mallice needs to be flipped to see button, that's ok.
-    const popupPanel = new PopupPanel(systemTileObj, new Vector(0, 4.6, 0.16))
+    const popupPanel = new PopupPanel(systemTileObj, new Vector(0, 4.6, 0.18))
         .setMatchPlayerYaw(true)
         .attachPopupButton(0.8);
     popupPanel.onShow.add((obj, player, popupPanel) => {
