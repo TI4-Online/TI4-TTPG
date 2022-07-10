@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
+const CONFIG = require("../game-ui/game-ui-config");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const {
@@ -164,7 +165,7 @@ class StatusPad {
 
         const ui = new UIElement();
         ui.anchorY = 0;
-        ui.position = new Vector(0, 0, 0.2);
+        ui.position = new Vector(0, 0, 0.09 + CONFIG.buttonLift);
         ui.rotation = new Rotator(0, 0, 180);
         ui.scale = 0.2;
         ui.widget = new Border().setChild(layoutBox);

@@ -7,6 +7,7 @@
 
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
+const CONFIG = require("../game-ui/game-ui-config");
 const { Broadcast } = require("../lib/broadcast");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const {
@@ -27,7 +28,7 @@ function setupStrategyCard(card) {
 
     // Setup the play button
     card.play_button = new UIElement();
-    card.play_button.position = new Vector(3, -0.5, -0.2);
+    card.play_button.position = new Vector(3, -0.5, -0.16 - CONFIG.buttonLift);
     card.play_button.rotation = new Rotator(180, 180, 0); // THis makes it appear ont he back side only.
     card.play_button.widget = new Button()
         .setText(playButtonName)

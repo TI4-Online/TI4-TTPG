@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const CONFIG = require("../../game-ui/game-ui-config");
 const { AuxDataBuilder } = require("../../lib/unit/auxdata");
 const { AuxDataPair } = require("../../lib/unit/auxdata-pair");
 const { Broadcast } = require("../../lib/broadcast");
@@ -188,7 +189,7 @@ class BuildAreaMat {
         const pos = new Vector(
             MAT_WIDTH / 2 - pad,
             -(MAT_HEIGHT / 2) + pad,
-            0.15
+            0.13 + CONFIG.buttonLift
         );
 
         // Attach a canvas.
