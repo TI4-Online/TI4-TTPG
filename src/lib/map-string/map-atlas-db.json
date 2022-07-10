@@ -738,5 +738,15 @@
         "difficulty": "Intermediate",
         "attributes": "PoK, Asymmetric",
         "comments": "A map designed for players with imbalanced experience levels at TI 3 Slices are for people who have some skill with the game, and get a pretty normal setup 1 slice is for someone new, who gets a great first setup (blue skip adjacent to home, protected home system, options on how to expand with a wormhole) 2 slices are for experts (blockers to mecatol rex, and slices that lead both players to fight each other over equidistants like Joel /Accoen."
+    },
+    {
+        "author": "PhilRoi",
+        "name": "Rumble in the Jungle",
+        "mapstring": "85A3,39,67,22,43,25,0,88A1,76,78,65,50,69,37,38,30,32,87A5,86A3,84A3,68,0,75,66,0,79,36,0,23,64,0,70,33,0,74,83A3",
+        "sliceNames": "Monkey,Chimpanzee,Orangutang,Gorrilla,Baboon,Lemur",
+        "playerCount": 6,
+        "difficulty": "Advanced",
+        "attributes": "PoK, Asymmetric",
+        "comments": "Made for game 3 of FFGs 25-Hour Livestream Celebrating the 25th Anniversary of Twilight Imperium"
     }
 ]

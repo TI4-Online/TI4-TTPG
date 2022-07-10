@@ -10,7 +10,8 @@ const { Player, globalEvents, world } = require("../wrapper/api");
 const { Shuffle } = require("./shuffle");
 
 // Only positions from the previous turn are kept.
-const ADVANCE_TTPG_TURNS = true;
+// Disable this for now until memory pressue is understood.
+const ADVANCE_TTPG_TURNS = false;
 
 const TURN_ORDER_TYPE = {
     FORWARD: 1,

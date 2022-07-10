@@ -85,7 +85,7 @@ class MapStringLoad {
             }
 
             // Place tile.
-            const animSpeed = 1;
+            const animSpeed = 0; // do not animate, report of hitting things
             obj.setObjectType(ObjectType.Regular);
             const container = obj.getContainer();
             if (container) {

@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const CONFIG = require("../../game-ui/game-ui-config");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { ControlToken } = require("../../lib/control-token/control-token");
 const { Explore } = require("../../lib/explore/explore");
@@ -115,7 +116,10 @@ function addRightClickOptions(systemTileObj) {
 
     // Also offer via a popup.
     // Mallice needs to be flipped to see button, that's ok.
-    const popupPanel = new PopupPanel(systemTileObj, new Vector(0, 4.6, 0.18))
+    const popupPanel = new PopupPanel(
+        systemTileObj,
+        new Vector(0, 4.6, 0.13 + CONFIG.buttonLift)
+    )
         .setMatchPlayerYaw(true)
         .attachPopupButton(0.8);
     popupPanel.onShow.add((obj, player, popupPanel) => {

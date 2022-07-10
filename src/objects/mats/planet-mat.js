@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const CONFIG = require("../../game-ui/game-ui-config");
 const { CardUtil } = require("../../lib/card/card-util");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
 const {
@@ -19,7 +20,7 @@ class PlanetMat {
         this._actionNameToPlanet = {};
         this._popup = new PopupPanel(
             gameObject,
-            new Vector(13.5, 0, 0.28)
+            new Vector(13.5, 0, 0.25 + CONFIG.buttonLift)
         ).attachPopupButton();
 
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
