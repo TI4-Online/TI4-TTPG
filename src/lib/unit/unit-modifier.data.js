@@ -96,7 +96,7 @@ module.exports = [
             if (!selfSheet) {
                 return false;
             }
-            for (const opponentCommandToken in opponentCommandTokens) {
+            for (const opponentCommandToken of opponentCommandTokens) {
                 const worldPos = opponentCommandToken.getPosition();
                 const sheetPos = selfSheet.worldPositionToLocal(worldPos);
                 // 15 is somewhat generous but nowhere near map area.
