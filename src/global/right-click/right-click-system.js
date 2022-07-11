@@ -146,18 +146,22 @@ function addRightClickOptions(systemTileObj) {
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isSystemTile(obj)) {
         process.nextTick(() => {
-            addRightClickOptions(obj);
+            process.nextTick(() => {
+                addRightClickOptions(obj);
+            });
         });
     }
 });
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        if (ObjectNamespace.isSystemTile(obj)) {
-            process.nextTick(() => {
-                addRightClickOptions(obj);
-            });
-        }
-    }
+    process.nextTick(() => {
+        process.nextTick(() => {
+            for (const obj of world.getAllObjects()) {
+                if (ObjectNamespace.isSystemTile(obj)) {
+                    addRightClickOptions(obj);
+                }
+            }
+        });
+    });
 }
