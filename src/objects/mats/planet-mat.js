@@ -18,6 +18,12 @@ class PlanetMat {
 
         this._obj = gameObject;
         this._actionNameToPlanet = {};
+
+        // Remove all UI.
+        for (const ui of this._obj.getUIs()) {
+            this._obj.removeUIElement(ui);
+        }
+
         this._popup = new PopupPanel(
             gameObject,
             new Vector(13.5, 0, 0.25 + CONFIG.buttonLift)

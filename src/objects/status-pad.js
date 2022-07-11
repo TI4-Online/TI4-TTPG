@@ -28,6 +28,11 @@ class StatusPad {
         this._awayImages = [];
         this._passImages = [];
 
+        // Remove all UI.
+        for (const ui of this._obj.getUIs()) {
+            this._obj.removeUIElement(ui);
+        }
+
         this._obj.addUI(this.createForwardUi());
         this._obj.addUI(this.createReverseUi());
 

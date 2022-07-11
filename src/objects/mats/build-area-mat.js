@@ -178,6 +178,11 @@ class BuildAreaMat {
     }
 
     _createUI() {
+        // Remove all UI.
+        for (const ui of this._obj.getUIs()) {
+            this._obj.removeUIElement(ui);
+        }
+
         // Get layout position and size.
         const scale = 4;
         const pad = 0.35;

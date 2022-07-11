@@ -85,6 +85,11 @@ function getNamesAndActions(player, systemTileObj) {
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
 
+    // Remove all UI.
+    for (const ui of systemTileObj.getUIs()) {
+        systemTileObj.removeUIElement(ui);
+    }
+
     // Skip home system placeholders and hyperlanes.
     const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
     if (!system || system.hyperlane) {
