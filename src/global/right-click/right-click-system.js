@@ -155,7 +155,9 @@ globalEvents.onObjectCreated.add((obj) => {
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
         if (ObjectNamespace.isSystemTile(obj)) {
-            addRightClickOptions(obj);
+            process.nextTick(() => {
+                addRightClickOptions(obj);
+            });
         }
     }
 }

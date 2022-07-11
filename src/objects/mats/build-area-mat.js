@@ -178,11 +178,6 @@ class BuildAreaMat {
     }
 
     _createUI() {
-        // Remove all UI.
-        for (const ui of this._obj.getUIs()) {
-            this._obj.removeUIElement(ui);
-        }
-
         // Get layout position and size.
         const scale = 4;
         const pad = 0.35;
@@ -197,19 +192,7 @@ class BuildAreaMat {
             0.13 + CONFIG.buttonLift
         );
 
-        // Attach a canvas.
         const canvas = new Canvas();
-        this._ui.uiE = new UIElement();
-        this._ui.uiE.useWidgetSize = false;
-        this._ui.uiE.width = size.w;
-        this._ui.uiE.height = size.h;
-        this._ui.uiE.scale = 1 / scale;
-        this._ui.uiE.anchorX = 0;
-        this._ui.uiE.anchorY = 0;
-        this._ui.uiE.position = pos;
-        this._ui.uiE.widget = canvas;
-        this._obj.addUI(this._ui.uiE);
-
         canvas.addChild(
             new Border(), //.setColor([0.3, 0, 0]),
             0,
@@ -246,6 +229,18 @@ class BuildAreaMat {
             buttonSize,
             buttonSize
         );
+
+        // Attach a canvas.
+        this._ui.uiE = new UIElement();
+        this._ui.uiE.useWidgetSize = false;
+        this._ui.uiE.width = size.w;
+        this._ui.uiE.height = size.h;
+        this._ui.uiE.scale = 1 / scale;
+        this._ui.uiE.anchorX = 0;
+        this._ui.uiE.anchorY = 0;
+        this._ui.uiE.position = pos;
+        this._ui.uiE.widget = canvas;
+        this._obj.addUI(this._ui.uiE);
     }
 
     _createPopupUI() {
@@ -497,13 +492,20 @@ class BuildAreaMat {
         this._ui.unitCount.setText(
             locale("ui.build.unitCount", { unitCount: totalUnitCount })
         );
+        console.log(
+            `BuildAreaMat.update: ${JSON.stringify(
+                unitToCount
+            )} = ${totalUnitCount}`
+        );
+        this._obj.updateUI(this._ui.uiE);
 
-        return {
+        const result = {
             produce,
             consume,
             unitToCount,
             totalUnitCount,
         };
+        return result;
     }
 
     reportBuild() {
@@ -566,12 +568,28 @@ class BuildAreaMat {
     }
 }
 
-refObject.onCreated.add((obj) => {
+let _createOnlyOnceCalled = false;
+const createOnlyOnce = (obj) => {
+    assert(obj instanceof GameObject);
+    if (_createOnlyOnceCalled || world.__isMock) {
+        return;
+    }
+    _createOnlyOnceCalled = true;
     new BuildAreaMat(obj);
+};
+
+refObject.onCreated.add((obj) => {
+    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
+    // AND PROBABLY CAUSES OTHER PROBLEMS.
+    process.nextTick(() => {
+        createOnlyOnce(obj);
+    });
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    new BuildAreaMat(refObject);
+    process.nextTick(() => {
+        createOnlyOnce(refObject);
+    });
 }
 
 if (world.__isMock) {

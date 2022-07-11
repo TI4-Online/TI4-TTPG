@@ -167,9 +167,26 @@ class UnitBag {
     }
 }
 
-refContainer.onCreated.add((obj) => {
+let _createOnlyOnceCalled = false;
+const createOnlyOnce = (obj) => {
+    assert(obj instanceof GameObject);
+    if (_createOnlyOnceCalled || world.__isMock) {
+        return;
+    }
+    _createOnlyOnceCalled = true;
     new UnitBag(obj);
+};
+
+refContainer.onCreated.add((obj) => {
+    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
+    // AND PROBABLY CAUSES OTHER PROBLEMS.
+    process.nextTick(() => {
+        createOnlyOnce(obj);
+    });
 });
+
 if (world.getExecutionReason() === "ScriptReload") {
-    new UnitBag(refContainer);
+    process.nextTick(() => {
+        createOnlyOnce(refContainer);
+    });
 }
