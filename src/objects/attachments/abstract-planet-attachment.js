@@ -118,20 +118,33 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
             planet.position.y - Math.cos(phi) * r,
             0
         );
-        const extraZ = steps * this._obj.getSize().z;
+
+        const tokenObj = this.getAttachTokenObj();
+        const extraZ = steps * tokenObj.getSize().z;
         const worldPosition = systemTileObj
             .localPositionToWorld(attachmentPosition)
             .add([0, 0, systemTileObj.getSize().z + extraZ]);
 
-        this._obj.setObjectType(ObjectType.Regular);
-        this._obj.setPosition(worldPosition, 0);
+        // Watch out for place re-triggering onMovementStopped, ignore if already
+        // at location.
+        const p = tokenObj.getPosition();
+        const dx = p.x - worldPosition.x;
+        const dy = p.y - worldPosition.y;
+        const dSq = dx * dx + dy * dy;
+        if (dSq < 0.1) {
+            return;
+        }
+        console.log(`AbstractPlanetAttachment._positionOnPlanet: dSq ${dSq}`);
+
+        tokenObj.setObjectType(ObjectType.Regular);
+        tokenObj.setPosition(worldPosition, 0);
 
         // Fix yaw to match system tile.
-        const rot = this._obj.getRotation();
+        const rot = tokenObj.getRotation();
         rot.yaw = systemTileObj.getRotation().yaw;
-        this._obj.setRotation(rot);
+        tokenObj.setRotation(rot);
 
-        this._obj.setObjectType(ObjectType.Ground);
+        tokenObj.setObjectType(ObjectType.Ground);
     }
 
     _addPlanetAttrs(planet, faceUp) {

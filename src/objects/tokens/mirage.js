@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const {
     AbstractSystemAttachment,
 } = require("../attachments/abstract-system-attachment");
-const { Planet } = require("../../lib/system/system");
+const { System, Planet } = require("../../lib/system/system");
 const {
     refObject,
     GameObject,
@@ -47,6 +47,7 @@ class Mirage extends AbstractSystemAttachment {
             planetRadius
         );
         system.planets.push(mirage);
+        System.invalidateCache();
 
         // place and lock the mirage token in the right location
 
@@ -63,14 +64,25 @@ class Mirage extends AbstractSystemAttachment {
         );
         const miragePos = systemTileObj.localPositionToWorld(shiftedMiragePos);
 
+        const tokenObj = this.getAttachTokenObj();
+        miragePos.z += systemTileObj.getSize().z * tokenObj.getSize().z;
+
+        // Watch out for place re-triggering onMovementStopped, ignore if already
+        // at location.
+        const p = tokenObj.getPosition();
+        const dx = p.x - miragePos.x;
+        const dy = p.y - miragePos.y;
+        const dSq = dx * dx + dy * dy;
+        if (dSq < 0.1) {
+            return;
+        }
+        console.log(`AbstractSystemAttachment.place: dSq ${dSq}`);
+
         // offset position in the z direction to ensure that the mirage is always
         // on top of the system tile, otherwise it sometimes appears partially
         // underneath the tile
-        const tokenObj = this.getAttachTokenObj();
         tokenObj.setObjectType(ObjectType.Regular); // paranoia
-        tokenObj.setPosition(
-            miragePos.add(new Vector(0, 0, systemTileObj.getSize().z))
-        );
+        tokenObj.setPosition(miragePos);
         tokenObj.setRotation(mirageRot);
         tokenObj.setScale(scale);
 
