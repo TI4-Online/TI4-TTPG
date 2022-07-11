@@ -492,20 +492,14 @@ class BuildAreaMat {
         this._ui.unitCount.setText(
             locale("ui.build.unitCount", { unitCount: totalUnitCount })
         );
-        console.log(
-            `BuildAreaMat.update: ${JSON.stringify(
-                unitToCount
-            )} = ${totalUnitCount}`
-        );
         this._obj.updateUI(this._ui.uiE);
 
-        const result = {
+        return {
             produce,
             consume,
             unitToCount,
             totalUnitCount,
         };
-        return result;
     }
 
     reportBuild() {

@@ -76,7 +76,6 @@ class Mirage extends AbstractSystemAttachment {
         if (dSq < 0.1) {
             return;
         }
-        console.log(`AbstractSystemAttachment.place: dSq ${dSq}`);
 
         // offset position in the z direction to ensure that the mirage is always
         // on top of the system tile, otherwise it sometimes appears partially

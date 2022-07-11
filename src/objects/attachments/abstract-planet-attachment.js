@@ -134,7 +134,6 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         if (dSq < 0.1) {
             return;
         }
-        console.log(`AbstractPlanetAttachment._positionOnPlanet: dSq ${dSq}`);
 
         tokenObj.setObjectType(ObjectType.Regular);
         tokenObj.setPosition(worldPosition, 0);
