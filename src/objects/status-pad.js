@@ -28,11 +28,10 @@ class StatusPad {
         this._awayImages = [];
         this._passImages = [];
 
-        this._obj.addUI(this.createForwardUi());
-        this._obj.addUI(this.createReverseUi());
-
         // Give creator a frame to finish setting state.
         process.nextTick(() => {
+            this._obj.addUI(this.createForwardUi());
+            this._obj.addUI(this.createReverseUi());
             this.updateUi();
         });
     }

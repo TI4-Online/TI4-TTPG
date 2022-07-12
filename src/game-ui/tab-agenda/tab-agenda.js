@@ -190,6 +190,10 @@ class TabAgenda {
             this.resetForCurrentState();
         });
 
+        globalEvents.TI4.onTurnChanged.add(() => {
+            this.updateWaitingForMessage();
+        });
+
         // This is not working reliably.
         //globalEvents.TI4.onPlanetCardFlipped.add((card, isFaceUp) => {
         //    this._onPlanetCardFlipped(card, isFaceUp);
@@ -266,8 +270,7 @@ class TabAgenda {
      */
     resetForCurrentState() {
         // Make sure desk UIs exist before trying to use them.
-        // Likewise discard them when finished.
-        this.createOrDestroyDeskUI();
+        this.maybeCreateDeskUI();
 
         const onResetPlanetCards = () => {
             TabAgenda.resetPlanetCards();
@@ -406,27 +409,30 @@ class TabAgenda {
                 throw new Error(`unknown state "${this._stateMachine.main}"`);
         }
 
-        // Set "waiting for" message.
-        if (this._deskUIs) {
-            if (this._stateMachine.main === "WHEN.MAIN") {
-                AgendaUiDesk.updateWaitingForWhen(this._deskUIs);
-            } else if (this._stateMachine.main === "AFTER.MAIN") {
-                AgendaUiDesk.updateWaitingForAfter(this._deskUIs);
-            } else if (this._stateMachine.main === "VOTE.MAIN") {
-                AgendaUiDesk.updateWaitingForVote(this._deskUIs);
-            }
+        this.updateWaitingForMessage();
+
+        // Discard them when finished.
+        this.maybeDestroyDeskUI();
+    }
+
+    updateWaitingForMessage() {
+        if (!this._stateMachine || !this._deskUIs) {
+            return;
+        }
+        if (this._stateMachine.main === "WHEN.MAIN") {
+            AgendaUiDesk.updateWaitingForWhen(this._deskUIs);
+        } else if (this._stateMachine.main === "AFTER.MAIN") {
+            AgendaUiDesk.updateWaitingForAfter(this._deskUIs);
+        } else if (this._stateMachine.main === "VOTE.MAIN") {
+            AgendaUiDesk.updateWaitingForVote(this._deskUIs);
         }
     }
 
-    createOrDestroyDeskUI() {
-        // Abort if not active.
+    maybeCreateDeskUI() {
         if (!this._stateMachine || !this._outcomeNames) {
-            if (this._deskUIs) {
-                for (const deskUI of this._deskUIs) {
-                    deskUI.detach();
-                }
-            }
-            this._deskUIs = undefined;
+            return;
+        }
+        if (this._deskUIs) {
             return;
         }
 
@@ -463,7 +469,6 @@ class TabAgenda {
                     world.TI4.turns.getCurrentTurn() === playerDesk
                 ) {
                     world.TI4.turns.endTurn(clickingPlayer);
-                    AgendaUiDesk.updateWaitingForAfter(this._deskUIs);
                 }
             },
             onVoteLocked: (playerDesk, clickingPlayer, isLocked) => {
@@ -472,22 +477,31 @@ class TabAgenda {
         };
 
         // Create if missing.
-        if (!this._deskUIs) {
-            this._deskUIs = [];
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const deskUi = new AgendaUiDesk(
-                    playerDesk,
-                    this._outcomeNames,
-                    this._outcomeType === OUTCOME_TYPE.OTHER,
-                    this._deskIndexToAvailableVotes,
-                    callbacks
-                );
-                deskUi.attach();
-                this._deskUIs.push(deskUi);
+        this._deskUIs = [];
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const deskUi = new AgendaUiDesk(
+                playerDesk,
+                this._outcomeNames,
+                this._outcomeType === OUTCOME_TYPE.OTHER,
+                this._deskIndexToAvailableVotes,
+                callbacks
+            );
+            deskUi.attach();
+            this._deskUIs.push(deskUi);
+        }
+        for (const deskUi of this._deskUIs) {
+            deskUi.setPeers(this._deskUIs);
+        }
+    }
+
+    maybeDestroyDeskUI() {
+        if (!this._stateMachine || !this._outcomeNames) {
+            if (this._deskUIs) {
+                for (const deskUI of this._deskUIs) {
+                    deskUI.detach();
+                }
             }
-            for (const deskUi of this._deskUIs) {
-                deskUi.setPeers(this._deskUIs);
-            }
+            this._deskUIs = undefined;
         }
     }
 
@@ -528,13 +542,6 @@ class TabAgenda {
         // At this point it is correct phase and our turn.
         if (!world.TI4.turns.isTurnOrderEmpty()) {
             world.TI4.turns.endTurn(clickingPlayer);
-            if (this._stateMachine.main === "WHEN.MAIN") {
-                AgendaUiDesk.updateWaitingForWhen(this._deskUIs);
-            } else if (this._stateMachine.main === "AFTER.MAIN") {
-                AgendaUiDesk.updateWaitingForAfter(this._deskUIs);
-            } else if (this._stateMachine.main === "VOTE.MAIN") {
-                AgendaUiDesk.updateWaitingForVote(this._deskUIs);
-            }
             return; // Advance to next player, same phase
         }
 

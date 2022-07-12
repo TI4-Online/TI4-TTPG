@@ -11,6 +11,11 @@ class TabStatus {
             dealActionCards: (button, player) => {
                 DealActionCards.dealToAll();
 
+                EndStatusPhase.returnCommandTokens(); // return before distribute
+                EndStatusPhase.repairShips();
+                EndStatusPhase.refreshCards();
+                EndStatusPhase.resetPassedFlags();
+
                 // Mantis says: "the gain tokens should be part of the deal
                 // action cards button instead of the end status phase.  there
                 // are edge case scenarios where token allocation is based on
@@ -21,11 +26,7 @@ class TabStatus {
                 EndStatusPhase.distributeCommandTokens();
             },
             endStatusPhase: (button, player) => {
-                EndStatusPhase.returnCommandTokens();
-                EndStatusPhase.repairShips();
-                EndStatusPhase.refreshCards();
                 EndStatusPhase.returnStrategyCards();
-                EndStatusPhase.resetPassedFlags();
             },
         };
         ThrottleClickHandler.wrapValues(onButtonCallbacks);

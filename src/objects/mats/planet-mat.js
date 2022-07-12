@@ -18,6 +18,7 @@ class PlanetMat {
 
         this._obj = gameObject;
         this._actionNameToPlanet = {};
+
         this._popup = new PopupPanel(
             gameObject,
             new Vector(13.5, 0, 0.25 + CONFIG.buttonLift)
@@ -87,10 +88,26 @@ class PlanetMat {
     }
 }
 
-refObject.onCreated.add((obj) => {
+let _createOnlyOnceCalled = false;
+const createOnlyOnce = (obj) => {
+    assert(obj instanceof GameObject);
+    if (_createOnlyOnceCalled || world.__isMock) {
+        return;
+    }
+    _createOnlyOnceCalled = true;
     new PlanetMat(obj);
+};
+
+refObject.onCreated.add((obj) => {
+    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
+    // AND PROBABLY CAUSES OTHER PROBLEMS.
+    process.nextTick(() => {
+        createOnlyOnce(obj);
+    });
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    new PlanetMat(refObject);
+    process.nextTick(() => {
+        createOnlyOnce(refObject);
+    });
 }

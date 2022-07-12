@@ -327,13 +327,18 @@ class System {
         return _activeSystemGameObject;
     }
 
+    static invalidateCache() {
+        _tileToSystem = undefined;
+        _planetLocaleNameToPlanet = undefined;
+    }
+
     static injectSystem(rawSystem) {
         assert(rawSystem);
         SystemSchema.validate(rawSystem, (err) => {
             throw new Error('System.injectSystem "${err}"');
         });
         SYSTEM_ATTRS.push(rawSystem);
-        _tileToSystem = undefined;
+        System.invalidateCache();
     }
 
     constructor(systemAttrs) {

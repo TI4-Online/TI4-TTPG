@@ -85,6 +85,11 @@ function getNamesAndActions(player, systemTileObj) {
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
 
+    // Remove all UI.
+    for (const ui of systemTileObj.getUIs()) {
+        systemTileObj.removeUIElement(ui);
+    }
+
     // Skip home system placeholders and hyperlanes.
     const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
     if (!system || system.hyperlane) {
@@ -141,16 +146,22 @@ function addRightClickOptions(systemTileObj) {
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isSystemTile(obj)) {
         process.nextTick(() => {
-            addRightClickOptions(obj);
+            process.nextTick(() => {
+                addRightClickOptions(obj);
+            });
         });
     }
 });
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
-        if (ObjectNamespace.isSystemTile(obj)) {
-            addRightClickOptions(obj);
-        }
-    }
+    process.nextTick(() => {
+        process.nextTick(() => {
+            for (const obj of world.getAllObjects()) {
+                if (ObjectNamespace.isSystemTile(obj)) {
+                    addRightClickOptions(obj);
+                }
+            }
+        });
+    });
 }

@@ -240,12 +240,27 @@ class CommandTokenBag {
     }
 }
 
-refContainer.onCreated.add((obj) => {
+let _createOnlyOnceCalled = false;
+const createOnlyOnce = (obj) => {
+    assert(obj instanceof GameObject);
+    if (_createOnlyOnceCalled || world.__isMock) {
+        return;
+    }
+    _createOnlyOnceCalled = true;
     new CommandTokenBag(obj);
     new Reporter(obj);
+};
+
+refContainer.onCreated.add((obj) => {
+    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
+    // AND PROBABLY CAUSES OTHER PROBLEMS.
+    process.nextTick(() => {
+        createOnlyOnce(obj);
+    });
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    new CommandTokenBag(refContainer);
-    new Reporter(refContainer);
+    process.nextTick(() => {
+        createOnlyOnce(refContainer);
+    });
 }
