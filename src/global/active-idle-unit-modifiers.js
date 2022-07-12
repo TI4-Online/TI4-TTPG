@@ -1,14 +1,22 @@
 /**
  * Add active/idle buttons to those unit modifiers.
  */
+const assert = require("../wrapper/assert-wrapper");
 const { ActiveIdle } = require("../lib/unit/active-idle");
 const { UnitModifier } = require("../lib/unit/unit-modifier");
 const { Card, globalEvents, world } = require("../wrapper/api");
 
-globalEvents.TI4.onSingletonCardCreated.add((card) => {
-    if (UnitModifier.isToggleActiveObject(card)) {
+function delayedAddToggleActiveButton(card) {
+    assert(card instanceof Card);
+    process.nextTick(() => {
         ActiveIdle.addToggleActiveButton(card);
         card.__hasToggleActiveButton = true;
+    });
+}
+
+globalEvents.TI4.onSingletonCardCreated.add((card) => {
+    if (UnitModifier.isToggleActiveObject(card)) {
+        delayedAddToggleActiveButton(card);
     }
 });
 
@@ -21,16 +29,13 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        for (const obj of world.getAllObjects()) {
-            if (!(obj instanceof Card)) {
-                continue;
-            }
-            if (!UnitModifier.isToggleActiveObject(obj)) {
-                continue;
-            }
-            ActiveIdle.addToggleActiveButton(obj);
-            obj.__hasToggleActiveButton = true;
+    for (const obj of world.getAllObjects()) {
+        if (!(obj instanceof Card)) {
+            continue;
         }
-    });
+        if (!UnitModifier.isToggleActiveObject(obj)) {
+            continue;
+        }
+        delayedAddToggleActiveButton(obj);
+    }
 }
