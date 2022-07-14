@@ -309,7 +309,7 @@
     "ui.agenda.clippy.vote_player_name": "Choose an outcome {playerName}, then flip planets and/or use +/- to vote.",
     "ui.agenda.clippy.pre": "Any ”at the start of an agenda phase“ (Ancient Burial Sites)?",
     "ui.agenda.clippy.post": "Play any ”after the speaker votes“ (Bribery), then proceed.",
-    "ui.agenda.clippy.outcome": "The outcome is:\n{outcome}\n\nReset cards after finishing the second agenda.",
+    "ui.agenda.clippy.outcome": "The outcome is:\n{outcome}\nPredictions:\n{riders}\n\nReset cards after finishing the second agenda.",
 
     "ui.agenda.outcome_type.for_against": "For/Against",
     "ui.agenda.outcome_type.player": "Elect player",

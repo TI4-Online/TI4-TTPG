@@ -133,6 +133,7 @@ class TabAgenda {
             case "FINISH.MAIN":
                 summary = locale("ui.agenda.clippy.outcome", {
                     outcome: agenda.summarizeVotes(),
+                    riders: agenda.summarizePredictions(),
                 });
                 this._widget.setChild(
                     AgendaUiMain.simpleButton(
@@ -256,7 +257,7 @@ class TabAgenda {
         // Otherwise need desk UI.
         this._deskUIs = [];
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const outcomeNamesMutable = false;
+            const outcomeNamesMutable = agenda.getOutcomeName(0) === "?";
             const deskUi = new AgendaUiDesk(
                 playerDesk,
                 outcomeNamesMutable,

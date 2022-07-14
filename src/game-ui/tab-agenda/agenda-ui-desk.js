@@ -22,10 +22,6 @@ const {
 const ANYONE_CAN_CLICK = false;
 const BUTTON_SCALE = 0.75;
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 /**
  * Per-desk: whens, afters, outcomes
  */
@@ -439,6 +435,7 @@ class AgendaUiDesk extends Border {
         const deskIndex = this._playerDesk.index;
         let enabled;
         let msg;
+        const locked = agenda.getVoteLocked(deskIndex);
 
         // Whens.
         enabled = !agenda.getNoWhens(deskIndex);
@@ -459,8 +456,10 @@ class AgendaUiDesk extends Border {
             const outcome = this._outcomeData[outcomeIndex];
             outcome.nameText.setText(agenda.getOutcomeName(outcomeIndex));
             enabled = agenda.getVoteOutcomeIndex(deskIndex) !== outcomeIndex;
+            enabled = enabled && !locked;
             outcome.voteButton.setEnabled(enabled);
-            enabled = !enabled;
+            enabled = agenda.getVoteOutcomeIndex(deskIndex) === outcomeIndex;
+            enabled = enabled && !locked;
             outcome.voteDecrButton.setEnabled(enabled);
             outcome.voteIncrButton.setEnabled(enabled);
 
@@ -473,13 +472,16 @@ class AgendaUiDesk extends Border {
                     const votes = agenda.getVoteCount(peerIndex);
                     if (votes > 0) {
                         total += votes;
-                        msg = `${votes}`;
+                        msg = `${votes} `;
                     }
                 }
                 outcome.voteTexts[peerIndex].setText(msg);
             }
             outcome.voteTotalText.setText(` [${total}] `);
 
+            enabled = !locked;
+            outcome.predictionDecrButton.setEnabled(enabled);
+            outcome.predictionIncrButton.setEnabled(enabled);
             for (let peerIndex = 0; peerIndex < peerCount; peerIndex++) {
                 msg = "";
                 const predictions = agenda.getPredictionCount(
@@ -494,7 +496,6 @@ class AgendaUiDesk extends Border {
         }
 
         // Lock votes.
-        const locked = agenda.getVoteLocked(deskIndex);
         msg = locked
             ? "ui.agenda.clippy.unlock_vote"
             : "ui.agenda.clippy.lock_vote";
@@ -518,164 +519,6 @@ class AgendaUiDesk extends Border {
                 playerName,
             })
         );
-    }
-
-    // ---------------
-
-    /**
-     * Update text fields
-     *
-     * @param {Array} agendaUiDesks
-     */
-    static updateVoteAndPredictionCounts(agendaUiDesks) {
-        assert(Array.isArray(agendaUiDesks));
-
-        // Clear all per-player vote, prediction text.  Default button enables.
-        for (const agendaUiDesk of agendaUiDesks) {
-            const isLocked = agendaUiDesk._voteLocked;
-            const m = isLocked
-                ? "ui.agenda.clippy.unlock_vote"
-                : "ui.agenda.clippy.lock_vote";
-            agendaUiDesk._lockVoteButton.setText(locale(m));
-
-            for (let i = 0; i < agendaUiDesk._outcomeData.length; i++) {
-                const outcomeData = agendaUiDesk._outcomeData[i];
-                const myOutcome = i === agendaUiDesk._votedOutcomeIndex;
-                outcomeData.voteButton.setEnabled(!myOutcome && !isLocked);
-                outcomeData.voteDecrButton.setEnabled(myOutcome && !isLocked);
-                outcomeData.voteIncrButton.setEnabled(myOutcome && !isLocked);
-                outcomeData.predictionDecrButton.setEnabled(!isLocked);
-                outcomeData.predictionIncrButton.setEnabled(!isLocked);
-                for (const voteText of outcomeData.voteTexts) {
-                    voteText.setText("");
-                }
-                for (const predictionText of outcomeData.predictionTexts) {
-                    predictionText.setText("");
-                }
-            }
-        }
-
-        // Apply per-player votes, swap selected button enabled.
-        for (const agendaUiDesk of agendaUiDesks) {
-            if (
-                agendaUiDesk._votedOutcomeIndex < 0 ||
-                agendaUiDesk._votesCast <= 0
-            ) {
-                continue;
-            }
-            const deskIndex = agendaUiDesk._playerDesk.index;
-            const voteOutcomeIndex = agendaUiDesk._votedOutcomeIndex;
-            const voteValueText = `${agendaUiDesk._votesCast} `;
-            for (const peer of agendaUiDesks) {
-                const outcome = peer._outcomeData[voteOutcomeIndex];
-                const voteText = outcome.voteTexts[deskIndex];
-                voteText.setText(voteValueText);
-            }
-        }
-
-        // Apply per-player predictions.
-        for (const agendaUiDesk of agendaUiDesks) {
-            const deskIndex = agendaUiDesk._playerDesk.index;
-            for (const [prediction, count] of Object.entries(
-                agendaUiDesk._predictedOutcomeIndexToCount
-            )) {
-                for (const peer of agendaUiDesks) {
-                    const outcome = peer._outcomeData[prediction];
-                    const predictionText = outcome.predictionTexts[deskIndex];
-                    const value = new Array(count + 1).join("X");
-                    predictionText.setText(value);
-                }
-            }
-        }
-
-        // Apply vote totals.
-        const count = agendaUiDesks[0]._outcomeData.length;
-        const totals = Array(count).fill(0);
-        for (const agendaUiDesk of agendaUiDesks) {
-            const deskOucome = agendaUiDesk._votedOutcomeIndex;
-            totals[deskOucome] += agendaUiDesk._votesCast;
-        }
-        for (const agendaUiDesk of agendaUiDesks) {
-            for (let i = 0; i < totals.length; i++) {
-                const total = totals[i];
-                const outcomeData = agendaUiDesk._outcomeData[i];
-                const totalText = outcomeData.voteTotalText;
-                const value = ` [${total}] `;
-                totalText.setText(value);
-            }
-        }
-    }
-
-    /**
-     * Update the waiting for message for the next desk to "when".
-     *
-     * @param {Array.{AgendaUiDesk}} agendaUiDesks
-     * @param {Array.{PlayerDesk}} order
-     * @returns {boolean} true if at least one desk is waiting
-     */
-    static updateWaitingForWhen(agendaUiDesks) {
-        assert(Array.isArray(agendaUiDesks));
-
-        const first = AgendaUiDesk._current(agendaUiDesks);
-        if (!first) {
-            return false;
-        }
-
-        const playerName = capitalizeFirstLetter(first._playerDesk.colorName);
-        const msg = locale("ui.agenda.clippy.waiting_whens", { playerName });
-        for (const agendaUiDesk of agendaUiDesks) {
-            agendaUiDesk._waitingFor.setText(msg);
-        }
-
-        return true;
-    }
-
-    /**
-     * Update the waiting for message for the next desk to "when".
-     *
-     * @param {Array.{AgendaUiDesk}} agendaUiDesks
-     * @param {Array.{PlayerDesk}} order
-     * @returns {boolean} true if at least one desk is waiting
-     */
-    static updateWaitingForAfter(agendaUiDesks) {
-        assert(Array.isArray(agendaUiDesks));
-
-        const first = AgendaUiDesk._current(agendaUiDesks);
-        if (!first) {
-            return false;
-        }
-
-        const playerName = capitalizeFirstLetter(first._playerDesk.colorName);
-        const msg = locale("ui.agenda.clippy.waiting_afters", { playerName });
-        for (const agendaUiDesk of agendaUiDesks) {
-            agendaUiDesk._waitingFor.setText(msg);
-        }
-
-        return true;
-    }
-
-    /**
-     * Update the waiting for message for the next desk to "when".
-     *
-     * @param {Array.{AgendaUiDesk}} agendaUiDesks
-     * @param {Array.{PlayerDesk}} order
-     * @returns {boolean} true if at least one desk is waiting
-     */
-    static updateWaitingForVote(agendaUiDesks) {
-        assert(Array.isArray(agendaUiDesks));
-
-        const first = AgendaUiDesk._current(agendaUiDesks);
-        if (!first) {
-            return false;
-        }
-
-        const playerName = capitalizeFirstLetter(first._playerDesk.colorName);
-        const msg = locale("ui.agenda.clippy.waiting_vote", { playerName });
-        for (const agendaUiDesk of agendaUiDesks) {
-            agendaUiDesk._waitingFor.setText(msg);
-        }
-
-        return true;
     }
 }
 

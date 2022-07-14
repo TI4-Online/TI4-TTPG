@@ -12,6 +12,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const locale = require("../locale");
 
 /**
  * Shared information about the current agenda.
@@ -697,6 +698,37 @@ class Agenda {
             result.push(
                 `“${outcomeName}”: ${voteTotal} (${voters.join(", ")})`
             );
+        }
+        return result.join(", ");
+    }
+
+    summarizePredictions() {
+        const desks = world.TI4.getAllPlayerDesks();
+        const result = [];
+        for (
+            let outcomeIndex = 0;
+            outcomeIndex < this.getNumOutcomes();
+            outcomeIndex++
+        ) {
+            const outcomeName = this.getOutcomeName(outcomeIndex);
+            const predictions = [];
+            for (
+                let deskIndex = 0;
+                deskIndex < world.TI4.config.playerCount;
+                deskIndex++
+            ) {
+                const desk = desks[deskIndex];
+                const count = this.getPredictionCount(deskIndex, outcomeIndex);
+                for (let i = 0; i < count; i++) {
+                    predictions.push(desk.colorName);
+                }
+            }
+            if (predictions.length > 0) {
+                result.push(`“${outcomeName}”: ${predictions.join(", ")}`);
+            }
+        }
+        if (result.length === 0) {
+            return locale("ui.message.none");
         }
         return result.join(", ");
     }
