@@ -112,17 +112,23 @@ class TabAgenda {
                 break;
             case "WHEN.MAIN":
                 this._widget.setChild(
-                    AgendaUiMain.simple(locale("ui.agenda.clippy.whens"))
+                    AgendaUiMain.simpleWithState(
+                        locale("ui.agenda.clippy.whens")
+                    )
                 );
                 break;
             case "AFTER.MAIN":
                 this._widget.setChild(
-                    AgendaUiMain.simple(locale("ui.agenda.clippy.afters"))
+                    AgendaUiMain.simpleWithState(
+                        locale("ui.agenda.clippy.afters")
+                    )
                 );
                 break;
             case "VOTE.MAIN":
                 this._widget.setChild(
-                    AgendaUiMain.simple(locale("ui.agenda.clippy.voting"))
+                    AgendaUiMain.simpleWithState(
+                        locale("ui.agenda.clippy.voting")
+                    )
                 );
                 break;
             case "POST.MAIN":

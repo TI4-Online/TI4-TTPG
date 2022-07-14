@@ -57,7 +57,9 @@ class AgendaUiDesk extends Border {
 
         let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
-        panel.addChild(this._createAvailabledVotesWidget());
+        panel.addChild(
+            AgendaUiDesk.createAvailabledVotesWidget(CONFIG.fontSize)
+        );
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(this._createWhensWidget());
         panel.addChild(this._createAftersWidget());
@@ -99,20 +101,19 @@ class AgendaUiDesk extends Border {
         Broadcast.broadcastOne(player, msg);
     }
 
-    _createAvailabledVotesWidget() {
+    static createAvailabledVotesWidget(fontSize) {
+        assert(typeof fontSize === "number");
         const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
 
         const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
-                const delim = new Text()
-                    .setFontSize(CONFIG.fontSize)
-                    .setText("|");
+                const delim = new Text().setFontSize(fontSize).setText("|");
                 panel.addChild(delim);
             }
             const available = deskIndexToAvailableVotes[index] || 0;
             const text = new Text()
-                .setFontSize(CONFIG.fontSize)
+                .setFontSize(fontSize)
                 .setTextColor(desk.color)
                 .setText(available);
             panel.addChild(text);
