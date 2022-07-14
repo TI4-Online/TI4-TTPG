@@ -26,7 +26,6 @@ function capitalizeFirstLetter(string) {
  */
 class DeskTurnOrder {
     static resetAll() {
-        console.log("DeskTurnOrder.resetAll");
         for (const deskTurnOrder of _deskTurnOrders) {
             deskTurnOrder.removeUI();
         }

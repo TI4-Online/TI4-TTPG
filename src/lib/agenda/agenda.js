@@ -253,7 +253,6 @@ class Agenda {
      * @returns {Agenda} self, for chaining
      */
     clear() {
-        console.log("Agenda.clear");
         this._agendaStateMachine = undefined;
 
         this._outcomeNames = undefined;
@@ -271,7 +270,6 @@ class Agenda {
     }
 
     init() {
-        console.log("Agenda.init");
         this._agendaStateMachine = new AgendaStateMachine();
         assert(this._agendaStateMachine.name === "WAITING_FOR_START");
 
@@ -294,7 +292,6 @@ class Agenda {
      * @returns {Agenda} self, or chaining
      */
     start() {
-        console.log("Agenda.start");
         assert(this._agendaStateMachine);
         assert(this._agendaStateMachine.name === "WAITING_FOR_START");
 
@@ -311,7 +308,6 @@ class Agenda {
      * @returns {Agenda} self, for chaining
      */
     resetOutcomeNames(outcomeType) {
-        console.log("Agenda.resetOutcomeNames");
         assert(typeof outcomeType === "string");
         assert(AgendaOutcome.isOutcomeType(outcomeType));
 
