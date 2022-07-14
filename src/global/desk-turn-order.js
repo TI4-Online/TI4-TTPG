@@ -167,6 +167,10 @@ const initHandler = () => {
 };
 globalEvents.onTick.add(initHandler);
 
+globalEvents.TI4.onPlayerCountChanged.add(() => {
+    DeskTurnOrder.resetAll();
+});
+
 globalEvents.TI4.onTurnOrderChanged.add(() => {
     DeskTurnOrder.updateAll(true);
 });
