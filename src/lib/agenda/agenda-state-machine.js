@@ -1,50 +1,69 @@
 const assert = require("../../wrapper/assert-wrapper");
 
 /**
+ * name: state name, same as key
  * main: main UI state
  * active: active player's desk (missing for none)
  * waiting: not-active players' desks (missing for none)
  * next: "continue" to this state
  */
-const STATES = {
-    START: {
-        main: "START.MAIN",
+const STATES = [
+    {
+        name: "WAITING_FOR_START",
+        main: "WAITING_FOR_START.MAIN",
         next: "OUTCOME_TYPE",
     },
-    OUTCOME_TYPE: {
+    {
+        name: "OUTCOME_TYPE",
         main: "OUTCOME_TYPE.MAIN",
         next: "WHEN",
     },
-    WHEN: {
+    {
+        name: "WHEN",
         main: "WHEN.MAIN",
         desk: "WHEN-AFTER-VOTE.DESK",
         next: "AFTER",
     },
-    AFTER: {
+    {
+        name: "AFTER",
         main: "AFTER.MAIN",
         desk: "WHEN-AFTER-VOTE.DESK",
         next: "VOTE",
     },
-    VOTE: {
+    {
+        name: "VOTE",
         main: "VOTE.MAIN",
         desk: "WHEN-AFTER-VOTE.DESK",
         next: "FINISH", // skip the post window, let players handle it
     },
-    POST: {
-        // bribery window
-        main: "POST.MAIN",
-        desk: "WHEN-AFTER-VOTE.DESK",
-        next: "FINISH",
-    },
-    FINISH: {
+    // {
+    //     // bribery window
+    //     name: "POST",
+    //     main: "POST.MAIN",
+    //     desk: "WHEN-AFTER-VOTE.DESK",
+    //     next: "FINISH",
+    // },
+    {
+        name: "FINISH",
         main: "FINISH.MAIN",
-        next: "START",
+        next: "WAITING_FOR_START",
     },
-};
+];
 
 class AgendaStateMachine {
     constructor() {
-        this._state = STATES.START;
+        this._nameToState = {};
+        for (const state of STATES) {
+            assert(typeof state.name === "string");
+            assert(!this._nameToState[state.name]);
+            this._nameToState[state.name] = state;
+        }
+        this._state = this._nameToState["WAITING_FOR_START"];
+        assert(this._state);
+    }
+
+    get name() {
+        return this._state.name;
     }
 
     get main() {
@@ -63,17 +82,17 @@ class AgendaStateMachine {
      * @returns {AgendaStateMachine} self, for chaining
      */
     next() {
-        this._state = STATES[this._state.next];
+        this._state = this._nameToState[this._state.next];
         assert(this._state);
         //console.log(`AgendaStateMachine: entering ${this._state.main}`);
         return this;
     }
 
     setState(key) {
-        assert(STATES[key]);
-        this._state = STATES[key];
+        this._state = this._nameToState[key];
+        assert(this._state);
         return this;
     }
 }
 
-module.exports = { AgendaStateMachine };
+module.exports = { AgendaStateMachine, STATES };
