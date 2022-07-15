@@ -5,7 +5,13 @@ class LayoutBox {
     setHorizontalAlignment(value) {
         return this;
     }
+    setMaximumHeight(value) {
+        return this;
+    }
     setMinimumHeight(value) {
+        return this;
+    }
+    setMaximumWidth(value) {
         return this;
     }
     setMinimumWidth(value) {

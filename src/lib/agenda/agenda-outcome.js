@@ -16,6 +16,11 @@ function capitalizeFirstLetter(string) {
  * Represent a single outcome for an agenda.
  */
 class AgendaOutcome {
+    static isOutcomeType(outcomeType) {
+        assert(typeof outcomeType === "string");
+        return Object.values(OUTCOME_TYPE).includes(outcomeType);
+    }
+
     static getDefaultOutcomeNames(outcomeType) {
         assert(typeof outcomeType === "string");
         switch (outcomeType) {

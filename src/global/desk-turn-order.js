@@ -26,7 +26,6 @@ function capitalizeFirstLetter(string) {
  */
 class DeskTurnOrder {
     static resetAll() {
-        console.log("DeskTurnOrder.resetAll");
         for (const deskTurnOrder of _deskTurnOrders) {
             deskTurnOrder.removeUI();
         }
@@ -166,6 +165,10 @@ const initHandler = () => {
     DeskTurnOrder.updateAll(true);
 };
 globalEvents.onTick.add(initHandler);
+
+globalEvents.TI4.onPlayerCountChanged.add(() => {
+    DeskTurnOrder.resetAll();
+});
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
     DeskTurnOrder.updateAll(true);

@@ -27,7 +27,20 @@ class MiltyDraftSettingsUI extends VerticalBox {
 
         super();
 
+        this._sliceGenerator = sliceGenerator;
+        this._factionGenerator = factionGenerator;
+        this._callbacks = callbacks;
+
         this.setChildDistance(CONFIG.spacing);
+
+        this._createDraftSettingsUI();
+    }
+
+    _createDraftSettingsUI() {
+        assert(this._sliceGenerator);
+        assert(this._factionGenerator);
+
+        this.removeAllChildren();
 
         const customInputLabel = new Text()
             .setFontSize(CONFIG.fontSize)
@@ -46,7 +59,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
         this.addChild(extraLegendariesAndWormholes);
         extraLegendariesAndWormholes.onCheckStateChanged.add(
             (checkbox, player, isChecked) => {
-                sliceGenerator.setExtraLegendariesAndWormholes(isChecked);
+                this._sliceGenerator.setExtraLegendariesAndWormholes(isChecked);
             }
         );
 
@@ -59,9 +72,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setMinValue(MiltySliceGenerator.minCount)
             .setMaxValue(MiltySliceGenerator.maxCount)
             .setStepSize(1)
-            .setValue(sliceGenerator.getCount());
+            .setValue(this._sliceGenerator.getCount());
         sliceCountSlider.onValueChanged.add((slider, player, value) => {
-            sliceGenerator.setCount(value);
+            this._sliceGenerator.setCount(value);
         });
         const sliceCountPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -78,9 +91,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setMinValue(MiltyFactionGenerator.minCount)
             .setMaxValue(MiltyFactionGenerator.maxCount)
             .setStepSize(1)
-            .setValue(factionGenerator.getCount());
+            .setValue(this._factionGenerator.getCount());
         factionCountSlider.onValueChanged.add((slider, player, value) => {
-            factionGenerator.setCount(value);
+            this._factionGenerator.setCount(value);
         });
         const factionCountPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -88,38 +101,41 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .addChild(factionCountSlider, 4);
         this.addChild(factionCountPanel);
 
-        const applyEnabled = (value) => {
-            sliceCountLabel.setEnabled(value);
-            sliceCountSlider.setEnabled(value);
-            extraLegendariesAndWormholes.setEnabled(value);
-            factionCountLabel.setEnabled(value);
-            factionCountSlider.setEnabled(value);
-            onFinishedButton.setEnabled(value);
-        };
-
         const onFinishedButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
             const customInputValue = customInput.getText();
-            const success = callbacks.onFinish(customInputValue, player);
-            applyEnabled(!success);
+            const success = this._callbacks.onFinish(customInputValue, player);
+            if (success) {
+                this._createDraftInProgressUI();
+            }
         });
 
         this.addChild(new LayoutBox(), 1);
+
+        this.addChild(onFinishedButton);
+    }
+
+    _createDraftInProgressUI() {
+        this.removeAllChildren();
 
         const onCancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
-            applyEnabled(true);
-            callbacks.onCancel(player);
+            this._callbacks.onCancel(player);
+            this._createDraftSettingsUI();
         });
-        const readyCancelPanel = new HorizontalBox()
-            .setChildDistance(CONFIG.spacing)
-            .addChild(onFinishedButton, 1)
-            .addChild(onCancelButton, 1);
-        this.addChild(readyCancelPanel);
+
+        const draftInProgress = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.in_progress"));
+        this.addChild(draftInProgress);
+
+        this.addChild(new LayoutBox(), 1);
+
+        this.addChild(onCancelButton);
     }
 }
 

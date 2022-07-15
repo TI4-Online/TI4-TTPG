@@ -1,8 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
+const { AgendaWidgetSummary } = require("./agenda-widget-summary");
 const {
     Button,
+    HorizontalAlignment,
     HorizontalBox,
     ImageWidget,
     LayoutBox,
@@ -10,44 +12,31 @@ const {
     TextJustification,
     VerticalAlignment,
     VerticalBox,
-    globalEvents,
     refPackageId,
-    world,
 } = require("../../wrapper/api");
-
-// These objects may come and go.  Register a single listener and propagate events.
-let _agendaUiMain = false;
-const onTurnChangedProxy = (currentDesk, previousDesk, player) => {
-    if (_agendaUiMain) {
-        _agendaUiMain.update();
-    }
-};
-globalEvents.TI4.onTurnChanged.add(onTurnChangedProxy);
 
 class AgendaUiMain extends LayoutBox {
     static simpleNoMechy(text) {
         assert(typeof text === "string");
+
+        const textWidget = AgendaUiMain.createMainText(text);
+
         const abstract = new AgendaUiMain();
-
-        const textWidget = abstract.createMainText(text);
-
-        abstract.update();
         abstract.setChild(textWidget);
         return abstract;
     }
 
     static simple(text) {
         assert(typeof text === "string");
-        const abstract = new AgendaUiMain();
 
-        const textWidget = abstract.createMainText(text);
+        const textWidget = AgendaUiMain.createMainText(text);
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(textWidget, 1)
-            .addChild(abstract.createMechy(), 0);
+            .addChild(AgendaUiMain.createMechy(), 0);
 
-        abstract.update();
+        const abstract = new AgendaUiMain();
         abstract.setChild(panel);
         return abstract;
     }
@@ -56,38 +45,34 @@ class AgendaUiMain extends LayoutBox {
         assert(typeof text === "string");
         assert(typeof yesHandler === "function");
         assert(typeof noHandler === "function");
-        const abstract = new AgendaUiMain();
 
-        const leftPanel = abstract
-            .createLeftPanel()
-            .addChild(abstract.createMainText(text))
-            .addChild(abstract.createYesNo(yesHandler, noHandler));
+        const leftPanel = AgendaUiMain.createLeftPanel()
+            .addChild(AgendaUiMain.createMainText(text))
+            .addChild(AgendaUiMain.createYesNo(yesHandler, noHandler));
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
-            .addChild(abstract.createMechy(), 0);
+            .addChild(AgendaUiMain.createMechy(), 0);
 
-        abstract.update();
+        const abstract = new AgendaUiMain();
         abstract.setChild(panel);
         return abstract;
     }
 
     static simpleWaiting(text) {
         assert(typeof text === "string");
-        const abstract = new AgendaUiMain();
 
-        const leftPanel = abstract
-            .createLeftPanel()
-            .addChild(abstract.createMainText(text))
-            .addChild(abstract.createWaitingFor());
+        const leftPanel = AgendaUiMain.createLeftPanel()
+            .addChild(AgendaUiMain.createMainText(text))
+            .addChild(AgendaUiMain.createWaitingFor());
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
-            .addChild(abstract.createMechy(), 0);
+            .addChild(AgendaUiMain.createMechy(), 0);
 
-        abstract.update();
+        const abstract = new AgendaUiMain();
         abstract.setChild(panel);
         return abstract;
     }
@@ -96,19 +81,17 @@ class AgendaUiMain extends LayoutBox {
         assert(typeof text === "string");
         assert(typeof buttonText === "string");
         assert(typeof buttonHandler === "function");
-        const abstract = new AgendaUiMain();
 
-        const leftPanel = abstract
-            .createLeftPanel()
-            .addChild(abstract.createMainText(text))
-            .addChild(abstract.createButton(buttonText, buttonHandler));
+        const leftPanel = AgendaUiMain.createLeftPanel()
+            .addChild(AgendaUiMain.createMainText(text))
+            .addChild(AgendaUiMain.createButton(buttonText, buttonHandler));
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
-            .addChild(abstract.createMechy(), 0);
+            .addChild(AgendaUiMain.createMechy(), 0);
 
-        abstract.update();
+        const abstract = new AgendaUiMain();
         abstract.setChild(panel);
         return abstract;
     }
@@ -116,12 +99,10 @@ class AgendaUiMain extends LayoutBox {
     static simpleButtonList(text, buttonTextsAndOnClicks) {
         assert(typeof text === "string");
         assert(Array.isArray(buttonTextsAndOnClicks));
-        const abstract = new AgendaUiMain();
 
-        const leftPanel = abstract
-            .createLeftPanel()
+        const leftPanel = AgendaUiMain.createLeftPanel()
             .setChildDistance(CONFIG.spacing)
-            .addChild(abstract.createMainText(text));
+            .addChild(AgendaUiMain.createMainText(text));
         buttonTextsAndOnClicks.forEach((buttonTextAndOnClick) => {
             assert(typeof buttonTextAndOnClick.text === "string");
             assert(typeof buttonTextAndOnClick.onClick === "function");
@@ -135,27 +116,38 @@ class AgendaUiMain extends LayoutBox {
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
-            .addChild(abstract.createMechy(), 0);
+            .addChild(AgendaUiMain.createMechy(), 0);
 
-        abstract.update();
+        const abstract = new AgendaUiMain();
         abstract.setChild(panel);
         return abstract;
     }
 
-    constructor() {
-        super();
-        this._waitingFor = undefined;
-        this.setVerticalAlignment(VerticalAlignment.Center);
-        _agendaUiMain = this;
+    static simpleWithState(text) {
+        assert(typeof text === "string");
+
+        const summary = new AgendaWidgetSummary();
+        const summaryBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(summary);
+
+        return summaryBox;
     }
 
-    createLeftPanel() {
+    constructor() {
+        super();
+
+        this.setVerticalAlignment(VerticalAlignment.Center);
+    }
+
+    static createLeftPanel() {
         return new VerticalBox().setChildDistance(
             CONFIG.spacing + CONFIG.fontSize
         );
     }
 
-    createMainText(text) {
+    static createMainText(text) {
         assert(typeof text === "string");
         return new Text()
             .setText(text)
@@ -164,17 +156,7 @@ class AgendaUiMain extends LayoutBox {
             .setAutoWrap(true);
     }
 
-    createWaitingFor() {
-        assert(!this._waitingFor);
-        this._waitingFor = new Text()
-            .setText(locale("ui.agenda.clippy.waiting_for_player_name"))
-            .setJustification(TextJustification.Center)
-            .setFontSize(CONFIG.fontSize)
-            .setAutoWrap(true);
-        return this._waitingFor;
-    }
-
-    createYesNo(yesHandler, noHandler) {
+    static createYesNo(yesHandler, noHandler) {
         assert(typeof yesHandler === "function");
         assert(typeof noHandler === "function");
         const yesButton = new Button()
@@ -191,7 +173,7 @@ class AgendaUiMain extends LayoutBox {
             .addChild(noButton, 1);
     }
 
-    createButton(buttonText, buttonHandler) {
+    static createButton(buttonText, buttonHandler) {
         assert(typeof buttonText === "string");
         assert(typeof buttonHandler === "function");
         const button = new Button()
@@ -201,21 +183,14 @@ class AgendaUiMain extends LayoutBox {
         return button;
     }
 
-    createMechy() {
-        return new ImageWidget()
+    static createMechy() {
+        const img = new ImageWidget()
             .setImage("global/ui/mechy.png", refPackageId)
             .setImageSize(256, 256);
-    }
-
-    update() {
-        const playerName = world.TI4.turns.getCurrentTurn().colorName;
-        if (this._waitingFor) {
-            this._waitingFor.setText(
-                locale("ui.agenda.clippy.waiting_for_player_name", {
-                    playerName,
-                })
-            );
-        }
+        return new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(img);
     }
 }
 

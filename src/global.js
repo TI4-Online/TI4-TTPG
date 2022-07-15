@@ -11,6 +11,10 @@ globalEvents.TI4 = {
     // <(agendaCard: GameObject|undefined) => void>
     onAgendaChanged: new TriggerableMulticastDelegate(onErr),
 
+    // Called when agenda player status changes (clicked "no whens", edited votes, etc).
+    // <() => void>
+    onAgendaPlayerStateChanged: new TriggerableMulticastDelegate(onErr),
+
     // Called when a script broadcasts a message to all players (either as broadcast or chat window only).
     // <(message: string, color: Color) => void>
     onBroadcast: new TriggerableMulticastDelegate(onErr),
@@ -114,6 +118,7 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const { Agenda } = require("./lib/agenda/agenda");
 const {
     AsyncTaskQueue,
     DEFAULT_ASYNC_DELAY,
@@ -131,6 +136,7 @@ const { Turns } = require("./lib/turns");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
     borders: new Borders(),
     config: new GameSetupConfig(),

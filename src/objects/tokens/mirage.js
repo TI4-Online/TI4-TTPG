@@ -17,7 +17,7 @@ const MIRAGE_ATTRS = {
     influence: 2,
     trait: ["cultural"],
     position: { x: 2, y: -1.25 },
-    radius: 1.75,
+    radius: 2,
     legendary: true,
     legendaryCard: "card.legendary_planet:pok/mirage_flight_academy",
 };
@@ -37,8 +37,8 @@ class Mirage extends AbstractSystemAttachment {
 
     place(system, planet, systemTileObj) {
         const planetIndex = 0;
-        const planetPos = { x: -2, y: 1 };
-        const planetRadius = 2;
+        const planetPos = { x: 0, y: 0 }; // use ATTRS
+        const planetRadius = 0; // use ATTRS
         const mirage = new Planet(
             MIRAGE_ATTRS,
             system,
@@ -47,7 +47,10 @@ class Mirage extends AbstractSystemAttachment {
             planetRadius
         );
         system.planets.push(mirage);
-        System.invalidateCache();
+        System.invalidatePlanetNameCache();
+
+        // Make sure card is registered.
+        assert(Planet.getByCardNsid("card.planet:pok/mirage"));
 
         // place and lock the mirage token in the right location
 

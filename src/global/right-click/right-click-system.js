@@ -85,9 +85,8 @@ function getNamesAndActions(player, systemTileObj) {
 function addRightClickOptions(systemTileObj) {
     assert(systemTileObj instanceof GameObject);
 
-    // Remove all UI.
-    for (const ui of systemTileObj.getUIs()) {
-        systemTileObj.removeUIElement(ui);
+    if (!systemTileObj.isValid()) {
+        return; // object was deleted?
     }
 
     // Skip home system placeholders and hyperlanes.
@@ -96,6 +95,12 @@ function addRightClickOptions(systemTileObj) {
         return;
     }
 
+    // Remove all UI (should not have any, be paranoid).
+    for (const ui of systemTileObj.getUIs()) {
+        systemTileObj.removeUIElement(ui);
+    }
+
+    // Sanity check only added once.
     assert(!systemTileObj.__hasRightClickOptions);
     systemTileObj.__hasRightClickOptions = true;
 
@@ -143,25 +148,26 @@ function addRightClickOptions(systemTileObj) {
     });
 }
 
+// Do not add UI during onCreated, wait a second frame for good measure.
+function delayedAddRightClickOptions(obj) {
+    process.nextTick(() => {
+        process.nextTick(() => {
+            addRightClickOptions(obj);
+        });
+    });
+}
+
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isSystemTile(obj)) {
-        process.nextTick(() => {
-            process.nextTick(() => {
-                addRightClickOptions(obj);
-            });
-        });
+        delayedAddRightClickOptions(obj);
     }
 });
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        process.nextTick(() => {
-            for (const obj of world.getAllObjects()) {
-                if (ObjectNamespace.isSystemTile(obj)) {
-                    addRightClickOptions(obj);
-                }
-            }
-        });
-    });
+    for (const obj of world.getAllObjects()) {
+        if (ObjectNamespace.isSystemTile(obj)) {
+            delayedAddRightClickOptions(obj);
+        }
+    }
 }

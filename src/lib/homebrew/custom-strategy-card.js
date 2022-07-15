@@ -207,9 +207,26 @@ class CustomStrategyCard {
     }
 }
 
-refObject.onCreated.add((obj) => {
+let _createOnlyOnceCalled = false;
+const createOnlyOnce = (obj) => {
+    assert(obj instanceof GameObject);
+    if (_createOnlyOnceCalled || world.__isMock) {
+        return;
+    }
+    _createOnlyOnceCalled = true;
     new CustomStrategyCard(obj);
+};
+
+refObject.onCreated.add((obj) => {
+    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
+    // AND PROBABLY CAUSES OTHER PROBLEMS.
+    process.nextTick(() => {
+        createOnlyOnce(obj);
+    });
 });
+
 if (world.getExecutionReason() === "ScriptReload") {
-    new CustomStrategyCard(refObject);
+    process.nextTick(() => {
+        createOnlyOnce(refObject);
+    });
 }

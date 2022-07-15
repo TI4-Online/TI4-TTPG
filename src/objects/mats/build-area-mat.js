@@ -492,7 +492,6 @@ class BuildAreaMat {
         this._ui.unitCount.setText(
             locale("ui.build.unitCount", { unitCount: totalUnitCount })
         );
-        this._obj.updateUI(this._ui.uiE);
 
         return {
             produce,

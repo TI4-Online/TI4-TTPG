@@ -551,6 +551,34 @@ class PlayerDesk {
 
         this.saveDesksState();
 
+        // Saw an instance of cardholder not being linked correctly.
+        // Wait a moment then manually set them.
+        const reassignCardHolder = (player, slot) => {
+            for (const obj of world.getAllObjects()) {
+                if (obj.getContainer()) {
+                    continue;
+                }
+                if (!(obj instanceof CardHolder)) {
+                    continue;
+                }
+                if (obj.getOwningPlayerSlot() !== slot) {
+                    continue;
+                }
+                player.setHandHolder(obj);
+                break;
+            }
+        };
+        if (srcPlayer) {
+            process.nextTick(() => {
+                reassignCardHolder(srcPlayer, dstPlayerSlot);
+            });
+        }
+        if (dstPlayer) {
+            process.nextTick(() => {
+                reassignCardHolder(dstPlayer, srcPlayerSlot);
+            });
+        }
+
         globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
         if (swapWith) {
             globalEvents.TI4.onPlayerColorChanged.trigger(

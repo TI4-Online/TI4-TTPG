@@ -46,7 +46,8 @@ function _maybeInit(tile) {
             assert(!_tileToSystem[system.tile]);
             _tileToSystem[system.tile] = system;
         }
-
+    }
+    if (!_planetLocaleNameToPlanet) {
         _planetLocaleNameToPlanet = {};
         for (const system of Object.values(_tileToSystem)) {
             for (const planet of system.planets) {
@@ -327,8 +328,14 @@ class System {
         return _activeSystemGameObject;
     }
 
-    static invalidateCache() {
-        _tileToSystem = undefined;
+    /**
+     * Never invalidate systems table or planet objects as attachments, etc
+     * live there.
+     *
+     * We can invalidate the planet name cache however, after adding new
+     * planets.
+     */
+    static invalidatePlanetNameCache() {
         _planetLocaleNameToPlanet = undefined;
     }
 
@@ -337,8 +344,16 @@ class System {
         SystemSchema.validate(rawSystem, (err) => {
             throw new Error('System.injectSystem "${err}"');
         });
-        SYSTEM_ATTRS.push(rawSystem);
-        System.invalidateCache();
+
+        // Add this new system.
+        const system = new System(rawSystem);
+        if (_tileToSystem[system.tile]) {
+            throw new Error(
+                'System.injectSystem already have system "${system.tile}"'
+            );
+        }
+        _tileToSystem[system.tile] = system;
+        System.invalidatePlanetNameCache();
     }
 
     constructor(systemAttrs) {

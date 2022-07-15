@@ -64,10 +64,20 @@ function setupStrategyCard(card) {
     });
 }
 
+// Do not add UI during onObjectCreated.
+function delayedSetupStrategyCard(card) {
+    assert(card instanceof GameObject);
+    process.nextTick(() => {
+        process.nextTick(() => {
+            setupStrategyCard(card);
+        });
+    });
+}
+
 // Add our listener to future objects.
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isStrategyCard(obj)) {
-        setupStrategyCard(obj);
+        delayedSetupStrategyCard(obj);
     }
 });
 
@@ -75,7 +85,7 @@ globalEvents.onObjectCreated.add((obj) => {
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
         if (ObjectNamespace.isStrategyCard(obj)) {
-            setupStrategyCard(obj);
+            delayedSetupStrategyCard(obj);
         }
     }
 }
