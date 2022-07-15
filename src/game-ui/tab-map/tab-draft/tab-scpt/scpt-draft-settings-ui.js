@@ -18,6 +18,12 @@ class SCPTDraftSettingsUI extends VerticalBox {
 
         this.setChildDistance(CONFIG.spacing);
 
+        this._createDraftSettingsUI();
+    }
+
+    _createDraftSettingsUI() {
+        this.removeAllChildren();
+
         for (const draft of SCPT_DRAFTS) {
             if (draft.chooseFactionSet) {
                 this.createChooseFaction(draft);
@@ -25,16 +31,27 @@ class SCPTDraftSettingsUI extends VerticalBox {
                 this.createSimpleButton(draft);
             }
         }
+    }
 
-        this.addChild(new LayoutBox(), 1); // stretch to fill space
+    _createDraftInProgressUI() {
+        this.removeAllChildren();
 
-        const button = new Button()
+        const onCancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
-        this.addChild(button);
-        button.onClicked.add((button, player) => {
-            this._onClickHandlers.cancel();
+        onCancelButton.onClicked.add((button, player) => {
+            this._onClickHandlers.cancel(player);
+            this._createDraftSettingsUI();
         });
+
+        const draftInProgress = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.in_progress"));
+        this.addChild(draftInProgress);
+
+        this.addChild(new LayoutBox(), 1);
+
+        this.addChild(onCancelButton);
     }
 
     createSimpleButton(draft) {
@@ -44,6 +61,7 @@ class SCPTDraftSettingsUI extends VerticalBox {
         this.addChild(button);
         button.onClicked.add((button, player) => {
             this._onClickHandlers.start(draft);
+            this._createDraftInProgressUI();
         });
     }
 
@@ -64,6 +82,7 @@ class SCPTDraftSettingsUI extends VerticalBox {
             button.onClicked.add((button, player) => {
                 console.log(`createChooseFaction: ${i}`);
                 this._onClickHandlers.start(draft, i);
+                this._createDraftInProgressUI();
             });
         }
     }
