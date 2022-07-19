@@ -250,7 +250,7 @@ class PlayerDeskSetup {
         }
         const available = [];
         for (const candidate of world.TI4.getAllFactions()) {
-            if (!inUse.has(candidate) && !candidate.raw.abstract) {
+            if (!inUse.has(candidate)) {
                 available.push(candidate);
             }
         }
