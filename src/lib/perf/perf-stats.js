@@ -3,7 +3,7 @@ const { Player, globalEvents } = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
 
 class PerfStats {
-    constructor(historySize = 180) {
+    constructor(historySize = 60) {
         assert(typeof historySize === "number" && historySize > 0);
 
         this._tick = 0;
