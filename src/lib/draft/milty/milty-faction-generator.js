@@ -43,15 +43,11 @@ class MiltyFactionGenerator {
         // Get available factions.
         const nsidNameToFaction = {};
         let nsidNames = [];
-        world.TI4.getAllFactions()
-            .filter((faction) => {
-                return !faction.raw.abstract;
-            })
-            .forEach((faction) => {
-                const nsidName = faction.nsidName;
-                nsidNameToFaction[nsidName] = faction;
-                nsidNames.push(nsidName);
-            });
+        world.TI4.getAllFactions().forEach((faction) => {
+            const nsidName = faction.nsidName;
+            nsidNameToFaction[nsidName] = faction;
+            nsidNames.push(nsidName);
+        });
 
         let keleresFlavors = [
             "keleres_argent",

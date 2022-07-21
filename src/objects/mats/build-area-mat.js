@@ -496,18 +496,37 @@ class BuildAreaMat {
         return {
             produce,
             consume,
+            consumeExtras,
             unitToCount,
             totalUnitCount,
         };
     }
 
     reportBuild() {
-        const { unitToCount } = this.update();
+        const { unitToCount, consume, consumeExtras } = this.update();
         let build = [];
         for (const [unit, count] of Object.entries(unitToCount)) {
             build.push(`${count} ${unit}`);
         }
         build = build.join(", ");
+
+        let consumed = [];
+        let tradeGoods = 0;
+        for (const entry of consume) {
+            if (entry.type === TYPE.TRADEGOOD) {
+                tradeGoods += entry.count * entry.value;
+            }
+            if (entry.type === TYPE.PLANET) {
+                consumed.push(`${entry.name} (${entry.value})`);
+            }
+        }
+        if (tradeGoods > 0) {
+            consumed.push(locale("ui.build.report.tradegoods", { tradeGoods }));
+        }
+        if (consumeExtras.length > 0) {
+            consumed.push(...consumeExtras);
+        }
+        consumed = consumed.join(", ");
 
         const playerSlot = this._getPlayerSlot();
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
@@ -515,7 +534,11 @@ class BuildAreaMat {
         const playerName = faction ? faction.nameFull : playerDesk.colorName;
         const color = playerDesk.color;
 
-        const msg = locale("ui.build.report.output", { playerName, build });
+        const msg = locale("ui.build.report.output", {
+            playerName,
+            build,
+            consumed,
+        });
         Broadcast.chatAll(msg, color);
     }
 

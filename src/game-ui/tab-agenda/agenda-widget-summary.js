@@ -160,6 +160,11 @@ class AgendaWidgetSummary extends VerticalBox {
             outcomeIndex++
         ) {
             const outcome = this._outcomeData[outcomeIndex];
+
+            if (!outcome) {
+                continue; // "can't happen" but got an error report
+            }
+
             outcome.nameText.setText(agenda.getOutcomeName(outcomeIndex));
 
             let total = 0;

@@ -85,10 +85,18 @@ function _maybeInit() {
 }
 
 class Faction {
+    /**
+     * Get all currently available factions (filter PoK, Codex 3, etc).
+     *
+     * @returns {Array.{Faction}}
+     */
     static getAllFactions() {
         _maybeInit();
         // Restrict to available factions.
         return [...Object.values(_nsidNameToFaction)].filter((faction) => {
+            if (faction.raw.abstract) {
+                return false;
+            }
             if (faction.nsidSource === "pok" && !world.TI4.config.pok) {
                 return false;
             }
