@@ -1,6 +1,8 @@
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 const { globalEvents, world } = require("./wrapper/api");
 
+//require("./objects/testp/monkey/monkey-interpose");
+
 const onErr = (exception) => {
     world.TI4.errorReporting.error(exception.stack);
 };
@@ -133,6 +135,7 @@ const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
+const { PerfStats } = require("./lib/perf/perf-stats");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -144,6 +147,7 @@ world.TI4 = {
     fogOfWar: new FogOfWar(),
     gameData: new GameData(),
     homebrew: new Homebrew(),
+    perfStats: new PerfStats(),
     turns: new Turns(true),
 
     getActiveSystemTileObject: () => {
