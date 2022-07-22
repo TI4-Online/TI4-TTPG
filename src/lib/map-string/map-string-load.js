@@ -18,6 +18,9 @@ class MapStringLoad {
         assert(typeof mapString === "string");
 
         const parsedMapString = MapStringParser.parse(mapString);
+        if (!parsedMapString) {
+            return false;
+        }
 
         // Verify systems exist.
         const unknown = [];
@@ -120,6 +123,9 @@ class MapStringLoad {
 
         const playerCount = world.TI4.config.playerCount;
         const parsedMapString = MapStringParser.parse(mapString);
+        if (!parsedMapString) {
+            return false;
+        }
 
         // Get available positions from map string.
         const zeroHexes = [];
@@ -131,7 +137,7 @@ class MapStringLoad {
             }
         }
         if (zeroHexes.length !== playerCount) {
-            return; // abort if wrong number
+            return false; // abort if wrong number
         }
 
         // Get generic home system tiles.
@@ -150,7 +156,7 @@ class MapStringLoad {
             }
         }
         if (Object.keys(playerSlotToGeneric).length !== playerCount) {
-            return; // abort if wrong number
+            return false; // abort if wrong number
         }
 
         // Move tiles to available positions.
@@ -199,6 +205,7 @@ class MapStringLoad {
                 genericHomeSystem.setPosition(pos);
             }
         });
+        return true;
     }
 }
 
