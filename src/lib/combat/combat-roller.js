@@ -177,7 +177,8 @@ class CombatRoller {
             // double check only two dice are being rolled
             // prioitize keeping cruisers if we need to remove dice
             let totalDice = Object.values(unitToDiceCount).reduce(
-                (a, b) => a + b
+                (a, b) => a + b,
+                0
             );
             while (totalDice > 2) {
                 if (Object.keys(unitToDiceCount).includes("destroyer")) {

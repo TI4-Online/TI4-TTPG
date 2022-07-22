@@ -52,7 +52,7 @@ class PerfStats {
     summarize() {
         const array = this._tickDurationMsecsHistory;
         const n = array.length;
-        const mean = array.reduce((a, b) => a + b) / n;
+        const mean = array.reduce((a, b) => a + b, 0) / n;
         const stdDev = Math.sqrt(
             array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n
         );
@@ -63,7 +63,7 @@ class PerfStats {
         let scrubbed = sorted.filter(
             (x) => x > mean - stdDev && x < mean + stdDev
         );
-        scrubbed = scrubbed.reduce((a, b) => a + b) / scrubbed.length;
+        scrubbed = scrubbed.reduce((a, b) => a + b, 0) / scrubbed.length;
 
         return {
             median,

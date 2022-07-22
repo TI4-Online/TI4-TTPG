@@ -278,7 +278,7 @@ const calculateHeight = (playerSlot) => {
     const technologies = Technology.getTechnologiesByType(playerSlot);
     const techRows = ["Blue", "Red", "Yellow", "Green"]
         .map((type) => technologies[type].length)
-        .reduce((a, b) => Math.max(a, b));
+        .reduce((a, b) => Math.max(a, b), 0);
     const unitUpgradeRows = Math.ceil(technologies.unitUpgrade.length / 4);
     return (techRows + unitUpgradeRows) * 55 + 130;
 };
