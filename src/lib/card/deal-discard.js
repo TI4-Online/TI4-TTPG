@@ -313,6 +313,10 @@ class DealDiscard {
     static discard(obj) {
         assert(obj instanceof Card);
 
+        if (obj.isInHolder()) {
+            obj.removeFromHolder();
+        }
+
         const nsid = ObjectNamespace.getNsid(obj);
 
         // Return promissory to player.
