@@ -27,6 +27,7 @@ class SetupSupplyBoxesDesks extends AbstractSetup {
         let shelfCenter = this.playerDesk.center
             .multiply(1.21)
             .rotateAngleAxis(EDGE_YAW, [0, 0, 1]);
+        shelfCenter.z = world.getTableHeight() + 5;
 
         // Move it closer to desk center.
         shelfCenter = Vector.interpolateTo(

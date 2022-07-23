@@ -111,7 +111,9 @@ class ControlTokenContainer {
         const playerSlot = this._container.getOwningPlayerSlot();
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         if (!faction) {
-            console.log("ControlTokenContainer.refill: no faction");
+            console.log(
+                `ControlTokenContainer.refill: no faction for playerSlot ${playerSlot}`
+            );
             return;
         }
 
