@@ -1,6 +1,7 @@
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 const { globalEvents, world } = require("./wrapper/api");
 
+// Expose button click handlers, canvas children.
 //require("./objects/testp/monkey/monkey-interpose");
 
 const onErr = (exception) => {
