@@ -7,19 +7,20 @@ class PerfStats {
         assert(typeof historySize === "number" && historySize > 0);
 
         this._tick = 0;
-        this._tickDurationMsecsHistory = [];
+        this._tickDurationMsecsHistory = Array(historySize).map(() => 0);
         this._reportHandle = undefined;
 
-        this._lastMsecs = 0;
-
         globalEvents.onTick.add((prevTickDurationSecs) => {
-            const msecs = prevTickDurationSecs * 1000;
-            this._tick += 1;
-            this._tickDurationMsecsHistory.push(msecs);
-            if (this._tickDurationMsecsHistory.length > historySize) {
-                this._tickDurationMsecsHistory.shift();
-            }
+            this._onTickHandler(prevTickDurationSecs);
         });
+    }
+
+    _onTickHandler(prevTickDurationSecs) {
+        this._tick += 1;
+        // Update in a fixed size window rather than push/shift.
+        const idx = this._tick % this._tickDurationMsecsHistory.length;
+        const msecs = prevTickDurationSecs * 1000;
+        this._tickDurationMsecsHistory[idx] = msecs;
     }
 
     isReporting() {
