@@ -23,7 +23,7 @@ const {
 function setupStrategyCard(card) {
     assert(card instanceof GameObject);
 
-    const playButtonName = locale("ui.button.strategy_card_play");
+    const playButtonName = "*" + locale("ui.button.strategy_card_play");
     const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
 
     // Setup the play button
@@ -36,7 +36,7 @@ function setupStrategyCard(card) {
     card.play_button.widget.onClicked.add((button, player) => {
         // Report.
         const parsed = ObjectNamespace.parseStrategyCard(card);
-        const cardName = parsed && locale(`tile.strategy.${parsed.card}`);
+        const cardName = parsed ? locale(`tile.strategy.${parsed.card}`) : "?";
         const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
         const msg = locale("ui.message.strategy_card_play", {
             playerName,
@@ -69,6 +69,12 @@ function delayedSetupStrategyCard(card) {
     assert(card instanceof GameObject);
     process.nextTick(() => {
         process.nextTick(() => {
+            // Watch out for double add.
+            if (card.__hasStrategyCardButton) {
+                return;
+            }
+            card.__hasStrategyCardButton = true;
+
             setupStrategyCard(card);
         });
     });
