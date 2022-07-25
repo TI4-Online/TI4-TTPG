@@ -5,22 +5,13 @@ const { GameObject, refObject, world } = require("../../../wrapper/api");
 
 const INTERVAL_DELAY_MSECS = 100;
 
+assert(MonkeyEvent);
 const MONKEY_ACTIONS = [
-    () => {
-        return MonkeyEvent.globalUiClick();
-    },
-    () => {
-        return MonkeyEvent.objectUiClick();
-    },
-    () => {
-        return MonkeyEvent.dealAndReplaceActionCard();
-    },
-    () => {
-        return MonkeyEvent.placeAndReplaceUnit();
-    },
-    () => {
-        return MonkeyEvent.activateSystem();
-    },
+    MonkeyEvent.globalUiClick, // REQUIRES GLOBAL.JS MONKEY-INTERPOSE
+    MonkeyEvent.objectUiClick, // REQUIRES GLOBAL.JS MONKEY-INTERPOSE
+    MonkeyEvent.dealAndReplaceActionCard,
+    MonkeyEvent.placeAndReplaceUnit,
+    MonkeyEvent.activateSystem,
 ];
 
 const CUSTOM_ACTIONS = {
@@ -64,7 +55,9 @@ class MonkeyRunner {
 
     _monkey() {
         const monkeyAction = MonkeyUtil.randomFrom(MONKEY_ACTIONS);
-        monkeyAction();
+        if (monkeyAction) {
+            monkeyAction();
+        }
     }
 }
 
