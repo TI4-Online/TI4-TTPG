@@ -32,7 +32,7 @@ describe("on actions", () => {
         card.onCustomAction.trigger(
             card,
             undefined /*player*/,
-            locale("ui.button.strategy_card_play")
+            "*" + locale("ui.button.strategy_card_play")
         );
         expect(playButtonHitCounter).toBe(1);
         card.onCustomAction.trigger(
