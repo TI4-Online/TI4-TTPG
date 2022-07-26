@@ -341,7 +341,9 @@ class FogOfWar {
             assert(typeof controlEntry.hex === "string");
             assert(typeof controlEntry.playerSlot === "number");
             const owners = hexToOwners[controlEntry.hex];
-            owners.add(controlEntry.playerSlot);
+            if (owners) {
+                owners.add(controlEntry.playerSlot);
+            }
         }
 
         // Compute adjacency.  Do wormholes on a per-player basis.

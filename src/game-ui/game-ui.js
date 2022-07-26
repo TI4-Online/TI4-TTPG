@@ -1,8 +1,6 @@
-/**
- * Attach Game UI to world.
- */
 const locale = require("../lib/locale");
 const { GameSetup } = require("../setup/game-setup/game-setup");
+const { ObjectNamespace } = require("../lib/object-namespace");
 const { TabAction } = require("./tab-action/tab-action");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
@@ -23,8 +21,11 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { ObjectNamespace } = require("../lib/object-namespace");
 
+/**
+ * The "Savant", collected game UI and utilities organized into tabs.
+ * This has grown rapidly, it deserves a user experience rethink.
+ */
 class GameUI {
     constructor() {
         const anchor = TableLayout.anchor.gameUI;

@@ -4,12 +4,14 @@ const { DealDiscard } = require("../../../lib/card/deal-discard");
 const { Hex } = require("../../../lib/hex");
 const { Hyperlane } = require("../../../lib/map-string/hyperlane");
 const { MapStringLoad } = require("../../../lib/map-string/map-string-load");
+const MapStringParser = require("../../../lib/map-string/map-string-parser");
 const { MapStringSave } = require("../../../lib/map-string/map-string-save");
 const { MapToolUI } = require("./map-tool-ui");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const PositionToPlanet = require("../../../lib/system/position-to-planet");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { Card, Rotator, world } = require("../../../wrapper/api");
+const locale = require("../../../lib/locale");
 
 class MapTool {
     static getMapTilesContainer() {
@@ -92,9 +94,14 @@ class MapTool {
     load() {
         const mapString = this._ui.getMapString().trim();
         console.log(`MapTool.load: "${mapString}"`);
-        if (mapString.length === 0) {
+
+        if (mapString.length === 0 || !MapStringParser.validate(mapString)) {
+            const msg = locale("ui.error.invalid_map_string", { mapString });
+            const color = [1, 0, 0];
+            Broadcast.chatAll(msg, color);
             return;
         }
+
         MapStringLoad.moveGenericHomeSystemTiles(mapString);
         MapStringLoad.load(mapString);
     }

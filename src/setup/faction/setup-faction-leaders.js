@@ -3,7 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
-const { Card, Rotator, Vector, world } = require("../../wrapper/api");
+const { Card, Vector, world } = require("../../wrapper/api");
 
 const LEADERS = {
     agent: {
@@ -142,19 +142,11 @@ class SetupFactionLeaders extends AbstractSetup {
                 count,
             ]);
             const pos = leaderSheet.localPositionToWorld(localOffset);
-            // GameObject.localRotationToWorld is broken (should be fixed in Feb2022)
-            //const rot = leaderSheet.localRotationToWorld([
-            //    0,
-            //    0,
-            //    leaderData.roll,
-            //]);
-            // Workaround:
-            const roll = nsid.startsWith("card.alliance")
-                ? 180
-                : leaderData.roll;
-            const rot = new Rotator(0, 0, roll).compose(
-                leaderSheet.getRotation()
-            );
+            const rot = leaderSheet.localRotationToWorld([
+                0,
+                0,
+                leaderData.roll,
+            ]);
             card.setPosition(pos);
             card.setRotation(rot);
         });

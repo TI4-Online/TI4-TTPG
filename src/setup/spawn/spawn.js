@@ -17,6 +17,10 @@ Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-tile-system.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-token.json"));
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-unit.json"));
 
+// Enable to check for any objects spawning inside other objects.
+// Can lead to physics getting "upset".
+const LOG_SPAWN_COLLISIONS = false;
+
 // The "NSID" in NSID_TO_TEMPLATE is normally a reasonable group name, the
 // prefix for releated objects.  In some cases we want to group earlier,
 // such as merging technology.color into an overall technology deck.
@@ -224,6 +228,35 @@ class Spawn {
         if (ObjectNamespace.isSystemTile(obj)) {
             const scale = Hex.SCALE * 0.995;
             obj.setScale([scale, scale, scale]);
+        }
+
+        // Optionally watch for collisions, useful to make sure initial spawns
+        // aren't happening at overlapping positions.
+        if (LOG_SPAWN_COLLISIONS) {
+            const onHitHandler = (
+                thisObject,
+                otherObject,
+                first,
+                impactPoint,
+                impulse
+            ) => {
+                const a = ObjectNamespace.getNsid(thisObject);
+                const b = otherObject
+                    ? ObjectNamespace.getNsid(otherObject)
+                    : otherObject;
+                console.log(`HIT "${a}" - "${b}"`);
+            };
+            // Remove a few frames later.
+            let lifetime = 3;
+            const onTickHandler = () => {
+                lifetime--;
+                if (lifetime <= 0) {
+                    obj.onHit.remove(onHitHandler);
+                    obj.onTick.remove(onTickHandler);
+                }
+            };
+            obj.onHit.add(onHitHandler);
+            obj.onTick.add(onTickHandler);
         }
 
         return obj;

@@ -7,19 +7,20 @@ class PerfStats {
         assert(typeof historySize === "number" && historySize > 0);
 
         this._tick = 0;
-        this._tickDurationMsecsHistory = [];
+        this._tickDurationMsecsHistory = Array(historySize).map(() => 0);
         this._reportHandle = undefined;
 
-        this._lastMsecs = 0;
-
         globalEvents.onTick.add((prevTickDurationSecs) => {
-            const msecs = prevTickDurationSecs * 1000;
-            this._tick += 1;
-            this._tickDurationMsecsHistory.push(msecs);
-            if (this._tickDurationMsecsHistory.length > historySize) {
-                this._tickDurationMsecsHistory.shift();
-            }
+            this._onTickHandler(prevTickDurationSecs);
         });
+    }
+
+    _onTickHandler(prevTickDurationSecs) {
+        this._tick += 1;
+        // Update in a fixed size window rather than push/shift.
+        const idx = this._tick % this._tickDurationMsecsHistory.length;
+        const msecs = prevTickDurationSecs * 1000;
+        this._tickDurationMsecsHistory[idx] = msecs;
     }
 
     isReporting() {
@@ -52,7 +53,7 @@ class PerfStats {
     summarize() {
         const array = this._tickDurationMsecsHistory;
         const n = array.length;
-        const mean = array.reduce((a, b) => a + b) / n;
+        const mean = array.reduce((a, b) => a + b, 0) / n;
         const stdDev = Math.sqrt(
             array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n
         );
@@ -63,7 +64,7 @@ class PerfStats {
         let scrubbed = sorted.filter(
             (x) => x > mean - stdDev && x < mean + stdDev
         );
-        scrubbed = scrubbed.reduce((a, b) => a + b) / scrubbed.length;
+        scrubbed = scrubbed.reduce((a, b) => a + b, 0) / scrubbed.length;
 
         return {
             median,

@@ -175,8 +175,9 @@ class SetupFactionTokens extends AbstractSetup {
             const pos = commandSheet.localPositionToWorld([
                 offset.x,
                 offset.y,
-                offset.z,
+                0,
             ]);
+            pos.z = commandSheet.getPosition().z + 3;
             const rot = commandSheet.localRotationToWorld([
                 offset.pitch || 0,
                 offset.yaw || 0,

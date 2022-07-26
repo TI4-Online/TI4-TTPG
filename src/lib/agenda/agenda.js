@@ -478,7 +478,10 @@ class Agenda {
     getNoWhens(deskIndex) {
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
-        return this._noWhensDeskIndexSet.has(deskIndex);
+        return (
+            this._noWhensDeskIndexSet &&
+            this._noWhensDeskIndexSet.has(deskIndex)
+        );
     }
 
     setNoWhens(deskIndex, value, clickingPlayer) {
@@ -512,7 +515,10 @@ class Agenda {
     getNoAfters(deskIndex) {
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
-        return this._noAftersDeskIndexSet.has(deskIndex);
+        return (
+            this._noAftersDeskIndexSet &&
+            this._noAftersDeskIndexSet.has(deskIndex)
+        );
     }
 
     setNoAfters(deskIndex, value, clickingPlayer) {
@@ -546,7 +552,10 @@ class Agenda {
     getVoteLocked(deskIndex) {
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
-        return this._voteLockedDeskIndexSet.has(deskIndex);
+        return (
+            this._voteLockedDeskIndexSet &&
+            this._voteLockedDeskIndexSet.has(deskIndex)
+        );
     }
 
     setVoteLocked(deskIndex, value, clickingPlayer) {
@@ -554,6 +563,16 @@ class Agenda {
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
         assert(typeof value === "boolean");
         assert(!clickingPlayer || clickingPlayer instanceof Player);
+
+        if (!this._voteLockedDeskIndexSet) {
+            // Not in a state with lock
+            const stateName = this._agendaStateMachine
+                ? this._agendaStateMachine.name
+                : "<nil>";
+            throw new Error(
+                `Agenda.setVoteLocked but not in locking state (in "${stateName}")`
+            );
+        }
 
         if (value) {
             this._voteLockedDeskIndexSet.add(deskIndex);

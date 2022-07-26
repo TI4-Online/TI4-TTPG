@@ -4,6 +4,7 @@
 
     "ui.error.not_owner": "That is not yours, {playerName}",
     "ui.error.commander_locked": "Commander is locked",
+    "ui.error.invalid_map_string": "Invalid map string “{mapString}”",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",

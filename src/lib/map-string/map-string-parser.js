@@ -35,7 +35,8 @@ const validate = function (mapString) {
  */
 const parse = function (mapString) {
     if (!validate(mapString)) {
-        throw new Error("Invalid map string");
+        const msg = `Invalid map string: ${mapString}`;
+        throw new Error(msg);
     }
     const tiles = Array.from(
         mapString.matchAll(

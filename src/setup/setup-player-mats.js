@@ -29,8 +29,9 @@ class SetupPlayerMats extends AbstractSetup {
 
     setup() {
         MATS.forEach((matData) => {
-            let pos = new Vector(matData.pos.x, matData.pos.y, 2);
+            let pos = new Vector(matData.pos.x, matData.pos.y, 0);
             pos = this.playerDesk.localPositionToWorld(pos);
+            pos.z = world.getTableHeight() + 5;
             const rot = this.playerDesk.rot;
 
             const nsid = matData.nsid;
