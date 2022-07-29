@@ -280,7 +280,7 @@ class PlayerDesk {
                 assert(colorTint);
                 assert(plasticColorTint);
                 if (!this.changeColor(colorName, colorTint, plasticColorTint)) {
-                    player.showMessage(locale("ui.desk.color_not_available"));
+                    player.showMessage(locale("ui.desk.color_in_use"));
                 }
                 this.resetUI();
             },
@@ -564,9 +564,13 @@ class PlayerDesk {
                 if (obj.getOwningPlayerSlot() !== slot) {
                     continue;
                 }
+                console.log(
+                    `PlayerDesk.changeColor: reassigning card holder for ${slot}`
+                );
                 player.setHandHolder(obj);
-                break;
+                return;
             }
+            throw new Error("PlayerDesk reassignCardHolder: no holder");
         };
         if (srcPlayer) {
             process.nextTick(() => {
@@ -667,32 +671,24 @@ class PlayerDesk {
 
 // ----------------------------------------------------------------------------
 
-/* DISABLE THIS FOR NOW, MAY BE INTERFERING WITH TTPG JOIN HANDLING
 // Bounce joining players to unseated.
 globalEvents.TI4.onPlayerJoinedDelayed.add((player) => {
     // Wait a tick to make sure player is fully set up.
     process.nextTick(() => {
-        moveNewPlayerToNonSeatSlot(player);
+        PlayerDesk.moveNewPlayerToNonSeatSlot(player);
     });
 });
 
 // Unseat host when first loading game.
-const isRescriptReload = world.getExecutionReason() === "ScriptReload";
 const runOnce = () => {
-    // If not reloading scripts move the host to a non-seat slot.
-    if (!isRescriptReload) {
-        for (const player of world.getAllPlayers()) {
-            moveNewPlayerToNonSeatSlot(player);
-        }
+    for (const player of world.getAllPlayers()) {
+        PlayerDesk.moveNewPlayerToNonSeatSlot(player);
     }
-
-    // Reset "take a seat" UI.
-    PlayerDesk.resetUIs();
+    PlayerDesk.resetUIs(); // show "take seat" UI
 };
-if (!world.__isMock) {
+if (!world.__isMock && world.getExecutionReason() !== "ScriptReload") {
     process.nextTick(runOnce);
 }
-*/
 
 // Reset on load.
 if (!world.__isMock) {
