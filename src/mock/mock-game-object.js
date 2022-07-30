@@ -165,6 +165,8 @@ class GameObject {
         this._savedData = value;
     }
 
+    snapToGround() {}
+
     toJSONString() {
         return "{}";
     }
