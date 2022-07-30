@@ -230,6 +230,7 @@ require("./global/right-click/right-click-purge");
 require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
 require("./global/right-click/right-click-trade-agreement");
+require("./global/right-click/right-click-yssaril-commander");
 require("./global/right-click/heroes/helio-command-array");
 require("./global/right-click/heroes/dimensional-anchor");
 require("./global/right-click/heroes/multiverse-shift");
