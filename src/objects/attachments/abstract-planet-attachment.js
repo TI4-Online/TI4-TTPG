@@ -1,8 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSystemAttachment } = require("./abstract-system-attachment");
+const { Explore } = require("../../lib/explore/explore");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ATTACHMENTS } = require("./attachment.data");
-const { GameObject, ObjectType, Vector } = require("../../wrapper/api");
+const { GameObject, Vector } = require("../../wrapper/api");
 
 /**
  * Mutate planet on attach/detach.
@@ -135,15 +136,13 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
             return;
         }
 
-        tokenObj.setObjectType(ObjectType.Regular);
-        tokenObj.setPosition(worldPosition, 0);
-
         // Fix yaw to match system tile.
         const rot = tokenObj.getRotation();
         rot.yaw = systemTileObj.getRotation().yaw;
-        tokenObj.setRotation(rot);
 
-        tokenObj.setObjectType(ObjectType.Ground);
+        // Move other objects at the spot up slightly.
+        // Physics *should* handle things, but be safe(r).
+        Explore.reserveTokenSpaceAndAnchorToken(tokenObj, worldPosition, rot);
     }
 
     _addPlanetAttrs(planet, faceUp) {
