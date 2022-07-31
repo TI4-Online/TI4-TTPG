@@ -2,12 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const {
     AbstractSystemAttachment,
 } = require("../attachments/abstract-system-attachment");
-const {
-    refObject,
-    GameObject,
-    ObjectType,
-    Vector,
-} = require("../../wrapper/api");
+const { Explore } = require("../../lib/explore/explore");
+const { refObject, GameObject } = require("../../wrapper/api");
 
 class StellarConverter extends AbstractSystemAttachment {
     constructor(gameObject) {
@@ -20,17 +16,33 @@ class StellarConverter extends AbstractSystemAttachment {
     }
 
     place(system, planet, systemTileObj) {
+        console.log(
+            `StellarConvert.place ${system.tile} ${planet.getNameStr()}`
+        );
         planet.destroyed = true;
 
         const attachmentPosition = systemTileObj
             .localPositionToWorld(planet.position)
-            .add(new Vector(0, 0, systemTileObj.getSize().z));
+            .add([0, 0, systemTileObj.getSize().z]);
 
         const tokenObj = this.getAttachTokenObj();
-        tokenObj.setObjectType(ObjectType.Regular); // paranoia
-        tokenObj.setPosition(attachmentPosition);
+
+        const p = tokenObj.getPosition();
+        const dx = p.x - attachmentPosition.x;
+        const dy = p.y - attachmentPosition.y;
+        const dSq = dx * dx + dy * dy;
+        if (dSq < 0.1) {
+            return;
+        }
+
         tokenObj.setScale(systemTileObj.getScale());
-        tokenObj.setObjectType(ObjectType.Ground); // ground i.e. locked
+
+        const rot = tokenObj.getRotation();
+        Explore.reserveTokenSpaceAndAnchorToken(
+            tokenObj,
+            attachmentPosition,
+            rot
+        );
     }
 
     remove(system, planet, systemTileObj) {

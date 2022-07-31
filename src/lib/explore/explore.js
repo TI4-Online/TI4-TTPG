@@ -3,20 +3,22 @@ const locale = require("../locale");
 const PositionToPlanet = require("../system/position-to-planet");
 const { CardUtil } = require("../card/card-util");
 const { DealDiscard } = require("../card/deal-discard");
+const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const { ATTACHMENTS } = require("../../objects/attachments/attachment.data");
 const {
+    Button,
+    Card,
     GameObject,
     Player,
     Rotator,
     Vector,
-    Button,
+    ObjectType,
     UIElement,
     world,
 } = require("../../wrapper/api");
-const { Hex } = require("../hex");
 
 /**
  * Planet exploration.  Attachment tokens already know how to attach, this
@@ -147,6 +149,106 @@ class Explore {
         return namesAndActions;
     }
 
+    /**
+     * Make sure there are no locked objects that will interfere with token
+     * placement.  Move any objects up very slightly, DO NOT RE-LOCK.
+     *
+     * @param {GameObject} tokenObj
+     * @param {Vector} pos
+     * @returns {Array.{GameObject}} - lifted objects
+     */
+    static reserveTokenSpace(tokenObj, pos) {
+        assert(tokenObj instanceof GameObject);
+        assert(typeof pos.x === "number");
+
+        // Anchor at table height for consisent scan area.
+        // Make a capsule since a stack could get high.
+        const scanPos = new Vector(pos.x, pos.y, world.getTableHeight());
+        const tokenExtent = tokenObj.getExtent();
+        const d = Math.max(tokenExtent.x, tokenExtent.y, tokenExtent.z);
+        const scanExtent = new Vector(d, d, d + 10);
+
+        // Collect objects that need moving.
+        const hitObjects = world.capsuleOverlap(scanPos, scanExtent);
+        const moveObjects = hitObjects.filter((hitObject) => {
+            // Ignore the system tile.
+            if (ObjectNamespace.isSystemTile(hitObject)) {
+                return false;
+            }
+            // Ignore the token.
+            if (hitObject === tokenObj) {
+                return false;
+            }
+            // Accept units.
+            if (UnitPlastic.getOne(hitObject)) {
+                return true;
+            }
+            // Accept cards.
+            if (hitObject instanceof Card) {
+                return true;
+            }
+            return false; // reject everything else
+        });
+
+        // Sort by increasing height in case consumer tries to snap to ground.
+        moveObjects.sort((a, b) => {
+            const aPos = a.getPosition();
+            const bPos = b.getPosition();
+            return aPos.z - bPos.z;
+        });
+
+        // Only move up very slightly.  Trying to be more fancy opens up many
+        // corner cases, including the exploration card(s) moving over.
+        const dz = tokenExtent.z + 0.25;
+
+        // Move objects.
+        for (const moveObject of moveObjects) {
+            const nsid = ObjectNamespace.getNsid(moveObject);
+            console.log(`Explore.reserveTokenSpace: moving ${nsid} up ${dz}`);
+
+            // Unlock (otherwise will hover instead of falling).
+            const objectType = moveObject.getObjectType();
+            if (objectType !== ObjectType.Regular) {
+                moveObject.setObjectType(ObjectType.Regular);
+            }
+
+            const above = moveObject.getPosition().add([0, 0, dz]);
+            moveObject.setPosition(above);
+
+            // DO NOT RESTORE LOCK.
+        }
+
+        return moveObjects;
+    }
+
+    /**
+     * Place token at pos/rot, moving other things up.
+     * ANY MOVED LOCKED UNITS GET UNLOCKED (relocking is finicky).
+     *
+     * @param {GameObject} tokenObj
+     * @param {Vector} pos
+     * @param {Rotator} rot
+     */
+    static reserveTokenSpaceAndAnchorToken(tokenObj, pos, rot) {
+        assert(tokenObj instanceof GameObject);
+        assert(typeof pos.x === "number");
+        assert(typeof rot.yaw === "number");
+
+        // Move units out of the way (upward).
+        const movedObjects = Explore.reserveTokenSpace(tokenObj, pos);
+        assert(Array.isArray(movedObjects));
+
+        // Move token to position, ground it.  If this position isn't
+        // exact there will be a future onMovementStopped event.
+        const objectType = tokenObj.getObjectType();
+        if (objectType !== ObjectType.Regular) {
+            tokenObj.setObjectType(ObjectType.Regular);
+        }
+        tokenObj.setPosition(pos);
+        tokenObj.setRotation(rot);
+        tokenObj.setObjectType(ObjectType.Ground);
+    }
+
     static removeFrontierToken(systemTileObj) {
         assert(systemTileObj instanceof GameObject);
 
@@ -172,12 +274,14 @@ class Explore {
     }
 
     static resolveExplore(card, planet, pos, rot) {
+        assert(card instanceof Card);
+
         // Is there an attachment?
         const nsid = ObjectNamespace.getNsid(card);
         let attachmentData = false;
         let tokenNsid = false;
         for (const attachment of ATTACHMENTS) {
-            if (attachment.cardNsid == nsid) {
+            if (attachment.cardNsid === nsid) {
                 attachmentData = attachment;
                 tokenNsid = attachment.tokenNsid;
                 break;
@@ -223,7 +327,7 @@ class Explore {
 
         // Move to location.  THIS TRIGGERS tokenObj.onMovementStopped,
         // which Attachment uses to attach.
-        tokenObj.setPosition(pos, 0);
+        Explore.reserveTokenSpaceAndAnchorToken(tokenObj, pos, tokenRot);
 
         // Extra cards? (Mirage)
         if (attachmentData.extraCardNsids) {
@@ -232,7 +336,7 @@ class Explore {
             });
             for (let i = 0; i < cards.length; i++) {
                 const card = cards[i];
-                card.setPosition(pos.add([0, 0, 10 + i]));
+                card.setPosition(pos.add([0, 0, 11 + i]));
                 card.setRotation(rot);
             }
         }
@@ -281,20 +385,22 @@ class Explore {
         } else {
             pos = systemTileObj.getPosition();
         }
-        pos.z += systemTileObj.getSize().z;
+        pos.z = world.getTableHeight() + systemTileObj.getSize().z;
 
         // Draw the card.
         const count = 1;
         const rot = new Rotator(0, player.getRotation().yaw, 180);
+        const above = pos.add([0, 0, 10]);
         const card = DealDiscard.dealToPosition(
             deckNsidPrefix,
             count,
-            pos.add([0, 0, 10]),
+            above,
             rot
         );
         if (!card) {
             return;
         }
+        console.log(`Explore.onExplorePlanetAction: dealt to Z (${above.z})`);
 
         Explore.resolveExplore(card, planet, pos, rot);
     }
@@ -358,7 +464,6 @@ class Explore {
         assert(player instanceof Player);
 
         const deckNsidPrefix = Explore.getExploreDeck(planet, overrideTrait);
-
         if (!deckNsidPrefix) {
             return;
         }
@@ -373,7 +478,7 @@ class Explore {
         } else {
             basePos = systemTileObj.getPosition();
         }
-        basePos.z += systemTileObj.getSize().z;
+        basePos.z = world.getTableHeight() + systemTileObj.getExtent().z;
 
         const pos1 = basePos.add(new Vector(0, -1, 0));
         const pos2 = basePos.add(new Vector(0, 1, 0));

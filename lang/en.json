@@ -101,6 +101,8 @@
 
     "ui.message.maban_omega_promissory": "PROMISSORIES: {content}",
     "ui.message.maban_omega_agent": "AGENDA DECK top: “{top}”, bottom: “{bottom}”",
+    "ui.message.yssaril_commander_broadcast": "{srcName} revealing cards to {dstName}",
+    "ui.message.yssaril_commander_report": "CARDS: {content}",
 
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
@@ -164,6 +166,10 @@
     "ui.menu.multiverse_shift": "Multiverse shift",
     "ui.menu.maban_omega_promissory": "View neighbors’ promissories",
     "ui.menu.maban_omega_agent": "View agenda top/bottom",
+    "ui.menu.yssaril_commander_actions": "Tell action cards",
+    "ui.menu.yssaril_commander_promissory": "Tell promissory cards",
+    "ui.menu.yssaril_commander_secrets": "Tell secret cards",
+    "ui.tooltip.yssaril_commander": "The player clicking this tells the player with the card in their area their cards",
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",

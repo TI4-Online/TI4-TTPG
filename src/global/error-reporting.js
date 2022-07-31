@@ -9,6 +9,18 @@ const REPORT_URL = "https://ti4-game-data.appspot.com/reporterror";
 class ErrorReporting {
     constructor() {
         this._stackToEntry = {};
+        this._extra = undefined;
+    }
+
+    setExtra(value) {
+        assert(typeof value === "string");
+        this._extra = value;
+        return this;
+    }
+
+    clearExtra() {
+        this._extra = undefined;
+        return this;
     }
 
     error(err) {
@@ -37,6 +49,9 @@ class ErrorReporting {
                 },
                 timestamp: now,
             };
+            if (this._extra) {
+                entry.extra = this._extra;
+            }
             this._stackToEntry[err] = entry;
         }
         entry.count += 1;

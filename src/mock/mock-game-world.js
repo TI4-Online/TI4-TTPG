@@ -60,6 +60,10 @@ class GameWorld {
         this._uis.push(uiElement);
     }
 
+    capsuleOverlap() {
+        return [];
+    }
+
     createObjectFromJSON(json, position) {
         const result = new GameObject();
         return result;

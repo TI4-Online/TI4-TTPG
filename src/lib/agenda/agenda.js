@@ -294,7 +294,7 @@ class Agenda {
      */
     start() {
         assert(this._agendaStateMachine);
-        assert(this._agendaStateMachine.name === "WAITING_FOR_START");
+        assert.equal(this._agendaStateMachine.name, "WAITING_FOR_START");
 
         this._agendaStateMachine.next();
 
@@ -469,6 +469,13 @@ class Agenda {
         );
     }
 
+    _getErrorExtra() {
+        const stateName = this._agendaStateMachine
+            ? this._agendaStateMachine.name
+            : "<nil>";
+        return `state "${stateName}"`;
+    }
+
     resetForCurrentState(clickingPlayer) {
         assert(!clickingPlayer || clickingPlayer instanceof Player);
         this._updatePassedAndSetTurnForPhase(clickingPlayer);
@@ -559,20 +566,13 @@ class Agenda {
     }
 
     setVoteLocked(deskIndex, value, clickingPlayer) {
+        world.TI4.errorReporting.setExtra(this._getErrorExtra());
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
         assert(typeof value === "boolean");
         assert(!clickingPlayer || clickingPlayer instanceof Player);
-
-        if (!this._voteLockedDeskIndexSet) {
-            // Not in a state with lock
-            const stateName = this._agendaStateMachine
-                ? this._agendaStateMachine.name
-                : "<nil>";
-            throw new Error(
-                `Agenda.setVoteLocked but not in locking state (in "${stateName}")`
-            );
-        }
+        assert(this._voteLockedDeskIndexSet);
+        world.TI4.errorReporting.clearExtra();
 
         if (value) {
             this._voteLockedDeskIndexSet.add(deskIndex);
@@ -606,11 +606,13 @@ class Agenda {
     }
 
     setVoteOutcomeIndex(deskIndex, outcomeIndex, clickingPlayer) {
+        world.TI4.errorReporting.setExtra(this._getErrorExtra());
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
         assert(typeof outcomeIndex === "number");
         assert(outcomeIndex >= 0 && outcomeIndex < this._outcomeNames.length);
         assert(!clickingPlayer || clickingPlayer instanceof Player);
+        world.TI4.errorReporting.clearExtra();
 
         this._deskIndexToOutcomeIndex[deskIndex] = outcomeIndex;
 
@@ -625,11 +627,13 @@ class Agenda {
     }
 
     setVoteCount(deskIndex, value, clickingPlayer) {
+        world.TI4.errorReporting.setExtra(this._getErrorExtra());
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
         assert(typeof value === "number");
         assert(value >= 0);
         assert(!clickingPlayer || clickingPlayer instanceof Player);
+        world.TI4.errorReporting.clearExtra();
 
         this._deskIndexToVoteCount[deskIndex] = value;
 
@@ -661,6 +665,7 @@ class Agenda {
         predictionCount,
         clickingPlayer
     ) {
+        world.TI4.errorReporting.setExtra(this._getErrorExtra());
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
         assert(typeof outcomeIndex === "number");
@@ -668,6 +673,7 @@ class Agenda {
         assert(typeof predictionCount === "number");
         assert(predictionCount >= 0);
         assert(!clickingPlayer || clickingPlayer instanceof Player);
+        world.TI4.errorReporting.clearExtra();
 
         let outcomeIndexToPredictionCount =
             this._deskIndexToPredictedOutcomeIndexToPredictionCount[deskIndex];

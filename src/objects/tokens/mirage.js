@@ -3,13 +3,8 @@ const {
     AbstractSystemAttachment,
 } = require("../attachments/abstract-system-attachment");
 const { System, Planet } = require("../../lib/system/system");
-const {
-    refObject,
-    GameObject,
-    ObjectType,
-    Rotator,
-    Vector,
-} = require("../../wrapper/api");
+const { refObject, GameObject, Rotator, Vector } = require("../../wrapper/api");
+const { Explore } = require("../../lib/explore/explore");
 
 const MIRAGE_ATTRS = {
     localeName: "planet.mirage",
@@ -80,18 +75,8 @@ class Mirage extends AbstractSystemAttachment {
             return;
         }
 
-        // offset position in the z direction to ensure that the mirage is always
-        // on top of the system tile, otherwise it sometimes appears partially
-        // underneath the tile
-        tokenObj.setObjectType(ObjectType.Regular); // paranoia
-        tokenObj.setPosition(miragePos);
-        tokenObj.setRotation(mirageRot);
         tokenObj.setScale(scale);
-
-        // convert to a "ground" object so that it cant be moved
-        // using toggleLock() causes the token to be unlocked when coming
-        // back from a script reload
-        tokenObj.setObjectType(ObjectType.Ground);
+        Explore.reserveTokenSpaceAndAnchorToken(tokenObj, miragePos, mirageRot);
     }
 
     remove(system, planet, systemTileObj) {

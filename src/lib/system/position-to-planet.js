@@ -160,20 +160,9 @@ function getClosestPlanet(pos, systemObject, debug) {
         const planetPositions = getPlanetHelper(system.system);
         const planets = system.system.planets;
 
-        // catch the edge case were the only planet in a one planet
-        // system gets detroyed by stellar convertor etc.
-        if (planets.length === 1 && planets[0].destroyed) {
-            return;
-        }
-
         const distances = planetPositions.map((element, index) => {
-            if (!planets[index].destroyed) {
-                return distance(element.position, localPos);
-            } else {
-                return 1e4;
-            }
+            return distance(element.position, localPos);
         });
-
         const closestPlanetIndex = distances.indexOf(Math.min(...distances));
 
         if (debug) {
@@ -207,10 +196,8 @@ function getExactPlanet(pos, systemObject, debug) {
         const planets = system.system.planets;
 
         const onPlanet = planetPositions
-            .map(
-                (element, index) =>
-                    withinCircle(element.position, element.radius, localPos) &&
-                    !planets[index].destroyed
+            .map((element, index) =>
+                withinCircle(element.position, element.radius, localPos)
             )
             .indexOf(true);
 
