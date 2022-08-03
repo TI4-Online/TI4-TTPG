@@ -146,6 +146,9 @@ class PlayerDeskSetup {
     cleanFaction() {
         const playerSlot = this._playerDesk.playerSlot;
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        if (!faction) {
+            throw new Error(`cleanFaction: no faction for ${playerSlot}`);
+        }
         const setups = this._getFactionSetups(faction);
         setups.forEach((setup) => setup.clean());
 
@@ -189,6 +192,7 @@ class PlayerDeskSetup {
     }
 
     _getFactionSetups(faction) {
+        assert(faction);
         return [
             new SetupFactionAlliance(this._playerDesk, faction),
             new SetupFactionExtra(this._playerDesk, faction),
