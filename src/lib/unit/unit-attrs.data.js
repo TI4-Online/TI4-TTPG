@@ -12,6 +12,7 @@ module.exports = [
         move: 1,
         capacity: 4,
         ship: true,
+        unitCount: 4,
     },
     {
         unit: "cruiser",
@@ -22,6 +23,7 @@ module.exports = [
         spaceCombat: { dice: 1, hit: 7 },
         move: 2,
         ship: true,
+        unitCount: 8,
     },
     {
         unit: "destroyer",
@@ -33,6 +35,7 @@ module.exports = [
         spaceCombat: { dice: 1, hit: 9 },
         move: 2,
         ship: true,
+        unitCount: 8,
     },
     {
         unit: "dreadnought",
@@ -46,6 +49,7 @@ module.exports = [
         move: 1,
         capacity: 1,
         ship: true,
+        unitCount: 5,
     },
     {
         unit: "fighter",
@@ -57,6 +61,7 @@ module.exports = [
         spaceCombat: { dice: 1, hit: 9 },
         ship: true,
         requireCapacity: true,
+        unitCount: 10,
     },
     {
         unit: "flagship",
@@ -68,6 +73,7 @@ module.exports = [
         move: 1,
         capacity: 3,
         ship: true,
+        unitCount: 1,
     },
     {
         unit: "infantry",
@@ -79,6 +85,7 @@ module.exports = [
         groundCombat: { dice: 1, hit: 8 },
         ground: true,
         requireCapacity: true,
+        unitCount: 12,
     },
     {
         unit: "mech",
@@ -90,6 +97,7 @@ module.exports = [
         sustainDamage: true,
         ground: true,
         requireCapacity: true,
+        unitCount: 4,
     },
     {
         unit: "pds",
@@ -99,6 +107,7 @@ module.exports = [
         planetaryShield: true,
         spaceCannon: { dice: 1, hit: 6 },
         structure: true,
+        unitCount: 6,
     },
     {
         unit: "space_dock",
@@ -107,6 +116,7 @@ module.exports = [
         diceColor: { r: 1, g: 1, b: 0, a: 1 }, // Yellow
         production: -2,
         structure: true,
+        unitCount: 3,
     },
     {
         unit: "war_sun",
@@ -114,6 +124,7 @@ module.exports = [
         unitNsid: "unit:base/war_sun",
         diceColor: { r: 1, g: 0.5, b: 0, a: 1 }, // Orange
         ship: true,
+        unitCount: 2,
     },
 
     // Unit upgrades.

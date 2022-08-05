@@ -1,6 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { UNIT_DATA } = require("../../setup/setup-units");
+const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const {
     Border,
     Color,
@@ -33,13 +33,8 @@ class UnitBag {
         this._boxes = [];
 
         // Get capacity, do not use for figthers/infantry.
-        this._capacity = -1;
-        for (const unitData of UNIT_DATA) {
-            if (unitData.unitNsid.endsWith(this._unit)) {
-                this._capacity = unitData.unitCount;
-                break;
-            }
-        }
+        const unitAttrs = UnitAttrs.getDefaultUnitAttrs(this._unit);
+        this._capacity = unitAttrs.raw.unitCount;
         assert(this._capacity > 0);
         if (this._unit === "fighter" || this._unit === "infantry") {
             this._capacity = -1;

@@ -4,52 +4,42 @@ const { Layout } = require("../lib/layout");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
+const { UnitAttrs } = require("../lib/unit/unit-attrs");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
     {
         unitNsid: "unit:pok/mech",
-        unitCount: 4,
     },
     {
         unitNsid: "unit:base/infantry",
-        unitCount: 12,
     },
     {
         unitNsid: "unit:base/fighter",
-        unitCount: 10,
     },
     {
         unitNsid: "unit:base/space_dock",
-        unitCount: 3,
     },
     {
         unitNsid: "unit:base/pds",
-        unitCount: 6,
     },
     {
         unitNsid: "unit:base/carrier",
-        unitCount: 4,
     },
     {
         unitNsid: "unit:base/destroyer",
-        unitCount: 8,
     },
     {
         unitNsid: "unit:base/cruiser",
-        unitCount: 8,
     },
     {
         unitNsid: "unit:base/dreadnought",
-        unitCount: 5,
     },
     {
         unitNsid: "unit:base/flagship",
-        unitCount: 1,
     },
     {
         unitNsid: "unit:base/war_sun",
-        unitCount: 2,
     },
 ];
 
@@ -133,7 +123,12 @@ class SetupUnits extends AbstractSetup {
         bag.setOwningPlayerSlot(playerSlot);
         bag.setPrimaryColor(color); // setting owning slot applies default, set again paranoia
 
-        for (let i = 0; i < unitData.unitCount; i++) {
+        const parsed = ObjectNamespace.parseNsid(unitNsid);
+        const unit = parsed.name;
+        const unitAttrs = UnitAttrs.getDefaultUnitAttrs(unit);
+        const unitCount = unitAttrs.raw.unitCount;
+
+        for (let i = 0; i < unitCount; i++) {
             const aboveBag = pointPosRot.pos.add([0, 0, 10 + i * 3]);
             const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
             unit.setOwningPlayerSlot(playerSlot);
@@ -153,4 +148,4 @@ class SetupUnits extends AbstractSetup {
     }
 }
 //
-module.exports = { SetupUnits, UNIT_DATA };
+module.exports = { SetupUnits };

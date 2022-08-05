@@ -15,7 +15,7 @@ const {
 
 const HEIGHT = 32;
 const WIDTH = 400; // UI scale is 10x world
-const _deskTurnOrders = [];
+let _deskTurnOrders = [];
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -29,8 +29,10 @@ class DeskTurnOrder {
         for (const deskTurnOrder of _deskTurnOrders) {
             deskTurnOrder.removeUI();
         }
+        _deskTurnOrders = [];
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const deskTurnOrder = new DeskTurnOrder(playerDesk).addUI();
+            const playerSlot = playerDesk.playerSlot;
+            const deskTurnOrder = new DeskTurnOrder(playerSlot).addUI();
             _deskTurnOrders.push(deskTurnOrder);
         }
     }
@@ -42,10 +44,10 @@ class DeskTurnOrder {
         }
     }
 
-    constructor(playerDesk) {
-        assert(playerDesk);
+    constructor(playerSlot) {
+        assert(typeof playerSlot === "number");
 
-        this._playerDesk = playerDesk;
+        this._playerSlot = playerSlot;
         this._border = undefined;
         this._endTurnButton = new Button();
         this._turnOrderPanel = new HorizontalBox();
@@ -84,7 +86,10 @@ class DeskTurnOrder {
 
         this._endTurnButton.onClicked.add(this._onEndTurnClicked);
 
-        const pos = this._playerDesk.localPositionToWorld(new Vector(42, 0, 0));
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+            this._playerSlot
+        );
+        const pos = playerDesk.localPositionToWorld(new Vector(42, 0, 0));
         pos.z = world.getTableHeight() + 0.01;
 
         const panel = new VerticalBox()
@@ -101,7 +106,7 @@ class DeskTurnOrder {
 
         this._ui = new UIElement();
         this._ui.position = pos;
-        this._ui.rotation = this._playerDesk.rot;
+        this._ui.rotation = playerDesk.rot;
         this._ui.anchorY = 1; // bottom
         this._ui.widget = this._border.setChild(box);
 
@@ -116,7 +121,7 @@ class DeskTurnOrder {
         const current = world.TI4.turns.getCurrentTurn();
         const currentName = current ? current.colorName : "?";
 
-        const isActive = current === this._playerDesk;
+        const isActive = current.playerSlot === this._playerSlot;
         let endTurnButtonText = undefined;
 
         const v = 0.1;
@@ -168,6 +173,7 @@ globalEvents.onTick.add(initHandler);
 
 globalEvents.TI4.onPlayerCountChanged.add(() => {
     DeskTurnOrder.resetAll();
+    DeskTurnOrder.updateAll(true);
 });
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
