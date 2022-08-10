@@ -4,13 +4,8 @@ const { Broadcast } = require("../../lib/broadcast");
 const { DealDiscard } = require("../../lib/card/deal-discard");
 const { Neighbors } = require("../../lib/borders/neighbors");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const {
-    Card,
-    CardHolder,
-    Player,
-    globalEvents,
-    world,
-} = require("../../wrapper/api");
+const { Card, CardHolder, Player, world } = require("../../wrapper/api");
+const { AbstractRightClickCard } = require("./abstract-right-click-card");
 
 /**
  * Naalu commander omega "card.leader.commander.naalu:codex.vigil/maban.omega":
@@ -21,11 +16,7 @@ const {
 const ACTION_NAME_PROMISSORY = "*" + locale("ui.menu.maban_omega_promissory");
 const ACTION_NAME_AGENDA = "*" + locale("ui.menu.maban_omega_agent");
 
-class MabanOmega {
-    constructor() {
-        throw new Error("static only");
-    }
-
+class MabanOmega extends AbstractRightClickCard {
     static isMabanOmegaOrAlliance(gameObject) {
         const nsid = ObjectNamespace.getNsid(gameObject);
         if (
@@ -156,51 +147,28 @@ class MabanOmega {
         const color = [1, 1, 1, 1];
         player.sendChatMessage(msg, color);
     }
-}
 
-// Below here is event managment, route to MabanOmega methods.
+    constructor() {
+        super();
+    }
 
-function onCustomActionHandler(obj, player, selectedActionName) {
-    if (selectedActionName === ACTION_NAME_PROMISSORY) {
-        MabanOmega.reportNeighborsPromissoryNotes(obj, player);
-    } else if (selectedActionName === ACTION_NAME_AGENDA) {
-        MabanOmega.reportAgendaTopBottom(obj, player);
+    isRightClickable(card) {
+        return MabanOmega.isMabanOmegaOrAlliance(card);
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        return [
+            { actionName: ACTION_NAME_PROMISSORY, tooltip: undefined },
+            { actionName: ACTION_NAME_AGENDA, tooltip: undefined },
+        ];
+    }
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME_PROMISSORY) {
+            MabanOmega.reportNeighborsPromissoryNotes(card, player);
+        } else if (selectedActionName === ACTION_NAME_AGENDA) {
+            MabanOmega.reportAgendaTopBottom(card, player);
+        }
     }
 }
 
-function addRightClickOptions(card) {
-    assert(card instanceof Card);
-    card.addCustomAction(ACTION_NAME_PROMISSORY);
-    card.addCustomAction(ACTION_NAME_AGENDA);
-    card.onCustomAction.remove(onCustomActionHandler);
-    card.onCustomAction.add(onCustomActionHandler);
-    card.__hasRightClickMabanOmegaOptions = true;
-}
-
-function removeRightClickOptions(card) {
-    assert(card instanceof Card);
-    card.removeCustomAction(ACTION_NAME_PROMISSORY);
-    card.removeCustomAction(ACTION_NAME_AGENDA);
-    card.onCustomAction.remove(onCustomActionHandler);
-    card.__hasRightClickMabanOmegaOptions = false;
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((card) => {
-    assert(card instanceof Card);
-    if (MabanOmega.isMabanOmegaOrAlliance(card)) {
-        addRightClickOptions(card);
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
-    assert(card instanceof Card);
-    if (card.__hasRightClickMabanOmegaOptions) {
-        removeRightClickOptions(card);
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (MabanOmega.isMabanOmegaOrAlliance(obj)) {
-        addRightClickOptions(obj);
-    }
-}
+new MabanOmega();

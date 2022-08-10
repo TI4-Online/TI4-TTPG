@@ -1,15 +1,11 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { CommandToken } = require("../../../lib/command-token/command-token");
-const {
-    Card,
-    world,
-    GameObject,
-    globalEvents,
-} = require("../../../wrapper/api");
+const { Card, world } = require("../../../wrapper/api");
 const { Broadcast } = require("../../../lib/broadcast");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const { Hex } = require("../../../lib/hex");
 const locale = require("../../../lib/locale");
+const { AbstractRightClickCard } = require("../abstract-right-click-card");
 
 const CARD_NAME = "jace_x_4th_air_legion";
 const ACTION_NAME = "*" + locale("ui.menu.helio_command_array");
@@ -95,58 +91,24 @@ function helioCommandArray(card) {
     }
 }
 
-function maybeHelioCommandArray(card, _player, selectedActionName) {
-    if (selectedActionName === ACTION_NAME) {
-        helioCommandArray(card);
+class RightClickHelioCommandArray extends AbstractRightClickCard {
+    constructor() {
+        super();
+    }
+    isRightClickable(card) {
+        const parsedCard = ObjectNamespace.parseCard(card);
+        return parsedCard && parsedCard.name === CARD_NAME;
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        return [{ actionName: ACTION_NAME, tooltip: undefined }];
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME) {
+            helioCommandArray(card);
+        }
     }
 }
 
-function addRightClickOption(card) {
-    assert(card instanceof Card);
-    removeRightClickOption(card);
-    card.addCustomAction(ACTION_NAME);
-    card.onCustomAction.add(maybeHelioCommandArray);
-}
-
-function removeRightClickOption(card) {
-    card.removeCustomAction(ACTION_NAME);
-    card.onCustomAction.remove(maybeHelioCommandArray);
-}
-
-function isJaceX4thAirLegion(obj) {
-    assert(obj instanceof GameObject);
-
-    if (!(obj instanceof Card)) {
-        return false;
-    }
-
-    if (!ObjectNamespace.isCard(obj)) {
-        return false;
-    }
-
-    const parsedCard = ObjectNamespace.parseCard(obj);
-    if (parsedCard.name === CARD_NAME) {
-        return true;
-    }
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((obj) => {
-    if (isJaceX4thAirLegion(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickHelioCommandArray = true;
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickHelioCommandArray) {
-        removeRightClickOption(obj);
-        delete obj.__hasRightClickHelioCommandArray;
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (isJaceX4thAirLegion(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickHelioCommandArray = true;
-    }
-}
+new RightClickHelioCommandArray();

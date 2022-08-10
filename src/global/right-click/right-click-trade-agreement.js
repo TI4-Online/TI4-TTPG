@@ -1,16 +1,13 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Broadcast } = require("../../lib/broadcast");
-const {
-    Card,
-    GameObject,
-    globalEvents,
-    world,
-    Rotator,
-} = require("../../wrapper/api");
+const { Card, world, Rotator } = require("../../wrapper/api");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { CardUtil } = require("../../lib/card/card-util");
+const { AbstractRightClickCard } = require("./abstract-right-click-card");
+
+const ACTION_NAME = "*" + locale("ui.menu.trade_agreement");
 
 function getCommoditiesAndReturnTradeAgreement(card, player) {
     assert(card instanceof Card);
@@ -69,63 +66,39 @@ function getCommoditiesAndReturnTradeAgreement(card, player) {
     }
 }
 
-function maybeTradeAgreement(card, player, selectedActionName) {
-    const actionName = "*" + locale("ui.menu.trade_agreement");
-    if (selectedActionName === actionName) {
-        getCommoditiesAndReturnTradeAgreement(card, player);
+class RightClickTradeAgreement extends AbstractRightClickCard {
+    constructor() {
+        super();
+    }
+
+    isRightClickable(card) {
+        const parsedCard = ObjectNamespace.parseCard(card);
+        const name = parsedCard?.name;
+        return name && name.startsWith("trade_agreement");
+    }
+
+    /**
+     * Get the array of right click action names.
+     *
+     * @param {Card} card
+     * @returns {Array.{Object{actionName:string, tooltip:string}}} Right click actions
+     */
+    getRightClickActionNamesAndTooltips(card) {
+        return [{ actionName: ACTION_NAME, tooltip: undefined }];
+    }
+
+    /**
+     * Handle a right click action.
+     *
+     * @param {Card} card
+     * @param {Player} player
+     * @param {string} selectedActionName
+     */
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME) {
+            getCommoditiesAndReturnTradeAgreement(card, player);
+        }
     }
 }
 
-function addRightClickOption(card) {
-    assert(card instanceof Card);
-    removeRightClickOption(card);
-    const actionName = "*" + locale("ui.menu.trade_agreement");
-    card.addCustomAction(actionName);
-    card.onCustomAction.add(maybeTradeAgreement);
-}
-
-function removeRightClickOption(card) {
-    const actionName = "*" + locale("ui.menu.purge");
-    card.removeCustomAction(actionName);
-    card.onCustomAction.remove(maybeTradeAgreement);
-}
-
-function isTradeAgreement(obj) {
-    assert(obj instanceof GameObject);
-
-    if (!(obj instanceof Card)) {
-        return false;
-    }
-
-    if (!ObjectNamespace.isCard(obj)) {
-        return false;
-    }
-
-    const parsedCard = ObjectNamespace.parseCard(obj);
-    const name = parsedCard.name;
-
-    if (name.startsWith("trade_agreement")) {
-        return true;
-    }
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((obj) => {
-    if (isTradeAgreement(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickTradeAgreement = true;
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickTradeAgreement) {
-        removeRightClickOption(obj);
-        delete obj.__hasRightClickTradeAgreement;
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (isTradeAgreement(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickTradeAgreement = true;
-    }
-}
+new RightClickTradeAgreement();
