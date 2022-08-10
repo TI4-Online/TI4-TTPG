@@ -2,13 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const {
-    Card,
-    CardHolder,
-    Player,
-    globalEvents,
-    world,
-} = require("../../wrapper/api");
+const { Card, CardHolder, Player, world } = require("../../wrapper/api");
+const { AbstractRightClickCard } = require("./abstract-right-click-card");
 
 /**
  * Yssaril commander omega "card.leader.commander.yssaril:pok/so_ata":
@@ -21,11 +16,7 @@ const ACTION_NAME_PROMISSORY =
     "*" + locale("ui.menu.yssaril_commander_promissory");
 const ACTION_NAME_SECRETS = "*" + locale("ui.menu.yssaril_commander_secrets");
 
-class YssarilCommander {
-    constructor() {
-        throw new Error("static only");
-    }
-
+class YssarilCommander extends AbstractRightClickCard {
     static isYssarilCommanderOrAlliance(gameObject) {
         const nsid = ObjectNamespace.getNsid(gameObject);
         if (
@@ -144,56 +135,33 @@ class YssarilCommander {
             receiver.sendChatMessage(msg, color);
         }
     }
-}
 
-// Below here is event managment, route to static methods.
+    constructor() {
+        super();
+    }
 
-function onCustomActionHandler(obj, player, selectedActionName) {
-    if (selectedActionName === ACTION_NAME_ACTIONS) {
-        YssarilCommander.reportCards(obj, player, "card.action");
-    } else if (selectedActionName === ACTION_NAME_PROMISSORY) {
-        YssarilCommander.reportCards(obj, player, "card.promissory");
-    } else if (selectedActionName === ACTION_NAME_SECRETS) {
-        YssarilCommander.reportCards(obj, player, "card.objective.secret");
+    isRightClickable(card) {
+        return YssarilCommander.isYssarilCommanderOrAlliance(card);
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        const tooltip = locale("ui.tooltip.yssaril_commander");
+        return [
+            { actionName: ACTION_NAME_ACTIONS, tooltip },
+            { actionName: ACTION_NAME_PROMISSORY, tooltip },
+            { actionName: ACTION_NAME_SECRETS, tooltip },
+        ];
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME_ACTIONS) {
+            YssarilCommander.reportCards(card, player, "card.action");
+        } else if (selectedActionName === ACTION_NAME_PROMISSORY) {
+            YssarilCommander.reportCards(card, player, "card.promissory");
+        } else if (selectedActionName === ACTION_NAME_SECRETS) {
+            YssarilCommander.reportCards(card, player, "card.objective.secret");
+        }
     }
 }
 
-function addRightClickOptions(card) {
-    assert(card instanceof Card);
-    const tooltip = locale("ui.tooltip.yssaril_commander");
-    card.addCustomAction(ACTION_NAME_ACTIONS, tooltip);
-    card.addCustomAction(ACTION_NAME_PROMISSORY, tooltip);
-    card.addCustomAction(ACTION_NAME_SECRETS, tooltip);
-    card.onCustomAction.remove(onCustomActionHandler);
-    card.onCustomAction.add(onCustomActionHandler);
-    card.__hasRightClickOptions = true;
-}
-
-function removeRightClickOptions(card) {
-    assert(card instanceof Card);
-    card.removeCustomAction(ACTION_NAME_ACTIONS);
-    card.removeCustomAction(ACTION_NAME_PROMISSORY);
-    card.removeCustomAction(ACTION_NAME_SECRETS);
-    card.onCustomAction.remove(onCustomActionHandler);
-    card.__hasRightClickOptions = false;
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((card) => {
-    assert(card instanceof Card);
-    if (YssarilCommander.isYssarilCommanderOrAlliance(card)) {
-        addRightClickOptions(card);
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
-    assert(card instanceof Card);
-    if (card.__hasRightClickOptions) {
-        removeRightClickOptions(card);
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (YssarilCommander.isYssarilCommanderOrAlliance(obj)) {
-        addRightClickOptions(obj);
-    }
-}
+new YssarilCommander();

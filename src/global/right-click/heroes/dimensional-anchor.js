@@ -8,13 +8,7 @@ const {
 } = require("../../../lib/system/adjacency-hyperlane");
 const { AdjacencyNeighbor } = require("../../../lib/system/adjacency-neighbor");
 const { AdjacencyWormhole } = require("../../../lib/system/adjacency-wormhole");
-const {
-    Card,
-    GameObject,
-    world,
-    Vector,
-    globalEvents,
-} = require("../../../wrapper/api");
+const { Card, GameObject, world, Vector } = require("../../../wrapper/api");
 const { UnitPlastic } = require("../../../lib/unit/unit-plastic");
 const { SimpleDieBuilder } = require("../../../lib/dice/simple-die");
 const { RollGroup } = require("../../../lib/dice/roll-group");
@@ -22,6 +16,7 @@ const {
     AutoGravRiftRoller,
 } = require("../../../global/right-click/grav-rift-roller");
 const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
+const { AbstractRightClickCard } = require("../abstract-right-click-card");
 
 const CARD_NSID_NAME = "it_feeds_on_carrion";
 const ACTION_NAME = "*" + locale("ui.menu.dimensional_anchor");
@@ -224,58 +219,25 @@ function dimensionalAnchorRollFinished(dice, player) {
     Broadcast.chatAll(parts.join("\n"), color);
 }
 
-function maybeDimensionalAnchor(card, player, selectedActionName) {
-    if (selectedActionName === ACTION_NAME) {
-        dimensionalAnchor(card, player);
+class RightClickDimensionalAnchor extends AbstractRightClickCard {
+    constructor() {
+        super();
+    }
+
+    isRightClickable(card) {
+        const parsedCard = ObjectNamespace.parseCard(card);
+        return parsedCard && parsedCard.name === CARD_NSID_NAME;
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        return [{ actionName: ACTION_NAME, tooltip: undefined }];
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME) {
+            dimensionalAnchor(card, player);
+        }
     }
 }
 
-function addRightClickOption(card) {
-    assert(card instanceof Card);
-    removeRightClickOption(card);
-    card.addCustomAction(ACTION_NAME);
-    card.onCustomAction.add(maybeDimensionalAnchor);
-}
-
-function removeRightClickOption(card) {
-    card.removeCustomAction(ACTION_NAME);
-    card.onCustomAction.remove(maybeDimensionalAnchor);
-}
-
-function isItFeedsOnCarrion(obj) {
-    assert(obj instanceof GameObject);
-
-    if (!(obj instanceof Card)) {
-        return false;
-    }
-
-    if (!ObjectNamespace.isCard(obj)) {
-        return false;
-    }
-
-    const parsedCard = ObjectNamespace.parseCard(obj);
-    if (parsedCard.name === CARD_NSID_NAME) {
-        return true;
-    }
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((obj) => {
-    if (isItFeedsOnCarrion(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickDimensionalAnchor = true;
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickDimensionalAnchor) {
-        removeRightClickOption(obj);
-        delete obj.__hasRightClickDimensionalAnchor;
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (isItFeedsOnCarrion(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickDimensionalAnchor = true;
-    }
-}
+new RightClickDimensionalAnchor();

@@ -7,13 +7,8 @@ const { UnitPlastic } = require("../../../lib/unit/unit-plastic");
 const { SystemHighlight } = require("../../highlight-on-system-activated");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
-const {
-    Card,
-    world,
-    globalEvents,
-    Rotator,
-    GameObject,
-} = require("../../../wrapper/api");
+const { Card, world, Rotator } = require("../../../wrapper/api");
+const { AbstractRightClickCard } = require("../abstract-right-click-card");
 
 const CARD_NAME = "conservator_procyon";
 const PURGE_CONTAINER_NAME = "bag.purge";
@@ -125,58 +120,24 @@ function multiverseShift(card) {
     }
 }
 
-function maybeMultiverseShift(card, _player, selectedActionName) {
-    if (selectedActionName === ACTION_NAME) {
-        multiverseShift(card);
+class RightClickMultiverseShift extends AbstractRightClickCard {
+    constructor() {
+        super();
+    }
+    isRightClickable(card) {
+        const parsedCard = ObjectNamespace.parseCard(card);
+        return parsedCard && parsedCard.name === CARD_NAME;
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        return [{ actionName: ACTION_NAME, tooltip: undefined }];
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === ACTION_NAME) {
+            multiverseShift(card);
+        }
     }
 }
 
-function addRightClickOption(card) {
-    assert(card instanceof Card);
-    removeRightClickOption(card);
-    card.addCustomAction(ACTION_NAME);
-    card.onCustomAction.add(maybeMultiverseShift);
-}
-
-function removeRightClickOption(card) {
-    card.removeCustomAction(ACTION_NAME);
-    card.onCustomAction.remove(maybeMultiverseShift);
-}
-
-function isConservatorProcyon(obj) {
-    assert(obj instanceof GameObject);
-
-    if (!(obj instanceof Card)) {
-        return false;
-    }
-
-    if (!ObjectNamespace.isCard(obj)) {
-        return false;
-    }
-
-    const parsedCard = ObjectNamespace.parseCard(obj);
-    if (parsedCard.name === CARD_NAME) {
-        return true;
-    }
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((obj) => {
-    if (isConservatorProcyon(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickMultiverseShift = true;
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickMultiverseShift) {
-        removeRightClickOption(obj);
-        delete obj.__hasRightClickMultiverseShift;
-    }
-});
-
-for (const obj of world.getAllObjects()) {
-    if (isConservatorProcyon(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickMultiverseShift = true;
-    }
-}
+new RightClickMultiverseShift();

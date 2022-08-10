@@ -15,6 +15,8 @@ const {
 } = require("../../wrapper/api");
 const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 
+const SCORE_ACTION_NAME = "*" + locale("ui.menu.score");
+
 const OTHER_SCORABLE_NSIDS = new Set([
     "card.action:base/imperial_rider",
     "card.agenda:base.only/holy_planet_of_ixth",
@@ -224,16 +226,15 @@ function maybeScore(obj, player, selectedActionName) {
     if (obj instanceof Card && !obj.isInHolder() && !obj.isFaceUp()) {
         return;
     }
-    const actionName = "*" + locale("ui.menu.score");
-    if (selectedActionName === actionName) {
+    if (selectedActionName === SCORE_ACTION_NAME) {
         score(obj, player);
     }
 }
 
+// AbstractRightClickCard cannot currently also add to the custodians token.
 function addRightClickOptions(scoreableObj) {
     assert(scoreableObj instanceof GameObject);
-    const actionName = "*" + locale("ui.menu.score");
-    scoreableObj.addCustomAction(actionName);
+    scoreableObj.addCustomAction(SCORE_ACTION_NAME);
     scoreableObj.onCustomAction.remove(maybeScore);
     scoreableObj.onCustomAction.add(maybeScore);
     scoreableObj.__hasRightClickScoreOption = true;
@@ -241,8 +242,7 @@ function addRightClickOptions(scoreableObj) {
 
 function removeRightClickOptions(scoreableObj) {
     assert(scoreableObj instanceof GameObject);
-    const actionName = "*" + locale("ui.menu.score");
-    scoreableObj.removeCustomAction(actionName);
+    scoreableObj.removeCustomAction(SCORE_ACTION_NAME);
     scoreableObj.onCustomAction.remove(maybeScore);
     scoreableObj.__hasRightClickScoreOption = false;
 }

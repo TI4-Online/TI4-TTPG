@@ -2,7 +2,38 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
+const { Card, GameObject, world } = require("../../wrapper/api");
+const { AbstractRightClickCard } = require("./abstract-right-click-card");
+
+const PURGE_ACTION_NAME = "*" + locale("ui.menu.purge");
+
+const PURGABLE_ATTACHMENTS = [
+    "research_facility",
+    "dmz",
+    "rich_world",
+    "paradise_world",
+    "tomb_of_emphidia",
+    "mining_world",
+    "lazax_survivors",
+    "dyson_sphere",
+];
+
+const PURGABLE_EXPLORES = [
+    "gamma",
+    "mirage",
+    "enigmatic_device",
+    "relic_fragment",
+];
+
+const PURGABLE_RELICS = [
+    "dominus_orb",
+    "maw_of_worlds",
+    "stellar_converter",
+    "the_codex",
+    "the_crown_of_emphidia",
+    "dynamis_core",
+    "nano_forge",
+];
 
 const PURGE_CONTAINER_NAME = "bag.purge";
 let _purgeContainer = false;
@@ -39,60 +70,6 @@ function purge(card) {
     const purgeContainer = getPurgeContainer();
     purgeContainer.addObjects([card], true);
 }
-
-function maybePurge(card, player, selectedActionName) {
-    const actionName = "*" + locale("ui.menu.purge");
-    if (selectedActionName === actionName) {
-        purge(card);
-    }
-}
-
-/**
- * Adds the right click option to purge a card.
- *
- * @param {Card} card
- */
-function addRightClickOption(card) {
-    assert(card instanceof Card);
-    const actionName = "*" + locale("ui.menu.purge");
-    card.removeCustomAction(actionName);
-    card.addCustomAction(actionName);
-    card.onCustomAction.add(maybePurge);
-}
-
-function removeRightClickOption(card) {
-    const actionName = "*" + locale("ui.menu.purge");
-    card.removeCustomAction(actionName);
-    card.onCustomAction.remove(maybePurge);
-}
-
-const PURGABLE_ATTACHMENTS = [
-    "research_facility",
-    "dmz",
-    "rich_world",
-    "paradise_world",
-    "tomb_of_emphidia",
-    "mining_world",
-    "lazax_survivors",
-    "dyson_sphere",
-];
-
-const PURGABLE_EXPLORES = [
-    "gamma",
-    "mirage",
-    "enigmatic_device",
-    "relic_fragment",
-];
-
-const PURGABLE_RELICS = [
-    "dominus_orb",
-    "maw_of_worlds",
-    "stellar_converter",
-    "the_codex",
-    "the_crown_of_emphidia",
-    "dynamis_core",
-    "nano_forge",
-];
 
 /**
  * Returns true if the obj can be purged, returns false otherwise.
@@ -144,23 +121,24 @@ function canBePurged(obj) {
     }
 }
 
-globalEvents.TI4.onSingletonCardCreated.add((obj) => {
-    if (canBePurged(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickPurge = true;
+class RightClickPurge extends AbstractRightClickCard {
+    constructor() {
+        super();
     }
-});
 
-globalEvents.TI4.onSingletonCardMadeDeck.add((obj) => {
-    if (obj.__hasRightClickPurge) {
-        removeRightClickOption(obj);
-        delete obj.__hasRightClickPurge;
+    isRightClickable(card) {
+        return canBePurged(card);
     }
-});
 
-for (const obj of world.getAllObjects()) {
-    if (canBePurged(obj)) {
-        addRightClickOption(obj);
-        obj.__hasRightClickPurge = true;
+    getRightClickActionNamesAndTooltips(card) {
+        return [{ actionName: PURGE_ACTION_NAME, tooltip: undefined }];
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        if (selectedActionName === PURGE_ACTION_NAME) {
+            purge(card);
+        }
     }
 }
+
+new RightClickPurge();

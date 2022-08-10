@@ -1,8 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { AbstractRightClickCard } = require("./abstract-right-click-card");
 const { DealDiscard } = require("../../lib/card/deal-discard");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Card, globalEvents, world } = require("../../wrapper/api");
+const { Card, Player, globalEvents } = require("../../wrapper/api");
 
 function updateDescription(deck, onTop) {
     if (!deck) {
@@ -56,52 +57,46 @@ const NAMES_AND_ACTIONS = [
     },
 ];
 
-function onCustomActionHandler(obj, player, selectedActionName) {
-    for (const nameAndAction of NAMES_AND_ACTIONS) {
-        const actionName = "*" + locale(nameAndAction.localeName);
-        if (selectedActionName === actionName) {
-            _placeAgenda(obj, nameAndAction.placeTop);
-            break;
+class RightClickAgenda extends AbstractRightClickCard {
+    constructor() {
+        super();
+    }
+
+    init() {}
+
+    isRightClickable(card) {
+        assert(card instanceof Card);
+        const nsid = ObjectNamespace.getNsid(card);
+        return nsid.startsWith("card.agenda");
+    }
+
+    getRightClickActionNamesAndTooltips(card) {
+        assert(card instanceof Card);
+        return NAMES_AND_ACTIONS.map((x) => {
+            return {
+                actionName: "*" + locale(x.localeName),
+                tooltip: undefined,
+            };
+        });
+    }
+
+    onRightClick(card, player, selectedActionName) {
+        assert(card instanceof Card);
+        assert(player instanceof Player);
+        assert(typeof selectedActionName === "string");
+
+        for (const nameAndAction of NAMES_AND_ACTIONS) {
+            const actionName = "*" + locale(nameAndAction.localeName);
+            if (selectedActionName === actionName) {
+                _placeAgenda(card, nameAndAction.placeTop);
+                break;
+            }
         }
     }
 }
 
-function addRightClickOptions(agendaCard) {
-    assert(agendaCard instanceof Card);
-
-    // Add as right-click options.
-    for (const nameAndAction of NAMES_AND_ACTIONS) {
-        const actionName = "*" + locale(nameAndAction.localeName);
-        agendaCard.addCustomAction(actionName);
-    }
-    agendaCard.onCustomAction.remove(onCustomActionHandler);
-    agendaCard.onCustomAction.add(onCustomActionHandler);
-    agendaCard.__hasRightClickAgendaOptions = true;
-}
-
-function removeRightClickOptions(agendaCard) {
-    for (const nameAndAction of NAMES_AND_ACTIONS) {
-        const actionName = "*" + locale(nameAndAction.localeName);
-        agendaCard.removeCustomAction(actionName);
-        agendaCard.onCustomAction.remove(onCustomActionHandler);
-    }
-    agendaCard.__hasRightClickAgendaOptions = false;
-}
-
-globalEvents.TI4.onSingletonCardCreated.add((card) => {
-    assert(card instanceof Card);
-    const nsid = ObjectNamespace.getNsid(card);
-    if (nsid.startsWith("card.agenda")) {
-        addRightClickOptions(card);
-    }
-});
-
-globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
-    assert(card instanceof Card);
-    if (card.__hasRightClickAgendaOptions) {
-        removeRightClickOptions(card);
-    }
-});
+// Create and register self
+new RightClickAgenda();
 
 globalEvents.TI4.onStrategyCardPlayed.add((strategyCardObj, player) => {
     const parsed = ObjectNamespace.parseGeneric(strategyCardObj);
@@ -109,10 +104,3 @@ globalEvents.TI4.onStrategyCardPlayed.add((strategyCardObj, player) => {
         updateDescription(undefined, undefined);
     }
 });
-
-for (const obj of world.getAllObjects()) {
-    const nsid = ObjectNamespace.getNsid(obj);
-    if (nsid.startsWith("card.agenda")) {
-        addRightClickOptions(obj);
-    }
-}
