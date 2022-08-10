@@ -24,36 +24,45 @@ class ControlTokenContainer {
 
         this._container = gameObject;
 
-        const doUpdate = () => {
+        this._container.onInserted.add((container, insertedObjects, player) => {
+            assert(container instanceof Container);
+            assert(Array.isArray(insertedObjects));
+            assert(player instanceof Player);
+
             if (!this._container.isValid()) {
                 return;
             }
-            this.rejectMismatched();
+            this.rejectMismatched(insertedObjects, player);
             this.removeExtras();
             this.refill();
-        };
-
-        this._container.onInserted.add((container, insertedObjects, player) => {
-            doUpdate(player);
         });
         this._container.onRemoved.add((container, removedObject, player) => {
-            doUpdate(player);
+            assert(container instanceof Container);
+            assert(removedObject instanceof GameObject);
+            assert(player instanceof Player);
+
+            if (!this._container.isValid()) {
+                return;
+            }
+            this.removeExtras(removedObject);
+            this.refill(removedObject);
         });
 
         // On construction give caller a moment to finish setup.
         process.nextTick(() => {
-            doUpdate(undefined);
+            this.refill();
         });
     }
 
     /**
      * Scan content, use onContainerRejected event to remove mismatched items.
      */
-    rejectMismatched(player) {
-        assert(!player || player instanceof Player);
+    rejectMismatched(insertedObjects, player) {
+        assert(Array.isArray(insertedObjects));
+        assert(player instanceof Player);
 
         const rejectedObjs = [];
-        for (const obj of this._container.getItems()) {
+        for (const obj of insertedObjects) {
             if (
                 !ObjectNamespace.isControlToken(obj) ||
                 obj.getOwningPlayerSlot() !==
@@ -78,33 +87,49 @@ class ControlTokenContainer {
     /**
      * Keep at most one item.
      */
-    removeExtras() {
-        this._container.getItems().forEach((obj, index) => {
-            assert(obj instanceof GameObject);
-            assert(typeof index === "number");
+    removeExtras(removedObject) {
+        assert(!removedObject || removedObject instanceof GameObject);
 
-            // Call `rejectMismatched` first to enforce content type.
-            assert(ObjectNamespace.isControlToken(obj));
-            assert(
+        // Get remaining correct objects.
+        const matchingObjs = this._container.getItems().filter((obj) => {
+            return (
+                obj !== removedObject &&
+                ObjectNamespace.isControlToken(obj) &&
                 obj.getOwningPlayerSlot() ===
                     this._container.getOwningPlayerSlot()
             );
+        });
 
-            if (index > 0) {
-                const nsid = ObjectNamespace.getNsid(obj);
-                console.log(
-                    `ControlTokenContainer.removeExtras: removing extra "${nsid}"`
-                );
-                this._container.remove(obj);
-            }
+        // Keep one (if there is one).
+        matchingObjs.shift();
+
+        // Remove extra.
+        matchingObjs.forEach((obj) => {
+            const nsid = ObjectNamespace.getNsid(obj);
+            console.log(
+                `SingletonInfiniteContainer.removeExtras: removing extra "${nsid}"`
+            );
+            this._container.remove(obj);
         });
     }
 
     /**
      * Fill with an item if empty.
      */
-    refill() {
-        if (this._container.getNumItems() >= 1) {
+    refill(removedObject) {
+        assert(!removedObject || removedObject instanceof GameObject);
+
+        // Get correct objects.
+        const matchingObjs = this._container.getItems().filter((obj) => {
+            return (
+                obj !== removedObject &&
+                ObjectNamespace.isControlToken(obj) &&
+                obj.getOwningPlayerSlot() ===
+                    this._container.getOwningPlayerSlot()
+            );
+        });
+
+        if (matchingObjs.length >= 1) {
             return;
         }
 
