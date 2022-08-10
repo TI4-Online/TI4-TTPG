@@ -67,6 +67,20 @@ const SCPT_DRAFTS = [
             "Mahact|Winnu|Hacan|Letnev|Muaat|Naalu|N'orr",
         ],
     },
+    {
+        name: "SCPT 2022 Finals",
+        slices: "79 35 34 64 78 | 27 29 46 44 25 | 40 37 31 65 41 | 39 66 69 47 74 | 48 76 68 20 19 | 67 28 49 73 26",
+        labels: [
+            "NekroDiesTwice",
+            "NerfZerg",
+            "Mantis",
+            "Jonno",
+            "nerdY2K",
+            "codytct",
+        ].join("|"),
+        clock: 28800,
+        factionSets: ["Ul|Winnu|N'orr|Yssaril|Sol|Arborec|Nomad|Mahact"],
+    },
 ];
 
 module.exports = { SCPT_DRAFTS };
