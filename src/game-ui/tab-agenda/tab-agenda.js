@@ -164,19 +164,22 @@ class TabAgenda {
         const stateMachine = agenda.getStateMachine();
         const stateDesk = stateMachine && stateMachine.desk;
 
+        // If no desk state, remove any desk UIs.
+        if (!stateDesk) {
+            if (this._deskUIs) {
+                for (const deskUI of this._deskUIs) {
+                    deskUI.detach();
+                }
+                this._deskUIs = undefined;
+            }
+            return;
+        }
+
+        // Abort if already in state, otherwise mark self as in new state.
         if (stateDesk === this._stateDesk) {
             return; // already in state
         }
         this._stateDesk = stateDesk;
-
-        // If no desk state, remove any desk UIs.
-        if (!stateDesk) {
-            for (const deskUI of this._deskUIs) {
-                deskUI.detach();
-            }
-            this._deskUIs = undefined;
-            return;
-        }
 
         const callbacks = {
             onNoWhens: (playerDesk, clickingPlayer) => {

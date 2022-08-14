@@ -272,7 +272,7 @@ class Agenda {
 
     init() {
         this._agendaStateMachine = new AgendaStateMachine();
-        assert(this._agendaStateMachine.name === "WAITING_FOR_START");
+        assert.equal(this._agendaStateMachine.name, "WAITING_FOR_START");
 
         this._deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
 
@@ -313,7 +313,7 @@ class Agenda {
         assert(AgendaOutcome.isOutcomeType(outcomeType));
 
         assert(this._agendaStateMachine);
-        assert(this._agendaStateMachine.name === "OUTCOME_TYPE");
+        assert.equal(this._agendaStateMachine.name, "OUTCOME_TYPE");
 
         const outcomeNames = AgendaOutcome.getDefaultOutcomeNames(outcomeType);
         assert(Array.isArray(outcomeNames));
