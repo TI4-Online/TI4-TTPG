@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
+const { CardUtil } = require("../card/card-util");
 
 // Hack Election: During this agenda, voting begins with the player to the
 // right of the speaker and continues counterclockwise.
@@ -81,8 +82,9 @@ class AgendaTurnOrder {
 
         let dir = 1;
 
+        // Look for the card that reverses direction.
         for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
+            if (!CardUtil.isLooseCard(obj)) {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
