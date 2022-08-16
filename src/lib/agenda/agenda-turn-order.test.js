@@ -2,6 +2,7 @@ require("../../global"); // create world.TI4
 const assert = require("assert");
 const { AgendaTurnOrder, REVERSE_ORDER_NSID } = require("./agenda-turn-order");
 const {
+    MockCard,
     MockGameObject,
     MockPlayer,
     globalEvents,
@@ -67,8 +68,8 @@ it("getVoteOrder reversed", () => {
         templateMetadata: "token:base/speaker",
         position: speakerDesk.center,
     });
-    const reverse = new MockGameObject({
-        templateMetadata: REVERSE_ORDER_NSID,
+    const reverse = new MockCard({
+        allCardDetails: [{ metadata: REVERSE_ORDER_NSID }],
     });
     world.__clear();
     world.__addObject(speakerToken);

@@ -166,6 +166,7 @@ class Agenda {
     constructor() {
         this._agendaStateMachine = undefined;
 
+        this._agendaCard = undefined;
         this._deskIndexToAvailableVotes = undefined;
         this._outcomeNames = undefined;
 
@@ -186,6 +187,11 @@ class Agenda {
             } else {
                 this.clear();
             }
+        });
+
+        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
+            assert(!agendaCard || agendaCard instanceof Card);
+            this._agendaCard = agendaCard;
         });
     }
 
@@ -246,6 +252,22 @@ class Agenda {
         return this._outcomeNames[outcomeIndex];
     }
 
+    /**
+     * The agenda card currently in the active agenda spot.
+     *
+     * @returns {Card}
+     */
+    getAgendaCard() {
+        return this._agendaCard;
+    }
+
+    /**
+     * The agenda NSID currently in the active agenda spot.
+     */
+    getAgendaNsid() {
+        return this._agendaCard && ObjectNamespace.getNsid(this._agendaCard);
+    }
+
     // ----------------------------------------------------------------------
 
     /**
@@ -272,7 +294,7 @@ class Agenda {
 
     init() {
         this._agendaStateMachine = new AgendaStateMachine();
-        assert(this._agendaStateMachine.name === "WAITING_FOR_START");
+        assert.equal(this._agendaStateMachine.name, "WAITING_FOR_START");
 
         this._deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
 
@@ -313,7 +335,7 @@ class Agenda {
         assert(AgendaOutcome.isOutcomeType(outcomeType));
 
         assert(this._agendaStateMachine);
-        assert(this._agendaStateMachine.name === "OUTCOME_TYPE");
+        assert.equal(this._agendaStateMachine.name, "OUTCOME_TYPE");
 
         const outcomeNames = AgendaOutcome.getDefaultOutcomeNames(outcomeType);
         assert(Array.isArray(outcomeNames));

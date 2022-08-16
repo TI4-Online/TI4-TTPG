@@ -5,6 +5,10 @@ const Rotator = require("./mock-rotator");
 let _nextId = 1;
 
 class GameObject {
+    static __create(nsid, position) {
+        return new GameObject({ templateMetadata: nsid, position });
+    }
+
     constructor(data) {
         this._container = (data && data.container) || undefined;
         this._extent = (data && data.extent) || new Vector(1, 1, 1);

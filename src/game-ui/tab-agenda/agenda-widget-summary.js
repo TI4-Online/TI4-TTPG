@@ -1,11 +1,15 @@
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
+const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
 const { AgendaUiDesk } = require("./agenda-ui-desk");
 const {
     Border,
+    HorizontalAlignment,
     HorizontalBox,
+    LayoutBox,
     Text,
     TextJustification,
+    VerticalAlignment,
     VerticalBox,
     globalEvents,
     world,
@@ -28,10 +32,10 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
  * Agenda phase summary, used for main UI (streamer request).
  * Can handle
  */
-class AgendaWidgetSummary extends VerticalBox {
+class AgendaWidgetSummary extends HorizontalBox {
     constructor() {
         super();
-        this.setChildDistance(CONFIG.spacing);
+        this.setChildDistance(CONFIG.spacing * 3);
 
         this._createUI();
         this._updateUI();
@@ -43,16 +47,30 @@ class AgendaWidgetSummary extends VerticalBox {
     _createUI() {
         const agenda = world.TI4.agenda;
 
+        const nsid = agenda.getAgendaNsid();
+        if (nsid) {
+            const leftPanel = new AgendaCardWidget(nsid);
+            const width = 200;
+            leftPanel.setImageSize(width, (width * 750) / 500);
+            const leftBox = new LayoutBox()
+                .setChild(leftPanel)
+                .setVerticalAlignment(VerticalAlignment.Center)
+                .setHorizontalAlignment(HorizontalAlignment.Center);
+            this.addChild(leftBox, 0);
+        }
+
         let fontSize = CONFIG.fontSize;
         const fitOutcomes = 5.8;
         if (agenda.getNumOutcomes() > fitOutcomes) {
             fontSize = (fontSize * fitOutcomes) / agenda.getNumOutcomes();
         }
 
+        const rightPanel = new VerticalBox().setChildDistance(CONFIG.spacing);
+
         const availableVotes =
-            AgendaUiDesk.createAvailabledVotesWidget(fontSize);
-        this.addChild(availableVotes);
-        this.addChild(new Border().setColor(CONFIG.spacerColor));
+            AgendaUiDesk.createAvailableVotesWidget(fontSize);
+        rightPanel.addChild(availableVotes);
+        rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
 
         this._outcomeData = [];
 
@@ -133,9 +151,9 @@ class AgendaWidgetSummary extends VerticalBox {
             .addChild(colName)
             .addChild(colVotes)
             .addChild(colPredictions);
-        this.addChild(box);
+        rightPanel.addChild(box);
 
-        this.addChild(new Border().setColor(CONFIG.spacerColor));
+        rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
 
         const playerName = "?";
         this._waitingFor = new Text()
@@ -147,7 +165,14 @@ class AgendaWidgetSummary extends VerticalBox {
             .setJustification(TextJustification.Center)
             .setFontSize(fontSize);
 
-        this.addChild(this._waitingFor);
+        rightPanel.addChild(this._waitingFor);
+
+        const rightBox = new LayoutBox()
+            .setChild(rightPanel)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setHorizontalAlignment(HorizontalAlignment.Center);
+
+        this.addChild(rightBox, 1);
     }
 
     _updateUI() {
