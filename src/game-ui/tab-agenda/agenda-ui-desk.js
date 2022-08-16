@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const { Agenda } = require("../../lib/agenda/agenda");
+const { AgendaCardButton } = require("../../lib/agenda/agenda-card-widget");
 const { Broadcast } = require("../../lib/broadcast");
 const {
     Border,
@@ -15,6 +16,7 @@ const {
     TextJustification,
     UIElement,
     Vector,
+    VerticalAlignment,
     VerticalBox,
     world,
 } = require("../../wrapper/api");
@@ -58,11 +60,21 @@ class AgendaUiDesk extends Border {
         let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
         panel.addChild(
-            AgendaUiDesk.createAvailabledVotesWidget(CONFIG.fontSize)
+            AgendaUiDesk.createAvailableVotesWidget(CONFIG.fontSize)
         );
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
-        panel.addChild(this._createWhensWidget());
-        panel.addChild(this._createAftersWidget());
+
+        const midPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
+        midPanel.addChild(this._createAgendaCardWidget());
+        const midRight = new VerticalBox().setChildDistance(CONFIG.spacing);
+        midRight.addChild(this._createWhensWidget());
+        midRight.addChild(this._createAftersWidget());
+        midPanel.addChild(midRight);
+        const midBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(midPanel);
+        panel.addChild(midBox);
+
         panel.addChild(this._createOutcomesWidget(outcomeNamesMutable));
         panel.addChild(this._createLockCollapseWidget());
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
@@ -101,7 +113,7 @@ class AgendaUiDesk extends Border {
         Broadcast.broadcastOne(player, msg);
     }
 
-    static createAvailabledVotesWidget(fontSize) {
+    static createAvailableVotesWidget(fontSize) {
         assert(typeof fontSize === "number");
         const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
 
@@ -121,6 +133,39 @@ class AgendaUiDesk extends Border {
         return new LayoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(panel);
+    }
+
+    _createAgendaCardWidget() {
+        const box = new LayoutBox().setVerticalAlignment(
+            VerticalAlignment.Center
+        );
+        const nsid = world.TI4.agenda.getAgendaNsid();
+        if (nsid) {
+            const button = new AgendaCardButton(nsid);
+            const width = 48;
+            button.setImageSize(width, (width * 750) / 500);
+            box.setChild(button);
+
+            button.onClicked.add((button, player) => {
+                const scale = 3;
+                const width = 330 * scale;
+                const height = (width * 750) / 500;
+                const popupButton = new AgendaCardButton(nsid);
+                popupButton.setImageSize(width, height);
+
+                const popupUi = new UIElement();
+                popupUi.position = this._ui.position.add([0, 0, 1]);
+                popupUi.rotation = this._ui.rotation;
+                popupUi.scale = 1 / scale;
+                popupUi.widget = new LayoutBox().setChild(popupButton);
+                world.addUI(popupUi);
+
+                popupButton.onClicked.add((button, player) => {
+                    world.removeUIElement(popupUi);
+                });
+            });
+        }
+        return box;
     }
 
     _createWhensWidget() {
@@ -148,10 +193,7 @@ class AgendaUiDesk extends Border {
             .setChildDistance(CONFIG.spacing)
             .addChild(this._noWhensButton)
             .addChild(this._playWhenButton);
-        const box = new LayoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setChild(panel);
-        return box;
+        return panel;
     }
 
     _createAftersWidget() {
@@ -179,10 +221,7 @@ class AgendaUiDesk extends Border {
             .setChildDistance(CONFIG.spacing)
             .addChild(this._noAftersButton)
             .addChild(this._playAfterButton);
-        const box = new LayoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setChild(panel);
-        return box;
+        return panel;
     }
 
     _createOutcomesWidget(outcomeNamesMutable) {

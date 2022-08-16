@@ -166,6 +166,7 @@ class Agenda {
     constructor() {
         this._agendaStateMachine = undefined;
 
+        this._agendaCard = undefined;
         this._deskIndexToAvailableVotes = undefined;
         this._outcomeNames = undefined;
 
@@ -186,6 +187,11 @@ class Agenda {
             } else {
                 this.clear();
             }
+        });
+
+        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
+            assert(!agendaCard || agendaCard instanceof Card);
+            this._agendaCard = agendaCard;
         });
     }
 
@@ -244,6 +250,22 @@ class Agenda {
         assert(this._outcomeNames);
         assert(outcomeIndex >= 0 && outcomeIndex < this._outcomeNames.length);
         return this._outcomeNames[outcomeIndex];
+    }
+
+    /**
+     * The agenda card currently in the active agenda spot.
+     *
+     * @returns {Card}
+     */
+    getAgendaCard() {
+        return this._agendaCard;
+    }
+
+    /**
+     * The agenda NSID currently in the active agenda spot.
+     */
+    getAgendaNsid() {
+        return this._agendaCard && ObjectNamespace.getNsid(this._agendaCard);
     }
 
     // ----------------------------------------------------------------------
