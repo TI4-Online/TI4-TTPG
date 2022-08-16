@@ -2,6 +2,13 @@ const GameObject = require("./mock-game-object");
 const MockCardDetails = require("./mock-card-details");
 
 class Card extends GameObject {
+    static __create(nsid, position) {
+        return new Card({
+            position,
+            allCardDetails: [new MockCardDetails({ metadata: nsid })],
+        });
+    }
+
     constructor(data) {
         super(data);
         this._allCardDetails = (data && data.allCardDetails) || [];

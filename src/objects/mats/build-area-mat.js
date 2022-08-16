@@ -31,6 +31,14 @@ const {
     world,
 } = require("../../wrapper/api");
 
+/**
+ * MISSING ABILITIES:
+ *
+ * "Amalgamation" Vuil'raith faction ability: pay for units with captured units.
+ *
+ * "Hegemonic Trade Policy" Winnu tech: swap r/i values of one planet.
+ */
+
 const MAT_WIDTH = 18.4;
 const MAT_HEIGHT = 18.4;
 
@@ -98,9 +106,25 @@ class BuildAreaMat {
         }
     }
 
-    static getConsumeEntry(obj, hasXxchaHeroCodex3) {
+    static getConsumeFlags(playerSlot) {
+        assert(typeof playerSlot === "number");
+
+        const consumeFlags = {};
+        consumeFlags.hasXxchaHeroCodex3 = CardUtil.hasCard(
+            playerSlot,
+            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega"
+        );
+        consumeFlags.hasMirrorComputing = CardUtil.hasCard(
+            playerSlot,
+            "card.technology.yellow.mentak:base/mirror_computing"
+        );
+
+        return consumeFlags;
+    }
+
+    static getConsumeEntry(obj, flags) {
         assert(obj instanceof GameObject);
-        assert(typeof hasXxchaHeroCodex3 === "boolean");
+        const { hasXxchaHeroCodex3, hasMirrorComputing } = flags;
 
         const nsid = ObjectNamespace.getNsid(obj);
 
@@ -109,7 +133,7 @@ class BuildAreaMat {
             return {
                 obj,
                 type: TYPE.TRADEGOOD,
-                value: 1,
+                value: hasMirrorComputing ? 2 : 1,
                 count: 1,
             };
         }
@@ -117,8 +141,8 @@ class BuildAreaMat {
             return {
                 obj,
                 type: TYPE.TRADEGOOD,
-                value: 1,
-                count: 3,
+                value: hasMirrorComputing ? 6 : 3,
+                count: 1,
             };
         }
 
@@ -380,14 +404,8 @@ class BuildAreaMat {
         assert(this._zone instanceof Zone);
         let consumeExtras = [];
 
-        // Check for Xxcha hero codex 3 before gathering consume entries.
         const playerSlot = this._getPlayerSlot();
-        const xxchaHeroCodex3Nsid =
-            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
-        let hasXxchaHeroCodex3 = CardUtil.hasCard(
-            playerSlot,
-            xxchaHeroCodex3Nsid
-        );
+        const consumeFlags = BuildAreaMat.getConsumeFlags(playerSlot);
 
         // What's inside area?
         const produce = [];
@@ -403,7 +421,7 @@ class BuildAreaMat {
             }
             const consumeEntry = BuildAreaMat.getConsumeEntry(
                 obj,
-                hasXxchaHeroCodex3
+                consumeFlags
             );
             if (consumeEntry) {
                 consume.push(consumeEntry);
@@ -609,5 +627,5 @@ if (world.getExecutionReason() === "ScriptReload") {
 }
 
 if (world.__isMock) {
-    module.exports = { BuildAreaMat };
+    module.exports = { BuildAreaMat, TYPE };
 }
