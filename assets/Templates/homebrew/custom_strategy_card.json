@@ -1,7 +1,7 @@
 {
 	"Type": "Generic",
 	"GUID": "55F67A443844DDEEBF439AB3F7A5AD05",
-	"Name": "Homebrew",
+	"Name": "Custom Strategy Card",
 	"Metadata": "tile.strategy:homebrew/custom",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
