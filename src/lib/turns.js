@@ -173,7 +173,15 @@ class Turns {
         return this._currentTurn;
     }
 
-    getNextTurn() {
+    /**
+     * Read the next turn.  If `changeTurnInProgress` is true, also update
+     * any internal state (e.g. snake changing direction) as part of reading
+     * the next turn.
+     *
+     * @param {boolean} changeTurnInProgress
+     * @returns
+     */
+    getNextTurn(changeTurnInProgress) {
         // Careful, the "current" player may have passed during their turn.
         const currentIdx = this._turnOrder.indexOf(this._currentTurn);
         if (currentIdx === -1) {
@@ -202,16 +210,20 @@ class Turns {
             if (this._isSnake) {
                 if (this._isForward) {
                     if (candidateIdx === this._turnOrder.length - 1) {
-                        this._isForward = !this._isForward;
-                        dir = this._isForward ? 1 : -1;
+                        if (changeTurnInProgress) {
+                            this._isForward = !this._isForward;
+                        }
+                        dir = -dir;
                         // Continue leaving current candidate in place.
                     } else {
                         candidateIdx += dir;
                     }
                 } else {
                     if (candidateIdx === 0) {
-                        this._isForward = !this._isForward;
-                        dir = this._isForward ? 1 : -1;
+                        if (changeTurnInProgress) {
+                            this._isForward = !this._isForward;
+                        }
+                        dir = -dir;
                         // Continue leaving current candidate in place.
                     } else {
                         candidateIdx += dir;
@@ -239,9 +251,9 @@ class Turns {
         // playerDesk may be undefined
         assert(!clickingPlayer || clickingPlayer instanceof Player);
 
-        if (this._currentTurn === playerDesk) {
-            return; // already this turn!
-        }
+        // It is legal to have the same player take two turns in a row
+        // (e.g. snake draft changing direction).  Process set turn
+        // for the current turn player as a new turn.
 
         const playerSlot = playerDesk.playerSlot;
         const currentTurnPlayer = world.getPlayerBySlot(playerSlot);
@@ -331,7 +343,7 @@ class Turns {
             return;
         }
 
-        const next = this.getNextTurn();
+        const next = this.getNextTurn(true);
         if (next) {
             this.setCurrentTurn(next, clickingPlayer);
             if (ADVANCE_TTPG_TURNS) {
