@@ -16,6 +16,9 @@ class AgendaCardWidget extends ImageWidget {
         assert(agendaNsid.startsWith("card.agenda"));
         const parsed = ObjectNamespace.parseNsid(agendaNsid);
         assert(parsed);
+        if (parsed.source.includes("homebrew")) {
+            return undefined; // if the card has a custom image, use that instead?
+        }
         return `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
     }
 
