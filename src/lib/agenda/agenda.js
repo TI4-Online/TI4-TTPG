@@ -645,7 +645,14 @@ class Agenda {
     getVoteCount(deskIndex) {
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
-        return this._deskIndexToVoteCount[deskIndex] || 0;
+        if (!this._deskIndexToVoteCount) {
+            return 0;
+        }
+        const voteCount = this._deskIndexToVoteCount[deskIndex];
+        if (!voteCount) {
+            return 0;
+        }
+        return voteCount;
     }
 
     setVoteCount(deskIndex, value, clickingPlayer) {

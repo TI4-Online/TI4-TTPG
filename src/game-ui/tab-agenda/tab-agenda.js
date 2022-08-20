@@ -171,6 +171,7 @@ class TabAgenda {
                     deskUI.detach();
                 }
                 this._deskUIs = undefined;
+                this._stateDesk = undefined;
             }
             return;
         }
