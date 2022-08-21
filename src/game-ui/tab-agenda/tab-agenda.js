@@ -5,6 +5,7 @@ const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
 const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -52,30 +53,30 @@ class TabAgenda {
         const onResetPlanetCards = () => {
             Agenda.resetPlanetCards();
         };
-        const onStart = (button, player) => {
+        const onStart = ThrottleClickHandler.wrap((button, player) => {
             agenda.start();
-        };
-        const onCancel = (button, player) => {
+        });
+        const onCancel = ThrottleClickHandler.wrap((button, player) => {
             agenda.clear();
-        };
+        });
         const outcomeButtonTextsAndOnClicks = [
             {
                 text: locale("ui.agenda.outcome_type.for_against"),
-                onClick: (button, player) => {
+                onClick: ThrottleClickHandler.wrap((button, player) => {
                     agenda.resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-                },
+                }),
             },
             {
                 text: locale("ui.agenda.outcome_type.player"),
-                onClick: (button, player) => {
+                onClick: ThrottleClickHandler.wrap((button, player) => {
                     agenda.resetOutcomeNames(OUTCOME_TYPE.PLAYER);
-                },
+                }),
             },
             {
                 text: locale("ui.agenda.outcome_type.other"),
-                onClick: (button, player) => {
+                onClick: ThrottleClickHandler.wrap((button, player) => {
                     agenda.resetOutcomeNames(OUTCOME_TYPE.OTHER);
-                },
+                }),
             },
         ];
 
