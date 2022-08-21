@@ -139,9 +139,9 @@ class AgendaUiDesk extends Border {
         const box = new LayoutBox().setVerticalAlignment(
             VerticalAlignment.Center
         );
-        const nsid = world.TI4.agenda.getAgendaNsid();
-        if (nsid) {
-            const button = new AgendaCardButton(nsid);
+        const card = world.TI4.agenda.getAgendaCard();
+        if (card) {
+            const button = new AgendaCardButton(card);
             const width = 48;
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
@@ -150,7 +150,7 @@ class AgendaUiDesk extends Border {
                 const scale = 3;
                 const width = 330 * scale;
                 const height = (width * 750) / 500;
-                const popupButton = new AgendaCardButton(nsid);
+                const popupButton = new AgendaCardButton(card);
                 popupButton.setImageSize(width, height);
 
                 const popupUi = new UIElement();

@@ -47,9 +47,9 @@ class AgendaWidgetSummary extends HorizontalBox {
     _createUI() {
         const agenda = world.TI4.agenda;
 
-        const nsid = agenda.getAgendaNsid();
-        if (nsid) {
-            const leftPanel = new AgendaCardWidget(nsid);
+        const card = world.TI4.agenda.getAgendaCard();
+        if (card) {
+            const leftPanel = new AgendaCardWidget(card);
             const width = 200;
             leftPanel.setImageSize(width, (width * 750) / 500);
             const leftBox = new LayoutBox()

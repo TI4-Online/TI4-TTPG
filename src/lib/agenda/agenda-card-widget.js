@@ -1,6 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
-const { ImageButton, ImageWidget, refPackageId } = require("../../wrapper/api");
+const {
+    Card,
+    ImageButton,
+    ImageWidget,
+    refPackageId,
+} = require("../../wrapper/api");
 
 const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
 
@@ -11,8 +16,9 @@ const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
  * select a card in a cardsheet this could share images with the deck(s).
  */
 class AgendaCardWidget extends ImageWidget {
-    static getImagePath(agendaNsid) {
-        assert(typeof agendaNsid === "string");
+    static getImagePath(card) {
+        assert(card instanceof Card);
+        const agendaNsid = ObjectNamespace.getNsid(card);
         assert(agendaNsid.startsWith("card.agenda"));
         const parsed = ObjectNamespace.parseNsid(agendaNsid);
         assert(parsed);
@@ -22,9 +28,9 @@ class AgendaCardWidget extends ImageWidget {
         return `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
     }
 
-    constructor(agendaNsid) {
-        assert(typeof agendaNsid === "string");
-        const path = AgendaCardWidget.getImagePath(agendaNsid);
+    constructor(card) {
+        assert(card instanceof Card);
+        const path = AgendaCardWidget.getImagePath(card);
         super();
         this.setImage(path, refPackageId);
         this.setImageSize(500, 750);
@@ -32,9 +38,9 @@ class AgendaCardWidget extends ImageWidget {
 }
 
 class AgendaCardButton extends ImageButton {
-    constructor(agendaNsid) {
-        assert(typeof agendaNsid === "string");
-        const path = AgendaCardWidget.getImagePath(agendaNsid);
+    constructor(card) {
+        assert(card instanceof Card);
+        const path = AgendaCardWidget.getImagePath(card);
         super();
         this.setImage(path, refPackageId);
         this.setImageSize(500, 750);
