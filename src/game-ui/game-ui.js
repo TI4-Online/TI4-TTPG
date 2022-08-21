@@ -36,8 +36,6 @@ class GameUI {
             CONFIG.padding,
             CONFIG.padding
         );
-        //.setMinimumWidth(anchor.width)
-        //.setMinimumHeight(anchor.height);
 
         this._uiElement = new UIElement();
         this._uiElement.scale = 1 / CONFIG.scale;
