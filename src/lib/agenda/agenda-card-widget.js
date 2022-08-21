@@ -17,8 +17,8 @@ const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
  */
 class AgendaCardWidget extends ImageWidget {
     static setImagePath(widget, card) {
-        assert(card instanceof Card);
         assert(widget instanceof ImageWidget || widget instanceof ImageButton);
+        assert(card instanceof Card);
 
         const agendaNsid = ObjectNamespace.getNsid(card);
         assert(agendaNsid.startsWith("card.agenda"));
@@ -26,11 +26,18 @@ class AgendaCardWidget extends ImageWidget {
         assert(parsed);
 
         if (parsed.source.includes("homebrew")) {
-            return undefined; // if the card has a custom image, use that instead?
+            // There is no method to read the custom image, pull it from the save JSON.
+            // If no URL do not set the image.
+            const json = JSON.parse(card.toJSONString());
+            const url = json.frontTextureOverride;
+            if (url && url.startsWith("http")) {
+                widget.setImageURL(url);
+            }
+        } else {
+            const path = `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
+            widget.setImage(path, refPackageId);
         }
 
-        const path = `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
-        widget.setImage(path, refPackageId);
         widget.setImageSize(500, 750);
     }
 
