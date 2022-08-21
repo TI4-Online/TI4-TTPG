@@ -40,8 +40,9 @@ class GameUI {
         //.setMinimumHeight(anchor.height);
 
         this._uiElement = new UIElement();
-        this._uiElement.width = anchor.width;
-        this._uiElement.height = anchor.height;
+        this._uiElement.scale = 1 / CONFIG.scale;
+        this._uiElement.width = anchor.width * CONFIG.scale;
+        this._uiElement.height = anchor.height * CONFIG.scale;
         this._uiElement.useWidgetSize = false;
 
         this._uiElement.position = new Vector(

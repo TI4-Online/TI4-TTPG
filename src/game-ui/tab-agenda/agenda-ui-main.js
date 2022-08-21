@@ -186,7 +186,7 @@ class AgendaUiMain extends LayoutBox {
     static createMechy() {
         const img = new ImageWidget()
             .setImage("global/ui/mechy.png", refPackageId)
-            .setImageSize(256, 256);
+            .setImageSize(256 * CONFIG.scale, 256 * CONFIG.scale);
         return new LayoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
             .setHorizontalAlignment(HorizontalAlignment.Center)
