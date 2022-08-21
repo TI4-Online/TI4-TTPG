@@ -16,34 +16,36 @@ const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
  * select a card in a cardsheet this could share images with the deck(s).
  */
 class AgendaCardWidget extends ImageWidget {
-    static getImagePath(card) {
+    static setImagePath(widget, card) {
         assert(card instanceof Card);
+        assert(widget instanceof ImageWidget || widget instanceof ImageButton);
+
         const agendaNsid = ObjectNamespace.getNsid(card);
         assert(agendaNsid.startsWith("card.agenda"));
         const parsed = ObjectNamespace.parseNsid(agendaNsid);
         assert(parsed);
+
         if (parsed.source.includes("homebrew")) {
             return undefined; // if the card has a custom image, use that instead?
         }
-        return `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
+
+        const path = `${TEXTURE_PATH_WITHOUT_SOURCE}/${parsed.source}/${parsed.name}.jpg`;
+        widget.setImage(path, refPackageId);
+        widget.setImageSize(500, 750);
     }
 
     constructor(card) {
         assert(card instanceof Card);
-        const path = AgendaCardWidget.getImagePath(card);
         super();
-        this.setImage(path, refPackageId);
-        this.setImageSize(500, 750);
+        AgendaCardWidget.setImagePath(this, card);
     }
 }
 
 class AgendaCardButton extends ImageButton {
     constructor(card) {
         assert(card instanceof Card);
-        const path = AgendaCardWidget.getImagePath(card);
         super();
-        this.setImage(path, refPackageId);
-        this.setImageSize(500, 750);
+        AgendaCardWidget.setImagePath(this, card);
     }
 }
 
