@@ -1483,8 +1483,8 @@ module.exports = [
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.unit === "mech" && unitAttrs.raw.groundCombat) {
-                unitAttrs.raw.groundCombat.extraDice =
-                    (unitAttrs.raw.groundCombat.extraDice || 0) + 1;
+                unitAttrs.raw.groundCombat.dice =
+                    (unitAttrs.raw.groundCombat.dice || 0) + 1;
             }
         },
     },
