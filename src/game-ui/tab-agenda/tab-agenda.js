@@ -171,9 +171,9 @@ class TabAgenda {
                 for (const deskUI of this._deskUIs) {
                     deskUI.detach();
                 }
-                this._deskUIs = undefined;
-                this._stateDesk = undefined;
             }
+            this._deskUIs = undefined;
+            this._stateDesk = undefined;
             return;
         }
 
