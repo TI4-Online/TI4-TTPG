@@ -63,7 +63,7 @@ class AutoRollerUI extends LayoutBox {
         panel.addChild(new LayoutBox(), 1); // stretch to fill space
 
         const reportModifiers = new Button()
-            .setFontSize(12)
+            .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.roller.report_modifiers"));
         reportModifiers.onClicked.add((button, player) => {
             this._onButton("reportModifiers", false, player);
@@ -122,20 +122,20 @@ class AutoRollerUI extends LayoutBox {
         assert(system instanceof System);
         // Mandate column width so if button text overflows it truncates
         // instead of adding a scrollbar.  Do not assume EN locale!
-        const VERTICAL_DISTANCE = 5;
-        const HORIZONTAL_DISTANCE = 10;
-        const COLUMN_WIDTH = 175;
+        const VERTICAL_DISTANCE = 5 * CONFIG.scale;
+        const HORIZONTAL_DISTANCE = 10 * CONFIG.scale;
+        const COLUMN_WIDTH = 175 * CONFIG.scale;
 
-        const BUTTON_FONT_SIZE = 12;
+        const BUTTON_FONT_SIZE = 12 * CONFIG.scale;
         const LABEL_FONT = "Handel_Gothic_Regular.otf";
-        const LABEL_FONT_SIZE = 14;
+        const LABEL_FONT_SIZE = 14 * CONFIG.scale;
 
         const spaceLayout = new VerticalBox().setChildDistance(
             VERTICAL_DISTANCE
         );
         const spaceBox = new LayoutBox()
             .setOverrideWidth(COLUMN_WIDTH)
-            .setVerticalAlignment(VerticalAlignment.Bottom)
+            .setVerticalAlignment(VerticalAlignment.Fill)
             .setChild(spaceLayout);
 
         const groundLayout = new HorizontalBox().setChildDistance(
@@ -198,7 +198,7 @@ class AutoRollerUI extends LayoutBox {
                 .setFont(LABEL_FONT, refPackageId)
                 .setJustification(TextJustification.Center)
                 .setText(locale(localeText).toUpperCase());
-            panel.addChild(label);
+            panel.addChild(label, 0);
         };
 
         const addPlanetName = (planet) => {
@@ -209,7 +209,7 @@ class AutoRollerUI extends LayoutBox {
                 .setJustification(TextJustification.Center)
                 .setItalic(true)
                 .setText(planet.getNameStr());
-            panel.addChild(label);
+            panel.addChild(label, 0);
         };
 
         const addButton = (localeText, combatType, planet) => {
@@ -223,15 +223,14 @@ class AutoRollerUI extends LayoutBox {
             button.onClicked.add((button, player) => {
                 this._onButton(combatType, planet, player);
             });
-            panel.addChild(button);
+            panel.addChild(button, 1); // stretch buttons to fill
             return button;
         };
 
         const addGap = () => {
             assert(panel instanceof Panel);
-            panel.addChild(
-                new LayoutBox().setOverrideHeight(VERTICAL_DISTANCE)
-            );
+            const gap = new LayoutBox().setOverrideHeight(VERTICAL_DISTANCE);
+            panel.addChild(gap, 0);
         };
 
         const ambushAvailable = this._ambush(system);

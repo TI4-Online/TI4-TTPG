@@ -14,6 +14,12 @@ const locale = require("../lib/locale");
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
     const system = world.TI4.getSystemBySystemTileObject(obj);
+
+    if (!system) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        throw new Error(`onSystemActivated: unknown system "${nsid}"`);
+    }
+
     const message = locale("ui.message.system_activated", {
         playerName: player.getName(),
         systemTile: system.tile,

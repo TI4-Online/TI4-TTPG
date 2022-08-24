@@ -53,6 +53,7 @@ class AgendaUiDesk extends Border {
         const localPos = new Vector(30, 0, 20);
         const localRot = new Rotator(25, 0, 0);
         this._ui = new UIElement();
+        this._ui.scale = 1 / CONFIG.scale;
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
@@ -139,10 +140,10 @@ class AgendaUiDesk extends Border {
         const box = new LayoutBox().setVerticalAlignment(
             VerticalAlignment.Center
         );
-        const nsid = world.TI4.agenda.getAgendaNsid();
-        if (nsid) {
-            const button = new AgendaCardButton(nsid);
-            const width = 48;
+        const card = world.TI4.agenda.getAgendaCard();
+        if (card) {
+            const button = new AgendaCardButton(card);
+            const width = 48 * CONFIG.scale;
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
 
@@ -150,7 +151,7 @@ class AgendaUiDesk extends Border {
                 const scale = 3;
                 const width = 330 * scale;
                 const height = (width * 750) / 500;
-                const popupButton = new AgendaCardButton(nsid);
+                const popupButton = new AgendaCardButton(card);
                 popupButton.setImageSize(width, height);
 
                 const popupUi = new UIElement();
