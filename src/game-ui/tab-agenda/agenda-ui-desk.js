@@ -58,6 +58,9 @@ class AgendaUiDesk extends Border {
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
         this._ui.widget = this;
 
+        this._collapsedUi = undefined;
+        this._zoomedAgendaCardUi = undefined;
+
         let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
         panel.addChild(
@@ -99,6 +102,14 @@ class AgendaUiDesk extends Border {
 
     detach() {
         world.removeUIElement(this._ui);
+        if (this._collapsedUi) {
+            world.removeUIElement(this._collapsedUi);
+            this._collapsedUi = undefined;
+        }
+        if (this._zoomedAgendaCardUi) {
+            world.removeUIElement(this._zoomedAgendaCardUi);
+            this._zoomedAgendaCardUi = undefined;
+        }
         return this;
     }
 
@@ -154,15 +165,20 @@ class AgendaUiDesk extends Border {
                 const popupButton = new AgendaCardButton(card);
                 popupButton.setImageSize(width, height);
 
-                const popupUi = new UIElement();
-                popupUi.position = this._ui.position.add([0, 0, 1]);
-                popupUi.rotation = this._ui.rotation;
-                popupUi.scale = 1 / scale;
-                popupUi.widget = new LayoutBox().setChild(popupButton);
-                world.addUI(popupUi);
+                this._zoomedAgendaCardUi = new UIElement();
+                this._zoomedAgendaCardUi.position = this._ui.position.add([
+                    0, 0, 1,
+                ]);
+                this._zoomedAgendaCardUi.rotation = this._ui.rotation;
+                this._zoomedAgendaCardUi.scale = 1 / scale;
+                this._zoomedAgendaCardUi.widget = new LayoutBox().setChild(
+                    popupButton
+                );
+                world.addUI(this._zoomedAgendaCardUi);
 
                 popupButton.onClicked.add((button, player) => {
-                    world.removeUIElement(popupUi);
+                    world.removeUIElement(this._zoomedAgendaCardUi);
+                    this._zoomedAgendaCardUi = undefined;
                 });
             });
         }
@@ -420,9 +436,9 @@ class AgendaUiDesk extends Border {
             }
             world.removeUIElement(this._ui);
 
-            const expandButtonUi = new UIElement();
-            expandButtonUi.position = this._ui.position;
-            expandButtonUi.rotation = this._ui.rotation;
+            this._collapsedUi = new UIElement();
+            this._collapsedUi.position = this._ui.position;
+            this._collapsedUi.rotation = this._ui.rotation;
 
             const expandButton = new Button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
@@ -440,11 +456,12 @@ class AgendaUiDesk extends Border {
                 if (!this.allowClick(player)) {
                     return;
                 }
-                world.removeUIElement(expandButtonUi);
+                world.removeUIElement(this._collapsedUi);
+                this._collapsedUi = undefined;
                 world.addUI(this._ui);
             });
-            expandButtonUi.widget = new Border().setChild(expandButtonBox);
-            world.addUI(expandButtonUi);
+            this._collapsedUi.widget = new Border().setChild(expandButtonBox);
+            world.addUI(this._collapsedUi);
         });
 
         const panel = new HorizontalBox()
