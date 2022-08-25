@@ -27,6 +27,9 @@ class TabAgenda {
         globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
             this.update();
         });
+
+        // Update manually to seed initial state.
+        this.update();
     }
 
     getUI() {
@@ -45,7 +48,7 @@ class TabAgenda {
         const stateMachine = agenda.getStateMachine();
         const stateMain = stateMachine && stateMachine.main;
 
-        if (stateMain === this._stateMain) {
+        if (stateMain && stateMain === this._stateMain) {
             return; // already in state
         }
         this._stateMain = stateMain;

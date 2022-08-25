@@ -164,6 +164,7 @@ class Agenda {
     // ----------------------------------------------------------------------
 
     constructor() {
+        this._epoch = 0; // advance every agenda change
         this._agendaStateMachine = undefined;
 
         this._agendaCard = undefined;
@@ -180,18 +181,18 @@ class Agenda {
         this._invalidatePending = false;
 
         globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
+            assert(!agendaCard || agendaCard instanceof Card);
+
             world.TI4.turns.clearAllPassed();
+
+            this._epoch += 1;
+            this._agendaCard = agendaCard;
             if (agendaCard) {
                 this.clear();
                 this.init();
             } else {
                 this.clear();
             }
-        });
-
-        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
-            assert(!agendaCard || agendaCard instanceof Card);
-            this._agendaCard = agendaCard;
         });
     }
 
@@ -204,6 +205,15 @@ class Agenda {
      */
     isActive() {
         return this._agendaStateMachine ? true : false;
+    }
+
+    /**
+     * Agenda sequence number.
+     *
+     * @returns {number}
+     */
+    getEpoch() {
+        return this._epoch;
     }
 
     /**
