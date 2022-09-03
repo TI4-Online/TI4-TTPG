@@ -31,6 +31,29 @@ it("atlas db", () => {
     }
 });
 
+it("string db hs count", () => {
+    for (const entry of MAP_STRING_DB) {
+        const parsedMapString = MapStringParser.parse(entry.mapstring);
+        assert(parsedMapString);
+        const numHomeSystems = parsedMapString.filter(
+            (entry) => entry.tile === 0
+        ).length;
+        assert(typeof numHomeSystems === "number");
+
+        // Extract player count from name.
+        const m = entry.name.match(/\[(\d)p/);
+        if (!m) {
+            throw new Error(entry.name);
+        }
+        const playerCount = parseInt(m[1]);
+        if (playerCount !== numHomeSystems) {
+            const msg = `HS count mismatch ${JSON.stringify(entry)}`;
+            throw new Error(msg);
+        }
+        assert.equal(playerCount, numHomeSystems);
+    }
+});
+
 it("atlas db hs count", () => {
     for (const entry of MAP_ATLAS_DB) {
         const parsedMapString = MapStringParser.parse(entry.mapstring);

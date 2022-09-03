@@ -1,4 +1,3 @@
-const assert = require("../../wrapper/assert-wrapper");
 const { Facing } = require("../facing");
 const { Hex } = require("../hex");
 const MapStringHex = require("./map-string-hex");
