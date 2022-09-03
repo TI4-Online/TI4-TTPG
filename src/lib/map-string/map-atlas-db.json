@@ -22,7 +22,7 @@
     {
         "author": "squirrelnest",
         "name": "The Mahact Awaken",
-        "mapstring": "{43} 45 0 42 43 41 0 0 28 39 48 40 0 44 0 48 48 26 33 0 0 0 0 60 48 23 25 75 0 34 64 59 48 61",
+        "mapstring": "{43} 45 0 42 43 41 0 -1 28 39 48 40 0 44 0 48 48 26 33 -1 -1 -1 -1 60 48 23 25 75 -1 34 64 59 48 61",
         "sliceNames": "Vuil'raith, Argent, Mahact, Creuss",
         "playerCount": 4,
         "difficulty": "Advanced",
@@ -162,7 +162,7 @@
     {
         "author": "Andromad",
         "name": "Due in December",
-        "mapstring": "0 73 75 0 0 70 76 40 38 42 47 36 74 67 48 34 65 32 28 0 29 0 80 24 0 26 0 69 64 37 30 60 0 43 27 39 0 31 0 0 0 0 0 0 0 0 0 46 0 41 79 0 0 0 0 22 0 0 63 44",
+        "mapstring": "-1 73 75 -1 -1 70 76 40 38 42 47 36 74 67 48 34 65 32 28 -1 29 0 80 24 0 26 -1 69 64 37 30 60 -1 43 27 39 0 31 -1 -1 -1 -1 -1 -1 -1 -1 -1 46 0 41 79 0 -1 -1 0 22 -1 0 63 44",
         "sliceNames": "Industrial Center, Build the Wall, You Guys are Getting Planets, Dubs, Hazardous Area, Grab Bag, Cultural Zone",
         "playerCount": 7,
         "difficulty": "Intermediate",
@@ -644,7 +644,7 @@
         "name": "Thin and Wild",
         "mapstring": "27 66 41 24 47 48 0 78 44 23 71 0 80 65 40 26 69 46 21 39 70 74 29 31 79 62 61 64 35 22 77 38 45 0 20 30 -1 42 49 0 36 19 0 63 -1 -1 -1 -1 -1 37 0 50",
         "sliceNames": "",
-        "playerCount": 7,
+        "playerCount": 6,
         "difficulty": "Advanced",
         "attributes": "PoK, Asymmetric",
         "comments": "With home systems in non-standard positions and a non-standard shape this map is sure to be weird and likely unbalanced. "
@@ -672,7 +672,7 @@
     {
         "author": "Spage",
         "name": "Twin Sun Portal",
-        "mapstring": "66 73 28 65 21 31 27 64 35 39 30 25 75 26 38 40 71 79 0 34 68 56 48 80 0 72 41 0 76 42 0 69 43 0 37 78",
+        "mapstring": "66 73 28 65 21 31 27 64 35 39 30 25 75 26 38 40 71 79 0 34 68 0 48 80 0 72 41 0 76 42 0 69 43 0 37 78",
         "sliceNames": "",
         "playerCount": 6,
         "difficulty": "Intermediate",
@@ -882,7 +882,7 @@
     {
         "author": "HektorOfTroy",
         "name": "Endless Void v2",
-        "mapstring": "77 50 24 85A0 47 45 38 67 30 60 48 87A2 65 88A4 74 25 66 39 0 59 76 0 40 32 0 26 84A5 0 83A4 69 0 78 73 0 49 42",
+        "mapstring": "77 50 24 85A0 47 45 38 67 30 60 48 87A2 65 88A4 74 25 66 39 0 59 76 0 40 32 0 26 84A5 86A0 83A4 69 0 78 73 0 49 42",
         "sliceNames": "",
         "playerCount": 5,
         "difficulty": "",

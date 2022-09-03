@@ -65,5 +65,5 @@ it("missing entry", () => {
     );
     const mapString = MapStringSave.save();
     world.__clear();
-    assert.equal(mapString, "{0} 0 0 0 1");
+    assert.equal(mapString, "{-1} -1 -1 -1 1");
 });

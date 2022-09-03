@@ -12,15 +12,20 @@ const { world } = require("../../wrapper/api");
 class MapStringSave {
     static save() {
         // Take note of rotation and side for hyperlanes.
-        const systemTileObjs = world.TI4.getAllSystemTileObjects();
+        // world.TI4.getAllSystemTileObjects() does not find generic HS tiles.
         const mapTiles = [];
-        for (const obj of systemTileObjs) {
-            assert(ObjectNamespace.isSystemTile(obj));
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!ObjectNamespace.isSystemTile(obj)) {
+                continue;
+            }
             const tile = ObjectNamespace.parseSystemTile(obj).tile;
             const system = world.TI4.getSystemByTileNumber(tile);
 
             // Ignore if not part of the main map.
-            if (system.raw.offMap) {
+            if (system && system.raw.offMap) {
                 continue;
             }
 
