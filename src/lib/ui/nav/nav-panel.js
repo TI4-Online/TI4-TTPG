@@ -86,6 +86,10 @@ class NavPanel extends LayoutBox {
             .setText("SEARCH");
         this._pathPanel.addChild(searchButton);
 
+        // If being reset to the current entry calling setChild with the
+        // already-there entry is an error.  Set temporary widget and replace.
+        this._currentNavEntryBox.setChild(new LayoutBox());
+
         // Update main window.
         const widget = navEntry.createWidget(this);
         assert(widget && widget instanceof Widget);
