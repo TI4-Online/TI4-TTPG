@@ -90,4 +90,4 @@ class NavEntry {
     }
 }
 
-module.exports = { NavEntry };
+module.exports = { NavEntry, DEFAULT_ENTRY_ICON_PATH };

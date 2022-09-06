@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { NavEntry } = require("./nav-entry");
+const { NavEntry, DEFAULT_ENTRY_ICON_PATH } = require("./nav-entry");
 const { NavFolder } = require("./nav-folder");
 const { NavPanel } = require("./nav-panel");
 const { MockWidget } = require("../../../wrapper/api");
@@ -20,7 +20,7 @@ it("get/set desc", () => {
 
 it("get/set icon", () => {
     const navEntry = new NavEntry();
-    assert.equal(navEntry.getIconPath(), undefined);
+    assert.equal(navEntry.getIconPath(), DEFAULT_ENTRY_ICON_PATH);
     navEntry.setIconPath("baz");
     assert.equal(navEntry.getIconPath(), "baz");
 });
