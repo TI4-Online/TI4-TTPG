@@ -74,10 +74,10 @@ const parse = function (mapString) {
 const format = function (mapTiles) {
     mapTiles = mapTiles.slice(); // copy
 
-    // Replace any missing entries with "0".
+    // Replace any missing entries with "-1".
     for (let i = 0; i < mapTiles.length; i++) {
         if (mapTiles[i] === undefined) {
-            mapTiles[i] = { tile: 0 };
+            mapTiles[i] = { tile: -1 };
         }
     }
 

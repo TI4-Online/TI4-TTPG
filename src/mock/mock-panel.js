@@ -24,7 +24,15 @@ class Panel extends Widget {
 
     removeChildAt(index) {}
 
-    setChildDistance() {
+    setChildDistance(value) {
+        return this;
+    }
+
+    setHorizontalAlignment(value) {
+        return this;
+    }
+
+    setVerticalAlignment(value) {
         return this;
     }
 }

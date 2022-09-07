@@ -17,6 +17,12 @@ class LayoutBox {
     setMinimumWidth(value) {
         return this;
     }
+    setOverrideHeight(value) {
+        return this;
+    }
+    setOverrideWidth(value) {
+        return this;
+    }
     setPadding(left, right, top, bottom) {
         return this;
     }

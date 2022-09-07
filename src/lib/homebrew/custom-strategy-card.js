@@ -3,6 +3,7 @@ const locale = require("../../lib/locale");
 const {
     Canvas,
     GameObject,
+    MultilineTextBox,
     Text,
     TextBox,
     UIElement,
@@ -129,7 +130,7 @@ class CustomStrategyCard {
 
         value =
             this._obj.getSavedData(KEY.PRIMARY_BODY) || "> Primary ability.";
-        text = isEdit ? new TextBox().setMaxLength(255) : new Text();
+        text = isEdit ? new MultilineTextBox().setMaxLength(255) : new Text();
         text.setFont("MyriadProSemibold.otf", refPackageId)
             .setFontSize(2.4 * scale)
             .setText(value);
@@ -173,7 +174,7 @@ class CustomStrategyCard {
         value =
             this._obj.getSavedData(KEY.SECONDARY_BODY) ||
             "> Secondary ability.";
-        text = isEdit ? new TextBox().setMaxLength(255) : new Text();
+        text = isEdit ? new MultilineTextBox().setMaxLength(255) : new Text();
         text.setFont("MyriadProSemibold.otf", refPackageId)
             .setFontSize(2.4 * scale)
             .setText(value);

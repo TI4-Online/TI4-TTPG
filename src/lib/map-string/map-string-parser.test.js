@@ -138,5 +138,5 @@ it("format with missing tile", () => {
     (mapTiles[0] = { tile: 18 }),
         (mapTiles[1] = { tile: 1 }),
         (mapTiles[3] = { tile: 3 }),
-        assert.equal(format(mapTiles), "1 0 3");
+        assert.equal(format(mapTiles), "1 -1 3");
 });

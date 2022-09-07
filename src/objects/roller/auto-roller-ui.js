@@ -180,15 +180,15 @@ class AutoRollerUI extends LayoutBox {
             .addChild(new Text().setFontSize(LABEL_FONT_SIZE))
             .addChild(groundLayout);
 
-        this.setChild(
-            new HorizontalBox()
-                .setChildDistance(HORIZONTAL_DISTANCE)
-                .addChild(spaceBox)
-                .addChild(new Border().setColor(CONFIG.spacerColor))
-                .addChild(groundBox)
-        );
+        let panel = new HorizontalBox()
+            .setChildDistance(HORIZONTAL_DISTANCE)
+            .addChild(spaceBox)
+            .addChild(new Border().setColor(CONFIG.spacerColor))
+            .addChild(groundBox);
 
-        let panel = spaceLayout;
+        this.setChild(panel);
+
+        panel = spaceLayout;
 
         const addStep = (localeText) => {
             assert(panel instanceof Panel);
