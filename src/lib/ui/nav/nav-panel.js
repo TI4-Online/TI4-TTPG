@@ -43,8 +43,8 @@ class NavPanel extends LayoutBox {
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(pathBorder)
-            .addChild(this._currentNavEntryBox);
+            .addChild(pathBorder, 0)
+            .addChild(this._currentNavEntryBox, 1);
         this.setChild(panel);
 
         this.setCurrentNavEntry(this._rootFolder);
