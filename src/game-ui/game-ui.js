@@ -191,6 +191,7 @@ class GameUI {
 
         const mapToolEntry = new NavEntry()
             .setName(locale("nav.map.maptool"))
+            .setIconPath("global/ui/icons/hex.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new MapTool().getUI();
             });
@@ -198,6 +199,7 @@ class GameUI {
 
         const premadeMapsEntry = new NavEntry()
             .setName(locale("nav.map.premade"))
+            .setIconPath("global/ui/icons/filter.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new PremadeMap().getUI();
             });
@@ -208,6 +210,7 @@ class GameUI {
 
         const factionBordersEntry = new NavEntry()
             .setName(locale("nav.map.borders"))
+            .setIconPath("global/ui/icons/settings_application.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabDisplay().getUI();
             });
@@ -215,6 +218,7 @@ class GameUI {
 
         const fogOfWarEntry = new NavEntry()
             .setName(locale("nav.map.fog"))
+            .setIconPath("global/ui/icons/lens_blur.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabFogOfWar().getUI();
             });
@@ -265,6 +269,7 @@ class GameUI {
         // Phases.
         const strategyPhaseEntry = new NavEntry()
             .setName(locale("nav.strategy_phase"))
+            .setIconPath("global/ui/icons/not_started.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabStrategy().getUI();
             });
@@ -275,6 +280,7 @@ class GameUI {
 
         const statusPhaseEntry = new NavEntry()
             .setName(locale("nav.status_phase"))
+            .setIconPath("global/ui/icons/cleaning_services.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabStatus().getUI();
             });
@@ -283,6 +289,7 @@ class GameUI {
         const tabAgenda = new TabAgenda(); // registers event handler, reuse
         const agendaPhaseEntry = new NavEntry()
             .setName(locale("nav.agenda_phase"))
+            .setIconPath("global/ui/icons/ballot.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return tabAgenda.getUI();
             });

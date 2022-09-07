@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const { NavEntry } = require("./nav-entry");
 const {
@@ -79,7 +80,7 @@ class NavFolder extends NavEntry {
         const parent = navFolder.getParentNavEntry();
         if (parent) {
             const up = new NavEntry()
-                .setName("..up")
+                .setName(locale("nav.up"))
                 .setIconPath(DEFAULT_UP_ICON_PATH)
                 .setWidgetFactory(parent.getWidgetFactory());
             up.__isUp = true;
