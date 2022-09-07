@@ -20,6 +20,7 @@ const ICON_WIDTH = 70 * CONFIG.scale;
 const ICON_HEIGHT = ICON_WIDTH;
 const NAV_ENTRY_WIDTH = 235 * CONFIG.scale;
 const NAV_SPACING = 20 * CONFIG.scale;
+const NAV_ENTRY_FONTSIZE = CONFIG.fontSize * 0.9;
 
 class NavFolder extends NavEntry {
     static _createEntryWidget(navPanel, navEntry, dstEntry) {
@@ -37,7 +38,7 @@ class NavFolder extends NavEntry {
         icon.onClicked.add(onClickedHandler);
 
         const name = new Button()
-            .setFontSize(CONFIG.fontSize)
+            .setFontSize(NAV_ENTRY_FONTSIZE)
             .setText(` ${navEntry.getName()} `);
         name.onClicked.add(onClickedHandler);
 
