@@ -53,17 +53,29 @@ class NavFolder extends NavEntry {
         return box;
     }
 
-    static _createFolderContentsWidget(navPanel, navEntry) {
+    static _createFolderContentsWidget(navPanel, navFolder) {
         assert(navPanel);
-        assert(navEntry instanceof NavFolder);
+        assert(navFolder instanceof NavFolder);
 
         const outerPanel = new VerticalBox().setChildDistance(NAV_SPACING);
 
         // Get a mutable copy, we may prepend "up".
-        const children = [...navEntry.getChildren()];
+        const children = [...navFolder.getChildren()];
+
+        // Sort before prepend.
+        children.sort((a, b) => {
+            a = a.getName();
+            b = b.getName();
+            if (a < b) {
+                return -1;
+            } else if (a > b) {
+                return 1;
+            }
+            return 0;
+        });
 
         // If entry has a parent, create "up" option.
-        const parent = navEntry.getParentNavEntry();
+        const parent = navFolder.getParentNavEntry();
         if (parent) {
             const up = new NavEntry()
                 .setName("..up")

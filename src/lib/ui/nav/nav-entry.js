@@ -1,7 +1,7 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { Widget } = require("../../../wrapper/api");
 
-const DEFAULT_ENTRY_ICON_PATH = "global/ui/icons/folder.png";
+const DEFAULT_ENTRY_ICON_PATH = "global/ui/icons/document.png";
 
 /**
  * An item in the navigation hierarchy.

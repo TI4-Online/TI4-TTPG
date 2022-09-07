@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const { ColorUtil } = require("../../color/color-util");
 const { NavFolder } = require("./nav-folder");
@@ -20,7 +21,7 @@ class NavPanel extends LayoutBox {
     constructor() {
         super();
 
-        this._rootFolder = new NavFolder().setName("ROOT");
+        this._rootFolder = new NavFolder().setName(locale("nav.root"));
 
         this._pathPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -66,7 +67,7 @@ class NavPanel extends LayoutBox {
             if (isFirst) {
                 isFirst = false;
             } else {
-                const sep = new Text().setFontSize(pathFontSize).setText(" / ");
+                const sep = new Text().setFontSize(pathFontSize).setText("/");
                 this._pathPanel.addChild(sep, 0);
             }
 
@@ -81,10 +82,11 @@ class NavPanel extends LayoutBox {
         // Fill empty space between left and right entries.
         this._pathPanel.addChild(new LayoutBox(), 1);
 
-        const searchButton = new Button()
-            .setFontSize(pathFontSize)
-            .setText("SEARCH");
-        this._pathPanel.addChild(searchButton);
+        // Do we want search?
+        // const searchButton = new Button()
+        //     .setFontSize(pathFontSize)
+        //     .setText("SEARCH");
+        // this._pathPanel.addChild(searchButton);
 
         // If being reset to the current entry calling setChild with the
         // already-there entry is an error.  Set temporary widget and replace.
