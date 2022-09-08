@@ -76,6 +76,12 @@ class TabAgenda {
                 }),
             },
             {
+                text: locale("ui.agenda.outcome_type.strategy_card"),
+                onClick: ThrottleClickHandler.wrap((button, player) => {
+                    agenda.resetOutcomeNames(OUTCOME_TYPE.STRATEGY_CARD);
+                }),
+            },
+            {
                 text: locale("ui.agenda.outcome_type.other"),
                 onClick: ThrottleClickHandler.wrap((button, player) => {
                     agenda.resetOutcomeNames(OUTCOME_TYPE.OTHER);
