@@ -5,6 +5,7 @@ const { world } = require("../../wrapper/api");
 const OUTCOME_TYPE = {
     FOR_AGAINST: "for/against",
     PLAYER: "player",
+    STRATEGY_CARD: "strategy card",
     OTHER: "other",
 };
 
@@ -33,6 +34,17 @@ class AgendaOutcome {
                 return world.TI4.getAllPlayerDesks().map((desk) => {
                     return capitalizeFirstLetter(desk.colorName);
                 });
+            case OUTCOME_TYPE.STRATEGY_CARD:
+                return [
+                    locale("tile.strategy.leadership"),
+                    locale("tile.strategy.diplomacy"),
+                    locale("tile.strategy.politics"),
+                    locale("tile.strategy.construction"),
+                    locale("tile.strategy.trade"),
+                    locale("tile.strategy.warfare"),
+                    locale("tile.strategy.technology"),
+                    locale("tile.strategy.imperial"),
+                ];
             case OUTCOME_TYPE.OTHER:
                 return Array(8).fill("?");
         }

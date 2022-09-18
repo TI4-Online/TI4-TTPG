@@ -6,10 +6,13 @@
  * when the active player drops a command token on a system tile.
  */
 
+const locale = require("../lib/locale");
 const { globalEvents, world } = require("../wrapper/api");
 const { Broadcast } = require("../lib/broadcast");
+const { CommandToken } = require("../lib/command-token/command-token");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const locale = require("../lib/locale");
+
+const DEBUG_TOKEN_REGION = false;
 
 // Register a listener to report (as well as test) system activation.
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
@@ -36,6 +39,10 @@ const onCommandTokenReleased = (
     grabPosition,
     grabRotation
 ) => {
+    if (DEBUG_TOKEN_REGION) {
+        CommandToken.debugHighlightTokens();
+    }
+
     if (!world.TI4.turns.isActivePlayer(player)) {
         return; // not the active player
     }

@@ -759,9 +759,8 @@ class Agenda {
                 const desk = desks[deskIndex];
                 return desk.colorName;
             });
-            result.push(
-                `“${outcomeName}”: ${voteTotal} (${voters.join(", ")})`
-            );
+            voters = voters.length > 0 ? ` (${voters.join(", ")})` : "";
+            result.push(`“${outcomeName}”: ${voteTotal}${voters}`);
         }
         return result.join(", ");
     }

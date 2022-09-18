@@ -832,3 +832,43 @@ it("early no afters AND vote lock during whens phase", () => {
 
     world.__clear();
 });
+
+it("summarize votes", () => {
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
+
+    let summary;
+    let deskIndex;
+    let outcomeIndex;
+    let voteCount;
+
+    summary = agenda.summarizeVotes();
+    assert.equal(summary, "“For”: 0, “Against”: 0");
+
+    deskIndex = 2;
+    outcomeIndex = 1;
+    voteCount = 3;
+    agenda.setVoteOutcomeIndex(deskIndex, outcomeIndex, clickingPlayer);
+    agenda.setVoteCount(deskIndex, voteCount, clickingPlayer);
+    summary = agenda.summarizeVotes();
+    assert.equal(summary, "“For”: 0, “Against”: 3 (purple)");
+
+    deskIndex = 3;
+    outcomeIndex = 1;
+    voteCount = 4;
+    agenda.setVoteOutcomeIndex(deskIndex, outcomeIndex, clickingPlayer);
+    agenda.setVoteCount(deskIndex, voteCount, clickingPlayer);
+    summary = agenda.summarizeVotes();
+    assert.equal(summary, "“For”: 0, “Against”: 7 (purple, yellow)");
+
+    deskIndex = 4;
+    outcomeIndex = 0;
+    voteCount = 5;
+    agenda.setVoteOutcomeIndex(deskIndex, outcomeIndex, clickingPlayer);
+    agenda.setVoteCount(deskIndex, voteCount, clickingPlayer);
+    summary = agenda.summarizeVotes();
+    assert.equal(summary, "“For”: 5 (red), “Against”: 7 (purple, yellow)");
+});

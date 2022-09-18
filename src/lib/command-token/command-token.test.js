@@ -17,7 +17,7 @@ it("getCommandSheetAndTokens", () => {
         new MockGameObject({
             templateMetadata: "token.command:base/arborec",
             owningPlayerSlot: slot,
-            position: new MockVector(10, 0, 0),
+            position: new MockVector(8, 0, 0),
         })
     );
 
@@ -45,7 +45,7 @@ it("sortTokensByRegion", () => {
         new MockGameObject({
             templateMetadata: "token.command:base/arborec",
             owningPlayerSlot: slot,
-            position: new MockVector(10, 0, 0),
+            position: new MockVector(8, 0, 0),
         })
     );
 
@@ -73,7 +73,7 @@ it("getPlayerSlotToTokenCount", () => {
         new MockGameObject({
             templateMetadata: "token.command:base/arborec",
             owningPlayerSlot: slot,
-            position: new MockVector(10, 0, 0),
+            position: new MockVector(8, 0, 0),
         })
     );
 
