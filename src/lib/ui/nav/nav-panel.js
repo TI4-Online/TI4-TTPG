@@ -14,6 +14,8 @@ const {
     Widget,
 } = require("../../../wrapper/api");
 
+const PATH_FONT_SIIZE = CONFIG.fontSize * 0.9;
+
 /**
  * Wrap Widgets inside a panet with top-row of tabs to select between them.
  */
@@ -23,28 +25,41 @@ class NavPanel extends LayoutBox {
 
         this._rootFolder = new NavFolder().setName(locale("nav.root"));
 
+        // Path elements to the right of the root button.
+        // Center rather than fill to use "natural" path entry button height.
         this._pathPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .setVerticalAlignment(VerticalAlignment.Center);
+
+        // Main contents for the current nav entry.
         this._currentNavEntryBox = new LayoutBox();
 
-        // Padding between path and content.
-        const pathBox = new LayoutBox()
-            .setPadding(
-                CONFIG.padding,
-                CONFIG.padding,
-                CONFIG.padding,
-                CONFIG.padding
-            )
-            .setChild(this._pathPanel);
-        const pathBorder = new Border()
+        // "Root" is a large button extending to the edge of path panel border.
+        // The current path appears as clickable entries to the right.
+        const rootButton = new Button()
+            .setFontSize(PATH_FONT_SIIZE)
+            .setText(" " + this._rootFolder.getName() + " ");
+        rootButton.onClicked.add((button, player) => {
+            this.setCurrentNavEntry(this._rootFolder);
+        });
+
+        // "Top" layout holding root button and path.
+        const topPanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(rootButton, 0)
+            .addChild(this._pathPanel, 1);
+        const topBox = new LayoutBox()
+            .setOverrideHeight(PATH_FONT_SIIZE * 3)
+            .setChild(topPanel);
+        const topBorder = new Border()
             .setColor(ColorUtil.colorFromHex("#101010"))
-            .setChild(pathBox);
+            .setChild(topBox);
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(pathBorder, 0)
+            .addChild(topBorder, 0)
             .addChild(this._currentNavEntryBox, 1);
+
         this.setChild(panel);
 
         this.setCurrentNavEntry(this._rootFolder);
@@ -57,22 +72,22 @@ class NavPanel extends LayoutBox {
     setCurrentNavEntry(navEntry) {
         assert(navEntry);
 
-        // Update path window.
-        this._pathPanel.removeAllChildren();
+        // Get the path, stripping off the root entry (root is a dedicated button).
+        const pathEntries = navEntry.getPath();
+        if (pathEntries.length > 0 && pathEntries[0] == this._rootFolder) {
+            pathEntries.shift();
+        }
 
-        // Add path.
-        const pathFontSize = CONFIG.fontSize * 0.9;
-        let isFirst = true;
-        for (const pathEntry of navEntry.getPath()) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                const sep = new Text().setFontSize(pathFontSize).setText("/");
-                this._pathPanel.addChild(sep, 0);
-            }
+        // Update path.
+        this._pathPanel.removeAllChildren();
+        for (const pathEntry of pathEntries) {
+            const sep = new Text().setFontSize(PATH_FONT_SIIZE).setText("/");
+            this._pathPanel.addChild(sep, 0);
 
             const name = pathEntry.getName();
-            const button = new Button().setFontSize(pathFontSize).setText(name);
+            const button = new Button()
+                .setFontSize(PATH_FONT_SIIZE)
+                .setText(name);
             button.onClicked.add((button, player) => {
                 this.setCurrentNavEntry(pathEntry);
             });
@@ -80,7 +95,7 @@ class NavPanel extends LayoutBox {
         }
 
         // Fill empty space between left and right entries.
-        this._pathPanel.addChild(new LayoutBox(), 1);
+        //this._pathPanel.addChild(new LayoutBox(), 1);
 
         // Do we want search?
         // const searchButton = new Button()
