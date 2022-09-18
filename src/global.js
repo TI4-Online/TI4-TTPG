@@ -79,6 +79,11 @@ globalEvents.TI4 = {
     // <(systemTile: GameObject) => void>
     onSystemChanged: new TriggerableMulticastDelegate(onErr),
 
+    // Called when a Strategy Card is dropped/flipped or otherwise stops moving.
+    // Useful for updating picks & when flipped.
+    // <(strategyCard: GameObject, player: Player) => void>
+    onStrategyCardMovementStopped: new TriggerableMulticastDelegate(onErr),
+
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(onErr),
