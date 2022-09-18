@@ -4,6 +4,7 @@ const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const {
+    Color,
     Container,
     GameObject,
     Player,
@@ -13,8 +14,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
-// 15 is somewhat generous but nowhere near map area.
-const ON_SHEET_DISTANCE_SQ = 225;
+// Value that lets token be a little off sheet.
+const ON_SHEET_DISTANCE_SQ = 90;
 
 /**
  * Find command tokens on the command sheet or reinforcements.
@@ -86,12 +87,19 @@ class CommandToken {
         for (const token of sheetAndTokens.commandTokens) {
             let pos = token.getPosition();
             pos = sheetAndTokens.commandSheet.worldPositionToLocal(pos);
+
+            // COMMAND SHEET IS NOT CENTERED AT THE REGION CENTER.
+            pos = pos.add([0, 0.96, 0]);
+            pos.z = 0;
+
+            const angle = (Math.atan2(pos.y, pos.x) * 180) / Math.PI;
             const dSq = pos.magnitudeSquared();
+            token.__debug = `${pos.y}/${pos.x}=${angle} @ ${dSq}`;
+
             if (dSq > ON_SHEET_DISTANCE_SQ) {
                 continue; // not close enough to command sheet
             }
             // Which region?
-            let angle = (Math.atan2(pos.y, pos.x) * 180) / Math.PI;
             if (-30 < angle && angle <= 30) {
                 sheetAndTokens.tactics.push(token);
             } else if (30 < angle && angle <= 90) {
@@ -99,6 +107,39 @@ class CommandToken {
             } else if (90 < angle && angle <= 150) {
                 sheetAndTokens.strategy.push(token);
             }
+        }
+    }
+
+    static debugHighlightTokens() {
+        for (const obj of world.getAllObjects()) {
+            if (!ObjectNamespace.isCommandToken(obj)) {
+                continue;
+            }
+            obj.setPrimaryColor(new Color(0.5, 0.5, 0.5, 1));
+        }
+
+        const playerSlotToSheetAndTokens =
+            CommandToken._getAllCommandSheetsAndTokens();
+        for (const sheetAndTokens of Object.values(
+            playerSlotToSheetAndTokens
+        )) {
+            CommandToken._sortTokensByRegion(sheetAndTokens);
+            for (const token of sheetAndTokens.tactics) {
+                token.setPrimaryColor(new Color(1, 0, 0, 1));
+            }
+            for (const token of sheetAndTokens.fleet) {
+                token.setPrimaryColor(new Color(0, 1, 0, 1));
+            }
+            for (const token of sheetAndTokens.strategy) {
+                token.setPrimaryColor(new Color(0, 0, 1, 1));
+            }
+        }
+
+        for (const obj of world.getAllObjects()) {
+            if (!ObjectNamespace.isCommandToken(obj)) {
+                continue;
+            }
+            obj.setName(`DEBUG: ${obj.__debug}`);
         }
     }
 
@@ -117,25 +158,6 @@ class CommandToken {
             };
         }
         return result;
-    }
-
-    /**
-     * Get a tactic token.
-     *
-     * @param {number} playerSlot
-     * @returns {GameObject|undefined} tactic token, if present
-     */
-    static getTacticToken(playerSlot) {
-        assert(typeof playerSlot === "number");
-        const playerSlotToSheetAndTokens =
-            CommandToken._getAllCommandSheetsAndTokens(playerSlot);
-        const sheetAndTokens = playerSlotToSheetAndTokens[playerSlot];
-        if (!sheetAndTokens) {
-            return;
-        }
-        assert(sheetAndTokens);
-        CommandToken._sortTokensByRegion(sheetAndTokens);
-        return sheetAndTokens.tactics[0];
     }
 
     static getPlayerSlotToCommandTokenBag() {
@@ -157,6 +179,25 @@ class CommandToken {
             playerSlotToCommandTokenBag[playerSlot] = obj;
         }
         return playerSlotToCommandTokenBag;
+    }
+
+    /**
+     * Get a tactic token.
+     *
+     * @param {number} playerSlot
+     * @returns {GameObject|undefined} tactic token, if present
+     */
+    static getTacticToken(playerSlot) {
+        assert(typeof playerSlot === "number");
+        const playerSlotToSheetAndTokens =
+            CommandToken._getAllCommandSheetsAndTokens(playerSlot);
+        const sheetAndTokens = playerSlotToSheetAndTokens[playerSlot];
+        if (!sheetAndTokens) {
+            return;
+        }
+        assert(sheetAndTokens);
+        CommandToken._sortTokensByRegion(sheetAndTokens);
+        return sheetAndTokens.tactics[0];
     }
 
     /**
