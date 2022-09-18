@@ -25,7 +25,7 @@ it("player.commandTokens", () => {
         new MockGameObject({
             templateMetadata: "token.command:base/arborec",
             owningPlayerSlot: slot,
-            position: new MockVector(10, 0, 0),
+            position: new MockVector(8, 0, 0),
         })
     );
 
