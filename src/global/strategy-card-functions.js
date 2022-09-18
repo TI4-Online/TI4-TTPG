@@ -23,7 +23,7 @@ const {
 function setupStrategyCard(card) {
     assert(card instanceof GameObject);
 
-    const playButtonName = "*" + locale("ui.button.strategy_card_play");
+    const playButtonName = locale("ui.button.strategy_card_play");
     const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
 
     // Setup the play button
@@ -53,14 +53,19 @@ function setupStrategyCard(card) {
 
     card.addUI(card.play_button);
 
-    card.addCustomAction(playButtonName, playButtonTooltip);
-
+    const menuItemName = "*" + playButtonName;
+    card.addCustomAction(menuItemName, playButtonTooltip);
     card.onCustomAction.add((card, player, name) => {
         switch (name) {
-            case playButtonName:
+            case menuItemName:
                 globalEvents.TI4.onStrategyCardPlayed.trigger(card, player);
                 break;
         }
+    });
+
+    // Also escalate 'onMovementStopped' to the global event just for strategy cards.
+    card.onMovementStopped.add((obj) => {
+        globalEvents.TI4.onStrategyCardMovementStopped.trigger(obj);
     });
 }
 
