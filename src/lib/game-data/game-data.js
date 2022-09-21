@@ -36,6 +36,7 @@ const UPDATORS = [
     require("./updator-player-tech"),
     require("./updator-player-tgs"),
     require("./updator-round"),
+    require("./updator-timestamp"),
     require("./updator-turn"),
 ];
 let _addedPlayerNames = false;
@@ -351,9 +352,6 @@ class GameData {
             return; // nothing changed
         }
         this._endpointToLastPostString[endpoint] = thisPostStr;
-
-        // Add current timestamp.
-        data.timestamp = Date.now() / 1000;
 
         // Post.
         const url = this._getUrl(endpoint);
