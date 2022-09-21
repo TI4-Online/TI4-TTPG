@@ -20,8 +20,23 @@ it("parseCustomConfig (simple slice)", () => {
     assert.deepEqual(parsed.slices, [[1, 2, 3, 4, 5]]);
 });
 
+it("parseCustomConfig (simple slice with key)", () => {
+    const sliceString = "slices=1 2 3 4 5";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [[1, 2, 3, 4, 5]]);
+});
+
 it("parseCustomConfig (multiple slices)", () => {
     const sliceString = "1 2 3 4 5|6 7 8 9 10";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10],
+    ]);
+});
+
+it("parseCustomConfig (multiple slices with key)", () => {
+    const sliceString = "slices=1 2 3 4 5|6 7 8 9 10";
     const parsed = MiltyUtil.parseCustomConfig(sliceString);
     assert.deepEqual(parsed.slices, [
         [1, 2, 3, 4, 5],
@@ -67,6 +82,17 @@ it("parseCustomConfig (faction aliases)", () => {
         [1, 2, 3, 4, 5],
         [6, 7, 8, 9, 10],
     ]);
+    assert.deepEqual(parsed.factions, [
+        "jolnar",
+        "naazrokha",
+        "not-a-faction-name",
+    ]);
+});
+
+it("parseCustomConfig (no slice)", () => {
+    const sliceString = "factions=Jol-Nar|Naaz-Rokha|not-a-faction-name";
+    const parsed = MiltyUtil.parseCustomConfig(sliceString);
+    assert(!parsed.slices);
     assert.deepEqual(parsed.factions, [
         "jolnar",
         "naazrokha",
