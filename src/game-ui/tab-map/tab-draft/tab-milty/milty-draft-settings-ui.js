@@ -46,7 +46,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.custom_input"));
         this.addChild(customInputLabel);
-        const customInput = new MultilineTextBox().setMaxLength(1000);
+        const customInput = new MultilineTextBox()
+            .setFontSize(CONFIG.fontSize)
+            .setMaxLength(1000);
         const customInputBox = new LayoutBox()
             .setChild(customInput)
             .setMinimumHeight(CONFIG.fontSize * 3);
