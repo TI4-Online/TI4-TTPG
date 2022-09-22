@@ -31,5 +31,6 @@ it("player.factionName", () => {
     UPDATOR(data);
     world.__clear();
 
-    assert.equal(data.players[0].factionName, "Arborec");
+    assert.equal(data.players[0].factionName, "The Arborec");
+    assert.equal(data.players[0].factionShort, "Arborec");
 });

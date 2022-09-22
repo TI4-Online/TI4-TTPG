@@ -215,6 +215,8 @@
     "nav.map.draft.bag": "Bag Draft",
     "nav.map.borders": "Faction Borders",
     "nav.map.fog": "Fog of War",
+    "nav.stats": "Stats",
+    "nav.stats.simple": "Simple Stats",
 
     "ui.tab.root": "Root",
     "ui.tab.help": "Help",

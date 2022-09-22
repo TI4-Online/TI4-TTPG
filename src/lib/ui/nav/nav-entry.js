@@ -14,6 +14,7 @@ class NavEntry {
         this._description = undefined;
         this._iconPath = DEFAULT_ENTRY_ICON_PATH;
         this._widgetFactory = undefined;
+        this._destroyWidget = undefined;
 
         this._parentNavEntry = undefined;
         this._children = undefined;
@@ -59,6 +60,12 @@ class NavEntry {
         return widget;
     }
 
+    destroyWidget() {
+        if (this._destroyWidget) {
+            this._destroyWidget(this);
+        }
+    }
+
     /**
      * Name displayed when showing this entry in a folder.
      *
@@ -86,6 +93,12 @@ class NavEntry {
     setWidgetFactory(widgetFactory) {
         assert(typeof widgetFactory === "function");
         this._widgetFactory = widgetFactory;
+        return this;
+    }
+
+    setDestroyWidget(destroyWidget) {
+        assert(typeof destroyWidget === "function");
+        this._destroyWidget = destroyWidget;
         return this;
     }
 }
