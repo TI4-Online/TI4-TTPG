@@ -36,8 +36,10 @@ const UPDATORS = [
     require("./updator-player-tech"),
     require("./updator-player-tgs"),
     require("./updator-round"),
+    require("./updator-timestamp"),
     require("./updator-turn"),
 ];
+let _addedPlayerNames = false;
 
 const DEFAULT_HOST = "ti4-game-data.appspot.com";
 const LOCALHOST = "localhost:8080";
@@ -165,6 +167,12 @@ class GameData {
         assert(!key || (typeof key === "string" && key.length > 0));
         assert(!key || key.length < 32); // cap length
         this._key = key;
+
+        if (!_addedPlayerNames) {
+            _addedPlayerNames = true;
+            UPDATORS.push(require("./updator-player-name"));
+        }
+
         return this;
     }
 
@@ -270,14 +278,6 @@ class GameData {
             player.color = requiredColor[index] || `seat${index + 1}`;
         });
 
-        // Streamer data includes player names.
-        if (this._key) {
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const playerData = data.players[playerDesk.index];
-                const player = world.getPlayerBySlot(playerDesk.playerSlot);
-                playerData.steamName = player ? player.getName() : "-";
-            }
-        }
         if (this._extraData) {
             data.extra = this._extraData;
         }
@@ -352,9 +352,6 @@ class GameData {
             return; // nothing changed
         }
         this._endpointToLastPostString[endpoint] = thisPostStr;
-
-        // Add current timestamp.
-        data.timestamp = Date.now() / 1000;
 
         // Post.
         const url = this._getUrl(endpoint);

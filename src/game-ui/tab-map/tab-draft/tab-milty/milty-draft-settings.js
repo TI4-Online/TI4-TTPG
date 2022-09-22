@@ -51,22 +51,28 @@ class MiltyDraftSettings {
                         Broadcast.chatAll(error);
                         return false;
                     }
-                    if (custom.slices.length < world.TI4.config.playerCount) {
-                        Broadcast.chatAll("not enough slices for player count");
-                        return false;
-                    }
-                    this._miltyDraft.resetSlices();
-                    for (let i = 0; i < custom.slices.length; i++) {
-                        const slice = custom.slices[i];
-                        let label = "x";
-                        if (custom.labels && custom.labels[i]) {
-                            label = custom.labels[i];
-                        } else {
-                            label = locale("ui.draft.slice_label", {
-                                index: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i],
-                            });
+                    if (custom.slices) {
+                        if (
+                            custom.slices.length < world.TI4.config.playerCount
+                        ) {
+                            Broadcast.chatAll(
+                                "not enough slices for player count"
+                            );
+                            return false;
                         }
-                        this._miltyDraft.addSlice(slice, false, label);
+                        this._miltyDraft.resetSlices();
+                        for (let i = 0; i < custom.slices.length; i++) {
+                            const slice = custom.slices[i];
+                            let label = "x";
+                            if (custom.labels && custom.labels[i]) {
+                                label = custom.labels[i];
+                            } else {
+                                label = locale("ui.draft.slice_label", {
+                                    index: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i],
+                                });
+                            }
+                            this._miltyDraft.addSlice(slice, false, label);
+                        }
                     }
                     if (custom.factions) {
                         this._miltyDraft.resetFactions();

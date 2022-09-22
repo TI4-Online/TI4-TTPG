@@ -14,7 +14,7 @@ module.exports = (data) => {
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         const playerData = data.players[playerDesk.index];
         if (playerData && faction) {
-            playerData.factionName = faction.nameAbbr;
+            playerData.factionName = faction.nameFull;
             playerData.factionShort = faction.nameAbbr;
         }
     });

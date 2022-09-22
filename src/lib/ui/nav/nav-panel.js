@@ -23,6 +23,7 @@ class NavPanel extends LayoutBox {
     constructor() {
         super();
 
+        this._currentNavEntry = undefined;
         this._rootFolder = new NavFolder().setName(locale("nav.root"));
 
         // Path elements to the right of the root button.
@@ -71,6 +72,11 @@ class NavPanel extends LayoutBox {
 
     setCurrentNavEntry(navEntry) {
         assert(navEntry);
+
+        if (this._currentNavEntry) {
+            this._currentNavEntry.destroyWidget(this._currentNavEntry);
+        }
+        this._currentNavEntry = navEntry;
 
         // Get the path, stripping off the root entry (root is a dedicated button).
         const pathEntries = navEntry.getPath();

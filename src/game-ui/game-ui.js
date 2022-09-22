@@ -37,6 +37,7 @@ const {
 } = require("../wrapper/api");
 const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
+const { TabStats } = require("./tab-stats/tab-stats");
 
 /**
  * The "Savant", collected game UI and utilities organized into tabs.
@@ -249,6 +250,26 @@ class GameUI {
         return actionPhaseFolder;
     }
 
+    _createStatsFolder() {
+        const statsFolder = new NavFolder().setName(locale("nav.stats"));
+
+        const tabStatsEntry = new NavEntry()
+            .setName(locale("nav.stats.simple"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                const tabStats = new TabStats();
+                navEntry.__tabStats = tabStats; // store reference to release
+                return tabStats.getUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                const tabStats = navEntry.__tabStats;
+                assert(tabStats);
+                tabStats.releaseUI();
+            });
+        statsFolder.addChild(tabStatsEntry);
+
+        return statsFolder;
+    }
+
     fillNavPanel(navPanel) {
         assert(navPanel instanceof NavPanel);
         const rootFolder = navPanel.getRootFolder();
@@ -299,6 +320,9 @@ class GameUI {
                 navPanel.setCurrentNavEntry(agendaPhaseEntry);
             }
         });
+
+        const statsFolder = this._createStatsFolder();
+        rootFolder.addChild(statsFolder);
     }
 
     fillForGameORIG() {
