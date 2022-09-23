@@ -1,13 +1,16 @@
+const assert = require("../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../../lib/color/color-util");
 const CONFIG = require("../game-ui-config");
 const {
     Border,
     HorizontalAlignment,
     HorizontalBox,
+    LayoutBox,
     Text,
+    VerticalAlignment,
     VerticalBox,
     world,
 } = require("../../wrapper/api");
-const assert = require("../../wrapper/assert-wrapper");
 
 // Background signals if active
 // Player name
@@ -22,6 +25,7 @@ class PlayerStatsUI extends Border {
         assert(playerDesk);
 
         super();
+        this._colorName = `[${playerDesk.colorName}]`;
 
         const textColor = playerDesk.plasticColor;
         const majorFontSize = CONFIG.fontSize;
@@ -36,7 +40,8 @@ class PlayerStatsUI extends Border {
         this._score = new Text()
             .setFontSize(majorFontSize)
             .setTextColor(textColor);
-        this._strategyCards = [
+        this._strategyCardPanel = new HorizontalBox();
+        this._strategyCardTexts = [
             new Text().setFontSize(majorFontSize).setTextColor(textColor), // reserve two
             new Text().setFontSize(majorFontSize).setTextColor(textColor),
         ];
@@ -56,53 +61,70 @@ class PlayerStatsUI extends Border {
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
 
-        const strategyCardPanel = new HorizontalBox().setChildDistance(
-            CONFIG.spacing
-        );
-        this._strategyCards.forEach((text) => {
-            strategyCardPanel.addChild(text);
+        this._strategyCardTexts.forEach((text) => {
+            this._strategyCardPanel.addChild(text);
         });
-
-        const overallPanel = new VerticalBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .addChild(this._steamName)
-            .addChild(this._factionName)
-            .addChild(strategyCardPanel)
-            .addChild(this._commandTokens);
 
         const resInfPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._resources)
             .addChild(this._influence);
-        overallPanel.addChild(resInfPanel);
 
         const commoditiesTgsPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._commodities)
             .addChild(this._tradegoods);
-        overallPanel.addChild(commoditiesTgsPanel);
 
-        this.setChild(overallPanel);
+        const factionScorePanel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(this._score)
+            .addChild(this._factionName);
+
+        const overallPanel = new VerticalBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .addChild(this._steamName)
+            .addChild(factionScorePanel)
+            .addChild(this._strategyCardPanel)
+            .addChild(this._commandTokens)
+            .addChild(resInfPanel)
+            .addChild(commoditiesTgsPanel);
+
+        const overallBox = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(overallPanel);
+        this.setChild(overallBox);
     }
 
     update(playerData) {
         assert(typeof playerData.steamName === "string");
-        this._steamName.setText(playerData.steamName);
+        let name = playerData.steamName;
+        if (name === "-") {
+            name = this._colorName;
+        }
+        this._steamName.setText(name);
 
-        assert(typeof playerData.factionName === "string");
-        this._factionName.setText(playerData.factionShort);
+        assert(typeof playerData.factionShort === "string");
+        let factionName = playerData.factionShort;
+        if (factionName === "-") {
+            factionName = "[faction]";
+        }
+        this._factionName.setText(factionName);
 
         assert(typeof playerData.score === "number");
         this._score.setText(`${playerData.score}`);
 
-        this._strategyCards.forEach((text, index) => {
+        // Only apply child spacing if using multiple strategy cards.
+        this._strategyCardPanel.setChildDistance(
+            playerData.strategyCards.length > 1 ? CONFIG.spacing : 0
+        );
+        this._strategyCardTexts.forEach((text, index) => {
             text.setText(index === 0 ? "-" : "");
         });
         playerData.strategyCards.forEach((strategyCardName, index) => {
-            if (index > this._strategyCards.length) {
+            const strategyCardText = this._strategyCardTexts[index];
+            if (!strategyCardText) {
                 return;
             }
-            const strategyCardText = this._strategyCards[index];
             const isPlayed =
                 playerData.strategyCardsFaceDown.includes(strategyCardName);
             strategyCardText.setBold(!isPlayed).setText(strategyCardName);
@@ -121,6 +143,12 @@ class PlayerStatsUI extends Border {
 
         this._commodities.setText(`C: ${playerData.commodities}`);
         this._tradegoods.setText(`TG: ${playerData.tradeGoods}`);
+
+        assert(typeof playerData.active === "boolean");
+        const isActive = playerData.active;
+        const colorPassed = ColorUtil.colorFromHex("#101010");
+        const colorActive = ColorUtil.colorFromHex("#080808");
+        this.setColor(isActive ? colorActive : colorPassed);
     }
 }
 

@@ -14,12 +14,6 @@ const FILL_TASKS = [
     require("../../lib/game-data/updator-timestamp"),
 ];
 
-const PERIODIC_INTERVAL_MSECS = 5000;
-
-// Use a single update handler, only updating the most recently created
-// (prevent leaking multiple update handlers).
-let _periodicStatsIntervalHandler = undefined;
-
 /**
  * Display score, strategy card pick (and if used).  Display token counts, res/inf, etc.
  */
@@ -70,36 +64,16 @@ class TabStats {
         const data = TabStats.getPlayerDataSync();
         this._tabStatsUI.update(data);
 
-        // Interval function to do async updates.
-        const asyncUpdate = () => {
-            const onDataCallback = (data) => {
-                if (this._tabStatsUI) {
-                    this._tabStatsUI.update(data);
-                }
-            };
-            TabStats.getPlayerDataAsync(onDataCallback);
-        };
-
-        // Register new interval handler.
-        console.log("TabStats.getUI: setting interval handler");
-        if (_periodicStatsIntervalHandler) {
-            clearInterval(_periodicStatsIntervalHandler);
-            _periodicStatsIntervalHandler = undefined;
-        }
-        _periodicStatsIntervalHandler = setInterval(
-            asyncUpdate,
-            PERIODIC_INTERVAL_MSECS
-        );
-
         return this._tabStatsUI;
     }
 
-    releaseUI() {
-        console.log("TabStats.releaseUI: clearing interval handler");
-        if (_periodicStatsIntervalHandler) {
-            clearInterval(_periodicStatsIntervalHandler);
-            _periodicStatsIntervalHandler = undefined;
-        }
+    updateUI() {
+        const onDataCallback = (data) => {
+            if (this._tabStatsUI) {
+                this._tabStatsUI.update(data);
+            }
+        };
+        TabStats.getPlayerDataAsync(onDataCallback);
     }
 }
 

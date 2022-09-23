@@ -15,6 +15,7 @@ const {
 } = require("../../../wrapper/api");
 
 const PATH_FONT_SIIZE = CONFIG.fontSize * 0.9;
+const PERIODIC_UPDATE_MSECS = 5000;
 
 /**
  * Wrap Widgets inside a panet with top-row of tabs to select between them.
@@ -24,6 +25,8 @@ class NavPanel extends LayoutBox {
         super();
 
         this._currentNavEntry = undefined;
+        this._periodicUpdateInterval = undefined;
+
         this._rootFolder = new NavFolder().setName(locale("nav.root"));
 
         // Path elements to the right of the root button.
@@ -64,6 +67,34 @@ class NavPanel extends LayoutBox {
         this.setChild(panel);
 
         this.setCurrentNavEntry(this._rootFolder);
+    }
+
+    startPeriodicUpdates() {
+        const handler = () => {
+            if (this._currentNavEntry) {
+                this._currentNavEntry.periodicUpdateWidget(
+                    this._currentNavEntry
+                );
+            }
+        };
+
+        if (this._periodicUpdateInterval) {
+            clearInterval(this._periodicUpdateInterval);
+            this._periodicUpdateInterval = undefined;
+        }
+        this._periodicUpdateInterval = setInterval(
+            handler,
+            PERIODIC_UPDATE_MSECS
+        );
+        return this;
+    }
+
+    stopPeriodicUpdates() {
+        if (this._periodicUpdateInterval) {
+            clearInterval(this._periodicUpdateInterval);
+            this._periodicUpdateInterval = undefined;
+        }
+        return this;
     }
 
     getRootFolder() {
