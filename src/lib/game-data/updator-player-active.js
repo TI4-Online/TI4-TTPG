@@ -7,18 +7,14 @@ module.exports = (data) => {
         playerData.active = true;
     });
 
-    for (const obj of world.TI4.turns.getAllStatusPads()) {
-        const playerSlot = obj.getOwningPlayerSlot();
+    const passedSlotSet = world.TI4.turns.getPassedPlayerSlotSet();
+    for (const playerSlot of passedSlotSet) {
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         if (!playerDesk) {
             continue;
         }
-
         const playerData = data.players[playerDesk.index];
         assert(playerData);
-
-        assert(obj.__getPass);
-        const active = !obj.__getPass();
-        playerData.active = active;
+        playerData.active = false;
     }
 };

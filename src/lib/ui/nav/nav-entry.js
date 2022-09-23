@@ -14,6 +14,7 @@ class NavEntry {
         this._description = undefined;
         this._iconPath = DEFAULT_ENTRY_ICON_PATH;
         this._widgetFactory = undefined;
+        this._periodicUpdateWidget = undefined;
         this._destroyWidget = undefined;
 
         this._parentNavEntry = undefined;
@@ -60,6 +61,12 @@ class NavEntry {
         return widget;
     }
 
+    periodicUpdateWidget() {
+        if (this._periodicUpdateWidget) {
+            this._periodicUpdateWidget(this);
+        }
+    }
+
     destroyWidget() {
         if (this._destroyWidget) {
             this._destroyWidget(this);
@@ -93,6 +100,12 @@ class NavEntry {
     setWidgetFactory(widgetFactory) {
         assert(typeof widgetFactory === "function");
         this._widgetFactory = widgetFactory;
+        return this;
+    }
+
+    setPeriodicUpdateWidget(periodicUpdateWidget) {
+        assert(typeof periodicUpdateWidget === "function");
+        this._periodicUpdateWidget = periodicUpdateWidget;
         return this;
     }
 

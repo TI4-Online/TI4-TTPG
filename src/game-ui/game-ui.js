@@ -150,7 +150,7 @@ class GameUI {
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
             .setSpacing(CONFIG.spacing);
-        const navPanel = new NavPanel();
+        const navPanel = new NavPanel().startPeriodicUpdates();
 
         panel.addChild(turnOrderPanel, 1);
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
@@ -260,10 +260,10 @@ class GameUI {
                 navEntry.__tabStats = tabStats; // store reference to release
                 return tabStats.getUI();
             })
-            .setDestroyWidget((navEntry) => {
+            .setPeriodicUpdateWidget((navEntry) => {
                 const tabStats = navEntry.__tabStats;
                 assert(tabStats);
-                tabStats.releaseUI();
+                tabStats.updateUI();
             });
         statsFolder.addChild(tabStatsEntry);
 
