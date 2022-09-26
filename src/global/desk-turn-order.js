@@ -175,6 +175,10 @@ globalEvents.TI4.onPlayerCountChanged.add(() => {
     DeskTurnOrder.resetAll();
     DeskTurnOrder.updateAll(true);
 });
+globalEvents.TI4.onPlayerColorChanged.add(() => {
+    DeskTurnOrder.resetAll();
+    DeskTurnOrder.updateAll(true);
+});
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
     DeskTurnOrder.updateAll(true);

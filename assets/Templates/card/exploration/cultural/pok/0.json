@@ -62,11 +62,11 @@
 	],
 	"CardNames": {
 		"0": "Cultural Relic Fragment (1)",
-		"1": "Cultural Relic Fragment (1)",
-		"2": "Cultural Relic Fragment (1)",
-		"3": "Cultural Relic Fragment (1)",
-		"4": "Cultural Relic Fragment (1)",
-		"5": "Cultural Relic Fragment (1)"
+		"1": "Cultural Relic Fragment (2)",
+		"2": "Cultural Relic Fragment (3)",
+		"3": "Cultural Relic Fragment (4)",
+		"4": "Cultural Relic Fragment (5)",
+		"5": "Cultural Relic Fragment (6)"
 	},
 	"CardMetadata": {
 		"0": "card.exploration.cultural:pok/cultural_relic_fragment.1",

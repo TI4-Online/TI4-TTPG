@@ -99,17 +99,6 @@ it("AssetFilenames.cardImage global back (2)", () => {
     );
 });
 
-it("AssetFilenames.cardImage redirect duplicate", () => {
-    const nsid = "card.exploration.cultural:pok/cultural_relic_fragment.2";
-    const face = AssetFilenames.cardImage(nsid, "face", "en");
-    assert.equal(
-        face,
-        path.normalize(
-            "prebuild/Textures/en/card/exploration/cultural/cultural_relic_fragment.1.jpg"
-        )
-    );
-});
-
 it("AssetFilenames.cardsheetImage en face", () => {
     const nsid = "card.action:base/*";
     const face = AssetFilenames.cardsheetImage(nsid, "face", 0, "en");

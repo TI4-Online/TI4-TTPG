@@ -62,11 +62,11 @@
 	],
 	"CardNames": {
 		"0": "Hazardous Relic Fragment (1)",
-		"1": "Hazardous Relic Fragment (1)",
-		"2": "Hazardous Relic Fragment (1)",
-		"3": "Hazardous Relic Fragment (1)",
-		"4": "Hazardous Relic Fragment (1)",
-		"5": "Hazardous Relic Fragment (1)"
+		"1": "Hazardous Relic Fragment (2)",
+		"2": "Hazardous Relic Fragment (3)",
+		"3": "Hazardous Relic Fragment (4)",
+		"4": "Hazardous Relic Fragment (5)",
+		"5": "Hazardous Relic Fragment (6)"
 	},
 	"CardMetadata": {
 		"0": "card.exploration.hazardous:pok/hazardous_relic_fragment.1",

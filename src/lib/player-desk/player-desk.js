@@ -554,6 +554,9 @@ class PlayerDesk {
         // Saw an instance of cardholder not being linked correctly.
         // Wait a moment then manually set them.
         const reassignCardHolder = (player, slot) => {
+            assert(player instanceof Player);
+            assert(typeof slot === "number");
+            assert(slot >= 0);
             for (const obj of world.getAllObjects()) {
                 if (obj.getContainer()) {
                     continue;
@@ -572,15 +575,16 @@ class PlayerDesk {
             }
             throw new Error("PlayerDesk reassignCardHolder: no holder");
         };
+        const reassignDelayMsecs = 3000;
         if (srcPlayer) {
-            process.nextTick(() => {
+            setTimeout(() => {
                 reassignCardHolder(srcPlayer, dstPlayerSlot);
-            });
+            }, reassignDelayMsecs);
         }
         if (dstPlayer) {
-            process.nextTick(() => {
+            setTimeout(() => {
                 reassignCardHolder(dstPlayer, srcPlayerSlot);
-            });
+            }, reassignDelayMsecs);
         }
 
         globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
