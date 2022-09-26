@@ -57,8 +57,8 @@
 		1
 	],
 	"CardNames": {
-		"0": "Unknown Relic Fragment (1)",
-		"1": "Unknown Relic Fragment (1)"
+		"0": "Unknown Relic Fragment (2)",
+		"1": "Unknown Relic Fragment (3)"
 	},
 	"CardMetadata": {
 		"0": "card.exploration.frontier:pok/unknown_relic_fragment.2",
