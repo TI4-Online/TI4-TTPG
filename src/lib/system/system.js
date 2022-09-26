@@ -177,9 +177,12 @@ class Planet {
     }
 
     getPlanetCardNsid() {
-        const source = this.system.raw.source;
-        const name = this.getPlanetNsidName();
-        return `card.planet:${source}/${name}`;
+        let source = this.system.raw.source;
+        const nsidName = this.getPlanetNsidName();
+        if (nsidName === "mirage") {
+            source = "pok";
+        }
+        return `card.planet:${source}/${nsidName}`;
     }
 }
 
