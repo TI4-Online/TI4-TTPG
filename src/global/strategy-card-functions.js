@@ -64,7 +64,24 @@ function setupStrategyCard(card) {
     });
 
     // Also escalate 'onMovementStopped' to the global event just for strategy cards.
+    // TTPG can keep sending this event (physics?), suppress if not changed much.
+    let lastLossy = "";
     card.onMovementStopped.add((obj) => {
+        const pos = obj.getPosition();
+        const rot = obj.getRotation();
+        const lossy = [
+            Math.round(pos.x),
+            Math.round(pos.y),
+            Math.round(pos.z),
+            Math.round(rot.x),
+            Math.round(rot.y),
+            Math.round(rot.z),
+        ].join(",");
+        if (lossy === lastLossy) {
+            return;
+        }
+        lastLossy = lossy;
+
         globalEvents.TI4.onStrategyCardMovementStopped.trigger(obj);
     });
 }
