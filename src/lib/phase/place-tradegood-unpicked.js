@@ -15,6 +15,23 @@ class PlaceTradegoodUnpicked {
         throw new Error("static only");
     }
 
+    static getUnpickedStrategyCards() {
+        const unpickedStrategyCards = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside containers
+            }
+            if (!ObjectNamespace.isStrategyCard(obj)) {
+                continue; // not a strategy card.
+            }
+            if (FindTurnOrder.isStrategyCardPicked(obj)) {
+                continue; // picked, ignore it
+            }
+            unpickedStrategyCards.push(obj);
+        }
+        return unpickedStrategyCards;
+    }
+
     static placeOne(strategyCard) {
         assert(strategyCard instanceof GameObject);
         assert(ObjectNamespace.isStrategyCard(strategyCard));
@@ -31,17 +48,10 @@ class PlaceTradegoodUnpicked {
     }
 
     static placeAll() {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside containers
-            }
-            if (!ObjectNamespace.isStrategyCard(obj)) {
-                continue; // not a strategy card.
-            }
-            if (FindTurnOrder.isStrategyCardPicked(obj)) {
-                continue; // picked, ignore it
-            }
-            this.placeOne(obj);
+        const unpickedStrategyCards =
+            PlaceTradegoodUnpicked.getUnpickedStrategyCards();
+        for (const unpickedStrategyCard of unpickedStrategyCards) {
+            this.placeOne(unpickedStrategyCard);
         }
     }
 }

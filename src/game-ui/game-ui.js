@@ -10,6 +10,9 @@ const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const {
+    PlaceTradegoodUnpicked,
+} = require("../lib/phase/place-tradegood-unpicked");
 const { PremadeMap } = require("./tab-map/tab-premade/premade-map");
 const {
     SCPTDraftSettings,
@@ -18,10 +21,13 @@ const { TabAction } = require("./tab-action/tab-action");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
 const { TabbedPanel } = require("../lib/ui/tabbed-panel");
+const { TabDisplay } = require("./tab-map/tab-display/tab-display");
+const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
+const { TabStats } = require("./tab-stats/tab-stats");
 const { TabStatus } = require("./tab-status/tab-status");
 const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
@@ -35,9 +41,6 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { TabDisplay } = require("./tab-map/tab-display/tab-display");
-const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
-const { TabStats } = require("./tab-stats/tab-stats");
 
 /**
  * The "Savant", collected game UI and utilities organized into tabs.
@@ -295,6 +298,16 @@ class GameUI {
                 return new TabStrategy().getUI();
             });
         rootFolder.addChild(strategyPhaseEntry);
+        globalEvents.TI4.onStrategyCardMovementStopped.add(() => {
+            console.log("GameUI: onStrategyCardMovementStopped");
+            // How shall we test if this is the stragey phase?
+            // If enough strategy cards are unpicked assume picking now.
+            const unpickedStrategyCards =
+                PlaceTradegoodUnpicked.getUnpickedStrategyCards();
+            if (unpickedStrategyCards.length >= 6) {
+                navPanel.setCurrentNavEntry(strategyPhaseEntry);
+            }
+        });
 
         const actionPhaseFolder = this._createActionPhaseFolder(navPanel);
         rootFolder.addChild(actionPhaseFolder);
@@ -306,6 +319,13 @@ class GameUI {
                 return new TabStatus().getUI();
             });
         rootFolder.addChild(statusPhaseEntry);
+        globalEvents.TI4.onTurnOrderEmpty.add(() => {
+            if (world.TI4.agenda.isActive()) {
+                return; // agenda phase, ignore all have passed
+            }
+            // All players have passed, probably the action phase (?).
+            navPanel.setCurrentNavEntry(statusPhaseEntry);
+        });
 
         const tabAgenda = new TabAgenda(); // registers event handler, reuse
         const agendaPhaseEntry = new NavEntry()
