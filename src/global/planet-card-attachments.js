@@ -101,6 +101,8 @@ function addAttachmentsUI(card) {
 
     const planet = world.TI4.getPlanetByCard(card);
     if (!planet) {
+        const cardNsid = ObjectNamespace.getNsid(card);
+        console.log(`PlanetCardAttachments: unknown planet "${cardNsid}"`);
         return;
     }
 
