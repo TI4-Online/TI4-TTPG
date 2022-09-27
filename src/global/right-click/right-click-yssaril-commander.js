@@ -111,13 +111,7 @@ class YssarilCommander extends AbstractRightClickCard {
         // Sent to player who has the card in their area, not the clicking player.
         const pos = card.getPosition();
         const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-        let receiver = undefined;
-        for (const candidate of world.getAllPlayers()) {
-            if (candidate.getSlot() === closestDesk.playerSlot) {
-                receiver = candidate;
-                break;
-            }
-        }
+        const receiver = world.getPlayerBySlot(closestDesk.playerSlot);
 
         const srcName = world.TI4.getNameByPlayerSlot(player.getSlot());
         const dstName = world.TI4.getNameByPlayerSlot(closestDesk.playerSlot);

@@ -535,13 +535,13 @@ class PlayerDesk {
             new PlayerDeskSetup(this).setupGeneric();
         }
         if (srcFaction) {
-            new PlayerDeskSetup(this).setupFaction();
+            new PlayerDeskSetup(this).setupFaction(srcFaction.nsidName);
         }
         if (dstSetup) {
             new PlayerDeskSetup(swapWith).setupGeneric();
         }
         if (dstFaction) {
-            new PlayerDeskSetup(swapWith).setupFaction();
+            new PlayerDeskSetup(swapWith).setupFaction(dstFaction.nsidName);
         }
 
         this.resetUI();
