@@ -329,6 +329,7 @@ class Agenda {
         assert.equal(this._agendaStateMachine.name, "WAITING_FOR_START");
 
         this._agendaStateMachine.next();
+        this.resetForCurrentState();
 
         this._postInvalidate();
         return this;
@@ -353,6 +354,7 @@ class Agenda {
 
         this._outcomeNames = outcomeNames;
         this._agendaStateMachine.next();
+        this.resetForCurrentState(); // entering "WHENs", sets turn order
 
         this._postInvalidate();
         return this;

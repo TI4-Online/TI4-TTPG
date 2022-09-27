@@ -2,13 +2,23 @@ require("../../global"); // create world.TI4
 const assert = require("assert");
 const { TabAgenda } = require("./tab-agenda");
 const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
-const { world } = require("../../wrapper/api");
+const { MockGameObject, world } = require("../../wrapper/api");
 
 it("constructor", () => {
     new TabAgenda();
 });
 
 it("states", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = world.TI4.agenda;
     const tabAgenda = new TabAgenda();
 
@@ -49,4 +59,6 @@ it("states", () => {
 
     agenda.clear();
     assert(!agenda.isActive());
+
+    world.__clear();
 });

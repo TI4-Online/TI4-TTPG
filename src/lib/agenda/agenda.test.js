@@ -239,6 +239,16 @@ it("constructor", () => {
 });
 
 it("init/start/clear", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda();
     assert(!agenda.getStateMachine());
     assert(!agenda.isActive());
@@ -263,9 +273,21 @@ it("init/start/clear", () => {
     assert(!agenda.getStateMachine());
     assert(!agenda.isActive());
     assert.equal(agenda.getNumOutcomes(), 0);
+
+    world.__clear();
 });
 
 it("edit outcome name", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda().init().start().resetOutcomeNames("for/against");
     assert.equal(agenda.getStateMachine().name, "WHEN");
     assert(agenda.isActive());
@@ -277,6 +299,8 @@ it("edit outcome name", () => {
     assert.equal(agenda.getNumOutcomes(), 2);
     assert.equal(agenda.getOutcomeName(0), "foo");
     assert.equal(agenda.getOutcomeName(1), "bar");
+
+    world.__clear();
 });
 
 it("noWhens basic", () => {
@@ -328,6 +352,16 @@ it("voteLocked basic", () => {
 });
 
 it("voteOutcomeIndex basic", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda()
         .init()
         .start()
@@ -338,9 +372,21 @@ it("voteOutcomeIndex basic", () => {
 
     agenda.setVoteOutcomeIndex(1, 1, clickingPlayer);
     assert.equal(agenda.getVoteOutcomeIndex(1), 1);
+
+    world.__clear();
 });
 
 it("voteCount basic", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda()
         .init()
         .start()
@@ -351,9 +397,21 @@ it("voteCount basic", () => {
 
     agenda.setVoteCount(1, 13, clickingPlayer);
     assert.equal(agenda.getVoteCount(1), 13);
+
+    world.__clear();
 });
 
 it("predictionCount basic", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda()
         .init()
         .start()
@@ -366,9 +424,21 @@ it("predictionCount basic", () => {
 
     agenda.setPredictionCount(deskIndex, outcomeIndex, 7, clickingPlayer);
     assert.equal(agenda.getPredictionCount(deskIndex, outcomeIndex), 7);
+
+    world.__clear();
 });
 
 it("summarize votes", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda()
         .init()
         .start()
@@ -384,15 +454,11 @@ it("summarize votes", () => {
 
     const summary = agenda.summarizeVotes();
     assert.equal(summary, "“For”: 14 (white, blue), “Against”: 3 (purple)");
+
+    world.__clear();
 });
 
 it("whens, afters, votes in order", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -417,6 +483,12 @@ it("whens, afters, votes in order", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     assert.equal(agenda.getStateMachine().name, "WHEN");
 
@@ -476,12 +548,6 @@ it("whens, afters, votes in order", () => {
 });
 
 it("play when", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -506,6 +572,12 @@ it("play when", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     assert.equal(agenda.getStateMachine().name, "WHEN");
 
@@ -547,12 +619,6 @@ it("play when", () => {
 });
 
 it("play after", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -577,6 +643,12 @@ it("play after", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     // Advance to AFTER.
     agenda.getStateMachine().setState("AFTER");
@@ -620,12 +692,6 @@ it("play after", () => {
 });
 
 it("early no afters during whens phase", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -650,6 +716,12 @@ it("early no afters during whens phase", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     assert.equal(agenda.getStateMachine().name, "WHEN");
 
@@ -687,12 +759,6 @@ it("early no afters during whens phase", () => {
 });
 
 it("partial early no afters during whens phase", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -717,6 +783,12 @@ it("partial early no afters during whens phase", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     assert.equal(agenda.getStateMachine().name, "WHEN");
 
@@ -759,12 +831,6 @@ it("partial early no afters during whens phase", () => {
 });
 
 it("early no afters AND vote lock during whens phase", () => {
-    const agenda = new Agenda()
-        .init()
-        .start()
-        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-    const clickingPlayer = new MockPlayer();
-
     const desks = world.TI4.getAllPlayerDesks();
     const speakerToken = new MockGameObject({
         templateMetadata: "token:base/speaker",
@@ -789,6 +855,12 @@ it("early no afters AND vote lock during whens phase", () => {
     statusPads.forEach((statusPad) => {
         world.__addObject(statusPad);
     });
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+    const clickingPlayer = new MockPlayer();
 
     assert.equal(agenda.getStateMachine().name, "WHEN");
 
@@ -834,6 +906,16 @@ it("early no afters AND vote lock during whens phase", () => {
 });
 
 it("summarize votes", () => {
+    world.__clear();
+
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
     const agenda = new Agenda()
         .init()
         .start()
@@ -871,4 +953,6 @@ it("summarize votes", () => {
     agenda.setVoteCount(deskIndex, voteCount, clickingPlayer);
     summary = agenda.summarizeVotes();
     assert.equal(summary, "“For”: 5 (red), “Against”: 7 (purple, yellow)");
+
+    world.__clear();
 });
