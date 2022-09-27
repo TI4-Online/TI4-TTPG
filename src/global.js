@@ -234,6 +234,7 @@ require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-iihq-modernization");
 require("./global/right-click/right-click-maban-omega");
+require("./global/right-click/right-click-mageon-implants");
 require("./global/right-click/right-click-purge");
 require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
