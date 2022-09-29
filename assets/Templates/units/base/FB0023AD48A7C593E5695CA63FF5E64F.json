@@ -51,13 +51,38 @@
 			"Texture": "global/units/base/flagship.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "units/base/flagship_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -65,5 +90,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
