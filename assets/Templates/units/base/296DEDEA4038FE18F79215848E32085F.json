@@ -57,6 +57,50 @@
 			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/flatsquare.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -0.6
+			},
+			"Scale":
+			{
+				"X": 3,
+				"Y": 3,
+				"Z": 3
+			},
+			"Rotation":
+			{
+				"X": -180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/units/sustained-wrench.png",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": false,
+			"Roughness": 1,
+			"Metallic": 0,
+			"PrimaryColor":
+			{
+				"R": 255,
+				"G": 255,
+				"B": 255
+			},
+			"SecondaryColor":
+			{
+				"R": 0,
+				"G": 0,
+				"B": 0
+			},
+			"SurfaceType": "Plastic"
 		}
 	],
 	"Collision": [
