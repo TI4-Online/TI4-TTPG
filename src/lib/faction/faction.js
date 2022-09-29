@@ -34,6 +34,9 @@ function _maybeInit() {
                 assert(newFactionAttrs);
                 factionAttrs = lodash.merge(newFactionAttrs, factionAttrs);
             }
+            if (factionAttrs.abstract) {
+                return; // reserved for merging into others
+            }
             const faction = new Faction(factionAttrs);
             _nsidNameToFaction[faction.raw.faction] = faction;
         });
