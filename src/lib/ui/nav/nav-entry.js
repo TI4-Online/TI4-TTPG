@@ -17,6 +17,11 @@ class NavEntry {
         this._periodicUpdateWidget = undefined;
         this._destroyWidget = undefined;
 
+        // For entries that want to keep state when returning to them.
+        // This *does* keep the object in memory, so be careful!
+        this._persistWidget = false;
+        this._persistedWidget = undefined;
+
         this._parentNavEntry = undefined;
         this._children = undefined;
     }
@@ -55,9 +60,21 @@ class NavEntry {
     createWidget(navPanel) {
         assert.equal(navPanel.constructor.name, "NavPanel");
         assert(this._widgetFactory);
-        const widget = this._widgetFactory(navPanel, this);
-        assert(widget);
-        assert(widget instanceof Widget);
+
+        // Owner can ask widget to keep UI around across leave/return.
+        let widget = undefined;
+        if (this._persistWidget) {
+            widget = this._persistedWidget;
+        }
+        if (!widget) {
+            widget = this._widgetFactory(navPanel, this);
+            assert(widget);
+            assert(widget instanceof Widget);
+        }
+        if (this._persistWidget) {
+            this._persistedWidget = widget;
+        }
+
         return widget;
     }
 
@@ -112,6 +129,20 @@ class NavEntry {
     setDestroyWidget(destroyWidget) {
         assert(typeof destroyWidget === "function");
         this._destroyWidget = destroyWidget;
+        return this;
+    }
+
+    /**
+     * Normally widgets get discarded when changing nav entries.
+     * This tells this entry to keep the widget, and restore it
+     * if/when returning to this entry.
+     *
+     * @param {boolean} value
+     * @returns {NavEntry} self, for chaining
+     */
+    setPersistWidget(value) {
+        assert(typeof value === "boolean");
+        this._persistWidget = value;
         return this;
     }
 }

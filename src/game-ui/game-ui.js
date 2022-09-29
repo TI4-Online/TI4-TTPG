@@ -168,6 +168,7 @@ class GameUI {
 
         const miltyDraftEntry = new NavEntry()
             .setName(locale("nav.map.draft.milty"))
+            .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {
                 return new MiltyDraftSettings().getUI();
             });
