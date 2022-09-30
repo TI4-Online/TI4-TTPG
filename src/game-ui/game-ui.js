@@ -33,6 +33,7 @@ const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
     Border,
+    Card,
     HorizontalBox,
     LayoutBox,
     Rotator,
@@ -119,6 +120,10 @@ class GameUI {
         zone.onBeginOverlap.add((zone, obj) => {
             const nsid = ObjectNamespace.getNsid(obj);
             console.log(`GameUI.onBeginOverlap: "${nsid}"`);
+
+            if (!(obj instanceof Card)) {
+                return; // allow non-cards here
+            }
 
             // Move to outside zone.
             const x = 25 + Math.random() * 5;
