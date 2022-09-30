@@ -20,3 +20,20 @@ it("colorToHex", () => {
     const hexColor = ColorUtil.colorToHex(color);
     assert.equal(hexColor, "#010203");
 });
+
+it("validate", () => {
+    assert.throws(() => {
+        ColorUtil.validate(undefined);
+    });
+    assert.throws(() => {
+        ColorUtil.validate([0, 0]);
+    });
+    assert.throws(() => {
+        ColorUtil.validate([0, 0, 0, 0, 0]);
+    });
+    assert.throws(() => {
+        ColorUtil.validate(["a", "b", "c,", "d"]);
+    });
+    // Valid color arg, does not throw
+    ColorUtil.validate([0, 0, 0, 0]);
+});

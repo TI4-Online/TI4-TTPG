@@ -6,6 +6,26 @@ class ColorUtil {
         return typeof color.r === "number";
     }
 
+    static validate(colorOrArray) {
+        if (colorOrArray instanceof Color) {
+            return true;
+        } else if (Array.isArray(colorOrArray)) {
+            if (colorOrArray.length < 3 || colorOrArray.length > 4) {
+                throw new Error(`bad size (${colorOrArray.length})`);
+            }
+            for (const value of colorOrArray) {
+                if (typeof value !== "number") {
+                    throw new Error(`bad type (${typeof value})`);
+                }
+                if (value < 0 || value > 1) {
+                    throw new Error(`bad value (${value})`);
+                }
+            }
+        } else {
+            throw new Error("bad arg");
+        }
+    }
+
     static colorFromHex(hexColor) {
         assert(typeof hexColor === "string");
         assert(hexColor.startsWith("#"));
