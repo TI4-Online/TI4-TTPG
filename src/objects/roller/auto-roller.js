@@ -71,7 +71,6 @@ class AutoRoller {
             uiElement.widget = new CollapsiblePanel().setChild(this._ui);
             uiElement.anchorY = 0;
             gameObject.addUI(uiElement);
-            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
         }
     }
 

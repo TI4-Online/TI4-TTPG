@@ -1,78 +1,47 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { Hex } = require("../../lib/hex");
 const { System, Planet } = require("../../lib/system/system");
+const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Border,
     Button,
-    GameObject,
     HorizontalBox,
     LayoutBox,
-    Panel,
     Text,
     TextJustification,
-    UIElement,
     VerticalAlignment,
     VerticalBox,
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { UnitPlastic } = require("../../lib/unit/unit-plastic");
-const { Hex } = require("../../lib/hex");
+
+const COMBAT_TYPE = {
+    FINISH_MOVE: "finishMove",
+    SPACE_CANNON: "spaceCannon",
+    AMBUSH: "ambush",
+    ANTI_FIGHTER_BARRAGE: "antiFighterBarrage",
+    ANNOUNCE_RETREAT: "announceRetreat",
+    SPACE_COMBAT: "spaceCombat",
+    PRODUCTION: "production",
+    BOMBARDMENT: "bombardment",
+    GROUND_COMBAT: "groundCombat",
+    REPORT_MODIFIERS: "reportModifiers",
+};
+
+const VERTICAL_DISTANCE = 5 * CONFIG.scale;
+const LABEL_FONT = "Handel_Gothic_Regular.otf";
+const LABEL_FONT_SIZE = 14 * CONFIG.scale;
+const LABEL_WEIGHT = 0;
+const BUTTON_FONT_SIZE = 12 * CONFIG.scale;
+const BUTTON_WEIGHT = 1;
+const GAP_WEIGHT = 0;
 
 /**
  * Manage the UI on an AutoRoller object.
  */
-class AutoRollerUI extends LayoutBox {
-    /**
-     * Constructor.
-     *
-     * @param {function} onButton - called with (rollType: string, planet: Planet or false, player: Player)
-     */
-    constructor(onButton) {
-        assert(onButton);
-        super();
-        this._gameObject = false;
-        this._uiElement = false;
-        this._onButton = onButton;
-        this._player = undefined;
-
-        this.resetAwaitingSystemActivation();
-        //this.resetAfterSystemActivation(world.TI4.getSystemByTileNumber(18));
-    }
-
-    setOwningObjectForUpdate(gameObject, uiElement) {
-        assert(gameObject instanceof GameObject);
-        assert(uiElement instanceof UIElement);
-        this._gameObject = gameObject;
-        this._uiElement = uiElement;
-        return this;
-    }
-
-    /**
-     * Reset for "no system activated".
-     */
-    resetAwaitingSystemActivation() {
-        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
-
-        const message = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.message.no_system_activated"));
-        panel.addChild(message);
-
-        panel.addChild(new LayoutBox(), 1); // stretch to fill space
-
-        const reportModifiers = new Button()
-            .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.roller.report_modifiers"));
-        reportModifiers.onClicked.add((button, player) => {
-            this._onButton("reportModifiers", false, player);
-        });
-        panel.addChild(reportModifiers);
-
-        this.setChild(panel);
-    }
-
+class AutoRollerUI extends HorizontalBox {
     /**
      * Returns true if the active player, or a player with ships in the system
      * has the faction ability ambush.
@@ -84,7 +53,7 @@ class AutoRollerUI extends LayoutBox {
      * @param {System} system
      * @return {boolean}
      */
-    _ambush(system) {
+    static _ambush(system) {
         const activeSlot = world.TI4.turns.getCurrentTurn().playerSlot;
         const activeFaction = world.TI4.getFactionByPlayerSlot(activeSlot);
         if (activeFaction && activeFaction.raw.abilities.includes("ambush")) {
@@ -95,6 +64,9 @@ class AutoRollerUI extends LayoutBox {
             (obj) =>
                 world.TI4.getSystemBySystemTileObject(obj).tile === system.tile
         )[0];
+        if (!systemObj) {
+            return false; // should only happen during testing
+        }
         const systemHex = Hex.fromPosition(systemObj.getPosition());
         const systemPlastic = UnitPlastic.getAll().filter(
             (plastic) => plastic.hex === systemHex
@@ -110,6 +82,251 @@ class AutoRollerUI extends LayoutBox {
     }
 
     /**
+     * Constructor.
+     *
+     * @param {function} onButton - called with (rollType: string, planet: Planet or false, player: Player)
+     */
+    constructor(onButton) {
+        assert(onButton);
+        super();
+        this._onButton = onButton;
+
+        this._stepsPanel = new VerticalBox()
+            .setChildDistance(VERTICAL_DISTANCE)
+            .setVerticalAlignment(VerticalAlignment.Fill);
+        this._invasionPanel = new VerticalBox().setChildDistance(
+            VERTICAL_DISTANCE
+        );
+        const arenaPanel = new VerticalBox().setChildDistance(
+            VERTICAL_DISTANCE
+        );
+
+        // Divide arena panel up.
+        this._arenaBox = new LayoutBox();
+        this._arenaLowerLeft = new VerticalBox().setChildDistance(
+            VERTICAL_DISTANCE
+        );
+        const arenaLowerRight = new LayoutBox();
+        const arenaLower = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(this._arenaLowerLeft, 1)
+            .addChild(new Border().setColor(CONFIG.spacerColor))
+            .addChild(arenaLowerRight, 1);
+        const localeText = "ui.roller.report_modifiers";
+        const combatType = COMBAT_TYPE.REPORT_MODIFIERS;
+        const widget = this._createButton(localeText, combatType);
+        arenaLowerRight.setChild(widget);
+        arenaPanel.addChild(this._arenaBox, 9);
+        arenaPanel.addChild(arenaLower, 3);
+
+        this.setChildDistance(CONFIG.spacing)
+            .addChild(this._stepsPanel, 1)
+            .addChild(new Border().setColor(CONFIG.spacerColor))
+            .addChild(this._invasionPanel, 1)
+            .addChild(new Border().setColor(CONFIG.spacerColor))
+            .addChild(arenaPanel, 2);
+
+        this.resetAwaitingSystemActivation();
+
+        // Leave this for testing (commented out)
+        //const system = world.TI4.getSystemByTileNumber(18);
+        //this._fillStepsPanel(system);
+        //this._fillInvasionPanel(system);
+        //this._fillArenaPanel(system);
+    }
+
+    _createLabel(localeText) {
+        assert(typeof localeText === "string");
+        const label = new Text()
+            .setFontSize(LABEL_FONT_SIZE)
+            .setFont(LABEL_FONT, refPackageId)
+            .setJustification(TextJustification.Center)
+            .setText(locale(localeText).toUpperCase());
+        return label;
+    }
+
+    _createPlanetLabel(planetName) {
+        assert(typeof planetName === "string");
+        const label = new Text()
+            .setFontSize(LABEL_FONT_SIZE)
+            .setJustification(TextJustification.Center)
+            .setItalic(true)
+            .setText(locale(planetName).toUpperCase());
+        return label;
+    }
+
+    _createButton(localeText, combatType, planet) {
+        assert(typeof localeText === "string");
+        assert(typeof combatType === "string");
+        assert(!planet || planet instanceof Planet);
+        const button = new Button()
+            .setFontSize(BUTTON_FONT_SIZE)
+            .setText(locale(localeText));
+        button.onClicked.add((button, player) => {
+            this._onButton(combatType, planet, player);
+        });
+        return button;
+    }
+
+    _createGap() {
+        return new LayoutBox().setOverrideHeight(VERTICAL_DISTANCE);
+    }
+
+    _fillStepsPanel(system) {
+        assert(system instanceof System);
+
+        this._stepsPanel.removeAllChildren();
+
+        let localeText;
+        let combatType;
+        let widget;
+
+        // MOVEMENT STEP
+        localeText = "ui.label.movement";
+        widget = this._createLabel(localeText);
+        this._stepsPanel.addChild(widget, LABEL_WEIGHT);
+
+        localeText = "ui.movement.finish_movement";
+        combatType = COMBAT_TYPE.FINISH_MOVE;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        localeText = "ui.roller.space_cannon_offense";
+        combatType = COMBAT_TYPE.SPACE_CANNON;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        // GAP
+        widget = this._createGap();
+        this._stepsPanel.addChild(widget, GAP_WEIGHT);
+
+        // SPACE COMBAT STEP
+        localeText = "ui.label.space_combat";
+        widget = this._createLabel(localeText);
+        this._stepsPanel.addChild(widget, LABEL_WEIGHT);
+
+        const ambushAvailable = AutoRollerUI._ambush(system);
+        if (ambushAvailable) {
+            localeText = "ui.roller.ambush";
+            combatType = COMBAT_TYPE.AMBUSH;
+            widget = this._createButton(localeText, combatType);
+            this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+        }
+
+        localeText = "ui.roller.anti_fighter_barrage";
+        combatType = COMBAT_TYPE.ANTI_FIGHTER_BARRAGE;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        localeText = "ui.roller.announce_retreat";
+        combatType = COMBAT_TYPE.ANNOUNCE_RETREAT;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        localeText = "ui.roller.space_combat";
+        combatType = COMBAT_TYPE.SPACE_COMBAT;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        // GAP
+        widget = this._createGap();
+        this._stepsPanel.addChild(widget, GAP_WEIGHT);
+
+        // INVASION (redirect)
+        localeText = "ui.label.invasion";
+        widget = this._createLabel(localeText);
+        this._stepsPanel.addChild(widget, LABEL_WEIGHT);
+
+        localeText = "->";
+        combatType = "n/a";
+        widget = this._createButton(localeText, combatType);
+        widget.setEnabled(false);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+
+        // GAP
+        widget = this._createGap();
+        this._stepsPanel.addChild(widget, GAP_WEIGHT);
+
+        // PRODUCTION
+        localeText = "ui.label.production";
+        widget = this._createLabel(localeText);
+        this._stepsPanel.addChild(widget, LABEL_WEIGHT);
+
+        localeText = "ui.label.production";
+        combatType = COMBAT_TYPE.PRODUCTION;
+        widget = this._createButton(localeText, combatType);
+        this._stepsPanel.addChild(widget, BUTTON_WEIGHT);
+    }
+
+    _fillInvasionPanel(system) {
+        assert(system instanceof System);
+
+        this._invasionPanel.removeAllChildren();
+
+        let localeText;
+        let combatType;
+        let widget;
+
+        // Always create 3 (but allow more!) for consistent sizing.
+        const numPlanetPanels = Math.max(3, system.planets.length);
+        const planetPanels = new Array(numPlanetPanels).fill(0).map(() => {
+            const panel = new VerticalBox().setChildDistance(VERTICAL_DISTANCE);
+            this._invasionPanel.addChild(panel, 4);
+            return panel;
+        });
+
+        system.planets.forEach((planet, index) => {
+            const panelIndex = 3 - system.planets.length + index;
+            const panel = planetPanels[panelIndex];
+
+            const planetName = planet.getNameStr();
+            widget = this._createPlanetLabel(planetName);
+            panel.addChild(widget, LABEL_WEIGHT);
+
+            localeText = "ui.roller.bombardment";
+            combatType = COMBAT_TYPE.BOMBARDMENT;
+            widget = this._createButton(localeText, combatType, planet);
+            panel.addChild(widget, BUTTON_WEIGHT);
+
+            localeText = "ui.roller.space_cannon_defense";
+            combatType = COMBAT_TYPE.SPACE_CANNON;
+            widget = this._createButton(localeText, combatType, planet);
+            panel.addChild(widget, BUTTON_WEIGHT);
+
+            localeText = "ui.roller.ground_combat";
+            combatType = COMBAT_TYPE.GROUND_COMBAT;
+            widget = this._createButton(localeText, combatType, planet);
+            panel.addChild(widget, BUTTON_WEIGHT);
+        });
+    }
+
+    _fillArenaPanel(system) {
+        assert(system instanceof System);
+
+        this._arenaBox.setChild(undefined);
+        this._arenaLowerLeft.removeAllChildren();
+
+        // XXX TODO
+    }
+
+    /**
+     * Reset for "no system activated".
+     */
+    resetAwaitingSystemActivation() {
+        this._stepsPanel.removeAllChildren();
+        this._invasionPanel.removeAllChildren();
+        this._arenaBox.setChild(undefined);
+        this._arenaLowerLeft.removeAllChildren();
+
+        const message = new Text()
+            .setAutoWrap(true)
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.message.no_system_activated"));
+
+        this._stepsPanel.addChild(message);
+    }
+
+    /**
      * Reset for the given system.
      *
      * Get localized planet names by: `system.planets[].getNameStr()`
@@ -120,172 +337,10 @@ class AutoRollerUI extends LayoutBox {
      */
     resetAfterSystemActivation(system) {
         assert(system instanceof System);
-        // Mandate column width so if button text overflows it truncates
-        // instead of adding a scrollbar.  Do not assume EN locale!
-        const VERTICAL_DISTANCE = 5 * CONFIG.scale;
-        const HORIZONTAL_DISTANCE = 10 * CONFIG.scale;
-        const COLUMN_WIDTH = 175 * CONFIG.scale;
 
-        const BUTTON_FONT_SIZE = 12 * CONFIG.scale;
-        const LABEL_FONT = "Handel_Gothic_Regular.otf";
-        const LABEL_FONT_SIZE = 14 * CONFIG.scale;
-
-        const spaceLayout = new VerticalBox().setChildDistance(
-            VERTICAL_DISTANCE
-        );
-        const spaceBox = new LayoutBox()
-            .setOverrideWidth(COLUMN_WIDTH)
-            .setVerticalAlignment(VerticalAlignment.Fill)
-            .setChild(spaceLayout);
-
-        const groundLayout = new HorizontalBox().setChildDistance(
-            HORIZONTAL_DISTANCE
-        );
-        const groundOuterLayout = new VerticalBox().setChildDistance(
-            VERTICAL_DISTANCE
-        );
-        const groundBox = new LayoutBox()
-            .setOverrideWidth(COLUMN_WIDTH * 3 + HORIZONTAL_DISTANCE * 3)
-            .setVerticalAlignment(VerticalAlignment.Bottom)
-            .setPadding(0, 0, 0, 0) //44
-            .setChild(groundOuterLayout);
-
-        // Add hotkey reminders to the ground layout.
-        groundOuterLayout
-            .addChild(
-                new Text()
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setText(locale("ui.help.numpad"))
-            )
-            .addChild(
-                new Text()
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setText(locale("ui.help.numpad.4"))
-            )
-            .addChild(
-                new Text()
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setText(locale("ui.help.numpad.5"))
-            )
-            .addChild(
-                new Text()
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setText(locale("ui.help.numpad.9"))
-            )
-            .addChild(
-                new Text()
-                    .setFontSize(LABEL_FONT_SIZE)
-                    .setText(locale("ui.help.numpad.0"))
-            )
-            .addChild(new Text().setFontSize(LABEL_FONT_SIZE))
-            .addChild(groundLayout);
-
-        let panel = new HorizontalBox()
-            .setChildDistance(HORIZONTAL_DISTANCE)
-            .addChild(spaceBox)
-            .addChild(new Border().setColor(CONFIG.spacerColor))
-            .addChild(groundBox);
-
-        this.setChild(panel);
-
-        panel = spaceLayout;
-
-        const addStep = (localeText) => {
-            assert(panel instanceof Panel);
-            assert(typeof localeText === "string");
-            const label = new Text()
-                .setFontSize(LABEL_FONT_SIZE)
-                .setFont(LABEL_FONT, refPackageId)
-                .setJustification(TextJustification.Center)
-                .setText(locale(localeText).toUpperCase());
-            panel.addChild(label, 0);
-        };
-
-        const addPlanetName = (planet) => {
-            assert(panel instanceof Panel);
-            assert(planet instanceof Planet);
-            const label = new Text()
-                .setFontSize(LABEL_FONT_SIZE)
-                .setJustification(TextJustification.Center)
-                .setItalic(true)
-                .setText(planet.getNameStr());
-            panel.addChild(label, 0);
-        };
-
-        const addButton = (localeText, combatType, planet) => {
-            assert(panel instanceof Panel);
-            assert(typeof localeText === "string");
-            assert(typeof combatType === "string");
-            assert(!planet || planet instanceof Planet);
-            const button = new Button()
-                .setFontSize(BUTTON_FONT_SIZE)
-                .setText(locale(localeText));
-            button.onClicked.add((button, player) => {
-                this._onButton(combatType, planet, player);
-            });
-            panel.addChild(button, 1); // stretch buttons to fill
-            return button;
-        };
-
-        const addGap = () => {
-            assert(panel instanceof Panel);
-            const gap = new LayoutBox().setOverrideHeight(VERTICAL_DISTANCE);
-            panel.addChild(gap, 0);
-        };
-
-        const ambushAvailable = this._ambush(system);
-
-        // MOVEMENT STEP
-        addStep("ui.label.movement");
-        addButton("ui.movement.finish_movement", "finishMove");
-        addButton("ui.roller.space_cannon_offense", "spaceCannon");
-        addGap();
-
-        // SPACE COMBAT STEP
-        addStep("ui.label.space_combat");
-        if (ambushAvailable) {
-            // only show ambush button if a player has the ambush ability
-            addButton("ui.roller.ambush", "ambush");
-        }
-        addButton("ui.roller.anti_fighter_barrage", "antiFighterBarrage");
-        addButton("ui.roller.announce_retreat", "announceRetreat");
-        addButton("ui.roller.space_combat", "spaceCombat");
-        addGap();
-
-        // INVASION (redirect)
-        if (ambushAvailable) {
-            // combine invasion step into one line
-            // otherwise adding the ambush button causes a vertical scroll bar
-            addStep("ui.label.invasion_oneline");
-        } else {
-            addStep("ui.label.invasion");
-            addButton("—>", "").setEnabled(false);
-        }
-        addGap();
-
-        // PRODUCTION
-        addStep("ui.label.production");
-        addButton("ui.label.production", "production");
-
-        // INVASION (real this time)
-        for (const planet of system.planets) {
-            panel = new VerticalBox().setChildDistance(VERTICAL_DISTANCE);
-            groundLayout.addChild(
-                new LayoutBox().setOverrideWidth(COLUMN_WIDTH).setChild(panel)
-            );
-
-            addPlanetName(planet);
-            addButton("ui.roller.bombardment", "bombardment", planet);
-            addButton(
-                "ui.roller.space_cannon_defense",
-                "spaceCannonDefense",
-                planet
-            );
-            addButton("ui.roller.ground_combat", "groundCombat", planet);
-        }
-
-        panel = groundOuterLayout;
-        addButton("ui.roller.report_modifiers", "reportModifiers");
+        this._fillStepsPanel(system);
+        this._fillInvasionPanel(system);
+        this._fillArena(system);
     }
 }
 
