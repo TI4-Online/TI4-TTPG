@@ -399,6 +399,9 @@ class MapTilesTextures {
         const src = await sharp(srcAbsolutePath);
         const dst = await MapTilesTextures.processOneRaw(src, options);
         await dst.toFile(dstAbsolutePath);
+
+        // Also write to the UI version.
+        MapTilesTextures.writeUiTile(dst, relativePath);
     }
 
     static async processOneRaw(src, options) {
@@ -426,6 +429,34 @@ class MapTilesTextures {
         }
 
         return img;
+    }
+
+    static async writeUiTile(img, relativePath) {
+        const mask = await new sharp(
+            "assets/Textures/global/ui/tiles/blank.png"
+        )
+            .resize(512, 512, { fit: "fill" })
+            .extractChannel("alpha")
+            .toBuffer();
+        const ui = await img
+            .extract({
+                left: 70,
+                top: 70,
+                width: 884,
+                height: 884,
+            })
+            .resize(512, 512, { fit: "fill" })
+            .joinChannel(mask);
+        let uiPath = relativePath.split("/");
+        const locale = uiPath.shift();
+        uiPath.unshift("ui");
+        uiPath.unshift(locale);
+        let filename = uiPath.pop();
+        const basename = path.basename(filename, ".jpg");
+        filename = basename + ".png";
+        uiPath.push(filename);
+        uiPath = path.join(DST_TEXTURES_DIR, ...uiPath);
+        await ui.toFile(uiPath);
     }
 }
 
