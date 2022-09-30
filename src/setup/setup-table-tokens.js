@@ -111,8 +111,14 @@ class SetupTableTokens extends AbstractSetup {
         let rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
 
         if (EXPLORATION_TOKENS.anchor) {
-            pos = this.anchorPositionToWorld(EXPLORATION_TOKENS.anchor, pos);
-            rot = this.anchorRotationToWorld(EXPLORATION_TOKENS.anchor, rot);
+            pos = TableLayout.anchorPositionToWorld(
+                EXPLORATION_TOKENS.anchor,
+                pos
+            );
+            rot = TableLayout.anchorRotationToWorld(
+                EXPLORATION_TOKENS.anchor,
+                rot
+            );
         }
         pos.z = world.getTableHeight() + EXPLORATION_TOKENS.pos.z;
 
@@ -161,8 +167,8 @@ class SetupTableTokens extends AbstractSetup {
         let rot = new Rotator(0, tokenData.yaw, 0);
 
         if (tokenData.anchor) {
-            pos = this.anchorPositionToWorld(tokenData.anchor, pos);
-            rot = this.anchorRotationToWorld(tokenData.anchor, rot);
+            pos = TableLayout.anchorPositionToWorld(tokenData.anchor, pos);
+            rot = TableLayout.anchorRotationToWorld(tokenData.anchor, rot);
         }
         pos.z = world.getTableHeight() + tokenData.pos.z;
 

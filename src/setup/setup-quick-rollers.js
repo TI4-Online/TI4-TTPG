@@ -23,8 +23,11 @@ class SetupQuickRollers extends AbstractSetup {
     setup() {
         const nsid = QUICK_ROLLER.nsid;
         QUICK_ROLLER.spawns.forEach((data) => {
-            const pos = this.anchorPositionToWorld(data.anchor, data.pos);
-            const rot = this.anchorRotationToWorld(
+            const pos = TableLayout.anchorPositionToWorld(
+                data.anchor,
+                data.pos
+            );
+            const rot = TableLayout.anchorRotationToWorld(
                 data.anchor,
                 new Rotator(0, data.yaw, 0)
             );
