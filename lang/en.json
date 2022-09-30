@@ -264,6 +264,8 @@
     "ui.roller.ground_combat": "Ground Combat",
     "ui.roller.report_modifiers": "Report Modifiers",
     "ui.roller.ambush": "Ambush",
+    "ui.roller.warp_in": "Warp in",
+    "ui.roller.warp_out": "Warp out",
 
     "ui.phase.status.label": "Status",
     "ui.phase.agenda.label": "Agenda",

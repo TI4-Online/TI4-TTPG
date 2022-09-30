@@ -4,6 +4,7 @@ const { ObjectNamespace } = require("../object-namespace");
 const PositionToPlanet = require("../system/position-to-planet");
 const UNIT_ATTRS = require("./unit-attrs.data");
 const { GameObject, world } = require("../../wrapper/api");
+const { AutoRollerArena } = require("../../objects/roller/auto-roller-arena");
 
 let _nsidToUnitData = false;
 
@@ -68,6 +69,9 @@ class UnitPlastic {
                 result.push(unitPlastic);
             }
         }
+
+        AutoRollerArena.rewriteArenaUnitHexes(result);
+
         return result;
     }
 
@@ -151,6 +155,8 @@ class UnitPlastic {
                 systemObj
             );
         }
+
+        AutoRollerArena.rewriteArenaUnitPlanets(unitPlastics);
     }
 
     // ------------------------------------------------------------------------

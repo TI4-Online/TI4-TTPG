@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { AutoRollerArena } = require("./auto-roller-arena");
 const { Hex } = require("../../lib/hex");
 const { System, Planet } = require("../../lib/system/system");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
@@ -7,7 +8,9 @@ const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Border,
     Button,
+    HorizontalAlignment,
     HorizontalBox,
+    ImageWidget,
     LayoutBox,
     Text,
     TextJustification,
@@ -37,6 +40,7 @@ const LABEL_WEIGHT = 0;
 const BUTTON_FONT_SIZE = 12 * CONFIG.scale;
 const BUTTON_WEIGHT = 1;
 const GAP_WEIGHT = 0;
+const HELP_FONT_SIZE = 11 * CONFIG.scale;
 
 /**
  * Manage the UI on an AutoRoller object.
@@ -102,22 +106,47 @@ class AutoRollerUI extends HorizontalBox {
         );
 
         // Divide arena panel up.
-        this._arenaBox = new LayoutBox();
+        this._arenaBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center);
         this._arenaLowerLeft = new VerticalBox().setChildDistance(
             VERTICAL_DISTANCE
         );
-        const arenaLowerRight = new LayoutBox();
+        const arenaLowerRight = new VerticalBox();
         const arenaLower = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._arenaLowerLeft, 1)
             .addChild(new Border().setColor(CONFIG.spacerColor))
             .addChild(arenaLowerRight, 1);
-        const localeText = "ui.roller.report_modifiers";
-        const combatType = COMBAT_TYPE.REPORT_MODIFIERS;
-        const widget = this._createButton(localeText, combatType);
-        arenaLowerRight.setChild(widget);
         arenaPanel.addChild(this._arenaBox, 9);
         arenaPanel.addChild(arenaLower, 3);
+
+        arenaLowerRight
+            .addChild(
+                new Text()
+                    .setFontSize(HELP_FONT_SIZE)
+                    .setText(locale("ui.help.numpad"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(HELP_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.4"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(HELP_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.5"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(HELP_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.9"))
+            )
+            .addChild(
+                new Text()
+                    .setFontSize(HELP_FONT_SIZE)
+                    .setText(locale("ui.help.numpad.0"))
+            );
 
         this.setChildDistance(CONFIG.spacing)
             .addChild(this._stepsPanel, 1)
@@ -128,8 +157,8 @@ class AutoRollerUI extends HorizontalBox {
 
         this.resetAwaitingSystemActivation();
 
-        // Leave this for testing (commented out)
-        //const system = world.TI4.getSystemByTileNumber(18);
+        // Leave this for testing (commented out) 58 is three planet system
+        //const system = world.TI4.getSystemByTileNumber(58);
         //this._fillStepsPanel(system);
         //this._fillInvasionPanel(system);
         //this._fillArenaPanel(system);
@@ -306,7 +335,41 @@ class AutoRollerUI extends HorizontalBox {
         this._arenaBox.setChild(undefined);
         this._arenaLowerLeft.removeAllChildren();
 
-        // XXX TODO
+        let localeText;
+        let combatType;
+        let widget;
+
+        localeText = "ui.roller.warp_in";
+        combatType = "n/a";
+        widget = this._createButton(localeText, combatType);
+        widget.onClicked.clear();
+        widget.onClicked.add((button, player) => {
+            AutoRollerArena.warpIn();
+        });
+        this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
+
+        localeText = "ui.roller.warp_out";
+        combatType = "n/a";
+        widget = this._createButton(localeText, combatType);
+        widget.onClicked.clear();
+        widget.onClicked.add((button, player) => {
+            AutoRollerArena.warpOut();
+        });
+        this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
+
+        localeText = "ui.roller.report_modifiers";
+        combatType = COMBAT_TYPE.REPORT_MODIFIERS;
+        widget = this._createButton(localeText, combatType);
+        this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
+
+        const imgPath = system.raw.img;
+        const size = CONFIG.scale * 350;
+        const img = new ImageWidget()
+            .setImage(imgPath, refPackageId)
+            .setImageSize(size, size);
+        this._arenaBox.setChild(img);
+
+        System;
     }
 
     /**
@@ -322,6 +385,15 @@ class AutoRollerUI extends HorizontalBox {
             .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.message.no_system_activated"));
+
+        let localeText;
+        let combatType;
+        let widget;
+
+        localeText = "ui.roller.report_modifiers";
+        combatType = COMBAT_TYPE.REPORT_MODIFIERS;
+        widget = this._createButton(localeText, combatType);
+        this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
 
         this._stepsPanel.addChild(message);
     }
