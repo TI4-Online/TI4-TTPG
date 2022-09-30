@@ -1,10 +1,11 @@
+const locale = require("../../lib/locale");
 const {
     onUiClosedClicked,
     RegisterStrategyCardUI,
 } = require("./strategy-card");
-const { Button, Color, Text, VerticalBox } = require("../../wrapper/api");
 const { Broadcast } = require("../../lib/broadcast");
-const locale = require("../../lib/locale");
+const { ColorUtil } = require("../../lib/color/color-util");
+const { Button, Color, Text, VerticalBox } = require("../../wrapper/api");
 
 module.exports = function registerStandardCard(
     strategyCardInstance,
@@ -69,6 +70,7 @@ module.exports = function registerStandardCard(
         return verticalBox;
     };
 
+    ColorUtil.validate(color);
     new RegisterStrategyCardUI()
         .setCard(strategyCardInstance)
         .setWidgetFactory(widgetFactory)

@@ -58,9 +58,11 @@ function drawTechButton(
 ) {
     assert(typeof packageId === "string");
 
-    let techButton = new Button()
+    const textColor = techIcons[tech.type].color;
+    ColorUtil.validate(textColor);
+    const techButton = new Button()
         .setText(tech.name)
-        .setTextColor(techIcons[tech.type].color)
+        .setTextColor(textColor)
         .setEnabled(!ownedTechnologies.includes(tech));
     techButton.onClicked.add((button, player) => {
         const techName = button.getText();
@@ -75,7 +77,7 @@ function drawTechButton(
     }
 
     if (factionNsidName) {
-        let factionIcon = new ImageWidget()
+        const factionIcon = new ImageWidget()
             .setImage(
                 world.TI4.getFactionByNsidName(factionNsidName).icon,
                 packageId
@@ -116,7 +118,7 @@ function drawTechButton(
 }
 
 const countPlayerTechsByType = (playerSlot) => {
-    let playerTechnologies = {
+    const playerTechnologies = {
         Blue: 0,
         Red: 0,
         Yellow: 0,
@@ -167,7 +169,7 @@ const onTechResearched = (technologyName, playerSlot) => {
     }
 
     let messageKey = "strategy_card.technology.message.researched";
-    let messageParameters = {
+    const messageParameters = {
         playerName: player ? player.getName() : playerDesk.colorName,
         technologyName: technologyName,
         skips: "",
@@ -241,7 +243,7 @@ function widgetFactory(playerDesk, packageId) {
     });
 
     technologies.unitUpgrade.forEach((tech, index) => {
-        let techButton = new Button().setText(tech.name);
+        const techButton = new Button().setText(tech.name);
         const xOffset = (tech.unitPosition % 4) * 210;
         const yOffset =
             yOffsetMax + 20 + Math.floor(tech.unitPosition / 4) * 60;
@@ -259,7 +261,7 @@ function widgetFactory(playerDesk, packageId) {
         );
     });
 
-    let closeButton = new Button()
+    const closeButton = new Button()
         .setFontSize(10)
         .setText(locale("strategy_card.base.button.close"));
     closeButton.onClicked.add(onUiClosedClicked);
