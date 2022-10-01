@@ -179,14 +179,4 @@ class AutoRollerArena {
     }
 }
 
-process.nextTick(() => {
-    AutoRollerArena.debugVisualize();
-
-    const anchor = TableLayout.anchor.gameUI;
-    let pos = TableLayout.anchorPositionToWorld(anchor, new Vector(0, 0, 0));
-    console.log(pos);
-    pos = AutoRollerArena._worldPositionToHexLocal(pos);
-    console.log(pos);
-});
-
 module.exports = { AutoRollerArena };
