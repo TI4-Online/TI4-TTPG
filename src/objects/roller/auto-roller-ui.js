@@ -1,9 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AutoRollerArena } = require("./auto-roller-arena");
+const { ColorUtil } = require("../../lib/color/color-util");
 const { Hex } = require("../../lib/hex");
 const { System, Planet } = require("../../lib/system/system");
-const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Border,
@@ -72,7 +72,7 @@ class AutoRollerUI extends HorizontalBox {
             return false; // should only happen during testing
         }
         const systemHex = Hex.fromPosition(systemObj.getPosition());
-        const systemPlastic = UnitPlastic.getAll().filter(
+        const systemPlastic = world.TI4.getAllUnitPlastics().filter(
             (plastic) => plastic.hex === systemHex
         );
 
@@ -109,6 +109,9 @@ class AutoRollerUI extends HorizontalBox {
         this._arenaBox = new LayoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center);
+        const arenaBoxBorder = new Border()
+            .setColor(ColorUtil.colorFromHex("#101010"))
+            .setChild(this._arenaBox);
         this._arenaLowerLeft = new VerticalBox().setChildDistance(
             VERTICAL_DISTANCE
         );
@@ -118,7 +121,7 @@ class AutoRollerUI extends HorizontalBox {
             .addChild(this._arenaLowerLeft, 1)
             .addChild(new Border().setColor(CONFIG.spacerColor))
             .addChild(arenaLowerRight, 1);
-        arenaPanel.addChild(this._arenaBox, 9);
+        arenaPanel.addChild(arenaBoxBorder, 9);
         arenaPanel.addChild(arenaLower, 3);
 
         arenaLowerRight
@@ -299,9 +302,15 @@ class AutoRollerUI extends HorizontalBox {
         // Always create 3 (but allow more!) for consistent sizing.
         const numPlanetPanels = Math.max(3, system.planets.length);
         const planetPanels = new Array(numPlanetPanels).fill(0).map(() => {
-            const panel = new VerticalBox().setChildDistance(VERTICAL_DISTANCE);
+            return new VerticalBox().setChildDistance(VERTICAL_DISTANCE);
+        });
+
+        planetPanels.forEach((panel, index) => {
+            if (index > 0) {
+                widget = this._createGap();
+                this._invasionPanel.addChild(widget, GAP_WEIGHT);
+            }
             this._invasionPanel.addChild(panel, 4);
-            return panel;
         });
 
         system.planets.forEach((planet, index) => {
@@ -412,7 +421,7 @@ class AutoRollerUI extends HorizontalBox {
 
         this._fillStepsPanel(system);
         this._fillInvasionPanel(system);
-        this._fillArena(system);
+        this._fillArenaPanel(system);
     }
 }
 

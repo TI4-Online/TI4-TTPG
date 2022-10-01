@@ -9,7 +9,6 @@ const {
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
-const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     PlaceTradegoodUnpicked,
 } = require("../lib/phase/place-tradegood-unpicked");
@@ -118,9 +117,6 @@ class GameUI {
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
-            const nsid = ObjectNamespace.getNsid(obj);
-            console.log(`GameUI.onBeginOverlap: "${nsid}"`);
-
             if (!(obj instanceof Card)) {
                 return; // allow non-cards here
             }
@@ -133,8 +129,7 @@ class GameUI {
             obj.setPosition(outside, 1);
         });
         zone.onEndOverlap.add((zone, obj) => {
-            const nsid = ObjectNamespace.getNsid(obj);
-            console.log(`GameUI.onEndOverlap: "${nsid}"`);
+            // nop
         });
     }
 
