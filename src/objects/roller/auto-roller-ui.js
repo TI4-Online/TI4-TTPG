@@ -341,7 +341,6 @@ class AutoRollerUI extends HorizontalBox {
     _fillArenaPanel(system) {
         assert(system instanceof System);
 
-        this._arenaBox.setChild(undefined);
         this._arenaLowerLeft.removeAllChildren();
 
         let localeText;
@@ -387,7 +386,6 @@ class AutoRollerUI extends HorizontalBox {
     resetAwaitingSystemActivation() {
         this._stepsPanel.removeAllChildren();
         this._invasionPanel.removeAllChildren();
-        this._arenaBox.setChild(undefined);
         this._arenaLowerLeft.removeAllChildren();
 
         const message = new Text()
@@ -404,7 +402,7 @@ class AutoRollerUI extends HorizontalBox {
         widget = this._createButton(localeText, combatType);
         this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
 
-        this._stepsPanel.addChild(message);
+        this._arenaBox.setChild(message);
     }
 
     /**
