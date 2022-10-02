@@ -145,7 +145,8 @@ class UnitModifier {
                 continue;
             }
 
-            if (!CardUtil.isLooseCard(obj, true)) {
+            const checkIsDiscardPile = true;
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile)) {
                 continue; // not a lone, faceup card on the table
             }
 
