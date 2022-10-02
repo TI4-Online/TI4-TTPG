@@ -146,10 +146,11 @@ class AutoRollerArena {
             const src = unitPlastic.gameObject.getPosition();
             const hexLocal = activeSystemObj.worldPositionToLocal(src);
             const dst = AutoRollerArena._hexLocalPositionToWorld(hexLocal);
-            dst.z = src.z + 1;
+            dst.z = src.z + 15; // move above then snap down (may be other units there)
             const objectType = unitPlastic.gameObject.getObjectType();
             unitPlastic.gameObject.setObjectType(ObjectType.Regular);
             unitPlastic.gameObject.setPosition(dst, 1);
+            unitPlastic.gameObject.snapToGround();
             unitPlastic.gameObject.setObjectType(objectType);
         }
     }
@@ -170,10 +171,11 @@ class AutoRollerArena {
             const src = unitPlastic.gameObject.getPosition();
             const hexLocal = AutoRollerArena._worldPositionToHexLocal(src);
             const dst = activeSystemObj.localPositionToWorld(hexLocal);
-            dst.z = src.z + 1; // arena is at table height, this is on top of tile
+            dst.z = src.z + 15; // move above then snap down (may be other units there)
             const objectType = unitPlastic.gameObject.getObjectType();
             unitPlastic.gameObject.setObjectType(ObjectType.Regular);
             unitPlastic.gameObject.setPosition(dst, 1);
+            unitPlastic.gameObject.snapToGround();
             unitPlastic.gameObject.setObjectType(objectType);
         }
     }
