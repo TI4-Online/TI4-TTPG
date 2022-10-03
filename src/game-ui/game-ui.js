@@ -9,7 +9,6 @@ const {
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
-const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     PlaceTradegoodUnpicked,
 } = require("../lib/phase/place-tradegood-unpicked");
@@ -33,6 +32,7 @@ const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
     Border,
+    Card,
     HorizontalBox,
     LayoutBox,
     Rotator,
@@ -117,8 +117,9 @@ class GameUI {
         zone.setColor([1, 0, 0, 0.2]);
         zone.setAlwaysVisible(false);
         zone.onBeginOverlap.add((zone, obj) => {
-            const nsid = ObjectNamespace.getNsid(obj);
-            console.log(`GameUI.onBeginOverlap: "${nsid}"`);
+            if (!(obj instanceof Card)) {
+                return; // allow non-cards here
+            }
 
             // Move to outside zone.
             const x = 25 + Math.random() * 5;
@@ -128,8 +129,7 @@ class GameUI {
             obj.setPosition(outside, 1);
         });
         zone.onEndOverlap.add((zone, obj) => {
-            const nsid = ObjectNamespace.getNsid(obj);
-            console.log(`GameUI.onEndOverlap: "${nsid}"`);
+            // nop
         });
     }
 
@@ -168,6 +168,7 @@ class GameUI {
 
         const miltyDraftEntry = new NavEntry()
             .setName(locale("nav.map.draft.milty"))
+            .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {
                 return new MiltyDraftSettings().getUI();
             });

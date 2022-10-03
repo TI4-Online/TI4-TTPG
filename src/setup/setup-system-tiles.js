@@ -24,8 +24,8 @@ class SetupSystemTiles extends AbstractSetup {
     setup() {
         let pos = new Vector(BAG.pos.x, BAG.pos.y, BAG.pos.z);
         let rot = new Rotator(0, BAG.yaw, 0);
-        pos = this.anchorPositionToWorld(BAG.anchor, pos);
-        rot = this.anchorRotationToWorld(BAG.anchor, rot);
+        pos = TableLayout.anchorPositionToWorld(BAG.anchor, pos);
+        rot = TableLayout.anchorRotationToWorld(BAG.anchor, rot);
         const bag = Spawn.spawn(BAG.nsid, pos, rot);
         bag.setName(locale("bag.system_tiles"));
         bag.setScale(new Vector(BAG.scale.x, BAG.scale.y, BAG.scale.z));

@@ -59,7 +59,7 @@ class CardUtil {
         assert(card instanceof Card);
         const nsid = ObjectNamespace.getNsid(card);
         const discard = DealDiscard.getDiscard(nsid);
-        discard === card;
+        return discard === card;
     }
 
     /**

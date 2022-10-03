@@ -4,6 +4,10 @@
  */
 
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
+const { Broadcast } = require("../../lib/broadcast");
+const { ColorUtil } = require("../../lib/color/color-util");
+const { StrategyCardBorder } = require("./strategy-card-border");
 const {
     GameObject,
     UIElement,
@@ -11,9 +15,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { StrategyCardBorder } = require("./strategy-card-border");
-const { Broadcast } = require("../../lib/broadcast");
-const locale = require("../../lib/locale");
+
 let openSelections = {};
 let playerUis = {};
 
@@ -126,6 +128,7 @@ class RegisterStrategyCardUI {
     }
 
     setColor(value) {
+        ColorUtil.validate(value);
         this._color = value;
         return this;
     }

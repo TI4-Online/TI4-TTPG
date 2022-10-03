@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { globalEvents, world } = require("../../wrapper/api");
+const { ColorUtil } = require("../color/color-util");
 
 let _brightness = 1.0;
 
@@ -37,6 +38,7 @@ class SystemTileBrightness {
         assert(ObjectNamespace.isSystemTile(systemTileObj));
         const c = _brightness;
         const tint = [c, c, c, 1];
+        ColorUtil.validate(tint);
         systemTileObj.setSecondaryColor(tint);
     }
 }

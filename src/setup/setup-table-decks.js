@@ -176,8 +176,8 @@ class SetupTableDecks extends AbstractSetup {
             pos = new Vector(deckData.pos.x, deckData.pos.y, deckData.pos.z);
             rot = new Rotator(0, deckData.yaw, 0);
             if (deckData.anchor) {
-                pos = this.anchorPositionToWorld(deckData.anchor, pos);
-                rot = this.anchorRotationToWorld(deckData.anchor, rot);
+                pos = TableLayout.anchorPositionToWorld(deckData.anchor, pos);
+                rot = TableLayout.anchorRotationToWorld(deckData.anchor, rot);
             }
             pos.z = world.getTableHeight() + deckData.pos.z;
         }

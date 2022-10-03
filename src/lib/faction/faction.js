@@ -16,6 +16,10 @@ globalEvents.onPlayerSwitchedSlots.add((player, index) => {
 globalEvents.TI4.onFactionChanged.add((deskPlayerSlot, player) => {
     _playerSlotToFaction = false; // invalidate cache
 });
+globalEvents.TI4.onGameSetup.add((player) => {
+    _nsidNameToFaction = false; // setup may have changed PoK, Codex 3, etc.
+    _playerSlotToFaction = false; // invalidate cache
+});
 
 function _maybeInit() {
     if (!_nsidNameToFaction) {
@@ -33,6 +37,9 @@ function _maybeInit() {
                 }
                 assert(newFactionAttrs);
                 factionAttrs = lodash.merge(newFactionAttrs, factionAttrs);
+            }
+            if (factionAttrs.abstract) {
+                return; // reserved for merging into others
             }
             const faction = new Faction(factionAttrs);
             _nsidNameToFaction[faction.raw.faction] = faction;

@@ -51,10 +51,16 @@ class SetupSecretHolders extends AbstractSetup {
 
         // Move to anchor.
         positions = positions.map((pos) => {
-            return this.anchorPositionToWorld(TableLayout.anchor.score, pos);
+            return TableLayout.anchorPositionToWorld(
+                TableLayout.anchor.score,
+                pos
+            );
         });
         rotations = rotations.map((rot) => {
-            return this.anchorRotationToWorld(TableLayout.anchor.score, rot);
+            return TableLayout.anchorRotationToWorld(
+                TableLayout.anchor.score,
+                rot
+            );
         });
 
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {

@@ -36,8 +36,8 @@ class SetupTableBoxes extends AbstractSetup {
             let pos = new Vector(boxData.pos.x, boxData.pos.y, 0);
             let rot = new Rotator(0, boxData.yaw, 0);
             if (boxData.anchor) {
-                pos = this.anchorPositionToWorld(boxData.anchor, pos);
-                rot = this.anchorRotationToWorld(boxData.anchor, rot);
+                pos = TableLayout.anchorPositionToWorld(boxData.anchor, pos);
+                rot = TableLayout.anchorRotationToWorld(boxData.anchor, rot);
             }
             pos.z = world.getTableHeight() + boxData.pos.z;
 

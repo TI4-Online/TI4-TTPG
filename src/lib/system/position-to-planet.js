@@ -5,7 +5,7 @@ const { Color, Vector, world } = require("../../wrapper/api");
 // TODO: better Clan of Saar home system
 
 // constants used to draw debug spheres
-const DEBUG_COLOR = new Color(255, 0, 255);
+const DEBUG_COLOR = new Color(1, 0, 1);
 const DEBUG_DURATION = 10;
 const DEBUG_THICKNESS = 0.1;
 const TILE_HEIGHT = 0.253;

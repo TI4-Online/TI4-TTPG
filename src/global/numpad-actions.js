@@ -64,6 +64,8 @@ globalEvents.onScriptButtonPressed.add((player, index) => {
             lookAt(pos, yaw, 20, player);
         }
     } else if (index === 6) {
+        // This view is tight on map for my screen, but varies on other screens.
+        // Feature request out to TTPG to "view rect", currently not possible?
         const pos = new Vector(0, 0, 0);
         const yaw = 0;
         lookAt(pos, yaw, 110, player);

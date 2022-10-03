@@ -61,6 +61,20 @@ it("static getByNsidName", () => {
     assert.equal(faction.raw.faction, "arborec");
 });
 
+it("static getByNsidName (keleres)", () => {
+    let faction = Faction.getByNsidName("keleres_argent");
+    assert.equal(faction.raw.faction, "keleres_argent");
+
+    faction = Faction.getByNsidName("keleres_mentak");
+    assert.equal(faction.raw.faction, "keleres_mentak");
+
+    faction = Faction.getByNsidName("keleres_xxcha");
+    assert.equal(faction.raw.faction, "keleres_xxcha");
+
+    faction = Faction.getByNsidName("keleres");
+    assert.equal(faction, undefined);
+});
+
 it("static getByPlayerSlot", () => {
     world.__clear();
     const desk = world.TI4.getAllPlayerDesks()[0];

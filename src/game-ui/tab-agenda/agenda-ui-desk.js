@@ -138,7 +138,7 @@ class AgendaUiDesk extends Border {
             const available = deskIndexToAvailableVotes[index] || 0;
             const text = new Text()
                 .setFontSize(fontSize)
-                .setTextColor(desk.color)
+                .setTextColor(desk.plasticColor)
                 .setText(available);
             panel.addChild(text);
         });
@@ -346,7 +346,7 @@ class AgendaUiDesk extends Border {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
                 const voteText = new Text()
                     .setFontSize(CONFIG.fontSize)
-                    .setTextColor(playerDesk.color)
+                    .setTextColor(playerDesk.plasticColor)
                     .setText("");
                 votePanel.addChild(voteText);
                 voteTexts.push(voteText);
@@ -388,7 +388,7 @@ class AgendaUiDesk extends Border {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
                 const predictionText = new Text()
                     .setFontSize(CONFIG.fontSize)
-                    .setTextColor(playerDesk.color)
+                    .setTextColor(playerDesk.plasticColor)
                     .setText("");
                 predictionPanel.addChild(predictionText);
                 predictionTexts.push(predictionText);

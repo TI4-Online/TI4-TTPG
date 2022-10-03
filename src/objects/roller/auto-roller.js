@@ -17,6 +17,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { AutoRollerArena } = require("./auto-roller-arena");
 
 /**
  * Add this script to a TTPG object to create the auto-roller.
@@ -54,6 +55,7 @@ class AutoRoller {
         const newTurnHandler = () => {
             assert(this instanceof AutoRoller);
             this.getUI().resetAwaitingSystemActivation();
+            AutoRollerArena.warpOut();
         };
         globalEvents.TI4.onTurnChanged.add(newTurnHandler);
 
@@ -71,7 +73,6 @@ class AutoRoller {
             uiElement.widget = new CollapsiblePanel().setChild(this._ui);
             uiElement.anchorY = 0;
             gameObject.addUI(uiElement);
-            this._ui.setOwningObjectForUpdate(gameObject, uiElement);
         }
     }
 

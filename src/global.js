@@ -142,6 +142,7 @@ const { Homebrew } = require("./lib/homebrew/homebrew");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
 const { PerfStats } = require("./lib/perf/perf-stats");
+const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -168,6 +169,9 @@ world.TI4 = {
     },
     getAllSystemTileObjects: () => {
         return System.getAllSystemTileObjects();
+    },
+    getAllUnitPlastics: () => {
+        return UnitPlastic.getAll();
     },
 
     getClosestPlayerDesk: (pos) => {

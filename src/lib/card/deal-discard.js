@@ -122,12 +122,15 @@ class DealDiscard {
             return;
         }
         const snapPoints = parent.getAllSnapPoints();
-        const index = getDiscard
+        let index = getDiscard
             ? deckData.discardSnapPointIndex
             : deckData.deckSnapPointIndex;
+        if (getDiscard && index === -1) {
+            index = deckData.deckSnapPointIndex;
+        }
         const snapPoint = snapPoints[index];
 
-        if (index == -1) {
+        if (index === -1) {
             return; // asked for the discard pile when there is no discard pile
         }
         if (!snapPoint) {
@@ -160,6 +163,7 @@ class DealDiscard {
                 break;
             }
         }
+
         return deck;
     }
 
