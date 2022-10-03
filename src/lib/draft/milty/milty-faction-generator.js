@@ -55,11 +55,17 @@ class MiltyFactionGenerator {
             "keleres_xxcha",
         ];
 
-        // Use a generic Keleres.
+        // Remove the specific Keleres flavors.  If present, inject a generic
+        // one for selection purposes.  (Might not be present if not using Codex 3.)
+        let haveKeleres = false;
         nsidNames = nsidNames.filter((nsidName) => {
-            return !keleresFlavors.includes(nsidName);
+            const isKeleres = keleresFlavors.includes(nsidName);
+            haveKeleres = haveKeleres || isKeleres;
+            return !isKeleres;
         });
-        nsidNames.push("keleres");
+        if (haveKeleres) {
+            nsidNames.push("keleres");
+        }
 
         nsidNames = Shuffle.shuffle(nsidNames);
 

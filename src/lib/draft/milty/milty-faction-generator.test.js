@@ -9,6 +9,23 @@ it("generate", () => {
     assert.equal(factions.length, factionGenerator.getCount());
 });
 
+it("keleres", () => {
+    const factionGenerator = new MiltyFactionGenerator().setCount(
+        MiltyFactionGenerator.maxCount
+    );
+
+    const maxIterations = 1000;
+    for (let i = 0; i < maxIterations; i++) {
+        const factions = factionGenerator.generate();
+        for (const faction of factions) {
+            if (faction.nsidName.startsWith("keleres_")) {
+                return;
+            }
+        }
+    }
+    throw new Error("not generating Keleres");
+});
+
 // it("keleres frequency", () => {
 //     const factionGenerator = new MiltyFactionGenerator().setCount(8);
 
