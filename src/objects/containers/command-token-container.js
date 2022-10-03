@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const TriggerableMulticastDelegate = require("../../lib/triggerable-multicast-delegate");
 const { COMMAND_TOKENS } = require("../../setup/faction/setup-faction-tokens");
 const {
     Border,
@@ -67,6 +68,14 @@ class Reporter {
         this._container.onRemoved.add((container, object) =>
             this.countRemoved(container, object)
         );
+
+        // When a script inserts the events do not fire.  Offer an event-like
+        // such scripts can call.  For now only do this for inserts as players
+        // can drop tokens in graveyards instead of bag.
+        this._container.__notifyInserted = new TriggerableMulticastDelegate();
+        this._container.__notifyInserted.add((container, objects) => {
+            this.countInserted(container, objects);
+        });
 
         this._insertedCounter = 0;
         this._firstInserted = false;

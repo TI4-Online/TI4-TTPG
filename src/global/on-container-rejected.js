@@ -117,6 +117,12 @@ function rejectToMatchingBag(rejectedObj) {
         }
         // Found a home!  Send item there.
         obj.addObjects([rejectedObj], 0, true);
+
+        // Special hook for Command Token bag insert reporting.
+        // Others may use it as well.
+        if (obj.__notifyInserted) {
+            obj.__notifyInserted.trigger(obj, [rejectedObj]);
+        }
         return true;
     }
     return false;
