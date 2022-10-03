@@ -90,6 +90,34 @@ it("wormholes", () => {
     assert.equal(system.wormholes[0], "alpha");
 });
 
+it("red/blue", () => {
+    let system;
+
+    system = System.getByTileNumber(47); // empty
+    assert(system.red);
+    assert(!system.blue);
+
+    system = System.getByTileNumber(26); // lodor
+    assert(!system.red);
+    assert(system.blue);
+
+    system = System.getByTileNumber(67); // cormund (rift)
+    assert(system.red);
+    assert(!system.blue);
+
+    system = System.getByTileNumber(18); // mecatol
+    assert(!system.red);
+    assert(!system.blue);
+
+    system = System.getByTileNumber(1); // home
+    assert(!system.red);
+    assert(!system.blue);
+
+    system = System.getByTileNumber(90); // hyperlane
+    assert(!system.red);
+    assert(!system.blue);
+});
+
 it("summarize", () => {
     let tiles, summary;
 
