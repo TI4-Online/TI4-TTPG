@@ -140,7 +140,9 @@ class FogOfWarZone {
 
         systemTileObj.onDestroyed.add(() => {
             this._zone.destroy();
-            delete _hexToFogOfWarZone[this._hex];
+            if (_hexToFogOfWarZone && _hexToFogOfWarZone[this._hex]) {
+                delete _hexToFogOfWarZone[this._hex];
+            }
         });
 
         const updateStuff = () => {
