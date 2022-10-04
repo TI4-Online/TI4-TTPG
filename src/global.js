@@ -167,6 +167,9 @@ world.TI4 = {
     getAllPlayerDesks: () => {
         return PlayerDesk.getAllPlayerDesks();
     },
+    getAllSystems: () => {
+        return System.getAllSystems();
+    },
     getAllSystemTileObjects: () => {
         return System.getAllSystemTileObjects();
     },

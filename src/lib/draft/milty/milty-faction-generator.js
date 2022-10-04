@@ -31,10 +31,13 @@ class MiltyFactionGenerator {
         return this._count;
     }
 
-    setCount(value) {
+    setCount(value, overrideChecks) {
         assert(typeof value === "number");
-        assert(value >= MiltyFactionGenerator.minCount);
-        assert(value <= MiltyFactionGenerator.maxCount);
+        if (!overrideChecks) {
+            // Some consumers might want counts outside the standard range
+            assert(value >= MiltyFactionGenerator.minCount);
+            assert(value <= MiltyFactionGenerator.maxCount);
+        }
         this._count = value;
         return this;
     }

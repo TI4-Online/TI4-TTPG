@@ -302,6 +302,8 @@
     "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.faction_count": "Faction count",
+    "ui.draft.red_count": "Red system count",
+    "ui.draft.blue_count": "Blue system count",
     "ui.draft.extra_legendaries_and_wormholes": "Extra legendaries, wormholes",
     "ui.draft.slice_label": "Slice {index}",
     "ui.draft.category.slice": "slice",
