@@ -133,6 +133,3 @@ class TabBagDraftUI extends VerticalBox {
 }
 
 module.exports = { TabBagDraftUI };
-const {
-    MiltySliceGenerator,
-} = require("../../../../lib/draft/milty/milty-slice-generator");
