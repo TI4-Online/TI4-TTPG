@@ -70,16 +70,10 @@ class FactionToken {
         const gather = CardUtil.gatherCards(filterNsid);
         let card = gather[0];
         if (card) {
-            console.log(
-                `FactionToken.findOrSpawnFactionReference found ${nsidName}`
-            );
             return card;
         }
 
         // Spawn a new one.
-        console.log(
-            `FactionToken.findOrSpawnFactionReference spawning ${nsidName}`
-        );
         const pos = new Vector(0, 0, world.getTableHeight() + 10);
         const rot = new Rotator(0, 0, 0);
         const nsidPrefix = "card.faction_reference";

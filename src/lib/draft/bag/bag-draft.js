@@ -5,13 +5,36 @@ const { Shuffle } = require("../../shuffle");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const {
     GameObject,
+    Rotator,
     Vector,
     globalEvents,
     world,
 } = require("../../../wrapper/api");
-const { Rotator } = require("@tabletop-playground/api");
 
 class BagDraft {
+    static draftFactions(count) {
+        let factions = new MiltyFactionGenerator()
+            .setCount(
+                count,
+                true // override value bounds checking
+            )
+            .generate();
+        factions = Shuffle.shuffle(factions);
+        assert(factions.length === count);
+        return factions;
+    }
+
+    static draftSystems(count, isRed) {
+        let systems = world.TI4.getAllSystems();
+        systems = systems.filter((system) =>
+            isRed ? system.red : system.blue
+        );
+        systems = Shuffle.shuffle(systems);
+        assert(systems.length >= count);
+        systems = systems.slice(0, count);
+        assert(systems.length === count);
+        return systems;
+    }
     /**
      * Create per-player bags.
      *
@@ -87,18 +110,17 @@ class BagDraft {
         this._bags = BagDraft.createEmptyBags();
 
         // Get the available systems and factions.
-        let systems = world.TI4.getAllSystems();
-        systems = Shuffle.shuffle(systems);
-        const reds = systems.filter((system) => system.red);
-        const blues = systems.filter((system) => system.blue);
-        let factions = new MiltyFactionGenerator()
-            .setCount(
-                this._bags.length * this._factionCount,
-                true // override value bounds checking
-            )
-            .generate();
-        factions = Shuffle.shuffle(factions);
-
+        const reds = BagDraft.draftSystems(
+            this._bags.length * this._redCount,
+            true
+        );
+        const blues = BagDraft.draftSystems(
+            this._bags.length * this._blueCount,
+            false
+        );
+        const factions = BagDraft.draftFactions(
+            this._bags.length * this._factionCount
+        );
         console.log(
             `BagDraft.start: |reds|=${reds.length} |blues|=${blues.length} |factions|=${factions.length}`
         );
