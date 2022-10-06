@@ -30,6 +30,7 @@ const {
     TabSimpleStats,
 } = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
+const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
@@ -272,6 +273,20 @@ class GameUI {
                 tabStats.updateUI();
             });
         statsFolder.addChild(tabStatsEntry);
+
+        const tabWhispersEntry = new NavEntry()
+            .setName(locale("nav.stats.whispers"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                const tabWhispers = new TabWhispers();
+                navEntry.__tabWhispers = tabWhispers; // store reference to release
+                return tabWhispers.getUI();
+            })
+            .setPeriodicUpdateWidget((navEntry) => {
+                const tabWhispers = navEntry.__tabWhispers;
+                assert(tabWhispers);
+                tabWhispers.updateUI();
+            });
+        statsFolder.addChild(tabWhispersEntry);
 
         return statsFolder;
     }
