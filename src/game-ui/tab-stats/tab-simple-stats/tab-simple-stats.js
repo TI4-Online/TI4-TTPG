@@ -1,23 +1,23 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { world } = require("../../wrapper/api");
-const { TabStatsUI } = require("./tab-stats-ui");
+const assert = require("../../../wrapper/assert-wrapper");
+const { world } = require("../../../wrapper/api");
+const { TabSimpleStatsUI } = require("./tab-simple-stats-ui");
 
 const FILL_TASKS = [
-    require("../../lib/game-data/updator-player-active"),
-    require("../../lib/game-data/updator-player-command-tokens"),
-    require("../../lib/game-data/updator-player-name"),
-    require("../../lib/game-data/updator-player-faction-name"),
-    require("../../lib/game-data/updator-player-planet-totals"),
-    require("../../lib/game-data/updator-player-score"),
-    require("../../lib/game-data/updator-player-strategy-cards"),
-    require("../../lib/game-data/updator-player-tgs"),
-    require("../../lib/game-data/updator-timestamp"),
+    require("../../../lib/game-data/updator-player-active"),
+    require("../../../lib/game-data/updator-player-command-tokens"),
+    require("../../../lib/game-data/updator-player-name"),
+    require("../../../lib/game-data/updator-player-faction-name"),
+    require("../../../lib/game-data/updator-player-planet-totals"),
+    require("../../../lib/game-data/updator-player-score"),
+    require("../../../lib/game-data/updator-player-strategy-cards"),
+    require("../../../lib/game-data/updator-player-tgs"),
+    require("../../../lib/game-data/updator-timestamp"),
 ];
 
 /**
  * Display score, strategy card pick (and if used).  Display token counts, res/inf, etc.
  */
-class TabStats {
+class TabSimpleStats {
     static getPlayerDataAsync(callback) {
         assert(typeof callback === "function");
 
@@ -53,28 +53,28 @@ class TabStats {
     }
 
     constructor() {
-        this._tabStatsUI = undefined;
+        this._tabSimpleStatsUI = undefined;
     }
 
     getUI() {
-        this._tabStatsUI = new TabStatsUI();
+        this._tabSimpleStatsUI = new TabSimpleStatsUI();
 
         // Do a sync update right away.  Sync does a good deal of
         // work, but still very performant.
-        const data = TabStats.getPlayerDataSync();
-        this._tabStatsUI.update(data);
+        const data = TabSimpleStats.getPlayerDataSync();
+        this._tabSimpleStatsUI.update(data);
 
-        return this._tabStatsUI;
+        return this._tabSimpleStatsUI;
     }
 
     updateUI() {
         const onDataCallback = (data) => {
-            if (this._tabStatsUI) {
-                this._tabStatsUI.update(data);
+            if (this._tabSimpleStatsUI) {
+                this._tabSimpleStatsUI.update(data);
             }
         };
-        TabStats.getPlayerDataAsync(onDataCallback);
+        TabSimpleStats.getPlayerDataAsync(onDataCallback);
     }
 }
 
-module.exports = { TabStats };
+module.exports = { TabSimpleStats };

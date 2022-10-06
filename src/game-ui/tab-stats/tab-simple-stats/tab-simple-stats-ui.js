@@ -1,6 +1,6 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { ColorUtil } = require("../../lib/color/color-util");
-const CONFIG = require("../game-ui-config");
+const assert = require("../../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../../../lib/color/color-util");
+const CONFIG = require("../../game-ui-config");
 const {
     Border,
     HorizontalAlignment,
@@ -10,7 +10,7 @@ const {
     VerticalAlignment,
     VerticalBox,
     world,
-} = require("../../wrapper/api");
+} = require("../../../wrapper/api");
 
 // Background signals if active
 // Player name
@@ -152,7 +152,7 @@ class PlayerStatsUI extends Border {
     }
 }
 
-class TabStatsUI extends VerticalBox {
+class TabSimpleStatsUI extends VerticalBox {
     constructor() {
         super();
         this.setChildDistance(CONFIG.spacing);
@@ -202,4 +202,4 @@ class TabStatsUI extends VerticalBox {
     }
 }
 
-module.exports = { TabStatsUI };
+module.exports = { TabSimpleStatsUI };

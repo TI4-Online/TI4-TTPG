@@ -26,7 +26,9 @@ const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
-const { TabStats } = require("./tab-stats/tab-stats");
+const {
+    TabSimpleStats,
+} = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
 const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
@@ -260,7 +262,7 @@ class GameUI {
         const tabStatsEntry = new NavEntry()
             .setName(locale("nav.stats.simple"))
             .setWidgetFactory((navPanel, navEntry) => {
-                const tabStats = new TabStats();
+                const tabStats = new TabSimpleStats();
                 navEntry.__tabStats = tabStats; // store reference to release
                 return tabStats.getUI();
             })
