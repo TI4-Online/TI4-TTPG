@@ -1,6 +1,6 @@
 require("../../global"); // register world.TI4, etc
 const assert = require("assert");
-const { WhisperPair } = require("./whisper-history");
+const { WhisperHistory, WhisperPair } = require("./whisper-history");
 const { MockBorder, MockPlayer, globalEvents } = require("../../wrapper/api");
 
 it("WhisperPair constructor", () => {
@@ -28,8 +28,9 @@ it("prune", () => {
     pair._history[0].timestamp = 1;
 
     // Timestamp is definitely older than history size.
+    assert.equal(pair._history.length, 1);
     pair.prune();
-    assert.equal(pair.newestTimestamp(), 0);
+    assert.equal(pair._history.length, 0);
 });
 
 it("sort", () => {
@@ -54,7 +55,7 @@ it("_bucketize", () => {
     pair.add(src, dst, "foo");
     pair.add(dst, src, "bar");
     const buckets = pair._bucketize(2);
-    assert.deepEqual(buckets, [[], [true, false]]);
+    assert.deepEqual(buckets, [[true, false], []]);
 });
 
 it("summarizeToBorders", () => {
@@ -77,4 +78,15 @@ it("onWhisper", () => {
     const pair = WhisperPair.findOrCreate(src, dst);
     const now = WhisperPair.timestamp();
     assert(Math.abs(pair.newestTimestamp() - now) < 0.01);
+});
+
+it("getAllInUpdateOrder", () => {
+    // In the mock environment, we can trigger whispers.
+    const src = new MockPlayer({ slot: 1 });
+    const dst = new MockPlayer({ slot: 2 });
+    globalEvents.onWhisper.trigger(src, dst, "foo");
+
+    const whisperPairs = WhisperHistory.getAllInUpdateOrder();
+    assert(Array.isArray(whisperPairs));
+    assert.equal(whisperPairs.length, 1);
 });

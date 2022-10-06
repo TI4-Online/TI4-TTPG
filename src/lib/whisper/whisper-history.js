@@ -25,6 +25,7 @@ class WhisperPair {
     static sort(whisperPairs) {
         assert(Array.isArray(whisperPairs));
         return whisperPairs.sort(
+            // Newer entries at front of list.
             (a, b) => a.newestTimestamp() - b.newestTimestamp()
         );
     }
@@ -38,6 +39,7 @@ class WhisperPair {
             whisperPair = new WhisperPair(src, dst);
             _keyToWhisperPair[key] = whisperPair;
         }
+        assert(whisperPair instanceof WhisperPair);
         return whisperPair;
     }
 
@@ -48,16 +50,14 @@ class WhisperPair {
         this._playerSlotA = playerA.getSlot();
         this._playerSlotB = playerB.getSlot();
         this._history = [];
+        this._lastAddTimestamp = 0; // preserve value even after prune
     }
 
     prune() {
         const now = WhisperPair.timestamp();
         const limit = now - WINDOW_SIZE_SECONDS;
-        while (this._history.length > 0) {
-            const peek = this._history[0];
-            if (peek.timestamp < limit) {
-                this._history.shift();
-            }
+        while (this._history.length > 0 && this._history[0].timestamp < limit) {
+            this._history.shift();
         }
         return this;
     }
@@ -73,22 +73,26 @@ class WhisperPair {
         assert(srcSlot === this._playerSlotA || srcSlot === this._playerSlotB);
         assert(dstSlot === this._playerSlotA || dstSlot === this._playerSlotB);
 
+        const timestamp = WhisperPair.timestamp();
         const forward = srcSlot === this._playerSlotA; // src->dst or dst->src
-        this._history.push({
-            timestamp: WhisperPair.timestamp(),
+        const entry = {
+            timestamp,
             forward,
-        });
+        };
+
+        assert(Array.isArray(this._history));
+        this._history.push(entry);
+        this._lastAddTimestamp = timestamp;
         return this;
     }
 
     newestTimestamp() {
-        const last = this._history[this._history.length - 1];
-        return last ? last.timestamp : 0;
+        return this._lastAddTimestamp;
     }
 
     /**
      * Represent forward and reverse messages (preserving order) in buckets.
-     * Buckets are in time order, the last bucket being newest.
+     * Buckets are in reverse time order, the first bucket being newest.
      *
      * @param {number} numBuckets
      * @return {Array.{boolean}}
@@ -106,10 +110,9 @@ class WhisperPair {
             if (age > WINDOW_SIZE_SECONDS || age < 0) {
                 continue;
             }
-            const bucketIndex =
-                buckets.length -
-                1 -
-                Math.round((age * (buckets.length - 1)) / WINDOW_SIZE_SECONDS);
+            const bucketIndex = Math.round(
+                (age * (buckets.length - 1)) / WINDOW_SIZE_SECONDS
+            );
             const bucket = buckets[bucketIndex];
             assert(bucket);
             assert(typeof entry.forward === "boolean");
@@ -155,17 +158,28 @@ class WhisperPair {
     }
 }
 
+class WhisperHistory {
+    constructor() {
+        throw new Error("static only");
+    }
+
+    static getAllInUpdateOrder() {
+        const whisperPairs = Object.values(_keyToWhisperPair);
+        whisperPairs.forEach((whisperPair) => {
+            whisperPair.prune();
+        });
+        return WhisperPair.sort(whisperPairs);
+    }
+}
+
 globalEvents.onWhisper.add((src, dst, msg) => {
     assert(src instanceof Player);
     assert(dst instanceof Player);
     assert(typeof msg === "string");
-
-    const key = WhisperPair.generateKey(src, dst);
-    console.log(`WhisperHistory onWhisper key="${key}"`);
 
     WhisperPair.findOrCreate(src, dst)
         .prune() // trim old
         .add(src, dst, msg);
 });
 
-module.exports = { WhisperPair };
+module.exports = { WhisperHistory, WhisperPair };
