@@ -271,7 +271,11 @@ class GameUI {
                 const tabStats = navEntry.__tabStats;
                 assert(tabStats);
                 tabStats.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabStats = undefined; // release for GC
             });
+
         statsFolder.addChild(tabStatsEntry);
 
         const tabWhispersEntry = new NavEntry()
@@ -285,6 +289,9 @@ class GameUI {
                 const tabWhispers = navEntry.__tabWhispers;
                 assert(tabWhispers);
                 tabWhispers.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabWhispers = undefined; // release for GC
             });
         statsFolder.addChild(tabWhispersEntry);
 
