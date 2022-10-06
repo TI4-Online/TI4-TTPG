@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Player, globalEvents } = require("../../wrapper/api");
+const { Border, Player, globalEvents } = require("../../wrapper/api");
 
 const WINDOW_SIZE_SECONDS = 10 * 60;
+
+const _keyToWhisperPair = {};
 
 class WhisperPair {
     static timestamp() {
@@ -27,6 +29,18 @@ class WhisperPair {
         );
     }
 
+    static findOrCreate(src, dst) {
+        assert(src instanceof Player);
+        assert(dst instanceof Player);
+        const key = WhisperPair.generateKey(src, dst);
+        let whisperPair = _keyToWhisperPair[key];
+        if (!whisperPair) {
+            whisperPair = new WhisperPair(src, dst);
+            _keyToWhisperPair[key] = whisperPair;
+        }
+        return whisperPair;
+    }
+
     constructor(playerA, playerB) {
         assert(playerA instanceof Player);
         assert(playerB instanceof Player);
@@ -45,6 +59,7 @@ class WhisperPair {
                 this._history.shift();
             }
         }
+        return this;
     }
 
     add(src, dst, msg) {
@@ -63,6 +78,7 @@ class WhisperPair {
             timestamp: WhisperPair.timestamp(),
             forward,
         });
+        return this;
     }
 
     newestTimestamp() {
@@ -102,14 +118,40 @@ class WhisperPair {
         return buckets;
     }
 
-    summarize(strLen) {
-        assert(typeof strLen === "number");
-        assert(strLen > 0);
+    /**
+     * Set Border colors to summarize communications.
+     * Apply color per cell, extend to neighboring cells even if not same time bucket.
+     *
+     * @param {Array.{Border}} arrayOfBorders
+     */
+    summarizeToBorders(arrayOfBorders) {
+        assert(Array.isArray(arrayOfBorders));
+        arrayOfBorders.forEach((border) => {
+            assert(border instanceof Border);
+        });
 
-        const str = new Array(strLen)
-            .fill(0)
-            .map((x) => [" "])
-            .join();
+        const black = [0, 0, 0, 1];
+        const src = [1, 0, 0, 1];
+        const dst = [0, 1, 0, 1];
+
+        arrayOfBorders.forEach((border) => {
+            border.setColor(black);
+        });
+
+        const buckets = this._bucketize(arrayOfBorders.length);
+        let nextBucketIndex = 0;
+        buckets.forEach((bucket, index) => {
+            // Start at the later of [correct bucket] or [next available bucket],
+            // draw communication exchanges in order and run past time window allotment.
+            nextBucketIndex = Math.max(nextBucketIndex, index);
+            bucket.forEach((forward) => {
+                const border = arrayOfBorders[nextBucketIndex++];
+                if (!border) {
+                    return; // ran past end
+                }
+                border.setColor(forward ? src : dst);
+            });
+        });
     }
 }
 
@@ -118,8 +160,12 @@ globalEvents.onWhisper.add((src, dst, msg) => {
     assert(dst instanceof Player);
     assert(typeof msg === "string");
 
-    // XXX TODO
-    console.log("XXX");
+    const key = WhisperPair.generateKey(src, dst);
+    console.log(`WhisperHistory onWhisper key="${key}"`);
+
+    WhisperPair.findOrCreate(src, dst)
+        .prune() // trim old
+        .add(src, dst, msg);
 });
 
 module.exports = { WhisperPair };

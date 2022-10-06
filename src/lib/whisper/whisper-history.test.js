@@ -1,7 +1,7 @@
 require("../../global"); // register world.TI4, etc
 const assert = require("assert");
 const { WhisperPair } = require("./whisper-history");
-const { MockPlayer } = require("../../wrapper/api");
+const { MockBorder, MockPlayer, globalEvents } = require("../../wrapper/api");
 
 it("WhisperPair constructor", () => {
     const src = new MockPlayer({ slot: 1 });
@@ -55,4 +55,26 @@ it("_bucketize", () => {
     pair.add(dst, src, "bar");
     const buckets = pair._bucketize(2);
     assert.deepEqual(buckets, [[], [true, false]]);
+});
+
+it("summarizeToBorders", () => {
+    const src = new MockPlayer({ slot: 1 });
+    const dst = new MockPlayer({ slot: 2 });
+    const pair = new WhisperPair(src, dst);
+    pair.add(src, dst, "foo");
+    pair.add(dst, src, "bar");
+    const borders = [new MockBorder(), new MockBorder()];
+    pair.summarizeToBorders(borders);
+    // For now just check it runs
+});
+
+it("onWhisper", () => {
+    // In the mock environment, we can trigger whispers.
+    const src = new MockPlayer({ slot: 1 });
+    const dst = new MockPlayer({ slot: 2 });
+    globalEvents.onWhisper.trigger(src, dst, "foo");
+
+    const pair = WhisperPair.findOrCreate(src, dst);
+    const now = WhisperPair.timestamp();
+    assert(Math.abs(pair.newestTimestamp() - now) < 0.01);
 });
