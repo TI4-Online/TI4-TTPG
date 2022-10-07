@@ -149,6 +149,9 @@
     "ui.label.invasion_oneline": "Invasion —>",
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
+    "ui.whisper.newest": "New",
+    "ui.whisper.who_sent": "Whispers",
+    "ui.whisper.oldest": "Old",
 
     "ui.strategy.instructions": "Player uses their Strategy Card. Click the button on the back of the card.",
 
@@ -221,6 +224,7 @@
     "nav.map.fog": "Fog of War",
     "nav.stats": "Stats",
     "nav.stats.simple": "Simple Stats",
+    "nav.stats.whispers": "Whispers",
 
     "ui.tab.root": "Root",
     "ui.tab.help": "Help",
@@ -302,6 +306,8 @@
     "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.faction_count": "Faction count",
+    "ui.draft.red_count": "Red system count",
+    "ui.draft.blue_count": "Blue system count",
     "ui.draft.extra_legendaries_and_wormholes": "Extra legendaries, wormholes",
     "ui.draft.slice_label": "Slice {index}",
     "ui.draft.category.slice": "slice",

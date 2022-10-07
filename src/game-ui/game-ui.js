@@ -26,8 +26,11 @@ const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
 const { TabMap } = require("./tab-map/tab-map");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
-const { TabStats } = require("./tab-stats/tab-stats");
+const {
+    TabSimpleStats,
+} = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
+const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
@@ -260,7 +263,7 @@ class GameUI {
         const tabStatsEntry = new NavEntry()
             .setName(locale("nav.stats.simple"))
             .setWidgetFactory((navPanel, navEntry) => {
-                const tabStats = new TabStats();
+                const tabStats = new TabSimpleStats();
                 navEntry.__tabStats = tabStats; // store reference to release
                 return tabStats.getUI();
             })
@@ -268,8 +271,29 @@ class GameUI {
                 const tabStats = navEntry.__tabStats;
                 assert(tabStats);
                 tabStats.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabStats = undefined; // release for GC
             });
+
         statsFolder.addChild(tabStatsEntry);
+
+        const tabWhispersEntry = new NavEntry()
+            .setName(locale("nav.stats.whispers"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                const tabWhispers = new TabWhispers();
+                navEntry.__tabWhispers = tabWhispers; // store reference to release
+                return tabWhispers.getUI();
+            })
+            .setPeriodicUpdateWidget((navEntry) => {
+                const tabWhispers = navEntry.__tabWhispers;
+                assert(tabWhispers);
+                tabWhispers.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabWhispers = undefined; // release for GC
+            });
+        statsFolder.addChild(tabWhispersEntry);
 
         return statsFolder;
     }

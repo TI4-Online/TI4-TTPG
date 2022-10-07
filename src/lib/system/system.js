@@ -190,6 +190,11 @@ class Planet {
  * System tile.  May change over time due to attachments, etc.
  */
 class System {
+    static getAllSystems() {
+        _maybeInit();
+        return Object.values(_tileToSystem);
+    }
+
     /**
      * Retrieve the system object.  Do not use the contructor directly,
      * because attachements, etc, modify the shared instance.
@@ -427,6 +432,21 @@ class System {
         if (systemAttrs.traits) {
             this._traits.push(...systemAttrs.traits);
         }
+
+        // Compute this early, before Mirage or other things might mutate the system.
+        this._isRed =
+            (this._planets.length === 0 || this._anomalies.length > 0) &&
+            this._attrs.tile > 0 &&
+            this._attrs.tile !== 18 &&
+            !this._attrs.home &&
+            !this._attrs.hyperlane;
+        this._isBlue =
+            this._planets.length > 0 &&
+            this._anomalies.length === 0 &&
+            this._attrs.tile > 0 &&
+            this._attrs.tile !== 18 &&
+            !this._attrs.home &&
+            !this._attrs.hyperlane;
     }
 
     get tile() {
@@ -438,7 +458,7 @@ class System {
     }
 
     get hyperlane() {
-        return this.raw.hyperlane;
+        return this._attrs.hyperlane;
     }
 
     get planets() {
@@ -461,6 +481,18 @@ class System {
 
     get raw() {
         return this._attrs;
+    }
+
+    get red() {
+        return this._isRed;
+    }
+
+    get blue() {
+        return this._isBlue;
+    }
+
+    get tileNsid() {
+        return `tile.system:${this.raw.source}/${this.tile}`;
     }
 
     getSummaryStr() {

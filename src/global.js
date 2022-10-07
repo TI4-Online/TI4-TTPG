@@ -121,6 +121,7 @@ globalEvents.onPlayerJoined.add((player) => {
 // Some naughty scripts register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
+require("./lib/whisper/whisper-history");
 
 if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
@@ -166,6 +167,9 @@ world.TI4 = {
     },
     getAllPlayerDesks: () => {
         return PlayerDesk.getAllPlayerDesks();
+    },
+    getAllSystems: () => {
+        return System.getAllSystems();
     },
     getAllSystemTileObjects: () => {
         return System.getAllSystemTileObjects();

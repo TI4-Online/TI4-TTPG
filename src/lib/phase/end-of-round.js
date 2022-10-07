@@ -276,7 +276,7 @@ class EndStatusPhase {
             true
         );
         if (politicalStability) {
-            const playerName = world.getPlayerBySlot(desk.playerSlot).getName();
+            const playerName = world.TI4.getNameByPlayerSlot(desk.playerSlot);
             const nsid = ObjectNamespace.getNsid(strategyCardObj);
             const strategyCardName = nsid.split("/").slice(-1)[0].split(".")[0];
             const strategyCard = locale(
@@ -288,7 +288,6 @@ class EndStatusPhase {
                     strategyCard,
                 })
             );
-            DealDiscard.discard(politicalStability);
             return;
         }
 

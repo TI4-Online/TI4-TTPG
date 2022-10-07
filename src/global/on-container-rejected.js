@@ -130,7 +130,6 @@ function rejectToMatchingBag(rejectedObj) {
 
 /**
  * Handler for globalEvents.TI4.onContainerRejected
- * For the moment, just remove rejected objects.
  */
 globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
     for (let i = 0; i < rejectedObjs.length; i++) {

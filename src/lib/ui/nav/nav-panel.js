@@ -104,10 +104,11 @@ class NavPanel extends LayoutBox {
     setCurrentNavEntry(navEntry) {
         assert(navEntry);
 
+        // Release the current entry.
         if (this._currentNavEntry) {
             this._currentNavEntry.destroyWidget(this._currentNavEntry);
+            this._currentNavEntry = undefined;
         }
-        this._currentNavEntry = navEntry;
 
         // Get the path, stripping off the root entry (root is a dedicated button).
         const pathEntries = navEntry.getPath();
@@ -148,6 +149,11 @@ class NavPanel extends LayoutBox {
         const widget = navEntry.createWidget(this);
         assert(widget && widget instanceof Widget);
         this._currentNavEntryBox.setChild(widget);
+
+        // If we got this far (no erroring out), remember the entry.
+        // This is useful because it prevents periodic updates from trying
+        // to apply to a bad instance.
+        this._currentNavEntry = navEntry;
 
         return this;
     }
