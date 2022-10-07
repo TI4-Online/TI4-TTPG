@@ -1,5 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Border, Player, globalEvents } = require("../../wrapper/api");
+const {
+    Border,
+    Player,
+    Text,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 const WINDOW_SIZE_SECONDS = 10 * 60;
 
@@ -13,6 +19,12 @@ class WhisperPair {
     static generateKey(src, dst) {
         assert(src instanceof Player);
         assert(dst instanceof Player);
+
+        const deskA = world.TI4.getPlayerDeskByPlayerSlot(src.getSlot());
+        const deskB = world.TI4.getPlayerDeskByPlayerSlot(dst.getSlot());
+        if (!deskA || !deskB) {
+            return undefined; // require both endpoints be seated
+        }
 
         let a = src.getSlot();
         let b = dst.getSlot();
@@ -34,6 +46,9 @@ class WhisperPair {
         assert(src instanceof Player);
         assert(dst instanceof Player);
         const key = WhisperPair.generateKey(src, dst);
+        if (!key) {
+            return undefined;
+        }
         let whisperPair = _keyToWhisperPair[key];
         if (!whisperPair) {
             whisperPair = new WhisperPair(src, dst);
@@ -93,6 +108,7 @@ class WhisperPair {
     /**
      * Represent forward and reverse messages (preserving order) in buckets.
      * Buckets are in reverse time order, the first bucket being newest.
+     * Entries in buckets are also reverse order, first is newest.
      *
      * @param {number} numBuckets
      * @return {Array.{boolean}}
@@ -102,21 +118,26 @@ class WhisperPair {
         assert(numBuckets > 0);
 
         const buckets = new Array(numBuckets).fill(0).map((x) => []);
+        const bucketDuration = WINDOW_SIZE_SECONDS / buckets.length;
 
         const now = WhisperPair.timestamp();
         for (const entry of this._history) {
             assert(typeof entry.timestamp === "number");
-            const age = now - entry.timestamp;
+            let age = now - entry.timestamp;
             if (age > WINDOW_SIZE_SECONDS || age < 0) {
                 continue;
             }
-            const bucketIndex = Math.round(
+
+            // Discretize age so buckets shift at the same time.
+            age = Math.floor(age / bucketDuration) * bucketDuration;
+
+            const bucketIndex = Math.floor(
                 (age * (buckets.length - 1)) / WINDOW_SIZE_SECONDS
             );
             const bucket = buckets[bucketIndex];
             assert(bucket);
             assert(typeof entry.forward === "boolean");
-            bucket.push(entry.forward);
+            bucket.unshift(entry.forward);
         }
         return buckets;
     }
@@ -127,14 +148,26 @@ class WhisperPair {
      *
      * @param {Array.{Border}} arrayOfBorders
      */
-    summarizeToBorders(arrayOfBorders, black) {
+    summarizeToBorders(labelA, labelB, arrayOfBorders, black) {
+        assert(labelA instanceof Text);
+        assert(labelB instanceof Text);
         assert(Array.isArray(arrayOfBorders));
         arrayOfBorders.forEach((border) => {
             assert(border instanceof Border);
         });
+        assert(black);
 
-        const src = [1, 0, 0, 1];
-        const dst = [0, 1, 0, 1];
+        const deskA = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotA);
+        const deskB = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotB);
+        const nameA = deskA ? deskA.colorName : "?";
+        const nameB = deskB ? deskB.colorName : "?";
+        const colorA = deskA ? deskA.plasticColor : [1, 1, 1, 1];
+        const colorB = deskB ? deskB.plasticColor : [1, 1, 1, 1];
+
+        labelA.setText(nameA);
+        labelA.setTextColor(colorA);
+        labelB.setText(nameB);
+        labelB.setTextColor(colorB);
 
         arrayOfBorders.forEach((border) => {
             border.setColor(black);
@@ -151,7 +184,7 @@ class WhisperPair {
                 if (!border) {
                     return; // ran past end
                 }
-                border.setColor(forward ? src : dst);
+                border.setColor(forward ? colorA : colorB);
             });
         });
     }
@@ -176,9 +209,12 @@ globalEvents.onWhisper.add((src, dst, msg) => {
     assert(dst instanceof Player);
     assert(typeof msg === "string");
 
-    WhisperPair.findOrCreate(src, dst)
-        .prune() // trim old
-        .add(src, dst, msg);
+    const whisperPair = WhisperPair.findOrCreate(src, dst);
+    if (whisperPair) {
+        whisperPair
+            .prune() // trim old
+            .add(src, dst, msg);
+    }
 });
 
 module.exports = { WhisperHistory, WhisperPair };

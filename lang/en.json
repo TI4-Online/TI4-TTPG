@@ -149,6 +149,9 @@
     "ui.label.invasion_oneline": "Invasion —>",
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
+    "ui.whisper.newest": "New",
+    "ui.whisper.who_sent": "Whispers",
+    "ui.whisper.oldest": "Old",
 
     "ui.strategy.instructions": "Player uses their Strategy Card. Click the button on the back of the card.",
 

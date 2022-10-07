@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const { ColorUtil } = require("../../../lib/color/color-util");
 const { WhisperHistory } = require("../../../lib/whisper/whisper-history");
 const CONFIG = require("../../game-ui-config");
@@ -29,21 +30,21 @@ class TabWhispersUI extends VerticalBox {
         const headerWindowleft = new Text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Left)
-            .setText("<newest>");
+            .setText(locale("ui.whisper.newest"));
         const headerWindowCenter = new Text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Center)
-            .setText("<who sent?>");
+            .setText(locale("ui.whisper.who_sent"));
         const headerWindowRight = new Text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Right)
-            .setText("<oldest>");
+            .setText(locale("ui.whisper.oldest"));
 
         const headerLabels = new HorizontalBox();
         const headerWindow = new HorizontalBox()
-            .addChild(headerWindowleft, 0)
+            .addChild(headerWindowleft, 1)
             .addChild(headerWindowCenter, 1)
-            .addChild(headerWindowRight, 0);
+            .addChild(headerWindowRight, 1);
         const header = new HorizontalBox()
             .setChildDistance(CONFIG.spacing * 2)
             .addChild(headerLabels, labelWeight)
@@ -111,12 +112,21 @@ class TabWhispersUI extends VerticalBox {
     update() {
         const whisperPairs = WhisperHistory.getAllInUpdateOrder();
         assert(Array.isArray(whisperPairs));
-        whisperPairs.forEach((whisperPair, index) => {
-            if (index >= this._rows.length) {
-                return; // ran past end
+
+        this._rows.forEach((row, index) => {
+            const { label1, label2, window } = row;
+            label1.setText("-");
+            label2.setText("-");
+            label1.setTextColor([1, 1, 1, 1]);
+            label2.setTextColor([1, 1, 1, 1]);
+            for (const border of window) {
+                border.setColor(BLACK);
             }
-            const { label1, label2, window } = this._rows[index];
-            whisperPair.summarizeToBorders(window, BLACK);
+
+            const whisperPair = whisperPairs[index];
+            if (whisperPair) {
+                whisperPair.summarizeToBorders(label1, label2, window, BLACK);
+            }
         });
     }
 }

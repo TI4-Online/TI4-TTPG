@@ -1,17 +1,26 @@
 require("../../global"); // register world.TI4, etc
 const assert = require("assert");
 const { WhisperHistory, WhisperPair } = require("./whisper-history");
-const { MockBorder, MockPlayer, globalEvents } = require("../../wrapper/api");
+const {
+    MockBorder,
+    MockColor,
+    MockPlayer,
+    MockText,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 it("WhisperPair constructor", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     new WhisperPair(src, dst);
 });
 
 it("add/newestTimestamp", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const pair = new WhisperPair(src, dst);
     const now = WhisperPair.timestamp();
     pair.add(src, dst, "foo");
@@ -19,8 +28,9 @@ it("add/newestTimestamp", () => {
 });
 
 it("prune", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const pair = new WhisperPair(src, dst);
     pair.add(src, dst, "foo");
 
@@ -34,8 +44,9 @@ it("prune", () => {
 });
 
 it("sort", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const a = new WhisperPair(src, dst);
     const b = new WhisperPair(src, dst);
     a.add(src, dst, "foo", 1);
@@ -49,30 +60,36 @@ it("sort", () => {
 });
 
 it("_bucketize", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const pair = new WhisperPair(src, dst);
     pair.add(src, dst, "foo");
-    pair.add(dst, src, "bar");
+    pair.add(dst, src, "bar"); // new first entry
     const buckets = pair._bucketize(2);
-    assert.deepEqual(buckets, [[true, false], []]);
+    assert.deepEqual(buckets, [[false, true], []]);
 });
 
 it("summarizeToBorders", () => {
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const pair = new WhisperPair(src, dst);
     pair.add(src, dst, "foo");
     pair.add(dst, src, "bar");
+    const labelA = new MockText();
+    const labelB = new MockText();
     const borders = [new MockBorder(), new MockBorder()];
-    pair.summarizeToBorders(borders);
+    const black = new MockColor();
+    pair.summarizeToBorders(labelA, labelB, borders, black);
     // For now just check it runs
 });
 
 it("onWhisper", () => {
     // In the mock environment, we can trigger whispers.
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     globalEvents.onWhisper.trigger(src, dst, "foo");
 
     const pair = WhisperPair.findOrCreate(src, dst);
@@ -82,8 +99,9 @@ it("onWhisper", () => {
 
 it("getAllInUpdateOrder", () => {
     // In the mock environment, we can trigger whispers.
-    const src = new MockPlayer({ slot: 1 });
-    const dst = new MockPlayer({ slot: 2 });
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
     globalEvents.onWhisper.trigger(src, dst, "foo");
 
     const whisperPairs = WhisperHistory.getAllInUpdateOrder();
