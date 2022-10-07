@@ -127,13 +127,12 @@ class WhisperPair {
      *
      * @param {Array.{Border}} arrayOfBorders
      */
-    summarizeToBorders(arrayOfBorders) {
+    summarizeToBorders(arrayOfBorders, black) {
         assert(Array.isArray(arrayOfBorders));
         arrayOfBorders.forEach((border) => {
             assert(border instanceof Border);
         });
 
-        const black = [0, 0, 0, 1];
         const src = [1, 0, 0, 1];
         const dst = [0, 1, 0, 1];
 
