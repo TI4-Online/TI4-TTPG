@@ -20,6 +20,7 @@ const {
     VerticalBox,
     world,
 } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const ANYONE_CAN_CLICK = false;
 const BUTTON_SCALE = 0.75;
@@ -158,29 +159,33 @@ class AgendaUiDesk extends Border {
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
 
-            button.onClicked.add((button, player) => {
-                const scale = 3;
-                const width = 330 * scale;
-                const height = (width * 750) / 500;
-                const popupButton = new AgendaCardButton(card);
-                popupButton.setImageSize(width, height);
+            button.onClicked.add(
+                ThrottleClickHandler.wrap((button, player) => {
+                    const scale = 3;
+                    const width = 330 * scale;
+                    const height = (width * 750) / 500;
+                    const popupButton = new AgendaCardButton(card);
+                    popupButton.setImageSize(width, height);
 
-                this._zoomedAgendaCardUi = new UIElement();
-                this._zoomedAgendaCardUi.position = this._ui.position.add([
-                    0, 0, 1,
-                ]);
-                this._zoomedAgendaCardUi.rotation = this._ui.rotation;
-                this._zoomedAgendaCardUi.scale = 1 / scale;
-                this._zoomedAgendaCardUi.widget = new LayoutBox().setChild(
-                    popupButton
-                );
-                world.addUI(this._zoomedAgendaCardUi);
+                    this._zoomedAgendaCardUi = new UIElement();
+                    this._zoomedAgendaCardUi.position = this._ui.position.add([
+                        0, 0, 1,
+                    ]);
+                    this._zoomedAgendaCardUi.rotation = this._ui.rotation;
+                    this._zoomedAgendaCardUi.scale = 1 / scale;
+                    this._zoomedAgendaCardUi.widget = new LayoutBox().setChild(
+                        popupButton
+                    );
+                    world.addUI(this._zoomedAgendaCardUi);
 
-                popupButton.onClicked.add((button, player) => {
-                    world.removeUIElement(this._zoomedAgendaCardUi);
-                    this._zoomedAgendaCardUi = undefined;
-                });
-            });
+                    popupButton.onClicked.add(
+                        ThrottleClickHandler.wrap((button, player) => {
+                            world.removeUIElement(this._zoomedAgendaCardUi);
+                            this._zoomedAgendaCardUi = undefined;
+                        })
+                    );
+                })
+            );
         }
         return box;
     }
@@ -193,18 +198,22 @@ class AgendaUiDesk extends Border {
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.play_when"));
 
-        this._noWhensButton.onClicked.add((button, player) => {
-            if (!this.allowClick(player)) {
-                return;
-            }
-            this._callbacks.onNoWhens(this._playerDesk, player);
-        });
-        this._playWhenButton.onClicked.add((button, player) => {
-            if (!this.allowClick(player)) {
-                return;
-            }
-            this._callbacks.onPlayWhen(this._playerDesk, player);
-        });
+        this._noWhensButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onNoWhens(this._playerDesk, player);
+            })
+        );
+        this._playWhenButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onPlayWhen(this._playerDesk, player);
+            })
+        );
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -221,18 +230,22 @@ class AgendaUiDesk extends Border {
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.play_after"));
 
-        this._noAftersButton.onClicked.add((button, player) => {
-            if (!this.allowClick(player)) {
-                return;
-            }
-            this._callbacks.onNoAfters(this._playerDesk, player);
-        });
-        this._playAfterButton.onClicked.add((button, player) => {
-            if (!this.allowClick(player)) {
-                return;
-            }
-            this._callbacks.onPlayAfter(this._playerDesk, player);
-        });
+        this._noAftersButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onNoAfters(this._playerDesk, player);
+            })
+        );
+        this._playAfterButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onPlayAfter(this._playerDesk, player);
+            })
+        );
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -314,16 +327,18 @@ class AgendaUiDesk extends Border {
                 .setFontSize(CONFIG.fontSize)
                 .setText(" [0] ");
 
-            voteButton.onClicked.add((button, player) => {
-                if (!this.allowClick(player)) {
-                    return;
-                }
-                this._callbacks.onVoteOutcome(
-                    this._playerDesk,
-                    outcomeIndex,
-                    player
-                );
-            });
+            voteButton.onClicked.add(
+                ThrottleClickHandler.wrap((button, player) => {
+                    if (!this.allowClick(player)) {
+                        return;
+                    }
+                    this._callbacks.onVoteOutcome(
+                        this._playerDesk,
+                        outcomeIndex,
+                        player
+                    );
+                })
+            );
             voteDecrButton.onClicked.add((button, player) => {
                 if (!this.allowClick(player)) {
                     return;
@@ -419,50 +434,58 @@ class AgendaUiDesk extends Border {
         this._lockVoteButton = new Button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.lock_vote"));
-        this._lockVoteButton.onClicked.add((button, player) => {
-            if (!this.allowClick(player)) {
-                return;
-            }
-            this._callbacks.onVoteLocked(this._playerDesk, player);
-        });
+        this._lockVoteButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onVoteLocked(this._playerDesk, player);
+            })
+        );
 
         this._collapseButton = new Button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.button.collapse"));
-        this._collapseButton.onClicked.add((button, player) => {
-            console.log("AgendaDeskUI.collapse");
-            if (!this.allowClick(player)) {
-                return;
-            }
-            world.removeUIElement(this._ui);
-
-            this._collapsedUi = new UIElement();
-            this._collapsedUi.position = this._ui.position;
-            this._collapsedUi.rotation = this._ui.rotation;
-
-            const expandButton = new Button()
-                .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
-                .setText(locale("ui.button.expand"));
-            const expandButtonBox = new LayoutBox()
-                .setPadding(
-                    CONFIG.padding,
-                    CONFIG.padding,
-                    CONFIG.padding,
-                    CONFIG.padding
-                )
-                .setChild(expandButton);
-            expandButton.onClicked.add((button, player) => {
-                console.log("AgendaDeskUI.expand");
+        this._collapseButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                console.log("AgendaDeskUI.collapse");
                 if (!this.allowClick(player)) {
                     return;
                 }
-                world.removeUIElement(this._collapsedUi);
-                this._collapsedUi = undefined;
-                world.addUI(this._ui);
-            });
-            this._collapsedUi.widget = new Border().setChild(expandButtonBox);
-            world.addUI(this._collapsedUi);
-        });
+                world.removeUIElement(this._ui);
+
+                this._collapsedUi = new UIElement();
+                this._collapsedUi.position = this._ui.position;
+                this._collapsedUi.rotation = this._ui.rotation;
+
+                const expandButton = new Button()
+                    .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
+                    .setText(locale("ui.button.expand"));
+                const expandButtonBox = new LayoutBox()
+                    .setPadding(
+                        CONFIG.padding,
+                        CONFIG.padding,
+                        CONFIG.padding,
+                        CONFIG.padding
+                    )
+                    .setChild(expandButton);
+                expandButton.onClicked.add(
+                    ThrottleClickHandler.wrap((button, player) => {
+                        console.log("AgendaDeskUI.expand");
+                        if (!this.allowClick(player)) {
+                            return;
+                        }
+                        world.removeUIElement(this._collapsedUi);
+                        this._collapsedUi = undefined;
+                        world.addUI(this._ui);
+                    })
+                );
+                this._collapsedUi.widget = new Border().setChild(
+                    expandButtonBox
+                );
+                world.addUI(this._collapsedUi);
+            })
+        );
 
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)

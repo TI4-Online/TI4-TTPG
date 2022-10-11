@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Button, Player } = require("../../wrapper/api");
+const { Button, ImageButton, Player } = require("../../wrapper/api");
 
-const THROTTLE_MSECS = 2000;
+const THROTTLE_MSECS = 500;
 
 /**
  * Reject repeat clicks if too soon since last click.
@@ -17,7 +17,7 @@ class ThrottleClickHandler {
         assert(typeof clickHandler === "function");
         let lastClickMsecs = 0;
         return (button, player) => {
-            assert(button instanceof Button);
+            assert(button instanceof Button || button instanceof ImageButton);
             assert(player instanceof Player);
 
             // Throttle if clicked again too soon.
