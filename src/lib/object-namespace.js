@@ -41,7 +41,7 @@ class ObjectNamespace {
     static getNsid(obj) {
         assert(obj instanceof GameObject);
         if (obj instanceof Card) {
-            if (obj.getStackSize() == 1) {
+            if (obj.getStackSize() === 1) {
                 return obj.getCardDetails().metadata;
             } else {
                 // This is a deck.  Treat as anonymous.
