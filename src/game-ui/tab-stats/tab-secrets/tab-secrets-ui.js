@@ -11,11 +11,12 @@ class TabSecretsUI extends HorizontalBox {
 
         this.setChildDistance(CONFIG.spacing);
 
-        const fontSize = CONFIG.fontSize * 0.6;
-        this._columns = new Array(3).fill(0).map(() => {
+        const fontSize = CONFIG.fontSize * 0.5;
+        this._columns = new Array(2).fill(0).map(() => {
             const column = new Text()
                 .setFontSize(fontSize)
-                .setJustification(TextJustification.Center);
+                .setJustification(TextJustification.Center)
+                .setAutoWrap(true);
             this.addChild(column, 1);
             return column;
         });
