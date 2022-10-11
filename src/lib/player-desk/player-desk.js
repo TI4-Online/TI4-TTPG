@@ -205,6 +205,7 @@ class PlayerDesk {
         // Pos is center, but allow for non-center pos.
         this._center = this._pos.clone();
 
+        this._showColors = false;
         this._factionSetupInProgress = false;
         this._ready = false;
     }
@@ -255,8 +256,11 @@ class PlayerDesk {
         const config = {
             isReady,
             isOccupied,
+            showColors: !isReady && this._showColors,
             canFaction:
-                world.TI4.config.timestamp > 0 && !this._factionSetupInProgress,
+                !isReady &&
+                world.TI4.config.timestamp > 0 &&
+                !this._factionSetupInProgress,
             hasFaction: world.TI4.getFactionByPlayerSlot(playerSlot)
                 ? true
                 : false,
@@ -274,6 +278,10 @@ class PlayerDesk {
                 PlayerDesk.moveNewPlayerToNonSeatSlot(player);
                 this.resetUI();
             },
+            onToggleColors: (button, player) => {
+                this._showColors = !this._showColors;
+                this.resetUI();
+            },
             onChangeColor: (colorOption, player) => {
                 const { colorName, colorTint, plasticColorTint } = colorOption;
                 assert(colorName);
@@ -282,6 +290,7 @@ class PlayerDesk {
                 if (!this.changeColor(colorName, colorTint, plasticColorTint)) {
                     player.showMessage(locale("ui.desk.color_in_use"));
                 }
+                this._showColors = false;
                 this.resetUI();
             },
             onSetupFaction: (button, player) => {
