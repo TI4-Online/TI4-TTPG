@@ -31,7 +31,6 @@ class PremadeMap {
                 break;
             }
         }
-        assert(tilesBag);
 
         const clearedSet = new Set();
         for (const obj of world.TI4.getAllSystemTileObjects()) {
@@ -40,6 +39,7 @@ class PremadeMap {
                 continue;
             }
             if (!tilesBag || clearedSet.has(system.tile)) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             } else {
                 clearedSet.add(system.tile);
