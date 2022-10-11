@@ -33,14 +33,17 @@ class ThrottleClickHandler {
     }
 
     /**
-     * Wrap the values in a dictionary.
+     * Wrap the values in a dictionary.  Mutates the given object, return
+     * in case caller wants to assign it at the same line.
      *
      * @param {Object.{key:string, value:function}} onButtonCallbacks
+     * @return {Object.{key:string, value:function}}
      */
     static wrapValues(onButtonCallbacks) {
         for (const [key, value] of Object.entries(onButtonCallbacks)) {
             onButtonCallbacks[key] = ThrottleClickHandler.wrap(value);
         }
+        return onButtonCallbacks;
     }
 }
 
