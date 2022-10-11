@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { ThrottleClickHandler } = require("../ui/throttle-click-handler");
 const {
     Border,
     Button,
@@ -20,7 +21,7 @@ class PlayerDeskUI {
     constructor(playerDesk, colorOptions, callbacks) {
         this._playerDesk = playerDesk;
         this._colorOptions = colorOptions;
-        this._callbacks = callbacks;
+        this._callbacks = ThrottleClickHandler.wrapValues(callbacks);
     }
 
     create(config) {
