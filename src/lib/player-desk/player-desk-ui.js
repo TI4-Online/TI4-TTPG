@@ -96,11 +96,13 @@ class PlayerDeskUI {
             }
         }
 
-        // Once a faction is selected show ready button.
-        if (!config.isReady && config.hasFaction) {
-            panel.addChild(
-                this._createButton("ui.button.ready", this._callbacks.onReady)
-            );
+        // Once a faction is selected enable ready button.
+        if (!config.isReady) {
+            const readyButton = this._createButton(
+                "ui.button.ready",
+                this._callbacks.onReady
+            ).setEnabled(config.hasFaction);
+            panel.addChild(readyButton);
         }
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
