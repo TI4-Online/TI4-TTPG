@@ -14,6 +14,9 @@ class ImageButton extends Widget {
     setImageSize(w, h) {
         return this;
     }
+    setTintColor(value) {
+        return this;
+    }
 }
 
 module.exports = ImageButton;

@@ -224,6 +224,7 @@
     "nav.map.fog": "Fog of War",
     "nav.stats": "Stats",
     "nav.stats.simple": "Simple Stats",
+    "nav.stats.secrets": "Secrets",
     "nav.stats.whispers": "Whispers",
 
     "ui.tab.root": "Root",

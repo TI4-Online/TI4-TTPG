@@ -41,6 +41,10 @@ class Card extends GameObject {
         return this._stackSize;
     }
 
+    isInHolder() {
+        return this._holder ? true : false;
+    }
+
     isFaceUp() {
         return this._faceUp;
     }

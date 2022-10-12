@@ -44,6 +44,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { TabSecrets } = require("./tab-stats/tab-secrets/tab-secrets");
 
 /**
  * The "Savant", collected game UI and utilities organized into tabs.
@@ -294,6 +295,23 @@ class GameUI {
                 navEntry.__tabWhispers = undefined; // release for GC
             });
         statsFolder.addChild(tabWhispersEntry);
+
+        const tabSecretsEntry = new NavEntry()
+            .setName(locale("nav.stats.secrets"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                const tabSecrets = new TabSecrets();
+                navEntry.__tabSecrets = tabSecrets; // store reference to release
+                return tabSecrets.getUI();
+            })
+            .setPeriodicUpdateWidget((navEntry) => {
+                const tabSecrets = navEntry.__tabSecrets;
+                assert(tabSecrets);
+                tabSecrets.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabSecrets = undefined; // release for GC
+            });
+        statsFolder.addChild(tabSecretsEntry);
 
         return statsFolder;
     }

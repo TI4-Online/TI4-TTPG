@@ -100,11 +100,17 @@ it("onWhisper", () => {
 it("getAllInUpdateOrder", () => {
     // In the mock environment, we can trigger whispers.
     const desks = world.TI4.getAllPlayerDesks();
-    const src = new MockPlayer({ slot: desks[0].playerSlot });
-    const dst = new MockPlayer({ slot: desks[1].playerSlot });
-    globalEvents.onWhisper.trigger(src, dst, "foo");
+    const a = new MockPlayer({ slot: desks[0].playerSlot });
+    const b = new MockPlayer({ slot: desks[1].playerSlot });
+    const c = new MockPlayer({ slot: desks[2].playerSlot });
+    globalEvents.onWhisper.trigger(a, b, "foo");
+    globalEvents.onWhisper.trigger(c, a, "foo");
 
     const whisperPairs = WhisperHistory.getAllInUpdateOrder();
     assert(Array.isArray(whisperPairs));
-    assert.equal(whisperPairs.length, 1);
+    assert.equal(whisperPairs.length, 2);
+    assert.equal(whisperPairs[0]._playerSlotA, desks[0].playerSlot);
+    assert.equal(whisperPairs[0]._playerSlotB, desks[1].playerSlot);
+    assert.equal(whisperPairs[1]._playerSlotA, desks[2].playerSlot);
+    assert.equal(whisperPairs[1]._playerSlotB, desks[0].playerSlot);
 });

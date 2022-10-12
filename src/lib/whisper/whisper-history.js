@@ -123,13 +123,15 @@ class WhisperPair {
         const now = WhisperPair.timestamp();
         for (const entry of this._history) {
             assert(typeof entry.timestamp === "number");
-            let age = now - entry.timestamp;
+            let timestamp = entry.timestamp;
+
+            // Discretize buckets shift at the same time.
+            timestamp = Math.floor(timestamp / bucketDuration) * bucketDuration;
+
+            const age = now - timestamp;
             if (age > WINDOW_SIZE_SECONDS || age < 0) {
                 continue;
             }
-
-            // Discretize age so buckets shift at the same time.
-            age = Math.floor(age / bucketDuration) * bucketDuration;
 
             const bucketIndex = Math.floor(
                 (age * (buckets.length - 1)) / WINDOW_SIZE_SECONDS
