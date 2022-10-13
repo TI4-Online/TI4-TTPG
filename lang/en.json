@@ -217,6 +217,7 @@
     "nav.map.maptool": "Map Tool",
     "nav.map.premade": "Premade",
     "nav.map.draft": "Draft",
+    "nav.map.draft.bunker": "Bunker Draft",
     "nav.map.draft.milty": "Milty Draft",
     "nav.map.draft.scpt": "SCPT",
     "nav.map.draft.bag": "Bag Draft",
@@ -306,6 +307,7 @@
 
     "ui.draft.custom_input": "Custom input:",
     "ui.draft.slice_count": "Slice count",
+    "ui.draft.bunker_count": "Bunker count",
     "ui.draft.faction_count": "Faction count",
     "ui.draft.red_count": "Red system count",
     "ui.draft.blue_count": "Blue system count",

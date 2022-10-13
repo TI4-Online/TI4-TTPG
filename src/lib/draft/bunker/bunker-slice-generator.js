@@ -89,28 +89,12 @@ class Bunker {
  * There is an innder circle of other systems.
  */
 class BunkerSliceGenerator {
-    /**
-     * Simple endpoint to run the full generator.
-     *
-     * @param {number} bunkerCount
-     * @returns {Object.{bunkers,innerRing}}
-     */
-    static simpleGenerate(bunkerCount) {
-        assert(typeof bunkerCount === "number");
-        return new BunkerSliceGenerator()
-            .setBunkerCount(bunkerCount)
-            .pickNumInnerReds()
-            .pickBunkerTileTypes()
-            .pickInnerRingTileTypes()
-            .pickRedTiles()
-            .assignRedTiles()
-            .maybeDowngradeOtherWithGoodRed() // do before picking blue
-            .pickBlueTiles()
-            .maybeSwapInWormholes()
-            .maybeSwapInLegendaries()
-            .assignBlueTiles()
-            .separateAnomalies()
-            .generate();
+    static get minCount() {
+        return world.TI4.config.playerCount;
+    }
+
+    static get maxCount() {
+        return 9; // milty draft max is 9
     }
 
     /**
@@ -492,7 +476,7 @@ class BunkerSliceGenerator {
 
     constructor() {
         this._playerCount = world.TI4.config.playerCount;
-        this._bunkerCount = undefined; // number
+        this._bunkerCount = world.TI4.config.playerCount + 1;
         this._numInnerReds = undefined; // number
         this._bunkers = undefined; // {Array.{Bunker}}
         this._innerRingEntries = undefined; // {Array.{tileType:string,tile:number}}
@@ -512,6 +496,31 @@ class BunkerSliceGenerator {
             low: [],
             red: [],
         };
+    }
+
+    getBunkerCount() {
+        return this._bunkerCount;
+    }
+
+    /**
+     * Simple endpoint to run the full generator.
+     *
+     * @param {number} bunkerCount
+     * @returns {Object.{bunkers,innerRing}}
+     */
+    simpleGenerate() {
+        return this.pickNumInnerReds()
+            .pickBunkerTileTypes()
+            .pickInnerRingTileTypes()
+            .pickRedTiles()
+            .assignRedTiles()
+            .maybeDowngradeOtherWithGoodRed() // do before picking blue
+            .pickBlueTiles()
+            .maybeSwapInWormholes()
+            .maybeSwapInLegendaries()
+            .assignBlueTiles()
+            .separateAnomalies()
+            .generate();
     }
 
     /**
@@ -535,9 +544,6 @@ class BunkerSliceGenerator {
     setBunkerCount(bunkerCount) {
         assert(typeof bunkerCount === "number");
         this._bunkerCount = bunkerCount;
-        this._bunkers = new Array(bunkerCount).fill(0).map(() => {
-            return new Bunker();
-        });
         return this;
     }
 
@@ -559,9 +565,6 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     pickBunkerTileTypes() {
-        if (!this._bunkerCount) {
-            throw new Error("must set bunker count first");
-        }
         if (!this._numInnerReds) {
             throw new Error("must set inner red count first");
         }
@@ -570,6 +573,11 @@ class BunkerSliceGenerator {
             this._bunkerCount,
             this._numInnerReds
         );
+
+        assert(!this._bunkers);
+        this._bunkers = new Array(this._bunkerCount).fill(0).map(() => {
+            return new Bunker();
+        });
 
         // Fill in bunker entries.
         assert(this._bunkers.length === bunkerTileTypesArray.length);
@@ -589,9 +597,6 @@ class BunkerSliceGenerator {
     }
 
     pickInnerRingTileTypes() {
-        if (!this._bunkerCount) {
-            throw new Error("must set bunker count first");
-        }
         if (!this._numInnerReds) {
             throw new Error("must set inner red count first");
         }
@@ -610,9 +615,6 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     pickRedTiles() {
-        if (!this._bunkerCount) {
-            throw new Error("must set bunker count first");
-        }
         if (!this._numInnerReds) {
             throw new Error("must set inner red count first");
         }

@@ -1,6 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AutoRoller } = require("../objects/roller/auto-roller");
+const {
+    BunkerDraftSettings,
+} = require("./tab-map/tab-draft/tab-bunker/bunker-draft-settings");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
 const {
@@ -191,6 +194,13 @@ class GameUI {
                 return new TabBagDraft().getUI();
             });
         draftFolder.addChild(bagDraft);
+
+        const bunkerDraft = new NavEntry()
+            .setName(locale("nav.map.draft.bunker"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new BunkerDraftSettings().getUI();
+            });
+        draftFolder.addChild(bunkerDraft);
 
         return draftFolder;
     }
