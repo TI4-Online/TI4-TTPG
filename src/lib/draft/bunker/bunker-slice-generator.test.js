@@ -34,8 +34,8 @@ it("weightedChoice", () => {
 });
 
 it("getNumInnerReds", () => {
-    const bunkerCount = 6;
-    const value = BunkerSliceGenerator._getNumInnerReds(bunkerCount);
+    const playerCount = 6;
+    const value = BunkerSliceGenerator._getNumInnerReds(playerCount);
     assert(value > 0);
 });
 
@@ -64,16 +64,16 @@ it("getBunkerTileTypes", () => {
 });
 
 it("getInnerRingTileTypes", () => {
-    const bunkerCount = 6;
+    const playerCount = 6;
     const numInnerReds = 3;
     const tileTypes = BunkerSliceGenerator._getInnerRingTileTypes(
-        bunkerCount,
+        playerCount,
         numInnerReds
     );
 
     let numReds = 0;
     let numOther = 0;
-    assert.equal(tileTypes.length, bunkerCount);
+    assert.equal(tileTypes.length, playerCount);
     for (const tileType of tileTypes) {
         if (tileType === TILE_TYPE.RED) {
             numReds += 1;
@@ -82,7 +82,7 @@ it("getInnerRingTileTypes", () => {
         }
     }
     assert.equal(numReds, numInnerReds);
-    assert.equal(numOther, bunkerCount - numInnerReds);
+    assert.equal(numOther, playerCount - numInnerReds);
 });
 
 it("promoteWormhole", () => {

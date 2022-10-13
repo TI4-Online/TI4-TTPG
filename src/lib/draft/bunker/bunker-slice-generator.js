@@ -158,13 +158,13 @@ class BunkerSliceGenerator {
      * @param {number} bunkerCount
      * @returns {number}
      */
-    static _getNumInnerReds(bunkerCount) {
-        assert(typeof bunkerCount === "number");
+    static _getNumInnerReds(playerCount) {
+        assert(typeof playerCount === "number");
         let numInnerReds = BunkerSliceGenerator._weightedChoice(
             INNER_RED_COUNT_DISTRIBUTION
         );
-        if (numInnerReds > bunkerCount) {
-            numInnerReds = bunkerCount;
+        if (numInnerReds > playerCount) {
+            numInnerReds = playerCount;
         }
         return numInnerReds;
     }
@@ -216,12 +216,12 @@ class BunkerSliceGenerator {
      * Compute TILE_TYPE values for inner ring.  Does not account for
      * if a tier empties, consumer can adjust if needed.
      *
-     * @param {number} bunkerCount
+     * @param {number} playerCount
      * @param {number} numInnerReds
      * @returns {Array.{string}}
      */
-    static _getInnerRingTileTypes(bunkerCount, numInnerReds) {
-        assert(typeof bunkerCount === "number");
+    static _getInnerRingTileTypes(playerCount, numInnerReds) {
+        assert(typeof playerCount === "number");
         assert(typeof numInnerReds === "number");
 
         const tileTypes = [];
@@ -230,7 +230,7 @@ class BunkerSliceGenerator {
             tileTypes.push(TILE_TYPE.RED);
         }
 
-        while (tileTypes.length < bunkerCount) {
+        while (tileTypes.length < playerCount) {
             const tileType = BunkerSliceGenerator._weightedChoice(
                 INNER_BLUE_TILE_TYPE_DISTRIBUTION
             );
@@ -491,6 +491,7 @@ class BunkerSliceGenerator {
     }
 
     constructor() {
+        this._playerCount = world.TI4.config.playerCount;
         this._bunkerCount = undefined; // number
         this._numInnerReds = undefined; // number
         this._bunkers = undefined; // {Array.{Bunker}}
@@ -514,6 +515,18 @@ class BunkerSliceGenerator {
     }
 
     /**
+     * Override default player count.
+     *
+     * @param {number} playerCount
+     * @returns {BunkerSliceGenerator} self, for chaining
+     */
+    setPlayerCount(playerCount) {
+        assert(typeof bunkerCount === "number");
+        this._playerCount = playerCount;
+        return this;
+    }
+
+    /**
      * Generate how many bunkers?
      *
      * @param {number} bunkerCount
@@ -534,11 +547,8 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     pickNumInnerReds() {
-        if (!this._bunkerCount) {
-            throw new Error("must set bunker count first");
-        }
         this._numInnerReds = BunkerSliceGenerator._getNumInnerReds(
-            this._bunkerCount
+            this._playerCount
         );
         return this;
     }
@@ -586,7 +596,7 @@ class BunkerSliceGenerator {
             throw new Error("must set inner red count first");
         }
         this._innerRingEntries = BunkerSliceGenerator._getInnerRingTileTypes(
-            this._bunkerCount,
+            this._playerCount,
             this._numInnerReds
         ).map((tileType) => {
             return { tileType, tile: undefined };
