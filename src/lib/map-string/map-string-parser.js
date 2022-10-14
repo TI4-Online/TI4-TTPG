@@ -53,7 +53,7 @@ const parse = function (mapString) {
 
     if (
         !mapString.startsWith("{") &&
-        tiles[0].tile !== MECATOL_REX_SYSTEM_TILE
+        (tiles.length === 0 || tiles[0].tile !== MECATOL_REX_SYSTEM_TILE)
     ) {
         tiles.unshift({ tile: MECATOL_REX_SYSTEM_TILE });
     }

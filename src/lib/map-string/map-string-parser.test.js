@@ -44,6 +44,10 @@ it("validate does not support invalid characters", () => {
 });
 
 // test parsing
+it("parse empty", () => {
+    assert.deepEqual(parse(""), [{ tile: 18 }]);
+});
+
 it("parse with numeric only", () => {
     assert.deepEqual(parse("7 18 23"), [
         { tile: 18 },
