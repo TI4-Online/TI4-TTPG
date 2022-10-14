@@ -15,13 +15,13 @@ const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
 
 class BunkerDraftSettings {
     constructor() {
-        const sliceGenerator = new BunkerSliceGenerator();
-        const factionGenerator = new MiltyFactionGenerator();
+        this._sliceGenerator = new BunkerSliceGenerator();
+        this._factionGenerator = new MiltyFactionGenerator();
         this._bunkerDraft = undefined;
         const callbacks = {
             onFinish: (customConfig, player) => {
                 assert(player instanceof Player);
-                console.log("MiltyDraft.Settings.onFinish");
+                console.log("BunkerDraftSettings.onFinish");
                 if (this._bunkerDraft) {
                     this._bunkerDraft.cancel();
                     this._bunkerDraft = undefined;
@@ -29,7 +29,8 @@ class BunkerDraftSettings {
 
                 this._bunkerDraft = new BunkerDraft();
 
-                const bunkersAndInner = sliceGenerator.simpleGenerate();
+                // UI may have adjusted any settings (e.g. bunker count).
+                const bunkersAndInner = this._sliceGenerator.simpleGenerate();
 
                 bunkersAndInner.bunkers.forEach((bunker, index) => {
                     console.log(`adding bunker [${bunker.join(",")}]`);
@@ -39,8 +40,9 @@ class BunkerDraftSettings {
                     const color = false;
                     this._bunkerDraft.addBunker(bunker, color, label);
                 });
+                this._bunkerDraft.setInnerRing(bunkersAndInner.innerRing);
 
-                factionGenerator.generate().forEach((faction) => {
+                this._factionGenerator.generate().forEach((faction) => {
                     const nsidName = faction.nsidName;
                     console.log(`adding faction [${nsidName}]`);
                     this._bunkerDraft.addFaction(faction.nsidName);
@@ -79,9 +81,9 @@ class BunkerDraftSettings {
                         }
                     }
                     if (custom.factions) {
-                        this._miltyDraft.resetFactions();
+                        this._bunkerDraft.resetFactions();
                         for (const factionNsidName of custom.factions) {
-                            this._miltyDraft.addFaction(factionNsidName);
+                            this._bunkerDraft.addFaction(factionNsidName);
                         }
                     }
                 }
@@ -98,16 +100,17 @@ class BunkerDraftSettings {
             },
             onCancel: (player) => {
                 assert(player instanceof Player);
-                console.log("BunkerDraft.Settings.onCancel");
+                console.log("BunkerDraftSettings.onCancel");
                 if (this._bunkerDraft) {
                     this._bunkerDraft.cancel();
                 }
                 this._bunkerDraft = undefined;
+                this._sliceGenerator.reset();
             },
         };
         this._ui = new BunkerDraftSettingsUI(
-            sliceGenerator,
-            factionGenerator,
+            this._sliceGenerator,
+            this._factionGenerator,
             callbacks
         );
     }

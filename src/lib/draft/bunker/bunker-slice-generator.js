@@ -104,7 +104,10 @@ class BunkerSliceGenerator {
      */
     static _getRedTileNumbers() {
         return world.TI4.getAllSystems()
-            .filter((system) => system.red)
+            .filter((system) => {
+                // 81 is Muatt hero supernova
+                return system.red && system.tile !== 81;
+            })
             .map((system) => system.tile);
     }
 
@@ -475,6 +478,10 @@ class BunkerSliceGenerator {
     }
 
     constructor() {
+        this.reset();
+    }
+
+    reset() {
         this._playerCount = world.TI4.config.playerCount;
         this._bunkerCount = world.TI4.config.playerCount + 1;
         this._numInnerReds = undefined; // number

@@ -144,7 +144,7 @@ class BunkerSliceLayout {
             merge =
                 "{-1} -1 -1 -1 89B1 -1 -1 -1 -1 -1 -1 -1 83A0 83A0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 87B4 83A0 86A0";
         } else {
-            return mapString; // unsupported player count
+            merge = "{-1}"; // unsupported player count
         }
 
         const mapStringArray = MapStringParser.parse(mapString);
@@ -176,12 +176,14 @@ class BunkerSliceLayout {
             if (obj.getContainer()) {
                 return false;
             }
-            if (!ObjectNamespace.isSystemTile(obj)) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "tile.system:base/0") {
                 return false;
             }
             if (obj.getOwningPlayerSlot() !== playerSlot) {
                 return false;
             }
+            return true;
         });
         if (genericHomeSystemTiles.length === 1) {
             const tile = genericHomeSystemTiles[0];
@@ -198,8 +200,18 @@ class BunkerSliceLayout {
             deskIndex,
             playerCount
         );
-        console.log(`${playerSlot}: ${mapString}`);
+        console.log(
+            `BunkerSliceLayout.doLayoutBunker ${playerSlot}: ${mapString}`
+        );
 
+        MapStringLoad.load(mapString, true);
+    }
+
+    static doLayoutInnerRing(innerRing) {
+        assert(Array.isArray(innerRing));
+        assert(innerRing.length === 6);
+
+        const mapString = innerRing.join(" ");
         MapStringLoad.load(mapString, true);
     }
 }

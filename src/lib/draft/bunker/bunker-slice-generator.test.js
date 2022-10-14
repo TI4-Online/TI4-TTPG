@@ -17,20 +17,26 @@ it("weightedChoice", () => {
     const options = [
         { weight: 1, value: "a" },
         { weight: 3, value: "b" },
+        { weight: 6, value: "c" },
     ];
     let a = 0,
-        b = 0;
-    for (let i = 0; i < 100; i++) {
+        b = 0,
+        c = 0;
+    for (let i = 0; i < 1000; i++) {
         const value = BunkerSliceGenerator._weightedChoice(options);
         if (value === "a") {
             a++;
         } else if (value === "b") {
             b++;
+        } else if (value === "c") {
+            c++;
         } else {
             throw new Error("invalid");
         }
     }
+    //console.log(`${a}/${b}/${c}`);
     assert(a < b / 2);
+    assert(a < c / 4);
 });
 
 it("getNumInnerReds", () => {

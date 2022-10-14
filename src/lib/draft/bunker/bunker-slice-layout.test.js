@@ -56,7 +56,7 @@ it("toMapString", () => {
 });
 
 it("addHyperlanes", () => {
-    const mapString = "{18}";
+    const mapString = "";
     const playerCount = 5;
     const str = BunkerSliceLayout._addHyperlanes(mapString, playerCount);
     assert.equal(

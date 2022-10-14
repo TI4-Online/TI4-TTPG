@@ -23,7 +23,7 @@ const {
 } = require("../../../wrapper/api");
 
 const NUM_SLICE_ROWS = 3;
-const NUM_FACTION_ROWS = 4;
+const NUM_FACTION_ROWS = 6;
 
 const DEFAULT_SLICE_COLORS = [
     "#CB0000", // red
@@ -228,11 +228,12 @@ class BunkerDraftUI {
             tilePosArray.forEach((tilePos, index) => {
                 const hex = Hex.fromPosition(tilePos);
                 const img = new ImageWidget()
-                    .setImage("global/ui/tiles/blank.png")
+                    .setImage("global/ui/tiles/blank.png", refPackageId)
                     .setTintColor(index === 0 ? homeColor : mutedColor);
+                const box = new LayoutBox().setChild(img);
 
                 const mapStringIndex = MapStringHex.hexStringToIdx(hex);
-                placeWidgetAtTileIndex(mapStringIndex, img);
+                placeWidgetAtTileIndex(mapStringIndex, box);
 
                 if (index === 0) {
                     const seatData = seatDataArray[playerDesk.index];
@@ -328,7 +329,6 @@ class BunkerDraftUI {
         const seatW = bunkerW;
         const seatH = tileH;
         const padLeft = (this._seatPos.w - this._pad - seatW * 2) / 2;
-        console.log("xxx " + padLeft);
 
         seatDataArray.forEach((seatData, index) => {
             // Place in reserved area.
