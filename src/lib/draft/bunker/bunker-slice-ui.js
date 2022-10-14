@@ -29,9 +29,9 @@ class BunkerSliceUI {
 
         const tileW = Math.floor(TILE_W * scale);
         const tileH = Math.floor(TILE_H * scale);
-        const sliceW = Math.floor(tileW * 2.5);
-        const sliceH = Math.floor(tileH * 3.5);
-        return { sliceW, sliceH, tileW, tileH };
+        const bunkerW = Math.floor(tileW * 2.5);
+        const bunkerH = Math.floor(tileH * 3.5);
+        return { bunkerW, bunkerH, tileW, tileH };
     }
 
     static getFontSize(scale) {

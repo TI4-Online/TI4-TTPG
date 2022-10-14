@@ -144,3 +144,14 @@ it("normal use", () => {
         .generate();
     assert(result);
 });
+
+it("different player counts", () => {
+    for (let playerCount = 2; playerCount <= 6; playerCount++) {
+        const result = new BunkerSliceGenerator()
+            .setBunkerCount(playerCount + 2)
+            .setPlayerCount(playerCount)
+            .simpleGenerate();
+        assert.equal(result.innerRing.length, 6);
+        assert.equal(result.bunkers.length, playerCount + 2);
+    }
+});

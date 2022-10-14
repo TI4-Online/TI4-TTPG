@@ -314,6 +314,7 @@
     "ui.draft.extra_legendaries_and_wormholes": "Extra legendaries, wormholes",
     "ui.draft.slice_label": "Slice {index}",
     "ui.draft.category.slice": "slice",
+    "ui.draft.category.bunker": "bunker",
     "ui.draft.category.faction": "faction",
     "ui.draft.category.seat": "seat",
     "ui.draft.not_seated": "Must be seated to select",

@@ -530,7 +530,7 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     setPlayerCount(playerCount) {
-        assert(typeof bunkerCount === "number");
+        assert(typeof playerCount === "number");
         this._playerCount = playerCount;
         return this;
     }
@@ -980,11 +980,39 @@ class BunkerSliceGenerator {
     }
 
     generate() {
+        let innerRing = this._innerRingEntries.map((entry) => entry.tile);
+
+        // The inner ring always has 6 entries.
+        // Inject -1 for empty sectors.
+        if (innerRing.length === 5) {
+            innerRing = [
+                innerRing[0],
+                innerRing[1],
+                innerRing[2],
+                -1,
+                innerRing[3],
+                innerRing[4],
+            ];
+        } else if (innerRing.length === 4) {
+            innerRing = [
+                -1,
+                innerRing[0],
+                innerRing[1],
+                -1,
+                innerRing[2],
+                innerRing[3],
+            ];
+        } else if (innerRing.length === 3) {
+            innerRing = [-1, innerRing[0], -1, innerRing[1], -1, innerRing[2]];
+        } else if (innerRing.length === 2) {
+            innerRing = [innerRing[0], -1, -1, innerRing[1], -1, -1];
+        }
+
         return {
             bunkers: this._bunkers.map((bunker) => {
                 return bunker.getEntries().map((entry) => entry.tile);
             }),
-            innerRing: this._innerRingEntries.map((entry) => entry.tile),
+            innerRing,
         };
     }
 }
