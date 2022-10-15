@@ -10,42 +10,57 @@ const TILE_TIERS = {
     low: [19, 20, 21, 22, 23, 24, 25, 31, 32, 36, 59, 60, 61, 63, 73],
 };
 
-const TILE_TYPE = {
-    RED: "red",
-    HIGH: "high",
-    MED: "med",
-    LOW: "low",
-};
+// Make these top-level constants for cleaner arrays when used.
+const RED = "red";
+const HIGH = "high";
+const MED = "med";
+const LOW = "low";
 
-const INNER_RED_COUNT_DISTRIBUTION = [
-    { weight: 1, value: 1 },
-    { weight: 6, value: 2 },
-    { weight: 3, value: 3 },
+// There may be extra bunkers generated for a draft, do not make any
+// assumptions about how many reds will be taken by players.  Instead,
+// Pick from a fixed set of possible inner ring tile tiers.
+const INNER_RING_CHOICES = [
+    // 4 red
+    { weight: 1, value: [RED, RED, RED, RED, HIGH, MED] }, // 5
+    { weight: 1, value: [RED, RED, RED, RED, HIGH, LOW] }, // 4
+    { weight: 1, value: [RED, RED, RED, RED, MED, MED] }, // 4
+    { weight: 1, value: [RED, RED, RED, RED, MED, LOW] }, // 3
+    { weight: 1, value: [RED, RED, RED, RED, LOW, LOW] }, // 2
+
+    // 3 red
+    { weight: 1, value: [RED, RED, RED, HIGH, MED, LOW] }, // 6
+    { weight: 1, value: [RED, RED, RED, HIGH, LOW, LOW] }, // 5
+    { weight: 1, value: [RED, RED, RED, MED, MED, LOW] }, // 5
+    { weight: 1, value: [RED, RED, RED, MED, LOW, LOW] }, // 4
+    { weight: 1, value: [RED, RED, RED, LOW, LOW, LOW] }, // 3
+
+    // 2 red
+    { weight: 1, value: [RED, RED, HIGH, MED, LOW, LOW] }, // 7
+    { weight: 1, value: [RED, RED, HIGH, LOW, LOW, LOW] }, // 6
+    { weight: 1, value: [RED, RED, MED, MED, LOW, LOW] }, // 6
+    { weight: 1, value: [RED, RED, MED, LOW, LOW, LOW] }, // 5
+    { weight: 1, value: [RED, RED, LOW, LOW, LOW, LOW] }, // 4
 ];
 
-const INNER_BLUE_TILE_TYPE_DISTRIBUTION = [
-    { weight: 3, value: TILE_TYPE.HIGH },
-    { weight: 4, value: TILE_TYPE.MED },
-    { weight: 3, value: TILE_TYPE.LOW },
+const BUNKER_CHOICES = [
+    // 2 red
+    { weight: 1, value: [RED, RED, HIGH, HIGH] }, // 6
+    { weight: 1, value: [RED, RED, HIGH, MED] }, // 5
+    { weight: 1, value: [RED, RED, MED, MED] }, // 4
+
+    // 1 red
+    { weight: 1, value: [RED, HIGH, MED, LOW] }, // 6
+    { weight: 1, value: [RED, HIGH, LOW, LOW] }, // 5
+    { weight: 1, value: [RED, MED, MED, LOW] }, // 5
+    { weight: 1, value: [RED, MED, LOW, LOW] }, // 4
 ];
 
-const ONE_REDS_BUNKER_TYPES_DISTRIBUTION = [
-    { weight: 4, value: [TILE_TYPE.HIGH, TILE_TYPE.LOW, TILE_TYPE.LOW] }, // sum 5
-    { weight: 4, value: [TILE_TYPE.MED, TILE_TYPE.MED, TILE_TYPE.LOW] }, // sum 5
-    { weight: 2, value: [TILE_TYPE.MED, TILE_TYPE.LOW, TILE_TYPE.LOW] }, // sum 4
-];
-
-const TWO_REDS_BUNKER_TYPES_DISTRIBUTION = [
-    { weight: 4, value: [TILE_TYPE.HIGH, TILE_TYPE.MED] }, // sum 5
-    { weight: 3, value: [TILE_TYPE.MED, TILE_TYPE.MED] }, // sum 4
-    { weight: 3, value: [TILE_TYPE.HIGH, TILE_TYPE.LOW] }, // sum 4
-];
-
-const MIN_WORMHOLE_COUNT_DISTRIBUTION = [
+const MIN_WORMHOLE_CHOICES = [
     { weight: 1, value: 2 },
     { weight: 1, value: 3 },
 ];
-const MIN_LEGENDARY_COUNT_DISTRIBUTION = [
+
+const MIN_LEGENDARY_CHOICES = [
     { weight: 1, value: 1 },
     { weight: 1, value: 2 },
 ];
@@ -71,16 +86,6 @@ class Bunker {
         assert(typeof index === "number");
         assert(0 <= index && index < 4);
         return this._entries[index];
-    }
-
-    getNumReds() {
-        let result = 0;
-        for (const entry of this._entries) {
-            if (entry.tileType === TILE_TYPE.RED) {
-                result += 1;
-            }
-        }
-        return result;
     }
 }
 
@@ -139,93 +144,30 @@ class BunkerSliceGenerator {
     }
 
     /**
-     * How many red tiles should be in the inner ring?
-     * (And thus how many need to be placed in bunkers?)
+     * Which tile tiers make up the inner ring?
      *
-     * @param {number} bunkerCount
-     * @returns {number}
+     * @return {Array.{string}}
      */
-    static _getNumInnerReds(playerCount) {
+    static _chooseInnerRingTileTypes(playerCount) {
         assert(typeof playerCount === "number");
-        let numInnerReds = BunkerSliceGenerator._weightedChoice(
-            INNER_RED_COUNT_DISTRIBUTION
-        );
-        if (numInnerReds > playerCount) {
-            numInnerReds = playerCount;
+        assert(playerCount >= 0 && playerCount <= 6);
+        let result = BunkerSliceGenerator._weightedChoice(INNER_RING_CHOICES);
+        result = [...result]; // return a copy
+        while (result.length > playerCount) {
+            result.shift();
         }
-        return numInnerReds;
+        return Shuffle.shuffle(result);
     }
 
     /**
-     * Choose the four TILE_TYPEs (tier or red) in each bunker.
+     * Which tile tiers make up a single bunker?
      *
-     * @param {number} count
-     * @return {Array.{Array.{string}}}
+     * @return {Array.{string}}
      */
-    static _getBunkerTileTypes(bunkerCount, numInnerReds) {
-        assert(typeof bunkerCount === "number");
-        assert(typeof numInnerReds === "number");
-
-        // Array of arrays, inner arrays are TILE_TYPE values.
-        const bunkerTypesArray = new Array(bunkerCount).fill(0).map(() => []);
-
-        // Spread reds around, might not be even.
-        const remainingReds = bunkerCount * 2 - numInnerReds;
-        for (let i = 0; i < remainingReds; i++) {
-            const bunkerIndex = i % bunkerCount;
-            const bunkerTypes = bunkerTypesArray[bunkerIndex];
-            bunkerTypes.push(TILE_TYPE.RED);
-        }
-
-        // Now choose from available bunker styles given num reds.
-        for (const bunkerTypes of bunkerTypesArray) {
-            const numReds = bunkerTypes.length; // all are red here
-            let choices;
-            if (numReds === 1) {
-                choices = ONE_REDS_BUNKER_TYPES_DISTRIBUTION;
-            } else if (numReds === 2) {
-                choices = TWO_REDS_BUNKER_TYPES_DISTRIBUTION;
-            } else {
-                throw new Error("invalid red count");
-            }
-            const choice = BunkerSliceGenerator._weightedChoice(choices);
-            for (const tileType of choice) {
-                bunkerTypes.push(tileType);
-            }
-            Shuffle.shuffle(bunkerTypes);
-            assert(bunkerTypes.length === 4);
-        }
-
-        return bunkerTypesArray;
-    }
-
-    /**
-     * Compute TILE_TYPE values for inner ring.  Does not account for
-     * if a tier empties, consumer can adjust if needed.
-     *
-     * @param {number} playerCount
-     * @param {number} numInnerReds
-     * @returns {Array.{string}}
-     */
-    static _getInnerRingTileTypes(playerCount, numInnerReds) {
-        assert(typeof playerCount === "number");
-        assert(typeof numInnerReds === "number");
-
-        const tileTypes = [];
-
-        while (tileTypes.length < numInnerReds) {
-            tileTypes.push(TILE_TYPE.RED);
-        }
-
-        while (tileTypes.length < playerCount) {
-            const tileType = BunkerSliceGenerator._weightedChoice(
-                INNER_BLUE_TILE_TYPE_DISTRIBUTION
-            );
-            assert(typeof tileType === "string");
-            tileTypes.push(tileType);
-        }
-
-        return tileTypes;
+    static _chooseOneBunkerTileTypes() {
+        let result = BunkerSliceGenerator._weightedChoice(BUNKER_CHOICES);
+        result = [...result]; // return a copy
+        return Shuffle.shuffle(result);
     }
 
     /**
@@ -293,8 +235,8 @@ class BunkerSliceGenerator {
      * Swap a wormhole from unused to active.
      *
      * @param {string} wormholeType
-     * @param {Object.{high,med.low}} actives
-     * @param {Object.{high,med.low}} unuseds
+     * @param {Object.{high,med.low}} actives - tile numbers available for use
+     * @param {Object.{high,med.low}} unuseds - unused tile numbers
      * @returns {boolean}
      */
     static _promoteWormholeRandomizeTier(wormholeType, actives, unuseds) {
@@ -308,19 +250,19 @@ class BunkerSliceGenerator {
         assert(Array.isArray(unuseds.low));
         assert(Array.isArray(unuseds.red));
 
-        const tiers = Shuffle.shuffle(Object.values(TILE_TYPE));
+        const tiers = Shuffle.shuffle([HIGH, MED, LOW, RED]);
         for (const tier of tiers) {
             let active, unused;
-            if (tier === TILE_TYPE.HIGH) {
+            if (tier === HIGH) {
                 active = actives.high;
                 unused = unuseds.high;
-            } else if (tier === TILE_TYPE.MED) {
+            } else if (tier === MED) {
                 active = actives.med;
                 unused = unuseds.med;
-            } else if (tier === TILE_TYPE.LOW) {
+            } else if (tier === LOW) {
                 active = actives.low;
                 unused = unuseds.low;
-            } else if (tier === TILE_TYPE.RED) {
+            } else if (tier === RED) {
                 active = actives.red;
                 unused = unuseds.red;
             } else {
@@ -342,9 +284,9 @@ class BunkerSliceGenerator {
     /**
      * Choose one available tile.  May consider tiles aready used by peer entries.
      *
-     * @param {Array.{Object.{tileType,tile}}} entries
-     * @param {Array.{number}} availableTiles
-     * @returns
+     * @param {Array.{Object.{tileType,tile}}} entries - bunker or inner ring
+     * @param {Array.{number}} availableTiles - choose from this collection
+     * @returns {number} - tile from availableTiles
      */
     static _chooseAndRemoveFromAvailableTiles(entries, availableTiles) {
         assert(Array.isArray(entries));
@@ -484,7 +426,6 @@ class BunkerSliceGenerator {
     reset() {
         this._playerCount = world.TI4.config.playerCount;
         this._bunkerCount = world.TI4.config.playerCount + 1;
-        this._numInnerReds = undefined; // number
         this._bunkers = undefined; // {Array.{Bunker}}
         this._innerRingEntries = undefined; // {Array.{tileType:string,tile:number}}
 
@@ -516,9 +457,8 @@ class BunkerSliceGenerator {
      * @returns {Object.{bunkers,innerRing}}
      */
     simpleGenerate() {
-        return this.pickNumInnerReds()
+        return this.pickInnerRingTileTypes()
             .pickBunkerTileTypes()
-            .pickInnerRingTileTypes()
             .pickRedTiles()
             .assignRedTiles()
             .maybeDowngradeOtherWithGoodRed() // do before picking blue
@@ -559,10 +499,16 @@ class BunkerSliceGenerator {
      *
      * @returns {BunkerSliceGenerator} self, for chaining
      */
-    pickNumInnerReds() {
-        this._numInnerReds = BunkerSliceGenerator._getNumInnerReds(
-            this._playerCount
-        );
+    pickInnerRingTileTypes() {
+        const innerRedTileTypes =
+            BunkerSliceGenerator._chooseInnerRingTileTypes(this._playerCount);
+        this._innerRingEntries = innerRedTileTypes.map((tileType) => {
+            assert(typeof tileType === "string");
+            return {
+                tileType,
+                tile: undefined,
+            };
+        });
         return this;
     }
 
@@ -572,25 +518,15 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     pickBunkerTileTypes() {
-        if (!this._numInnerReds) {
-            throw new Error("must set inner red count first");
-        }
-
-        const bunkerTileTypesArray = BunkerSliceGenerator._getBunkerTileTypes(
-            this._bunkerCount,
-            this._numInnerReds
-        );
-
         assert(!this._bunkers);
         this._bunkers = new Array(this._bunkerCount).fill(0).map(() => {
             return new Bunker();
         });
 
         // Fill in bunker entries.
-        assert(this._bunkers.length === bunkerTileTypesArray.length);
-        bunkerTileTypesArray.forEach((bunkerTileTypes, index) => {
-            const bunker = this._bunkers[index];
-            assert(bunker);
+        for (const bunker of this._bunkers) {
+            const bunkerTileTypes =
+                BunkerSliceGenerator._chooseOneBunkerTileTypes();
             assert(bunkerTileTypes.length === 4);
             bunkerTileTypes.forEach((tileType, index) => {
                 const entry = bunker.getEntry(index);
@@ -598,21 +534,8 @@ class BunkerSliceGenerator {
                 assert(entry);
                 entry.tileType = tileType;
             });
-        });
-
-        return this;
-    }
-
-    pickInnerRingTileTypes() {
-        if (!this._numInnerReds) {
-            throw new Error("must set inner red count first");
         }
-        this._innerRingEntries = BunkerSliceGenerator._getInnerRingTileTypes(
-            this._playerCount,
-            this._numInnerReds
-        ).map((tileType) => {
-            return { tileType, tile: undefined };
-        });
+
         return this;
     }
 
@@ -622,17 +545,24 @@ class BunkerSliceGenerator {
      * @returns {BunkerSliceGenerator} self, for chaining
      */
     pickRedTiles() {
-        if (!this._numInnerReds) {
-            throw new Error("must set inner red count first");
-        }
         if (!this._bunkers) {
             throw new Error("must set bunker tile types first");
         }
 
-        let numReds = this._numInnerReds;
-        assert(Array.isArray(this._bunkers));
+        let numReds = 0;
+        const tileTypes = [];
+        for (const entry of this._innerRingEntries) {
+            tileTypes.push(entry.tileType);
+        }
         for (const bunker of this._bunkers) {
-            numReds += bunker.getNumReds();
+            for (const entry of bunker.getEntries()) {
+                tileTypes.push(entry.tileType);
+            }
+        }
+        for (const tileType of tileTypes) {
+            if (tileType === "RED") {
+                numReds += 1;
+            }
         }
 
         assert(this._unused.red.length >= numReds);
@@ -666,13 +596,13 @@ class BunkerSliceGenerator {
             numMed = 0,
             numHigh = 0;
         for (const tileType of tileTypes) {
-            if (tileType === TILE_TYPE.LOW) {
+            if (tileType === LOW) {
                 numLow += 1;
-            } else if (tileType === TILE_TYPE.MED) {
+            } else if (tileType === MED) {
                 numMed += 1;
-            } else if (tileType === TILE_TYPE.HIGH) {
+            } else if (tileType === HIGH) {
                 numHigh += 1;
-            } else if (tileType === TILE_TYPE.RED) {
+            } else if (tileType === RED) {
                 //numRed += 1;
             } else {
                 throw new Error(`invalid type "${tileType}"`);
@@ -762,12 +692,10 @@ class BunkerSliceGenerator {
             }
         }
 
-        const wantAlpha = BunkerSliceGenerator._weightedChoice(
-            MIN_WORMHOLE_COUNT_DISTRIBUTION
-        );
-        const wantBeta = BunkerSliceGenerator._weightedChoice(
-            MIN_WORMHOLE_COUNT_DISTRIBUTION
-        );
+        const wantAlpha =
+            BunkerSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES);
+        const wantBeta =
+            BunkerSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES);
         while (numAlpha < wantAlpha) {
             const success = BunkerSliceGenerator._promoteWormholeRandomizeTier(
                 "alpha",
@@ -810,7 +738,7 @@ class BunkerSliceGenerator {
         }
 
         const want = BunkerSliceGenerator._weightedChoice(
-            MIN_LEGENDARY_COUNT_DISTRIBUTION
+            MIN_LEGENDARY_CHOICES
         );
         while (numLegendary < want) {
             const success = BunkerSliceGenerator._promoteWormholeRandomizeTier(
@@ -842,13 +770,13 @@ class BunkerSliceGenerator {
 
         const redEntries = [];
         for (const entry of this._innerRingEntries) {
-            if (entry.tileType === TILE_TYPE.RED) {
+            if (entry.tileType === RED) {
                 redEntries.push(entry);
             }
         }
         for (const bunker of this._bunkers) {
             for (const entry of bunker.getEntries()) {
-                if (entry.tileType === TILE_TYPE.RED) {
+                if (entry.tileType === RED) {
                     redEntries.push(entry);
                 }
             }
@@ -880,7 +808,7 @@ class BunkerSliceGenerator {
             const entries = bunker.getEntries();
             let downgrade = false;
             for (const entry of bunker.getEntries()) {
-                if (entry.tileType === TILE_TYPE.RED) {
+                if (entry.tileType === RED) {
                     assert(entry.tile);
                     const system = world.TI4.getSystemByTileNumber(entry.tile);
                     if (system.planets.length > 0) {
@@ -895,11 +823,11 @@ class BunkerSliceGenerator {
                     const index = (start + offset) % entries.length;
                     const entry = entries[index];
                     assert(entry);
-                    if (entry.tileType === TILE_TYPE.HIGH) {
-                        entry.tileType = TILE_TYPE.MED;
+                    if (entry.tileType === HIGH) {
+                        entry.tileType = MED;
                         break;
-                    } else if (entry.tileType === TILE_TYPE.MED) {
-                        entry.tileType = TILE_TYPE.LOW;
+                    } else if (entry.tileType === MED) {
+                        entry.tileType = LOW;
                         break;
                     }
                 }
@@ -939,7 +867,7 @@ class BunkerSliceGenerator {
         Shuffle.shuffle(processOrders);
 
         for (const { entries, entry } of processOrders) {
-            if (entry.tileType === TILE_TYPE.HIGH) {
+            if (entry.tileType === HIGH) {
                 assert(!entry.tile);
                 entry.tile =
                     BunkerSliceGenerator._chooseAndRemoveFromAvailableTiles(
@@ -947,7 +875,7 @@ class BunkerSliceGenerator {
                         this._tiles.high
                     );
                 assert(entry.tile);
-            } else if (entry.tileType === TILE_TYPE.MED) {
+            } else if (entry.tileType === MED) {
                 assert(!entry.tile);
                 entry.tile =
                     BunkerSliceGenerator._chooseAndRemoveFromAvailableTiles(
@@ -955,7 +883,7 @@ class BunkerSliceGenerator {
                         this._tiles.med
                     );
                 assert(entry.tile);
-            } else if (entry.tileType === TILE_TYPE.LOW) {
+            } else if (entry.tileType === LOW) {
                 assert(!entry.tile);
                 entry.tile =
                     BunkerSliceGenerator._chooseAndRemoveFromAvailableTiles(
@@ -963,7 +891,7 @@ class BunkerSliceGenerator {
                         this._tiles.low
                     );
                 assert(entry.tile);
-            } else if (entry.tileType === TILE_TYPE.RED) {
+            } else if (entry.tileType === RED) {
                 assert(entry.tile);
             } else {
                 throw new Error("invalid type");
@@ -1024,4 +952,4 @@ class BunkerSliceGenerator {
     }
 }
 
-module.exports = { BunkerSliceGenerator, TILE_TYPE };
+module.exports = { BunkerSliceGenerator, RED, HIGH, MED, LOW };

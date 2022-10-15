@@ -1,6 +1,12 @@
 require("../../../global");
 const assert = require("assert");
-const { BunkerSliceGenerator, TILE_TYPE } = require("./bunker-slice-generator");
+const {
+    BunkerSliceGenerator,
+    RED,
+    HIGH,
+    MED,
+    LOW,
+} = require("./bunker-slice-generator");
 
 it("constructor", () => {
     new BunkerSliceGenerator();
@@ -39,56 +45,27 @@ it("weightedChoice", () => {
     assert(a < c / 4);
 });
 
-it("getNumInnerReds", () => {
-    const playerCount = 6;
-    const value = BunkerSliceGenerator._getNumInnerReds(playerCount);
-    assert(value > 0);
+it("_chooseInnerRingTileTypes", () => {
+    let playerCount = 6;
+    let innerRingTileTypes =
+        BunkerSliceGenerator._chooseInnerRingTileTypes(playerCount);
+    assert(innerRingTileTypes.length === playerCount);
+    innerRingTileTypes.forEach((tileType) => {
+        assert(typeof tileType === "string");
+    });
+
+    playerCount = 4;
+    innerRingTileTypes =
+        BunkerSliceGenerator._chooseInnerRingTileTypes(playerCount);
+    assert(innerRingTileTypes.length === playerCount);
+    innerRingTileTypes.forEach((tileType) => {
+        assert(typeof tileType === "string");
+    });
 });
 
-it("getBunkerTileTypes", () => {
-    const bunkerCount = 6;
-    const numInnerReds = 3;
-    const bunkerTileTypesArray = BunkerSliceGenerator._getBunkerTileTypes(
-        bunkerCount,
-        numInnerReds
-    );
-
-    let numReds = 0;
-    let numOther = 0;
-    for (const bunkerTileTypes of bunkerTileTypesArray) {
-        assert.equal(bunkerTileTypes.length, 4);
-        for (const bunkerTileType of bunkerTileTypes) {
-            if (bunkerTileType === TILE_TYPE.RED) {
-                numReds += 1;
-            } else {
-                numOther += 1;
-            }
-        }
-    }
-    assert.equal(numReds, bunkerCount * 2 - numInnerReds);
-    assert.equal(numOther, bunkerCount * 4 - numReds);
-});
-
-it("getInnerRingTileTypes", () => {
-    const playerCount = 6;
-    const numInnerReds = 3;
-    const tileTypes = BunkerSliceGenerator._getInnerRingTileTypes(
-        playerCount,
-        numInnerReds
-    );
-
-    let numReds = 0;
-    let numOther = 0;
-    assert.equal(tileTypes.length, playerCount);
-    for (const tileType of tileTypes) {
-        if (tileType === TILE_TYPE.RED) {
-            numReds += 1;
-        } else {
-            numOther += 1;
-        }
-    }
-    assert.equal(numReds, numInnerReds);
-    assert.equal(numOther, playerCount - numInnerReds);
+it("_chooseOneBunkerTileTypes", () => {
+    const bunkerTileTypes = BunkerSliceGenerator._chooseOneBunkerTileTypes();
+    assert.equal(bunkerTileTypes.length, 4);
 });
 
 it("promoteWormhole", () => {
@@ -136,7 +113,7 @@ it("promoteWormholeRandomizeTier", () => {
 it("normal use", () => {
     const result = new BunkerSliceGenerator()
         .setBunkerCount(6)
-        .pickNumInnerReds()
+        .pickInnerRingTileTypes()
         .pickBunkerTileTypes()
         .pickInnerRingTileTypes()
         .pickRedTiles()

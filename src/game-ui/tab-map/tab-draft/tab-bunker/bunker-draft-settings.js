@@ -34,7 +34,7 @@ class BunkerDraftSettings {
 
                 bunkersAndInner.bunkers.forEach((bunker, index) => {
                     console.log(`adding bunker [${bunker.join(",")}]`);
-                    const label = locale("ui.draft.slice_label", {
+                    const label = locale("ui.draft.bunker_label", {
                         index: index + 1,
                     });
                     const color = false;
@@ -73,7 +73,7 @@ class BunkerDraftSettings {
                             if (custom.labels && custom.labels[i]) {
                                 label = custom.labels[i];
                             } else {
-                                label = locale("ui.draft.slice_label", {
+                                label = locale("ui.draft.bunker_label", {
                                     index: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i],
                                 });
                             }
