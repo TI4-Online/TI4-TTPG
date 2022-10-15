@@ -1,12 +1,6 @@
 require("../../../global");
 const assert = require("assert");
-const {
-    BunkerSliceGenerator,
-    RED,
-    HIGH,
-    MED,
-    LOW,
-} = require("./bunker-slice-generator");
+const { BunkerSliceGenerator } = require("./bunker-slice-generator");
 
 it("constructor", () => {
     new BunkerSliceGenerator();

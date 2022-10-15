@@ -1,6 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
-const { Broadcast } = require("../../broadcast");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { FactionToken } = require("../../faction/faction-token");

@@ -22,36 +22,36 @@ const LOW = "low";
 const INNER_RING_CHOICES = [
     // 4 red
     { weight: 1, value: [RED, RED, RED, RED, HIGH, MED] }, // 5
-    { weight: 1, value: [RED, RED, RED, RED, HIGH, LOW] }, // 4
-    { weight: 1, value: [RED, RED, RED, RED, MED, MED] }, // 4
-    { weight: 1, value: [RED, RED, RED, RED, MED, LOW] }, // 3
+    { weight: 2, value: [RED, RED, RED, RED, HIGH, LOW] }, // 4
+    { weight: 3, value: [RED, RED, RED, RED, MED, MED] }, // 4
+    { weight: 2, value: [RED, RED, RED, RED, MED, LOW] }, // 3
     { weight: 1, value: [RED, RED, RED, RED, LOW, LOW] }, // 2
 
     // 3 red
-    { weight: 1, value: [RED, RED, RED, HIGH, MED, LOW] }, // 6
-    { weight: 1, value: [RED, RED, RED, HIGH, LOW, LOW] }, // 5
-    { weight: 1, value: [RED, RED, RED, MED, MED, LOW] }, // 5
-    { weight: 1, value: [RED, RED, RED, MED, LOW, LOW] }, // 4
-    { weight: 1, value: [RED, RED, RED, LOW, LOW, LOW] }, // 3
+    { weight: 5 + 1, value: [RED, RED, RED, HIGH, MED, LOW] }, // 6
+    { weight: 5 + 2, value: [RED, RED, RED, HIGH, LOW, LOW] }, // 5
+    { weight: 5 + 3, value: [RED, RED, RED, MED, MED, LOW] }, // 5
+    { weight: 5 + 2, value: [RED, RED, RED, MED, LOW, LOW] }, // 4
+    { weight: 5 + 1, value: [RED, RED, RED, LOW, LOW, LOW] }, // 3
 
     // 2 red
-    { weight: 1, value: [RED, RED, HIGH, MED, LOW, LOW] }, // 7
-    { weight: 1, value: [RED, RED, HIGH, LOW, LOW, LOW] }, // 6
-    { weight: 1, value: [RED, RED, MED, MED, LOW, LOW] }, // 6
-    { weight: 1, value: [RED, RED, MED, LOW, LOW, LOW] }, // 5
-    { weight: 1, value: [RED, RED, LOW, LOW, LOW, LOW] }, // 4
+    { weight: 5 + 1, value: [RED, RED, HIGH, MED, LOW, LOW] }, // 7
+    { weight: 5 + 2, value: [RED, RED, HIGH, LOW, LOW, LOW] }, // 6
+    { weight: 5 + 3, value: [RED, RED, MED, MED, LOW, LOW] }, // 6
+    { weight: 5 + 2, value: [RED, RED, MED, LOW, LOW, LOW] }, // 5
+    { weight: 5 + 1, value: [RED, RED, LOW, LOW, LOW, LOW] }, // 4
 ];
 
 const BUNKER_CHOICES = [
     // 2 red
     { weight: 1, value: [RED, RED, HIGH, HIGH] }, // 6
-    { weight: 1, value: [RED, RED, HIGH, MED] }, // 5
+    { weight: 2, value: [RED, RED, HIGH, MED] }, // 5
     { weight: 1, value: [RED, RED, MED, MED] }, // 4
 
     // 1 red
     { weight: 1, value: [RED, HIGH, MED, LOW] }, // 6
-    { weight: 1, value: [RED, HIGH, LOW, LOW] }, // 5
-    { weight: 1, value: [RED, MED, MED, LOW] }, // 5
+    { weight: 2, value: [RED, HIGH, LOW, LOW] }, // 5
+    { weight: 2, value: [RED, MED, MED, LOW] }, // 5
     { weight: 1, value: [RED, MED, LOW, LOW] }, // 4
 ];
 
@@ -153,10 +153,11 @@ class BunkerSliceGenerator {
         assert(playerCount >= 0 && playerCount <= 6);
         let result = BunkerSliceGenerator._weightedChoice(INNER_RING_CHOICES);
         result = [...result]; // return a copy
+        result = Shuffle.shuffle(result);
         while (result.length > playerCount) {
             result.shift();
         }
-        return Shuffle.shuffle(result);
+        return result;
     }
 
     /**
@@ -292,6 +293,8 @@ class BunkerSliceGenerator {
         assert(Array.isArray(entries));
         assert(Array.isArray(availableTiles));
 
+        let entriesBlue = 0;
+        let entriesPlanetCount = 0;
         let entriesRes = 0;
         let entriesInf = 0;
         let entriesWormhole = false;
@@ -301,7 +304,11 @@ class BunkerSliceGenerator {
         for (const entry of entries) {
             if (entry.tile) {
                 const system = world.TI4.getSystemByTileNumber(entry.tile);
+                if (system.blue) {
+                    entriesBlue += 1;
+                }
                 for (const planet of system.planets) {
+                    entriesPlanetCount += 1;
                     entriesRes += planet.raw.resources;
                     entriesInf += planet.raw.influence;
 
@@ -323,6 +330,7 @@ class BunkerSliceGenerator {
                 }
             }
         }
+        const avgPlanets = entriesPlanetCount / Math.max(1, entriesBlue);
         const entryIsRes = entriesRes > entriesInf; // fill the other one
 
         const choices = [];
@@ -356,10 +364,24 @@ class BunkerSliceGenerator {
             }
 
             let weight = 1;
+
+            // If average planet count is low favor higher planet counts.
+            if (avgPlanets < 1.4 && system.planets.length > 1) {
+                weight += 3;
+            }
+
+            // Likewise if planet count is high favor fewer.
+            if (avgPlanets > 1.6 && system.planets.length <= 1) {
+                weight += 3;
+            }
+
+            // If more res than inf, favor inf and vice versa.
             const isRes = res > inf;
             if (isRes != entryIsRes) {
-                weight += 1;
+                weight += 2;
             }
+
+            // Prefer tech and trait diversity.
             if (!techOverlap) {
                 weight += 1;
             }
