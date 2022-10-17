@@ -251,7 +251,7 @@ class BunkerDraft {
         assert(clickingPlayer instanceof Player);
 
         // Position Mecatol and Mallice.
-        MapStringLoad.load("{18}", true);
+        MapStringLoad.load("{18}", false);
 
         // Unpack inner ring.
         BunkerSliceLayout.doLayoutInnerRing(this._innerRing);
@@ -281,7 +281,7 @@ class BunkerDraft {
             playerCount
         );
         console.log(`BunkerDraft: hyperlanes "${hyperlanesString}"`);
-        MapStringLoad.load(hyperlanesString, true);
+        MapStringLoad.load(hyperlanesString, false);
 
         // Set turn order.
         const playerDesks = world.TI4.getAllPlayerDesks();

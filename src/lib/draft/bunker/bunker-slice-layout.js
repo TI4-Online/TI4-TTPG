@@ -212,7 +212,7 @@ class BunkerSliceLayout {
         assert(innerRing.length === 6);
 
         const mapString = innerRing.join(" ");
-        MapStringLoad.load(mapString, true);
+        MapStringLoad.load(mapString, false);
     }
 }
 

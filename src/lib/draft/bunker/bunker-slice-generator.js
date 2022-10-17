@@ -447,7 +447,7 @@ class BunkerSliceGenerator {
 
     reset() {
         this._playerCount = world.TI4.config.playerCount;
-        this._bunkerCount = world.TI4.config.playerCount + 1;
+        this._bunkerCount = world.TI4.config.playerCount + 2;
         this._bunkers = undefined; // {Array.{Bunker}}
         this._innerRingEntries = undefined; // {Array.{tileType:string,tile:number}}
 
