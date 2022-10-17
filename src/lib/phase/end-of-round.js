@@ -306,7 +306,7 @@ class EndStatusPhase {
         const snapPoint = nsidToSnapPoint[nsid];
         if (!snapPoint) {
             // custom strategy card?
-            const pos = strategyCardMat.getPosition().add([-15, 0, 10]);
+            const pos = strategyCardMat.getPosition().add([-12, 0, 10]);
             const rot = strategyCardMat.getRotation().compose([0, 90, 0]);
             strategyCardObj.setPosition(pos, ANIMATION_SPEED);
             strategyCardObj.setRotation(rot, ANIMATION_SPEED);
