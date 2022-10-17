@@ -199,11 +199,30 @@ class AuxDataPair {
 
         // If using a planet, get units on and ships above planet.
         if (this._planet) {
-            this._hexPlastic = this._hexPlastic.filter(
-                (plastic) =>
+            // The Matriarch (Naalu flagship) lets fighters participate in
+            // ground combat.  Do not require players position the flagship
+            // and fighters, detect and use them.  This would probably be better
+            // done by stowing removed units and looking at those later in the
+            // modifier, but modifier trigger would also need to consider them.
+            // For now bring out the hack hammer.
+            const includeFlagshipAndFighters =
+                this._aux1.rollType === "groundCombat" &&
+                this._aux1.faction.raw.units.includes("matriarch");
+
+            this._hexPlastic = this._hexPlastic.filter((plastic) => {
+                // Matriarch factions pass along fighters and flagships.
+                if (
+                    includeFlagshipAndFighters &&
+                    (plastic.unit === "fighter" || plastic.unit === "flagship")
+                ) {
+                    return true;
+                }
+                // Normal case.
+                return (
                     plastic.planet &&
                     plastic.planet.localeName === this._planet.localeName
-            );
+                );
+            });
         }
     }
 
