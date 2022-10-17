@@ -11,6 +11,7 @@ const {
     Vector,
     world,
 } = require("../wrapper/api");
+const { TableLayout } = require("../table/table-layout");
 
 const SPAWN_OFF_MAP_ALSO = false;
 
@@ -53,6 +54,8 @@ const HOME_SYSTEM_POSITIONS = {
         { onMap: "<-2,4,-2>", offMap: "<2,4,-6>" },
     ],
 };
+
+const SKINNY_OFF_MAP = ["<-1,5,-4>", "<4,-5,1>", "<1,-5,4>"];
 
 class SetupGenericHomeSystems extends AbstractSetup {
     static addLabel(systemTileObj, labelText) {
@@ -133,6 +136,27 @@ class SetupGenericHomeSystems extends AbstractSetup {
     }
 
     static getHomeSystemPosition(playerDesk, offMap = false) {
+        // The skinny table has fewer choices.
+        if (offMap && TableLayout.GET_TABLE() === "6p-skinny") {
+            console.log("6p-skinny off map override");
+            const std = SetupGenericHomeSystems.getHomeSystemPosition(
+                playerDesk,
+                false
+            );
+            let best = "";
+            let bestDistanceSq = Number.MAX_SAFE_INTEGER;
+            for (const hex of SKINNY_OFF_MAP) {
+                const pos = Hex.toPosition(hex);
+                pos.z = world.getTableHeight() + 10;
+                const dSq = pos.subtract(std).magnitudeSquared();
+                if (dSq < bestDistanceSq) {
+                    best = pos;
+                    bestDistanceSq = dSq;
+                }
+            }
+            return best;
+        }
+
         const playerSlot = playerDesk.playerSlot;
         const index = this.getPlayerSlotToHomeSystemIndex()[playerSlot];
 
