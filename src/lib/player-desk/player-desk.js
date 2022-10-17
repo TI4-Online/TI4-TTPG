@@ -356,6 +356,18 @@ class PlayerDesk {
         return new Rotator(rot.pitch, rot.yaw, rot.roll).compose(this.rot);
     }
 
+    worldPositionToLocal(pos) {
+        assert(typeof pos.x === "number"); // instanceof Vector broken
+        return new Vector(pos.x, pos.y, pos.z)
+            .subtract(this.pos)
+            .rotateAngleAxis(-this.rot.yaw, [0, 0, 1]);
+    }
+
+    worldRotationToLocal(rot) {
+        assert(typeof rot.yaw === "number"); // instanceof Rotator broken
+        return this.rot.getInverse().compose(rot);
+    }
+
     /**
      * Move a player to this seat.
      *
