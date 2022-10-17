@@ -13,7 +13,9 @@ const tableJsFile = GlobalSavedData.get(
     GLOBAL_SAVED_DATA_KEY.TABLE,
     DEFAULT_TABLE_JS_FILE
 );
-console.log(`TableLayout "${tableJsFile}"`);
+if (!world.__isMock) {
+    console.log(`TableLayout "${tableJsFile}"`);
+}
 const layout = require(`./${tableJsFile}`);
 
 class TableLayout {
