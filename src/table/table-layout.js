@@ -13,6 +13,7 @@ const tableJsFile = GlobalSavedData.get(
     GLOBAL_SAVED_DATA_KEY.TABLE,
     DEFAULT_TABLE_JS_FILE
 );
+console.log(`TableLayout "${tableJsFile}"`);
 const layout = require(`./${tableJsFile}`);
 
 class TableLayout {
@@ -20,6 +21,7 @@ class TableLayout {
     static SET_TABLE(value) {
         GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.TABLE, value);
     }
+
     static GET_TABLE() {
         return GlobalSavedData.get(
             GLOBAL_SAVED_DATA_KEY.TABLE,
