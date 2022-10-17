@@ -12,9 +12,6 @@ const {
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
-const {
-    PlaceTradegoodUnpicked,
-} = require("../lib/phase/place-tradegood-unpicked");
 const { PremadeMap } = require("./tab-map/tab-premade/premade-map");
 const {
     SCPTDraftSettings,
@@ -351,16 +348,18 @@ class GameUI {
                 return new TabStrategy().getUI();
             });
         rootFolder.addChild(strategyPhaseEntry);
-        globalEvents.TI4.onStrategyCardMovementStopped.add(() => {
-            console.log("GameUI: onStrategyCardMovementStopped");
-            // How shall we test if this is the stragey phase?
-            // If enough strategy cards are unpicked assume picking now.
-            const unpickedStrategyCards =
-                PlaceTradegoodUnpicked.getUnpickedStrategyCards();
-            if (unpickedStrategyCards.length >= 6) {
-                navPanel.setCurrentNavEntry(strategyPhaseEntry);
-            }
-        });
+        // Comment this out for now.  Switch to the strategy phase panel?
+        // This triggers for status phase cleanup too, not ideal.
+        // globalEvents.TI4.onStrategyCardMovementStopped.add(() => {
+        //     console.log("GameUI: onStrategyCardMovementStopped");
+        //     // How shall we test if this is the stragey phase?
+        //     // If enough strategy cards are unpicked assume picking now.
+        //     const unpickedStrategyCards =
+        //         PlaceTradegoodUnpicked.getUnpickedStrategyCards();
+        //     if (unpickedStrategyCards.length >= 6) {
+        //         navPanel.setCurrentNavEntry(strategyPhaseEntry);
+        //     }
+        // });
 
         const actionPhaseFolder = this._createActionPhaseFolder(navPanel);
         rootFolder.addChild(actionPhaseFolder);
