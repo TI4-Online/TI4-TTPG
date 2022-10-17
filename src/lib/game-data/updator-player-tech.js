@@ -41,8 +41,12 @@ module.exports = (data) => {
 
     // Add per-player tech.
     techCards.forEach((card) => {
-        const nsid = ObjectNamespace.getNsid(card);
+        let nsid = ObjectNamespace.getNsid(card);
         assert(nsid);
+        // Tech map does not include omega nsids (should it?).
+        if (nsid.endsWith(".omega")) {
+            nsid = nsid.replace(/.omega$/, "");
+        }
         const name = _nsidToName[nsid];
         assert(name);
         const pos = card.getPosition();
