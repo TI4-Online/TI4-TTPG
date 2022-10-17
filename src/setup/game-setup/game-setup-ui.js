@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Hex } = require("../../lib/hex");
+const { TableLayout } = require("../../table/table-layout");
 const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Button,
@@ -55,10 +56,11 @@ class GameSetupUI {
             .addChild(title)
             .addChild(colsPanel);
 
+        const maxPlayerCount = Math.min(8, TableLayout.desks().length);
         _playerCountSlider = this._createSlider(
             "ui.setup.player_count",
             2,
-            8,
+            maxPlayerCount,
             world.TI4.config.playerCount,
             this._callbacks.onPlayerCountChanged
         );
@@ -73,13 +75,17 @@ class GameSetupUI {
                 this._callbacks.onGamePointsChanged
             )
         );
-        col1Panel.addChild(
-            this._createCheckbox(
-                "ui.setup.larger_hexes",
-                Hex.getLargerScale(),
-                this._callbacks.onUseLargerHexes
-            )
-        );
+
+        if (TableLayout.supportsLargeHexes) {
+            col1Panel.addChild(
+                this._createCheckbox(
+                    "ui.setup.larger_hexes",
+                    Hex.getLargerScale(),
+                    this._callbacks.onUseLargerHexes
+                )
+            );
+        }
+
         col1Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_game_data",

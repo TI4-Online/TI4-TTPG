@@ -55,6 +55,10 @@ class TableLayout {
         assert(typeof anchor.yaw === "number");
         return new Rotator(0, anchor.yaw, 0).compose(rot);
     }
+
+    static get supportsLargeHexes() {
+        return layout.supportsLargeHexes;
+    }
 }
 
 module.exports = { TableLayout };

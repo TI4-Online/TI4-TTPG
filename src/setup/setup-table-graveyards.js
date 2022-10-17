@@ -12,7 +12,15 @@ const GRAVEYARDS = {
     nsid: "bag:base/garbage",
 };
 
+if (TableLayout.GET_TABLE() === "6p-skinny") {
+    GRAVEYARDS.d = 65;
+    GRAVEYARDS.yaw0 = 30;
+    GRAVEYARDS.dYaw = 60;
+    GRAVEYARDS.count = 6;
+}
+
 const EXTRA_GRAVEYARDS = [
+    // on the side
     {
         nsid: "bag:base/garbage",
         anchor: TableLayout.anchor.strategy,
