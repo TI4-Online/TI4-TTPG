@@ -23,7 +23,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-assets/States/*.vts
+#assets/States/*.vts
 assets/Thumbnails/*.png
 
 src/lib/langdef.js
