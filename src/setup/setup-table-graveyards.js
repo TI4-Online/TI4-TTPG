@@ -1,6 +1,7 @@
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
 
 const GRAVEYARDS = {
@@ -10,6 +11,15 @@ const GRAVEYARDS = {
     count: 9,
     nsid: "bag:base/garbage",
 };
+
+const EXTRA_GRAVEYARDS = [
+    {
+        nsid: "bag:base/garbage",
+        anchor: TableLayout.anchor.strategy,
+        pos: { x: -10, y: 35, z: 3 },
+        yaw: 0,
+    },
+];
 
 class SetupTableGraveyards extends AbstractSetup {
     setup() {
@@ -25,6 +35,22 @@ class SetupTableGraveyards extends AbstractSetup {
             obj.setScale(new Vector(0.8, 0.8, 0.5));
             obj.setObjectType(ObjectType.Ground);
         }
+
+        // Place one near the combat arena.
+        EXTRA_GRAVEYARDS.forEach((data) => {
+            const nsid = data.nsid;
+            const pos = TableLayout.anchorPositionToWorld(
+                data.anchor,
+                data.pos
+            );
+            const rot = TableLayout.anchorRotationToWorld(
+                data.anchor,
+                new Rotator(0, data.yaw, 0)
+            );
+            const obj = Spawn.spawn(nsid, pos, rot);
+            obj.setScale(new Vector(0.8, 0.8, 0.5));
+            obj.setObjectType(ObjectType.Ground);
+        });
     }
 
     clean() {
