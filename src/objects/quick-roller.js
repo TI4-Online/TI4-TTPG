@@ -101,8 +101,9 @@ class QuickRoller {
             .build(player);
         this._pendingDice.push(simpleDie);
 
-        if (!this._pendingRollHandle) {
+        if (this._pendingRollHandle) {
             clearTimeout(this._pendingRollHandle);
+            this._pendingRollHandle = undefined;
         }
         this._pendingRollHandle = setTimeout(() => {
             this.doRoll(player);

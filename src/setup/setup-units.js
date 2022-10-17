@@ -1,50 +1,69 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
-const { Layout } = require("../lib/layout");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
-const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
+const { ObjectType, Rotator, world } = require("../wrapper/api");
 const { UnitAttrs } = require("../lib/unit/unit-attrs");
 
 // Units in left-right bag order.
 const UNIT_DATA = [
     {
         unitNsid: "unit:pok/mech",
+        pos: { x: -24.498, y: -49.464, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/infantry",
+        pos: { x: -19.077, y: -47.702, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/fighter",
+        pos: { x: -13.656, y: -45.941, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/space_dock",
+        pos: { x: -8.235, y: -44.18, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/pds",
+        pos: { x: -2.814, y: -42.418, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/carrier",
+        pos: { x: 2.607, y: -40.657, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/destroyer",
+        pos: { x: 8.028, y: -38.895, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/cruiser",
+        pos: { x: 13.449, y: -37.134, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/dreadnought",
+        pos: { x: 18.87, y: -35.373, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/flagship",
+        pos: { x: 24.291, y: -33.611, z: 4.43 },
+        yaw: -72.001,
     },
     {
         unitNsid: "unit:base/war_sun",
+        pos: { x: 29.712, y: -31.85, z: 4.43 },
+        yaw: -72.001,
     },
 ];
 
-const EDGE_YAW = 18;
-const DISTANCE_BETWEEN_UNITS = 5.7;
 const UNIT_SCALE = 0.8;
 
 class SetupUnits extends AbstractSetup {
@@ -54,36 +73,8 @@ class SetupUnits extends AbstractSetup {
     }
 
     setup() {
-        // Compute center by rotating the desk center to match desk edge.
-        let shelfCenter = this.playerDesk.center
-            .multiply(1.03)
-            .rotateAngleAxis(EDGE_YAW, [0, 0, 1]);
-        shelfCenter.z = world.getTableHeight() + 5;
-
-        // Move it closer to desk center.
-        shelfCenter = Vector.interpolateTo(
-            shelfCenter,
-            this.playerDesk.center,
-            1,
-            DISTANCE_BETWEEN_UNITS * 0.02
-        );
-
-        //.add([0, DISTANCE_BETWEEN_UNITS * 0.5 + 2, 0]);
-        const rot = new Rotator(0, EDGE_YAW - 90, 0).compose(
-            this.playerDesk.rot
-        );
-
-        // Use layout to find positions and rotations along an arc.
-        const pointPosRots = new Layout()
-            .setCount(UNIT_DATA.length)
-            .setDistanceBetween(DISTANCE_BETWEEN_UNITS)
-            .setCenter(shelfCenter)
-            .layoutLinear(rot.yaw)
-            .getPoints();
-
-        assert(UNIT_DATA.length == pointPosRots.length);
         for (let i = 0; i < UNIT_DATA.length; i++) {
-            this._setupUnit(UNIT_DATA[i], pointPosRots[i]);
+            this._setupUnit(UNIT_DATA[i]);
         }
     }
 
@@ -110,14 +101,19 @@ class SetupUnits extends AbstractSetup {
         }
     }
 
-    _setupUnit(unitData, pointPosRot) {
+    _setupUnit(unitData) {
         const unitNsid = unitData.unitNsid;
         const bagNsid = "bag." + unitNsid;
 
         const color = this.playerDesk.plasticColor;
         const playerSlot = this.playerDesk.playerSlot;
 
-        const bag = Spawn.spawn(bagNsid, pointPosRot.pos, pointPosRot.rot);
+        const pos = this.playerDesk.localPositionToWorld(unitData.pos);
+        const rot = this.playerDesk.localRotationToWorld(
+            new Rotator(0, unitData.yaw, 0)
+        );
+
+        const bag = Spawn.spawn(bagNsid, pos, rot);
         bag.clear(); // paranoia
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(playerSlot);
@@ -129,8 +125,8 @@ class SetupUnits extends AbstractSetup {
         const unitCount = unitAttrs.raw.unitCount;
 
         for (let i = 0; i < unitCount; i++) {
-            const aboveBag = pointPosRot.pos.add([0, 0, 10 + i * 3]);
-            const unit = Spawn.spawn(unitNsid, aboveBag, pointPosRot.rot);
+            const aboveBag = pos.add([0, 0, 10 + i * 3]);
+            const unit = Spawn.spawn(unitNsid, aboveBag, rot);
             unit.setOwningPlayerSlot(playerSlot);
             unit.setPrimaryColor(color);
             unit.setScale([UNIT_SCALE, UNIT_SCALE, UNIT_SCALE]);

@@ -22,6 +22,7 @@ const ACTION = {
     CLEAN: "*CLEAN",
     SETUP: "*SETUP",
     OCTO_TABLE: "*OCTO TABLE",
+    SIX_SKINNY: "*6P SKINNY",
 };
 
 function clean(preserveTable) {
@@ -97,5 +98,9 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     if (actionName === ACTION.OCTO_TABLE) {
         clean();
         TableLayout.SET_TABLE("layout-v5-oct");
+    }
+    if (actionName === ACTION.SIX_SKINNY) {
+        clean();
+        TableLayout.SET_TABLE("6p-skinny");
     }
 });

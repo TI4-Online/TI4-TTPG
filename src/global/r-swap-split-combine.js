@@ -303,6 +303,11 @@ function onR(obj, player) {
         return;
     }
 
+    // Saw a crash from an object without nsid.  Double check before using.
+    if (!METADATA_TO_INFO[obj.getTemplateMetadata()]) {
+        return;
+    }
+
     // Careful, if multiple objects selected ALL get a separate call!
     // Pressing "R" outside any selected object still calls for each.
     // Moreover, player.getSelectedObjects seems to fail for non-host?

@@ -3,6 +3,7 @@ const { AbstractSetup } = require("./abstract-setup");
 const { Layout } = require("../lib/layout");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
+const { TableLayout } = require("../table/table-layout");
 const { ObjectType, Vector, world } = require("../wrapper/api");
 
 const SCALE = 0.8;
@@ -24,6 +25,17 @@ const SUPPLY_BOX_SETS = [
         nsids: ["token:base/fighter_3", "token:base/fighter_1"],
     },
 ];
+
+if (TableLayout.GET_TABLE() === "6p-skinny") {
+    SUPPLY_BOX_SETS[0].d = 65 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
+    SUPPLY_BOX_SETS[0].yaw0 = 90;
+    SUPPLY_BOX_SETS[0].dyaw = 180;
+    SUPPLY_BOX_SETS[0].count = 2;
+    SUPPLY_BOX_SETS[1].d = 65 + DISTANCE_BETWEEN_SUPPLY_BOXES;
+    SUPPLY_BOX_SETS[1].yaw0 = 90;
+    SUPPLY_BOX_SETS[1].dyaw = 180;
+    SUPPLY_BOX_SETS[1].count = 2;
+}
 
 class SetupSupplyBoxesTable extends AbstractSetup {
     constructor() {

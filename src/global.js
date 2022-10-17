@@ -240,6 +240,7 @@ require("./global/right-click/heroes/dimensional-anchor");
 require("./global/right-click/heroes/multiverse-shift");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
+require("./global/right-click/right-click-fetch-planet");
 require("./global/right-click/right-click-iihq-modernization");
 require("./global/right-click/right-click-maban-omega");
 require("./global/right-click/right-click-mageon-implants");
