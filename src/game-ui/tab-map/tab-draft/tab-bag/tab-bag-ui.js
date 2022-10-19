@@ -1,6 +1,7 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const locale = require("../../../../lib/locale");
 const CONFIG = require("../../../game-ui-config");
+const { BagDraft } = require("../../../../lib/draft/bag/bag-draft");
 const {
     Button,
     HorizontalBox,
@@ -12,9 +13,9 @@ const {
 } = require("../../../../wrapper/api");
 
 const SLIDER = {
-    RED: { MIN: 1, MAX_6: 3, MAX_GREATER: 2, DEFAULT: 2 },
-    BLUE: { MIN: 1, MAX_6: 4, MAX_GREATER: 4, DEFAULT: 3 },
-    FACTION: { MIN: 1, MAX_6: 4, MAX_GREATER: 3, DEFAULT: 2 },
+    RED: { MIN: 1, DEFAULT: 2 },
+    BLUE: { MIN: 1, DEFAULT: 3 },
+    FACTION: { MIN: 1, DEFAULT: 2 },
 };
 
 class TabBagDraftUI extends VerticalBox {
@@ -33,7 +34,14 @@ class TabBagDraftUI extends VerticalBox {
         this.removeAllChildren();
 
         const playerCount = world.TI4.config.playerCount;
-        const max6 = playerCount <= 6;
+
+        const availRed = BagDraft.draftSystems(-1, true).length;
+        const availBlue = BagDraft.draftSystems(-1, false).length;
+        const availFactions = world.TI4.getAllFactions().length - 3; // at most one keleres, minus one for linked faction
+
+        const maxRed = Math.floor(availRed / playerCount);
+        const maxBlue = Math.floor(availBlue / playerCount);
+        const maxFactions = Math.floor(availFactions / playerCount);
 
         // RED
         const redCountLabel = new Text()
@@ -43,7 +51,7 @@ class TabBagDraftUI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.RED.MIN)
-            .setMaxValue(max6 ? SLIDER.RED.MAX_6 : SLIDER.RED.MAX_GREATER)
+            .setMaxValue(maxRed)
             .setStepSize(1)
             .setValue(SLIDER.RED.DEFAULT);
         const redCountPanel = new HorizontalBox()
@@ -60,7 +68,7 @@ class TabBagDraftUI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.BLUE.MIN)
-            .setMaxValue(max6 ? SLIDER.BLUE.MAX_6 : SLIDER.BLUE.MAX_GREATER)
+            .setMaxValue(maxBlue)
             .setStepSize(1)
             .setValue(SLIDER.BLUE.DEFAULT);
         const blueCountPanel = new HorizontalBox()
@@ -77,9 +85,7 @@ class TabBagDraftUI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.FACTION.MIN)
-            .setMaxValue(
-                max6 ? SLIDER.FACTION.MAX_6 : SLIDER.FACTION.MAX_GREATER
-            )
+            .setMaxValue(maxFactions)
             .setStepSize(1)
             .setValue(SLIDER.FACTION.DEFAULT);
         const factionCountPanel = new HorizontalBox()

@@ -25,14 +25,19 @@ class BagDraft {
     }
 
     static draftSystems(count, isRed) {
+        assert(typeof count === "number");
+        assert(typeof isRed === "boolean");
+
         let systems = world.TI4.getAllSystems();
-        systems = systems.filter((system) =>
-            isRed ? system.red : system.blue
+        systems = systems.filter(
+            (system) => (isRed ? system.red : system.blue) && system.tile !== 81
         );
         systems = Shuffle.shuffle(systems);
-        assert(systems.length >= count);
-        systems = systems.slice(0, count);
-        assert(systems.length === count);
+        if (count > 0) {
+            assert(systems.length >= count);
+            systems = systems.slice(0, count);
+            assert(systems.length === count);
+        }
         return systems;
     }
     /**
