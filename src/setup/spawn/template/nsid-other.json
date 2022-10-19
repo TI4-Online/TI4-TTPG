@@ -2,5 +2,6 @@
     "pad:base/status": "1C78FD3041A92C57AC10EBB7653904CC",
     "bag:base/generic": "A44BAA604E0ED034CD67FA9502214AA7",
     "tool:base/quick_roller": "FAC91E978D47C90DF8CCDCA76B2F8DA5",
-    "card.other.portrait:base/munitions_reserves": "2A581AD7E94B599AD85FB3B48542254C"
+    "card.other.portrait:base/munitions_reserves": "2A581AD7E94B599AD85FB3B48542254C",
+    "tool:base/timer": "DC445A09A04B312D99BE7A86765E379E"
 }
