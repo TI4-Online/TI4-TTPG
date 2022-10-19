@@ -167,6 +167,8 @@ class SetupGenericHomeSystems extends AbstractSetup {
         // Saw an error report where hexData was undefined in a stack trace
         // coming from PlayerDesk.changeColor.  Have not been able to
         // reproduce and added a unittest.  For now throw a better error.
+        // Followup: index is undefined, during a change color call stack.
+        // Fixing this by reworking color change to preserve the player slot.
         if (!hexData) {
             const report = {
                 playerSlot,
