@@ -62,7 +62,7 @@ class AgendaWidgetSummary extends HorizontalBox {
         }
 
         let fontSize = CONFIG.fontSize;
-        const fitOutcomes = 5.8;
+        const fitOutcomes = 5;
         if (agenda.getNumOutcomes() > fitOutcomes) {
             fontSize = (fontSize * fitOutcomes) / agenda.getNumOutcomes();
         }

@@ -9,7 +9,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Button } = require("@tabletop-playground/api");
+const { Button, VerticalBox } = require("@tabletop-playground/api");
 const locale = require("../../lib/locale");
 
 let _deskIndexToWidgets = {};
@@ -17,7 +17,7 @@ globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
     _deskIndexToWidgets = {}; // release for garbage collection
 });
 
-class AgendaWidgetAvailableVotes extends LayoutBox {
+class AgendaWidgetAvailableVotes extends VerticalBox {
     static resetAll() {
         for (const widget of Object.values(_deskIndexToWidgets)) {
             assert(widget instanceof AgendaWidgetAvailableVotes);
@@ -31,22 +31,23 @@ class AgendaWidgetAvailableVotes extends LayoutBox {
 
         super();
 
+        const votesPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
+        this.setChildDistance(CONFIG.spacing)
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .addChild(votesPanel);
+
         this._fontSize = fontSize;
         this._availableVotesText = [];
-        this._panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        this.setHorizontalAlignment(HorizontalAlignment.Center).setChild(
-            this._panel
-        );
 
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
                 const delim = new Text().setFontSize(fontSize).setText("|");
-                this._panel.addChild(delim);
+                votesPanel.addChild(delim);
             }
             const text = new Text()
                 .setFontSize(fontSize)
                 .setTextColor(desk.plasticColor);
-            this._panel.addChild(text);
+            votesPanel.addChild(text);
             this._availableVotesText.push(text);
         });
         this.reset();
@@ -67,11 +68,13 @@ class AgendaWidgetAvailableVotes extends LayoutBox {
     addResetButton() {
         const button = new Button()
             .setFontSize(this._fontSize)
-            .setText(locale("ui.button.reset"));
+            .setText(locale("ui.agenda.clippy.reset_available_votes"));
         button.onClicked.add((button, player) => {
             AgendaWidgetAvailableVotes.resetAll();
         });
-        this._panel.addChild(button);
+
+        this.addChild(button);
+
         return this;
     }
 }
