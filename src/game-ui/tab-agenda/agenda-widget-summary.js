@@ -73,7 +73,7 @@ class AgendaWidgetSummary extends HorizontalBox {
         const availableVotes = new AgendaWidgetAvailableVotes(
             fontSize,
             deskIndex
-        );
+        ).addResetButton();
         rightPanel.addChild(availableVotes);
         rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
 
