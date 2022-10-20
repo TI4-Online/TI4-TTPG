@@ -58,9 +58,11 @@ class PlayerDeskColor {
         assert(playerDesk);
         assert(typeof newColorName === "string");
 
-        console.log(
-            `PlayerDeskColor.change: index=${playerDesk.index} from=${playerDesk.colorName} to=${newColorName}`
-        );
+        if (!world.__isMock) {
+            console.log(
+                `PlayerDeskColor.change: index=${playerDesk.index} from=${playerDesk.colorName} to=${newColorName}`
+            );
+        }
 
         let colorAttrs = undefined;
         for (const candidate of PLAYER_DESK_COLORS) {
