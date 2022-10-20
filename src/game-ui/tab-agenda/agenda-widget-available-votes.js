@@ -1,16 +1,16 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const { Agenda } = require("../../lib/agenda/agenda");
 const {
+    Button,
     HorizontalAlignment,
     HorizontalBox,
-    LayoutBox,
     Text,
+    VerticalBox,
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Button, VerticalBox } = require("@tabletop-playground/api");
-const locale = require("../../lib/locale");
 
 let _deskIndexToWidgets = {};
 globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
