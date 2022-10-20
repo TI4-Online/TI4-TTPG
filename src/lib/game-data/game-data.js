@@ -346,12 +346,15 @@ class GameData {
         assert(typeof endpoint == "string");
 
         // Drop if nothing changed.  No native digest, just keep whole string.
+        const timestamp = data.timestamp;
+        data.timestamp = 0; // remove timestamp for comparison with previous
         const thisPostStr = JSON.stringify(data);
         const lastPostStr = this._endpointToLastPostString[endpoint];
         if (lastPostStr === thisPostStr) {
             return; // nothing changed
         }
         this._endpointToLastPostString[endpoint] = thisPostStr;
+        data.timestamp = timestamp; // restore
 
         // Post.
         const url = this._getUrl(endpoint);
