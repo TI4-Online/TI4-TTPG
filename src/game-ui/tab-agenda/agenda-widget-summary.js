@@ -1,7 +1,6 @@
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
-const { AgendaUiDesk } = require("./agenda-ui-desk");
 const {
     Border,
     HorizontalAlignment,
@@ -14,6 +13,9 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const {
+    AgendaWidgetAvailableVotes,
+} = require("./agenda-widget-available-votes");
 
 let _agendaWidgetSummary = undefined;
 
@@ -67,8 +69,11 @@ class AgendaWidgetSummary extends HorizontalBox {
 
         const rightPanel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
-        const availableVotes =
-            AgendaUiDesk.createAvailableVotesWidget(fontSize);
+        const deskIndex = -1; // not a desk
+        const availableVotes = new AgendaWidgetAvailableVotes(
+            fontSize,
+            deskIndex
+        );
         rightPanel.addChild(availableVotes);
         rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
 
