@@ -25,6 +25,7 @@ const UPDATORS = [
     require("./updator-objectives"),
     require("./updator-player-active"),
     require("./updator-player-alliances"),
+    require("./updator-player-color"),
     require("./updator-player-command-tokens"),
     require("./updator-player-custodians"),
     require("./updator-player-faction-name"),
@@ -52,10 +53,6 @@ const KEY_DELAY_MSECS = 45 * 1000;
 
 const TI4_STREAMER_BUDDY_KEY = "buddy";
 const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 5 * 1000;
-
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 /**
  * Periodic upload of (normally) anonymized game state.
@@ -259,25 +256,10 @@ class GameData {
     _createGameDataShell() {
         const data = {
             players: world.TI4.getAllPlayerDesks().map((desk) => {
-                return { color: capitalizeFirstLetter(desk.colorName) };
+                return {};
             }),
             platform: "ttpg",
         };
-
-        // Overlay cannot handle custom colors.
-        const requiredColor = [
-            "White",
-            "Blue",
-            "Purple",
-            "Yellow",
-            "Red",
-            "Green",
-        ];
-        data.players.forEach((player, index) => {
-            player.colorActual = player.color;
-            player.color = requiredColor[index] || `seat${index + 1}`;
-        });
-
         if (this._extraData) {
             data.extra = this._extraData;
         }

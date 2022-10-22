@@ -227,6 +227,7 @@ require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/chat-commands");
 require("./global/desk-turn-order");
+require("./global/export-game");
 require("./global/gamedata-key");
 //require("./global/highlight-active-turn"); // desk-turn-order does this now
 require("./global/highlight-on-system-activated");
