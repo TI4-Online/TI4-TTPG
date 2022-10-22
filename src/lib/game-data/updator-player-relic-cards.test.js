@@ -17,6 +17,7 @@ it("player.relicCards", () => {
             allCardDetails: [
                 new MockCardDetails({
                     metadata: "card.relic:codex.affinity/nanoforge",
+                    name: "Nanoforge",
                 }),
             ],
             faceUp: false,
@@ -27,7 +28,5 @@ it("player.relicCards", () => {
     UPDATOR(data);
     world.__clear();
 
-    assert.deepEqual(data.players[0].relicCards, [
-        "card.relic:codex.affinity/nanoforge",
-    ]);
+    assert.deepEqual(data.players[0].relicCards, ["Nanoforge"]);
 });

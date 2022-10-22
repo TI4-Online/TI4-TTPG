@@ -4,6 +4,7 @@ const { Player, fetch, globalEvents, world } = require("../wrapper/api");
 const { AsyncTaskQueue } = require("../lib/async-task-queue/async-task-queue");
 
 const COMMAND = "!export";
+const LOCALHOST_POST = false;
 
 const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-config"),
@@ -21,6 +22,7 @@ const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-player-leaders"),
     require("../lib/game-data/updator-player-name"),
     require("../lib/game-data/updator-player-planet-cards"),
+    require("../lib/game-data/updator-player-relic-cards"),
     require("../lib/game-data/updator-player-score"),
     require("../lib/game-data/updator-player-strategy-cards"),
     require("../lib/game-data/updator-player-tech"),
@@ -33,7 +35,6 @@ const GAME_DATA_UPDATORS = [
 function sendToDiscord(webhook, message) {
     assert(typeof webhook === "string");
     assert(typeof message === "string");
-
     assert(webhook.startsWith("https://discord.com/api/webhooks/"));
 
     console.log(`sendToDiscord |${message.length}|: "${message}"`);
@@ -63,9 +64,27 @@ function gatherAndExport(webhook) {
     const setupTimestamp = data.setupTimestamp;
     assert(typeof setupTimestamp === "number");
 
+    const message = JSON.stringify(data);
+
+    // Localhost dump of full data.
+    if (LOCALHOST_POST) {
+        const url = "http://localhost:8080/postkey_ttpg?key=export";
+        const fetchOptions = {
+            headers: { "Content-type": "application/json;charset=UTF-8" },
+            body: JSON.stringify(data), // timestamp got added
+            method: "POST",
+        };
+        const promise = fetch(url, fetchOptions);
+        promise.then((res) => console.log(JSON.stringify(res.json())));
+    }
+
+    if (!webhook.startsWith("https://discord.com/api/webhooks/")) {
+        Broadcast.chatAll("missing webhook");
+        return;
+    }
+
     // Message size is limited to 2k characters.
     // Break up into chunks.
-    const message = JSON.stringify(data);
     let chunks = message.match(/(.|[\r\n]){1,1800}/g);
 
     // Prefix the game id (setup timestamp) and chunk index.

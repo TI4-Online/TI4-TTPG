@@ -18,7 +18,7 @@ module.exports = (data) => {
     for (const playerDesk of world.TI4.getAllPlayerDesks()) {
         const index = playerDesk.index;
         data.players[index].color = OVERRIDE_COLOR[index] || "?";
-        data.players[index].actualColor = capitalizeFirstLetter(
+        data.players[index].colorActual = capitalizeFirstLetter(
             playerDesk.colorName
         );
     }

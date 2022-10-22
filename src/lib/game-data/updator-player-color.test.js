@@ -16,5 +16,5 @@ it("player.steamName", () => {
     world.__clear();
 
     assert.equal(data.players[0].color, "White");
-    assert.equal(data.players[0].actualColor, "White");
+    assert.equal(data.players[0].colorActual, "White");
 });

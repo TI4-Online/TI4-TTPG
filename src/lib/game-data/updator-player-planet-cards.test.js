@@ -17,6 +17,7 @@ it("player.planetCards", () => {
             allCardDetails: [
                 new MockCardDetails({
                     metadata: "card.planet:base/meer",
+                    name: "Meer",
                 }),
             ],
             faceUp: false,
@@ -28,6 +29,7 @@ it("player.planetCards", () => {
             allCardDetails: [
                 new MockCardDetails({
                     metadata: "card.planet:base/mecatol_rex",
+                    name: "Mecatol Rex",
                 }),
             ],
             faceUp: false,
@@ -39,6 +41,7 @@ it("player.planetCards", () => {
             allCardDetails: [
                 new MockCardDetails({
                     metadata: "card.planet:pok/mallice",
+                    name: "Mallice",
                 }),
             ],
             faceUp: true,
@@ -50,8 +53,8 @@ it("player.planetCards", () => {
     world.__clear();
 
     assert.deepEqual(data.players[0].planetCards, [
-        "card.planet:base/meer",
-        "card.planet:base/mecatol_rex",
-        "card.planet:pok/mallice",
+        "Meer",
+        "Mecatol Rex",
+        "Mallice",
     ]);
 });
