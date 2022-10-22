@@ -4,7 +4,7 @@ const { Player, fetch, globalEvents, world } = require("../wrapper/api");
 const { AsyncTaskQueue } = require("../lib/async-task-queue/async-task-queue");
 
 const COMMAND = "!export";
-const LOCALHOST_POST = true;
+const LOCALHOST_POST = false;
 
 const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-config"),
