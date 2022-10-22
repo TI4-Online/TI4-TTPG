@@ -9,7 +9,7 @@ const { ObjectNamespace } = require("../object-namespace");
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
     data.players.forEach((playerData) => {
-        playerData.planetCards = [];
+        playerData.relicCards = [];
     });
 
     const checkIsDiscardPile = true;
@@ -21,8 +21,8 @@ module.exports = (data) => {
         if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
             continue;
         }
-        const planet = world.TI4.getPlanetByCard(obj);
-        if (!planet) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (!nsid.startsWith("card.relic")) {
             continue;
         }
 
@@ -34,7 +34,6 @@ module.exports = (data) => {
         const playerData = data.players[closestDesk.index];
         assert(playerData);
 
-        const nsid = ObjectNamespace.getNsid(obj);
-        playerData.planetCards.push(nsid);
+        playerData.relicCards.push(nsid);
     }
 };
