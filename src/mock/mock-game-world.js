@@ -182,6 +182,8 @@ class GameWorld {
         this._savedData = value;
     }
 
+    setSlotColor(slot, color) {}
+
     updateUI(uiElement) {
         assert(uiElement instanceof UIElement);
     }

@@ -47,8 +47,12 @@ module.exports = (data) => {
         if (nsid.endsWith(".omega")) {
             nsid = nsid.replace(/.omega$/, "");
         }
-        const name = _nsidToName[nsid];
-        assert(name);
+        let name = _nsidToName[nsid];
+        if (!name) {
+            console.log(`unknown tech "${nsid}"`);
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            name = parsed ? parsed.name : nsid;
+        }
         const pos = card.getPosition();
         const playerDesk = world.TI4.getClosestPlayerDesk(pos);
         assert(playerDesk);

@@ -5,6 +5,7 @@
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Hex } = require("./lib/hex");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
+const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
 const { SetupStrategyCards } = require("./setup/setup-strategy-cards");
 const { SetupSupplyBoxesTable } = require("./setup/setup-supply-boxes-table");
@@ -14,7 +15,7 @@ const { SetupTableDecks } = require("./setup/setup-table-decks");
 const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
 const { SetupTableTokens } = require("./setup/setup-table-tokens");
-const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
+const { SetupTimer } = require("./setup/setup-timer");
 const { TableLayout } = require("./table/table-layout");
 const { refObject, world } = require("./wrapper/api");
 
@@ -81,6 +82,7 @@ refObject.onCustomAction.add((obj, player, actionName) => {
         setups.push(new SetupTableGraveyards());
         setups.push(new SetupTableTokens());
         setups.push(new SetupQuickRollers());
+        setups.push(new SetupTimer());
 
         const setupNext = () => {
             const setup = setups.shift();

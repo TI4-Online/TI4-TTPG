@@ -332,6 +332,7 @@
     "ui.agenda.clippy.vote": "Vote",
     "ui.agenda.clippy.predict": "Ride",
     "ui.agenda.clippy.reset_cards": "Reset planet cards",
+    "ui.agenda.clippy.reset_available_votes": "Reset available votes",
     "ui.agenda.clippy.no_whens": "No WHENs",
     "ui.agenda.clippy.no_afters": "No AFTERs",
     "ui.agenda.clippy.play_when": "Play WHEN",

@@ -1,7 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ColorUtil } = require("../color/color-util");
+const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
+const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
+const { PlayerDeskColor, PLAYER_DESK_COLORS } = require("./player-desk-color");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
 const { PlayerDeskUI } = require("./player-desk-ui");
@@ -19,8 +22,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
-const { FactionToken } = require("../faction/faction-token");
 
 const TAKE_SEAT_CAMERA = {
     pos: { x: -90, y: 0, z: 70 },
@@ -310,6 +311,7 @@ class PlayerDesk {
             },
             onCleanFaction: (button, player) => {
                 this._factionSetupInProgress = false;
+                // BUG REPORT: "no faction for 15"
                 new PlayerDeskSetup(this).cleanFaction();
                 this.resetUI();
             },
@@ -430,7 +432,7 @@ class PlayerDesk {
      * @returns {Array.{colorName:string,color:Color,plasticColor:Color}}
      */
     getColorOptions() {
-        return TableLayout.desks().map((attrs) => {
+        return PLAYER_DESK_COLORS.map((attrs) => {
             return {
                 colorName: attrs.colorName,
                 colorTint: ColorUtil.colorFromHex(attrs.hexColor),
@@ -453,11 +455,9 @@ class PlayerDesk {
         assert(ColorUtil.isColor(colorTint));
         assert(ColorUtil.isColor(plasticColorTint));
 
-        const tableDesks = TableLayout.desks();
-
         let legalColorName = false;
-        for (const deskAttrs of tableDesks) {
-            if (deskAttrs.colorName === colorName) {
+        for (const attrs of PLAYER_DESK_COLORS) {
+            if (attrs.colorName === colorName) {
                 legalColorName = true;
                 break;
             }
@@ -465,14 +465,10 @@ class PlayerDesk {
         assert(legalColorName);
 
         const srcColorName = this.colorName;
-        const srcColorTint = this.color;
-        const srcPlasticColorTint = this.plasticColor;
         const srcPlayerSlot = this.playerSlot;
         const srcSetup = this.isDeskSetup();
         const srcFaction = world.TI4.getFactionByPlayerSlot(srcPlayerSlot);
         const dstColorName = colorName;
-        const dstColorTint = colorTint;
-        const dstPlasticColorTint = plasticColorTint;
         let dstPlayerSlot = -1;
         let dstSetup = false;
         let dstFaction = false;
@@ -489,14 +485,6 @@ class PlayerDesk {
             dstPlayerSlot = swapWith.playerSlot;
             dstSetup = swapWith.isDeskSetup();
             dstFaction = world.TI4.getFactionByPlayerSlot(dstPlayerSlot);
-        } else {
-            // Not swapping with an active seat.  Lookup from unused seats.
-            for (const deskAttrs of tableDesks) {
-                if (deskAttrs.colorName === colorName) {
-                    dstPlayerSlot = deskAttrs.defaultPlayerSlot;
-                    break;
-                }
-            }
         }
 
         // Reject change request if swap-with is seated.
@@ -518,41 +506,15 @@ class PlayerDesk {
             new PlayerDeskSetup(swapWith).cleanGeneric();
         }
 
-        // At this point all src/dst values are known.  Move players to free
-        // slots then to destination slots.  We want players in the final slot
-        // during desk setup to make sure the card holder gets linked.
-        assert(dstPlayerSlot >= 0);
-        const srcPlayer = world.getPlayerBySlot(srcPlayerSlot);
-        const dstPlayer = world.getPlayerBySlot(dstPlayerSlot);
-        if (srcPlayer) {
-            PlayerDesk.moveNewPlayerToNonSeatSlot(srcPlayer);
-        }
-        if (dstPlayer) {
-            PlayerDesk.moveNewPlayerToNonSeatSlot(dstPlayer);
-        }
-        if (srcPlayer) {
-            console.log(`PlayerDesk.changeColor: src -> ${dstPlayerSlot}`);
-            srcPlayer.switchSlot(dstPlayerSlot);
-        }
-        if (dstPlayer) {
-            console.log(`PlayerDesk.changeColor: dst -> ${srcPlayerSlot}`);
-            dstPlayer.switchSlot(srcPlayerSlot);
-        }
-
+        // At this point all src/dst values are known.
+        PlayerDeskColor.change(this, dstColorName);
         if (swapWith) {
-            swapWith._colorName = srcColorName;
-            swapWith._color = srcColorTint;
-            swapWith._plasticColor = srcPlasticColorTint;
-            swapWith._playerSlot = srcPlayerSlot;
+            PlayerDeskColor.change(swapWith, srcColorName);
         }
-
-        this._colorName = dstColorName;
-        this._color = dstColorTint;
-        this._plasticColor = dstPlasticColorTint;
-        this._playerSlot = dstPlayerSlot;
 
         // Recreate initial setup/faction state.
         if (srcSetup) {
+            // BUG REPORT: Setup home system generic failed, playerSlot wasn't recognized?
             new PlayerDeskSetup(this).setupGeneric();
         }
         if (srcFaction) {
@@ -571,42 +533,6 @@ class PlayerDesk {
         }
 
         this.saveDesksState();
-
-        // Saw an instance of cardholder not being linked correctly.
-        // Wait a moment then manually set them.
-        const reassignCardHolder = (player, slot) => {
-            assert(player instanceof Player);
-            assert(typeof slot === "number");
-            assert(slot >= 0);
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
-                if (!(obj instanceof CardHolder)) {
-                    continue;
-                }
-                if (obj.getOwningPlayerSlot() !== slot) {
-                    continue;
-                }
-                console.log(
-                    `PlayerDesk.changeColor: reassigning card holder for ${slot}`
-                );
-                player.setHandHolder(obj);
-                return;
-            }
-            throw new Error("PlayerDesk reassignCardHolder: no holder");
-        };
-        const reassignDelayMsecs = 3000;
-        if (srcPlayer) {
-            setTimeout(() => {
-                reassignCardHolder(srcPlayer, dstPlayerSlot);
-            }, reassignDelayMsecs);
-        }
-        if (dstPlayer) {
-            setTimeout(() => {
-                reassignCardHolder(dstPlayer, srcPlayerSlot);
-            }, reassignDelayMsecs);
-        }
 
         globalEvents.TI4.onPlayerColorChanged.trigger(this.color, this.index);
         if (swapWith) {

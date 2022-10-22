@@ -811,6 +811,7 @@ class Agenda {
             return;
         }
         if (world.__isMock) {
+            // Mock world: call event immediately b/c test might not have a next frame
             globalEvents.TI4.onAgendaPlayerStateChanged.trigger();
             return;
         }

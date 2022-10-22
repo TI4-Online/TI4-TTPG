@@ -1,0 +1,71 @@
+{
+	"Type": "Card",
+	"GUID": "DC445A09A04B312D99BE7A86765E379E",
+	"Name": "Timer",
+	"Metadata": "tool:base/timer",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 23,
+		"G": 23,
+		"B": 23
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "objects/timer.js",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"Tags": [],
+	"FrontTexture": "",
+	"BackTexture": "",
+	"HiddenTexture": "",
+	"BackIndex": -1,
+	"HiddenIndex": 0,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 18.2,
+	"Height": 6,
+	"Thickness": 0.250003,
+	"HiddenInHand": false,
+	"UsedWithCardHolders": false,
+	"CanStack": true,
+	"UsePrimaryColorForSide": true,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"EmissiveFront": false,
+	"Model": "Square",
+	"Indices": [ 0 ],
+	"CardNames":
+	{
+	},
+	"CardMetadata":
+	{
+		"0": "tool:base/timer"
+	},
+	"CardTags":
+	{
+	}
+}

@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { Agenda } = require("../../lib/agenda/agenda");
 const { AgendaCardButton } = require("../../lib/agenda/agenda-card-widget");
 const { Broadcast } = require("../../lib/broadcast");
 const {
@@ -21,6 +20,9 @@ const {
     world,
 } = require("../../wrapper/api");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const {
+    AgendaWidgetAvailableVotes,
+} = require("./agenda-widget-available-votes");
 
 const ANYONE_CAN_CLICK = false;
 const BUTTON_SCALE = 0.75;
@@ -65,7 +67,7 @@ class AgendaUiDesk extends Border {
         let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
 
         panel.addChild(
-            AgendaUiDesk.createAvailableVotesWidget(CONFIG.fontSize)
+            new AgendaWidgetAvailableVotes(CONFIG.fontSize, playerDesk.index)
         );
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
 
@@ -124,28 +126,6 @@ class AgendaUiDesk extends Border {
         const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
         const msg = locale("ui.error.not_owner", { playerName });
         Broadcast.broadcastOne(player, msg);
-    }
-
-    static createAvailableVotesWidget(fontSize) {
-        assert(typeof fontSize === "number");
-        const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
-
-        const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        world.TI4.getAllPlayerDesks().forEach((desk, index) => {
-            if (index > 0) {
-                const delim = new Text().setFontSize(fontSize).setText("|");
-                panel.addChild(delim);
-            }
-            const available = deskIndexToAvailableVotes[index] || 0;
-            const text = new Text()
-                .setFontSize(fontSize)
-                .setTextColor(desk.plasticColor)
-                .setText(available);
-            panel.addChild(text);
-        });
-        return new LayoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setChild(panel);
     }
 
     _createAgendaCardWidget() {
