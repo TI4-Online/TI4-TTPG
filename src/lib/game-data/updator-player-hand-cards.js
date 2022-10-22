@@ -3,33 +3,14 @@
  * NOT INTENDED FOR NORMAL GAME-DATA USE!
  */
 const assert = require("../../wrapper/assert-wrapper");
-const { ObjectNamespace } = require("../object-namespace");
 const { Card, world } = require("../../wrapper/api");
-
-/**
- * handSummary:{"Promissory":4}
- */
-const NSID_PREFIX_TO_EXPECTED_DECK_NAME = {
-    "card.objective.secret": "Secret Objectives",
-    "card.action": "Actions",
-    "card.promissory": "Promissory",
-};
+const { ObjectNamespace } = require("../object-namespace");
 
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
     data.players.forEach((playerData) => {
         playerData.handCards = [];
     });
-
-    const addNsid = (playerData, nsid) => {
-        for (const nsidPrefix of Object.keys(
-            NSID_PREFIX_TO_EXPECTED_DECK_NAME
-        )) {
-            if (nsid.startsWith(nsidPrefix)) {
-                playerData.handCards.push(nsid);
-            }
-        }
-    };
 
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
@@ -57,7 +38,7 @@ module.exports = (data) => {
 
         // Card in a holder owned by player.
         const playerData = data.players[playerDesk.index];
-        const nsid = ObjectNamespace.getNsid(obj);
-        addNsid(playerData, nsid);
+        const name = obj.getCardDetails().name;
+        playerData.handCards.push(name);
     }
 };

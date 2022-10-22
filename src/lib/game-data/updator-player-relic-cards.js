@@ -34,6 +34,7 @@ module.exports = (data) => {
         const playerData = data.players[closestDesk.index];
         assert(playerData);
 
-        playerData.relicCards.push(nsid);
+        const name = obj.getCardDetails().name;
+        playerData.relicCards.push(name);
     }
 };

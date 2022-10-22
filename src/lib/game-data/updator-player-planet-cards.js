@@ -4,7 +4,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { CardUtil } = require("../card/card-util");
 const { world } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../object-namespace");
 
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
@@ -34,7 +33,7 @@ module.exports = (data) => {
         const playerData = data.players[closestDesk.index];
         assert(playerData);
 
-        const nsid = ObjectNamespace.getNsid(obj);
-        playerData.planetCards.push(nsid);
+        const name = obj.getCardDetails().name;
+        playerData.planetCards.push(name);
     }
 };
