@@ -345,8 +345,15 @@ class GameData {
             body: JSON.stringify(data), // timestamp got added
             method: "POST",
         };
-        const promise = fetch(url, fetchOptions);
-        promise.then((res) => console.log(JSON.stringify(res.json())));
+        fetch(url, fetchOptions)
+            .then((res) => {
+                //console.log(`fetch response code ${res.status}`)
+            })
+            .catch((error) => {
+                // If fetch fails clear the last-sent cache.
+                //console.log(`fetch error "${error}"`);
+                this._endpointToLastPostString[endpoint] = undefined;
+            });
     }
 }
 
