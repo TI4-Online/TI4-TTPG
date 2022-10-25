@@ -15,6 +15,8 @@ class GameWorld {
         this._savedData = data ? data.savedData : "";
         this._tableHeight = data ? data.tableHeight : 1;
         this._uis = data && data.uis ? data.uis : [];
+
+        this._slotToTeam = {};
     }
 
     get __isMock() {
@@ -125,6 +127,10 @@ class GameWorld {
         return this._savedData;
     }
 
+    getSlotTeam(playerSlot) {
+        return this._slotToTeam[playerSlot] || 0;
+    }
+
     getTableHeight() {
         return this._tableHeight;
     }
@@ -183,6 +189,10 @@ class GameWorld {
     }
 
     setSlotColor(slot, color) {}
+
+    setSlotTeam(playerSlot, teamNumber) {
+        this._slotToTeam[playerSlot] = teamNumber;
+    }
 
     updateUI(uiElement) {
         assert(uiElement instanceof UIElement);

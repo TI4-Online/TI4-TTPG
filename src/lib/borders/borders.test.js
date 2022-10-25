@@ -53,6 +53,47 @@ it("getAllControlEntries", () => {
     assert(controlEntries[2].planet);
 });
 
+it("rewriteControlEntriesForTeams", () => {
+    const desks = world.TI4.getAllPlayerDesks();
+    const slot1 = desks[1].playerSlot;
+    const slot2 = desks[2].playerSlot;
+    assert(slot2 < slot1); // team uses lowest slot
+    const systemObj = new MockGameObject({
+        templateMetadata: "tile.system:base/18",
+        position: new MockVector(0, 0, 0),
+    });
+    const controlToken = new MockGameObject({
+        templateMetadata: "token.control:base/arborec",
+        position: new MockVector(0, 0, 0),
+        owningPlayerSlot: slot1,
+    });
+
+    world.__clear();
+    world.__addObject(systemObj);
+    world.__addObject(controlToken);
+
+    const controlEntries = Borders.getAllControlEntries();
+    world.__clear;
+
+    assert.equal(controlEntries.length, 1);
+    assert.equal(controlEntries[0].obj, controlToken);
+    assert.equal(controlEntries[0].hex, "<0,0,0>");
+    assert.equal(controlEntries[0].playerSlot, slot1);
+    assert.equal(controlEntries[0].areaType, AREA.PLANET);
+    assert(controlEntries[0].planet);
+
+    world.setSlotTeam(slot1, 13);
+    world.setSlotTeam(slot2, 13);
+    Borders.rewriteControlEntriesForTeams(controlEntries);
+
+    assert.equal(controlEntries.length, 1);
+    assert.equal(controlEntries[0].obj, controlToken);
+    assert.equal(controlEntries[0].hex, "<0,0,0>");
+    assert.equal(controlEntries[0].playerSlot, slot2); // team uses lowest slot
+    assert.equal(controlEntries[0].areaType, AREA.PLANET);
+    assert(controlEntries[0].planet);
+});
+
 it("getHexToControlSummary", () => {
     const systemObj = new MockGameObject({
         templateMetadata: "tile.system:base/18",
