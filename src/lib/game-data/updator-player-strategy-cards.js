@@ -19,6 +19,9 @@ module.exports = (data) => {
         if (!ObjectNamespace.isStrategyCard(obj)) {
             continue; // not a strategy card.
         }
+        if (obj.isHeld()) {
+            continue; // currently held by a player's pointer
+        }
         if (!FindTurnOrder.isStrategyCardPicked(obj)) {
             continue; // not picked, ignore it
         }
