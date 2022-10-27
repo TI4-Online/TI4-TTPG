@@ -16,6 +16,7 @@ const {
     globalEvents,
     world,
 } = require("../../../wrapper/api");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -124,10 +125,12 @@ class BunkerDraft {
 
         const onFinishedButton =
             this._draftSelectionManager.createOnFinishedButton();
-        onFinishedButton.onClicked.add((button, player) => {
-            this.clearPlayerUIs();
-            this.applyChoices(player);
-        });
+        onFinishedButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this.clearPlayerUIs();
+                this.applyChoices(player);
+            })
+        );
 
         const { widget, w, h, updateWaitingFor } = new BunkerDraftUI(
             playerDesk,
