@@ -40,9 +40,13 @@ class TurnOrderPanel extends VerticalBox {
             verticalAlignment = VerticalAlignment.Fill;
         }
         label.setText(name);
-        if (this._fontSize) {
-            label.setFontSize(this._fontSize);
-        }
+
+        // Scale down long names, but only so much.
+        let fontSizeScale = this._fitNameLength / name.length;
+        fontSizeScale = Math.min(fontSizeScale, 1);
+        fontSizeScale = Math.max(fontSizeScale, 0.5);
+        label.setFontSize(this._fontSize * fontSizeScale);
+
         const labelBox = new LayoutBox()
             .setVerticalAlignment(verticalAlignment)
             .setChild(label);
@@ -74,7 +78,8 @@ class TurnOrderPanel extends VerticalBox {
         super();
 
         this._fontSize = 20;
-        this._useEndTurnButton = true;
+        this._fitNameLength = 100;
+        this._addEndTurnButton = false;
 
         const update = () => {
             // Let other handlers finish, system process.  When a player joins
@@ -119,14 +124,20 @@ class TurnOrderPanel extends VerticalBox {
         return this;
     }
 
+    setFitNameLength(value) {
+        this._fitNameLength = value;
+        this.update();
+        return this;
+    }
+
     setSpacing(value) {
         assert(typeof value === "number");
         this.setChildDistance(value);
         return this;
     }
 
-    disableEndTurnButton() {
-        this._useEndTurnButton = false;
+    setAddEndTurnButton(value) {
+        this._addEndTurnButton = value;
         this.update();
         return this;
     }
@@ -148,13 +159,11 @@ class TurnOrderPanel extends VerticalBox {
             this.addChild(widget, 1);
         }
 
-        if (this._useEndTurnButton) {
+        if (this._addEndTurnButton) {
             const endTurnButton = new Button().setText(
                 locale("ui.button.end_turn")
             );
-            if (this._fontSize) {
-                endTurnButton.setFontSize(this._fontSize);
-            }
+            endTurnButton.setFontSize(this._fontSize);
             endTurnButton.onClicked.add((button, player) => {
                 if (world.TI4.turns.isActivePlayer(player)) {
                     world.TI4.turns.endTurn(player);
