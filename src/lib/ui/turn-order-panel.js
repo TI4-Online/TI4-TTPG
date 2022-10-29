@@ -15,11 +15,66 @@ const {
 } = require("../../wrapper/api");
 
 class TurnOrderPanel extends VerticalBox {
+    createBasicTurnWidget(playerDesk, passedPlayerSlotSet) {
+        assert(playerDesk);
+        assert(passedPlayerSlotSet);
+
+        const currentDesk = world.TI4.turns.getCurrentTurn();
+        const isTurn = playerDesk === currentDesk;
+        const playerSlot = playerDesk.playerSlot;
+        const player = world.getPlayerBySlot(playerSlot);
+        let name = player && player.getName();
+        if (!name || name.length === 0) {
+            name = `<${playerDesk.colorName}>`;
+        }
+        let label;
+        let verticalAlignment;
+        if (isTurn) {
+            label = new Text().setJustification(TextJustification.Center);
+            verticalAlignment = VerticalAlignment.Center;
+        } else {
+            label = new Button();
+            label.onClicked.add((button, clickingPlayer) => {
+                world.TI4.turns.setCurrentTurn(playerDesk, clickingPlayer);
+            });
+            verticalAlignment = VerticalAlignment.Fill;
+        }
+        label.setText(name);
+        if (this._fontSize) {
+            label.setFontSize(this._fontSize);
+        }
+        const labelBox = new LayoutBox()
+            .setVerticalAlignment(verticalAlignment)
+            .setChild(label);
+        const inner = new Border().setChild(labelBox);
+
+        const p = 1;
+        const innerBox = new LayoutBox().setPadding(p, p, p, p).setChild(inner);
+
+        const outer = new Border().setChild(innerBox);
+
+        const v = 0.05;
+        const plrColor = playerDesk.plasticColor;
+        const altColor = new Color(v, v, v);
+        const fgColor = isTurn ? altColor : plrColor;
+        const bgColor = isTurn ? plrColor : altColor;
+
+        const passed = passedPlayerSlotSet.has(playerSlot);
+        const passColor = altColor;
+
+        outer.setColor(passed ? passColor : fgColor);
+        inner.setColor(bgColor);
+        label.setTextColor(fgColor);
+
+        return outer;
+    }
+
     constructor(gameObject) {
         assert(!gameObject || gameObject instanceof GameObject);
         super();
 
-        this._fontSize = undefined;
+        this._fontSize = 20;
+        this._useEndTurnButton = true;
 
         const update = () => {
             // Let other handlers finish, system process.  When a player joins
@@ -70,6 +125,12 @@ class TurnOrderPanel extends VerticalBox {
         return this;
     }
 
+    disableEndTurnButton() {
+        this._useEndTurnButton = false;
+        this.update();
+        return this;
+    }
+
     update() {
         const playerDeskOrder = world.TI4.turns.getTurnOrder();
         assert(Array.isArray(playerDeskOrder));
@@ -79,71 +140,28 @@ class TurnOrderPanel extends VerticalBox {
 
         this.removeAllChildren();
 
-        const currentDesk = world.TI4.turns.getCurrentTurn();
         for (const playerDesk of playerDeskOrder) {
-            const playerSlot = playerDesk.playerSlot;
-            const isTurn = playerDesk === currentDesk;
-            const player = world.getPlayerBySlot(playerSlot);
-            let name = player && player.getName();
-            if (!name || name.length === 0) {
-                name = `<${playerDesk.colorName}>`;
-            }
-            let label;
-            let verticalAlignment;
-            if (isTurn) {
-                label = new Text().setJustification(TextJustification.Center);
-                verticalAlignment = VerticalAlignment.Center;
-            } else {
-                label = new Button();
-                label.onClicked.add((button, clickingPlayer) => {
-                    world.TI4.turns.setCurrentTurn(playerDesk, clickingPlayer);
-                });
-                verticalAlignment = VerticalAlignment.Fill;
-            }
-            label.setText(name);
+            const widget = this.createBasicTurnWidget(
+                playerDesk,
+                passedPlayerSlotSet
+            );
+            this.addChild(widget, 1);
+        }
+
+        if (this._useEndTurnButton) {
+            const endTurnButton = new Button().setText(
+                locale("ui.button.end_turn")
+            );
             if (this._fontSize) {
-                label.setFontSize(this._fontSize);
+                endTurnButton.setFontSize(this._fontSize);
             }
-            const labelBox = new LayoutBox()
-                .setVerticalAlignment(verticalAlignment)
-                .setChild(label);
-            const inner = new Border().setChild(labelBox);
-
-            const p = 1;
-            const innerBox = new LayoutBox()
-                .setPadding(p, p, p, p)
-                .setChild(inner);
-
-            const outer = new Border().setChild(innerBox);
-
-            const v = 0.05;
-            const plrColor = playerDesk.plasticColor;
-            const altColor = new Color(v, v, v);
-            const fgColor = isTurn ? altColor : plrColor;
-            const bgColor = isTurn ? plrColor : altColor;
-
-            const passed = passedPlayerSlotSet.has(playerSlot);
-            const passColor = altColor;
-
-            outer.setColor(passed ? passColor : plrColor);
-            inner.setColor(bgColor);
-            label.setTextColor(fgColor);
-
-            this.addChild(outer, 1);
+            endTurnButton.onClicked.add((button, player) => {
+                if (world.TI4.turns.isActivePlayer(player)) {
+                    world.TI4.turns.endTurn(player);
+                }
+            });
+            this.addChild(endTurnButton, 1.5);
         }
-
-        const endTurnButton = new Button().setText(
-            locale("ui.button.end_turn")
-        );
-        if (this._fontSize) {
-            endTurnButton.setFontSize(this._fontSize);
-        }
-        endTurnButton.onClicked.add((button, player) => {
-            if (world.TI4.turns.isActivePlayer(player)) {
-                world.TI4.turns.endTurn(player);
-            }
-        });
-        this.addChild(endTurnButton, 1.5);
     }
 }
 
