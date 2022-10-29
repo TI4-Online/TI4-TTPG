@@ -57,9 +57,14 @@ class GameWorld {
         this._drawingLines.push(value);
     }
 
+    addScreenUI(screenUIElement) {
+        return 0;
+    }
+
     addUI(uiElement) {
         assert(uiElement instanceof UIElement);
         this._uis.push(uiElement);
+        return this._uis.length - 1;
     }
 
     capsuleOverlap() {
@@ -193,6 +198,8 @@ class GameWorld {
     setSlotTeam(playerSlot, teamNumber) {
         this._slotToTeam[playerSlot] = teamNumber;
     }
+
+    updateScreenUI(screenUIElement) {}
 
     updateUI(uiElement) {
         assert(uiElement instanceof UIElement);
