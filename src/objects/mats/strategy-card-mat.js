@@ -19,7 +19,7 @@ _panel.addChild(
         .setFontSize(26 * SCALE)
         .setText(locale("ui.setup.title"))
         .setJustification(TextJustification.Center)
-        .setFont("ambroise_firmin_bold.otf", refPackageId)
+        .setFont("ambroise-firmin-bold.otf", refPackageId)
 );
 
 _panel.addChild(

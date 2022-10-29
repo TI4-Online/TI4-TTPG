@@ -156,7 +156,9 @@ class GameUI {
 
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
-            .setSpacing(CONFIG.spacing);
+            .setSpacing(CONFIG.spacing)
+            .setFitNameLength(13) // scale longer names
+            .setAddEndTurnButton(true);
         const navPanel = new NavPanel().startPeriodicUpdates();
 
         panel.addChild(turnOrderPanel, 1);

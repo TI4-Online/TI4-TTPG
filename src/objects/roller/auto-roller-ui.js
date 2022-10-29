@@ -34,7 +34,7 @@ const COMBAT_TYPE = {
 };
 
 const VERTICAL_DISTANCE = 5 * CONFIG.scale;
-const LABEL_FONT = "Handel_Gothic_Regular.otf";
+const LABEL_FONT = "handel-gothic-regular.ttf";
 const LABEL_FONT_SIZE = 14 * CONFIG.scale;
 const LABEL_WEIGHT = 0;
 const BUTTON_FONT_SIZE = 12 * CONFIG.scale;
