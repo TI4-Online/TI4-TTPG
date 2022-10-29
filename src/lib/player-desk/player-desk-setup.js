@@ -49,7 +49,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AsyncTaskQueue } = require("../async-task-queue/async-task-queue");
 
 const DISCARD_FACTION_TOKENS = true;
-const ASYNC_DELAY_MSECS = 10;
+const ASYNC_DELAY_MSECS = 50;
 const _sharedAsyncTaskQueue = new AsyncTaskQueue(ASYNC_DELAY_MSECS);
 
 class PlayerDeskSetup {
