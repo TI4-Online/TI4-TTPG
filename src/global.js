@@ -62,6 +62,10 @@ globalEvents.TI4 = {
     // <(player: Player) => void>
     onPlayerJoinedDelayed: new TriggerableMulticastDelegate(onErr),
 
+    // Called when a player uses right-click score.
+    // <(obj: GameObject, player: Player) => void>
+    onScored: new TriggerableMulticastDelegate(onErr),
+
     // Called when a singleton card is created, or when a deck is reduced to
     // a single card it is called on the "deck" (now a single card).
     // <(card: Card) => void>
