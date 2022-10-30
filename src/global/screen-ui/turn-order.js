@@ -1,4 +1,4 @@
-const { TurnOrderPanel } = require("../../lib/ui/turn-order-panel");
+const { TurnOrderPanel } = require("../../lib/ui/turn-order/turn-order-panel");
 const {
     Border,
     HorizontalAlignment,
@@ -8,62 +8,66 @@ const {
     world,
 } = require("../../wrapper/api");
 
-let _turnOrderPanel = undefined;
-let _ui = undefined;
+const WIDTH = 220;
+const ENTRY_HEIGHT = 58;
+const FONT_SIZE = ENTRY_HEIGHT * 0.2;
+const PAD = 10;
 
-// TODO XXX DO A LEADERBOARD LIKE UI
+class TurnOrderScreenUI {
+    constructor() {
+        this._turnOrderPanel = new TurnOrderPanel()
+            .setFontSize(FONT_SIZE)
+            .setFitNameLength(13)
+            .setUseFancyWidgets(true);
 
-/**
- * Leaderboard-like UI:
- *
- * [faction icon] [player name]   [score v]
- * [faction name] [strategy card] [score ^]
- *
- * There is no strikethrough, but we could use a special font for that.
- * Or put in parens?
- */
+        // Screen UI can be placed and sized with relative values, but that
+        // means UI will vary with screen size.  Since we cannot (yet) center
+        // a fixed-size element, place a fixed-side box inside another.
+        // This is definitely a hack.
+        // This goes away when screen UI can be fixed size.
+        const inner = new LayoutBox()
+            .setOverrideWidth(WIDTH)
+            .setChild(this._turnOrderPanel);
 
-const initHandler = () => {
-    console.log("screen-ui.end-turn.init");
+        const c = 0.3;
+        const frame = new Border().setColor([c, c, c, 1]).setChild(inner);
 
-    _turnOrderPanel = new TurnOrderPanel().disableEndTurnButton();
-    const innerBox = new LayoutBox()
-        .setOverrideWidth(150)
-        .setChild(_turnOrderPanel);
-    const outerBox = new LayoutBox()
-        .setHorizontalAlignment(HorizontalAlignment.Right)
-        .setChild(innerBox);
+        const outer = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Right)
+            .setPadding(0, PAD, PAD, 0)
+            .setChild(frame);
 
-    const v = 0.05;
-    const border = new Border().setColor([v, v, v, 1]).setChild(outerBox);
+        this._ui = new ScreenUIElement();
+        this._ui.relativeWidth = true;
+        this._ui.width = 0.2;
+        this._ui.relativeHeight = false;
+        this._ui.height = ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
+        this._ui.relativePositionX = true;
+        this._ui.positionX = 1 - this._ui.width;
 
-    _ui = new ScreenUIElement();
+        this._ui.relativePositionY = false;
+        this._ui.positionY = 0;
 
-    // Make x/width relative to screen size, fix y/height in pixels.
-    _ui.relativeWidth = true;
-    _ui.width = 0.1;
+        this._ui.widget = outer;
 
-    _ui.relativeHeight = false;
-    _ui.height = world.TI4.config.playerCount * 40;
+        world.addScreenUI(this._ui);
 
-    _ui.relativePositionX = true;
-    _ui.positionX = 1 - _ui.width;
-
-    _ui.relativePositionY = true;
-    _ui.positionY = 0;
-
-    _ui.widget = outerBox;
-
-    world.addScreenUI(_ui);
-};
-
-globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
-    if (_ui) {
-        _ui.height = world.TI4.config.playerCount * 40;
-        world.updateScreenUI(_ui);
+        globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
+            this._ui.height = ENTRY_HEIGHT * world.TI4.config.playerCount;
+            world.updateScreenUI(this._ui);
+        });
     }
-});
+}
 
 if (!world.__isMock) {
-    process.nextTick(initHandler);
+    // Give the world a little time to set up.
+    let ticksRemaining = 10;
+    const maybeGo = () => {
+        if (ticksRemaining-- > 0) {
+            process.nextTick(maybeGo);
+            return;
+        }
+        new TurnOrderScreenUI();
+    };
+    maybeGo();
 }
