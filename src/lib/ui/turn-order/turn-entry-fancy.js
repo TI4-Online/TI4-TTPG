@@ -1,5 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { Scoreboard } = require("../../scoreboard/scoreboard");
+const PlayerStrategyCards = require("../../game-data/updator-player-strategy-cards");
 const {
     Border,
     Canvas,
@@ -22,6 +23,13 @@ class TurnEntryFancy extends Canvas {
         const scoreboard = Scoreboard.getScoreboard();
         const playerSlotToScore = Scoreboard.getPlayerSlotToScore(scoreboard);
 
+        const gameData = {
+            players: new Array(world.TI4.config.playerCount)
+                .fill(0)
+                .map(() => []),
+        };
+        PlayerStrategyCards(gameData);
+
         for (let i = 0; i < entries.length; i++) {
             const entry = entries[i];
             const playerDesk = playerDeskOrder[i];
@@ -29,6 +37,10 @@ class TurnEntryFancy extends Canvas {
             config.isTurn = playerDesk === currentDesk;
             config.isPassed = passedPlayerSlotSet.has(playerSlot);
             config.score = playerSlotToScore[playerSlot] || 0;
+            config.strategyCards =
+                gameData.players[playerDesk.index]?.strategyCards || [];
+            config.strategyCardsFaceDown =
+                gameData.players[playerDesk.index]?.strategyCardsFaceDown || [];
             entry.update(playerDesk, config);
         }
     }
@@ -50,14 +62,15 @@ class TurnEntryFancy extends Canvas {
             .setText("Player Name");
         this._strategyCards = new Text()
             .setJustification(TextJustification.Center)
-            .setFontSize(12)
-            .setBold(true)
-            .setText("Strategy Card");
+            .setFont("handel-gothic-regular.ttf", refPackageId);
         this._score = new Text()
             .setJustification(TextJustification.Center)
             .setFontSize(26)
             .setBold(true)
             .setText("0");
+
+        // Use this to detect if strategy cards needs reset.
+        this._strategyCardsKey = undefined;
 
         const nameBox = new LayoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
@@ -84,6 +97,8 @@ class TurnEntryFancy extends Canvas {
         assert(typeof config.isTurn === "boolean");
         assert(typeof config.isPassed === "boolean");
         assert(typeof config.score === "number");
+        assert(Array.isArray(config.strategyCards));
+        assert(Array.isArray(config.strategyCardsFaceDown));
 
         const playerSlot = playerDesk.playerSlot;
         const player = world.getPlayerBySlot(playerSlot);
@@ -98,7 +113,7 @@ class TurnEntryFancy extends Canvas {
         const nameFontSize = 12 * fontSizeScale;
 
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
-        let factionName = faction ? faction.nameAbbr : "???";
+        let factionName = faction ? faction.nameAbbr : "—";
         if (factionName.startsWith("Keleres")) {
             factionName = "Keleres";
         }
@@ -111,7 +126,6 @@ class TurnEntryFancy extends Canvas {
         this._factionName.setText(factionName);
 
         this._playerName.setFontSize(nameFontSize).setText(name);
-        this._strategyCards.setText("TODO");
         this._score.setText(config.score.toString());
 
         // Color.
@@ -122,13 +136,36 @@ class TurnEntryFancy extends Canvas {
         const altBgColor = new Color(v1, v1, v1);
 
         const fgColor = config.isTurn ? altColor : plrColor;
-        let bgColor = config.isTurn ? plrColor : altBgColor;
+        const bgColor = config.isTurn ? plrColor : altBgColor;
 
         this._factionName.setTextColor(fgColor);
         this._playerName.setTextColor(fgColor);
-        this._strategyCards.setTextColor(fgColor);
         this._score.setTextColor(fgColor);
         this._canvasBackground.setColor(bgColor);
+
+        // Strategy cards.
+        const MARK_LEFT = "~";
+        const MARK_RIGHT = MARK_LEFT;
+        let strategyCards = config.strategyCards.map((strategyCard) => {
+            if (config.strategyCardsFaceDown.includes(strategyCard)) {
+                strategyCard = `${MARK_LEFT}${strategyCard}${MARK_RIGHT}`;
+            }
+            return strategyCard.toUpperCase();
+        });
+        if (strategyCards.length === 0) {
+            strategyCards.push("—");
+        }
+        strategyCards = strategyCards.join(" ");
+
+        fontSizeScale = 12 / strategyCards.length;
+        fontSizeScale = Math.min(fontSizeScale, 1);
+        fontSizeScale = Math.max(fontSizeScale, 0.5);
+        const strategyCardFontSize = 12 * fontSizeScale;
+
+        this._strategyCards
+            .setFontSize(strategyCardFontSize)
+            .setTextColor(fgColor)
+            .setText(strategyCards);
     }
 }
 
