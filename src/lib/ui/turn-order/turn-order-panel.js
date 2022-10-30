@@ -26,10 +26,15 @@ class TurnOrderPanel extends VerticalBox {
 
         // Let other handlers finish, system process.  When a player joins
         // they may not have a name yet.
+        let pending = false;
         const delayedUpdate = () => {
-            process.nextTick(() => {
-                this.update();
-            });
+            if (!pending) {
+                pending = true;
+                process.nextTick(() => {
+                    pending = false;
+                    this.update();
+                });
+            }
         };
 
         // Register listeners.
@@ -42,6 +47,9 @@ class TurnOrderPanel extends VerticalBox {
             globalEvents.TI4.onPlayerCountChanged.add(delayedUpdate);
             globalEvents.TI4.onPlayerJoinedDelayed.add(delayedUpdate); // do less work on immediate join
             globalEvents.onPlayerSwitchedSlots.add(delayedUpdate);
+            globalEvents.TI4.onFactionChanged.add(delayedUpdate); // fancy shows faction
+            globalEvents.TI4.onStrategyCardMovementStopped.add(delayedUpdate); // fancy shows strat cards
+            globalEvents.TI4.onScored.add(delayedUpdate); // fancy shows score
         }
 
         this.update();
@@ -80,13 +88,14 @@ class TurnOrderPanel extends VerticalBox {
     }
 
     update() {
+        const playerDeskOrder = world.TI4.turns.getTurnOrder();
         if (
             !this._turnOrderEntries ||
-            this._turnOrderEntries.length !== world.TI4.config.playerCount
+            this._turnOrderEntries.length !== playerDeskOrder.length
         ) {
             this._turnOrderEntries = [];
             this.removeAllChildren();
-            for (let i = 0; i < world.TI4.config.playerCount; i++) {
+            for (let i = 0; i < playerDeskOrder.length; i++) {
                 let entry;
                 if (this._useFancyWidgets) {
                     entry = new TurnEntryFancy();
