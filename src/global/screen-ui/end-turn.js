@@ -59,7 +59,6 @@ class EndTurnScreenUI {
         const outer = new LayoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(inner);
-        //.setChild(new Border().setChild(inner));
 
         this._ui = new ScreenUIElement();
         this._ui.relativeWidth = true;
