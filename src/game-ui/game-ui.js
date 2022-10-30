@@ -31,7 +31,7 @@ const {
 } = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
-const { TurnOrderPanel } = require("../lib/ui/turn-order-panel");
+const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
 const CONFIG = require("./game-ui-config");
 const {
     Border,
@@ -61,6 +61,15 @@ class GameUI {
             CONFIG.padding
         );
 
+        const wrapper = new Border().setChild(this._layout);
+        const b = CONFIG.spacing / 2;
+        const wrapperBox = new LayoutBox()
+            .setPadding(b, b, b, b)
+            .setChild(wrapper);
+        const frame = new Border()
+            .setColor(CONFIG.spacerColor)
+            .setChild(wrapperBox);
+
         this._uiElement = new UIElement();
         this._uiElement.scale = 1 / CONFIG.scale;
         this._uiElement.width = anchor.width * CONFIG.scale;
@@ -73,7 +82,7 @@ class GameUI {
             world.getTableHeight() + 0.01
         );
         this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
-        this._uiElement.widget = new Border().setChild(this._layout);
+        this._uiElement.widget = frame;
 
         world.addUI(this._uiElement);
 
@@ -161,9 +170,9 @@ class GameUI {
             .setAddEndTurnButton(true);
         const navPanel = new NavPanel().startPeriodicUpdates();
 
-        panel.addChild(turnOrderPanel, 1);
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(navPanel, 4);
+        panel.addChild(new Border().setColor(CONFIG.spacerColor));
+        panel.addChild(turnOrderPanel, 1);
 
         this.fillNavPanel(navPanel);
         navPanel.setCurrentNavEntry(navPanel.getRootFolder());
