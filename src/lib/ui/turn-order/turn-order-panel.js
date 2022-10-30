@@ -1,5 +1,5 @@
-const assert = require("../../wrapper/assert-wrapper");
-const locale = require("../../lib/locale");
+const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const { TurnEntryFancy } = require("./turn-entry-fancy");
 const { TurnEntrySimple } = require("./turn-entry-simple");
 const {
@@ -7,7 +7,7 @@ const {
     VerticalBox,
     globalEvents,
     world,
-} = require("../../wrapper/api");
+} = require("../../../wrapper/api");
 
 class TurnOrderPanel extends VerticalBox {
     constructor() {

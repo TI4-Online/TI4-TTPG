@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
+const assert = require("../../../wrapper/assert-wrapper");
 const {
     Border,
     Button,
@@ -8,7 +8,7 @@ const {
     TextJustification,
     VerticalAlignment,
     world,
-} = require("../../wrapper/api");
+} = require("../../../wrapper/api");
 
 /**
  * Simple turn order entry, swaps between a button that sets turn to player,

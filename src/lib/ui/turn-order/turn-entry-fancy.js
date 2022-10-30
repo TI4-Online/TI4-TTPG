@@ -1,4 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
+const assert = require("../../../wrapper/assert-wrapper");
 const { Scoreboard } = require("../../scoreboard/scoreboard");
 const {
     Border,
@@ -11,7 +11,7 @@ const {
     VerticalAlignment,
     refPackageId,
     world,
-} = require("../../wrapper/api");
+} = require("../../../wrapper/api");
 
 Scoreboard;
 class TurnEntryFancy extends Canvas {
@@ -95,10 +95,10 @@ class TurnEntryFancy extends Canvas {
         let fontSizeScale = 15 / name.length;
         fontSizeScale = Math.min(fontSizeScale, 1);
         fontSizeScale = Math.max(fontSizeScale, 0.5);
-        const fontSize = 12 * fontSizeScale;
+        const nameFontSize = 12 * fontSizeScale;
 
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
-        let factionName = faction ? faction.nameAbbr : "-";
+        let factionName = faction ? faction.nameAbbr : "???";
         if (factionName.startsWith("Keleres")) {
             factionName = "Keleres";
         }
@@ -110,7 +110,7 @@ class TurnEntryFancy extends Canvas {
         this._factionIcon.setImage(factionIcon, refPackageId);
         this._factionName.setText(factionName);
 
-        this._playerName.setFontSize(fontSize).setText(name);
+        this._playerName.setFontSize(nameFontSize).setText(name);
         this._strategyCards.setText("TODO");
         this._score.setText(config.score.toString());
 
