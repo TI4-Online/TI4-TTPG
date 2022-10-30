@@ -73,9 +73,9 @@ function setupStrategyCard(card) {
             Math.round(pos.x),
             Math.round(pos.y),
             Math.round(pos.z),
-            Math.round(rot.x),
-            Math.round(rot.y),
-            Math.round(rot.z),
+            Math.round(rot.pitch),
+            Math.round(rot.yaw),
+            Math.round(rot.roll),
         ].join(",");
         if (lossy === lastLossy) {
             return;
