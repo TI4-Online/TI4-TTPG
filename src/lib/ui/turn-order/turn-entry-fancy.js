@@ -117,7 +117,7 @@ class TurnEntryFancy extends Canvas {
         if (factionName.startsWith("Keleres")) {
             factionName = "Keleres";
         }
-        factionName = factionName.replace("-", "").toUpperCase();
+        factionName = factionName.toUpperCase();
         const factionIcon = faction
             ? faction.icon
             : "global/factions/bobert_icon.png";
