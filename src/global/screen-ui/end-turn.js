@@ -42,7 +42,7 @@ class EndTurnScreenUI {
         const outerBorderBox = new LayoutBox()
             .setPadding(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE)
             .setChild(this._border);
-        const c = 0.03;
+        const c = 0.02;
         const outerBorder = new Border()
             .setColor([c, c, c, 1])
             .setChild(outerBorderBox);

@@ -10,15 +10,21 @@ const {
 
 const WIDTH = 220;
 const ENTRY_HEIGHT = 58;
-const FONT_SIZE = ENTRY_HEIGHT * 0.2;
 const PAD = 10;
 
 class TurnOrderScreenUI {
     constructor() {
-        this._turnOrderPanel = new TurnOrderPanel()
-            .setFontSize(FONT_SIZE)
-            .setFitNameLength(13)
-            .setUseFancyWidgets(true);
+        this._fancyUIs = [this.createFancyUI()];
+
+        globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
+            this.resetHeight();
+        });
+        this.resetHeight();
+    }
+
+    createFancyUI() {
+        // Fancy hard codes font sizes and fit lengths.
+        const turnOrderPanel = new TurnOrderPanel().setUseFancyWidgets(true);
 
         // Screen UI can be placed and sized with relative values, but that
         // means UI will vary with screen size.  Since we cannot (yet) center
@@ -27,7 +33,7 @@ class TurnOrderScreenUI {
         // This goes away when screen UI can be fixed size.
         const inner = new LayoutBox()
             .setOverrideWidth(WIDTH)
-            .setChild(this._turnOrderPanel);
+            .setChild(turnOrderPanel);
 
         const c = 0.3;
         const frame = new Border().setColor([c, c, c, 1]).setChild(inner);
@@ -37,25 +43,29 @@ class TurnOrderScreenUI {
             .setPadding(0, PAD, PAD, 0)
             .setChild(frame);
 
-        this._ui = new ScreenUIElement();
-        this._ui.relativeWidth = true;
-        this._ui.width = 0.2;
-        this._ui.relativeHeight = false;
-        this._ui.height = ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
-        this._ui.relativePositionX = true;
-        this._ui.positionX = 1 - this._ui.width;
+        const ui = new ScreenUIElement();
+        ui.relativeWidth = true;
+        ui.width = 0.2;
+        ui.relativeHeight = false;
+        ui.height = 0; // call resetHeight to set
+        ui.relativePositionX = true;
+        ui.positionX = 1 - ui.width;
 
-        this._ui.relativePositionY = false;
-        this._ui.positionY = 0;
+        ui.relativePositionY = false;
+        ui.positionY = 0;
 
-        this._ui.widget = outer;
+        ui.widget = outer;
 
-        world.addScreenUI(this._ui);
+        world.addScreenUI(ui);
 
-        globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
-            this._ui.height = ENTRY_HEIGHT * world.TI4.config.playerCount;
-            world.updateScreenUI(this._ui);
-        });
+        return ui;
+    }
+
+    resetHeight() {
+        for (const ui of this._fancyUIs) {
+            ui.height = ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
+            world.updateScreenUI(ui);
+        }
     }
 }
 
