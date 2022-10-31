@@ -237,23 +237,9 @@ class PlayerDesk {
     }
 
     resetUI() {
-        this.removeUI();
-        this.addUI();
-    }
-
-    addUI() {
-        // Always add name, even after ready.
-        this._nameUI = new PlayerDeskPlayerNameUI(this);
-        this._nameUI.addUI();
-
         const playerSlot = this.playerSlot;
         const isOccupied = world.getPlayerBySlot(playerSlot);
         const isReady = this.isDeskReady();
-        // No UI once "ready" (unless not seated, show for "take seat")
-        if (isOccupied && isReady) {
-            return;
-        }
-        const colorOptions = this.getColorOptions();
         const config = {
             isReady,
             isOccupied,
@@ -266,8 +252,33 @@ class PlayerDesk {
                 ? true
                 : false,
         };
-        assert(!this._ui);
-        this._ui = new PlayerDeskUI(this, colorOptions, {
+
+        // Always add name UI.
+        if (!this._nameUI) {
+            this._nameUI = new PlayerDeskPlayerNameUI(this);
+            this._nameUI.addUI();
+        }
+
+        // If player is seated and ready, remove UI.
+        if (isOccupied && isReady) {
+            if (this._playerDeskUI) {
+                this._playerDeskUI.removeUI();
+                this._playerDeskUI = undefined;
+            }
+            return;
+        }
+
+        if (!this._playerDeskUI) {
+            this.addUI();
+        }
+        this._playerDeskUI.update(config);
+    }
+
+    addUI() {
+        const colorOptions = this.getColorOptions();
+
+        assert(!this._playerDeskUI);
+        this._playerDeskUI = new PlayerDeskUI(this, colorOptions, {
             onTakeSeat: (button, player) => {
                 this.seatPlayer(player);
                 this.resetUI();
@@ -319,14 +330,14 @@ class PlayerDesk {
                 this.setReady(true);
                 this.resetUI();
             },
-        }).create(config);
-        world.addUI(this._ui);
+        });
+        this._playerDeskUI.addUI();
     }
 
     removeUI() {
-        if (this._ui) {
-            world.removeUIElement(this._ui);
-            this._ui = false;
+        if (this._playerDeskUI) {
+            this._playerDeskUI.removeUI();
+            this._playerDeskUI = false;
         }
         if (this._nameUI) {
             this._nameUI.removeUI();
