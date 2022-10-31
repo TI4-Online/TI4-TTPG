@@ -46,8 +46,8 @@ class PlayerDeskUI {
     }
 
     create(config) {
-        const extraScale = 2;
-        const spacing = CONFIG.spacing / extraScale;
+        const extraScale = 1.5;
+        const spacing = Math.round(CONFIG.spacing / extraScale);
         const panel = new VerticalBox().setChildDistance(spacing);
 
         // Always show take/leave seat.
@@ -105,6 +105,12 @@ class PlayerDeskUI {
             panel.addChild(readyButton);
         }
 
+        // Pad panel.
+        const panelPadded = new LayoutBox()
+            .setPadding(spacing, spacing, spacing, spacing)
+            .setMinimumWidth(350 * extraScale)
+            .setChild(panel);
+
         const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
 
         const ui = new UIElement();
@@ -112,12 +118,7 @@ class PlayerDeskUI {
         ui.position = pos;
         ui.rotation = this._playerDesk.rot;
         ui.scale = extraScale / CONFIG.scale; // Bigger than normal
-        ui.widget = new Border().setChild(
-            new LayoutBox()
-                .setChild(panel)
-                .setPadding(spacing, spacing, spacing, spacing)
-                .setMinimumWidth(250 * extraScale)
-        );
+        ui.widget = new Border().setChild(panelPadded);
 
         return ui;
     }

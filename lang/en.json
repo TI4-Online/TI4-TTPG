@@ -194,11 +194,9 @@
 
     "ui.desk.take_seat": "TAKE SEAT",
     "ui.desk.leave_seat": "LEAVE SEAT",
-    "ui.desk.change_color": "Change color",
-    "ui.desk.setup_desk": "Setup desk",
-    "ui.desk.clean_desk": "Clear desk",
-    "ui.desk.setup_faction": "Setup faction",
-    "ui.desk.clean_faction": "Clear faction",
+    "ui.desk.change_color": "CHANGE COLOR",
+    "ui.desk.setup_faction": "SETUP FACTION",
+    "ui.desk.clean_faction": "CLEAR FACTION",
     "ui.desk.color_in_use": "Color already in use",
 
     "ui.button.deal_action_cards": "Deal Action Cards, Command Tokens",
