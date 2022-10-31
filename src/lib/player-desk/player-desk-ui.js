@@ -13,11 +13,15 @@ const {
     UIElement,
     VerticalBox,
     refPackageId,
+    world,
 } = require("../../wrapper/api");
 
 const DESK_UI = {
     pos: { x: 40, y: 0, z: 3 },
 };
+
+const EXTRA_SCALE = 1.5;
+const SPACING = Math.round(CONFIG.spacing / EXTRA_SCALE);
 
 class PlayerDeskUI {
     constructor(playerDesk, colorOptions, callbacks) {
@@ -43,13 +47,88 @@ class PlayerDeskUI {
         this._callbacks.onReady = ThrottleClickHandler.wrap(
             this._callbacks.onReady
         );
+
+        this._ui = undefined;
+
+        this._takeSeatButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText("X");
+
+        this._changeColorButton = this._createColorSquareButton(
+            this._playerDesk.plasticColor,
+            this._callbacks.onToggleColors
+        );
+
+        const takeSeatPanel = new HorizontalBox()
+            .setChildDistance(SPACING)
+            .addChild(this._takeSeatButton, 1)
+            .addChild(this._changeColorButton);
+        this._takeSeatBox = new LayoutBox()
+            .setPadding(0, 0, 0, SPACING)
+            .setChild(takeSeatPanel);
+
+        const colorOptionsPanel = this._createChangeColorButton(
+            this._callbacks.onChangeColor
+        );
+        this._colorOptionsBox = new LayoutBox()
+            .setPadding(0, 0, 0, SPACING)
+            .setChild(colorOptionsPanel);
+        this._colorOptionsBox.setOverrideHeight(0);
+
+        this._setupFactionButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText("X");
+
+        this._setupFactionBox = new LayoutBox()
+            .setPadding(0, 0, 0, SPACING)
+            .setChild(this._setupFactionButton);
+
+        this._readyButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText("X");
+
+        this._readyBox = new LayoutBox()
+            .setPadding(0, 0, 0, SPACING)
+            .setChild(this._readyButton);
+
+        const panel = new VerticalBox()
+            .addChild(this._takeSeatBox)
+            .addChild(this._colorOptionsBox)
+            .addChild(this._setupFactionBox)
+            .addChild(this._readyBox);
+
+        // Pad panel.
+        const panelPadded = new LayoutBox()
+            .setPadding(SPACING, SPACING, SPACING, 0)
+            .setMinimumWidth(350 * EXTRA_SCALE)
+            .setChild(panel);
+
+        const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
+
+        this._ui = new UIElement();
+        this._ui.anchorY = 0;
+        this._ui.position = pos;
+        this._ui.rotation = this._playerDesk.rot;
+        this._ui.scale = EXTRA_SCALE / CONFIG.scale; // Bigger than normal
+        this._ui.widget = new Border().setChild(panelPadded);
+
+        return this;
     }
 
-    create(config) {
-        const extraScale = 1.5;
-        const spacing = Math.round(CONFIG.spacing / extraScale);
-        const panel = new VerticalBox().setChildDistance(spacing);
+    addUI() {
+        assert(this._ui);
+        world.addUI(this._ui);
+        return this;
+    }
 
+    removeUI() {
+        assert(this._ui);
+        world.removeUIElement(this._ui);
+        this._ui = undefined;
+        return this;
+    }
+
+    update(config) {
         // Always show take/leave seat.
         let localeText = config.isOccupied
             ? "ui.desk.leave_seat"
@@ -57,88 +136,57 @@ class PlayerDeskUI {
         let onClickHandler = config.isOccupied
             ? this._callbacks.onLeaveSeat
             : this._callbacks.onTakeSeat;
-        const takeSeatButton = this._createButton(localeText, onClickHandler);
+        this._takeSeatButton.setText(locale(localeText));
+        this._takeSeatButton.onClicked.clear();
+        this._takeSeatButton.onClicked.add(onClickHandler);
 
         // Button to toggle color selection.
-        const showColors = this._createColorSquareButton(
-            this._playerDesk.plasticColor,
-            this._callbacks.onToggleColors
-        );
-        showColors.setEnabled(!config.isReady);
-
-        const takeSeatPanel = new HorizontalBox()
-            .setChildDistance(spacing)
-            .addChild(takeSeatButton, 1)
-            .addChild(showColors, 0);
-        panel.addChild(takeSeatPanel);
+        this._changeColorButton.setEnabled(!config.isReady);
+        this._changeColorButton.setTintColor(this._playerDesk.plasticColor);
 
         if (config.showColors) {
-            panel.addChild(
-                this._createChangeColorButton(this._callbacks.onChangeColor)
-            );
+            this._colorOptionsBox
+                .setPadding(0, 0, 0, SPACING)
+                .setOverrideHeight(-1);
+        } else {
+            this._colorOptionsBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
         }
 
         if (config.canFaction) {
             if (config.hasFaction) {
-                panel.addChild(
-                    this._createButton(
-                        "ui.desk.clean_faction",
-                        this._callbacks.onCleanFaction
-                    )
-                );
+                localeText = "ui.desk.clean_faction";
+                onClickHandler = this._callbacks.onCleanFaction;
             } else {
-                panel.addChild(
-                    this._createButton(
-                        "ui.desk.setup_faction",
-                        this._callbacks.onSetupFaction
-                    )
-                );
+                localeText = "ui.desk.setup_faction";
+                onClickHandler = this._callbacks.onSetupFaction;
             }
+            this._setupFactionButton.setText(locale(localeText));
+            this._setupFactionButton.onClicked.clear();
+            this._setupFactionButton.onClicked.add(onClickHandler);
+            this._setupFactionBox
+                .setPadding(0, 0, 0, SPACING)
+                .setOverrideHeight(-1);
+        } else {
+            this._setupFactionBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
         }
 
         // Once a faction is selected enable ready button.
         if (!config.isReady) {
-            const readyButton = this._createButton(
-                "ui.button.ready",
-                this._callbacks.onReady
-            ).setEnabled(config.hasFaction);
-            panel.addChild(readyButton);
+            (localeText = "ui.button.ready"),
+                (onClickHandler = this._callbacks.onReady);
+            this._readyButton.setText(locale(localeText));
+            this._readyButton.onClicked.clear();
+            this._readyButton.onClicked.add(onClickHandler);
+            this._readyButton.setEnabled(config.hasFaction);
+            this._readyBox.setPadding(0, 0, 0, SPACING).setOverrideHeight(-1);
+        } else {
+            this._readyBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
         }
-
-        // Pad panel.
-        const panelPadded = new LayoutBox()
-            .setPadding(spacing, spacing, spacing, spacing)
-            .setMinimumWidth(350 * extraScale)
-            .setChild(panel);
-
-        const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
-
-        const ui = new UIElement();
-        ui.anchorY = 0;
-        ui.position = pos;
-        ui.rotation = this._playerDesk.rot;
-        ui.scale = extraScale / CONFIG.scale; // Bigger than normal
-        ui.widget = new Border().setChild(panelPadded);
-
-        return ui;
-    }
-
-    _createButton(localeLabel, onClicked) {
-        assert(typeof localeLabel === "string");
-        assert(typeof onClicked === "function");
-
-        const color = this._playerDesk.plasticColor;
-        const labelText = locale(localeLabel);
-        const button = new Button()
-            .setTextColor(color)
-            .setFontSize(CONFIG.fontSize)
-            .setText(labelText);
-        button.onClicked.add(onClicked);
-        return button;
+        return this;
     }
 
     _createColorSquareButton(color, onClicked) {
-        const size = CONFIG.fontSize * 1.61;
+        const size = Math.round(CONFIG.fontSize * 1.61);
         const imageButton = new ImageButton()
             .setImage("global/ui/white16x16.png", refPackageId)
             .setImageSize(size, size)
@@ -151,10 +199,8 @@ class PlayerDeskUI {
         assert(typeof onClicked === "function");
 
         // Create a swatch with not-setup peer colors.
-        const color = this._playerDesk.plasticColor;
         const labelText = locale("ui.desk.change_color");
         const text = new Text()
-            .setTextColor(color)
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Center)
             .setText(labelText);

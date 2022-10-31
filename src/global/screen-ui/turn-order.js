@@ -77,7 +77,7 @@ class TurnOrderScreenUI {
         const imageButtonBorder = 2;
         const right =
             Math.round(PAD + WIDTH / 2 - BUTTON_SIZE / 2) - imageButtonBorder;
-        const top = Math.round(PAD - BUTTON_SIZE / 2) - imageButtonBorder;
+        const top = Math.round(PAD - (BUTTON_SIZE * 3) / 4) - imageButtonBorder;
         const buttonBox = new LayoutBox()
             .setPadding(0, right, top, 0)
             .setHorizontalAlignment(HorizontalAlignment.Right)
