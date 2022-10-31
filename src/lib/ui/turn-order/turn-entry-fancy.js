@@ -14,7 +14,12 @@ const {
     world,
 } = require("../../../wrapper/api");
 
-Scoreboard;
+const PLAYER_NAME_FONT_SIZE = 12;
+const PLAYER_NAME_FIT_LENGTH = 15;
+
+const STRATEGY_CARD_FONT_SIZE = 11;
+const STRATEGY_CARD_FIT_LENGTH = 13;
+
 class TurnEntryFancy extends Canvas {
     static updateArray(entries, config) {
         const playerDeskOrder = world.TI4.turns.getTurnOrder();
@@ -57,11 +62,12 @@ class TurnEntryFancy extends Canvas {
             .setText("FACTION");
         this._playerName = new Text()
             .setJustification(TextJustification.Center)
-            .setFontSize(12)
+            .setFontSize(PLAYER_NAME_FONT_SIZE)
             .setBold(true)
             .setText("Player Name");
         this._strategyCards = new Text()
             .setJustification(TextJustification.Center)
+            .setFontSize(STRATEGY_CARD_FONT_SIZE)
             .setFont("handel-gothic-regular.ttf", refPackageId);
         this._score = new Text()
             .setJustification(TextJustification.Center)
@@ -81,11 +87,12 @@ class TurnEntryFancy extends Canvas {
 
         const w = 220;
         const h = 58;
+
         this.addChild(this._canvasBackground, 0, 0, w, h)
             .addChild(this._factionIcon, 4, 4, 40, 40)
             .addChild(this._factionName, 0, 44, 48, 15)
             .addChild(this._score, w - 45, 3, 45, 45)
-            .addChild(nameBox, 0, 1, w, h / 2)
+            .addChild(nameBox, 0, 3, w, h / 2)
             .addChild(strategyBox, 0, h / 2 - 4, w, h / 2);
     }
 
@@ -107,10 +114,10 @@ class TurnEntryFancy extends Canvas {
         if (!name || name.length === 0) {
             name = `<${playerDesk.colorName}>`;
         }
-        let fontSizeScale = 15 / name.length;
+        let fontSizeScale = PLAYER_NAME_FIT_LENGTH / name.length;
         fontSizeScale = Math.min(fontSizeScale, 1);
         fontSizeScale = Math.max(fontSizeScale, 0.5);
-        const nameFontSize = 12 * fontSizeScale;
+        const nameFontSize = PLAYER_NAME_FONT_SIZE * fontSizeScale;
 
         const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
         let factionName = faction ? faction.nameAbbr : "—";
@@ -129,14 +136,12 @@ class TurnEntryFancy extends Canvas {
         this._score.setText(config.score.toString());
 
         // Color.
-        const v1 = 0.05;
-        const v2 = 0.03;
+        const v = 0.02;
         const plrColor = playerDesk.plasticColor;
-        const altColor = new Color(v2, v2, v2);
-        const altBgColor = new Color(v1, v1, v1);
+        const altColor = new Color(v, v, v);
 
         const fgColor = config.isTurn ? altColor : plrColor;
-        const bgColor = config.isTurn ? plrColor : altBgColor;
+        const bgColor = config.isTurn ? plrColor : altColor;
 
         this._factionName.setTextColor(fgColor);
         this._playerName.setTextColor(fgColor);
@@ -157,10 +162,10 @@ class TurnEntryFancy extends Canvas {
         }
         strategyCards = strategyCards.join(" ");
 
-        fontSizeScale = 12 / strategyCards.length;
+        fontSizeScale = STRATEGY_CARD_FIT_LENGTH / strategyCards.length;
         fontSizeScale = Math.min(fontSizeScale, 1);
         fontSizeScale = Math.max(fontSizeScale, 0.5);
-        const strategyCardFontSize = 12 * fontSizeScale;
+        const strategyCardFontSize = STRATEGY_CARD_FONT_SIZE * fontSizeScale;
 
         this._strategyCards
             .setFontSize(strategyCardFontSize)

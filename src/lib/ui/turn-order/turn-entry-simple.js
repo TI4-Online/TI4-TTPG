@@ -61,6 +61,7 @@ class TurnEntrySimple extends Border {
 
         // Needed for set turn clicked.
         this._playerDesk = playerDesk;
+        this._button.setEnabled(config.enableButtons);
 
         const playerSlot = playerDesk.playerSlot;
         const player = world.getPlayerBySlot(playerSlot);
