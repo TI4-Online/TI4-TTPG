@@ -17,6 +17,7 @@ class TurnOrderPanel extends VerticalBox {
         this._config = {
             fontSize: 20,
             fitNameLength: 100,
+            enableButtons: true,
         };
         this._useFancyWidgets = false;
         this._addEndTurnButton = false;
@@ -77,6 +78,11 @@ class TurnOrderPanel extends VerticalBox {
         this._addEndTurnButton = value;
         this._turnOrderEntries = undefined; // invalidate
         this.update();
+        return this;
+    }
+
+    setEnableButtons(value) {
+        this._config.enableButtons = value;
         return this;
     }
 
