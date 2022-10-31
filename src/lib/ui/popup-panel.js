@@ -39,8 +39,7 @@ class PopupPanel extends Border {
 
         this._obj = gameObject;
         this._localPos = localPos;
-        this._ui = new UIElement();
-        this._ui.widget = this;
+        this._ui = undefined;
 
         this._matchPlayerYaw = false;
         this._namesAndActions = [];
@@ -178,6 +177,8 @@ class PopupPanel extends Border {
         this.setChild(panel);
 
         // Z scaling may be wonky.  Place above in world space and move back.
+        this._ui = new UIElement();
+        this._ui.widget = this;
         this._ui.position = this._obj.worldPositionToLocal(
             this._obj
                 .localPositionToWorld(this._localPos)
@@ -197,6 +198,7 @@ class PopupPanel extends Border {
 
     _hide() {
         this._obj.removeUIElement(this._ui);
+        this._ui = undefined;
         this.setChild(undefined);
         this._isShowing = false;
     }
