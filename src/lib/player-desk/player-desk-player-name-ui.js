@@ -63,6 +63,7 @@ class PlayerDeskPlayerNameUI {
         globalEvents.TI4.onTurnOrderChanged.add(this._eventHandler);
         globalEvents.TI4.onPlayerJoinedDelayed.add(this._eventHandler); // do less work on immediate join
         globalEvents.onPlayerSwitchedSlots.add(this._eventHandler);
+        globalEvents.TI4.onPlayerColorChanged.add(this._eventHandler);
     }
 
     removeUI() {
@@ -73,6 +74,7 @@ class PlayerDeskPlayerNameUI {
         globalEvents.TI4.onTurnOrderChanged.remove(this._eventHandler);
         globalEvents.TI4.onPlayerJoinedDelayed.remove(this._eventHandler);
         globalEvents.onPlayerSwitchedSlots.remove(this._eventHandler);
+        globalEvents.TI4.onPlayerColorChanged.remove(this._eventHandler);
     }
 
     /**
