@@ -62,6 +62,10 @@ globalEvents.TI4 = {
     // <(player: Player) => void>
     onPlayerJoinedDelayed: new TriggerableMulticastDelegate(onErr),
 
+    // Called when a player uses right-click score.
+    // <(obj: GameObject, player: Player) => void>
+    onScored: new TriggerableMulticastDelegate(onErr),
+
     // Called when a singleton card is created, or when a deck is reduced to
     // a single card it is called on the "deck" (now a single card).
     // <(card: Card) => void>
@@ -250,7 +254,8 @@ require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
 require("./global/right-click/right-click-trade-agreement");
 require("./global/right-click/right-click-yssaril-commander");
-//require("./global/screen-ui/end-turn"); // not ready
+require("./global/screen-ui/end-turn");
+require("./global/screen-ui/turn-order");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/strategy-card-functions");

@@ -53,9 +53,6 @@ class BunkerDraftSettingsUI extends VerticalBox {
             .setMinimumHeight(CONFIG.fontSize * 3);
         this.addChild(customInputBox);
 
-        // DISABLE UNTIL PARSE SUPPORT IS READY
-        customInput.setEnabled(false);
-
         const sliceCountLabel = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.bunker_count"));

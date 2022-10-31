@@ -9,9 +9,9 @@ const {
 const {
     BunkerSliceGenerator,
 } = require("../../../../lib/draft/bunker/bunker-slice-generator");
-const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { Player, world } = require("../../../../wrapper/api");
 const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
+const { BunkerUtil } = require("../../../../lib/draft/bunker/bunker-util");
 
 class BunkerDraftSettings {
     constructor() {
@@ -50,9 +50,9 @@ class BunkerDraftSettings {
                 this._bunkerDraft.setSpeakerIndex(-1); // random
 
                 // If custom config set slices, labels, or factions use those instead.
-                const custom = MiltyUtil.parseCustomConfig(customConfig);
+                const custom = BunkerUtil.parseCustomConfig(customConfig);
                 if (custom) {
-                    const error = MiltyUtil.getCustomConfigError(custom);
+                    const error = BunkerUtil.getCustomConfigError(custom);
                     if (error) {
                         Broadcast.chatAll(error);
                         return false;
@@ -66,7 +66,7 @@ class BunkerDraftSettings {
                             );
                             return false;
                         }
-                        this._miltyDraft.resetSlices();
+                        this._bunkerDraft.resetBunkers();
                         for (let i = 0; i < custom.slices.length; i++) {
                             const slice = custom.slices[i];
                             let label = "x";
@@ -77,7 +77,7 @@ class BunkerDraftSettings {
                                     index: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i],
                                 });
                             }
-                            this._miltyDraft.addSlice(slice, false, label);
+                            this._bunkerDraft.addBunker(slice, false, label);
                         }
                     }
                     if (custom.factions) {

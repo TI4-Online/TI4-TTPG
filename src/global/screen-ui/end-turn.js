@@ -1,49 +1,110 @@
 const locale = require("../../lib/locale");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     Border,
     Button,
-    Rotator,
-    UIElement,
-    UIPresentationStyle,
-    Vector,
+    HorizontalAlignment,
+    LayoutBox,
+    PlayerPermission,
+    ScreenUIElement,
+    globalEvents,
     world,
 } = require("../../wrapper/api");
 
-let ui = undefined;
+const WIDTH = 225;
+const HEIGHT = 60;
+const FONT_SIZE = HEIGHT * 0.3;
+const SCREEN_X = 50; // top of widget
+const BORDER_SIZE = 2;
 
-const initHandler = () => {
-    console.log("screen-ui.end-turn.init");
+class EndTurnScreenUI {
+    constructor() {
+        this._button = new Button()
+            .setFontSize(FONT_SIZE)
+            .setBold(true)
+            .setText(locale("ui.button.end_turn"));
+        this._button.onClicked.add(
+            ThrottleClickHandler.wrap((button, clickingPlayer) => {
+                console.log("endTurnButton.onClicked");
+                if (world.TI4.turns.isActivePlayer(clickingPlayer)) {
+                    world.TI4.turns.endTurn(clickingPlayer);
+                }
+            })
+        );
 
-    const endTurnButton = new Button().setText(locale("ui.button.end_turn"));
-    endTurnButton.onClicked.add((button, clickingPlayer) => {
-        console.log("XXX ONCLICKED");
+        // Wrap button in a colored border.
+        const buttonBox = new LayoutBox()
+            .setPadding(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE)
+            .setChild(this._button);
+        this._border = new Border().setColor([1, 1, 1, 1]).setChild(buttonBox);
+
+        // Then wrap in an outer border.  This is "the widget" to show.
+        const outerBorderBox = new LayoutBox()
+            .setPadding(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE)
+            .setChild(this._border);
+        const c = 0.03;
+        const outerBorder = new Border()
+            .setColor([c, c, c, 1])
+            .setChild(outerBorderBox);
+
+        // Screen UI can be placed and sized with relative values, but that
+        // means UI will vary with screen size.  Since we cannot (yet) center
+        // a fixed-size element, place a fixed-side box inside another.
+        // This is definitely a hack.
+        // This goes away when screen UI can be fixed size.
+        const inner = new LayoutBox()
+            .setOverrideWidth(WIDTH)
+            .setChild(outerBorder);
+
+        const outer = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(inner);
+
+        this._ui = new ScreenUIElement();
+        this._ui.relativeWidth = true;
+        this._ui.width = 0.1; // if too small the WIDTH is reduced
+        this._ui.relativeHeight = false;
+        this._ui.height = HEIGHT;
+        this._ui.relativePositionX = true;
+        this._ui.positionX = (1 - this._ui.width) / 2;
+        this._ui.relativePositionY = false;
+        this._ui.positionY = SCREEN_X;
+        this._ui.widget = outer;
+
+        // Only the active turn player can see it.
+        this._playerPermission = new PlayerPermission();
+        this._playerPermission.setPlayerSlots([]);
+        this._ui.players = this._playerPermission;
+
+        world.addScreenUI(this._ui);
+
+        // Auto-update.
+        const updateHandler = () => {
+            this.update();
+        };
+        globalEvents.TI4.onTurnChanged.add(updateHandler);
+        globalEvents.TI4.onTurnOrderChanged.add(updateHandler);
+        globalEvents.TI4.onTurnOrderEmpty.add(updateHandler);
+        globalEvents.onPlayerSwitchedSlots.add(updateHandler);
+
+        this.update();
+    }
+
+    update() {
+        const currentDesk = world.TI4.turns.getCurrentTurn();
+        const playerSlots = currentDesk ? [currentDesk.playerSlot] : [];
+        this._playerPermission.setPlayerSlots(playerSlots);
+
+        this._button.setTextColor(currentDesk.plasticColor);
+        this._border.setColor(currentDesk.plasticColor);
+
+        // Need to poke world to update player permission change.
+        world.updateScreenUI(this._ui);
+    }
+}
+
+if (!world.__isMock) {
+    process.nextTick(() => {
+        new EndTurnScreenUI();
     });
-
-    ui = new UIElement();
-    ui.position = new Vector(0, 0, 20);
-    ui.rotation = new Rotator(0, 0, 0);
-    ui.scale = 1;
-    ui.width = 100;
-    ui.height = 100;
-    ui.useWidgetSize = false;
-    ui.presentationStyle = UIPresentationStyle.Screen; // does not clip
-    ui.widget = new Border().setChild(endTurnButton);
-
-    console.log(
-        `using presentation style ${ui.presentationStyle}, twoSided ${ui.twoSided}`
-    );
-    world.addUI(ui);
-};
-
-// globalEvents.onTick.add(() => {
-//     let player = world.getAllPlayers()[0];
-//     const p0 = player.getPosition();
-//     const fwd = player.getRotation().getForwardVector();
-//     const offset = new Vector(0, 0, 0.3);
-//     ui.position = p0.add(fwd).add(offset);
-//     world.updateUI(ui);
-// });
-
-//world.TI4.asyncTaskQueue.add(initHandler);
-initHandler();
-//initHandler();
+}

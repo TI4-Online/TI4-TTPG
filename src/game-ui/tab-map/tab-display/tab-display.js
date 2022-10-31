@@ -10,6 +10,9 @@ class TabDisplay {
             toggleBorders: (checkBox, player, isChecked) => {
                 this.toggleBorders(isChecked);
             },
+            teamBorders: (checkBox, player, isChecked) => {
+                this.teamBorders(isChecked);
+            },
             systemBrightnessChanged: (slider, player, value) => {
                 const u = value / slider.getMaxValue();
                 this.updateBrightness(u);
@@ -25,6 +28,11 @@ class TabDisplay {
     toggleBorders(isChecked) {
         console.log(`TabDisplay.toggleBorders ${isChecked}`);
         world.TI4.borders.setEnabled(isChecked);
+    }
+
+    teamBorders(isChecked) {
+        console.log(`TabDisplay.teamBorders ${isChecked}`);
+        world.TI4.borders.setTeams(isChecked);
     }
 
     updateBrightness(value) {

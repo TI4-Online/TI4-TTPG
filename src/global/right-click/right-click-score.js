@@ -218,6 +218,9 @@ function score(scoreableObj, player) {
         points = 2;
     }
     advanceScoreboardToken(player, points);
+
+    // Tell any listeners.
+    globalEvents.TI4.onScored.trigger(scoreableObj, player);
 }
 
 function maybeScore(obj, player, selectedActionName) {

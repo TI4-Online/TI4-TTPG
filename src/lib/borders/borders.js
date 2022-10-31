@@ -155,6 +155,48 @@ class Borders {
         return hexToControlSummary;
     }
 
+    static rewriteControlEntriesForTeams(controlEntries) {
+        assert(Array.isArray(controlEntries));
+
+        const playerSlotToTeamSlot = {};
+        const teamSlotToPlayerSlotArray = {};
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const playerSlot = playerDesk.playerSlot;
+            const teamSlot = world.getSlotTeam(playerSlot);
+            if (teamSlot <= 0) {
+                continue; // 0 means no team, 1-8 are valid
+            }
+            playerSlotToTeamSlot[playerSlot] = teamSlot;
+            let playerSlotArray = teamSlotToPlayerSlotArray[teamSlot];
+            if (!playerSlotArray) {
+                playerSlotArray = [];
+                teamSlotToPlayerSlotArray[teamSlot] = playerSlotArray;
+            }
+            playerSlotArray.push(playerSlot);
+        }
+
+        // Choose one player slot per team.
+        const playerSlotRewrite = {};
+        for (const [playerSlot, teamSlot] of Object.entries(
+            playerSlotToTeamSlot
+        )) {
+            const playerSlotArray = teamSlotToPlayerSlotArray[teamSlot];
+            if (playerSlotArray.length === 0) {
+                continue;
+            }
+            const minSlot = Math.min(...playerSlotArray);
+            playerSlotRewrite[playerSlot] = minSlot;
+        }
+
+        for (const controlEntry of controlEntries) {
+            const rewrite = playerSlotRewrite[controlEntry.playerSlot];
+            if (rewrite) {
+                controlEntry.playerSlot = rewrite;
+            }
+        }
+        return controlEntries; // mutated in place, but return for convenience
+    }
+
     static getSpaceLineSegments(hexToControlSummary) {
         const segments = [];
 
@@ -343,6 +385,7 @@ class Borders {
 
     constructor() {
         this._enabled = false;
+        this._teams = false;
         this._lines = undefined;
         this._thickness = DEFAULT_THICKNESS;
 
@@ -361,6 +404,19 @@ class Borders {
             this.clearLines();
             globalEvents.TI4.onTurnChanged.remove(this._doUpdate);
         }
+        return this;
+    }
+
+    getTeams() {
+        return this._teams;
+    }
+
+    setTeams(value) {
+        this._teams = value;
+        if (this._enabled) {
+            this.drawLinesAsync();
+        }
+        return this;
     }
 
     _getDrawLinesTasks() {
@@ -372,6 +428,12 @@ class Borders {
         return [
             () => {
                 controlEntries = Borders.getAllControlEntries();
+            },
+            () => {
+                if (this._teams) {
+                    controlEntries =
+                        Borders.rewriteControlEntriesForTeams(controlEntries);
+                }
             },
             () => {
                 hexToControlSummary =

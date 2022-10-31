@@ -3,6 +3,7 @@
  */
 const assert = require("../../wrapper/assert-wrapper");
 const { CardUtil } = require("../card/card-util");
+const { Hex } = require("../../lib/hex");
 const { world } = require("../../wrapper/api");
 
 module.exports = (data) => {
@@ -10,6 +11,13 @@ module.exports = (data) => {
     data.players.forEach((playerData) => {
         playerData.planetCards = [];
     });
+
+    const systemHexSet = new Set();
+    for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+        const pos = systemTileObj.getPosition();
+        const hex = Hex.fromPosition(pos);
+        systemHexSet.add(hex);
+    }
 
     const checkIsDiscardPile = true;
     const allowFaceDown = true;
@@ -26,6 +34,11 @@ module.exports = (data) => {
         }
 
         const pos = obj.getPosition();
+        const hex = Hex.fromPosition(pos);
+        if (systemHexSet.has(hex)) {
+            continue; // on a system tile
+        }
+
         const closestDesk = world.TI4.getClosestPlayerDesk(pos);
         if (!closestDesk) {
             continue;

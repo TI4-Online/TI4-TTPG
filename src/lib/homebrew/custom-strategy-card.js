@@ -57,7 +57,7 @@ class CustomStrategyCard {
 
         let value = this._obj.getSavedData(KEY.TITLE) || "TITLE";
         let text = isEdit ? new TextBox() : new Text();
-        text.setFont("Handel_Gothic_Regular.otf", refPackageId)
+        text.setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(4.5 * scale)
             .setText(value);
         let x = 5;
@@ -79,7 +79,7 @@ class CustomStrategyCard {
 
         value = this._obj.getSavedData(KEY.INITIATIVE) || "9";
         text = isEdit ? new TextBox().setInputType(2) : new Text();
-        text.setFont("Handel_Gothic_Regular.otf", refPackageId)
+        text.setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(9.5 * scale)
             .setText(value);
         x = 52;
@@ -113,7 +113,7 @@ class CustomStrategyCard {
 
         value = this._obj.getSavedData(KEY.PRIMARY_TITLE) || "PRIMARY ABILITY:";
         text = new Text();
-        text.setFont("Handel_Gothic_Regular.otf", refPackageId)
+        text.setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(2.7 * scale)
             .setText(value);
         x = 5;
@@ -131,7 +131,7 @@ class CustomStrategyCard {
         value =
             this._obj.getSavedData(KEY.PRIMARY_BODY) || "> Primary ability.";
         text = isEdit ? new MultilineTextBox().setMaxLength(255) : new Text();
-        text.setFont("MyriadProSemibold.otf", refPackageId)
+        text.setFont("myriad-pro-semibold.ttf", refPackageId)
             .setFontSize(2.4 * scale)
             .setText(value);
         x = 5;
@@ -156,7 +156,7 @@ class CustomStrategyCard {
         value =
             this._obj.getSavedData(KEY.SECONDARY_TITLE) || "SECONDARY ABILITY:";
         text = new Text();
-        text.setFont("Handel_Gothic_Regular.otf", refPackageId)
+        text.setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(2.7 * scale)
             .setText(value);
         x = 5;
@@ -175,7 +175,7 @@ class CustomStrategyCard {
             this._obj.getSavedData(KEY.SECONDARY_BODY) ||
             "> Secondary ability.";
         text = isEdit ? new MultilineTextBox().setMaxLength(255) : new Text();
-        text.setFont("MyriadProSemibold.otf", refPackageId)
+        text.setFont("myriad-pro-semibold.ttf", refPackageId)
             .setFontSize(2.4 * scale)
             .setText(value);
         x = 5;

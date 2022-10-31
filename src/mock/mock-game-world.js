@@ -15,6 +15,8 @@ class GameWorld {
         this._savedData = data ? data.savedData : "";
         this._tableHeight = data ? data.tableHeight : 1;
         this._uis = data && data.uis ? data.uis : [];
+
+        this._slotToTeam = {};
     }
 
     get __isMock() {
@@ -55,9 +57,14 @@ class GameWorld {
         this._drawingLines.push(value);
     }
 
+    addScreenUI(screenUIElement) {
+        return 0;
+    }
+
     addUI(uiElement) {
         assert(uiElement instanceof UIElement);
         this._uis.push(uiElement);
+        return this._uis.length - 1;
     }
 
     capsuleOverlap() {
@@ -125,6 +132,10 @@ class GameWorld {
         return this._savedData;
     }
 
+    getSlotTeam(playerSlot) {
+        return this._slotToTeam[playerSlot] || 0;
+    }
+
     getTableHeight() {
         return this._tableHeight;
     }
@@ -183,6 +194,12 @@ class GameWorld {
     }
 
     setSlotColor(slot, color) {}
+
+    setSlotTeam(playerSlot, teamNumber) {
+        this._slotToTeam[playerSlot] = teamNumber;
+    }
+
+    updateScreenUI(screenUIElement) {}
 
     updateUI(uiElement) {
         assert(uiElement instanceof UIElement);

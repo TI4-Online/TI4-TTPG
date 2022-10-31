@@ -43,7 +43,7 @@ class GameSetupUI {
             .setFontSize(CONFIG.fontSize * 3)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
-            .setFont("ambroise_firmin_bold.otf", refPackageId);
+            .setFont("ambroise-firmin-bold.otf", refPackageId);
 
         const col1Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
         const col2Panel = new VerticalBox().setChildDistance(CONFIG.spacing);

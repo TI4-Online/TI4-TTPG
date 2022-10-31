@@ -25,6 +25,13 @@ class TabDisplayUI extends VerticalBox {
         enableBorders.onCheckStateChanged.add(onClickHandlers.toggleBorders);
         this.addChild(enableBorders);
 
+        const teamBorders = new CheckBox()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.tab.map.display.team_borders"));
+        assert(typeof onClickHandlers.teamBorders === "function");
+        teamBorders.onCheckStateChanged.add(onClickHandlers.teamBorders);
+        this.addChild(teamBorders);
+
         const brightnessLabel = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.display.system_brightness"));
