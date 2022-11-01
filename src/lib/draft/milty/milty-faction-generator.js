@@ -1,6 +1,8 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { Shuffle } = require("../../../lib/shuffle");
 const { world } = require("../../../wrapper/api");
+const { CardUtil } = require("../../card/card-util");
+const { ObjectNamespace } = require("../../object-namespace");
 
 // Wrap in a static class like other modules.
 class MiltyFactionGenerator {
@@ -19,12 +21,38 @@ class MiltyFactionGenerator {
         return value;
     }
 
+    static getOnTableFactionCardNsidNames() {
+        const result = [];
+
+        const checkDiscardPile = true;
+        const allowFaceDown = false;
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (
+                !nsid.startsWith("card.faction_token") &&
+                !nsid.startsWith("card.faction_reference")
+            ) {
+                continue;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const nsidName = parsed.name.split(".")[0];
+            result.push(nsidName);
+        }
+
+        // Return unique results.
+        return result.filter((v, i, a) => a.indexOf(v) === i);
+    }
+
     constructor() {
         this.reset();
     }
 
     reset() {
         this._count = MiltyFactionGenerator.defaultCount;
+        this._factionsFromCards = false;
     }
 
     getCount() {
@@ -39,6 +67,16 @@ class MiltyFactionGenerator {
             assert(value <= MiltyFactionGenerator.maxCount);
         }
         this._count = value;
+        return this;
+    }
+
+    getFactionsFromCards() {
+        return this._factionsFromCards;
+    }
+
+    setFactionsFromCards(value) {
+        assert(typeof value === "boolean");
+        this._factionsFromCards = value;
         return this;
     }
 
@@ -71,6 +109,21 @@ class MiltyFactionGenerator {
         }
 
         nsidNames = Shuffle.shuffle(nsidNames);
+
+        // If seeding with cards add those to the front.
+        // Note that mixing Keleres with a competing flavor will still
+        // strip one out.
+        if (this._factionsFromCards) {
+            const tableNsidNames =
+                MiltyFactionGenerator.getOnTableFactionCardNsidNames();
+            Shuffle.shuffle(tableNsidNames);
+            const otherNsidNames = nsidNames.filter(
+                (name) => !tableNsidNames.includes(name)
+            );
+            nsidNames = [];
+            nsidNames.push(...tableNsidNames);
+            nsidNames.push(...otherNsidNames);
+        }
 
         // Do not mix Keleres with conflicting faction
         const rejectSet = new Set();
