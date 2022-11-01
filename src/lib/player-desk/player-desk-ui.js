@@ -71,7 +71,7 @@ class PlayerDeskUI {
             this._callbacks.onChangeColor
         );
         this._colorOptionsBox = new LayoutBox()
-            .setPadding(0, 0, 0, SPACING)
+            .setPadding(0, 0, 0, 0)
             .setChild(colorOptionsPanel);
         this._colorOptionsBox.setOverrideHeight(0);
 
