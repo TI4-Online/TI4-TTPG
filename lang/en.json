@@ -172,6 +172,8 @@
     "ui.menu.maban_omega_promissory": "View neighbors’ promissories",
     "ui.menu.maban_omega_agent": "View agenda top/bottom",
     "ui.menu.mageon_implants": "Tell action cards",
+    "ui.menu.sleeper_to_pds": "Replace with PDS",
+    "ui.menu.sleeper_to_mech_inf": "Replace with mech and infantry",
     "ui.menu.yssaril_commander_actions": "Tell action cards",
     "ui.menu.yssaril_commander_promissory": "Tell promissory cards",
     "ui.menu.yssaril_commander_secrets": "Tell secret cards",

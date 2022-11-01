@@ -252,6 +252,7 @@ require("./global/right-click/right-click-mageon-implants");
 require("./global/right-click/right-click-purge");
 require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
+require("./global/right-click/right-click-sleeper-token");
 require("./global/right-click/right-click-trade-agreement");
 require("./global/right-click/right-click-yssaril-commander");
 require("./global/screen-ui/end-turn");
