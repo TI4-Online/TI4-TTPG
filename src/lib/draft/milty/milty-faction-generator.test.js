@@ -1,6 +1,7 @@
 require("../../../global"); // create world.TI4
 const assert = require("assert");
 const { MiltyFactionGenerator } = require("./milty-faction-generator");
+const { MockCard, MockVector, world } = require("../../../wrapper/api");
 
 it("generate", () => {
     const factionGenerator = new MiltyFactionGenerator();
@@ -45,3 +46,50 @@ it("keleres", () => {
 //     }
 //     console.log(report.join("\n"));
 // });
+
+it("getOnTableFactionCardNsidNames", () => {
+    world.__clear();
+    const nsids = [
+        "card.faction_reference:base/jolnar",
+        "card.faction_token:base/mentak",
+        "card.faction_reference:codex.vigil/naalu.omega",
+        "card.faction_reference:codex.vigil/naalu.omega", // dup
+    ];
+    for (const nsid of nsids) {
+        const position = new MockVector(0, 0, world.getTableHeight());
+        const card = MockCard.__create(nsid, position);
+        world.__addObject(card);
+    }
+
+    const nsidNames = MiltyFactionGenerator.getOnTableFactionCardNsidNames();
+    world.__clear();
+
+    assert.deepEqual(nsidNames, ["jolnar", "mentak", "naalu"]);
+});
+
+it("mix on table", () => {
+    world.__clear();
+    const nsids = [
+        "card.faction_reference:base/jolnar",
+        "card.faction_token:base/mentak",
+        "card.faction_reference:codex.vigil/naalu.omega",
+    ];
+    for (const nsid of nsids) {
+        const position = new MockVector(0, 0, world.getTableHeight());
+        const card = MockCard.__create(nsid, position);
+        world.__addObject(card);
+    }
+
+    const factionGenerator = new MiltyFactionGenerator()
+        .setCount(MiltyFactionGenerator.maxCount)
+        .setFactionsFromCards(true);
+    const factions = factionGenerator
+        .generate()
+        .map((faction) => faction.nsidName);
+    world.__clear();
+
+    const firstThree = factions.slice(0, 3);
+    firstThree.sort();
+
+    assert.deepEqual(firstThree, ["jolnar", "mentak", "naalu"]);
+});

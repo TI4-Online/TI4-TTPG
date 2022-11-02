@@ -103,6 +103,17 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .addChild(factionCountSlider, 4);
         this.addChild(factionCountPanel);
 
+        const factionsFromCards = new CheckBox()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.factions_from_cards"))
+            .setIsChecked(this._factionGenerator.getFactionsFromCards());
+        this.addChild(factionsFromCards);
+        factionsFromCards.onCheckStateChanged.add(
+            (checkbox, player, isChecked) => {
+                this._factionGenerator.setFactionsFromCards(isChecked);
+            }
+        );
+
         const onFinishedButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
