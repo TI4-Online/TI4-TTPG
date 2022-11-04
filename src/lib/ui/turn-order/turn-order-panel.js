@@ -87,6 +87,7 @@ class TurnOrderPanel extends VerticalBox {
 
     setEnableButtons(value) {
         this._config.enableButtons = value;
+        this.update();
         return this;
     }
 

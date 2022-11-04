@@ -12,8 +12,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
-const SIMPLE_WIDTH = 150;
-const SIMPLE_ENTRY_HEIGHT = 40;
+const SIMPLE_WIDTH = 175;
+const SIMPLE_ENTRY_HEIGHT = 35;
 const FANCY_WIDTH = 220;
 const FANCY_ENTRY_HEIGHT = 58;
 const PAD = 14;
@@ -177,8 +177,8 @@ class TurnOrderScreenUI {
         // Fancy hard codes font sizes and fit lengths.
         const turnOrderPanel = new TurnOrderPanel()
             .setUseFancyWidgets(false)
-            .setFontSize(SIMPLE_ENTRY_HEIGHT * 0.3)
-            .setEnableButtons(true);
+            .setFontSize(SIMPLE_ENTRY_HEIGHT * 0.4)
+            .setEnableButtons(false);
 
         // Screen UI can be placed and sized with relative values, but that
         // means UI will vary with screen size.  Since we cannot (yet) center
@@ -189,7 +189,7 @@ class TurnOrderScreenUI {
             .setOverrideWidth(SIMPLE_WIDTH)
             .setChild(turnOrderPanel);
 
-        const c = 0.05;
+        const c = 0.3;
         const frame = new Border().setColor([c, c, c, 1]).setChild(inner);
 
         const outer = new LayoutBox()
