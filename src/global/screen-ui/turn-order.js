@@ -24,14 +24,7 @@ class TurnOrderScreenUI {
         this._simplePlayerSlots = [];
         this._fancyPlayerSlots = Array.from(Array(20).keys());
 
-        this._simplePlayerPermission = new PlayerPermission().setPlayerSlots(
-            this._simplePlayerSlots
-        );
-        this._fancyPlayerPermission = new PlayerPermission().setPlayerSlots(
-            this._fancyPlayerSlots
-        );
-
-        //this._simpleUI = this.createSimpleUI(); // visbility toggle bugged
+        this._simpleUI = this.createSimpleUI();
         this._fancyUI = this.createFancyUI();
         this.createToggleUI();
 
@@ -68,7 +61,10 @@ class TurnOrderScreenUI {
             } else {
                 this._simplePlayerSlots.push(playerSlot);
             }
-            this._simplePlayerPermission.setPlayerSlots(this._fancyPlayerSlots);
+            const playerPermission = new PlayerPermission().setPlayerSlots(
+                this._simplePlayerSlots
+            );
+            this._simpleUI.players = playerPermission;
             world.updateScreenUI(this._simpleUI);
         }
 
@@ -79,7 +75,10 @@ class TurnOrderScreenUI {
             } else {
                 this._fancyPlayerSlots.push(playerSlot);
             }
-            this._fancyPlayerPermission.setPlayerSlots(this._fancyPlayerSlots);
+            const playerPermission = new PlayerPermission().setPlayerSlots(
+                this._fancyPlayerSlots
+            );
+            this._fancyUI.players = playerPermission;
             world.updateScreenUI(this._fancyUI);
         }
     }

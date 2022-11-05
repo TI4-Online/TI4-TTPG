@@ -71,11 +71,6 @@ class EndTurnScreenUI {
         this._ui.positionY = SCREEN_X;
         this._ui.widget = outer;
 
-        // Only the active turn player can see it.
-        this._playerPermission = new PlayerPermission();
-        this._playerPermission.setPlayerSlots([]);
-        this._ui.players = this._playerPermission;
-
         world.addScreenUI(this._ui);
 
         // Auto-update.
@@ -92,13 +87,15 @@ class EndTurnScreenUI {
 
     update() {
         const currentDesk = world.TI4.turns.getCurrentTurn();
-        const playerSlots = currentDesk ? [currentDesk.playerSlot] : [];
-        this._playerPermission.setPlayerSlots(playerSlots);
-
         this._button.setTextColor(currentDesk.plasticColor);
         this._border.setColor(currentDesk.plasticColor);
 
-        // Need to poke world to update player permission change.
+        // Only the active turn player can see it.
+        const playerSlots = currentDesk ? [currentDesk.playerSlot] : [];
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            playerSlots
+        );
+        this._ui.players = playerPermission;
         world.updateScreenUI(this._ui);
     }
 }
