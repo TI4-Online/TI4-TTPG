@@ -371,7 +371,7 @@ class AutoRollerUI extends HorizontalBox {
         this._arenaLowerLeft.addChild(widget, BUTTON_WEIGHT);
 
         const imgPath = system.raw.img;
-        const size = CONFIG.scale * 350;
+        const size = CONFIG.scale * 340;
         const img = new ImageWidget()
             .setImage(imgPath, refPackageId)
             .setImageSize(size, size);
