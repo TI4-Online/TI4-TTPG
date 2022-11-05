@@ -12,7 +12,7 @@ const PLAYER_DESK_COLORS = [
     {
         colorName: "red",
         hexColor: "#FF2417",
-        plasticHexColor: "#CB0000",
+        plasticHexColor: "#D00404", //"#CB0000",
         defaultPlayerSlot: 16,
     },
     {
@@ -54,15 +54,19 @@ const PLAYER_DESK_COLORS = [
 ];
 
 class PlayerDeskColor {
+    static reset(playerDesk) {
+        PlayerDeskColor.change(playerDesk, playerDesk._colorName);
+    }
+
     static change(playerDesk, newColorName) {
         assert(playerDesk);
         assert(typeof newColorName === "string");
 
-        if (!world.__isMock) {
-            console.log(
-                `PlayerDeskColor.change: index=${playerDesk.index} from=${playerDesk.colorName} to=${newColorName}`
-            );
-        }
+        // if (!world.__isMock) {
+        //     console.log(
+        //         `PlayerDeskColor.change: index=${playerDesk.index} from=${playerDesk.colorName} to=${newColorName}`
+        //     );
+        // }
 
         let colorAttrs = undefined;
         for (const candidate of PLAYER_DESK_COLORS) {
