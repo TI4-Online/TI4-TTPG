@@ -50,6 +50,8 @@ class PlayerDeskUI {
 
         this._ui = undefined;
 
+        this._panel = new VerticalBox().setChildDistance(SPACING);
+
         this._takeSeatButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText("X");
@@ -59,49 +61,34 @@ class PlayerDeskUI {
             this._callbacks.onToggleColors
         );
 
-        const takeSeatPanel = new HorizontalBox()
+        this._takeSeatPanel = new HorizontalBox()
             .setChildDistance(SPACING)
             .addChild(this._takeSeatButton, 1)
             .addChild(this._changeColorButton);
-        this._takeSeatBox = new LayoutBox()
-            .setPadding(0, 0, 0, SPACING)
-            .setChild(takeSeatPanel);
 
-        const colorOptionsPanel = this._createChangeColorButton(
+        this._colorOptionsPanel = this._createChangeColorButton(
             this._callbacks.onChangeColor
         );
-        this._colorOptionsBox = new LayoutBox()
-            .setPadding(0, 0, 0, 0)
-            .setChild(colorOptionsPanel);
-        this._colorOptionsBox.setOverrideHeight(0);
 
         this._setupFactionButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText("X");
 
-        this._setupFactionBox = new LayoutBox()
-            .setPadding(0, 0, 0, SPACING)
-            .setChild(this._setupFactionButton);
-
         this._readyButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText("X");
 
-        this._readyBox = new LayoutBox()
-            .setPadding(0, 0, 0, SPACING)
-            .setChild(this._readyButton);
-
-        const panel = new VerticalBox()
-            .addChild(this._takeSeatBox)
-            .addChild(this._colorOptionsBox)
-            .addChild(this._setupFactionBox)
-            .addChild(this._readyBox);
+        this._panel
+            .addChild(this._takeSeatPanel)
+            .addChild(this._colorOptionsPanel)
+            .addChild(this._setupFactionButton)
+            .addChild(this._readyButton);
 
         // Pad panel.
         const panelPadded = new LayoutBox()
-            .setPadding(SPACING, SPACING, SPACING, 0)
+            .setPadding(SPACING, SPACING, SPACING, SPACING)
             .setMinimumWidth(350 * EXTRA_SCALE)
-            .setChild(panel);
+            .setChild(this._panel);
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
 
@@ -144,14 +131,6 @@ class PlayerDeskUI {
         this._changeColorButton.setEnabled(!config.isReady);
         this._changeColorButton.setTintColor(this._playerDesk.plasticColor);
 
-        if (config.showColors) {
-            this._colorOptionsBox
-                .setPadding(0, 0, 0, SPACING)
-                .setOverrideHeight(-1);
-        } else {
-            this._colorOptionsBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
-        }
-
         if (config.canFaction) {
             if (config.hasFaction) {
                 localeText = "ui.desk.clean_faction";
@@ -163,11 +142,6 @@ class PlayerDeskUI {
             this._setupFactionButton.setText(locale(localeText));
             this._setupFactionButton.onClicked.clear();
             this._setupFactionButton.onClicked.add(onClickHandler);
-            this._setupFactionBox
-                .setPadding(0, 0, 0, SPACING)
-                .setOverrideHeight(-1);
-        } else {
-            this._setupFactionBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
         }
 
         // Once a faction is selected enable ready button.
@@ -178,10 +152,21 @@ class PlayerDeskUI {
             this._readyButton.onClicked.clear();
             this._readyButton.onClicked.add(onClickHandler);
             this._readyButton.setEnabled(config.hasFaction);
-            this._readyBox.setPadding(0, 0, 0, SPACING).setOverrideHeight(-1);
-        } else {
-            this._readyBox.setPadding(0, 0, 0, 0).setOverrideHeight(0);
         }
+
+        // Show hide UI widgets.
+        this._panel.removeAllChildren();
+        this._panel.addChild(this._takeSeatPanel);
+        if (config.showColors) {
+            this._panel.addChild(this._colorOptionsPanel);
+        }
+        if (config.canFaction) {
+            this._panel.addChild(this._setupFactionButton);
+        }
+        if (!config.isReady) {
+            this._panel.addChild(this._readyButton);
+        }
+
         return this;
     }
 

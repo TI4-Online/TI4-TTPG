@@ -4,10 +4,10 @@ const { TableLayout } = require("../../table/table-layout");
 const PositionToPlanet = require("../../lib/system/position-to-planet");
 const { ObjectType, Rotator, Vector, world } = require("../../wrapper/api");
 
-const LOCAL_POS = new Vector(2.2, 31, 0);
+const LOCAL_POS = new Vector(2.0, 9.5, 0); // (2.2, 31, 0) if turn order is on left
 const LOCAL_ROT = new Rotator(0, 0, 0);
-const ARENA_TILE_WIDTH = 35;
-const ARENA_TILE_HEIGHT = 28;
+const ARENA_TILE_WIDTH = 34.5;
+const ARENA_TILE_HEIGHT = 26.5;
 
 class AutoRollerArena {
     static debugVisualize() {
@@ -16,7 +16,7 @@ class AutoRollerArena {
         const rot = TableLayout.anchorRotationToWorld(anchor, LOCAL_ROT);
         const extent = [ARENA_TILE_HEIGHT / 2, ARENA_TILE_WIDTH / 2, 0.1];
         const color = [1, 0, 0, 1];
-        const duration = 10; // seconds
+        const duration = 20; // seconds
         const thickness = 0.2;
         world.drawDebugBox(pos, extent, rot, color, duration, thickness);
     }

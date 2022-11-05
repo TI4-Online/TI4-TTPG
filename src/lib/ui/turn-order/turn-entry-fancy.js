@@ -107,6 +107,9 @@ class TurnEntryFancy extends Canvas {
         assert(Array.isArray(config.strategyCards));
         assert(Array.isArray(config.strategyCardsFaceDown));
 
+        const MARK_LEFT = "~";
+        const MARK_RIGHT = MARK_LEFT;
+
         const playerSlot = playerDesk.playerSlot;
         const player = world.getPlayerBySlot(playerSlot);
 
@@ -114,6 +117,16 @@ class TurnEntryFancy extends Canvas {
         if (!name || name.length === 0) {
             name = `<${playerDesk.colorName}>`;
         }
+        while (name.startsWith(MARK_LEFT)) {
+            name = name.slice(MARK_LEFT.length);
+        }
+        while (name.endsWith(MARK_RIGHT)) {
+            name = name.slice(0, name.length - MARK_RIGHT.length);
+        }
+        if (config.isPassed) {
+            name = `${MARK_LEFT}${name}${MARK_RIGHT}`;
+        }
+
         let fontSizeScale = PLAYER_NAME_FIT_LENGTH / name.length;
         fontSizeScale = Math.min(fontSizeScale, 1);
         fontSizeScale = Math.max(fontSizeScale, 0.5);
@@ -149,8 +162,6 @@ class TurnEntryFancy extends Canvas {
         this._canvasBackground.setColor(bgColor);
 
         // Strategy cards.
-        const MARK_LEFT = "~";
-        const MARK_RIGHT = MARK_LEFT;
         let strategyCards = config.strategyCards.map((strategyCard) => {
             if (config.strategyCardsFaceDown.includes(strategyCard)) {
                 strategyCard = `${MARK_LEFT}${strategyCard}${MARK_RIGHT}`;

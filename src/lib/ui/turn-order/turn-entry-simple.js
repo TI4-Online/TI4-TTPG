@@ -76,7 +76,10 @@ class TurnEntrySimple extends Border {
         const fontSize = config.fontSize * fontSizeScale;
 
         // Select between label and button depending on is turn.
-        const label = config.isTurn ? this._label : this._button;
+        let label = config.isTurn ? this._label : this._button;
+        if (!config.enableButtons) {
+            label = this._label;
+        }
         const fit = config.isTurn
             ? VerticalAlignment.Center
             : VerticalAlignment.Fill;
@@ -94,7 +97,10 @@ class TurnEntrySimple extends Border {
         const passColor = new Color(v2, v2, v2);
 
         const fgColor = config.isTurn ? altColor : plrColor;
-        const bgColor = config.isPassed ? passColor : plrColor;
+        let bgColor = config.isPassed ? passColor : plrColor;
+        if (!config.enableButtons) {
+            bgColor = config.isTurn ? plrColor : altColor;
+        }
 
         this.setColor(bgColor);
         label.setTextColor(fgColor);

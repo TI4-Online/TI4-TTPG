@@ -114,6 +114,8 @@ class PlayerDesk {
                 _playerDesks[i]._colorName = deskState[i].cn;
                 _playerDesks[i]._playerSlot = deskState[i].s;
                 _playerDesks[i]._ready = deskState[i].r;
+
+                PlayerDeskColor.reset(_playerDesks[i]);
             }
         }
 
@@ -175,7 +177,7 @@ class PlayerDesk {
 
         return new PlayerDesk(
             {
-                colorName: "black",
+                colorName: "white",
                 hexColor: "#000000",
                 plasticHexColor: "#000000",
                 pos: { x: 0, y: 0 },
@@ -209,6 +211,8 @@ class PlayerDesk {
         this._showColors = false;
         this._factionSetupInProgress = false;
         this._ready = false;
+
+        PlayerDeskColor.reset(this);
     }
 
     get center() {

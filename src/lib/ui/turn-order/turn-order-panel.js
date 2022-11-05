@@ -51,6 +51,10 @@ class TurnOrderPanel extends VerticalBox {
             globalEvents.TI4.onFactionChanged.add(delayedUpdate); // fancy shows faction
             globalEvents.TI4.onStrategyCardMovementStopped.add(delayedUpdate); // fancy shows strat cards
             globalEvents.TI4.onScored.add(delayedUpdate); // fancy shows score
+
+            setInterval(() => {
+                this.update();
+            }, 3000);
         }
 
         this.update();
@@ -83,6 +87,7 @@ class TurnOrderPanel extends VerticalBox {
 
     setEnableButtons(value) {
         this._config.enableButtons = value;
+        this.update();
         return this;
     }
 
