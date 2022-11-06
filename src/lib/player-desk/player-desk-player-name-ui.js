@@ -137,9 +137,6 @@ class PlayerDeskPlayerNameUI {
         this._names.forEach((name) => {
             name.setTextColor(fgColor).setText(` ${playerName} `);
         });
-        this._uis.forEach((ui) => {
-            world.updateUI(ui);
-        });
     }
 }
 
