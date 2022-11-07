@@ -19,7 +19,6 @@ const PLAYER_NAME_FONT_SIZE = 12;
 const PLAYER_NAME_FIT_LENGTH = 15;
 
 const STRATEGY_CARD_FONT_SIZE = 11;
-const STRATEGY_CARD_FIT_LENGTH = 13;
 
 class TurnEntryFancy extends Canvas {
     static updateArray(entries, config) {
@@ -109,36 +108,43 @@ class TurnEntryFancy extends Canvas {
 
         const w = 220;
         const h = 58;
+        const strike = 1;
 
         this.addChild(this._canvasBackground, 0, 0, w, h)
             .addChild(this._factionIcon, 4, 4, 40, 40)
             .addChild(this._factionName, 0, 44, 48, 15)
             .addChild(this._score, w - 45, 3, 45, 45)
             .addChild(nameBox, 0, 3, w, h / 2)
-            .addChild(this._playerNameOverlay, w / 4, h / 4 + 2, w / 2, 2)
+            .addChild(
+                this._playerNameOverlay,
+                w / 4,
+                h / 4 + 3 - strike,
+                w / 2,
+                strike
+            )
             .addChild(strategyBoxSolo, 0, h / 2 - 4, w, h / 2)
             .addChild(strategyBoxLeft, 40, h / 2 - 4, (w - 80) / 2, h / 2)
             .addChild(strategyBoxRight, w / 2, h / 2 - 4, (w - 80) / 2, h / 2)
             .addChild(
                 this._strategyCardSoloOverlay,
                 w / 4,
-                (h * 3) / 4 - 5,
+                (h * 3) / 4 - 3 - strike,
                 w / 2,
-                2
+                strike
             )
             .addChild(
                 this._strategyCardLeftOverlay,
                 44,
-                (h * 3) / 4 - 6,
+                (h * 3) / 4 - 4 - strike,
                 (w - 80) / 2 - 8,
-                2
+                strike
             )
             .addChild(
                 this._strategyCardRightOverlay,
                 w / 2 + 4,
-                (h * 3) / 4 - 6,
+                (h * 3) / 4 - 4 - strike,
                 (w - 80) / 2 - 8,
-                2
+                strike
             );
     }
 
