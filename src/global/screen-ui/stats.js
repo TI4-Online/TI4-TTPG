@@ -60,8 +60,9 @@ class StatsScreenUI {
     }
 
     constructor() {
-        this._playerSlots = [100];
+        this._playerSlots = [];
         this._playerEntries = [];
+        this._uiAdded = false;
 
         this._box = new LayoutBox()
             .setPadding(0, DISTANCE_TO_EDGE, 0, DISTANCE_TO_EDGE)
@@ -91,7 +92,7 @@ class StatsScreenUI {
 
         const delayedUpdate = () => {
             world.TI4.asyncTaskQueue.add(() => {
-                //this.update();
+                this.update();
             });
         };
         setInterval(delayedUpdate, 3000);
@@ -103,8 +104,6 @@ class StatsScreenUI {
 
         this.updateForPlayerCount();
         this.update();
-
-        world.addScreenUI(this._ui);
     }
 
     toggleVisibility(playerSlot) {
@@ -124,7 +123,18 @@ class StatsScreenUI {
             this._playerSlots
         );
         this._ui.players = playerPermission;
-        world.updateScreenUI(this._ui);
+
+        if (this._playerSlots.length === 0 && this._uiAdded) {
+            world.removeScreenUIElement(this._ui);
+            this._uiAdded = false;
+        } else if (this._playerSlots.length > 0 && !this._uiAdded) {
+            world.addScreenUI(this._ui);
+            this._uiAdded = true;
+        }
+
+        if (this._uiAdded) {
+            world.updateScreenUI(this._ui);
+        }
     }
 
     updateForPlayerCount() {
@@ -175,7 +185,8 @@ class StatsScreenUI {
 
         const labelName = new Text()
             .setFontSize(FONT_SIZE)
-            .setText(locale("ui.label.name"));
+            .setJustification(TextJustification.Center)
+            .setText(""); // empty spot
         const colName = new VerticalBox().addChild(labelName);
         this._playerEntries.forEach((playerEntry) => {
             colName.addChild(playerEntry.name);
@@ -183,6 +194,7 @@ class StatsScreenUI {
 
         const labelScore = new Text()
             .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(locale("ui.label.score"));
         const colScore = new VerticalBox().addChild(labelScore);
         this._playerEntries.forEach((playerEntry) => {
@@ -191,6 +203,7 @@ class StatsScreenUI {
 
         const labelRes = new Text()
             .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(locale("ui.label.resources"));
         const colRes = new VerticalBox().addChild(labelRes);
         this._playerEntries.forEach((playerEntry) => {
@@ -199,6 +212,7 @@ class StatsScreenUI {
 
         const labelInf = new Text()
             .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(locale("ui.label.influence"));
         const colInf = new VerticalBox().addChild(labelInf);
         this._playerEntries.forEach((playerEntry) => {
@@ -207,6 +221,7 @@ class StatsScreenUI {
 
         const labelTradegoods = new Text()
             .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(locale("ui.label.tradegoodsAndCommodities"));
         const colTradegoods = new VerticalBox().addChild(labelTradegoods);
         this._playerEntries.forEach((playerEntry) => {
@@ -215,6 +230,7 @@ class StatsScreenUI {
 
         const labelTokens = new Text()
             .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
             .setText(locale("ui.label.tokens"));
         const colTokens = new VerticalBox().addChild(labelTokens);
         this._playerEntries.forEach((playerEntry) => {
@@ -223,7 +239,7 @@ class StatsScreenUI {
 
         const panel = new HorizontalBox()
             .addChild(colName, 3)
-            .addChild(colScore, 1)
+            .addChild(colScore, 2)
             .addChild(colRes, 2)
             .addChild(colInf, 2)
             .addChild(colTradegoods, 2)
@@ -232,8 +248,12 @@ class StatsScreenUI {
             .setPadding(PAD, PAD, PAD, PAD)
             .setChild(panel);
         const v = 0.02;
+        const v2 = 0.3;
         const border = new Border().setColor([v, v, v, 1]).setChild(padded);
-        this._box.setChild(border);
+        const outerBorder = new Border()
+            .setColor([v2, v2, v2, 1])
+            .setChild(border);
+        this._box.setChild(outerBorder);
     }
 
     update() {

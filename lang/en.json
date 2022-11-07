@@ -131,7 +131,7 @@
     "ui.button.expand": "Expand",
     "ui.button.current_and_next_turn": "{current}‘s turn, next {next}",
     "ui.button.your_turn_end_turn": "YOUR TURN {current}, CLICK TO END TURN",
-    "ui.button.toggle_on_screen_stats": "Toggle on-screen stats",
+    "ui.button.toggle_on_screen_stats": "Toggle on-screen stats (per player)",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Diplomacy System",
@@ -143,13 +143,18 @@
     "ui.button.end_turn": "END TURN",
 
     "ui.label.speaker": "Speaker",
-
     "ui.label.movement": "Movement",
     "ui.label.space_combat": "Space Combat",
     "ui.label.invasion": "Invasion",
     "ui.label.invasion_oneline": "Invasion —>",
     "ui.label.production": "Production",
     "ui.label.search": "Search:",
+    "ui.label.score": "Score",
+    "ui.label.resources": "Res",
+    "ui.label.influence": "Inf",
+    "ui.label.tradegoodsAndCommodities": "TG/C",
+    "ui.label.tokens": "Tokens",
+
     "ui.whisper.newest": "New",
     "ui.whisper.who_sent": "Whispers",
     "ui.whisper.oldest": "Old",
