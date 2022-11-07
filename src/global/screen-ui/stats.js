@@ -117,7 +117,6 @@ class StatsScreenUI {
         } else {
             this._playerSlots.push(playerSlot);
         }
-        console.log(`XXX ${JSON.stringify(this._playerSlots)}`);
 
         const playerPermission = new PlayerPermission().setPlayerSlots(
             this._playerSlots
