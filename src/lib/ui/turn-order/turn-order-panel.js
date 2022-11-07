@@ -31,7 +31,7 @@ class TurnOrderPanel extends VerticalBox {
         const delayedUpdate = () => {
             if (!pending) {
                 pending = true;
-                process.nextTick(() => {
+                world.TI4.asyncTaskQueue.add(() => {
                     pending = false;
                     this.update();
                 });
@@ -52,9 +52,7 @@ class TurnOrderPanel extends VerticalBox {
             globalEvents.TI4.onStrategyCardMovementStopped.add(delayedUpdate); // fancy shows strat cards
             globalEvents.TI4.onScored.add(delayedUpdate); // fancy shows score
 
-            setInterval(() => {
-                this.update();
-            }, 3000);
+            setInterval(delayedUpdate, 3000);
         }
 
         this.update();

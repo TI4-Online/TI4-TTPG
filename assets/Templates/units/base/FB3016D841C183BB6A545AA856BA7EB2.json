@@ -34,7 +34,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 0
+				"Z": 0.1
 			},
 			"Scale":
 			{
@@ -51,8 +51,10 @@
 			"Texture": "global/units/base/fighter.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -65,5 +67,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
