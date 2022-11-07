@@ -18,7 +18,6 @@ const PLAYER_NAME_FONT_SIZE = 12;
 const PLAYER_NAME_FIT_LENGTH = 15;
 
 const STRATEGY_CARD_FONT_SIZE = 11;
-const STRATEGY_CARD_FIT_LENGTH = 13;
 
 class TurnEntryFancy extends Canvas {
     static updateArray(entries, config) {
@@ -65,35 +64,87 @@ class TurnEntryFancy extends Canvas {
             .setFontSize(PLAYER_NAME_FONT_SIZE)
             .setBold(true)
             .setText("Player Name");
-        this._strategyCards = new Text()
+        this._playerNameOverlay = new LayoutBox();
+
+        this._strategyCardSolo = new Text()
             .setJustification(TextJustification.Center)
             .setFontSize(STRATEGY_CARD_FONT_SIZE)
-            .setFont("handel-gothic-regular.ttf", refPackageId);
+            .setFont("handel-gothic-regular.ttf", refPackageId)
+            .setText("CONSTRUCTION");
+        this._strategyCardSoloOverlay = new LayoutBox();
+        this._strategyCardLeft = new Text()
+            .setJustification(TextJustification.Center)
+            .setFontSize(STRATEGY_CARD_FONT_SIZE * 0.6)
+            .setFont("handel-gothic-regular.ttf", refPackageId)
+            .setText("CONSTRUCTION");
+        this._strategyCardLeftOverlay = new LayoutBox();
+        this._strategyCardRight = new Text()
+            .setJustification(TextJustification.Center)
+            .setFontSize(STRATEGY_CARD_FONT_SIZE * 0.6)
+            .setFont("handel-gothic-regular.ttf", refPackageId)
+            .setText("CONSTRUCTION");
+        this._strategyCardRightOverlay = new LayoutBox();
+
         this._score = new Text()
             .setJustification(TextJustification.Center)
             .setFontSize(26)
             .setBold(true)
             .setText("0");
 
-        // Use this to detect if strategy cards needs reset.
-        this._strategyCardsKey = undefined;
-
         const nameBox = new LayoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(this._playerName);
-        const strategyBox = new LayoutBox()
+        const strategyBoxSolo = new LayoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
-            .setChild(this._strategyCards);
+            .setChild(this._strategyCardSolo);
+
+        const strategyBoxLeft = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(this._strategyCardLeft);
+        const strategyBoxRight = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(this._strategyCardRight);
 
         const w = 220;
         const h = 58;
+        const strike = 1;
 
         this.addChild(this._canvasBackground, 0, 0, w, h)
             .addChild(this._factionIcon, 4, 4, 40, 40)
             .addChild(this._factionName, 0, 44, 48, 15)
             .addChild(this._score, w - 45, 3, 45, 45)
             .addChild(nameBox, 0, 3, w, h / 2)
-            .addChild(strategyBox, 0, h / 2 - 4, w, h / 2);
+            .addChild(
+                this._playerNameOverlay,
+                w / 4,
+                h / 4 + 3 - strike,
+                w / 2,
+                strike
+            )
+            .addChild(strategyBoxSolo, 0, h / 2 - 4, w, h / 2)
+            .addChild(strategyBoxLeft, 40, h / 2 - 4, (w - 80) / 2, h / 2)
+            .addChild(strategyBoxRight, w / 2, h / 2 - 4, (w - 80) / 2, h / 2)
+            .addChild(
+                this._strategyCardSoloOverlay,
+                w / 4,
+                (h * 3) / 4 - 3 - strike,
+                w / 2,
+                strike
+            )
+            .addChild(
+                this._strategyCardLeftOverlay,
+                44,
+                (h * 3) / 4 - 4 - strike,
+                (w - 80) / 2 - 8,
+                strike
+            )
+            .addChild(
+                this._strategyCardRightOverlay,
+                w / 2 + 4,
+                (h * 3) / 4 - 4 - strike,
+                (w - 80) / 2 - 8,
+                strike
+            );
     }
 
     update(playerDesk, config) {
@@ -107,24 +158,12 @@ class TurnEntryFancy extends Canvas {
         assert(Array.isArray(config.strategyCards));
         assert(Array.isArray(config.strategyCardsFaceDown));
 
-        const MARK_LEFT = "~";
-        const MARK_RIGHT = MARK_LEFT;
-
         const playerSlot = playerDesk.playerSlot;
         const player = world.getPlayerBySlot(playerSlot);
 
         let name = player && player.getName();
         if (!name || name.length === 0) {
             name = `<${playerDesk.colorName}>`;
-        }
-        while (name.startsWith(MARK_LEFT)) {
-            name = name.slice(MARK_LEFT.length);
-        }
-        while (name.endsWith(MARK_RIGHT)) {
-            name = name.slice(0, name.length - MARK_RIGHT.length);
-        }
-        if (config.isPassed) {
-            name = `${MARK_LEFT}${name}${MARK_RIGHT}`;
         }
 
         let fontSizeScale = PLAYER_NAME_FIT_LENGTH / name.length;
@@ -161,27 +200,51 @@ class TurnEntryFancy extends Canvas {
         this._score.setTextColor(fgColor);
         this._canvasBackground.setColor(bgColor);
 
-        // Strategy cards.
-        let strategyCards = config.strategyCards.map((strategyCard) => {
-            if (config.strategyCardsFaceDown.includes(strategyCard)) {
-                strategyCard = `${MARK_LEFT}${strategyCard}${MARK_RIGHT}`;
-            }
-            return strategyCard.toUpperCase();
-        });
-        if (strategyCards.length === 0) {
-            strategyCards.push("—");
+        this._playerNameOverlay.setChild(new LayoutBox());
+        if (config.isPassed) {
+            this._playerNameOverlay.setChild(new Border().setColor(fgColor));
         }
-        strategyCards = strategyCards.join(" ");
 
-        fontSizeScale = STRATEGY_CARD_FIT_LENGTH / strategyCards.length;
-        fontSizeScale = Math.min(fontSizeScale, 1);
-        fontSizeScale = Math.max(fontSizeScale, 0.5);
-        const strategyCardFontSize = STRATEGY_CARD_FONT_SIZE * fontSizeScale;
+        // Strategy cards.
+        this._strategyCardSolo.setText("");
+        this._strategyCardLeft.setText("");
+        this._strategyCardRight.setText("");
+        this._strategyCardSoloOverlay.setChild(new LayoutBox());
+        this._strategyCardLeftOverlay.setChild(new LayoutBox());
+        this._strategyCardRightOverlay.setChild(new LayoutBox());
 
-        this._strategyCards
-            .setFontSize(strategyCardFontSize)
-            .setTextColor(fgColor)
-            .setText(strategyCards);
+        if (config.strategyCards.length === 0) {
+            this._strategyCardSolo.setText("—");
+        } else if (config.strategyCards.length === 1) {
+            const name = config.strategyCards[0];
+            this._strategyCardSolo
+                .setTextColor(fgColor)
+                .setText(name.toUpperCase());
+            if (config.strategyCardsFaceDown.includes(name)) {
+                this._strategyCardSoloOverlay.setChild(
+                    new Border().setColor(fgColor)
+                );
+            }
+        } else if (config.strategyCards.length > 1) {
+            const name1 = config.strategyCards[0];
+            const name2 = config.strategyCards[1];
+            this._strategyCardLeft
+                .setTextColor(fgColor)
+                .setText(name1.toUpperCase());
+            if (config.strategyCardsFaceDown.includes(name1)) {
+                this._strategyCardLeftOverlay.setChild(
+                    new Border().setColor(fgColor)
+                );
+            }
+            this._strategyCardRight
+                .setTextColor(fgColor)
+                .setText(name2.toUpperCase());
+            if (config.strategyCardsFaceDown.includes(name2)) {
+                this._strategyCardRightOverlay.setChild(
+                    new Border().setColor(fgColor)
+                );
+            }
+        }
     }
 }
 

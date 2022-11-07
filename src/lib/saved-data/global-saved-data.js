@@ -35,7 +35,7 @@ class GlobalSavedData {
     static get(key, defaultValue = undefined) {
         assert(typeof key === "string");
 
-        const json = world.getSavedData();
+        const json = world.getSavedData() || "";
         if (json.length > 0) {
             const parsed = JSON.parse(json);
             if (key in parsed) {
