@@ -13,7 +13,6 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const { str } = require("ajv");
 
 const PLAYER_NAME_FONT_SIZE = 12;
 const PLAYER_NAME_FIT_LENGTH = 15;
