@@ -131,6 +131,7 @@
     "ui.button.expand": "Expand",
     "ui.button.current_and_next_turn": "{current}‘s turn, next {next}",
     "ui.button.your_turn_end_turn": "YOUR TURN {current}, CLICK TO END TURN",
+    "ui.button.toggle_on_screen_stats": "Toggle on-screen stats",
 
     "ui.action.system.activate": "Activate System",
     "ui.action.system.diplomacy": "Diplomacy System",

@@ -256,6 +256,7 @@ require("./global/right-click/right-click-sleeper-token");
 require("./global/right-click/right-click-trade-agreement");
 require("./global/right-click/right-click-yssaril-commander");
 require("./global/screen-ui/end-turn");
+require("./global/screen-ui/stats");
 require("./global/screen-ui/turn-order");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");

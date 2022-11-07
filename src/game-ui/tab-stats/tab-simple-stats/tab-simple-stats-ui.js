@@ -1,8 +1,11 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const { ColorUtil } = require("../../../lib/color/color-util");
+const { StatsScreenUI } = require("../../../global/screen-ui/stats");
 const CONFIG = require("../../game-ui-config");
 const {
     Border,
+    Button,
     HorizontalAlignment,
     HorizontalBox,
     LayoutBox,
@@ -188,6 +191,16 @@ class TabSimpleStatsUI extends VerticalBox {
                 panel.addChild(playerStatsUI, 1);
             }
         }
+
+        const showOnScreenStatsButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.button.toggle_on_screen_stats"));
+        showOnScreenStatsButton.onClicked.add((button, player) => {
+            const statsScreenUI = StatsScreenUI.getInstance();
+            const playerSlot = player.getSlot();
+            statsScreenUI.toggleVisibility(playerSlot);
+        });
+        this.addChild(showOnScreenStatsButton);
     }
 
     update(data) {
