@@ -25,8 +25,14 @@ class TurnOrderScreenUI {
         this._fancyPlayerSlots = Array.from(Array(20).keys());
 
         this._simpleUI = this.createSimpleUI();
+        this._simpleUIadded = false;
+
         this._fancyUI = this.createFancyUI();
-        this.createToggleUI();
+        this._fancyUIadded = true;
+        world.addScreenUI(this._fancyUI);
+
+        const toggleUI = this.createToggleUI();
+        world.addScreenUI(toggleUI);
 
         globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
             this.resetHeight();
@@ -65,7 +71,21 @@ class TurnOrderScreenUI {
                 this._simplePlayerSlots
             );
             this._simpleUI.players = playerPermission;
-            world.updateScreenUI(this._simpleUI);
+
+            if (this._simplePlayerSlots.length === 0 && this._simpleUIadded) {
+                world.removeScreenUIElement(this._simpleUI);
+                this._simpleUIadded = false;
+            } else if (
+                this._simplePlayerSlots.length > 0 &&
+                !this._simpleUIadded
+            ) {
+                world.addScreenUI(this._simpleUI);
+                this._simpleUIadded = true;
+            }
+
+            if (this._simpleUIadded) {
+                world.updateScreenUI(this._simpleUI);
+            }
         }
 
         if (this._fancyUI) {
@@ -79,7 +99,21 @@ class TurnOrderScreenUI {
                 this._fancyPlayerSlots
             );
             this._fancyUI.players = playerPermission;
-            world.updateScreenUI(this._fancyUI);
+
+            if (this._fancyPlayerSlots.length === 0 && this._fancyUIadded) {
+                world.removeScreenUIElement(this._fancyUI);
+                this._fancyUIadded = false;
+            } else if (
+                this._fancyPlayerSlots.length > 0 &&
+                !this._fancyUIadded
+            ) {
+                world.addScreenUI(this._fancyUI);
+                this._fancyUIadded = true;
+            }
+
+            if (this._fancyUIadded) {
+                world.updateScreenUI(this._fancyUI);
+            }
         }
     }
 
@@ -122,8 +156,6 @@ class TurnOrderScreenUI {
 
         ui.widget = buttonBox;
 
-        world.addScreenUI(ui);
-
         return ui;
     }
 
@@ -165,9 +197,11 @@ class TurnOrderScreenUI {
         ui.positionY = 0;
 
         ui.widget = outer;
-        ui.players = this._fancyPlayerPermission;
 
-        world.addScreenUI(ui);
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            this._fancyPlayerSlots
+        );
+        ui.players = playerPermission;
 
         return ui;
     }
@@ -208,9 +242,11 @@ class TurnOrderScreenUI {
         ui.positionY = 0;
 
         ui.widget = outer;
-        ui.players = this._simplePlayerPermission;
 
-        world.addScreenUI(ui);
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            this._simplePlayerSlots
+        );
+        ui.players = playerPermission;
 
         return ui;
     }
