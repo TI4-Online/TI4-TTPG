@@ -24,7 +24,7 @@ class ObjectSavedData {
         assert(obj instanceof GameObject);
         assert(typeof key === "string");
 
-        const json = obj.getSavedData();
+        const json = obj.getSavedData() || "";
         if (json.length > 0) {
             const parsed = JSON.parse(json);
             if (key in parsed) {
