@@ -31,8 +31,8 @@ class TurnOrderScreenUI {
         this._fancyUIadded = true;
         world.addScreenUI(this._fancyUI);
 
-        const toggleUI = this.createToggleUI();
-        world.addScreenUI(toggleUI);
+        this._toggleUI = this.createToggleUI();
+        world.addScreenUI(this._toggleUI);
 
         globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
             this.resetHeight();
@@ -81,6 +81,10 @@ class TurnOrderScreenUI {
             ) {
                 world.addScreenUI(this._simpleUI);
                 this._simpleUIadded = true;
+
+                // Move to top.
+                world.removeScreenUIElement(this._toggleUI);
+                world.addScreenUI(this._toggleUI);
             }
 
             if (this._simpleUIadded) {
@@ -109,6 +113,10 @@ class TurnOrderScreenUI {
             ) {
                 world.addScreenUI(this._fancyUI);
                 this._fancyUIadded = true;
+
+                // Move to top.
+                world.removeScreenUIElement(this._toggleUI);
+                world.addScreenUI(this._toggleUI);
             }
 
             if (this._fancyUIadded) {
