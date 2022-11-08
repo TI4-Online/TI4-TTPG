@@ -17,6 +17,11 @@ if (TableLayout.GET_TABLE() === "6p-skinny") {
     GRAVEYARDS.yaw0 = 30;
     GRAVEYARDS.dYaw = 60;
     GRAVEYARDS.count = 6;
+} else if (TableLayout.GET_TABLE() === "8p-huge") {
+    GRAVEYARDS.d = 160;
+    GRAVEYARDS.yaw0 = 0;
+    GRAVEYARDS.dYaw = 45;
+    GRAVEYARDS.count = 8;
 }
 
 const EXTRA_GRAVEYARDS = [

@@ -25,7 +25,9 @@ class TurnEntryFancy extends Canvas {
         const currentDesk = world.TI4.turns.getCurrentTurn();
         const passedPlayerSlotSet = world.TI4.turns.getPassedPlayerSlotSet();
         const scoreboard = Scoreboard.getScoreboard();
-        const playerSlotToScore = Scoreboard.getPlayerSlotToScore(scoreboard);
+        const playerSlotToScore = scoreboard
+            ? Scoreboard.getPlayerSlotToScore(scoreboard)
+            : {};
 
         const gameData = {
             players: new Array(world.TI4.config.playerCount)

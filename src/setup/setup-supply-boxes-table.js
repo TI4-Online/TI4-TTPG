@@ -35,6 +35,15 @@ if (TableLayout.GET_TABLE() === "6p-skinny") {
     SUPPLY_BOX_SETS[1].yaw0 = 90;
     SUPPLY_BOX_SETS[1].dyaw = 180;
     SUPPLY_BOX_SETS[1].count = 2;
+} else if (TableLayout.GET_TABLE() === "8p-huge") {
+    SUPPLY_BOX_SETS[0].d = 160 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
+    SUPPLY_BOX_SETS[0].yaw0 = 0;
+    SUPPLY_BOX_SETS[0].dyaw = 45;
+    SUPPLY_BOX_SETS[0].count = 8;
+    SUPPLY_BOX_SETS[1].d = 160 + DISTANCE_BETWEEN_SUPPLY_BOXES;
+    SUPPLY_BOX_SETS[1].yaw0 = 0;
+    SUPPLY_BOX_SETS[1].dyaw = 45;
+    SUPPLY_BOX_SETS[1].count = 8;
 }
 
 class SetupSupplyBoxesTable extends AbstractSetup {

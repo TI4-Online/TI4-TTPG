@@ -15,7 +15,7 @@ const locale = require("../../../lib/locale");
 
 class MapTool {
     static getMapTilesContainer() {
-        // TODO XXX For now just look for a container with a system tile in it.
+        // Look for a container with a system tile in it.
         for (const obj of world.getAllObjects()) {
             if (!ObjectNamespace.isSystemTile(obj)) {
                 continue;
@@ -25,7 +25,6 @@ class MapTool {
                 return container;
             }
         }
-        throw new Error("MapTool.getMapTilesContainer: no container");
     }
 
     constructor() {
