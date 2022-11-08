@@ -137,6 +137,9 @@ class MapStringLoad {
             }
         }
         if (zeroHexes.length !== playerCount) {
+            console.log(
+                `moveGenericHomeSystemTiles: count mismatch (string has ${zeroHexes.length}, player count ${playerCount})`
+            );
             return false; // abort if wrong number
         }
 
@@ -156,6 +159,9 @@ class MapStringLoad {
             }
         }
         if (Object.keys(playerSlotToGeneric).length !== playerCount) {
+            console.log(
+                `moveGenericHomeSystemTiles: count mismatch (${zeroHexes.length} generic tiles, player count ${playerCount})`
+            );
             return false; // abort if wrong number
         }
 
