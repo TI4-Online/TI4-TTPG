@@ -35,6 +35,11 @@ class CommandToken {
     static _getAllCommandSheetsAndTokens(restrictToSlot = undefined) {
         assert(!restrictToSlot || typeof restrictToSlot === "number");
 
+        const playerSlotToPlayerDesk = {};
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerSlotToPlayerDesk[playerDesk.playerSlot] = playerDesk;
+        }
+
         const playerSlotToSheetAndTokens = {};
 
         for (const obj of world.getAllObjects()) {
@@ -68,8 +73,24 @@ class CommandToken {
             }
 
             if (isSheet) {
-                assert(!sheetAndTokens.commandSheet);
-                sheetAndTokens.commandSheet = obj;
+                // There should be only one sheet per player slot.  BUT if
+                // there is an another, keep the closest to player area.
+                if (sheetAndTokens.commandSheet) {
+                    const playerDesk = playerSlotToPlayerDesk[playerSlot];
+                    if (playerDesk) {
+                        const dNew = playerDesk.center.distance(
+                            obj.getPosition()
+                        );
+                        const dCurrent = playerDesk.center.distance(
+                            sheetAndTokens.commandSheet.getPosition()
+                        );
+                        if (dNew < dCurrent) {
+                            sheetAndTokens.commandSheet = obj;
+                        }
+                    }
+                } else {
+                    sheetAndTokens.commandSheet = obj;
+                }
             } else if (isToken) {
                 sheetAndTokens.commandTokens.push(obj);
             }
