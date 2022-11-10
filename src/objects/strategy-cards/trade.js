@@ -1,18 +1,20 @@
+const locale = require("../../lib/locale");
 const {
-    onUiClosedClicked,
-    RegisterStrategyCardUI,
-} = require("./strategy-card");
+    AbstractStrategyCard,
+    FONT_SIZE_BODY,
+    SCALE,
+} = require("./abstract-strategy-card");
+const { Broadcast } = require("../../lib/broadcast");
 const {
+    refObject,
+    world,
     Border,
     Button,
     Color,
+    LayoutBox,
     Text,
     VerticalBox,
-    refObject,
-    world,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
-const locale = require("../../lib/locale");
 
 const onPrimaryClicked = (button, player) => {
     Broadcast.chatAll(
@@ -39,25 +41,21 @@ const onSecondaryClicked = (button, player) => {
         player.getPlayerColor()
     );
 };
-const onPassClicked = (button, player) => {
-    Broadcast.chatAll(
-        locale("strategy_card.trade.message.pass", {
-            playerName: player.getName(),
-        }),
-        player.getPlayerColor()
-    );
-};
 
 const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
-    let replenishBorder = new Border();
-    verticalBox.addChild(replenishBorder);
-    let replenishBox = new VerticalBox();
-    replenishBorder.setChild(replenishBox);
+    const replenishBox = new VerticalBox();
+
+    const p = 4 * SCALE;
+    const padded = new LayoutBox()
+        .setPadding(p, p, p, p)
+        .setChild(replenishBox);
+    const border = new Border().setChild(padded);
+    verticalBox.addChild(border);
 
     replenishBox.addChild(
         new Text()
             .setText(locale("strategy_card.trade.text.allowReplenish"))
-            .setFontSize(10)
+            .setFontSize(FONT_SIZE_BODY)
     );
 
     world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
@@ -69,7 +67,7 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
         });
 
         let primaryAllowReplenishButton = new Button()
-            .setFontSize(10)
+            .setFontSize(FONT_SIZE_BODY)
             .setText(deskOwningPlayer || playerDesk.colorName) // in case the player is currently not seated
             .setTextColor(playerDesk.color);
         primaryAllowReplenishButton.onClicked.add(onAllowReplenishClicked);
@@ -77,51 +75,31 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
     });
 };
 
-const widgetFactory = (playerDesk) => {
-    let headerText = new Text()
-        .setFontSize(20)
-        .setText(locale("strategy_card.trade.text"));
-
+const widgetFactory = (verticalBox, playerDesk, closeHandler) => {
     let primaryButton = new Button()
-        .setFontSize(10)
+        .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.primary"));
     primaryButton.onClicked.add(onPrimaryClicked);
 
     let secondaryButton = new Button()
-        .setFontSize(10)
+        .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.secondary"));
     secondaryButton.onClicked.add(onSecondaryClicked);
-
-    let passButton = new Button()
-        .setFontSize(10)
-        .setTextColor(new Color(0.972, 0.317, 0.286))
-        .setText(locale("strategy_card.base.button.pass"));
-    passButton.onClicked.add(onPassClicked);
-    passButton.onClicked.add(onUiClosedClicked);
+    secondaryButton.onClicked.add(closeHandler);
 
     let closeButton = new Button()
-        .setFontSize(10)
+        .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(onUiClosedClicked);
+    closeButton.onClicked.add(closeHandler);
 
-    let verticalBox = new VerticalBox();
-    verticalBox.addChild(headerText);
     verticalBox.addChild(primaryButton);
     addReplenishPlayersSection(playerDesk, verticalBox);
     verticalBox.addChild(secondaryButton);
-    verticalBox.addChild(passButton);
     verticalBox.addChild(closeButton);
 
     return verticalBox;
 };
 
-const calculateHeight = () => {
-    return 166 + (world.TI4.config.playerCount - 1) * 25;
-};
-
-new RegisterStrategyCardUI()
-    .setCard(refObject)
-    .setWidgetFactory(widgetFactory)
-    .setHeight(calculateHeight) // variable height by player count
+new AbstractStrategyCard(refObject)
     .setColor(new Color(0, 0.486, 0.435))
-    .register();
+    .setBodyWidgetFactory(widgetFactory);

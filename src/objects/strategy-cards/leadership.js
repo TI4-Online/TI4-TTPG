@@ -1,21 +1,21 @@
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const {
-    onUiClosedClicked,
-    RegisterStrategyCardUI,
-} = require("./strategy-card");
+    AbstractStrategyCard,
+    FONT_SIZE_BODY,
+} = require("./abstract-strategy-card");
+const { Broadcast } = require("../../lib/broadcast");
 const {
+    refObject,
     Button,
     CheckBox,
     Color,
+    Player,
     Slider,
     Text,
-    VerticalBox,
-    refObject,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
-const locale = require("../../lib/locale");
-const assert = require("../../wrapper/assert-wrapper");
 
-let selections = {};
+const selections = {};
 
 function getPlayerSelectionBySlot(slot) {
     assert(typeof slot === "number");
@@ -27,49 +27,14 @@ function getPlayerSelectionBySlot(slot) {
     return selections[slot];
 }
 
-function widgetFactory(playerDesk, packageId) {
-    let headerText = new Text()
-        .setFontSize(20)
-        .setText(locale("strategy_card.leadership.text"));
-    let primaryCheckBox = new CheckBox()
-        .setFontSize(10)
-        .setText(locale("strategy_card.leadership.text.primary"));
-    primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
-        getPlayerSelectionBySlot(playerDesk.playerSlot).primary = isChecked;
-    });
-    let slider = new Slider().setStepSize(1).setMaxValue(10);
-    slider.onValueChanged.add((slider, player, value) => {
-        getPlayerSelectionBySlot(playerDesk.playerSlot).value = value;
-    });
-    let closeButton = new Button()
-        .setFontSize(10)
-        .setText(locale("strategy_card.base.button.close"));
-
-    closeButton.onClicked.add(onUiClosedClicked);
-
-    let verticalBox = new VerticalBox();
-    verticalBox.addChild(headerText);
-    verticalBox.addChild(primaryCheckBox);
-    verticalBox.addChild(
-        new Text()
-            .setFontSize(10)
-            .setText(locale("strategy_card.leadership.slider_text"))
-    );
-    verticalBox.addChild(slider);
-    verticalBox.addChild(closeButton);
-
-    return verticalBox;
-}
-
-const onStrategyCardPlayed = (card, player) => {
-    selections = {};
-};
-
 const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
+    assert(player instanceof Player);
     assert(typeof owningPlayerSlot === "number");
+
     let commandTokenCount = getPlayerSelectionBySlot(owningPlayerSlot).value;
-    if (getPlayerSelectionBySlot(owningPlayerSlot).primary)
+    if (getPlayerSelectionBySlot(owningPlayerSlot).primary) {
         commandTokenCount += 3;
+    }
 
     const message = locale("strategy_card.leadership.message", {
         playerName: player.getName(),
@@ -78,11 +43,47 @@ const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
     Broadcast.chatAll(message, player.getPlayerColor());
 };
 
-new RegisterStrategyCardUI()
-    .setCard(refObject)
-    .setWidgetFactory(widgetFactory)
-    .setHeight(125)
+function widgetFactory(verticalBox, playerDesk, closeHandler) {
+    const playerSlot = playerDesk.playerSlot;
+    selections[playerSlot] = {
+        value: 0,
+        primary: false,
+    };
+
+    const primaryCheckBox = new CheckBox()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.leadership.text.primary"));
+    primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
+        getPlayerSelectionBySlot(playerSlot).primary = isChecked;
+    });
+    const slider = new Slider()
+        .setFontSize(FONT_SIZE_BODY)
+        .setTextBoxWidth(FONT_SIZE_BODY * 3)
+        .setStepSize(1)
+        .setMaxValue(10);
+    slider.onValueChanged.add((slider, player, value) => {
+        getPlayerSelectionBySlot(playerSlot).value = value;
+    });
+    const gainTokensButton = new Button()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.leadership.button.gain"));
+    gainTokensButton.onClicked.add((button, player) => {
+        onStrategyCardSelectionDone(refObject, player, playerSlot);
+    });
+    gainTokensButton.onClicked.add(closeHandler);
+
+    verticalBox.addChild(primaryCheckBox);
+    verticalBox.addChild(
+        new Text()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(locale("strategy_card.leadership.slider_text"))
+    );
+    verticalBox.addChild(slider);
+    verticalBox.addChild(gainTokensButton);
+
+    return verticalBox;
+}
+
+new AbstractStrategyCard(refObject)
     .setColor(new Color(0.925, 0.109, 0.141))
-    .setOnStrategyCardPlayed(onStrategyCardPlayed)
-    .setOnStrategyCardSelectionDone(onStrategyCardSelectionDone)
-    .register();
+    .setBodyWidgetFactory(widgetFactory);

@@ -260,7 +260,6 @@ require("./global/screen-ui/stats");
 require("./global/screen-ui/turn-order");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
-require("./global/strategy-card-functions");
 require("./global/trigger-on-game-ended");
 require("./global/trigger-on-planet-card-flipped");
 require("./global/trigger-on-singleton-card");
