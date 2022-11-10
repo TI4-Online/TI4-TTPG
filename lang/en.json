@@ -908,7 +908,9 @@
     "strategy_card.leadership.text": "Leadership",
     "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
     "strategy_card.leadership.slider_text": "Choose the amount of tokens gained with influence.",
+    "strategy_card.leadership.button.gain": "Gain tokens",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
+    "strategy_card.leadership.message.pass": "{playerName} passes on Leadership.",
 
     "strategy_card.base.button.primary": "Primary Ability",
     "strategy_card.base.button.secondary": "Secondary Ability",
@@ -926,7 +928,7 @@
     "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
 
     "strategy_card.trade.text": "Trade",
-    "strategy_card.trade.text.allowReplenish": "Allow players secondary without command token",
+    "strategy_card.trade.text.allowReplenish": "Allow players secondary\nwithout command token",
     "strategy_card.trade.message.allow_replenish": "{playerName} allows {targetPlayerName} to use the secondary ability of Trade without spending a strategy token.",
     "strategy_card.trade.message.primary": "{playerName} uses the primary ability of Trade.",
     "strategy_card.trade.message.secondary": "{playerName} uses the secondary ability of Trade.",

@@ -1,3 +1,4 @@
+require("../../global");
 const assert = require("assert");
 const { CommandToken } = require("./command-token");
 const { MockGameObject, MockVector, world } = require("../../wrapper/api");

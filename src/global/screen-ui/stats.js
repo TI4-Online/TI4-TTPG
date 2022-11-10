@@ -78,7 +78,7 @@ class StatsScreenUI {
         this._ui.relativeWidth = true;
         this._ui.width = 0.2; // if too small the WIDTH is reduced
         this._ui.relativeHeight = true;
-        this._ui.height = 0.2;
+        this._ui.height = 0.3;
         this._ui.relativePositionX = true;
         this._ui.positionX = 1 - this._ui.width;
         this._ui.relativePositionY = true;
@@ -280,12 +280,6 @@ class StatsScreenUI {
         };
         StatsScreenUI.getPlayerDataAsync(callback);
     }
-}
-
-if (!world.__isMock) {
-    process.nextTick(() => {
-        StatsScreenUI.getInstance();
-    });
 }
 
 module.exports = { StatsScreenUI };

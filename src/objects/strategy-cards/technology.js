@@ -1,24 +1,33 @@
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const {
-    onUiClosedClicked,
-    RegisterStrategyCardUI,
-} = require("./strategy-card");
+    AbstractStrategyCard,
+    FONT_SIZE_BODY,
+    SCALE,
+} = require("./abstract-strategy-card");
+const { Broadcast } = require("../../lib/broadcast");
+const { ColorUtil } = require("../../lib/color/color-util");
+const { Technology } = require("../../lib/technology/technology");
+const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const {
+    refObject,
+    refPackageId,
+    world,
     Button,
     Canvas,
     Color,
     ImageWidget,
-    Text,
-    refObject,
-    world,
+    LayoutBox,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
-const { Technology } = require("../../lib/technology/technology");
-const locale = require("../../lib/locale");
-const assert = require("../../wrapper/assert-wrapper");
-const { TechCardUtil } = require("../../lib/card/tech-card-util");
-const { ColorUtil } = require("../../lib/color/color-util");
 
-const imageSize = 30;
+const IMAGE_SIZE = 14 * SCALE;
+const ROW_HEIGHT = 40 * SCALE;
+const COL_WIDTH = 150 * SCALE;
+
+const BUTTON_FONT_SIZE = FONT_SIZE_BODY * 0.9;
+const BUTTON_WIDTH = COL_WIDTH * 0.95;
+const BUTTON_HEIGHT = ROW_HEIGHT * 0.7;
+const IMAGE_OFFSET_Y = ROW_HEIGHT * 0.6;
 
 const techIcons = {
     unitUpgrade: {
@@ -61,6 +70,7 @@ function drawTechButton(
     const textColor = techIcons[tech.type].color;
     ColorUtil.validate(textColor);
     const techButton = new Button()
+        .setFontSize(BUTTON_FONT_SIZE)
         .setText(tech.name)
         .setTextColor(textColor)
         .setEnabled(!ownedTechnologies.includes(tech));
@@ -68,7 +78,7 @@ function drawTechButton(
         const techName = button.getText();
         onTechResearched(techName, playerSlot);
     });
-    canvas.addChild(techButton, xOffset, yOffset, 200, 35);
+    canvas.addChild(techButton, xOffset, yOffset, BUTTON_WIDTH, BUTTON_HEIGHT);
 
     let factionNsidName = tech.faction;
     if (tech.factions) {
@@ -82,13 +92,13 @@ function drawTechButton(
                 world.TI4.getFactionByNsidName(factionNsidName).icon,
                 packageId
             )
-            .setImageSize(imageSize, imageSize);
+            .setImageSize(IMAGE_SIZE, IMAGE_SIZE);
         canvas.addChild(
             factionIcon,
-            xOffset + 160,
-            yOffset + 23,
-            imageSize,
-            imageSize
+            xOffset + BUTTON_WIDTH - IMAGE_SIZE * 1.2,
+            yOffset + IMAGE_OFFSET_Y,
+            IMAGE_SIZE,
+            IMAGE_SIZE
         );
     }
 
@@ -103,13 +113,13 @@ function drawTechButton(
                         : techIcons[requirement].disabledIcon;
                 let techIcon = new ImageWidget()
                     .setImage(image, packageId)
-                    .setImageSize(imageSize, imageSize);
+                    .setImageSize(IMAGE_SIZE, IMAGE_SIZE);
                 canvas.addChild(
                     techIcon,
-                    xOffset + 15 * numOfIcons,
-                    yOffset + 27,
-                    imageSize,
-                    imageSize
+                    xOffset + IMAGE_SIZE * numOfIcons * 0.7 + IMAGE_SIZE * 0.2,
+                    yOffset + IMAGE_OFFSET_Y,
+                    IMAGE_SIZE,
+                    IMAGE_SIZE
                 );
                 numOfIcons++;
             }
@@ -197,9 +207,7 @@ const onTechResearched = (technologyName, playerSlot) => {
     Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
 };
 
-function widgetFactory(playerDesk, packageId) {
-    assert(typeof packageId === "string");
-
+function widgetFactory(verticalBox, playerDesk, closeHandler) {
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -211,13 +219,8 @@ function widgetFactory(playerDesk, packageId) {
 
     let canvas = new Canvas();
 
-    let headerText = new Text()
-        .setFontSize(20)
-        .setText(locale("strategy_card.technology.text"));
-    canvas.addChild(headerText, 0, 0, 200, 35);
-
     ["Blue", "Red", "Yellow", "Green"].forEach((type) => {
-        let yOffset = 50;
+        let yOffset = 0;
         technologies[type].forEach((tech) => {
             drawTechButton(
                 canvas,
@@ -227,27 +230,29 @@ function widgetFactory(playerDesk, packageId) {
                 playerSlot,
                 playerTechnologies,
                 ownedTechnologies,
-                packageId
+                refPackageId
             );
 
-            // Always add offset for consistent layout
-            //if (Object.keys(tech.requirements).length > 0) {
-            //   yOffset += 15;
-            //}
-            yOffset += 15;
-
-            yOffset += 40;
+            yOffset += ROW_HEIGHT;
         });
         yOffsetMax = Math.max(yOffset, yOffsetMax);
-        xOffset += 210;
+        xOffset += COL_WIDTH;
     });
 
     technologies.unitUpgrade.forEach((tech, index) => {
-        const techButton = new Button().setText(tech.name);
-        const xOffset = (tech.unitPosition % 4) * 210;
+        const techButton = new Button()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(tech.name);
+        const xOffset = (tech.unitPosition % 4) * COL_WIDTH;
         const yOffset =
-            yOffsetMax + 20 + Math.floor(tech.unitPosition / 4) * 60;
-        canvas.addChild(techButton, xOffset, yOffset, 200, 35);
+            yOffsetMax + Math.floor(tech.unitPosition / 4) * ROW_HEIGHT;
+        canvas.addChild(
+            techButton,
+            xOffset,
+            yOffset,
+            BUTTON_WIDTH,
+            BUTTON_HEIGHT
+        );
 
         drawTechButton(
             canvas,
@@ -257,23 +262,22 @@ function widgetFactory(playerDesk, packageId) {
             playerSlot,
             playerTechnologies,
             ownedTechnologies,
-            packageId
+            refPackageId
         );
     });
 
-    const closeButton = new Button()
-        .setFontSize(10)
-        .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(onUiClosedClicked);
-    canvas.addChild(
-        closeButton,
-        0,
-        calculateHeight(playerDesk.playerSlot) - 45,
-        830,
-        48
-    );
+    // Instead of forcing the overall widget size, place the canvas inside a fixed size box.
+    const fixedSize = new LayoutBox()
+        .setOverrideWidth(COL_WIDTH * 4)
+        .setOverrideHeight(calculateHeight(playerSlot))
+        .setChild(canvas);
+    verticalBox.addChild(fixedSize);
 
-    return canvas;
+    const closeButton = new Button()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.base.button.close"));
+    closeButton.onClicked.add(closeHandler);
+    verticalBox.addChild(closeButton);
 }
 
 const calculateHeight = (playerSlot) => {
@@ -282,13 +286,9 @@ const calculateHeight = (playerSlot) => {
         .map((type) => technologies[type].length)
         .reduce((a, b) => Math.max(a, b), 0);
     const unitUpgradeRows = Math.ceil(technologies.unitUpgrade.length / 4);
-    return (techRows + unitUpgradeRows) * 55 + 130;
+    return (techRows + unitUpgradeRows) * ROW_HEIGHT;
 };
 
-new RegisterStrategyCardUI()
-    .setCard(refObject)
-    .setWidgetFactory(widgetFactory)
-    .setHeight(calculateHeight)
-    .setWidth(833)
+new AbstractStrategyCard(refObject)
     .setColor(new Color(0.027, 0.203, 0.466))
-    .register();
+    .setBodyWidgetFactory(widgetFactory);

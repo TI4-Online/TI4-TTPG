@@ -1,6 +1,4 @@
+const { AbstractStrategyCard } = require("./abstract-strategy-card");
 const { refObject, Color } = require("../../wrapper/api");
-require("./register-standard-card")(
-    refObject,
-    "politics",
-    new Color(0.639, 0.627, 0.027)
-);
+
+new AbstractStrategyCard(refObject).setColor(new Color(0.639, 0.627, 0.027));
