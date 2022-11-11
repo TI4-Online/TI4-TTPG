@@ -22,7 +22,7 @@ const {
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const IMAGE_SIZE = 14 * SCALE;
-const ROW_HEIGHT = 40 * SCALE;
+const ROW_HEIGHT = 34 * SCALE;
 const COL_WIDTH = 150 * SCALE;
 
 const BUTTON_FONT_SIZE = FONT_SIZE_BODY * 0.9;
