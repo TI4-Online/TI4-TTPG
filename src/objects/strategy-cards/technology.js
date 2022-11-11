@@ -19,9 +19,10 @@ const {
     ImageWidget,
     LayoutBox,
 } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const IMAGE_SIZE = 14 * SCALE;
-const ROW_HEIGHT = 40 * SCALE;
+const ROW_HEIGHT = 34 * SCALE;
 const COL_WIDTH = 150 * SCALE;
 
 const BUTTON_FONT_SIZE = FONT_SIZE_BODY * 0.9;
@@ -67,6 +68,10 @@ function drawTechButton(
 ) {
     assert(typeof packageId === "string");
 
+    const clickHandler = (button, player) => {
+        const techName = button.getText();
+        onTechResearched(techName, playerSlot);
+    };
     const textColor = techIcons[tech.type].color;
     ColorUtil.validate(textColor);
     const techButton = new Button()
@@ -74,10 +79,7 @@ function drawTechButton(
         .setText(tech.name)
         .setTextColor(textColor)
         .setEnabled(!ownedTechnologies.includes(tech));
-    techButton.onClicked.add((button, player) => {
-        const techName = button.getText();
-        onTechResearched(techName, playerSlot);
-    });
+    techButton.onClicked.add(ThrottleClickHandler.wrap(clickHandler));
     canvas.addChild(techButton, xOffset, yOffset, BUTTON_WIDTH, BUTTON_HEIGHT);
 
     let factionNsidName = tech.faction;
@@ -148,7 +150,8 @@ const countPlayerTechsByType = (playerSlot) => {
 
 const onTechResearched = (technologyName, playerSlot) => {
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-    const player = world.getPlayerBySlot(playerSlot);
+    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+    const msgColor = playerDesk.color;
 
     const technology = Technology.getTechnologies(playerSlot).find(
         (tech) => tech.name === technologyName
@@ -157,12 +160,9 @@ const onTechResearched = (technologyName, playerSlot) => {
     if (technology.localeName == "strategy_card.technology.button.nekro") {
         let messageKey = "strategy_card.technology.message.nekro";
         let messageParameters = {
-            playerName: player ? player.getName() : playerDesk.colorName,
+            playerName,
         };
-        Broadcast.chatAll(
-            locale(messageKey, messageParameters),
-            playerDesk.color
-        );
+        Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
         return;
     }
 
@@ -180,7 +180,7 @@ const onTechResearched = (technologyName, playerSlot) => {
 
     let messageKey = "strategy_card.technology.message.researched";
     const messageParameters = {
-        playerName: player ? player.getName() : playerDesk.colorName,
+        playerName,
         technologyName: technologyName,
         skips: "",
     };
@@ -204,10 +204,10 @@ const onTechResearched = (technologyName, playerSlot) => {
     }
 
     TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
-    Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
+    Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
 };
 
-function widgetFactory(verticalBox, playerDesk, closeHandler) {
+function widgetFactory(verticalBox, playerDesk) {
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -272,12 +272,6 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
         .setOverrideHeight(calculateHeight(playerSlot))
         .setChild(canvas);
     verticalBox.addChild(fixedSize);
-
-    const closeButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(closeHandler);
-    verticalBox.addChild(closeButton);
 }
 
 const calculateHeight = (playerSlot) => {

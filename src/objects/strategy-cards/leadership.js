@@ -7,6 +7,7 @@ const {
 const { Broadcast } = require("../../lib/broadcast");
 const {
     refObject,
+    world,
     Button,
     CheckBox,
     Color,
@@ -14,6 +15,7 @@ const {
     Slider,
     Text,
 } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const selections = {};
 
@@ -36,14 +38,16 @@ const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
         commandTokenCount += 3;
     }
 
+    const playerName = world.TI4.getNameByPlayerSlot(owningPlayerSlot);
+
     const message = locale("strategy_card.leadership.message", {
-        playerName: player.getName(),
-        commandTokenCount: commandTokenCount,
+        playerName,
+        commandTokenCount,
     });
     Broadcast.chatAll(message, player.getPlayerColor());
 };
 
-function widgetFactory(verticalBox, playerDesk, closeHandler) {
+function widgetFactory(verticalBox, playerDesk) {
     const playerSlot = playerDesk.playerSlot;
     selections[playerSlot] = {
         value: 0,
@@ -64,13 +68,16 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
     slider.onValueChanged.add((slider, player, value) => {
         getPlayerSelectionBySlot(playerSlot).value = value;
     });
-    const gainTokensButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.leadership.button.gain"));
-    gainTokensButton.onClicked.add((button, player) => {
+
+    const reportTokensClicked = (button, player) => {
         onStrategyCardSelectionDone(refObject, player, playerSlot);
-    });
-    gainTokensButton.onClicked.add(closeHandler);
+    };
+    const reportTokensButton = new Button()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.leadership.button.report"));
+    reportTokensButton.onClicked.add(
+        ThrottleClickHandler.wrap(reportTokensClicked)
+    );
 
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(
@@ -79,7 +86,7 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
             .setText(locale("strategy_card.leadership.slider_text"))
     );
     verticalBox.addChild(slider);
-    verticalBox.addChild(gainTokensButton);
+    verticalBox.addChild(reportTokensButton);
 
     return verticalBox;
 }
