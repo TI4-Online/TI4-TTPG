@@ -210,6 +210,41 @@ class AbstractStrategyCard {
         return this;
     }
 
+    /**
+     * Strategy card popups stack behind current ones.
+     * As popups get closed, shift other popups forward.
+     * Otherwise using the number of active UIs can lead to collision.
+     *
+     * @param {PlayerDesk} playerDesk
+     */
+    _moveUIs(playerDesk) {
+        assert(playerDesk);
+
+        const playerSlot = playerDesk.playerSlot;
+
+        // Active are in add-order.
+        const active = _playerSlotToActiveAbstractStrategyCards[playerSlot];
+        if (!active || active.length === 0) {
+            return;
+        }
+
+        let nextOffset = 0;
+        const deltaOffset = 0.2;
+        for (const abstractStrategyCard of active) {
+            const ui = abstractStrategyCard._playerSlotToUi[playerSlot];
+            if (!ui) {
+                continue; // "can't happen"
+            }
+            ui.position = playerDesk.localPositionToWorld({
+                x: 10 + nextOffset,
+                y: 0,
+                z: 5,
+            });
+            world.updateUI(ui);
+            nextOffset += deltaOffset;
+        }
+    }
+
     _addUI(playerDesk, closeHandler) {
         assert(playerDesk);
         assert(typeof closeHandler === "function");
@@ -282,6 +317,8 @@ class AbstractStrategyCard {
 
         assert(!this._playerSlotToUi[playerSlot]);
         this._playerSlotToUi[playerSlot] = ui;
+
+        this._moveUIs(playerDesk);
     }
 
     _removeUI(playerDesk) {
