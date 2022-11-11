@@ -54,11 +54,9 @@ it("count body widgets created by play", () => {
     });
     let numBodyWidgetsCreated = 0;
     const abstractStrategyCard = new AbstractStrategyCard(gameObject);
-    abstractStrategyCard.setBodyWidgetFactory(
-        (verticalBox, playerDesk, closeHandler) => {
-            numBodyWidgetsCreated += 1;
-        }
-    );
+    abstractStrategyCard.setBodyWidgetFactory((verticalBox, playerDesk) => {
+        numBodyWidgetsCreated += 1;
+    });
     const player = new MockPlayer();
     globalEvents.TI4.onStrategyCardPlayed.trigger(gameObject, player);
     assert.equal(numBodyWidgetsCreated, world.TI4.config.playerCount);
