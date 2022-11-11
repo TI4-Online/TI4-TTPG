@@ -153,8 +153,12 @@ class AbstractStrategyCard {
         const playListener = (obj, player) => {
             if (obj === gameObject) {
                 for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                    let closeCalled = false;
                     const closeHandler = () => {
-                        this._removeUI(playerDesk);
+                        if (!closeCalled) {
+                            closeCalled = true;
+                            this._removeUI(playerDesk);
+                        }
                     };
                     this._addUI(playerDesk, closeHandler);
                 }
@@ -252,8 +256,8 @@ class AbstractStrategyCard {
             .setFontSize(FONT_SIZE_BODY)
             .setTextColor(new Color(0.972, 0.317, 0.286))
             .setText(locale("strategy_card.base.button.pass"));
-        passButton.onClicked.add(onPassClicked);
-        passButton.onClicked.add(closeHandler);
+        passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
+        passButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
         verticalBox.addChild(passButton);
 
         // Wrap in a padded frame.
@@ -286,16 +290,17 @@ class AbstractStrategyCard {
         // Track per-desk active strategy cards.
         const playerSlot = playerDesk.playerSlot;
         const active = _playerSlotToActiveAbstractStrategyCards[playerSlot];
-        assert(active);
-        const index = active.indexOf(this);
-        assert(index >= 0);
-        active.splice(index, 1);
+        const index = active ? active.indexOf(this) : -1;
+        if (index >= 0) {
+            active.splice(index, 1);
+        }
 
         // Remove UI.
         const ui = this._playerSlotToUi[playerSlot];
         this._playerSlotToUi[playerSlot] = undefined;
-        assert(ui);
-        world.removeUIElement(ui);
+        if (ui) {
+            world.removeUIElement(ui);
+        }
     }
 
     /**
@@ -331,14 +336,18 @@ class AbstractStrategyCard {
         const primaryButton = new Button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.base.button.primary"));
-        primaryButton.onClicked.add(onPrimaryClicked);
-        primaryButton.onClicked.add(closeHandler);
+        primaryButton.onClicked.add(
+            ThrottleClickHandler.wrap(onPrimaryClicked)
+        );
+        primaryButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
         const secondaryButton = new Button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.base.button.secondary"));
-        secondaryButton.onClicked.add(onSecondaryClicked);
-        secondaryButton.onClicked.add(closeHandler);
+        secondaryButton.onClicked.add(
+            ThrottleClickHandler.wrap(onSecondaryClicked)
+        );
+        secondaryButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
         verticalBox.addChild(primaryButton).addChild(secondaryButton);
     }

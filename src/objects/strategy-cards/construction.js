@@ -4,6 +4,7 @@ const {
     FONT_SIZE_BODY,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { refObject, Button, Color } = require("../../wrapper/api");
 
 new AbstractStrategyCard(refObject)
@@ -25,8 +26,12 @@ new AbstractStrategyCard(refObject)
             .setText(
                 locale("strategy_card.construction.button.primary_1dock_1pds")
             );
-        primary1Dock1PdsButton.onClicked.add(onPrimary1Dock1PdsClicked);
-        primary1Dock1PdsButton.onClicked.add(closeHandler);
+        primary1Dock1PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(onPrimary1Dock1PdsClicked)
+        );
+        primary1Dock1PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(closeHandler)
+        );
 
         const onPrimary2PdsClicked = (button, player) => {
             Broadcast.chatAll(
@@ -39,8 +44,12 @@ new AbstractStrategyCard(refObject)
         const primary2PdsButton = new Button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.construction.button.primary_2pds"));
-        primary2PdsButton.onClicked.add(onPrimary2PdsClicked);
-        primary2PdsButton.onClicked.add(closeHandler);
+        primary2PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(onPrimary2PdsClicked)
+        );
+        primary2PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(closeHandler)
+        );
 
         const onSecondary1DockClicked = (button, player) => {
             Broadcast.chatAll(
@@ -55,8 +64,12 @@ new AbstractStrategyCard(refObject)
             .setText(
                 locale("strategy_card.construction.button.secondary_1dock")
             );
-        secondary1DockButton.onClicked.add(onSecondary1DockClicked);
-        secondary1DockButton.onClicked.add(closeHandler);
+        secondary1DockButton.onClicked.add(
+            ThrottleClickHandler.wrap(onSecondary1DockClicked)
+        );
+        secondary1DockButton.onClicked.add(
+            ThrottleClickHandler.wrap(closeHandler)
+        );
 
         const onSecondary1PdsClicked = (button, player) => {
             Broadcast.chatAll(
@@ -71,8 +84,12 @@ new AbstractStrategyCard(refObject)
             .setText(
                 locale("strategy_card.construction.button.secondary_1pds")
             );
-        secondary1PdsButton.onClicked.add(onSecondary1PdsClicked);
-        secondary1PdsButton.onClicked.add(closeHandler);
+        secondary1PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(onSecondary1PdsClicked)
+        );
+        secondary1PdsButton.onClicked.add(
+            ThrottleClickHandler.wrap(closeHandler)
+        );
 
         verticalBox.addChild(primary1Dock1PdsButton);
         verticalBox.addChild(primary2PdsButton);

@@ -251,7 +251,7 @@
     "ui.tab.map.display.team_borders": "Team borders",
     "ui.tab.map.fog": "Fog",
     "ui.tab.map.fog.enable": "Enable fog",
-    "ui.tab.map.fog.description": "Updated when changing turns, players see only systems where they have units or control planets, as well as adjacent sytems.\n\nActivating a system temporarily reveals that system (but not adjacent) to the activating player.",
+    "ui.tab.map.fog.description": "Updated when changing turns, players see only systems where they have units or control planets, as well as adjacent systems.\n\nActivating a system temporarily reveals that system (but not adjacent) to the activating player.",
     "ui.tab.strategy_phase": "Strategy",
     "ui.tab.action_phase": "Action",
     "ui.tab.status_phase": "Status",
@@ -908,7 +908,7 @@
     "strategy_card.leadership.text": "Leadership",
     "strategy_card.leadership.text.primary": "Primary Ability (3 additional command tokens)",
     "strategy_card.leadership.slider_text": "Choose the amount of tokens gained with influence.",
-    "strategy_card.leadership.button.gain": "Gain tokens",
+    "strategy_card.leadership.button.report": "Report tokens",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
     "strategy_card.leadership.message.pass": "{playerName} passes on Leadership.",
 

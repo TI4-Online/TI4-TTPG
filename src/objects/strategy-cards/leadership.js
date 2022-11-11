@@ -14,6 +14,7 @@ const {
     Slider,
     Text,
 } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const selections = {};
 
@@ -64,13 +65,17 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
     slider.onValueChanged.add((slider, player, value) => {
         getPlayerSelectionBySlot(playerSlot).value = value;
     });
-    const gainTokensButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.leadership.button.gain"));
-    gainTokensButton.onClicked.add((button, player) => {
+
+    const reportTokensClicked = (button, player) => {
         onStrategyCardSelectionDone(refObject, player, playerSlot);
-    });
-    gainTokensButton.onClicked.add(closeHandler);
+    };
+    const reportTokensButton = new Button()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.leadership.button.report"));
+    reportTokensButton.onClicked.add(
+        ThrottleClickHandler.wrap(reportTokensClicked)
+    );
+    reportTokensButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(
@@ -79,7 +84,7 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
             .setText(locale("strategy_card.leadership.slider_text"))
     );
     verticalBox.addChild(slider);
-    verticalBox.addChild(gainTokensButton);
+    verticalBox.addChild(reportTokensButton);
 
     return verticalBox;
 }

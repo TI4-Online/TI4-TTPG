@@ -5,6 +5,7 @@ const {
     SCALE,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     refObject,
     world,
@@ -45,9 +46,9 @@ const onSecondaryClicked = (button, player) => {
 const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
     const replenishBox = new VerticalBox();
 
-    const p = 4 * SCALE;
+    const p = 8 * SCALE;
     const padded = new LayoutBox()
-        .setPadding(p, p, p, p)
+        .setPadding(p, p, p / 2, p)
         .setChild(replenishBox);
     const border = new Border().setChild(padded);
     verticalBox.addChild(border);
@@ -70,7 +71,9 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
             .setFontSize(FONT_SIZE_BODY)
             .setText(deskOwningPlayer || playerDesk.colorName) // in case the player is currently not seated
             .setTextColor(playerDesk.color);
-        primaryAllowReplenishButton.onClicked.add(onAllowReplenishClicked);
+        primaryAllowReplenishButton.onClicked.add(
+            ThrottleClickHandler.wrap(onAllowReplenishClicked)
+        );
         replenishBox.addChild(primaryAllowReplenishButton);
     });
 };
@@ -79,18 +82,20 @@ const widgetFactory = (verticalBox, playerDesk, closeHandler) => {
     let primaryButton = new Button()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.primary"));
-    primaryButton.onClicked.add(onPrimaryClicked);
+    primaryButton.onClicked.add(ThrottleClickHandler.wrap(onPrimaryClicked));
 
     let secondaryButton = new Button()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.secondary"));
-    secondaryButton.onClicked.add(onSecondaryClicked);
-    secondaryButton.onClicked.add(closeHandler);
+    secondaryButton.onClicked.add(
+        ThrottleClickHandler.wrap(onSecondaryClicked)
+    );
+    secondaryButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
     let closeButton = new Button()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(closeHandler);
+    closeButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
     verticalBox.addChild(primaryButton);
     addReplenishPlayersSection(playerDesk, verticalBox);

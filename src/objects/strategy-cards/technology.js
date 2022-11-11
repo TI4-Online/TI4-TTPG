@@ -19,6 +19,7 @@ const {
     ImageWidget,
     LayoutBox,
 } = require("../../wrapper/api");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const IMAGE_SIZE = 14 * SCALE;
 const ROW_HEIGHT = 40 * SCALE;
@@ -67,6 +68,10 @@ function drawTechButton(
 ) {
     assert(typeof packageId === "string");
 
+    const clickHandler = (button, player) => {
+        const techName = button.getText();
+        onTechResearched(techName, playerSlot);
+    };
     const textColor = techIcons[tech.type].color;
     ColorUtil.validate(textColor);
     const techButton = new Button()
@@ -74,10 +79,7 @@ function drawTechButton(
         .setText(tech.name)
         .setTextColor(textColor)
         .setEnabled(!ownedTechnologies.includes(tech));
-    techButton.onClicked.add((button, player) => {
-        const techName = button.getText();
-        onTechResearched(techName, playerSlot);
-    });
+    techButton.onClicked.add(ThrottleClickHandler.wrap(clickHandler));
     canvas.addChild(techButton, xOffset, yOffset, BUTTON_WIDTH, BUTTON_HEIGHT);
 
     let factionNsidName = tech.faction;
@@ -276,7 +278,7 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
     const closeButton = new Button()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(closeHandler);
+    closeButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
     verticalBox.addChild(closeButton);
 }
 
