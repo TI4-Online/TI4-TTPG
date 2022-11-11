@@ -910,29 +910,22 @@
     "strategy_card.leadership.slider_text": "Choose the amount of tokens gained with influence.",
     "strategy_card.leadership.button.report": "Report tokens",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
-    "strategy_card.leadership.message.pass": "{playerName} passes on Leadership.",
 
     "strategy_card.base.button.primary": "Primary Ability",
     "strategy_card.base.button.secondary": "Secondary Ability",
     "strategy_card.base.button.pass": "Pass",
     "strategy_card.base.button.close": "Close",
+    "strategy_card.base.message.primary": "{playerName} uses the primary ability of {cardName}.",
+    "strategy_card.base.message.secondary": "{playerName} uses the secondary ability of {cardName}.",
+    "strategy_card.base.message.pass": "{playerName} passes on {cardName}.",
 
     "strategy_card.diplomacy.text": "Diplomacy",
-    "strategy_card.diplomacy.message.primary": "{playerName} uses the primary ability of Diplomacy.",
-    "strategy_card.diplomacy.message.secondary": "{playerName} uses the secondary ability of Diplomacy.",
-    "strategy_card.diplomacy.message.pass": "{playerName} passes on Diplomacy.",
 
     "strategy_card.politics.text": "Politics",
-    "strategy_card.politics.message.primary": "{playerName} uses the primary ability of Politics.",
-    "strategy_card.politics.message.secondary": "{playerName} uses the secondary ability of Politics.",
-    "strategy_card.politics.message.pass": "{playerName} passes on Politics.",
 
     "strategy_card.trade.text": "Trade",
     "strategy_card.trade.text.allowReplenish": "Allow players secondary\nwithout command token",
     "strategy_card.trade.message.allow_replenish": "{playerName} allows {targetPlayerName} to use the secondary ability of Trade without spending a strategy token.",
-    "strategy_card.trade.message.primary": "{playerName} uses the primary ability of Trade.",
-    "strategy_card.trade.message.secondary": "{playerName} uses the secondary ability of Trade.",
-    "strategy_card.trade.message.pass": "{playerName} passes on Trade.",
 
     "strategy_card.construction.text": "Construction",
     "strategy_card.construction.button.primary_1dock_1pds": "Primary (1 Space Dock and 1 PDS)",
@@ -943,12 +936,8 @@
     "strategy_card.construction.message.primary_2pds": "{playerName} uses the primary ability of Construction (2 PDS).",
     "strategy_card.construction.message.secondary_1dock": "{playerName} uses the secondary ability of Construction (1 Space Dock).",
     "strategy_card.construction.message.secondary_1pds": "{playerName} uses the secondary ability of Construction (1 PDS).",
-    "strategy_card.construction.message.pass": "{playerName} passes on Construction.",
 
     "strategy_card.warfare.text": "Warfare",
-    "strategy_card.warfare.message.primary": "{playerName} uses the primary ability of Warfare.",
-    "strategy_card.warfare.message.secondary": "{playerName} uses the secondary ability of Warfare.",
-    "strategy_card.warfare.message.pass": "{playerName} passes on Warfare.",
 
     "strategy_card.technology.text": "Technology",
     "strategy_card.technology.button.nekro": "3 command tokens",
@@ -957,9 +946,6 @@
     "strategy_card.technology.message.nekro": "{playerName} gained 3 command tokens.",
 
     "strategy_card.imperial.text": "Imperial",
-    "strategy_card.imperial.message.primary": "{playerName} uses the primary ability of Imperial.",
-    "strategy_card.imperial.message.secondary": "{playerName} uses the secondary ability of Imperial.",
-    "strategy_card.imperial.message.pass": "{playerName} passes on Imperial.",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

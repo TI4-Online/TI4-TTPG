@@ -7,6 +7,7 @@ const {
 const { Broadcast } = require("../../lib/broadcast");
 const {
     refObject,
+    world,
     Button,
     CheckBox,
     Color,
@@ -37,14 +38,16 @@ const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
         commandTokenCount += 3;
     }
 
+    const playerName = world.TI4.getNameByPlayerSlot(owningPlayerSlot);
+
     const message = locale("strategy_card.leadership.message", {
-        playerName: player.getName(),
-        commandTokenCount: commandTokenCount,
+        playerName,
+        commandTokenCount,
     });
     Broadcast.chatAll(message, player.getPlayerColor());
 };
 
-function widgetFactory(verticalBox, playerDesk, closeHandler) {
+function widgetFactory(verticalBox, playerDesk) {
     const playerSlot = playerDesk.playerSlot;
     selections[playerSlot] = {
         value: 0,
@@ -75,7 +78,6 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
     reportTokensButton.onClicked.add(
         ThrottleClickHandler.wrap(reportTokensClicked)
     );
-    reportTokensButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
 
     verticalBox.addChild(primaryCheckBox);
     verticalBox.addChild(

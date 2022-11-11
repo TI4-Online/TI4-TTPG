@@ -150,7 +150,8 @@ const countPlayerTechsByType = (playerSlot) => {
 
 const onTechResearched = (technologyName, playerSlot) => {
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-    const player = world.getPlayerBySlot(playerSlot);
+    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+    const msgColor = playerDesk.color;
 
     const technology = Technology.getTechnologies(playerSlot).find(
         (tech) => tech.name === technologyName
@@ -159,12 +160,9 @@ const onTechResearched = (technologyName, playerSlot) => {
     if (technology.localeName == "strategy_card.technology.button.nekro") {
         let messageKey = "strategy_card.technology.message.nekro";
         let messageParameters = {
-            playerName: player ? player.getName() : playerDesk.colorName,
+            playerName,
         };
-        Broadcast.chatAll(
-            locale(messageKey, messageParameters),
-            playerDesk.color
-        );
+        Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
         return;
     }
 
@@ -182,7 +180,7 @@ const onTechResearched = (technologyName, playerSlot) => {
 
     let messageKey = "strategy_card.technology.message.researched";
     const messageParameters = {
-        playerName: player ? player.getName() : playerDesk.colorName,
+        playerName,
         technologyName: technologyName,
         skips: "",
     };
@@ -206,10 +204,10 @@ const onTechResearched = (technologyName, playerSlot) => {
     }
 
     TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
-    Broadcast.chatAll(locale(messageKey, messageParameters), playerDesk.color);
+    Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
 };
 
-function widgetFactory(verticalBox, playerDesk, closeHandler) {
+function widgetFactory(verticalBox, playerDesk) {
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -274,12 +272,6 @@ function widgetFactory(verticalBox, playerDesk, closeHandler) {
         .setOverrideHeight(calculateHeight(playerSlot))
         .setChild(canvas);
     verticalBox.addChild(fixedSize);
-
-    const closeButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.base.button.close"));
-    closeButton.onClicked.add(ThrottleClickHandler.wrap(closeHandler));
-    verticalBox.addChild(closeButton);
 }
 
 const calculateHeight = (playerSlot) => {

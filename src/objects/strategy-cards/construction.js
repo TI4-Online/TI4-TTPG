@@ -5,20 +5,24 @@ const {
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const { refObject, Button, Color } = require("../../wrapper/api");
+const { refObject, world, Button, Color } = require("../../wrapper/api");
 
 new AbstractStrategyCard(refObject)
     .setColor(new Color(0.054, 0.45, 0.188))
-    .setBodyWidgetFactory((verticalBox, playerDesk, closeHandler) => {
+    .setBodyWidgetFactory((verticalBox, playerDesk) => {
+        const playerSlot = playerDesk.playerSlot;
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.color;
+
         const onPrimary1Dock1PdsClicked = (button, player) => {
             Broadcast.chatAll(
                 locale(
                     "strategy_card.construction.message.primary_1dock_1pds",
                     {
-                        playerName: player.getName(),
+                        playerName,
                     }
                 ),
-                player.getPlayerColor()
+                msgColor
             );
         };
         const primary1Dock1PdsButton = new Button()
@@ -29,16 +33,13 @@ new AbstractStrategyCard(refObject)
         primary1Dock1PdsButton.onClicked.add(
             ThrottleClickHandler.wrap(onPrimary1Dock1PdsClicked)
         );
-        primary1Dock1PdsButton.onClicked.add(
-            ThrottleClickHandler.wrap(closeHandler)
-        );
 
         const onPrimary2PdsClicked = (button, player) => {
             Broadcast.chatAll(
                 locale("strategy_card.construction.message.primary_2pds", {
-                    playerName: player.getName(),
+                    playerName,
                 }),
-                player.getPlayerColor()
+                msgColor
             );
         };
         const primary2PdsButton = new Button()
@@ -47,16 +48,13 @@ new AbstractStrategyCard(refObject)
         primary2PdsButton.onClicked.add(
             ThrottleClickHandler.wrap(onPrimary2PdsClicked)
         );
-        primary2PdsButton.onClicked.add(
-            ThrottleClickHandler.wrap(closeHandler)
-        );
 
         const onSecondary1DockClicked = (button, player) => {
             Broadcast.chatAll(
                 locale("strategy_card.construction.message.secondary_1dock", {
-                    playerName: player.getName(),
+                    playerName,
                 }),
-                player.getPlayerColor()
+                msgColor
             );
         };
         const secondary1DockButton = new Button()
@@ -67,16 +65,13 @@ new AbstractStrategyCard(refObject)
         secondary1DockButton.onClicked.add(
             ThrottleClickHandler.wrap(onSecondary1DockClicked)
         );
-        secondary1DockButton.onClicked.add(
-            ThrottleClickHandler.wrap(closeHandler)
-        );
 
         const onSecondary1PdsClicked = (button, player) => {
             Broadcast.chatAll(
                 locale("strategy_card.construction.message.secondary_1pds", {
-                    playerName: player.getName(),
+                    playerName,
                 }),
-                player.getPlayerColor()
+                msgColor
             );
         };
         const secondary1PdsButton = new Button()
@@ -86,9 +81,6 @@ new AbstractStrategyCard(refObject)
             );
         secondary1PdsButton.onClicked.add(
             ThrottleClickHandler.wrap(onSecondary1PdsClicked)
-        );
-        secondary1PdsButton.onClicked.add(
-            ThrottleClickHandler.wrap(closeHandler)
         );
 
         verticalBox.addChild(primary1Dock1PdsButton);
