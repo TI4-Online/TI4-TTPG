@@ -4,9 +4,11 @@ const { globalEvents, world } = require("./wrapper/api");
 // Expose button click handlers, canvas children.
 //require("./objects/testp/monkey/monkey-interpose");
 
-const onErr = (exception) => {
-    world.TI4.errorReporting.error(exception.stack);
-};
+const onErr = world.__isMock
+    ? undefined
+    : (exception) => {
+          world.TI4.errorReporting.error(exception.stack);
+      };
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
@@ -91,10 +93,6 @@ globalEvents.TI4 = {
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(onErr),
-
-    // Called when a Strategy Card selection is done by a player
-    // <(strategyCard: card, player:Player, owningPlayerSlot: number) => void>
-    onStrategyCardSelectionDone: new TriggerableMulticastDelegate(onErr),
 
     // Called when turn changes.
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
