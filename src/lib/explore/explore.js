@@ -84,9 +84,11 @@ class Explore {
                 const traits = [...new Set(planet.traits)]; // unique
                 for (const trait of traits) {
                     let planetName = planet.getNameStr();
+                    let overrideTrait = false;
                     if (traits.length > 1) {
                         planetName =
                             planetName + " " + locale("trait." + trait);
+                        overrideTrait = trait;
                     }
                     namesAndActions.push({
                         name: locale("ui.action.system.explore", {
@@ -94,7 +96,6 @@ class Explore {
                         }),
                         action: (player) => {
                             assert(player instanceof Player);
-                            const overrideTrait = false;
                             Explore.onExplorePlanetAction(
                                 systemTileObj,
                                 planet,
