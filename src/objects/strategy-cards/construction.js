@@ -9,7 +9,7 @@ const { refObject, world, Button, Color } = require("../../wrapper/api");
 
 new AbstractStrategyCard(refObject)
     .setColor(new Color(0.054, 0.45, 0.188))
-    .setBodyWidgetFactory((verticalBox, playerDesk) => {
+    .setBodyWidgetFactory((playerDesk, strategyCardObj) => {
         const playerSlot = playerDesk.playerSlot;
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
         const msgColor = playerDesk.color;
@@ -83,8 +83,10 @@ new AbstractStrategyCard(refObject)
             ThrottleClickHandler.wrap(onSecondary1PdsClicked)
         );
 
-        verticalBox.addChild(primary1Dock1PdsButton);
-        verticalBox.addChild(primary2PdsButton);
-        verticalBox.addChild(secondary1DockButton);
-        verticalBox.addChild(secondary1PdsButton);
+        return [
+            primary1Dock1PdsButton,
+            primary2PdsButton,
+            secondary1DockButton,
+            secondary1PdsButton,
+        ];
     });

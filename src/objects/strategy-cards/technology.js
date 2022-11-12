@@ -207,7 +207,7 @@ const onTechResearched = (technologyName, playerSlot) => {
     Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
 };
 
-function widgetFactory(verticalBox, playerDesk) {
+function widgetFactory(playerDesk, strategyCardObj) {
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
@@ -271,7 +271,7 @@ function widgetFactory(verticalBox, playerDesk) {
         .setOverrideWidth(COL_WIDTH * 4)
         .setOverrideHeight(calculateHeight(playerSlot))
         .setChild(canvas);
-    verticalBox.addChild(fixedSize);
+    return [fixedSize];
 }
 
 const calculateHeight = (playerSlot) => {

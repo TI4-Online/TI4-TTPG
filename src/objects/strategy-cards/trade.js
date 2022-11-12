@@ -3,6 +3,7 @@ const {
     AbstractStrategyCard,
     FONT_SIZE_BODY,
     SCALE,
+    SPACING,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
@@ -29,15 +30,8 @@ const onAllowReplenishClicked = (button, player) => {
     );
 };
 
-const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
-    const replenishBox = new VerticalBox();
-
-    const p = 8 * SCALE;
-    const padded = new LayoutBox()
-        .setPadding(p, p, p / 2, p)
-        .setChild(replenishBox);
-    const border = new Border().setChild(padded);
-    verticalBox.addChild(border);
+const createReplenishPlayersSection = (owningPlayerDesk) => {
+    const replenishBox = new VerticalBox().setChildDistance(SPACING);
 
     replenishBox.addChild(
         new Text()
@@ -62,47 +56,29 @@ const addReplenishPlayersSection = (owningPlayerDesk, verticalBox) => {
         );
         replenishBox.addChild(primaryAllowReplenishButton);
     });
+
+    const p = 8 * SCALE;
+    const padded = new LayoutBox()
+        .setPadding(p, p, p / 2, p)
+        .setChild(replenishBox);
+    const border = new Border().setChild(padded);
+    return border;
 };
 
-const widgetFactory = (verticalBox, playerDesk) => {
-    const playerSlot = playerDesk.playerSlot;
-    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-    const msgColor = playerDesk.color;
-    const cardName = locale("strategy_card.trade.text");
-
-    const onPrimaryClicked = (button, player) => {
-        Broadcast.chatAll(
-            locale(`strategy_card.base.message.primary`, {
-                playerName,
-                cardName,
-            }),
-            msgColor
-        );
-    };
-    const primaryButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.base.button.primary"));
-    primaryButton.onClicked.add(ThrottleClickHandler.wrap(onPrimaryClicked));
-    verticalBox.addChild(primaryButton);
-
-    addReplenishPlayersSection(playerDesk, verticalBox);
-
-    const onSecondaryClicked = (button, player) => {
-        Broadcast.chatAll(
-            locale(`strategy_card.base.message.secondary`, {
-                playerName,
-                cardName,
-            }),
-            msgColor
-        );
-    };
-    const secondaryButton = new Button()
-        .setFontSize(FONT_SIZE_BODY)
-        .setText(locale("strategy_card.base.button.secondary"));
-    secondaryButton.onClicked.add(
-        ThrottleClickHandler.wrap(onSecondaryClicked)
+const widgetFactory = (playerDesk, strategyCardObj) => {
+    const primaryButton = AbstractStrategyCard.createButtonPlayPrimary(
+        playerDesk,
+        strategyCardObj
     );
-    verticalBox.addChild(secondaryButton);
+
+    const replenishBox = createReplenishPlayersSection(playerDesk);
+
+    const secondaryButton = AbstractStrategyCard.createButtonPlaySecondary(
+        playerDesk,
+        strategyCardObj
+    );
+
+    return [primaryButton, replenishBox, secondaryButton];
 };
 
 new AbstractStrategyCard(refObject)

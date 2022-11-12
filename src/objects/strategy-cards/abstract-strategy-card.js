@@ -2,7 +2,9 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { Broadcast } = require("../../lib/broadcast");
+const { ColorUtil } = require("../../lib/color/color-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     Border,
     Button,
@@ -14,12 +16,11 @@ const {
     UIElement,
     Vector,
     VerticalBox,
+    Widget,
     globalEvents,
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const { ColorUtil } = require("../../lib/color/color-util");
 
 // If a new strategy card is played while a player still has one open,
 // position the new UI behind the other(s).
@@ -29,6 +30,7 @@ const SCALE = 2;
 const FONT_SIZE_PLAY_BUTTON = 9 * SCALE;
 const FONT_SIZE_TITLE = 14 * SCALE;
 const FONT_SIZE_BODY = 10 * SCALE;
+const SPACING = 2 * SCALE;
 
 /**
  * Manage strategy card UI.
@@ -59,13 +61,14 @@ class AbstractStrategyCard {
      *
      * Play triggers the globalEvents.TI4.onStrategyCardPlayed event.
      *
-     * @param {GameObject} gameObject - strategy card
+     * @param {GameObject} strategyCardObj - strategy card
      */
-    static addPlayButton(gameObject) {
-        assert(gameObject instanceof GameObject);
-        assert(ObjectNamespace.isStrategyCard(gameObject));
+    static addPlayButton(strategyCardObj) {
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
 
-        const cardName = AbstractStrategyCard.getStrategyCardName(gameObject);
+        const cardName =
+            AbstractStrategyCard.getStrategyCardName(strategyCardObj);
         const playButtonName = locale("ui.button.strategy_card_play");
         const playButtonTooltip = locale("ui.tooltip.strategy_card_play");
 
@@ -79,7 +82,10 @@ class AbstractStrategyCard {
             Broadcast.broadcastAll(msg);
 
             // Tell any listeners.
-            globalEvents.TI4.onStrategyCardPlayed.trigger(gameObject, player);
+            globalEvents.TI4.onStrategyCardPlayed.trigger(
+                strategyCardObj,
+                player
+            );
         };
 
         // Setup the play button
@@ -94,12 +100,12 @@ class AbstractStrategyCard {
         ui.rotation = new Rotator(180, 180, 0); // THis makes it appear ont he back side only.
         ui.scale = 1 / SCALE;
         ui.widget = playButton;
-        gameObject.addUI(ui);
+        strategyCardObj.addUI(ui);
 
         // Also add as a context menu item.
         const playActionName = "*" + playButtonName;
-        gameObject.addCustomAction(playActionName, playButtonTooltip);
-        gameObject.onCustomAction.add((obj, player, actionName) => {
+        strategyCardObj.addCustomAction(playActionName, playButtonTooltip);
+        strategyCardObj.onCustomAction.add((obj, player, actionName) => {
             if (actionName === playActionName) {
                 handleOnPlayButtonClicked(playButton, player);
             }
@@ -110,15 +116,15 @@ class AbstractStrategyCard {
      * Set up globalEvents.TI4.onStrategyCardMovementStopped triggering when
      * the game object stops moving (e.g. selected by a player, flipped, etc).
      *
-     * @param {GameObject} gameObject - strategy card
+     * @param {GameObject} strategyCardObj - strategy card
      */
-    static addOnMovementStoppedTrigger(gameObject) {
-        assert(gameObject instanceof GameObject);
-        assert(ObjectNamespace.isStrategyCard(gameObject));
+    static addOnMovementStoppedTrigger(strategyCardObj) {
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
 
         // TTPG can keep sending this event (physics?), suppress if not changed much.
         let lastLossy = "";
-        gameObject.onMovementStopped.add((obj) => {
+        strategyCardObj.onMovementStopped.add((obj) => {
             const pos = obj.getPosition();
             const rot = obj.getRotation();
             const lossy = [
@@ -138,18 +144,124 @@ class AbstractStrategyCard {
         });
     }
 
+    /**
+     * Create the "primary" button, not added to any parent.
+     *
+     * @param {PlayerDesk} playerDesk
+     * @param {GameObject} strategyCardObj
+     * @returns {Button}
+     */
+    static createButtonPlayPrimary(playerDesk, strategyCardObj) {
+        assert(playerDesk);
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
+
+        const playerSlot = playerDesk.playerSlot;
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.color;
+        const cardName =
+            AbstractStrategyCard.getStrategyCardName(strategyCardObj);
+
+        const onPrimaryClicked = (button, player) => {
+            Broadcast.chatAll(
+                locale(`strategy_card.base.message.primary`, {
+                    playerName,
+                    cardName,
+                }),
+                msgColor
+            );
+        };
+        const primaryButton = new Button()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(locale("strategy_card.base.button.primary"));
+        primaryButton.onClicked.add(
+            ThrottleClickHandler.wrap(onPrimaryClicked)
+        );
+        return primaryButton;
+    }
+
+    /**
+     * Create the "primary" button, not added to any parent.
+     *
+     * @param {PlayerDesk} playerDesk
+     * @param {GameObject} strategyCardObj
+     * @returns {Button}
+     */
+    static createButtonPlaySecondary(playerDesk, strategyCardObj) {
+        assert(playerDesk);
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
+
+        const playerSlot = playerDesk.playerSlot;
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.color;
+        const cardName =
+            AbstractStrategyCard.getStrategyCardName(strategyCardObj);
+
+        const onSecondaryClicked = (button, player) => {
+            Broadcast.chatAll(
+                locale(`strategy_card.base.message.secondary`, {
+                    playerName,
+                    cardName,
+                }),
+                msgColor
+            );
+        };
+        const secondaryButton = new Button()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(locale("strategy_card.base.button.secondary"));
+        secondaryButton.onClicked.add(
+            ThrottleClickHandler.wrap(onSecondaryClicked)
+        );
+        return secondaryButton;
+    }
+
+    /**
+     * Create the "pass" button, not added to any parent.
+     *
+     * @param {PlayerDesk} playerDesk
+     * @param {GameObject} strategyCardObj
+     * @returns {Button}
+     */
+    static createButtonPlayPass(playerDesk, strategyCardObj) {
+        assert(playerDesk);
+        assert(strategyCardObj instanceof GameObject);
+        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
+
+        const playerSlot = playerDesk.playerSlot;
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.color;
+        const cardName =
+            AbstractStrategyCard.getStrategyCardName(strategyCardObj);
+
+        const onPassClicked = (button, player) => {
+            Broadcast.chatAll(
+                locale(`strategy_card.base.message.pass`, {
+                    playerName,
+                    cardName,
+                }),
+                msgColor
+            );
+        };
+        const passButton = new Button()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(locale("strategy_card.base.button.pass"));
+        passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
+        return passButton;
+    }
+
     constructor(gameObject) {
         assert(gameObject instanceof GameObject);
         assert(ObjectNamespace.isStrategyCard(gameObject));
 
         this._gameObject = gameObject;
         this._color = new Color(1, 1, 1);
-        this._bodyWidgetFactory = (verticalBox, playerDesk) => {
-            assert(verticalBox instanceof VerticalBox);
+        this._bodyWidgetFactory = (playerDesk, strategyCardObj) => {
             assert(playerDesk);
-            this._defaultBodyWidgetFactory(verticalBox, playerDesk);
+            assert(strategyCardObj instanceof GameObject);
+            return this._defaultBodyWidgetFactory(playerDesk, strategyCardObj);
         };
-        this._automatorOptions = undefined;
+        this._automatorButtons = undefined;
         this._playerSlotToUi = {};
         this._playerSlotToPlayed = {};
 
@@ -202,9 +314,13 @@ class AbstractStrategyCard {
      * @param {function} handler - (gameObject, player, actionName)
      * @returns {AbstractStrategyCard} self, for chaining
      */
-    addAutomatorOption(actionName, handler) {
+    addAutomatorButton(actionName, handler) {
         assert(typeof actionName === "string");
         assert(typeof handler === "function");
+        if (!this._automatorButtons) {
+            this._automatorButtons = [];
+        }
+        this._automatorButtons.push({ actionName, handler });
         return this;
     }
 
@@ -261,16 +377,29 @@ class AbstractStrategyCard {
         }
         active.push(this);
 
-        const verticalBox = new VerticalBox();
+        const verticalBox = new VerticalBox().setChildDistance(SPACING);
 
         // Create widget header.
         this._createHeader(verticalBox);
 
         // Create widget body.
-        this._bodyWidgetFactory(verticalBox, playerDesk);
+        const bodyWidgets = this._bodyWidgetFactory(
+            playerDesk,
+            this._gameObject
+        );
+        assert(Array.isArray(bodyWidgets));
+        for (const bodyWidget of bodyWidgets) {
+            assert(bodyWidget instanceof Widget);
+            verticalBox.addChild(bodyWidget);
+        }
 
         // Create widget footer.
         this._createFooter(verticalBox, playerDesk);
+
+        // Automator buttons?
+        if (this._automatorButtons) {
+            this._createAutomoatorButtons(verticalBox);
+        }
 
         // Wrap in a padded frame.
         let widget = new LayoutBox()
@@ -344,71 +473,63 @@ class AbstractStrategyCard {
         verticalBox.addChild(closeButton);
     }
 
+    _createAutomoatorButtons(verticalBox) {
+        assert(verticalBox instanceof VerticalBox);
+        assert(Array.isArray(this._automatorButtons));
+
+        const headerText = new Text()
+            .setFont("handel-gothic-regular.ttf", refPackageId)
+            .setFontSize(FONT_SIZE_TITLE / 2)
+            .setText(locale(`strategy_card.automator.title`).toUpperCase());
+
+        const panel = new VerticalBox()
+            .setChildDistance(SPACING)
+            .addChild(headerText);
+
+        for (const automatorButton of this._automatorButtons) {
+            const button = new Button()
+                .setFontSize((FONT_SIZE_BODY * 3) / 4)
+                .setText(automatorButton.actionName);
+            button.onClicked.add(
+                ThrottleClickHandler.wrap(automatorButton.handler)
+            );
+            panel.addChild(button);
+        }
+
+        const p = 8 * SCALE;
+        const padded = new LayoutBox()
+            .setPadding(p, p, p / 2, p / 2)
+            .setChild(panel);
+        const border = new Border().setChild(padded);
+        verticalBox.addChild(border);
+    }
+
     /**
      * Create primary/seconcary buttons.
      *
-     * @param {VerticalBox} verticalBox - add body to this panel
      * @param {PlayerDesk} playerDesk
+     * @param {GameObject} strategyCardObj
+     * @returns {Array.{Widget}}
      */
-    _defaultBodyWidgetFactory(verticalBox, playerDesk) {
-        assert(verticalBox instanceof VerticalBox);
+    _defaultBodyWidgetFactory(playerDesk, strategyCardObj) {
         assert(playerDesk);
 
-        const playerSlot = playerDesk.playerSlot;
-        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-        const msgColor = playerDesk.color;
-        const cardName = AbstractStrategyCard.getStrategyCardName(
+        const primaryButton = AbstractStrategyCard.createButtonPlayPrimary(
+            playerDesk,
             this._gameObject
         );
 
-        const onPrimaryClicked = (button, player) => {
-            Broadcast.chatAll(
-                locale(`strategy_card.base.message.primary`, {
-                    playerName,
-                    cardName,
-                }),
-                msgColor
-            );
-        };
-        const primaryButton = new Button()
-            .setFontSize(FONT_SIZE_BODY)
-            .setText(locale("strategy_card.base.button.primary"));
-        primaryButton.onClicked.add(
-            ThrottleClickHandler.wrap(onPrimaryClicked)
+        const secondaryButton = AbstractStrategyCard.createButtonPlaySecondary(
+            playerDesk,
+            this._gameObject
         );
-        verticalBox.addChild(primaryButton);
 
-        const onSecondaryClicked = (button, player) => {
-            Broadcast.chatAll(
-                locale(`strategy_card.base.message.secondary`, {
-                    playerName,
-                    cardName,
-                }),
-                msgColor
-            );
-        };
-        const secondaryButton = new Button()
-            .setFontSize(FONT_SIZE_BODY)
-            .setText(locale("strategy_card.base.button.secondary"));
-        secondaryButton.onClicked.add(
-            ThrottleClickHandler.wrap(onSecondaryClicked)
+        const passButton = AbstractStrategyCard.createButtonPlayPass(
+            playerDesk,
+            this._gameObject
         );
-        verticalBox.addChild(secondaryButton);
 
-        const onPassClicked = (button, player) => {
-            Broadcast.chatAll(
-                locale(`strategy_card.base.message.pass`, {
-                    playerName,
-                    cardName,
-                }),
-                msgColor
-            );
-        };
-        const passButton = new Button()
-            .setFontSize(FONT_SIZE_BODY)
-            .setText(locale("strategy_card.base.button.pass"));
-        passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
-        verticalBox.addChild(passButton);
+        return [primaryButton, secondaryButton, passButton];
     }
 }
 
@@ -418,4 +539,5 @@ module.exports = {
     FONT_SIZE_TITLE,
     FONT_SIZE_BODY,
     SCALE,
+    SPACING,
 };
