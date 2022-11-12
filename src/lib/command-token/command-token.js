@@ -203,7 +203,7 @@ class CommandToken {
     }
 
     /**
-     * Get a tactic token.
+     * Get a tactic token from the region on the command sheet.
      *
      * @param {number} playerSlot
      * @returns {GameObject|undefined} tactic token, if present
@@ -219,6 +219,25 @@ class CommandToken {
         assert(sheetAndTokens);
         CommandToken._sortTokensByRegion(sheetAndTokens);
         return sheetAndTokens.tactics[0];
+    }
+
+    /**
+     * Get a strategy token from the region on the command sheet.
+     *
+     * @param {number} playerSlot
+     * @returns {GameObject|undefined} strategy token, if present
+     */
+    static getStrategyToken(playerSlot) {
+        assert(typeof playerSlot === "number");
+        const playerSlotToSheetAndTokens =
+            CommandToken._getAllCommandSheetsAndTokens(playerSlot);
+        const sheetAndTokens = playerSlotToSheetAndTokens[playerSlot];
+        if (!sheetAndTokens) {
+            return;
+        }
+        assert(sheetAndTokens);
+        CommandToken._sortTokensByRegion(sheetAndTokens);
+        return sheetAndTokens.strategy[0];
     }
 
     /**
