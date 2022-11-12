@@ -11,7 +11,6 @@ const {
     Button,
     CheckBox,
     Color,
-    Player,
     Slider,
     Text,
 } = require("../../wrapper/api");
@@ -29,25 +28,26 @@ function getPlayerSelectionBySlot(slot) {
     return selections[slot];
 }
 
-const onStrategyCardSelectionDone = (card, player, owningPlayerSlot) => {
-    assert(player instanceof Player);
-    assert(typeof owningPlayerSlot === "number");
+const onStrategyCardSelectionDone = (playerDesk) => {
+    assert(playerDesk);
 
-    let commandTokenCount = getPlayerSelectionBySlot(owningPlayerSlot).value;
-    if (getPlayerSelectionBySlot(owningPlayerSlot).primary) {
+    const playerSlot = playerDesk.playerSlot;
+    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+    const msgColor = playerDesk.color;
+
+    let commandTokenCount = getPlayerSelectionBySlot(playerSlot).value;
+    if (getPlayerSelectionBySlot(playerSlot).primary) {
         commandTokenCount += 3;
     }
-
-    const playerName = world.TI4.getNameByPlayerSlot(owningPlayerSlot);
 
     const message = locale("strategy_card.leadership.message", {
         playerName,
         commandTokenCount,
     });
-    Broadcast.chatAll(message, player.getPlayerColor());
+    Broadcast.chatAll(message, msgColor);
 };
 
-function widgetFactory(verticalBox, playerDesk) {
+function widgetFactory(playerDesk, strategyCardObj) {
     const playerSlot = playerDesk.playerSlot;
     selections[playerSlot] = {
         value: 0,
@@ -60,6 +60,10 @@ function widgetFactory(verticalBox, playerDesk) {
     primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
         getPlayerSelectionBySlot(playerSlot).primary = isChecked;
     });
+
+    const sliderText = new Text()
+        .setFontSize(FONT_SIZE_BODY)
+        .setText(locale("strategy_card.leadership.slider_text"));
     const slider = new Slider()
         .setFontSize(FONT_SIZE_BODY)
         .setTextBoxWidth(FONT_SIZE_BODY * 3)
@@ -70,7 +74,7 @@ function widgetFactory(verticalBox, playerDesk) {
     });
 
     const reportTokensClicked = (button, player) => {
-        onStrategyCardSelectionDone(refObject, player, playerSlot);
+        onStrategyCardSelectionDone(playerDesk);
     };
     const reportTokensButton = new Button()
         .setFontSize(FONT_SIZE_BODY)
@@ -79,16 +83,7 @@ function widgetFactory(verticalBox, playerDesk) {
         ThrottleClickHandler.wrap(reportTokensClicked)
     );
 
-    verticalBox.addChild(primaryCheckBox);
-    verticalBox.addChild(
-        new Text()
-            .setFontSize(FONT_SIZE_BODY)
-            .setText(locale("strategy_card.leadership.slider_text"))
-    );
-    verticalBox.addChild(slider);
-    verticalBox.addChild(reportTokensButton);
-
-    return verticalBox;
+    return [primaryCheckBox, sliderText, slider, reportTokensButton];
 }
 
 new AbstractStrategyCard(refObject)

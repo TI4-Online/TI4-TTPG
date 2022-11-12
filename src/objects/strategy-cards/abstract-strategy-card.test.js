@@ -44,7 +44,7 @@ it("setBodyWidgetFactory", () => {
     });
     const abstractStrategyCard = new AbstractStrategyCard(gameObject);
     abstractStrategyCard.setBodyWidgetFactory(
-        (verticalBox, playerDesk, closeHandler) => {}
+        (playerDesk, strategyCardObj) => {}
     );
 });
 
@@ -54,8 +54,9 @@ it("count body widgets created by play", () => {
     });
     let numBodyWidgetsCreated = 0;
     const abstractStrategyCard = new AbstractStrategyCard(gameObject);
-    abstractStrategyCard.setBodyWidgetFactory((verticalBox, playerDesk) => {
+    abstractStrategyCard.setBodyWidgetFactory((playerDesk, strategyCardObj) => {
         numBodyWidgetsCreated += 1;
+        return [];
     });
     const player = new MockPlayer();
     globalEvents.TI4.onStrategyCardPlayed.trigger(gameObject, player);
