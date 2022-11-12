@@ -2,7 +2,9 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { Broadcast } = require("../../lib/broadcast");
+const { ColorUtil } = require("../../lib/color/color-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     Border,
     Button,
@@ -19,8 +21,6 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const { ColorUtil } = require("../../lib/color/color-util");
 
 // If a new strategy card is played while a player still has one open,
 // position the new UI behind the other(s).
@@ -30,6 +30,7 @@ const SCALE = 2;
 const FONT_SIZE_PLAY_BUTTON = 9 * SCALE;
 const FONT_SIZE_TITLE = 14 * SCALE;
 const FONT_SIZE_BODY = 10 * SCALE;
+const SPACING = 2 * SCALE;
 
 /**
  * Manage strategy card UI.
@@ -260,7 +261,7 @@ class AbstractStrategyCard {
             assert(strategyCardObj instanceof GameObject);
             return this._defaultBodyWidgetFactory(playerDesk, strategyCardObj);
         };
-        this._automatorOptions = undefined;
+        this._automatorButtons = undefined;
         this._playerSlotToUi = {};
         this._playerSlotToPlayed = {};
 
@@ -313,9 +314,13 @@ class AbstractStrategyCard {
      * @param {function} handler - (gameObject, player, actionName)
      * @returns {AbstractStrategyCard} self, for chaining
      */
-    addAutomatorOption(actionName, handler) {
+    addAutomatorButton(actionName, handler) {
         assert(typeof actionName === "string");
         assert(typeof handler === "function");
+        if (!this._automatorButtons) {
+            this._automatorButtons = [];
+        }
+        this._automatorButtons.push({ actionName, handler });
         return this;
     }
 
@@ -372,7 +377,7 @@ class AbstractStrategyCard {
         }
         active.push(this);
 
-        const verticalBox = new VerticalBox();
+        const verticalBox = new VerticalBox().setChildDistance(SPACING);
 
         // Create widget header.
         this._createHeader(verticalBox);
@@ -390,6 +395,11 @@ class AbstractStrategyCard {
 
         // Create widget footer.
         this._createFooter(verticalBox, playerDesk);
+
+        // Automator buttons?
+        if (this._automatorButtons) {
+            this._createAutomoatorButtons(verticalBox);
+        }
 
         // Wrap in a padded frame.
         let widget = new LayoutBox()
@@ -463,6 +473,37 @@ class AbstractStrategyCard {
         verticalBox.addChild(closeButton);
     }
 
+    _createAutomoatorButtons(verticalBox) {
+        assert(verticalBox instanceof VerticalBox);
+        assert(Array.isArray(this._automatorButtons));
+
+        const headerText = new Text()
+            .setFont("handel-gothic-regular.ttf", refPackageId)
+            .setFontSize(FONT_SIZE_TITLE / 2)
+            .setText(locale(`strategy_card.automator.title`).toUpperCase());
+
+        const panel = new VerticalBox()
+            .setChildDistance(SPACING)
+            .addChild(headerText);
+
+        for (const automatorButton of this._automatorButtons) {
+            const button = new Button()
+                .setFontSize((FONT_SIZE_BODY * 3) / 4)
+                .setText(automatorButton.actionName);
+            button.onClicked.add(
+                ThrottleClickHandler.wrap(automatorButton.handler)
+            );
+            panel.addChild(button);
+        }
+
+        const p = 8 * SCALE;
+        const padded = new LayoutBox()
+            .setPadding(p, p, p / 2, p / 2)
+            .setChild(panel);
+        const border = new Border().setChild(padded);
+        verticalBox.addChild(border);
+    }
+
     /**
      * Create primary/seconcary buttons.
      *
@@ -498,4 +539,5 @@ module.exports = {
     FONT_SIZE_TITLE,
     FONT_SIZE_BODY,
     SCALE,
+    SPACING,
 };

@@ -3,6 +3,7 @@ const {
     AbstractStrategyCard,
     FONT_SIZE_BODY,
     SCALE,
+    SPACING,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
@@ -30,7 +31,7 @@ const onAllowReplenishClicked = (button, player) => {
 };
 
 const createReplenishPlayersSection = (owningPlayerDesk) => {
-    const replenishBox = new VerticalBox();
+    const replenishBox = new VerticalBox().setChildDistance(SPACING);
 
     replenishBox.addChild(
         new Text()

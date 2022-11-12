@@ -911,8 +911,8 @@
     "strategy_card.leadership.button.report": "Report tokens",
     "strategy_card.leadership.message": "{playerName} gained {commandTokenCount} command tokens.",
 
-    "strategy_card.base.button.primary": "Primary Ability",
-    "strategy_card.base.button.secondary": "Secondary Ability",
+    "strategy_card.base.button.primary": "Primary ability",
+    "strategy_card.base.button.secondary": "Secondary ability",
     "strategy_card.base.button.pass": "Pass",
     "strategy_card.base.button.close": "Close",
     "strategy_card.base.message.primary": "{playerName} uses the primary ability of {cardName}.",
@@ -946,6 +946,12 @@
     "strategy_card.technology.message.nekro": "{playerName} gained 3 command tokens.",
 
     "strategy_card.imperial.text": "Imperial",
+
+    "strategy_card.automator.title": "Automator actions",
+    "strategy_card.automator.base.spend_strategy_token": "Spend strategy token",
+    "strategy_card.automator.politics.draw_action_cards": "Draw action cards",
+    "strategy_card.automator.trade.get_tgs_and_cs": "Get tradegoods, commodities",
+    "strategy_card.automator.imperial.draw_secret_objective": "Draw secret objective",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
