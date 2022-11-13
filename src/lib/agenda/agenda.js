@@ -542,6 +542,22 @@ class Agenda {
         return this;
     }
 
+    resetNoWhens() {
+        this._noWhensDeskIndexSet.clear();
+
+        if (
+            this._agendaStateMachine &&
+            this._agendaStateMachine.name === "WHEN"
+        ) {
+            world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
+                world.TI4.turns.setPassed(playerDesk.playerSlot, false);
+            });
+        }
+
+        this._postInvalidate();
+        return this;
+    }
+
     playWhen(deskIndex, clickingPlayer) {
         assert(typeof deskIndex === "number");
         assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
@@ -573,6 +589,22 @@ class Agenda {
             this._passForPhase(deskIndex, "AFTER", clickingPlayer);
         } else {
             this._noAftersDeskIndexSet.delete(deskIndex);
+        }
+
+        this._postInvalidate();
+        return this;
+    }
+
+    resetNoAfters() {
+        this._noAftersDeskIndexSet.clear();
+
+        if (
+            this._agendaStateMachine &&
+            this._agendaStateMachine.name === "AFTER"
+        ) {
+            world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
+                world.TI4.turns.setPassed(playerDesk.playerSlot, false);
+            });
         }
 
         this._postInvalidate();

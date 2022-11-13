@@ -203,6 +203,7 @@ class TabAgenda {
                         playerName,
                     })
                 );
+                agenda.resetNoWhens();
                 agenda.playWhen(playerDesk.index, clickingPlayer);
             },
             onNoAfters: (playerDesk, clickingPlayer) => {
@@ -215,6 +216,7 @@ class TabAgenda {
                         playerName,
                     })
                 );
+                agenda.resetNoAfters();
                 agenda.playAfter(playerDesk.index, clickingPlayer);
             },
             onOutcomeEdit: (outcomeIndex, outcomeName) => {
