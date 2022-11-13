@@ -80,6 +80,14 @@ class FogOfWarZone {
     static createSystemStandInUi(systemTileObj, system, pos) {
         assert(typeof system.tile === "number");
 
+        world.TI4.errorReporting.setExtra({
+            nsid: ObjectNamespace.getNsid(systemTileObj),
+            tile: system.tile,
+        });
+        assert(ObjectNamespace.isSystemTile(systemTileObj));
+        assert(world.TI4.getSystemBySystemTileObject(systemTileObj));
+        world.TI4.errorReporting.clearExtra();
+
         const resolutionScale = 4;
         const imgPath = system.raw.img;
         const hexSize = 115 * Hex.SCALE * resolutionScale;
