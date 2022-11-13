@@ -1,8 +1,17 @@
+const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
 const { CardUtil } = require("../lib/card/card-util");
 const { DealDiscard } = require("../lib/card/deal-discard");
-const { ObjectNamespace } = require("../lib/object-namespace");
-const { Card, Container, globalEvents, world } = require("../wrapper/api");
 const { EndStatusPhase } = require("../lib/phase/end-of-round");
+const { ObjectNamespace } = require("../lib/object-namespace");
+const {
+    Card,
+    Container,
+    Player,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
 
 const DESTROY_SET = new Set([
     "token:base/fighter_1",
@@ -132,6 +141,12 @@ function rejectToMatchingBag(rejectedObj) {
  * Handler for globalEvents.TI4.onContainerRejected
  */
 globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
+    assert(!container || container instanceof Container);
+    assert(Array.isArray(rejectedObjs));
+    assert(player instanceof Player);
+
+    const nameToCount = {};
+
     for (let i = 0; i < rejectedObjs.length; i++) {
         const rejectedObj = rejectedObjs[i];
 
@@ -153,8 +168,29 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             container.take(rejectedObj, pos, false, false);
         }
 
-        //const nsid = ObjectNamespace.getNsid(rejectedObj);
-        //console.log(`onContainerRejected "${nsid}"`);
+        // Track trashed object names and counts.
+        if (rejectedObj instanceof Card) {
+            const names = rejectedObj
+                .getAllCardDetails()
+                .map((details) => details.name);
+            const nsids = ObjectNamespace.getDeckNsids(rejectedObj);
+            for (let cardIndex = 0; cardIndex < names.length; cardIndex++) {
+                let name = names[cardIndex];
+                const nsid = nsids[cardIndex];
+                if (nsid.startsWith("card.objective.secret")) {
+                    name = locale("ui.message.graveyard.secret");
+                }
+                name = name.replace(/ \(\d\)$/, ""); // strip off card number ("morale boost (2)")
+                if (name.length > 0) {
+                    nameToCount[name] = (nameToCount[name] || 0) + 1;
+                }
+            }
+        } else {
+            const name = rejectedObj.getName();
+            if (name.length > 0) {
+                nameToCount[name] = (nameToCount[name] || 0) + 1;
+            }
+        }
 
         if (rejectDestroy(rejectedObj)) {
             continue;
@@ -182,4 +218,21 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
             continue;
         }
     }
+
+    const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
+    const content = Object.entries(nameToCount)
+        .map(([name, count]) => {
+            if (count === 1) {
+                return `“${name}”`;
+            } else {
+                return `“${name}” (x${count})`;
+            }
+        })
+        .join(", ");
+    const msg = locale("ui.message.graveyard.moving", {
+        playerName,
+        content,
+    });
+    const msgColor = player.getPrimaryColor();
+    Broadcast.chatAll(msg, msgColor);
 });

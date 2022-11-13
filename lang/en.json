@@ -106,6 +106,9 @@
     "ui.message.yssaril_commander_broadcast": "{srcName} revealing cards to {dstName}",
     "ui.message.yssaril_commander_report": "CARDS: {content}",
 
+    "ui.message.graveyard.secret": "Secret objective card",
+    "ui.message.graveyard.moving": "{playerName} trashing {content}",
+
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
