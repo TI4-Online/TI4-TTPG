@@ -116,7 +116,10 @@ class MiltyDraftSettings {
                 console.log("MiltyDraft.Settings.onFaction");
                 if (this.factionSelected.includes(factionNSID)) {
                     if (this.factionSelected.indexOf(factionNSID) !== -1) {
-                        this.factionSelected.splice(this.factionSelected.indexOf(factionNSID), 1);
+                        this.factionSelected.splice(
+                            this.factionSelected.indexOf(factionNSID),
+                            1
+                        );
                     }
                 } else {
                     this.factionSelected.push(factionNSID);
