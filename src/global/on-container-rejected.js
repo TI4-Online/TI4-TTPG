@@ -143,7 +143,7 @@ function rejectToMatchingBag(rejectedObj) {
 globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
     assert(!container || container instanceof Container);
     assert(Array.isArray(rejectedObjs));
-    assert(player instanceof Player);
+    assert(!player || player instanceof Player);
 
     const nameToCount = {};
 
@@ -219,20 +219,24 @@ globalEvents.TI4.onContainerRejected.add((container, rejectedObjs, player) => {
         }
     }
 
-    const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
-    const content = Object.entries(nameToCount)
-        .map(([name, count]) => {
-            if (count === 1) {
-                return `“${name}”`;
-            } else {
-                return `“${name}” (x${count})`;
-            }
-        })
-        .join(", ");
-    const msg = locale("ui.message.graveyard.moving", {
-        playerName,
-        content,
-    });
-    const msgColor = player.getPrimaryColor();
-    Broadcast.chatAll(msg, msgColor);
+    // Scripts may lean on this to put things in the correct discard, etc.
+    // Only report when driven by a player.
+    if (player) {
+        const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
+        const content = Object.entries(nameToCount)
+            .map(([name, count]) => {
+                if (count === 1) {
+                    return `“${name}”`;
+                } else {
+                    return `“${name}” (x${count})`;
+                }
+            })
+            .join(", ");
+        const msg = locale("ui.message.graveyard.moving", {
+            playerName,
+            content,
+        });
+        const msgColor = player.getPrimaryColor();
+        Broadcast.chatAll(msg, msgColor);
+    }
 });
