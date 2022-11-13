@@ -39,10 +39,16 @@ class MiltyDraftSettingsUI extends VerticalBox {
 
         this.setChildDistance(CONFIG.spacing);
 
-        this._createDraftSettingsUI(["", []]);
+        this._createDraftSettingsUI({
+            customInputString: "",
+            factions: [],
+        });
     }
 
     _createDraftSettingsUI(persistentMemory) {
+        assert(typeof persistentMemory.customInputString === "string");
+        assert(Array.isArray(persistentMemory.factions));
+
         assert(this._sliceGenerator);
         assert(this._factionGenerator);
 
@@ -54,13 +60,14 @@ class MiltyDraftSettingsUI extends VerticalBox {
         this.addChild(customInputLabel);
         const customInput = new MultilineTextBox()
             .setFontSize(CONFIG.fontSize)
-            .setMaxLength(1000);
+            .setMaxLength(1000)
+            .setText(persistentMemory.customInputString);
         const onCustomButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.custom"));
         onCustomButton.onClicked.add((button, player) => {
             this._callbacks.onCustom(player);
-            persistentMemory[0] = customInput.getText();
+            persistentMemory.customInputString = customInput.getText();
             this._createCustomSelectionUI(persistentMemory);
         });
         const customHBox = new HorizontalBox()
@@ -136,11 +143,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
-            console.log(customInput.getText());
             const customInputValue = customInput
                 .getText()
                 .replaceAll("\\n", " ");
-            console.log(customInputValue);
             const success = this._callbacks.onFinish(customInputValue, player);
             if (success) {
                 this._createDraftInProgressUI(persistentMemory);
@@ -153,6 +158,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
     }
 
     _createCustomSelectionUI(persistentMemory) {
+        assert(typeof persistentMemory.customInputString === "string");
+        assert(Array.isArray(persistentMemory.factions));
+
         this.removeAllChildren();
 
         const sliceInputLabel = new Text()
@@ -161,9 +169,8 @@ class MiltyDraftSettingsUI extends VerticalBox {
         this.addChild(sliceInputLabel);
         const sliceInput = new MultilineTextBox()
             .setFontSize(CONFIG.fontSize)
-            .setMaxLength(2000)
-            .setText(persistentMemory[0]) //This fails for strings > 200char TODO: Fix/find a work around
-            .setMaxLength(1000);
+            .setMaxLength(1000)
+            .setText(persistentMemory.customInputString);
         const customInputBox = new LayoutBox()
             .setChild(sliceInput)
             .setMinimumHeight(CONFIG.fontSize * 2);
@@ -200,8 +207,6 @@ class MiltyDraftSettingsUI extends VerticalBox {
             colLen = 7;
         }
 
-        console.log(persistentMemory);
-
         world.TI4.getAllFactions().forEach((faction) => {
             const keleresVariants = [
                 "keleres_argent",
@@ -214,7 +219,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
                 ColorUtil.colorFromHex("#482706"),
             ];
             let color = new Color(0, 0, 0);
-            if (persistentMemory[1].includes(faction.nsidName)) {
+            if (persistentMemory.factions.includes(faction.nsidName)) {
                 color = new Color(1, 1, 1);
             }
             let image = faction.icon;
@@ -275,8 +280,8 @@ class MiltyDraftSettingsUI extends VerticalBox {
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
             let factions = "";
-            if (persistentMemory[1].length > 0) {
-                factions = "&factions=" + persistentMemory[1].join("|");
+            if (persistentMemory.factions.length > 0) {
+                factions = "&factions=" + persistentMemory.factions.join("|");
             }
             const customInputValue =
                 sliceInput.getText().replaceAll("\\n", " ") + factions;

@@ -124,7 +124,10 @@ class MiltyDraftSettings {
                 } else {
                     this.factionSelected.push(factionNSID);
                 }
-                return [sliceInput, this.factionSelected];
+                return {
+                    customInputString: sliceInput,
+                    factions: this.factionSelected,
+                };
             },
         };
         this._ui = new MiltyDraftSettingsUI(
