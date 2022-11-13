@@ -9,18 +9,20 @@ const {
 } = require("../../../../lib/draft/milty/milty-slice-generator");
 const CONFIG = require("../../../game-ui-config");
 const {
+    Border,
     Button,
     CheckBox,
+    Color,
     HorizontalBox,
+    ImageButton,
     LayoutBox,
     Slider,
     Text,
     MultilineTextBox,
-    ImageButton,
-    refPackageId,
     VerticalBox,
+    refPackageId,
+    world,
 } = require("../../../../wrapper/api");
-const { world, Border, Color } = require("@tabletop-playground/api");
 
 class MiltyDraftSettingsUI extends VerticalBox {
     constructor(sliceGenerator, factionGenerator, callbacks) {

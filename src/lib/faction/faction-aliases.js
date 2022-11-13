@@ -7,6 +7,8 @@ const { Faction } = require("../faction/faction");
 const FACTION_NAME_TO_NSID_NAME = {
     "jol-nar": "jolnar",
     "n'orr": "norr",
+
+    // Full names
     "naaz-rokha": "naazrokha",
     "vuil'raith": "vuilraith",
     arborec: "arborec",
