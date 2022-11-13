@@ -18,6 +18,7 @@ class MiltyDraftSettings {
         const sliceGenerator = new MiltySliceGenerator();
         const factionGenerator = new MiltyFactionGenerator();
         this._miltyDraft = undefined;
+        this.factionSelected = [];
         const callbacks = {
             onFinish: (customConfig, player) => {
                 assert(player instanceof Player);
@@ -99,6 +100,28 @@ class MiltyDraftSettings {
                     this._miltyDraft.cancel();
                 }
                 this._miltyDraft = undefined;
+            },
+            onCustom: (player) => {
+                assert(player instanceof Player);
+                console.log("MiltyDraft.Settings.onCustom");
+                return true;
+            },
+            onClear: (player) => {
+                assert(player instanceof Player);
+                console.log("MiltyDraft.Settings.onClear");
+                this.factionSelected = [];
+            },
+            onFaction: (factionNSID, sliceInput, player) => {
+                assert(player instanceof Player);
+                console.log("MiltyDraft.Settings.onFaction");
+                if (this.factionSelected.includes(factionNSID)) {
+                    if (this.factionSelected.indexOf(factionNSID) !== -1) {
+                        this.factionSelected.splice(this.factionSelected.indexOf(factionNSID), 1);
+                    }
+                } else {
+                    this.factionSelected.push(factionNSID);
+                }
+                return [sliceInput, this.factionSelected];
             },
         };
         this._ui = new MiltyDraftSettingsUI(
