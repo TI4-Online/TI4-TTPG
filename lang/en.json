@@ -126,6 +126,8 @@
     "ui.button.idle": "Idle",
     "ui.button.cancel": "CANCEL",
     "ui.button.ready": "READY",
+    "ui.button.clear": "CLEAR",
+    "ui.button.custom": "CUSTOM",
     "ui.button.resolve_explore": "Resolve",
     "ui.button.collapse": "Collapse",
     "ui.button.expand": "Expand",
@@ -313,6 +315,8 @@
     "ui.build.toggle_privacy": "Toggle privacy",
 
     "ui.draft.custom_input": "Custom input:",
+    "ui.draft.slice_input": "Slice input:",
+    "ui.draft.faction_input": "Faction input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.bunker_count": "Bunker count",
     "ui.draft.faction_count": "Faction count",
