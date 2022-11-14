@@ -338,7 +338,7 @@ class CommandToken {
             const commandToken = CommandToken.getReinforcementsToken(deskSlot);
             if (!commandToken) {
                 const msg = locale("ui.error.diplomacy_no_token", {
-                    name: playerDesk.colorName,
+                    name: world.TI4.getNameByPlayerSlot(deskSlot),
                 });
                 Broadcast.broadcastAll(msg);
                 continue;
@@ -350,6 +350,44 @@ class CommandToken {
             );
             extraZ += 1;
         }
+    }
+
+    static spendStrategyToken(playerSlot, clickingPlayer) {
+        assert(typeof playerSlot === "number");
+        assert(clickingPlayer instanceof Player);
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const msgColor = playerDesk ? playerDesk.color : undefined;
+
+        const playerSlotToCommandTokenBag =
+            CommandToken.getPlayerSlotToCommandTokenBag();
+        const commandTokenBag = playerSlotToCommandTokenBag[playerSlot];
+        if (!commandTokenBag) {
+            const msg = locale("ui.error.missing_command_token_bag", {
+                name: world.TI4.getNameByPlayerSlot(playerSlot),
+            });
+            Broadcast.chatOne(clickingPlayer, msg, msgColor);
+            return false;
+        }
+
+        const strategyToken = CommandToken.getStrategyToken(playerSlot);
+        if (!strategyToken) {
+            const msg = locale("ui.error.strategy_no_token", {
+                name: world.TI4.getNameByPlayerSlot(playerSlot),
+            });
+            Broadcast.chatAll(msg, msgColor);
+            return false;
+        }
+
+        const animate = true;
+        commandTokenBag.addObjects([strategyToken], 0, animate);
+
+        const msg = locale("ui.message.command_tokens_inserted", {
+            factionName: world.TI4.getNameByPlayerSlot(playerSlot),
+            count: 1,
+        });
+        Broadcast.chatAll(msg, msgColor);
+        return true;
     }
 }
 

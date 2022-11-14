@@ -7,8 +7,10 @@ const {
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
 const { ColorUtil } = require("../../lib/color/color-util");
+const { CommandToken } = require("../../lib/command-token/command-token");
 const { Technology } = require("../../lib/technology/technology");
 const { TechCardUtil } = require("../../lib/card/tech-card-util");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     refObject,
     refPackageId,
@@ -19,7 +21,6 @@ const {
     ImageWidget,
     LayoutBox,
 } = require("../../wrapper/api");
-const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 
 const IMAGE_SIZE = 14 * SCALE;
 const ROW_HEIGHT = 34 * SCALE;
@@ -285,4 +286,10 @@ const calculateHeight = (playerSlot) => {
 
 new AbstractStrategyCard(refObject)
     .setColor(new Color(0.027, 0.203, 0.466))
-    .setBodyWidgetFactory(widgetFactory);
+    .setBodyWidgetFactory(widgetFactory)
+    .addAutomatorButton(
+        locale("strategy_card.automator.base.spend_strategy_token"),
+        (playerDesk, player) => {
+            CommandToken.spendStrategyToken(playerDesk.playerSlot, player);
+        }
+    );
