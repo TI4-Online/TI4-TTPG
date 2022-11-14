@@ -14,6 +14,9 @@ const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
 const { PremadeMap } = require("./tab-map/tab-premade/premade-map");
 const { SCPT2022 } = require("./tab-map/tab-draft/tab-scpt/scpt-2022");
+const {
+    SCPT2022Invitational,
+} = require("./tab-map/tab-draft/tab-scpt/scpt-2022-invitational");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
 const { TabDisplay } = require("./tab-map/tab-display/tab-display");
@@ -195,6 +198,12 @@ class GameUI {
                 return new SCPT2022().getUI();
             });
         scptFolder.addChild(scpt2022);
+        const scpt2022Invitatonal = new NavEntry()
+            .setName("2022 Invitational")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new SCPT2022Invitational().getUI();
+            });
+        scptFolder.addChild(scpt2022Invitatonal);
 
         const bagDraft = new NavEntry()
             .setName(locale("nav.map.draft.bag"))
