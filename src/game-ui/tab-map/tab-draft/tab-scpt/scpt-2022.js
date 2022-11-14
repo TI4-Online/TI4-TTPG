@@ -3,11 +3,11 @@ const { Broadcast } = require("../../../../lib/broadcast");
 const { FactionAliases } = require("../../../../lib/faction/faction-aliases");
 const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
 const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
-const { SCPTDraftSettingsUI } = require("./scpt-draft-settings-ui");
+const { SCPT2022UI } = require("./scpt-2022-ui");
 const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
 const { world } = require("../../../../wrapper/api");
 
-class SCPTDraftSettings {
+class SCPT2022 {
     constructor() {
         this._miltyDraft = false;
 
@@ -19,7 +19,7 @@ class SCPTDraftSettings {
                 this._cancel();
             },
         };
-        this._ui = new SCPTDraftSettingsUI(onClickHandlers);
+        this._ui = new SCPT2022UI(onClickHandlers);
     }
 
     getUI() {
@@ -42,8 +42,16 @@ class SCPTDraftSettings {
         });
         const labels = scptDraftData.labels.split("|");
         for (let i = 0; i < slices.length; i++) {
-            this._miltyDraft.addSlice(slices[i], false, labels[i]);
+            const slice = slices[i];
+            const label = labels[i];
+            console.log(`${i}: ${slice} "${label}"`);
+            this._miltyDraft.addSlice(slice, false, label);
         }
+
+        // Seats.
+        const playerCount = world.TI4.config.playerCount;
+        const speakerIndex = Math.floor(Math.random() * playerCount);
+        this._miltyDraft.setSpeakerIndex(speakerIndex);
 
         // Factions.
         if (factionSetIndex < 0) {
@@ -64,11 +72,6 @@ class SCPTDraftSettings {
             .forEach((name) => {
                 this._miltyDraft.addFaction(name);
             });
-
-        // Seats.
-        const playerCount = world.TI4.config.playerCount;
-        const speakerIndex = Math.floor(Math.random() * playerCount);
-        this._miltyDraft.setSpeakerIndex(speakerIndex);
 
         const playerDesks = world.TI4.getAllPlayerDesks();
         const player = undefined;
@@ -91,4 +94,4 @@ class SCPTDraftSettings {
     }
 }
 
-module.exports = { SCPTDraftSettings };
+module.exports = { SCPT2022 };
