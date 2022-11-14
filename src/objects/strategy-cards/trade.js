@@ -6,6 +6,7 @@ const {
     SPACING,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
+const { CommandToken } = require("../../lib/command-token/command-token");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const {
     refObject,
@@ -83,4 +84,10 @@ const widgetFactory = (playerDesk, strategyCardObj) => {
 
 new AbstractStrategyCard(refObject)
     .setColor(new Color(0, 0.486, 0.435))
-    .setBodyWidgetFactory(widgetFactory);
+    .setBodyWidgetFactory(widgetFactory)
+    .addAutomatorButton(
+        locale("strategy_card.automator.base.spend_strategy_token"),
+        (playerDesk, player) => {
+            CommandToken.spendStrategyToken(playerDesk.playerSlot, player);
+        }
+    );

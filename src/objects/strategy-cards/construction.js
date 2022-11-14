@@ -4,6 +4,7 @@ const {
     FONT_SIZE_BODY,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
+const { CommandToken } = require("../../lib/command-token/command-token");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { refObject, world, Button, Color } = require("../../wrapper/api");
 
@@ -89,4 +90,10 @@ new AbstractStrategyCard(refObject)
             secondary1DockButton,
             secondary1PdsButton,
         ];
-    });
+    })
+    .addAutomatorButton(
+        locale("strategy_card.automator.base.spend_strategy_token"),
+        (playerDesk, player) => {
+            CommandToken.spendStrategyToken(playerDesk.playerSlot, player);
+        }
+    );

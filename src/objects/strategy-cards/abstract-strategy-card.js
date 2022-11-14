@@ -10,6 +10,7 @@ const {
     Button,
     Color,
     GameObject,
+    HorizontalAlignment,
     LayoutBox,
     Rotator,
     Text,
@@ -398,7 +399,7 @@ class AbstractStrategyCard {
 
         // Automator buttons?
         if (this._automatorButtons) {
-            this._createAutomoatorButtons(verticalBox);
+            this._createAutomoatorButtons(verticalBox, playerDesk);
         }
 
         // Wrap in a padded frame.
@@ -466,35 +467,56 @@ class AbstractStrategyCard {
             this._removeUI(playerDesk);
         };
         const closeButton = new Button()
-            .setFontSize(FONT_SIZE_BODY)
+            .setFontSize(FONT_SIZE_BODY * 1.5)
             .setTextColor(new Color(0.972, 0.317, 0.286))
-            .setText(locale("strategy_card.base.button.close"));
+            .setText(locale("strategy_card.base.button.close").toUpperCase());
         closeButton.onClicked.add(ThrottleClickHandler.wrap(onCloseClicked));
+
         verticalBox.addChild(closeButton);
     }
 
-    _createAutomoatorButtons(verticalBox) {
+    _createAutomoatorButtons(verticalBox, playerDesk) {
         assert(verticalBox instanceof VerticalBox);
+        assert(playerDesk);
         assert(Array.isArray(this._automatorButtons));
 
-        const headerText = new Text()
+        const toggleButton = new Button()
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE / 2)
             .setText(locale(`strategy_card.automator.title`).toUpperCase());
 
+        // Wrap so toggle button doesn't stretch to edges.
+        const wrappedToggleButton = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(toggleButton);
+
         const panel = new VerticalBox()
             .setChildDistance(SPACING)
-            .addChild(headerText);
+            .addChild(wrappedToggleButton);
 
-        for (const automatorButton of this._automatorButtons) {
-            const button = new Button()
-                .setFontSize((FONT_SIZE_BODY * 3) / 4)
-                .setText(automatorButton.actionName);
-            button.onClicked.add(
-                ThrottleClickHandler.wrap(automatorButton.handler)
-            );
-            panel.addChild(button);
-        }
+        let showing = false;
+        const updatePanel = () => {
+            panel.removeAllChildren();
+            panel.addChild(wrappedToggleButton);
+            if (showing) {
+                for (const automatorButton of this._automatorButtons) {
+                    const onClicked = (button, player) => {
+                        automatorButton.handler(playerDesk, player);
+                    };
+                    const button = new Button()
+                        .setFontSize(FONT_SIZE_BODY)
+                        .setText(automatorButton.actionName);
+                    button.onClicked.add(ThrottleClickHandler.wrap(onClicked));
+                    panel.addChild(button);
+                }
+            }
+        };
+        toggleButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                showing = !showing;
+                updatePanel();
+            })
+        );
 
         const p = 8 * SCALE;
         const padded = new LayoutBox()

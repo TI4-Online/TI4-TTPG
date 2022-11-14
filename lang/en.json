@@ -38,9 +38,10 @@
     "ui.message.enabling_game_data": "Enabling game data ('{key}')",
     "ui.message.disabling_game_data": "Disabling game data",
 
-    "ui.message.deal_action_cards": "Dealing {count} action cards to {playerColor}.",
+    "ui.message.deal_action_cards": "Dealing {count} action {#count|card|cards} to {playerColor}.",
+    "ui.message.deal_secret_cards": "Dealing {count} secret objective {#count|card|cards} to {playerColor}.",
     "ui.message.shuffle_action_cards": "Shuffling action card discard pile",
-    "ui.message.distribute_command_tokens": "Distributing {count} command tokens to {playerColor}.",
+    "ui.message.distribute_command_tokens": "Distributing {count} command {#count|token|tokens} to {playerColor}.",
     "ui.message.not_enough_command_tokens": "{playerColor} does not have enough command tokens in supply.",
 
     "ui.message.system_name": "System {systemTile}: {systemName}",
@@ -106,12 +107,17 @@
     "ui.message.yssaril_commander_broadcast": "{srcName} revealing cards to {dstName}",
     "ui.message.yssaril_commander_report": "CARDS: {content}",
 
+    "ui.message.graveyard.secret": "Secret objective card",
+    "ui.message.graveyard.moving": "{playerName} trashing {content}",
+
     "ui.error.empty_supply": "{unit_name} supply is empty",
     "ui.error.too_many_opponents": "Too many players in fight, unable to assign opponent",
     "ui.error.no_active_system": "No active system",
     "ui.error.only_seated_players_may_r": "Only seated players may use (r)",
     "ui.error.no_tactic_token": "No tactic token",
+    "ui.error.missing_command_token_bag": "{name} does not have a command token bag",
     "ui.error.diplomacy_no_token": "{name} does not have a command token in reinforcements",
+    "ui.error.strategy_no_token": "{name} does not have a strategy token",
     "ui.error.missing_tile": "Missing map {#tileCount|tile|tiles}: {tileStr}",
 
     "ui.button.strategy_card_play": "Play",
@@ -359,8 +365,8 @@
     "ui.agenda.clippy.waiting_whens": "Any whens, {playerName}?",
     "ui.agenda.clippy.waiting_afters": "Any afters, {playerName}?",
     "ui.agenda.clippy.waiting_vote": "Please vote, {playerName}",
-    "ui.agenda.clippy.playing_when_player_name": "{playerName} is playing a when",
-    "ui.agenda.clippy.playing_after_player_name": "{playerName} is playing an after",
+    "ui.agenda.clippy.playing_when_player_name": "{playerName} is playing a when, resetting no whens",
+    "ui.agenda.clippy.playing_after_player_name": "{playerName} is playing an after, resetting no afters",
     "ui.agenda.clippy.prediction": "{playerName} predicts {prediction}",
     "ui.agenda.clippy.place_agenda_to_start": "Place an agenda card on the “Agenda” spot to start.  Remove and replace the card to reset the agenda phase.",
     "ui.agenda.clippy.would_you_like_help": "It looks like you’re starting an Agenda phase. Would you like help?",
@@ -951,9 +957,10 @@
 
     "strategy_card.imperial.text": "Imperial",
 
-    "strategy_card.automator.title": "Automator actions",
+    "strategy_card.automator.title": "Automator",
     "strategy_card.automator.base.spend_strategy_token": "Spend strategy token",
     "strategy_card.automator.politics.draw_action_cards": "Draw action cards",
+    "strategy_card.automator.politics.draw_agenda_cards": "Draw agenda cards",
     "strategy_card.automator.trade.get_tgs_and_cs": "Get tradegoods, commodities",
     "strategy_card.automator.imperial.draw_secret_objective": "Draw secret objective",
 

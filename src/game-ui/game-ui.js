@@ -13,18 +13,16 @@ const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
 const { PremadeMap } = require("./tab-map/tab-premade/premade-map");
+const { SCPT2022 } = require("./tab-map/tab-draft/tab-scpt/scpt-2022");
 const {
-    SCPTDraftSettings,
-} = require("./tab-map/tab-draft/tab-scpt/scpt-draft-settings");
-const { TabAction } = require("./tab-action/tab-action");
+    SCPT2022Invitational,
+} = require("./tab-map/tab-draft/tab-scpt/scpt-2022-invitational");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
-const { TabbedPanel } = require("../lib/ui/tabbed-panel");
 const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
-const { TabMap } = require("./tab-map/tab-map");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const {
     TabSimpleStats,
@@ -189,12 +187,23 @@ class GameUI {
             });
         draftFolder.addChild(miltyDraftEntry);
 
-        const scptDraftSettings = new NavEntry()
-            .setName(locale("nav.map.draft.scpt"))
+        const scptFolder = new NavFolder().setName(
+            locale("nav.map.draft.scpt")
+        );
+        draftFolder.addChild(scptFolder);
+
+        const scpt2022 = new NavEntry()
+            .setName("2022")
             .setWidgetFactory((navPanel, navEntry) => {
-                return new SCPTDraftSettings().getUI();
+                return new SCPT2022().getUI();
             });
-        draftFolder.addChild(scptDraftSettings);
+        scptFolder.addChild(scpt2022);
+        const scpt2022Invitatonal = new NavEntry()
+            .setName("2022 Invitational")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new SCPT2022Invitational().getUI();
+            });
+        scptFolder.addChild(scpt2022Invitatonal);
 
         const bagDraft = new NavEntry()
             .setName(locale("nav.map.draft.bag"))
@@ -406,54 +415,6 @@ class GameUI {
 
         const statsFolder = this._createStatsFolder();
         rootFolder.addChild(statsFolder);
-    }
-
-    fillForGameORIG() {
-        const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        this._layout.setChild(panel);
-
-        const tabbedPanel = new TabbedPanel()
-            .setFontSize(CONFIG.fontSize)
-            .setSpacing(CONFIG.spacing);
-
-        const turnOrderPanel = new TurnOrderPanel()
-            .setFontSize(CONFIG.fontSize)
-            .setSpacing(CONFIG.spacing);
-
-        // Line between main UI and turn order.
-        panel.addChild(turnOrderPanel, 1);
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
-        panel.addChild(tabbedPanel, 4);
-
-        const tabHelp = new TabHelpUI();
-        tabbedPanel.addTab(locale("ui.tab.help"), tabHelp, true);
-
-        const tabMap = new TabMap();
-        tabbedPanel.addTab(locale("ui.tab.map"), tabMap.getUI());
-
-        const tabStrategy = new TabStrategy();
-        tabbedPanel.addTab(
-            locale("ui.tab.strategy_phase"),
-            tabStrategy.getUI()
-        );
-
-        const tabAction = new TabAction();
-        tabbedPanel.addTab(locale("ui.tab.action_phase"), tabAction.getUI());
-
-        const tabStatus = new TabStatus();
-        tabbedPanel.addTab(locale("ui.tab.status_phase"), tabStatus.getUI());
-
-        const tabAgenda = new TabAgenda();
-        tabbedPanel.addTab(locale("ui.tab.agenda_phase"), tabAgenda.getUI());
-
-        globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
-            tabbedPanel.selectTab(locale("ui.tab.action_phase"));
-        });
-        globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
-            if (agendaCard) {
-                tabbedPanel.selectTab(locale("ui.tab.agenda_phase"));
-            }
-        });
     }
 }
 

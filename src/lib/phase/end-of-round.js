@@ -129,7 +129,7 @@ class EndStatusPhase {
         );
         if (cyberneticEnhancements1 || cyberneticEnhancements2) {
             const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
-            if (faction.nsidName !== "l1zix") {
+            if (faction && faction.nsidName !== "l1zix") {
                 dealNTokens += 1;
                 if (cyberneticEnhancements1) {
                     DealDiscard.discard(cyberneticEnhancements1);
@@ -243,16 +243,21 @@ class EndStatusPhase {
             );
             Broadcast.chatAll(message);
 
+            // Saw a case where this only drew one token (with a very laggy host).
+            // Maybe takeAt doesn't act immediately?  Instead of taking the "first"
+            // each iteration get the contents and name the exact object to take.
+            const items = commandTokenBag.getItems();
             for (let i = 0; i < count; i++) {
-                if (commandTokenBag.getItems().length === 0) {
+                if (items.length === 0) {
                     Broadcast.chatAll(errorMessage);
                     break;
                 } else {
+                    const item = items.shift();
                     const dropPosition = playerDesk.localPositionToWorld(
                         new Vector(32, 16 + i * 2, 0)
                     );
                     dropPosition.z = world.getTableHeight() + 1 + i;
-                    commandTokenBag.takeAt(0, dropPosition, true);
+                    commandTokenBag.take(item, dropPosition, true);
                 }
             }
         }

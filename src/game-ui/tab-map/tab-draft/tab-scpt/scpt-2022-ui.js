@@ -1,6 +1,8 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const locale = require("../../../../lib/locale");
-const { SCPT_DRAFTS } = require("../../../../lib/draft/scpt/scpt-draft.data");
+const {
+    SCPT_DRAFTS_2022,
+} = require("../../../../lib/draft/scpt/scpt-draft-2022.data");
 const CONFIG = require("../../../game-ui-config");
 const {
     Button,
@@ -10,7 +12,7 @@ const {
     VerticalBox,
 } = require("../../../../wrapper/api");
 
-class SCPTDraftSettingsUI extends VerticalBox {
+class SCPT2022UI extends VerticalBox {
     constructor(onClickHandlers) {
         assert(onClickHandlers);
         super();
@@ -24,7 +26,7 @@ class SCPTDraftSettingsUI extends VerticalBox {
     _createDraftSettingsUI() {
         this.removeAllChildren();
 
-        for (const draft of SCPT_DRAFTS) {
+        for (const draft of SCPT_DRAFTS_2022) {
             if (draft.chooseFactionSet) {
                 this.createChooseFaction(draft);
             } else {
@@ -88,4 +90,4 @@ class SCPTDraftSettingsUI extends VerticalBox {
     }
 }
 
-module.exports = { SCPTDraftSettingsUI };
+module.exports = { SCPT2022UI };

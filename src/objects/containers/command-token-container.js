@@ -50,7 +50,9 @@ function getFactionName(obj) {
 
     // cant get the faction name from the container because the container has name "*"
     // therefore get it from the command token object
-    assert(ObjectNamespace.isCommandToken(obj));
+    if (!ObjectNamespace.isCommandToken(obj)) {
+        return "?"; // not a proper command token, how did it get in there?
+    }
     const nsidName = ObjectNamespace.parseCommandToken(obj).name;
     const faction = world.TI4.getFactionByNsidName(nsidName);
     return faction ? faction.nameFull : nsidName;
