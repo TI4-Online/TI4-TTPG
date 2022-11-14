@@ -1,7 +1,7 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const locale = require("../../../../lib/locale");
 const {
-    SCPT_DRAFTS_2023,
+    SCPT_DRAFTS_2022_INVITATIONAL,
 } = require("../../../../lib/draft/scpt/scpt-draft-2022-invitational.data");
 const CONFIG = require("../../../game-ui-config");
 const {
@@ -75,7 +75,7 @@ class SCPT2022InvitationalUI extends VerticalBox {
             .setChild(paddedSetupPanel);
         this.addChild(borderSetupPanel);
 
-        for (const draft of SCPT_DRAFTS_2023) {
+        for (const draft of SCPT_DRAFTS_2022_INVITATIONAL) {
             const button = new Button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(draft.name);
