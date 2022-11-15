@@ -179,6 +179,7 @@
     "ui.menu.save": "Save",
     "ui.menu.fetch_planet": "Fetch {planetName}",
     "ui.menu.fetch_custodia_vigilia": "Fetch Custodia Vigilia planet card and legendary card",
+    "ui.menu.fetch_attachment_token": "Fetch attachment token",
     "ui.menu.trade_agreement": "Return trade agreement and gain commodities",
     "ui.menu.dimensional_anchor": "Dimensional Anchor",
     "ui.menu.helio_command_array": "Helio Command Array",
