@@ -49,14 +49,16 @@ it("sort", () => {
     const dst = new MockPlayer({ slot: desks[1].playerSlot });
     const a = new WhisperPair(src, dst);
     const b = new WhisperPair(src, dst);
-    a.add(src, dst, "foo", 1);
+    const c = new WhisperPair(src, dst);
+    a.add(src, dst, "foo", 2);
     b.add(src, dst, "foo", 1);
+    c.add(src, dst, "foo", 3); // NEWEST!
 
-    let sorted = WhisperPair.sort([a, b]);
-    assert.deepEqual(sorted, [a, b]);
+    let sorted = WhisperPair.sort([a, b, c]);
+    assert.deepEqual(sorted, [c, a, b]);
 
-    sorted = WhisperPair.sort([b, a]);
-    assert.deepEqual(sorted, [a, b]);
+    sorted = WhisperPair.sort([c, b, a]);
+    assert.deepEqual(sorted, [c, a, b]);
 });
 
 it("_bucketize", () => {

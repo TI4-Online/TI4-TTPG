@@ -38,7 +38,7 @@ class WhisperPair {
         assert(Array.isArray(whisperPairs));
         return whisperPairs.sort(
             // Newer entries at front of list.
-            (a, b) => a.newestTimestamp() - b.newestTimestamp()
+            (a, b) => b.newestTimestamp() - a.newestTimestamp()
         );
     }
 
@@ -77,7 +77,7 @@ class WhisperPair {
         return this;
     }
 
-    add(src, dst, msg) {
+    add(src, dst, msg, overrideTimestamp) {
         assert(src instanceof Player);
         assert(dst instanceof Player);
         assert(typeof msg === "string");
@@ -88,7 +88,7 @@ class WhisperPair {
         assert(srcSlot === this._playerSlotA || srcSlot === this._playerSlotB);
         assert(dstSlot === this._playerSlotA || dstSlot === this._playerSlotB);
 
-        const timestamp = WhisperPair.timestamp();
+        const timestamp = overrideTimestamp || WhisperPair.timestamp();
         const forward = srcSlot === this._playerSlotA; // src->dst or dst->src
         const entry = {
             timestamp,
