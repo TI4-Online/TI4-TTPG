@@ -23,6 +23,7 @@ const UPDATORS = [
     require("./updator-laws"),
     require("./updator-map-string"),
     require("./updator-objectives"),
+    require("./updator-perf"),
     require("./updator-player-active"),
     require("./updator-player-alliances"),
     require("./updator-player-color"),
