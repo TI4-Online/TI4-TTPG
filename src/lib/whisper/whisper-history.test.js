@@ -95,7 +95,7 @@ it("onWhisper", () => {
 
     const pair = WhisperPair.findOrCreate(src, dst);
     const now = WhisperPair.timestamp();
-    assert(Math.abs(pair.newestTimestamp() - now) < 0.01);
+    assert(Math.abs(pair.newestTimestamp() - now) < 1);
 });
 
 // This test isn't precise, timestamp may or may not change
