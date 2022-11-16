@@ -62,8 +62,15 @@ class WhisperPair {
         assert(playerA instanceof Player);
         assert(playerB instanceof Player);
 
-        this._playerSlotA = playerA.getSlot();
-        this._playerSlotB = playerB.getSlot();
+        // Always store in sort order (internally forward/reverse tracks direction).
+        let a = playerA.getSlot();
+        let b = playerB.getSlot();
+        if (a > b) {
+            [a, b] = [b, a];
+        }
+
+        this._playerSlotA = a;
+        this._playerSlotB = b;
         this._history = [];
         this._lastAddTimestamp = 0; // preserve value even after prune
     }
