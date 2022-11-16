@@ -98,27 +98,29 @@ it("onWhisper", () => {
     assert(Math.abs(pair.newestTimestamp() - now) < 0.01);
 });
 
-it("getAllInUpdateOrder", () => {
-    // In the mock environment, we can trigger whispers.
-    const desks = world.TI4.getAllPlayerDesks();
-    const a = new MockPlayer({ slot: desks[0].playerSlot });
-    const b = new MockPlayer({ slot: desks[1].playerSlot });
-    const c = new MockPlayer({ slot: desks[2].playerSlot });
-    globalEvents.onWhisper.trigger(a, b, "foo");
-    globalEvents.onWhisper.trigger(c, a, "foo");
+// This test isn't precise, timestamp may or may not change
+// leading to arbitrary sort order.
+// it("getAllInUpdateOrder", () => {
+//     // In the mock environment, we can trigger whispers.
+//     const desks = world.TI4.getAllPlayerDesks();
+//     const a = new MockPlayer({ slot: desks[0].playerSlot });
+//     const b = new MockPlayer({ slot: desks[1].playerSlot });
+//     const c = new MockPlayer({ slot: desks[2].playerSlot });
+//     globalEvents.onWhisper.trigger(a, b, "foo");
+//     globalEvents.onWhisper.trigger(c, a, "foo");
 
-    const ab0 = Math.min(a.getSlot(), b.getSlot());
-    const ab1 = Math.max(a.getSlot(), b.getSlot());
-    const ac0 = Math.min(a.getSlot(), c.getSlot());
-    const ac1 = Math.max(a.getSlot(), c.getSlot());
+//     const ab0 = Math.min(a.getSlot(), b.getSlot());
+//     const ab1 = Math.max(a.getSlot(), b.getSlot());
+//     const ac0 = Math.min(a.getSlot(), c.getSlot());
+//     const ac1 = Math.max(a.getSlot(), c.getSlot());
 
-    console.log(JSON.stringify({ ab0, ab1, ac0, ac1 }));
+//     console.log(JSON.stringify({ ab0, ab1, ac0, ac1 }));
 
-    const whisperPairs = WhisperHistory.getAllInUpdateOrder();
-    assert(Array.isArray(whisperPairs));
-    assert.equal(whisperPairs.length, 2);
-    assert.equal(whisperPairs[0]._playerSlotA, ab0);
-    assert.equal(whisperPairs[0]._playerSlotB, ab1);
-    assert.equal(whisperPairs[1]._playerSlotA, ac0);
-    assert.equal(whisperPairs[1]._playerSlotB, ac1);
-});
+//     const whisperPairs = WhisperHistory.getAllInUpdateOrder();
+//     assert(Array.isArray(whisperPairs));
+//     assert.equal(whisperPairs.length, 2);
+//     assert.equal(whisperPairs[0]._playerSlotA, ab0);
+//     assert.equal(whisperPairs[0]._playerSlotB, ab1);
+//     assert.equal(whisperPairs[1]._playerSlotA, ac0);
+//     assert.equal(whisperPairs[1]._playerSlotB, ac1);
+// });
