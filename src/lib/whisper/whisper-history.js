@@ -38,7 +38,7 @@ class WhisperPair {
         assert(Array.isArray(whisperPairs));
         return whisperPairs.sort(
             // Newer entries at front of list.
-            (a, b) => a.newestTimestamp() - b.newestTimestamp()
+            (a, b) => b.newestTimestamp() - a.newestTimestamp()
         );
     }
 
@@ -62,8 +62,15 @@ class WhisperPair {
         assert(playerA instanceof Player);
         assert(playerB instanceof Player);
 
-        this._playerSlotA = playerA.getSlot();
-        this._playerSlotB = playerB.getSlot();
+        // Always store in sort order (internally forward/reverse tracks direction).
+        let a = playerA.getSlot();
+        let b = playerB.getSlot();
+        if (a > b) {
+            [a, b] = [b, a];
+        }
+
+        this._playerSlotA = a;
+        this._playerSlotB = b;
         this._history = [];
         this._lastAddTimestamp = 0; // preserve value even after prune
     }
@@ -77,7 +84,7 @@ class WhisperPair {
         return this;
     }
 
-    add(src, dst, msg) {
+    add(src, dst, msg, overrideTimestamp) {
         assert(src instanceof Player);
         assert(dst instanceof Player);
         assert(typeof msg === "string");
@@ -88,7 +95,7 @@ class WhisperPair {
         assert(srcSlot === this._playerSlotA || srcSlot === this._playerSlotB);
         assert(dstSlot === this._playerSlotA || dstSlot === this._playerSlotB);
 
-        const timestamp = WhisperPair.timestamp();
+        const timestamp = overrideTimestamp || WhisperPair.timestamp();
         const forward = srcSlot === this._playerSlotA; // src->dst or dst->src
         const entry = {
             timestamp,

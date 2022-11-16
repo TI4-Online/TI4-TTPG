@@ -66,11 +66,12 @@ class PerfStats {
         );
         scrubbed = scrubbed.reduce((a, b) => a + b, 0) / scrubbed.length;
 
+        // Round to 3 decimal places for cleaner log / json.
         return {
-            median,
-            mean,
-            scrubbed,
-            stdDev,
+            median: Math.floor(median * 1000) / 1000,
+            mean: Math.floor(mean * 1000) / 1000,
+            scrubbed: Math.floor(scrubbed * 1000) / 1000,
+            stdDev: Math.floor(stdDev * 1000) / 1000,
         };
     }
 

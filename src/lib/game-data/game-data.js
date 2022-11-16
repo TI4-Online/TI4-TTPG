@@ -23,6 +23,7 @@ const UPDATORS = [
     require("./updator-laws"),
     require("./updator-map-string"),
     require("./updator-objectives"),
+    require("./updator-perf"),
     require("./updator-player-active"),
     require("./updator-player-alliances"),
     require("./updator-player-color"),
@@ -328,15 +329,27 @@ class GameData {
         assert(typeof endpoint == "string");
 
         // Drop if nothing changed.  No native digest, just keep whole string.
-        const timestamp = data.timestamp;
-        data.timestamp = 0; // remove timestamp for comparison with previous
+
+        // Remove some fields from consideration before comparing with cached.
+        const doNotCache = {
+            timestamp: data.timestamp,
+            perf: data.perf,
+        };
+        for (const key of Object.keys(doNotCache)) {
+            delete data[key];
+        }
+
         const thisPostStr = JSON.stringify(data);
         const lastPostStr = this._endpointToLastPostString[endpoint];
         if (lastPostStr === thisPostStr) {
             return; // nothing changed
         }
         this._endpointToLastPostString[endpoint] = thisPostStr;
-        data.timestamp = timestamp; // restore
+
+        // Restore.
+        for (const [key, value] of Object.entries(doNotCache)) {
+            data[key] = value;
+        }
 
         // Post.
         const url = this._getUrl(endpoint);

@@ -248,6 +248,7 @@ require("./global/right-click/right-click-iihq-modernization");
 require("./global/right-click/right-click-maban-omega");
 require("./global/right-click/right-click-mageon-implants");
 require("./global/right-click/right-click-purge");
+require("./global/right-click/right-click-nano-forge");
 require("./global/right-click/right-click-remaining-cards");
 require("./global/right-click/right-click-score");
 require("./global/right-click/right-click-sleeper-token");
