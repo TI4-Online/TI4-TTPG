@@ -1,10 +1,10 @@
 {
 	"Type": "Generic",
-	"GUID": "6D9817BADF431DC8154E6FBF6A409018",
-	"Name": "Planet Mat",
-	"Metadata": "mat:base/planets",
+	"GUID": "3B66B5D3A841038121C42EBFBEDF7C64",
+	"Name": "Tech Mat",
+	"Metadata": "mat:base/tech",
 	"CollisionType": "Ground",
-	"Friction": 0.7,
+	"Friction": 0.86,
 	"Restitution": 0.3,
 	"Density": 1,
 	"SurfaceType": "Cardboard",
@@ -25,7 +25,7 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "objects/mats/planet-mat.js",
+	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.41053,
-				"Y": 0.668571,
+				"X": 0.968421,
+				"Y": 1.19643,
 				"Z": 2
 			},
 			"Rotation":
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/mats/planet_board.jpg",
+			"Texture": "global/mats/tech_board.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"IsTransparent": false,
@@ -61,128 +61,160 @@
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
-			"X": -9.75,
-			"Y": -6.6,
+			"X": -6.6,
+			"Y": -13,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -3.25,
-			"Y": -6.6,
+			"X": -2.2,
+			"Y": -13,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 3.25,
-			"Y": -6.6,
+			"X": 2.2,
+			"Y": -13,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 9.75,
-			"Y": -6.6,
+			"X": 6.6,
+			"Y": -13,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -9.75,
-			"Y": -2.2,
+			"X": -6.6,
+			"Y": -6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -3.25,
-			"Y": -2.2,
+			"X": -2.2,
+			"Y": -6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 3.25,
-			"Y": -2.2,
+			"X": 2.2,
+			"Y": -6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 9.75,
-			"Y": -2.2,
+			"X": 6.6,
+			"Y": -6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -9.75,
-			"Y": 2.2,
+			"X": -6.6,
+			"Y": 0,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -3.25,
-			"Y": 2.2,
+			"X": -2.2,
+			"Y": 0,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 3.25,
-			"Y": 2.2,
+			"X": 2.2,
+			"Y": 0,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 9.75,
-			"Y": 2.2,
+			"X": 6.6,
+			"Y": 0,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -9.75,
-			"Y": 6.6,
+			"X": -6.6,
+			"Y": 6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": -3.25,
-			"Y": 6.6,
+			"X": -2.2,
+			"Y": 6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 3.25,
-			"Y": 6.6,
+			"X": 2.2,
+			"Y": 6.5,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
 			"RotationOffset": 0
 		},
 		{
-			"X": 9.75,
-			"Y": 6.6,
+			"X": 6.6,
+			"Y": 6.5,
+			"Z": 0.26,
+			"Range": 5,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -6.6,
+			"Y": 13,
+			"Z": 0.26,
+			"Range": 5,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": -2.2,
+			"Y": 13,
+			"Z": 0.26,
+			"Range": 5,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 2.2,
+			"Y": 13,
+			"Z": 0.26,
+			"Range": 5,
+			"SnapRotation": true,
+			"RotationOffset": 0
+		},
+		{
+			"X": 6.6,
+			"Y": 13,
 			"Z": 0.26,
 			"Range": 5,
 			"SnapRotation": true,
