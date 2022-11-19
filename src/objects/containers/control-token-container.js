@@ -11,18 +11,18 @@ const {
 const { Spawn } = require("../../setup/spawn/spawn");
 
 class ControlTokenContainer {
-    constructor(gameObject) {
-        assert(gameObject);
-        assert(gameObject instanceof GameObject);
-        assert(gameObject instanceof Container);
+    constructor(container) {
+        assert(container);
+        assert(container instanceof GameObject);
+        assert(container instanceof Container);
 
         // Might not have correct type on creation.
         //assert(gameObject.getType() === 1); // 3 technically ok
 
-        const nsid = ObjectNamespace.getNsid(gameObject);
+        const nsid = ObjectNamespace.getNsid(container);
         assert(nsid === "bag.token.control:base/*");
 
-        this._container = gameObject;
+        this._container = container;
 
         this._container.onInserted.add((container, insertedObjects, player) => {
             assert(container instanceof Container);
@@ -52,6 +52,14 @@ class ControlTokenContainer {
         process.nextTick(() => {
             this.refill();
         });
+
+        // Workaround for TTPG issue: on reload containers reset to player color.
+        // Reset to plastic color.
+        const playerSlot = container.getOwningPlayerSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            container.setPrimaryColor(playerDesk.plasticColor);
+        }
     }
 
     /**
