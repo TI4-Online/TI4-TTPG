@@ -65,8 +65,6 @@ class NavPanel extends LayoutBox {
             .addChild(this._currentNavEntryBox, 1);
 
         this.setChild(panel);
-
-        this.setCurrentNavEntry(this._rootFolder);
     }
 
     startPeriodicUpdates() {
@@ -103,6 +101,14 @@ class NavPanel extends LayoutBox {
 
     setCurrentNavEntry(navEntry) {
         assert(navEntry);
+
+        console.log("NavPanel.setCurrentNavEntry");
+
+        // If the current nav entry is already correct, keep it.
+        if (this._currentNavEntry === navEntry) {
+            console.log("NavPanel.setCurrentNavEntry: already set");
+            return;
+        }
 
         // Release the current entry.
         if (this._currentNavEntry) {
@@ -143,7 +149,8 @@ class NavPanel extends LayoutBox {
 
         // If being reset to the current entry calling setChild with the
         // already-there entry is an error.  Set temporary widget and replace.
-        this._currentNavEntryBox.setChild(new LayoutBox());
+        // Not needed: keep the current entry in place.
+        // this._currentNavEntryBox.setChild(new LayoutBox());
 
         // Update main window.
         const widget = navEntry.createWidget(this);
