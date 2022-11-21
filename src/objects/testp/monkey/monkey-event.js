@@ -93,6 +93,13 @@ class MonkeyEvent {
     }
 
     /**
+     * Explicit event to click "close" buttons.
+     *
+     * @returns {boolean} true if event triggered
+     */
+    static clickCloseButton() {}
+
+    /**
      * Deal an action card to a player.  If they have at least one in hand trash one.
      *
      * @returns {boolean} true if event triggered

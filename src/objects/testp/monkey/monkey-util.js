@@ -58,7 +58,7 @@ class MonkeyUtil {
                 for (let i = 0; widget.getChildAt(i); i++) {
                     consider(widget.getChildAt(i));
                 }
-            } else if (widget instanceof Canvas && widget.getChildren) {
+            } else if (widget instanceof Canvas) {
                 for (const child of widget.getChildren()) {
                     consider(child);
                 }

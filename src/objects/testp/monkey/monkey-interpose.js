@@ -4,7 +4,7 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const TriggerableMulticastDelegate = require("../../../lib/triggerable-multicast-delegate");
 const api = require("../../../wrapper/api");
-const { Button, Canvas, ImageButton, Player } = api;
+const { Button, ImageButton, Player } = api;
 
 class MonkeyButton extends Button {
     constructor() {
@@ -43,7 +43,7 @@ class MonkeyImageButton extends ImageButton {
 
         // Redirect underlying event to interposed version.
         this.onClicked.add((button, player) => {
-            assert(button instanceof Button);
+            assert(button instanceof ImageButton);
             assert(player instanceof Player);
             delegate.trigger(button, player);
         });
@@ -64,33 +64,10 @@ class MonkeyImageButton extends ImageButton {
     }
 }
 
-class MonkeyCanvas extends Canvas {
-    constructor() {
-        super();
-        this._children = [];
-    }
-
-    addChild(child, x, y, width, height) {
-        this._children.push(child);
-        super.addChild(child, x, y, width, height);
-    }
-
-    removeChild(child) {
-        this._children = this._children.filter((x) => x !== child);
-        super.removeChild(child);
-    }
-
-    // Canvas does not have a getChildren method (yet).  Make one.
-    getChildren() {
-        return [...this._children];
-    }
-}
-
 console.warn("*** MONKEY-INTERPOSE ACTIVE ***");
 console.warn("*** MONKEY-INTERPOSE ACTIVE ***");
 console.warn("*** MONKEY-INTERPOSE ACTIVE ***");
 console.warn("*** MONKEY-INTERPOSE ACTIVE ***");
 console.warn("*** MONKEY-INTERPOSE ACTIVE ***");
 api.Button = MonkeyButton;
-api.Canvas = MonkeyCanvas;
 api.ImageButton = MonkeyImageButton;
