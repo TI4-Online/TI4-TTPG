@@ -3,8 +3,6 @@ module.exports = {
         // North (right to left)
         {
             colorName: "green",
-            hexColor: "#5AE35A",
-            plasticHexColor: "#00A306",
             pos: { x: 184, y: 180 },
             yaw: 90,
             defaultPlayerSlot: 1,
@@ -12,8 +10,6 @@ module.exports = {
         },
         {
             colorName: "red",
-            hexColor: "#FF2417",
-            plasticHexColor: "#CB0000",
             pos: { x: 184, y: 60 },
             yaw: 90,
             defaultPlayerSlot: 16,
@@ -21,8 +17,6 @@ module.exports = {
         },
         {
             colorName: "yellow",
-            hexColor: "#FFDA00",
-            plasticHexColor: "#FFDA00",
             pos: { x: 184, y: -60 },
             yaw: 90,
             defaultPlayerSlot: 9,
@@ -30,8 +24,6 @@ module.exports = {
         },
         {
             colorName: "pink",
-            hexColor: "#FF84D6",
-            plasticHexColor: "#F46FCD",
             pos: { x: 184, y: -180 },
             yaw: 90,
             defaultPlayerSlot: 5,
@@ -40,8 +32,6 @@ module.exports = {
         // South (left to right)
         {
             colorName: "orange",
-            hexColor: "#FF932B",
-            plasticHexColor: "#FF7603",
             pos: { x: -184, y: -180 },
             yaw: -90,
             defaultPlayerSlot: 6,
@@ -49,8 +39,6 @@ module.exports = {
         },
         {
             colorName: "purple",
-            hexColor: "#C800FF",
-            plasticHexColor: "#5E219C",
             pos: { x: -184, y: -60 },
             yaw: -90,
             defaultPlayerSlot: 4,
@@ -58,8 +46,6 @@ module.exports = {
         },
         {
             colorName: "blue",
-            hexColor: "#07B2FF",
-            plasticHexColor: "#07B2FF",
             pos: { x: -184, y: 60 },
             yaw: -90,
             defaultPlayerSlot: 15,
@@ -67,8 +53,6 @@ module.exports = {
         },
         {
             colorName: "white",
-            hexColor: "#BABABA",
-            plasticHexColor: "#C1C1C1",
             pos: { x: -184, y: 180 },
             yaw: -90,
             defaultPlayerSlot: 18,

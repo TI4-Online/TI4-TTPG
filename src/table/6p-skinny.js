@@ -18,8 +18,6 @@ module.exports = {
         // North (right to left)
         {
             colorName: "green",
-            hexColor: "#5AE35A",
-            plasticHexColor: "#00A306",
             pos: { x: 76.636, y: 84.7411 },
             yaw: 126,
             defaultPlayerSlot: 1,
@@ -27,8 +25,6 @@ module.exports = {
         },
         {
             colorName: "red",
-            hexColor: "#FF2417",
-            plasticHexColor: "#CB0000",
             pos: { x: 104.17, y: 0 },
             yaw: 90,
             defaultPlayerSlot: 16,
@@ -36,8 +32,6 @@ module.exports = {
         },
         {
             colorName: "yellow",
-            hexColor: "#FFDA00",
-            plasticHexColor: "#FFDA00",
             pos: { x: 76.636, y: -84.7411 },
             yaw: 54,
             defaultPlayerSlot: 9,
@@ -46,8 +40,6 @@ module.exports = {
         // South (left to right)
         {
             colorName: "purple",
-            hexColor: "#C800FF",
-            plasticHexColor: "#5E219C",
             pos: { x: -76.636, y: -84.7411 },
             yaw: -54,
             defaultPlayerSlot: 4,
@@ -55,8 +47,6 @@ module.exports = {
         },
         {
             colorName: "blue",
-            hexColor: "#07B2FF",
-            plasticHexColor: "#07B2FF",
             pos: { x: -104.17, y: 0 },
             yaw: -90,
             defaultPlayerSlot: 15,
@@ -64,8 +54,6 @@ module.exports = {
         },
         {
             colorName: "white",
-            hexColor: "#BABABA",
-            plasticHexColor: "#C1C1C1",
             pos: { x: -76.636, y: 84.7411 },
             yaw: -126,
             defaultPlayerSlot: 18,
