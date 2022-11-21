@@ -96,6 +96,14 @@ class UnitBag {
             this.updateUI();
             return r;
         };
+
+        // Workaround for TTPG issue: on reload containers reset to player color.
+        // Reset to plastic color.
+        const playerSlot = container.getOwningPlayerSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk) {
+            container.setPrimaryColor(playerDesk.plasticColor);
+        }
     }
 
     createUI() {

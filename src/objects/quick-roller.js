@@ -106,14 +106,23 @@ class QuickRoller {
             this._pendingRollHandle = undefined;
         }
         this._pendingRollHandle = setTimeout(() => {
+            this._pendingRollHandle = undefined;
             this.doRoll(player);
         }, WAIT_MSECS_BEFORE_ROLL);
     }
 
     doRoll(player) {
-        const dice = this._pendingDice;
+        let dice = this._pendingDice;
         this._pendingDice = [];
         this._pendingRollHandle = undefined;
+
+        // Dice live on the table for a moment before rolling, players are able
+        // to delete them (boo).  Ignore deleted dice.
+        dice = dice.filter((die) => die.isValid());
+        if (dice.length === 0) {
+            return;
+        }
+
         RollGroup.roll(dice, (dice) => {
             this.onRollFinished(dice, player);
         });

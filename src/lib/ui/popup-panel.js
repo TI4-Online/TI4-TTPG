@@ -18,6 +18,8 @@ const POPUP_CHILD_DISTANCE = 3; // consistent look
 const POPUP_FONT_SIZE = 8;
 const DELAYED_HIDE_MSECS = 2500;
 
+const RECYCLE_UI = true;
+
 /**
  * Popup "panel" (Border) with custom actions.
  */
@@ -49,6 +51,12 @@ class PopupPanel extends Border {
 
         // <(gameObject: GameObject, player: Player, popupPanel: PopupPanel) => void>
         this.onShow = new TriggerableMulticastDelegate();
+
+        if (RECYCLE_UI) {
+            this._reusePanel = undefined;
+            this._reuseButtons = [];
+            this._reuseUI = undefined;
+        }
 
         this.reset();
     }
@@ -147,12 +155,31 @@ class PopupPanel extends Border {
         // Call listeners *before* showing so they can mutate the menu that appears.
         this.onShow.trigger(this._obj, player, this);
 
+        const getPanel = () => {
+            if (RECYCLE_UI && this._reusePanel) {
+                return this._reusePanel;
+            }
+            return new VerticalBox();
+        };
+        const getUI = () => {
+            if (RECYCLE_UI && this._reuseUI) {
+                return this._reuseUI;
+            }
+            return new UIElement();
+        };
+        const getButton = () => {
+            if (RECYCLE_UI && this._reuseButtons.length > 0) {
+                return this._reuseButtons.pop();
+            }
+            return new Button();
+        };
+
         // Add owner-specified actions, followed by cancel.
-        const panel = new VerticalBox().setChildDistance(
+        const panel = getPanel().setChildDistance(
             POPUP_CHILD_DISTANCE * this._popupScale
         );
         for (const { name, action, delayedHide } of this._namesAndActions) {
-            const button = new Button()
+            const button = getButton()
                 .setFontSize(POPUP_FONT_SIZE * this._popupScale)
                 .setText(name);
             button.onClicked.add((button, player) => {
@@ -167,17 +194,19 @@ class PopupPanel extends Border {
             });
             panel.addChild(button);
         }
-        const cancelButton = new Button()
+        const cancelButton = getButton()
             .setFontSize(POPUP_FONT_SIZE * this._popupScale)
             .setText(locale("ui.button.cancel"));
         cancelButton.onClicked.add((button, player) => {
             this._hide();
         });
         panel.addChild(cancelButton);
-        this.setChild(panel);
+        if (this.getChild() !== panel) {
+            this.setChild(panel);
+        }
 
         // Z scaling may be wonky.  Place above in world space and move back.
-        this._ui = new UIElement();
+        this._ui = getUI();
         this._ui.widget = this;
         this._ui.position = this._obj.worldPositionToLocal(
             this._obj
@@ -197,6 +226,24 @@ class PopupPanel extends Border {
     }
 
     _hide() {
+        if (RECYCLE_UI) {
+            this._reuseUI = this._ui;
+            assert(this._reuseUI instanceof UIElement);
+            this._reusePanel = this.getChild();
+            assert(this._reusePanel instanceof VerticalBox);
+            this._reuseButtons = [];
+            for (let i = 0; i < 10; i++) {
+                const button = this._reusePanel.getChildAt(i);
+                if (!button) {
+                    break;
+                }
+                assert(button instanceof Button);
+                button.onClicked.clear();
+                this._reuseButtons.push(button);
+            }
+            this._reusePanel.removeAllChildren();
+        }
+
         this._obj.removeUIElement(this._ui);
         this._ui = undefined;
         this.setChild(undefined);

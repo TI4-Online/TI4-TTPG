@@ -1,9 +1,9 @@
 /**
  * Trigger:
  *
- *  globalEvents.TI4.onSystemActivated(object: system tile, player: Player)
+ *  globalEvents.TI4.onGameEnded
  *
- * when the active player drops a command token on a system tile.
+ * when moving a control token to the last spot
  */
 
 const assert = require("../wrapper/assert-wrapper");

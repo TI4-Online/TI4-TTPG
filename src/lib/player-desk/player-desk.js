@@ -193,8 +193,6 @@ class PlayerDesk {
 
         this._index = index;
         this._colorName = attrs.colorName;
-        this._color = ColorUtil.colorFromHex(attrs.hexColor);
-        this._plasticColor = ColorUtil.colorFromHex(attrs.plasticHexColor);
         this._pos = new Vector(
             attrs.pos.x,
             attrs.pos.y,
@@ -202,6 +200,12 @@ class PlayerDesk {
         );
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
+
+        // Base attrs might be just color name.  ALWAYS look up color values.
+        const colorAttrs = PlayerDeskColor.getColorAttrs(attrs.colorName);
+        this._color = ColorUtil.colorFromHex(colorAttrs.hexColor);
+        this._plasticColor = ColorUtil.colorFromHex(colorAttrs.plasticHexColor);
+
         this._ui = false;
         this._nameUI = false;
 
@@ -211,8 +215,6 @@ class PlayerDesk {
         this._showColors = false;
         this._factionSetupInProgress = false;
         this._ready = false;
-
-        PlayerDeskColor.reset(this);
     }
 
     get center() {

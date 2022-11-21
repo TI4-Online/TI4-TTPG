@@ -1,10 +1,10 @@
 {
 	"Type": "Generic",
-	"GUID": "3B66B5D3A841038121C42EBFBEDF7C64",
-	"Name": "Tech Mat",
-	"Metadata": "mat:base/tech",
+	"GUID": "6D9817BADF431DC8154E6FBF6A409018",
+	"Name": "Planet Mat",
+	"Metadata": "mat:base/planets",
 	"CollisionType": "Ground",
-	"Friction": 0.86,
+	"Friction": 0.7,
 	"Restitution": 0.3,
 	"Density": 1,
 	"SurfaceType": "Cardboard",
@@ -25,11 +25,11 @@
 	"Flippable": false,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "",
+	"ScriptName": "objects/mats/planet-mat.js",
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/factionsheet.obj",
+			"Model": "mats/planet_mat.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 0.968421,
-				"Y": 1.19643,
+				"X": 1.41053,
+				"Y": 0.668571,
 				"Z": 2
 			},
 			"Rotation":
@@ -48,177 +48,202 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/mats/tech_board.jpg",
+			"Texture": "global/mats/planet_board.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "mats/planet_mat_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.41,
+				"Y": 0.668,
+				"Z": 2.2
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
-			"X": -6.6,
-			"Y": -13,
-			"Z": 0.26,
+			"X": -9.75,
+			"Y": -6.6,
+			"Z": 0.262626,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -2.2,
-			"Y": -13,
+			"X": -3.25,
+			"Y": -6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 2.2,
-			"Y": -13,
+			"X": 3.25,
+			"Y": -6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 6.6,
-			"Y": -13,
+			"X": 9.75,
+			"Y": -6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -6.6,
-			"Y": -6.5,
+			"X": -9.75,
+			"Y": -2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -2.2,
-			"Y": -6.5,
+			"X": -3.25,
+			"Y": -2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 2.2,
-			"Y": -6.5,
+			"X": 3.25,
+			"Y": -2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 6.6,
-			"Y": -6.5,
+			"X": 9.75,
+			"Y": -2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -6.6,
-			"Y": 0,
+			"X": -9.75,
+			"Y": 2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -2.2,
-			"Y": 0,
+			"X": -3.25,
+			"Y": 2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 2.2,
-			"Y": 0,
+			"X": 3.25,
+			"Y": 2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 6.6,
-			"Y": 0,
+			"X": 9.75,
+			"Y": 2.2,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -6.6,
-			"Y": 6.5,
+			"X": -9.75,
+			"Y": 6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": -2.2,
-			"Y": 6.5,
+			"X": -3.25,
+			"Y": 6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 2.2,
-			"Y": 6.5,
+			"X": 3.25,
+			"Y": 6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
-			"X": 6.6,
-			"Y": 6.5,
+			"X": 9.75,
+			"Y": 6.6,
 			"Z": 0.26,
 			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": -6.6,
-			"Y": 13,
-			"Z": 0.26,
-			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": -2.2,
-			"Y": 13,
-			"Z": 0.26,
-			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": 2.2,
-			"Y": 13,
-			"Z": 0.26,
-			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
-		},
-		{
-			"X": 6.6,
-			"Y": 13,
-			"Z": 0.26,
-			"Range": 5,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		}
 	],
 	"ZoomViewDirection":
@@ -226,5 +251,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

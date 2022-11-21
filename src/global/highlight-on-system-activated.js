@@ -22,6 +22,7 @@ const DISPLAY_SECONDS_APPROX = 15; // 30 in TTS
 const DISPLAY_SECONDS =
     Math.ceil(DISPLAY_SECONDS_APPROX / PULSE_SECONDS) * PULSE_SECONDS; // complete last pulse
 
+const _imageWidget = new ImageWidget(); // recycling avoids "new UI slowdown" issue (awaiting TTPG fix Nov-2022)
 let _systemHighlight = undefined;
 
 class SystemHighlight {
@@ -49,7 +50,7 @@ class SystemHighlight {
     attachUI() {
         this._ui.position = new Vector(0, 0, 0.13);
         this._ui.rotation = new Rotator(0, 0, 0);
-        this._ui.widget = new ImageWidget()
+        this._ui.widget = _imageWidget
             .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
             .setImage(OVERLAY_PNG, refPackageId);
         this._ui.useTransparency = true;

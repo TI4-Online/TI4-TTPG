@@ -1,7 +1,7 @@
 const TriggerableMulticastDelegate = require("./lib/triggerable-multicast-delegate");
 const { globalEvents, world } = require("./wrapper/api");
 
-// Expose button click handlers, canvas children.
+// Expose button click handlers.
 //require("./objects/testp/monkey/monkey-interpose");
 
 const onErr = world.__isMock

@@ -103,7 +103,7 @@ class TurnOrderPanel extends VerticalBox {
             this._turnOrderEntries.length !== playerDeskOrder.length
         ) {
             this._turnOrderEntries = [];
-            this.removeAllChildren();
+            this.removeAllChildren(); // only when count changes!
             for (let i = 0; i < playerDeskOrder.length; i++) {
                 let entry;
                 if (this._useFancyWidgets) {

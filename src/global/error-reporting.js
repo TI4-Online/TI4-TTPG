@@ -66,7 +66,7 @@ class ErrorReporting {
         // Send the error.
         const fetchOptions = {
             headers: { "Content-type": "application/json;charset=UTF-8" },
-            body: JSON.stringify(entry, null, 2),
+            body: "```" + JSON.stringify(entry, null, 2) + "```",
             method: "POST",
         };
         const promise = fetch(REPORT_URL, fetchOptions);
