@@ -258,6 +258,15 @@ class SimpleDie {
     }
 
     /**
+     * Die is no longer valid after deletion.
+     *
+     * @returns {boolean}
+     */
+    isValid() {
+        return this._die.isValid();
+    }
+
+    /**
      * Destroy the die GameObject.
      */
     destroy() {
