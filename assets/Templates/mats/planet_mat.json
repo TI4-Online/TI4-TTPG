@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/factionsheet.obj",
+			"Model": "mats/planet_mat.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -59,13 +59,36 @@
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "mats/planet_mat_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.41,
+				"Y": 0.668,
+				"Z": 2.2
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
 			"X": -9.75,
 			"Y": -6.6,
-			"Z": 0.2626262626262626262626262626262626262626262626262626,
+			"Z": 0.262626,
 			"Range": 5,
 			"SnapRotation": 2,
 			"RotationOffset": 0,

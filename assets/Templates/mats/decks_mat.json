@@ -51,13 +51,38 @@
 			"Texture": "locale/mats/decks_mat.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "mats/decks_mat_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 2,
+				"Y": 2,
+				"Z": 1.1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
@@ -65,48 +90,60 @@
 			"Y": -4.96,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 4.76837e-07,
 			"Y": -4.96,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 5.62,
 			"Y": -4.96,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -5.62,
 			"Y": 3.76,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 4.76837e-07,
 			"Y": 3.76,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 5.62,
 			"Y": 3.76,
 			"Z": 0.13,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 90
+			"SnapRotation": 2,
+			"RotationOffset": 90,
+			"Shape": 0,
+			"FlipValidity": 0
 		}
 	],
 	"ZoomViewDirection":
@@ -114,5 +151,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
