@@ -102,11 +102,8 @@ class NavPanel extends LayoutBox {
     setCurrentNavEntry(navEntry) {
         assert(navEntry);
 
-        console.log("NavPanel.setCurrentNavEntry");
-
         // If the current nav entry is already correct, keep it.
         if (this._currentNavEntry === navEntry) {
-            console.log("NavPanel.setCurrentNavEntry: already set");
             return;
         }
 
