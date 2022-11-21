@@ -270,6 +270,19 @@ class ConvexCollider {
         lines = ConvexCollider.hullVolume(hull, bb.min.z, bb.max.z);
         ConvexCollider.writeFileLines(dstFile, lines);
     }
+
+    static processSimple(srcFile, dstFile) {
+        // Get bounding box from mesh.
+        let lines = ConvexCollider.readFileLines(srcFile);
+        let vertices = ConvexCollider.parseVertices(lines);
+        const bb = ConvexCollider.getBoundingBox(vertices);
+
+        let hull = ConvexCollider.getConvexHullPolygon(vertices);
+        console.log(`|hull|=${hull.length}`);
+
+        lines = ConvexCollider.hullVolume(hull, bb.min.z, bb.max.z);
+        ConvexCollider.writeFileLines(dstFile, lines);
+    }
 }
 
 module.exports = { ConvexCollider };
