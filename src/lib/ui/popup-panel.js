@@ -226,7 +226,7 @@ class PopupPanel extends Border {
     }
 
     _hide() {
-        if (RECYCLE_UI) {
+        if (RECYCLE_UI && this._ui) {
             this._reuseUI = this._ui;
             assert(this._reuseUI instanceof UIElement);
             this._reusePanel = this.getChild();
