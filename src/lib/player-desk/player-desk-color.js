@@ -23,7 +23,7 @@ const PLAYER_DESK_COLORS = [
     },
     {
         colorName: "pink",
-        hexColor: "#F46FCD", //"#FF84D6",
+        hexColor: "#FF74D6", //"#FF84D6",
         plasticHexColor: "#F46FCD", //"#F46FCD",
         defaultPlayerSlot: 5,
     },
@@ -35,8 +35,8 @@ const PLAYER_DESK_COLORS = [
     },
     {
         colorName: "purple",
-        hexColor: "#7500b7", //"#C800FF",
-        plasticHexColor: "#7500b7", //"#5E219C",
+        hexColor: "#C800FF",
+        plasticHexColor: "#7500b7", // "#A300FF" "#5E219C",
         defaultPlayerSlot: 4,
     },
     {
@@ -47,7 +47,7 @@ const PLAYER_DESK_COLORS = [
     },
     {
         colorName: "white",
-        hexColor: "#E0E0E0", //"#BABABA",
+        hexColor: "#F0F0F0", //"#BABABA",
         plasticHexColor: "#E0E0E0", //"#C1C1C1",
         defaultPlayerSlot: 18,
     },
