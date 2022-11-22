@@ -150,11 +150,11 @@ class BunkerSliceGenerator {
      */
     static _chooseInnerRingTileTypes(playerCount) {
         assert(typeof playerCount === "number");
-        assert(playerCount >= 0 && playerCount <= 6);
+        const count = Math.min(playerCount, 6);
         let result = BunkerSliceGenerator._weightedChoice(INNER_RING_CHOICES);
         result = [...result]; // return a copy
         result = Shuffle.shuffle(result);
-        while (result.length > playerCount) {
+        while (result.length > count) {
             result.shift();
         }
         return result;
