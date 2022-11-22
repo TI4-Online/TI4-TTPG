@@ -69,6 +69,25 @@ class Broadcast {
             console.log(">> " + message);
         }
     }
+
+    static chatAllExcept(exceptPlayers, message, color = [1, 1, 1, 1]) {
+        assert(Array.isArray(exceptPlayers));
+        assert(typeof message === "string");
+
+        if (Array.isArray(color)) {
+            color = new Color(color[0], color[1], color[2], color[3] || 1);
+        }
+        assert(ColorUtil.isColor(color));
+
+        for (const player of world.getAllPlayers()) {
+            if (!exceptPlayers.includes(player)) {
+                player.sendChatMessage(message, color);
+            }
+        }
+        if (!world.__isMock) {
+            console.log(">> " + message);
+        }
+    }
 }
 
 module.exports = { Broadcast };

@@ -10,11 +10,18 @@ const {
 const WHISPER_SOUND = "digi_blip_hi_2x.wav";
 
 globalEvents.onWhisper.add((sender, receiver) => {
+    const srcDesk = world.TI4.getPlayerDeskByPlayerSlot(sender.getSlot());
+    const dstDesk = world.TI4.getPlayerDeskByPlayerSlot(receiver.getSlot());
+    if (!srcDesk || !dstDesk) {
+        return;
+    }
+
     const message = locale("ui.message.whisper", {
-        senderName: sender.getName(),
-        receiverName: receiver.getName(),
+        senderName: srcDesk.colorName,
+        receiverName: dstDesk.colorName,
     });
-    Broadcast.chatAll(message);
+    const msgColor = srcDesk.color;
+    Broadcast.chatAllExcept([sender, receiver], message, msgColor);
 
     if (WHISPER_SOUND) {
         const sound = world.importSound(WHISPER_SOUND, refPackageId);
