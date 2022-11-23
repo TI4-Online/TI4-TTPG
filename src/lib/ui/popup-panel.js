@@ -151,7 +151,10 @@ class PopupPanel {
             const button = WidgetFactory.button()
                 .setFontSize(POPUP_FONT_SIZE * this._popupScale)
                 .setText(name);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
+                console.log(
+                    `PopupPanel onClicked "${clickedButton.getText()}"`
+                );
                 if (delayedHide) {
                     setTimeout(() => {
                         this._hide();

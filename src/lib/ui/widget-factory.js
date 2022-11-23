@@ -24,6 +24,8 @@ const {
     refPackageId,
 } = require("../../wrapper/api");
 
+const RECYCLE = true;
+
 const _inventory = {
     border: [],
     button: [],
@@ -33,12 +35,19 @@ const _inventory = {
     imageWidget: [],
     layoutBox: [],
     multilineTextBox: [],
+    placeHolder: [],
     slider: [],
     text: [],
     textBox: [],
     verticalBox: [],
     uiElement: [],
 };
+
+class PlaceHolder extends Widget {
+    constructor() {
+        super();
+    }
+}
 
 class WidgetFactory {
     /**
@@ -48,6 +57,10 @@ class WidgetFactory {
      * @returns {WidgetFactory} self, for chaining
      */
     static release(widget) {
+        if (!RECYCLE) {
+            return;
+        }
+
         if (widget instanceof UIElement) {
             const ui = widget;
             widget = ui.widget;
@@ -72,7 +85,7 @@ class WidgetFactory {
         assert(widget instanceof Widget);
 
         assert(!widget.getParent());
-        //assert(!widget.getOwningObject());
+        assert(!widget.getOwningObject());
 
         // Reset some abstract class state.
         if (widget instanceof TextWidgetBase) {
@@ -112,6 +125,7 @@ class WidgetFactory {
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
             widget.setText("");
+            assert(!_inventory.button.includes(widget));
             _inventory.button.push(widget);
         } else if (widget instanceof CheckBox) {
             widget.onCheckStateChanged.clear();
@@ -184,6 +198,11 @@ class WidgetFactory {
 
     static border() {
         const widget = _inventory.border.pop();
+        if (widget) {
+            const child = widget.getChild();
+            assert(child);
+            _inventory.placeHolder.push(child);
+        }
         return widget ? widget : new Border();
     }
 
@@ -214,11 +233,16 @@ class WidgetFactory {
 
     static layoutBox() {
         const widget = _inventory.layoutBox.pop();
+        if (widget) {
+            const child = widget.getChild();
+            assert(child);
+            _inventory.placeHolder.push(child);
+        }
         return widget ? widget : new LayoutBox();
     }
 
     static multilineTextBox() {
-        const widget = _inventory.multilineTextBox.pop();
+        const widget = RECYCLE && _inventory.multilineTextBox.pop();
         return widget ? widget : new MultilineTextBox();
     }
 
@@ -254,7 +278,8 @@ class WidgetFactory {
      * @returns {Widget}
      */
     static _placeholder() {
-        return WidgetFactory.layoutBox();
+        const widget = _inventory.placeHolder.pop();
+        return widget ? widget : new PlaceHolder();
     }
 }
 
