@@ -7,6 +7,7 @@ const { FactionTokenUI } = require("../milty/faction-token-ui");
 const { Hex } = require("../../hex");
 const MapStringHex = require("../../map-string/map-string-hex");
 const { SeatTokenUI } = require("../milty/seat-token-ui");
+const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     Border,
     Button,
@@ -115,8 +116,12 @@ class BunkerDraftUI {
 
         this._updateWaitingFor();
 
+        const widget = new Border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(this._canvas);
+
         return {
-            widget: new Border().setChild(this._canvas),
+            widget,
             w: this._w,
             h: this._h,
             updateWaitingFor: this._updateWaitingFor,

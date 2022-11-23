@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
+const CONFIG = require("../../game-ui/game-ui-config");
 const {
     Border,
     Button,
@@ -38,6 +39,7 @@ class PopupPanel extends Border {
         assert(gameObject instanceof GameObject);
         assert(typeof localPos.x === "number");
         super();
+        this.setColor(CONFIG.backgroundColor);
 
         this._obj = gameObject;
         this._localPos = localPos;

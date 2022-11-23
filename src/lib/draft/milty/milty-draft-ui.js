@@ -4,6 +4,7 @@ const { ColorUtil } = require("../../color/color-util");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
+const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     Border,
     Button,
@@ -112,8 +113,12 @@ class MiltyDraftUI {
 
         this._updateWaitingFor();
 
+        const widget = new Border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(this._canvas);
+
         return {
-            widget: new Border().setChild(this._canvas),
+            widget,
             w: this._w,
             h: this._h,
             updateWaitingFor: this._updateWaitingFor,
