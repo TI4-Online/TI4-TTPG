@@ -2,6 +2,7 @@ require("../../global"); // setup world.TI4
 const assert = require("assert");
 const { MapStringLoad } = require("./map-string-load");
 const MapStringParser = require("./map-string-parser");
+const { world } = require("../../wrapper/api");
 
 const MAP_STRING_DB = require("./map-string-db.json");
 const MAP_ATLAS_DB = require("./map-atlas-db.json");
@@ -66,5 +67,47 @@ it("atlas db hs count", () => {
             throw new Error(msg);
         }
         assert.equal(entry.playerCount, numHomeSystems);
+    }
+});
+
+it("string db no defined hs", () => {
+    for (const dbEntry of MAP_STRING_DB) {
+        const parsedMapString = MapStringParser.parse(dbEntry.mapstring);
+        assert(parsedMapString);
+        const homes = [];
+        for (const entry of parsedMapString) {
+            const system = world.TI4.getSystemByTileNumber(entry.tile);
+            if (system && system.home) {
+                homes.push(entry.tile);
+            }
+        }
+        if (homes.length > 0) {
+            throw new Error(
+                `home systems (${JSON.stringify(homes)}) in "${
+                    dbEntry.name
+                }", string "${dbEntry.mapstring}"`
+            );
+        }
+    }
+});
+
+it("atlas db no defined hs", () => {
+    for (const dbEntry of MAP_ATLAS_DB) {
+        const parsedMapString = MapStringParser.parse(dbEntry.mapstring);
+        assert(parsedMapString);
+        const homes = [];
+        for (const entry of parsedMapString) {
+            const system = world.TI4.getSystemByTileNumber(entry.tile);
+            if (system && system.home) {
+                homes.push(entry.tile);
+            }
+        }
+        if (homes.length > 0) {
+            throw new Error(
+                `home systems (${JSON.stringify(homes)}) in "${
+                    dbEntry.name
+                }", string "${dbEntry.mapstring}"`
+            );
+        }
     }
 });
