@@ -219,12 +219,18 @@ class PlayerDeskSetup {
         const factionToken = FactionToken.getByPlayerDesk(this._playerDesk);
         if (factionToken) {
             // Found a faction token / reference card, use that.
-            const above = factionToken.getPosition().add([0, 0, 15]);
-            factionToken.setPosition(above);
-            const parsed = ObjectNamespace.parseGeneric(factionToken);
+            const nsid = ObjectNamespace.getNsid(factionToken);
+            const parsed = ObjectNamespace.parseNsid(nsid);
             const nsidName = parsed.name.split(".")[0];
             const faction = world.TI4.getFactionByNsidName(nsidName);
-            assert(faction);
+            if (!faction) {
+                throw new Error(
+                    `unknown faction "${nsidName}" from nsid "${nsid}"`
+                );
+            }
+
+            const above = factionToken.getPosition().add([0, 0, 15]);
+            factionToken.setPosition(above);
 
             if (DISCARD_FACTION_TOKENS) {
                 const container = undefined;
