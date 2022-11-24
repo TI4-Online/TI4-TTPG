@@ -53,7 +53,7 @@ class ActiveIdle {
         updateButton(button);
 
         // Click to toggle and update state.
-        button.onClicked.add((button, player) => {
+        button.onClicked.add((clickedButton, player) => {
             const toggled = !ActiveIdle.isActive(obj);
             ActiveIdle.setActive(obj, toggled);
             updateButton(button);

@@ -43,7 +43,7 @@ class NavPanel extends LayoutBox {
         const rootButton = new Button()
             .setFontSize(PATH_FONT_SIIZE)
             .setText(" " + this._rootFolder.getName() + " ");
-        rootButton.onClicked.add((button, player) => {
+        rootButton.onClicked.add((clickedButton, player) => {
             this.setCurrentNavEntry(this._rootFolder);
         });
 
@@ -129,7 +129,7 @@ class NavPanel extends LayoutBox {
             const button = new Button()
                 .setFontSize(PATH_FONT_SIIZE)
                 .setText(name);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
                 this.setCurrentNavEntry(pathEntry);
             });
             this._pathPanel.addChild(button, 0);

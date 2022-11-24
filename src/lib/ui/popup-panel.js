@@ -96,7 +96,7 @@ class PopupPanel {
             "global/ui/menu_button_hex.png",
             refPackageId
         );
-        button.onClicked.add((button, player) => {
+        button.onClicked.add((clickedButton, player) => {
             assert(player instanceof Player);
             this._show(player);
         });
@@ -169,7 +169,7 @@ class PopupPanel {
         const cancelButton = WidgetFactory.button()
             .setFontSize(POPUP_FONT_SIZE * this._popupScale)
             .setText(locale("ui.button.cancel"));
-        cancelButton.onClicked.add((button, player) => {
+        cancelButton.onClicked.add((clickedButton, player) => {
             this._hide();
         });
         panel.addChild(cancelButton);

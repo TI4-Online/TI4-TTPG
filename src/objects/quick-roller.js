@@ -53,7 +53,7 @@ class QuickRoller {
             const x = Math.sin(phi) * r + w / 2 - buttonW / 2;
             const y = -Math.cos(phi) * r + h / 2 - buttonH / 2;
             const button = new Button().setFontSize(60).setText(i);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
                 this.onClickedValue(i, player);
             });
             this._buttons.push(button);

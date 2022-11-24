@@ -36,7 +36,7 @@ class TurnEntrySimple extends Border {
 
         // Create button and label, configure and swap in update.
         this._button = new Button();
-        this._button.onClicked.add((button, clickingPlayer) => {
+        this._button.onClicked.add((clickedButton, clickingPlayer) => {
             world.TI4.turns.setCurrentTurn(this._playerDesk, clickingPlayer);
         });
         this._label = new Text().setJustification(TextJustification.Center);

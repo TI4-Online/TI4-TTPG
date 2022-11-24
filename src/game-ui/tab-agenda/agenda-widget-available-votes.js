@@ -69,7 +69,7 @@ class AgendaWidgetAvailableVotes extends VerticalBox {
         const button = new Button()
             .setFontSize(this._fontSize)
             .setText(locale("ui.agenda.clippy.reset_available_votes"));
-        button.onClicked.add((button, player) => {
+        button.onClicked.add((clickedButton, player) => {
             AgendaWidgetAvailableVotes.resetAll();
         });
 
