@@ -7,9 +7,8 @@ class Border extends Widget {
         this._child = (data && data.child) || undefined;
     }
 
-    setColor(color) {
-        this._color = color;
-        return this;
+    getChild() {
+        return this._child;
     }
 
     getColor() {
@@ -17,8 +16,16 @@ class Border extends Widget {
     }
 
     setChild(child) {
+        if (this._child) {
+            this._child._parent = undefined;
+        }
         this._child = child;
         child._parent = this;
+        return this;
+    }
+
+    setColor(color) {
+        this._color = color;
         return this;
     }
 }

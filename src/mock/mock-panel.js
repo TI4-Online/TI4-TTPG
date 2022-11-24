@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const Widget = require("./mock-widget");
 
 class Panel extends Widget {
@@ -7,6 +8,7 @@ class Panel extends Widget {
     }
 
     addChild(widget) {
+        assert(widget instanceof Widget);
         this._children.push(widget);
         widget._parent = this;
         return this;
@@ -20,9 +22,20 @@ class Panel extends Widget {
         return this._children;
     }
 
-    removeAllChildren() {}
+    removeAllChildren() {
+        for (const child of this._children) {
+            child._parent = undefined;
+        }
+        this._children = [];
+    }
 
-    removeChildAt(index) {}
+    removeChildAt(index) {
+        const child = this._children[index];
+        if (child) {
+            child._parent = undefined;
+        }
+        this._children.slice(index, 1);
+    }
 
     setChildDistance(value) {
         return this;
