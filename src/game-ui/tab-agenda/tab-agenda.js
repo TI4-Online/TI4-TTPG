@@ -6,6 +6,7 @@ const { Broadcast } = require("../../lib/broadcast");
 const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
 const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -41,6 +42,14 @@ class TabAgenda {
         this._updateMain();
         this._maybeReplaceDesks();
         this._updateDesks();
+    }
+
+    _setMainUI(widget) {
+        const old = this._widget.getChild();
+        this._widget.setChild(widget);
+        if (old) {
+            WidgetFactory.release(old);
+        }
     }
 
     _maybeReplaceMain() {
@@ -91,7 +100,7 @@ class TabAgenda {
 
         // Abort if not active.
         if (!agenda.isActive()) {
-            this._widget.setChild(
+            this._setMainUI(
                 AgendaUiMain.simpleButton(
                     locale("ui.agenda.clippy.place_agenda_to_start"),
                     locale("ui.agenda.clippy.reset_cards"),
@@ -104,7 +113,7 @@ class TabAgenda {
         let summary;
         switch (stateMain) {
             case "WAITING_FOR_START.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleYesNo(
                         locale("ui.agenda.clippy.would_you_like_help"),
                         onStart,
@@ -113,7 +122,7 @@ class TabAgenda {
                 );
                 break;
             case "OUTCOME_TYPE.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleButtonList(
                         locale("ui.agenda.clippy.outcome_category"),
                         outcomeButtonTextsAndOnClicks
@@ -121,28 +130,28 @@ class TabAgenda {
                 );
                 break;
             case "WHEN.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleWithState(
                         locale("ui.agenda.clippy.whens")
                     )
                 );
                 break;
             case "AFTER.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleWithState(
                         locale("ui.agenda.clippy.afters")
                     )
                 );
                 break;
             case "VOTE.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleWithState(
                         locale("ui.agenda.clippy.voting")
                     )
                 );
                 break;
             case "POST.MAIN":
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simple(locale("ui.agenda.clippy.post"))
                 );
                 break;
@@ -151,7 +160,7 @@ class TabAgenda {
                     outcome: agenda.summarizeVotes(),
                     riders: agenda.summarizePredictions(),
                 });
-                this._widget.setChild(
+                this._setMainUI(
                     AgendaUiMain.simpleButton(
                         summary,
                         locale("ui.agenda.clippy.reset_cards"),

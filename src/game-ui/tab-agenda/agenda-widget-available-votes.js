@@ -3,21 +3,18 @@ const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const { Agenda } = require("../../lib/agenda/agenda");
 const {
-    Button,
     HorizontalAlignment,
-    HorizontalBox,
-    Text,
-    VerticalBox,
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 let _deskIndexToWidgets = {};
 globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
     _deskIndexToWidgets = {}; // release for garbage collection
 });
 
-class AgendaWidgetAvailableVotes extends VerticalBox {
+class AgendaWidgetAvailableVotes {
     static resetAll() {
         for (const widget of Object.values(_deskIndexToWidgets)) {
             assert(widget instanceof AgendaWidgetAvailableVotes);
@@ -29,10 +26,11 @@ class AgendaWidgetAvailableVotes extends VerticalBox {
         assert(typeof fontSize === "number");
         assert(typeof deskIndex === "number");
 
-        super();
-
-        const votesPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        this.setChildDistance(CONFIG.spacing)
+        const votesPanel = WidgetFactory.horizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._verticalBox = WidgetFactory.verticalBox()
+            .setChildDistance(CONFIG.spacing)
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .addChild(votesPanel);
 
@@ -41,10 +39,12 @@ class AgendaWidgetAvailableVotes extends VerticalBox {
 
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
-                const delim = new Text().setFontSize(fontSize).setText("|");
+                const delim = WidgetFactory.text()
+                    .setFontSize(fontSize)
+                    .setText("|");
                 votesPanel.addChild(delim);
             }
-            const text = new Text()
+            const text = WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setTextColor(desk.plasticColor);
             votesPanel.addChild(text);
@@ -54,6 +54,10 @@ class AgendaWidgetAvailableVotes extends VerticalBox {
 
         // Keep a reference for easy mass-reset.
         _deskIndexToWidgets[deskIndex] = this;
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 
     reset() {
@@ -66,7 +70,7 @@ class AgendaWidgetAvailableVotes extends VerticalBox {
     }
 
     addResetButton() {
-        const button = new Button()
+        const button = WidgetFactory.button()
             .setFontSize(this._fontSize)
             .setText(locale("ui.agenda.clippy.reset_available_votes"));
         button.onClicked.add((clickedButton, player) => {
