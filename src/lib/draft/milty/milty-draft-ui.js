@@ -4,14 +4,11 @@ const { ColorUtil } = require("../../color/color-util");
 const { FactionTokenUI } = require("./faction-token-ui");
 const { MiltySliceUI } = require("./milty-slice-ui");
 const { SeatTokenUI } = require("./seat-token-ui");
+const { WidgetFactory } = require("../../ui/widget-factory");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const {
-    Border,
     Button,
-    Canvas,
     HorizontalAlignment,
-    LayoutBox,
-    Text,
     VerticalAlignment,
     world,
 } = require("../../../wrapper/api");
@@ -42,11 +39,11 @@ class MiltyDraftUI {
 
         this._playerDesk = playerDesk;
         this._scale = scale;
-        this._canvas = new Canvas();
+        this._canvas = WidgetFactory.canvas();
         this._sliceSize = MiltySliceUI.getSize(this._scale);
         this._pad = Math.floor(this._sliceSize.tileH / 3);
 
-        this._waitingFor = new Text().setText("<>");
+        this._waitingFor = WidgetFactory.text().setText("<>");
 
         // Fix height.
         const pad = this._pad;
@@ -92,7 +89,7 @@ class MiltyDraftUI {
         const fontSize = Math.min(255, Math.floor(h * 0.3));
 
         // Add "waiting for player".
-        const waitingForBox = new LayoutBox()
+        const waitingForBox = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(this._waitingFor);
@@ -113,7 +110,7 @@ class MiltyDraftUI {
 
         this._updateWaitingFor();
 
-        const widget = new Border()
+        const widget = WidgetFactory.border()
             .setColor(CONFIG.backgroundColor)
             .setChild(this._canvas);
 

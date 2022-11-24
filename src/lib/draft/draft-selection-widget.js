@@ -1,11 +1,12 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ColorUtil } = require("../color/color-util");
-const { Border, LayoutBox, Widget } = require("../../wrapper/api");
+const { Widget } = require("../../wrapper/api");
+const { WidgetFactory } = require("../ui/widget-factory");
 
 /**
  * Wrap child inside a padded box.
  */
-class DraftSelectionWidget extends Border {
+class DraftSelectionWidget {
     /**
      * Return the DraftSelectionWidget in the ancestry.
      * WARNING: Button appears to forget parent sometimes!
@@ -25,13 +26,15 @@ class DraftSelectionWidget extends Border {
     }
 
     constructor() {
-        super();
-
-        this._layoutBox = new LayoutBox();
-        super.setChild(this._layoutBox);
+        this._layoutBox = WidgetFactory.layoutBox();
+        this._border = WidgetFactory.border().setChild(this._layoutBox);
 
         this.setBorderSize(1);
         this.clearSelection();
+    }
+
+    getWidget() {
+        return this._border;
     }
 
     setBorderSize(padding) {
@@ -49,13 +52,13 @@ class DraftSelectionWidget extends Border {
 
     setSelection(color) {
         assert(ColorUtil.isColor(color));
-        this.setColor(color);
+        this._border.setColor(color);
         return this;
     }
 
     clearSelection() {
         const c = 0;
-        this.setColor([c, c, c, 1]);
+        this._border.setColor([c, c, c, 1]);
         return this;
     }
 }

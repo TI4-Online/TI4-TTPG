@@ -2,14 +2,10 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { DraftSelectionWidget } = require("../draft-selection-widget");
 const { MiltyUtil, DEFAULT_WRAP_AT } = require("./milty-util");
 const { System } = require("../../system/system");
+const { WidgetFactory } = require("../../ui/widget-factory");
 const {
-    Border,
-    Button,
     Canvas,
     HorizontalAlignment,
-    ImageWidget,
-    LayoutBox,
-    Text,
     VerticalAlignment,
     refPackageId,
     world,
@@ -70,7 +66,7 @@ class MiltySliceUI {
 
         // Add home system behind other elements (drawn in order).
         this._tileBoxes = offsets.map((offset) => {
-            const layoutBox = new LayoutBox();
+            const layoutBox = WidgetFactory.layoutBox();
             canvas.addChild(
                 layoutBox,
                 offset.x - 1,
@@ -84,7 +80,7 @@ class MiltySliceUI {
 
         // Summary.
         this._summaryFontSize = MiltySliceUI.getFontSize(scale);
-        this._summaryBox = new LayoutBox()
+        this._summaryBox = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Bottom);
         const summaryX = canvasOffset.x;
@@ -101,7 +97,7 @@ class MiltySliceUI {
 
         // Label / button area.
         this._labelFontSize = MiltySliceUI.getFontSize(scale);
-        this._labelBox = new LayoutBox();
+        this._labelBox = WidgetFactory.layoutBox();
         const labelX = canvasOffset.x;
         const labelY = canvasOffset.y + tileH * 2.75;
         const labelW = tileW * 2.5;
@@ -118,21 +114,23 @@ class MiltySliceUI {
             const system = world.TI4.getSystemByTileNumber(tile);
             const imgPath = system.raw.img;
             const tileBox = this._tileBoxes[i];
-            tileBox.setChild(new ImageWidget().setImage(imgPath, refPackageId));
+            tileBox.setChild(
+                WidgetFactory.imageWidget().setImage(imgPath, refPackageId)
+            );
         }
 
         const summaryValue = System.summarize(miltySlice);
-        const summary = new Text()
+        const summary = WidgetFactory.text()
             .setFontSize(this._summaryFontSize)
             .setText(summaryValue);
-        this._summaryBox.setChild(new Border().setChild(summary));
+        this._summaryBox.setChild(WidgetFactory.border().setChild(summary));
 
         return this;
     }
 
     setColor(color) {
         assert(typeof color.r === "number");
-        this._homeSystemBox.setChild(new Border().setColor(color));
+        this._homeSystemBox.setChild(WidgetFactory.border().setColor(color));
         return this;
     }
 
@@ -141,12 +139,12 @@ class MiltySliceUI {
         assert(typeof onClickedGenerator === "function");
 
         label = MiltyUtil.wrapSliceLabel(label, DEFAULT_WRAP_AT);
-        const button = new Button()
+        const button = WidgetFactory.button()
             .setFontSize(this._labelFontSize)
             .setText(label);
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));
-        this._labelBox.setChild(draftSelection);
+        this._labelBox.setChild(draftSelection.getWidget());
         return this;
     }
 

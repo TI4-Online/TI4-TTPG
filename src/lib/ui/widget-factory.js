@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const {
     Border,
     Button,
+    Canvas,
     CheckBox,
     HorizontalAlignment,
     HorizontalBox,
@@ -25,10 +26,12 @@ const {
 } = require("../../wrapper/api");
 
 const RECYCLE = true;
+const INVENTORY_CAP = 1000;
 
 const _inventory = {
     border: [],
     button: [],
+    canvas: [],
     checkBox: [],
     horizontalBox: [],
     imageButton: [],
@@ -53,14 +56,15 @@ class WidgetFactory {
     /**
      * Release a widget, if this widget contains others release those too.
      *
-     * @param {Widget} widget
+     * @param {Widget|UIElement} widget
      * @returns {WidgetFactory} self, for chaining
      */
-    static release(widget) {
+    static release(widget, isRecursiveCall) {
         if (!RECYCLE) {
             return;
         }
 
+        // If releasing UI release any connected widget.
         if (widget instanceof UIElement) {
             const ui = widget;
             widget = ui.widget;
@@ -110,7 +114,7 @@ class WidgetFactory {
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             for (const child of children) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         }
 
@@ -120,13 +124,20 @@ class WidgetFactory {
             widget.setColor([1, 0, 0, 1]);
             _inventory.border.push(widget);
             if (child) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
             widget.setText("");
             assert(!_inventory.button.includes(widget));
             _inventory.button.push(widget);
+        } else if (widget instanceof Canvas) {
+            const children = widget.getChildren();
+            for (const child of children) {
+                widget.removeChild(child);
+                WidgetFactory.release(child, true);
+            }
+            _inventory.canvas.push(widget);
         } else if (widget instanceof CheckBox) {
             widget.onCheckStateChanged.clear();
             widget.setText("");
@@ -152,7 +163,6 @@ class WidgetFactory {
             widget.setChild(WidgetFactory._placeholder());
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setMaximumHeight(-1);
-            widget.setMaximumWidget(-1);
             widget.setMinimumWidth(-1);
             widget.setMaximumWidth(-1);
             widget.setOverrideHeight(-1);
@@ -161,7 +171,7 @@ class WidgetFactory {
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             _inventory.layoutBox.push(widget);
             if (child) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         } else if (widget instanceof MultilineTextBox) {
             widget.setBackgroundTransparent(false);
@@ -193,6 +203,17 @@ class WidgetFactory {
             _inventory.verticalBox.push(widget);
         }
 
+        // If alloc/release are not balanced inventory could go out of control.
+        // Trim to a reasonable level.
+        if (!isRecursiveCall) {
+            for (const inventory of Object.values(_inventory)) {
+                const excess = INVENTORY_CAP - inventory.length;
+                if (excess > 0) {
+                    inventory.slice(INVENTORY_CAP);
+                }
+            }
+        }
+
         return this;
     }
 
@@ -200,8 +221,9 @@ class WidgetFactory {
         const widget = _inventory.border.pop();
         if (widget) {
             const child = widget.getChild();
-            assert(child);
-            _inventory.placeHolder.push(child);
+            if (child && child instanceof PlaceHolder) {
+                _inventory.placeHolder.push(child);
+            }
         }
         return widget ? widget : new Border();
     }
@@ -209,6 +231,11 @@ class WidgetFactory {
     static button() {
         const widget = _inventory.button.pop();
         return widget ? widget : new Button();
+    }
+
+    static canvas() {
+        const widget = _inventory.canvas.pop();
+        return widget ? widget : new Canvas();
     }
 
     static checkBox() {
@@ -235,8 +262,9 @@ class WidgetFactory {
         const widget = _inventory.layoutBox.pop();
         if (widget) {
             const child = widget.getChild();
-            assert(child);
-            _inventory.placeHolder.push(child);
+            if (child && child instanceof PlaceHolder) {
+                _inventory.placeHolder.push(child);
+            }
         }
         return widget ? widget : new LayoutBox();
     }
@@ -278,8 +306,17 @@ class WidgetFactory {
      * @returns {Widget}
      */
     static _placeholder() {
-        const widget = _inventory.placeHolder.pop();
-        return widget ? widget : new PlaceHolder();
+        // Placeholders live in "cannot clear child" widgets, expecting the
+        // widget consumer will replace them.  It is possible they will not,
+        // at least not immediately.  Check that a placeholder is free.
+        while (_inventory.placeHolder.length > 0) {
+            const widget = _inventory.placeHolder.pop();
+            if (!widget.getParent()) {
+                return widget;
+            }
+            // Otherwise this widget is still linked to another.  Forget it.
+        }
+        return new PlaceHolder();
     }
 }
 

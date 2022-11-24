@@ -150,7 +150,7 @@ class BunkerSliceUI {
             .setText(label);
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));
-        this._labelBox.setChild(draftSelection);
+        this._labelBox.setChild(draftSelection.getWidget());
         return this;
     }
 
