@@ -97,7 +97,9 @@ class PlayerDeskUI {
         this._ui.position = pos;
         this._ui.rotation = this._playerDesk.rot;
         this._ui.scale = EXTRA_SCALE / CONFIG.scale; // Bigger than normal
-        this._ui.widget = new Border().setChild(panelPadded);
+        this._ui.widget = new Border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(panelPadded);
 
         return this;
     }

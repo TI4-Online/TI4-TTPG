@@ -1,29 +1,24 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
+const CONFIG = require("../../game-ui/game-ui-config");
 const {
-    Border,
-    Button,
     GameObject,
-    ImageButton,
     Player,
     Rotator,
-    UIElement,
-    VerticalBox,
     refPackageId,
 } = require("../../wrapper/api");
+const { WidgetFactory } = require("./widget-factory");
 
 const POPUP_HEIGHT = 3;
 const POPUP_CHILD_DISTANCE = 3; // consistent look
 const POPUP_FONT_SIZE = 8;
 const DELAYED_HIDE_MSECS = 2500;
 
-const RECYCLE_UI = true;
-
 /**
  * Popup "panel" (Border) with custom actions.
  */
-class PopupPanel extends Border {
+class PopupPanel {
     /**
      * Constructor.
      *
@@ -37,7 +32,6 @@ class PopupPanel extends Border {
     constructor(gameObject, localPos) {
         assert(gameObject instanceof GameObject);
         assert(typeof localPos.x === "number");
-        super();
 
         this._obj = gameObject;
         this._localPos = localPos;
@@ -51,12 +45,6 @@ class PopupPanel extends Border {
 
         // <(gameObject: GameObject, player: Player, popupPanel: PopupPanel) => void>
         this.onShow = new TriggerableMulticastDelegate();
-
-        if (RECYCLE_UI) {
-            this._reusePanel = undefined;
-            this._reuseButtons = [];
-            this._reuseUI = undefined;
-        }
 
         this.reset();
     }
@@ -87,7 +75,7 @@ class PopupPanel extends Border {
      * @returns {PopupPanel} self, for chaining
      */
     attachPopupButton(scale = 1) {
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.widget = this.createPopupButton();
         ui.position = this._localPos;
         ui.scale = 0.23 * scale;
@@ -104,7 +92,7 @@ class PopupPanel extends Border {
      * @returns {ImageButton}
      */
     createPopupButton() {
-        const button = new ImageButton().setImage(
+        const button = WidgetFactory.imageButton().setImage(
             "global/ui/menu_button_hex.png",
             refPackageId
         );
@@ -155,34 +143,18 @@ class PopupPanel extends Border {
         // Call listeners *before* showing so they can mutate the menu that appears.
         this.onShow.trigger(this._obj, player, this);
 
-        const getPanel = () => {
-            if (RECYCLE_UI && this._reusePanel) {
-                return this._reusePanel;
-            }
-            return new VerticalBox();
-        };
-        const getUI = () => {
-            if (RECYCLE_UI && this._reuseUI) {
-                return this._reuseUI;
-            }
-            return new UIElement();
-        };
-        const getButton = () => {
-            if (RECYCLE_UI && this._reuseButtons.length > 0) {
-                return this._reuseButtons.pop();
-            }
-            return new Button();
-        };
-
         // Add owner-specified actions, followed by cancel.
-        const panel = getPanel().setChildDistance(
+        const panel = WidgetFactory.verticalBox().setChildDistance(
             POPUP_CHILD_DISTANCE * this._popupScale
         );
         for (const { name, action, delayedHide } of this._namesAndActions) {
-            const button = getButton()
+            const button = WidgetFactory.button()
                 .setFontSize(POPUP_FONT_SIZE * this._popupScale)
                 .setText(name);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
+                console.log(
+                    `PopupPanel onClicked "${clickedButton.getText()}"`
+                );
                 if (delayedHide) {
                     setTimeout(() => {
                         this._hide();
@@ -194,20 +166,21 @@ class PopupPanel extends Border {
             });
             panel.addChild(button);
         }
-        const cancelButton = getButton()
+        const cancelButton = WidgetFactory.button()
             .setFontSize(POPUP_FONT_SIZE * this._popupScale)
             .setText(locale("ui.button.cancel"));
         cancelButton.onClicked.add((button, player) => {
             this._hide();
         });
         panel.addChild(cancelButton);
-        if (this.getChild() !== panel) {
-            this.setChild(panel);
-        }
+
+        const border = WidgetFactory.border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(panel);
 
         // Z scaling may be wonky.  Place above in world space and move back.
-        this._ui = getUI();
-        this._ui.widget = this;
+        this._ui = WidgetFactory.uiElement();
+        this._ui.widget = border;
         this._ui.position = this._obj.worldPositionToLocal(
             this._obj
                 .localPositionToWorld(this._localPos)
@@ -226,27 +199,11 @@ class PopupPanel extends Border {
     }
 
     _hide() {
-        if (RECYCLE_UI && this._ui) {
-            this._reuseUI = this._ui;
-            assert(this._reuseUI instanceof UIElement);
-            this._reusePanel = this.getChild();
-            assert(this._reusePanel instanceof VerticalBox);
-            this._reuseButtons = [];
-            for (let i = 0; i < 10; i++) {
-                const button = this._reusePanel.getChildAt(i);
-                if (!button) {
-                    break;
-                }
-                assert(button instanceof Button);
-                button.onClicked.clear();
-                this._reuseButtons.push(button);
-            }
-            this._reusePanel.removeAllChildren();
+        if (this._ui) {
+            this._obj.removeUIElement(this._ui);
+            WidgetFactory.release(this._ui);
+            this._ui = undefined;
         }
-
-        this._obj.removeUIElement(this._ui);
-        this._ui = undefined;
-        this.setChild(undefined);
         this._isShowing = false;
     }
 }

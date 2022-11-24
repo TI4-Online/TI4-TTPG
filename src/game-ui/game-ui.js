@@ -59,7 +59,9 @@ class GameUI {
             CONFIG.padding
         );
 
-        const wrapper = new Border().setChild(this._layout);
+        const wrapper = new Border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(this._layout);
         const b = CONFIG.spacing / 2;
         const wrapperBox = new LayoutBox()
             .setPadding(b, b, b, b)

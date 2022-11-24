@@ -49,6 +49,7 @@ class AgendaUiDesk extends Border {
         assert(typeof callbacks.onPredictDecr === "function");
 
         super();
+        this.setColor(CONFIG.backgroundColor);
 
         this._playerDesk = playerDesk;
         this._callbacks = callbacks;
