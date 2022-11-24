@@ -8,16 +8,8 @@ const {
 const { Broadcast } = require("../../lib/broadcast");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const {
-    refObject,
-    world,
-    Border,
-    Button,
-    Color,
-    LayoutBox,
-    Text,
-    VerticalBox,
-} = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const { refObject, world, Color } = require("../../wrapper/api");
 
 const onAllowReplenishClicked = (button, player) => {
     const playerSlot = player.getSlot();
@@ -32,10 +24,10 @@ const onAllowReplenishClicked = (button, player) => {
 };
 
 const createReplenishPlayersSection = (owningPlayerDesk) => {
-    const replenishBox = new VerticalBox().setChildDistance(SPACING);
+    const replenishBox = WidgetFactory.verticalBox().setChildDistance(SPACING);
 
     replenishBox.addChild(
-        new Text()
+        WidgetFactory.text()
             .setText(locale("strategy_card.trade.text.allowReplenish"))
             .setFontSize(FONT_SIZE_BODY)
     );
@@ -48,7 +40,7 @@ const createReplenishPlayersSection = (owningPlayerDesk) => {
             p.getSlot() === playerDesk.playerSlot;
         });
 
-        let primaryAllowReplenishButton = new Button()
+        let primaryAllowReplenishButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(deskOwningPlayer || playerDesk.colorName) // in case the player is currently not seated
             .setTextColor(playerDesk.color);
@@ -59,10 +51,10 @@ const createReplenishPlayersSection = (owningPlayerDesk) => {
     });
 
     const p = 8 * SCALE;
-    const padded = new LayoutBox()
+    const padded = WidgetFactory.layoutBox()
         .setPadding(p, p, p / 2, p)
         .setChild(replenishBox);
-    const border = new Border().setChild(padded);
+    const border = WidgetFactory.border().setChild(padded);
     return border;
 };
 

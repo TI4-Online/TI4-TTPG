@@ -11,16 +11,8 @@ const { CommandToken } = require("../../lib/command-token/command-token");
 const { Technology } = require("../../lib/technology/technology");
 const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const {
-    refObject,
-    refPackageId,
-    world,
-    Button,
-    Canvas,
-    Color,
-    ImageWidget,
-    LayoutBox,
-} = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const { Color, refObject, refPackageId, world } = require("../../wrapper/api");
 
 const IMAGE_SIZE = 14 * SCALE;
 const ROW_HEIGHT = 34 * SCALE;
@@ -75,7 +67,7 @@ function drawTechButton(
     };
     const textColor = techIcons[tech.type].color;
     ColorUtil.validate(textColor);
-    const techButton = new Button()
+    const techButton = WidgetFactory.button()
         .setFontSize(BUTTON_FONT_SIZE)
         .setText(tech.name)
         .setTextColor(textColor)
@@ -90,7 +82,7 @@ function drawTechButton(
     }
 
     if (factionNsidName) {
-        const factionIcon = new ImageWidget()
+        const factionIcon = WidgetFactory.imageWidget()
             .setImage(
                 world.TI4.getFactionByNsidName(factionNsidName).icon,
                 packageId
@@ -114,7 +106,7 @@ function drawTechButton(
                     playerTechnologies[requirement] > i
                         ? techIcons[requirement].activeIcon
                         : techIcons[requirement].disabledIcon;
-                let techIcon = new ImageWidget()
+                let techIcon = WidgetFactory.imageWidget()
                     .setImage(image, packageId)
                     .setImageSize(IMAGE_SIZE, IMAGE_SIZE);
                 canvas.addChild(
@@ -218,9 +210,10 @@ function widgetFactory(playerDesk, strategyCardObj) {
     let xOffset = 0;
     let yOffsetMax = 0;
 
-    let canvas = new Canvas();
+    const canvas = WidgetFactory.canvas();
 
-    ["Blue", "Red", "Yellow", "Green"].forEach((type) => {
+    const techColors = ["Blue", "Red", "Yellow", "Green"];
+    techColors.forEach((type) => {
         let yOffset = 0;
         technologies[type].forEach((tech) => {
             drawTechButton(
@@ -241,7 +234,7 @@ function widgetFactory(playerDesk, strategyCardObj) {
     });
 
     technologies.unitUpgrade.forEach((tech, index) => {
-        const techButton = new Button()
+        const techButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(tech.name);
         const xOffset = (tech.unitPosition % 4) * COL_WIDTH;
@@ -268,7 +261,7 @@ function widgetFactory(playerDesk, strategyCardObj) {
     });
 
     // Instead of forcing the overall widget size, place the canvas inside a fixed size box.
-    const fixedSize = new LayoutBox()
+    const fixedSize = WidgetFactory.layoutBox()
         .setOverrideWidth(COL_WIDTH * 4)
         .setOverrideHeight(calculateHeight(playerSlot))
         .setChild(canvas);
