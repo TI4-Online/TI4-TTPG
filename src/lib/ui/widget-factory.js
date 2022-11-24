@@ -64,6 +64,12 @@ class WidgetFactory {
             return;
         }
 
+        // Watch out for double-release.
+        if (widget._isReleased) {
+            return;
+        }
+        widget._isReleased = true;
+
         // If releasing UI release any connected widget.
         if (widget instanceof UIElement) {
             const ui = widget;
@@ -129,7 +135,6 @@ class WidgetFactory {
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
             widget.setText("");
-            assert(!_inventory.button.includes(widget));
             _inventory.button.push(widget);
         } else if (widget instanceof Canvas) {
             const children = widget.getChildren();
@@ -218,7 +223,7 @@ class WidgetFactory {
     }
 
     static border() {
-        const widget = _inventory.border.pop();
+        const widget = WidgetFactory._alloc(_inventory.border);
         if (widget) {
             const child = widget.getChild();
             if (child && child instanceof PlaceHolder) {
@@ -229,37 +234,37 @@ class WidgetFactory {
     }
 
     static button() {
-        const widget = _inventory.button.pop();
+        const widget = WidgetFactory._alloc(_inventory.button);
         return widget ? widget : new Button();
     }
 
     static canvas() {
-        const widget = _inventory.canvas.pop();
+        const widget = WidgetFactory._alloc(_inventory.canvas);
         return widget ? widget : new Canvas();
     }
 
     static checkBox() {
-        const widget = _inventory.checkBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.checkBox);
         return widget ? widget : new CheckBox();
     }
 
     static horizontalBox() {
-        const widget = _inventory.horizontalBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.horizontalBox);
         return widget ? widget : new HorizontalBox();
     }
 
     static imageButton() {
-        const widget = _inventory.imageButton.pop();
+        const widget = WidgetFactory._alloc(_inventory.imageButton);
         return widget ? widget : new ImageButton();
     }
 
     static imageWidget() {
-        const widget = _inventory.imageWidget.pop();
+        const widget = WidgetFactory._alloc(_inventory.imageWidget);
         return widget ? widget : new ImageWidget();
     }
 
     static layoutBox() {
-        const widget = _inventory.layoutBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.layoutBox);
         if (widget) {
             const child = widget.getChild();
             if (child && child instanceof PlaceHolder) {
@@ -270,32 +275,32 @@ class WidgetFactory {
     }
 
     static multilineTextBox() {
-        const widget = RECYCLE && _inventory.multilineTextBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.multilineTextBox);
         return widget ? widget : new MultilineTextBox();
     }
 
     static slider() {
-        const widget = _inventory.slider.pop();
+        const widget = WidgetFactory._alloc(_inventory.slider);
         return widget ? widget : new Slider();
     }
 
     static text() {
-        const widget = _inventory.text.pop();
+        const widget = WidgetFactory._alloc(_inventory.text);
         return widget ? widget : new Text();
     }
 
     static textBox() {
-        const widget = _inventory.textBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.textBox);
         return widget ? widget : new TextBox();
     }
 
     static verticalBox() {
-        const widget = _inventory.verticalBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.verticalBox);
         return widget ? widget : new VerticalBox();
     }
 
     static uiElement() {
-        const widget = _inventory.uiElement.pop();
+        const widget = WidgetFactory._alloc(_inventory.uiElement);
         return widget ? widget : new UIElement();
     }
 
@@ -317,6 +322,19 @@ class WidgetFactory {
             // Otherwise this widget is still linked to another.  Forget it.
         }
         return new PlaceHolder();
+    }
+
+    static _alloc(inventoryArray) {
+        assert(Array.isArray(inventoryArray));
+        const widget = inventoryArray.pop();
+        if (widget) {
+            if (widget instanceof Widget) {
+                assert(!widget.getParent());
+            }
+            assert(widget._isReleased);
+            widget._isReleased = false;
+        }
+        return widget;
     }
 }
 
