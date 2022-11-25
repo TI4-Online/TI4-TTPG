@@ -6,7 +6,8 @@ const {
 const { Broadcast } = require("../../lib/broadcast");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const { refObject, world, Button, Color } = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const { refObject, world, Color } = require("../../wrapper/api");
 
 new AbstractStrategyCard(refObject)
     .setColor(new Color(0.054, 0.45, 0.188))
@@ -26,7 +27,7 @@ new AbstractStrategyCard(refObject)
                 msgColor
             );
         };
-        const primary1Dock1PdsButton = new Button()
+        const primary1Dock1PdsButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(
                 locale("strategy_card.construction.button.primary_1dock_1pds")
@@ -43,7 +44,7 @@ new AbstractStrategyCard(refObject)
                 msgColor
             );
         };
-        const primary2PdsButton = new Button()
+        const primary2PdsButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.construction.button.primary_2pds"));
         primary2PdsButton.onClicked.add(
@@ -58,7 +59,7 @@ new AbstractStrategyCard(refObject)
                 msgColor
             );
         };
-        const secondary1DockButton = new Button()
+        const secondary1DockButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(
                 locale("strategy_card.construction.button.secondary_1dock")
@@ -75,7 +76,7 @@ new AbstractStrategyCard(refObject)
                 msgColor
             );
         };
-        const secondary1PdsButton = new Button()
+        const secondary1PdsButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(
                 locale("strategy_card.construction.button.secondary_1pds")

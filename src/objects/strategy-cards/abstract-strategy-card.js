@@ -5,16 +5,12 @@ const { Broadcast } = require("../../lib/broadcast");
 const { ColorUtil } = require("../../lib/color/color-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
-    Border,
-    Button,
     Color,
     GameObject,
     HorizontalAlignment,
-    LayoutBox,
     Rotator,
-    Text,
-    UIElement,
     Vector,
     VerticalBox,
     Widget,
@@ -90,13 +86,13 @@ class AbstractStrategyCard {
         };
 
         // Setup the play button
-        const playButton = new Button()
+        const playButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_PLAY_BUTTON)
             .setText(playButtonName);
         playButton.onClicked.add(
             ThrottleClickHandler.wrap(handleOnPlayButtonClicked)
         );
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.position = new Vector(3, -0.5, -0.16 - CONFIG.buttonLift);
         ui.rotation = new Rotator(180, 180, 0); // THis makes it appear ont he back side only.
         ui.scale = 1 / SCALE;
@@ -172,7 +168,7 @@ class AbstractStrategyCard {
                 msgColor
             );
         };
-        const primaryButton = new Button()
+        const primaryButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.base.button.primary"));
         primaryButton.onClicked.add(
@@ -208,7 +204,7 @@ class AbstractStrategyCard {
                 msgColor
             );
         };
-        const secondaryButton = new Button()
+        const secondaryButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.base.button.secondary"));
         secondaryButton.onClicked.add(
@@ -244,7 +240,7 @@ class AbstractStrategyCard {
                 msgColor
             );
         };
-        const passButton = new Button()
+        const passButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(locale("strategy_card.base.button.pass"));
         passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
@@ -378,7 +374,8 @@ class AbstractStrategyCard {
         }
         active.push(this);
 
-        const verticalBox = new VerticalBox().setChildDistance(SPACING);
+        const verticalBox =
+            WidgetFactory.verticalBox().setChildDistance(SPACING);
 
         // Create widget header.
         this._createHeader(verticalBox);
@@ -403,13 +400,13 @@ class AbstractStrategyCard {
         }
 
         // Wrap in a padded frame.
-        let widget = new LayoutBox()
+        let widget = WidgetFactory.layoutBox()
             .setPadding(5, 5, 0, 5)
             .setChild(verticalBox);
-        widget = new Border().setColor(this._color).setChild(widget);
+        widget = WidgetFactory.border().setColor(this._color).setChild(widget);
 
         // Add UI.
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.anchorY = 1;
         ui.position = playerDesk.localPositionToWorld({
             x: 10 + active.length * 2,
@@ -444,6 +441,7 @@ class AbstractStrategyCard {
         this._playerSlotToUi[playerSlot] = undefined;
         if (ui) {
             world.removeUIElement(ui);
+            WidgetFactory.release(ui);
         }
     }
 
@@ -452,7 +450,7 @@ class AbstractStrategyCard {
 
         const parsed = ObjectNamespace.parseStrategyCard(this._gameObject);
         const nsidName = parsed.card;
-        const headerText = new Text()
+        const headerText = WidgetFactory.text()
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE)
             .setText(locale(`strategy_card.${nsidName}.text`).toUpperCase());
@@ -466,7 +464,7 @@ class AbstractStrategyCard {
         const onCloseClicked = (button, player) => {
             this._removeUI(playerDesk);
         };
-        const closeButton = new Button()
+        const closeButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY * 1.5)
             .setTextColor(new Color(0.972, 0.317, 0.286))
             .setText(locale("strategy_card.base.button.close").toUpperCase());
@@ -480,17 +478,17 @@ class AbstractStrategyCard {
         assert(playerDesk);
         assert(Array.isArray(this._automatorButtons));
 
-        const toggleButton = new Button()
+        const toggleButton = WidgetFactory.button()
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE / 2)
             .setText(locale(`strategy_card.automator.title`).toUpperCase());
 
         // Wrap so toggle button doesn't stretch to edges.
-        const wrappedToggleButton = new LayoutBox()
+        const wrappedToggleButton = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(toggleButton);
 
-        const panel = new VerticalBox()
+        const panel = WidgetFactory.verticalBox()
             .setChildDistance(SPACING)
             .addChild(wrappedToggleButton);
 
@@ -503,7 +501,7 @@ class AbstractStrategyCard {
                     const onClicked = (button, player) => {
                         automatorButton.handler(playerDesk, player);
                     };
-                    const button = new Button()
+                    const button = WidgetFactory.button()
                         .setFontSize(FONT_SIZE_BODY)
                         .setText(automatorButton.actionName);
                     button.onClicked.add(ThrottleClickHandler.wrap(onClicked));
@@ -519,10 +517,12 @@ class AbstractStrategyCard {
         );
 
         const p = 8 * SCALE;
-        const padded = new LayoutBox()
+        const padded = WidgetFactory.layoutBox()
             .setPadding(p, p, p / 2, p / 2)
             .setChild(panel);
-        const border = new Border().setChild(padded);
+        const border = WidgetFactory.border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(padded);
         verticalBox.addChild(border);
     }
 

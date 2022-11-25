@@ -41,7 +41,7 @@ class SCPT2022UI extends VerticalBox {
         const onCancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
-        onCancelButton.onClicked.add((button, player) => {
+        onCancelButton.onClicked.add((clickedButton, player) => {
             this._onClickHandlers.cancel(player);
             this._createDraftSettingsUI();
         });
@@ -61,7 +61,7 @@ class SCPT2022UI extends VerticalBox {
             .setFontSize(CONFIG.fontSize)
             .setText(draft.name);
         this.addChild(button);
-        button.onClicked.add((button, player) => {
+        button.onClicked.add((clickedButton, player) => {
             this._onClickHandlers.start(draft);
             this._createDraftInProgressUI();
         });
@@ -81,7 +81,7 @@ class SCPT2022UI extends VerticalBox {
                 .setFontSize(CONFIG.fontSize)
                 .setText(`${i + 1}`);
             panel.addChild(button, 1);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
                 console.log(`createChooseFaction: ${i}`);
                 this._onClickHandlers.start(draft, i);
                 this._createDraftInProgressUI();

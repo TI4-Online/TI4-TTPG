@@ -8,15 +8,15 @@ const { BunkerDraftUI } = require("./bunker-draft-ui");
 const { BunkerSliceLayout } = require("./bunker-slice-layout");
 const { ObjectNamespace } = require("../../object-namespace");
 const { SeatTokenUI } = require("../milty/seat-token-ui");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
+const { WidgetFactory } = require("../../ui/widget-factory");
 const { DEFAULT_SLICE_SCALE } = require("./bunker-slice-ui");
 const {
     Player,
     Rotator,
-    UIElement,
     globalEvents,
     world,
 } = require("../../../wrapper/api");
-const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -143,7 +143,7 @@ class BunkerDraft {
             .getWidgetAndSize(onFinishedButton);
         console.log(`draft ${w}x${h}`);
 
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.width = w;
         ui.height = h;
         ui.useWidgetSize = false;
@@ -176,7 +176,9 @@ class BunkerDraft {
     clearPlayerUIs() {
         this._uis.forEach((ui) => {
             world.removeUIElement(ui);
+            WidgetFactory.release(ui);
         });
+        this._uis = [];
         this._updateWaitingFor.forEach((handler) => {
             globalEvents.TI4.onTurnOrderChanged.remove(handler);
             globalEvents.TI4.onTurnChanged.remove(handler);

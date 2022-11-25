@@ -100,7 +100,7 @@ class PremadeMapUI extends VerticalBox {
             const button = new Button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(candidate._displayName);
-            button.onClicked.add((button, player) => {
+            button.onClicked.add((clickedButton, player) => {
                 console.log(`PremadeMapUI.onClicked ${candidate._displayName}`);
                 this._onClickHandlers.useMap(candidate);
             });

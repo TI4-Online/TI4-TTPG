@@ -1,8 +1,10 @@
+const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-delegate");
 const Widget = require("./mock-widget");
 
 class ImageWidget extends Widget {
     constructor(data) {
         super(data);
+        this.onImageLoaded = new TriggerableMulticastDelegate();
     }
 
     setImage(path, packageId) {

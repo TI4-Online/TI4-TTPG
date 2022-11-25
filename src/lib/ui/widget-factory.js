@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const {
     Border,
     Button,
+    Canvas,
     CheckBox,
     HorizontalAlignment,
     HorizontalBox,
@@ -23,19 +24,22 @@ const {
     UIElement,
     refPackageId,
 } = require("../../wrapper/api");
+const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
 
-const RECYCLE = true;
+const RECYCLE = false;
+const INVENTORY_CAP = 600;
 
 const _inventory = {
+    _placeHolder: [],
     border: [],
     button: [],
+    canvas: [],
     checkBox: [],
     horizontalBox: [],
     imageButton: [],
     imageWidget: [],
     layoutBox: [],
     multilineTextBox: [],
-    placeHolder: [],
     slider: [],
     text: [],
     textBox: [],
@@ -43,9 +47,18 @@ const _inventory = {
     uiElement: [],
 };
 
-class PlaceHolder extends Widget {
+// The onClicked.clear seems to fail sometimes?  This version works?
+class CheckButton extends Button {
     constructor() {
         super();
+        this._wrapped = new TriggerableMulticastDelegate();
+        super.onClicked.add((clickedButton, player) => {
+            this._wrapped.trigger(clickedButton, player);
+        });
+    }
+
+    get onClicked() {
+        return this._wrapped;
     }
 }
 
@@ -53,19 +66,25 @@ class WidgetFactory {
     /**
      * Release a widget, if this widget contains others release those too.
      *
-     * @param {Widget} widget
+     * @param {Widget|UIElement} widget
      * @returns {WidgetFactory} self, for chaining
      */
-    static release(widget) {
+    static release(widget, isRecursiveCall) {
         if (!RECYCLE) {
             return;
         }
 
+        // Watch out for double-release.
+        if (widget._isReleased) {
+            return;
+        }
+        widget._isReleased = true;
+
+        // If releasing UI release any connected widget.
         if (widget instanceof UIElement) {
             const ui = widget;
             widget = ui.widget;
             ui.widget = undefined;
-            WidgetFactory.release(widget);
             ui.anchorX = 0.5;
             ui.anchorY = 0.5;
             ui.height = 90;
@@ -79,6 +98,7 @@ class WidgetFactory {
             ui.useWidgetSize = true;
             ui.width = 160;
             _inventory.uiElement.push(ui);
+            WidgetFactory.release(widget);
             return;
         }
 
@@ -110,7 +130,7 @@ class WidgetFactory {
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             for (const child of children) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         }
 
@@ -120,13 +140,19 @@ class WidgetFactory {
             widget.setColor([1, 0, 0, 1]);
             _inventory.border.push(widget);
             if (child) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
             widget.setText("");
-            assert(!_inventory.button.includes(widget));
             _inventory.button.push(widget);
+        } else if (widget instanceof Canvas) {
+            const children = widget.getChildren();
+            for (const child of children) {
+                widget.removeChild(child);
+                WidgetFactory.release(child, true);
+            }
+            _inventory.canvas.push(widget);
         } else if (widget instanceof CheckBox) {
             widget.onCheckStateChanged.clear();
             widget.setText("");
@@ -152,7 +178,6 @@ class WidgetFactory {
             widget.setChild(WidgetFactory._placeholder());
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setMaximumHeight(-1);
-            widget.setMaximumWidget(-1);
             widget.setMinimumWidth(-1);
             widget.setMaximumWidth(-1);
             widget.setOverrideHeight(-1);
@@ -161,7 +186,7 @@ class WidgetFactory {
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             _inventory.layoutBox.push(widget);
             if (child) {
-                WidgetFactory.release(child);
+                WidgetFactory.release(child, true);
             }
         } else if (widget instanceof MultilineTextBox) {
             widget.setBackgroundTransparent(false);
@@ -193,81 +218,109 @@ class WidgetFactory {
             _inventory.verticalBox.push(widget);
         }
 
+        // If alloc/release are not balanced inventory could go out of control.
+        // Trim to a reasonable level.
+        if (!isRecursiveCall) {
+            for (const inventory of Object.values(_inventory)) {
+                const excess = INVENTORY_CAP - inventory.length;
+                if (excess > 0) {
+                    inventory.slice(INVENTORY_CAP);
+                }
+            }
+        }
+
         return this;
     }
 
     static border() {
-        const widget = _inventory.border.pop();
+        const widget = WidgetFactory._alloc(_inventory.border);
         if (widget) {
             const child = widget.getChild();
-            assert(child);
-            _inventory.placeHolder.push(child);
+            if (child && child instanceof Widget) {
+                _inventory._placeHolder.push(child);
+            }
         }
         return widget ? widget : new Border();
     }
 
     static button() {
-        const widget = _inventory.button.pop();
-        return widget ? widget : new Button();
+        let widget = WidgetFactory._alloc(_inventory.button);
+        if (widget) {
+            //widget.onClicked.clear();
+        }
+        widget = widget ? widget : new Button();
+        widget._alloc = widget._alloc || [];
+        widget._alloc.push(new Error().stack);
+        widget.onClicked.add((clickedButton, player) => {
+            const msg = widget._alloc.join("\n");
+            //console.log("XXX\n" + msg);
+        });
+        return widget;
+    }
+
+    static canvas() {
+        const widget = WidgetFactory._alloc(_inventory.canvas);
+        return widget ? widget : new Canvas();
     }
 
     static checkBox() {
-        const widget = _inventory.checkBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.checkBox);
         return widget ? widget : new CheckBox();
     }
 
     static horizontalBox() {
-        const widget = _inventory.horizontalBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.horizontalBox);
         return widget ? widget : new HorizontalBox();
     }
 
     static imageButton() {
-        const widget = _inventory.imageButton.pop();
+        const widget = WidgetFactory._alloc(_inventory.imageButton);
         return widget ? widget : new ImageButton();
     }
 
     static imageWidget() {
-        const widget = _inventory.imageWidget.pop();
+        const widget = WidgetFactory._alloc(_inventory.imageWidget);
         return widget ? widget : new ImageWidget();
     }
 
     static layoutBox() {
-        const widget = _inventory.layoutBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.layoutBox);
         if (widget) {
             const child = widget.getChild();
-            assert(child);
-            _inventory.placeHolder.push(child);
+            if (child && child instanceof Widget) {
+                _inventory._placeHolder.push(child);
+            }
         }
         return widget ? widget : new LayoutBox();
     }
 
     static multilineTextBox() {
-        const widget = RECYCLE && _inventory.multilineTextBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.multilineTextBox);
         return widget ? widget : new MultilineTextBox();
     }
 
     static slider() {
-        const widget = _inventory.slider.pop();
+        const widget = WidgetFactory._alloc(_inventory.slider);
         return widget ? widget : new Slider();
     }
 
     static text() {
-        const widget = _inventory.text.pop();
+        const widget = WidgetFactory._alloc(_inventory.text);
         return widget ? widget : new Text();
     }
 
     static textBox() {
-        const widget = _inventory.textBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.textBox);
         return widget ? widget : new TextBox();
     }
 
     static verticalBox() {
-        const widget = _inventory.verticalBox.pop();
+        const widget = WidgetFactory._alloc(_inventory.verticalBox);
         return widget ? widget : new VerticalBox();
     }
 
     static uiElement() {
-        const widget = _inventory.uiElement.pop();
+        const widget = WidgetFactory._alloc(_inventory.uiElement);
         return widget ? widget : new UIElement();
     }
 
@@ -278,8 +331,31 @@ class WidgetFactory {
      * @returns {Widget}
      */
     static _placeholder() {
-        const widget = _inventory.placeHolder.pop();
-        return widget ? widget : new PlaceHolder();
+        // Placeholders live in "cannot clear child" widgets, expecting the
+        // widget consumer will replace them.  It is possible they will not,
+        // at least not immediately.  Check that a placeholder is free.
+        while (_inventory._placeHolder.length > 0) {
+            const widget = _inventory._placeHolder.pop();
+            if (!widget.getParent()) {
+                return widget;
+            }
+            // Otherwise this widget is still linked to another.  Forget it.
+        }
+        return new Widget();
+    }
+
+    static _alloc(inventoryArray) {
+        assert(Array.isArray(inventoryArray));
+        const widget = inventoryArray.pop();
+        if (widget) {
+            if (widget instanceof Widget) {
+                assert(!widget.getParent());
+            }
+            assert(widget._isReleased);
+            widget._isReleased = false;
+            //assert(!inventoryArray.includes(widget));
+        }
+        return widget;
     }
 }
 

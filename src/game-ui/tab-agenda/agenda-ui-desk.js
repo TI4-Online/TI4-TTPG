@@ -1,28 +1,21 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { AgendaCardButton } = require("../../lib/agenda/agenda-card-widget");
-const { Broadcast } = require("../../lib/broadcast");
-const {
-    Border,
-    Button,
-    HorizontalAlignment,
-    HorizontalBox,
-    LayoutBox,
-    Rotator,
-    Text,
-    TextBox,
-    TextJustification,
-    UIElement,
-    Vector,
-    VerticalAlignment,
-    VerticalBox,
-    world,
-} = require("../../wrapper/api");
-const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
 const {
     AgendaWidgetAvailableVotes,
 } = require("./agenda-widget-available-votes");
+const { Broadcast } = require("../../lib/broadcast");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const {
+    HorizontalAlignment,
+    Rotator,
+    TextJustification,
+    Vector,
+    VerticalAlignment,
+    world,
+} = require("../../wrapper/api");
 
 const ANYONE_CAN_CLICK = false;
 const BUTTON_SCALE = 0.75;
@@ -30,7 +23,7 @@ const BUTTON_SCALE = 0.75;
 /**
  * Per-desk: whens, afters, outcomes
  */
-class AgendaUiDesk extends Border {
+class AgendaUiDesk {
     constructor(playerDesk, outcomeNamesMutable, callbacks) {
         assert(playerDesk);
         assert(typeof outcomeNamesMutable === "boolean");
@@ -48,47 +41,56 @@ class AgendaUiDesk extends Border {
         assert(typeof callbacks.onPredictIncr === "function");
         assert(typeof callbacks.onPredictDecr === "function");
 
-        super();
-        this.setColor(CONFIG.backgroundColor);
+        this._border = WidgetFactory.border();
+        this._border.setColor(CONFIG.backgroundColor);
 
         this._playerDesk = playerDesk;
         this._callbacks = callbacks;
 
         const localPos = new Vector(30, 0, 20);
         const localRot = new Rotator(25, 0, 0);
-        this._ui = new UIElement();
+        this._ui = WidgetFactory.uiElement();
         this._ui.scale = 1 / CONFIG.scale;
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
-        this._ui.widget = this;
+        this._ui.widget = this._border;
 
         this._collapsedUi = undefined;
         this._zoomedAgendaCardUi = undefined;
 
-        let panel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        let panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
         panel.addChild(
-            new AgendaWidgetAvailableVotes(CONFIG.fontSize, playerDesk.index)
+            new AgendaWidgetAvailableVotes(
+                CONFIG.fontSize,
+                playerDesk.index
+            ).getWidget()
         );
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
+        panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
 
-        const midPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
+        const midPanel = WidgetFactory.horizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
         midPanel.addChild(this._createAgendaCardWidget());
-        const midRight = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const midRight = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
         midRight.addChild(this._createWhensWidget());
         midRight.addChild(this._createAftersWidget());
         midPanel.addChild(midRight);
-        const midBox = new LayoutBox()
+        const midBox = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(midPanel);
         panel.addChild(midBox);
 
         panel.addChild(this._createOutcomesWidget(outcomeNamesMutable));
         panel.addChild(this._createLockCollapseWidget());
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
+        panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
         panel.addChild(this._createWaitingForWidget());
 
-        const panelBox = new LayoutBox()
+        const panelBox = WidgetFactory.layoutBox()
             .setPadding(
                 CONFIG.padding,
                 CONFIG.padding,
@@ -96,7 +98,7 @@ class AgendaUiDesk extends Border {
                 CONFIG.padding
             )
             .setChild(panel);
-        this.setChild(panelBox);
+        this._border.setChild(panelBox);
     }
 
     attach() {
@@ -106,12 +108,16 @@ class AgendaUiDesk extends Border {
 
     detach() {
         world.removeUIElement(this._ui);
+        WidgetFactory.release(this._ui);
+        this._ui = undefined;
         if (this._collapsedUi) {
             world.removeUIElement(this._collapsedUi);
+            WidgetFactory.release(this._collapsedUi);
             this._collapsedUi = undefined;
         }
         if (this._zoomedAgendaCardUi) {
             world.removeUIElement(this._zoomedAgendaCardUi);
+            WidgetFactory.release(this._zoomedAgendaCardUi);
             this._zoomedAgendaCardUi = undefined;
         }
         return this;
@@ -130,37 +136,36 @@ class AgendaUiDesk extends Border {
     }
 
     _createAgendaCardWidget() {
-        const box = new LayoutBox().setVerticalAlignment(
+        const box = WidgetFactory.layoutBox().setVerticalAlignment(
             VerticalAlignment.Center
         );
         const card = world.TI4.agenda.getAgendaCard();
         if (card) {
-            const button = new AgendaCardButton(card);
+            const button = AgendaCardWidget.getImageButton(card);
             const width = 48 * CONFIG.scale;
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
 
             button.onClicked.add(
-                ThrottleClickHandler.wrap((button, player) => {
+                ThrottleClickHandler.wrap((clickedButton, player) => {
                     const scale = 3;
                     const width = 330 * scale;
                     const height = (width * 750) / 500;
-                    const popupButton = new AgendaCardButton(card);
+                    const popupButton = AgendaCardWidget.getImageButton(card);
                     popupButton.setImageSize(width, height);
 
-                    this._zoomedAgendaCardUi = new UIElement();
+                    this._zoomedAgendaCardUi = WidgetFactory.uiElement();
                     this._zoomedAgendaCardUi.position = this._ui.position.add([
                         0, 0, 1,
                     ]);
                     this._zoomedAgendaCardUi.rotation = this._ui.rotation;
                     this._zoomedAgendaCardUi.scale = 1 / scale;
-                    this._zoomedAgendaCardUi.widget = new LayoutBox().setChild(
-                        popupButton
-                    );
+                    this._zoomedAgendaCardUi.widget =
+                        WidgetFactory.layoutBox().setChild(popupButton);
                     world.addUI(this._zoomedAgendaCardUi);
 
                     popupButton.onClicked.add(
-                        ThrottleClickHandler.wrap((button, player) => {
+                        ThrottleClickHandler.wrap((clickedButton, player) => {
                             world.removeUIElement(this._zoomedAgendaCardUi);
                             this._zoomedAgendaCardUi = undefined;
                         })
@@ -172,15 +177,15 @@ class AgendaUiDesk extends Border {
     }
 
     _createWhensWidget() {
-        this._noWhensButton = new Button()
+        this._noWhensButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.no_whens"));
-        this._playWhenButton = new Button()
+        this._playWhenButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.play_when"));
 
         this._noWhensButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -188,7 +193,7 @@ class AgendaUiDesk extends Border {
             })
         );
         this._playWhenButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -196,7 +201,7 @@ class AgendaUiDesk extends Border {
             })
         );
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._noWhensButton)
             .addChild(this._playWhenButton);
@@ -204,15 +209,15 @@ class AgendaUiDesk extends Border {
     }
 
     _createAftersWidget() {
-        this._noAftersButton = new Button()
+        this._noAftersButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.no_afters"));
-        this._playAfterButton = new Button()
+        this._playAfterButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.play_after"));
 
         this._noAftersButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -220,7 +225,7 @@ class AgendaUiDesk extends Border {
             })
         );
         this._playAfterButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -228,7 +233,7 @@ class AgendaUiDesk extends Border {
             })
         );
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._noAftersButton)
             .addChild(this._playAfterButton);
@@ -240,26 +245,30 @@ class AgendaUiDesk extends Border {
 
         this._outcomeData = [];
 
-        const colName = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const colVotes = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const colPredictions = new VerticalBox().setChildDistance(
+        const colName = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const colVotes = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const colPredictions = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
 
         colName.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.outcomes"))
         );
         colVotes.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.votes"))
         );
         colPredictions.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.predictions"))
@@ -272,7 +281,9 @@ class AgendaUiDesk extends Border {
             outcomeIndex++
         ) {
             const outcomeName = agenda.getOutcomeName(outcomeIndex);
-            const nameText = outcomeNamesMutable ? new TextBox() : new Text();
+            const nameText = outcomeNamesMutable
+                ? WidgetFactory.textBox()
+                : WidgetFactory.text();
             nameText.setFontSize(CONFIG.fontSize).setText(outcomeName);
             if (outcomeNamesMutable) {
                 let lazyUpdateTimeoutHandle = undefined;
@@ -293,23 +304,23 @@ class AgendaUiDesk extends Border {
             }
             colName.addChild(nameText);
 
-            const voteButton = new Button()
+            const voteButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText(locale("ui.agenda.clippy.vote"));
-            const voteDecrButton = new Button()
+            const voteDecrButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("-")
                 .setEnabled(false);
-            const voteIncrButton = new Button()
+            const voteIncrButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("+")
                 .setEnabled(false);
-            const voteTotalText = new Text()
+            const voteTotalText = WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setText(" [0] ");
 
             voteButton.onClicked.add(
-                ThrottleClickHandler.wrap((button, player) => {
+                ThrottleClickHandler.wrap((clickedButton, player) => {
                     if (!this.allowClick(player)) {
                         return;
                     }
@@ -320,27 +331,27 @@ class AgendaUiDesk extends Border {
                     );
                 })
             );
-            voteDecrButton.onClicked.add((button, player) => {
+            voteDecrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
                 this._callbacks.onVoteDecr(this._playerDesk, player);
             });
-            voteIncrButton.onClicked.add((button, player) => {
+            voteIncrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
                 this._callbacks.onVoteIncr(this._playerDesk, player);
             });
 
-            const votePanel = new HorizontalBox()
+            const votePanel = WidgetFactory.horizontalBox()
                 .addChild(voteButton)
                 .addChild(voteDecrButton)
                 .addChild(voteIncrButton)
                 .addChild(voteTotalText);
             const voteTexts = [];
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const voteText = new Text()
+                const voteText = WidgetFactory.text()
                     .setFontSize(CONFIG.fontSize)
                     .setTextColor(playerDesk.plasticColor)
                     .setText("");
@@ -349,14 +360,14 @@ class AgendaUiDesk extends Border {
             }
             colVotes.addChild(votePanel);
 
-            const predictionDecrButton = new Button()
+            const predictionDecrButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("-");
-            const predictionIncrButton = new Button()
+            const predictionIncrButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("+");
 
-            predictionDecrButton.onClicked.add((button, player) => {
+            predictionDecrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -366,7 +377,7 @@ class AgendaUiDesk extends Border {
                     player
                 );
             });
-            predictionIncrButton.onClicked.add((button, player) => {
+            predictionIncrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -377,12 +388,12 @@ class AgendaUiDesk extends Border {
                 );
             });
 
-            const predictionPanel = new HorizontalBox()
+            const predictionPanel = WidgetFactory.horizontalBox()
                 .addChild(predictionDecrButton)
                 .addChild(predictionIncrButton);
             const predictionTexts = [];
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const predictionText = new Text()
+                const predictionText = WidgetFactory.text()
                     .setFontSize(CONFIG.fontSize)
                     .setTextColor(playerDesk.plasticColor)
                     .setText("");
@@ -404,7 +415,7 @@ class AgendaUiDesk extends Border {
             });
         }
 
-        return new HorizontalBox()
+        return WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing * 3)
             .addChild(colName)
             .addChild(colVotes)
@@ -412,11 +423,11 @@ class AgendaUiDesk extends Border {
     }
 
     _createLockCollapseWidget() {
-        this._lockVoteButton = new Button()
+        this._lockVoteButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.lock_vote"));
         this._lockVoteButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -424,7 +435,7 @@ class AgendaUiDesk extends Border {
             })
         );
 
-        this._collapseButton = new Button()
+        this._collapseButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.button.collapse"));
         this._collapseButton.onClicked.add(
@@ -435,14 +446,14 @@ class AgendaUiDesk extends Border {
                 }
                 world.removeUIElement(this._ui);
 
-                this._collapsedUi = new UIElement();
+                this._collapsedUi = WidgetFactory.uiElement();
                 this._collapsedUi.position = this._ui.position;
                 this._collapsedUi.rotation = this._ui.rotation;
 
-                const expandButton = new Button()
+                const expandButton = WidgetFactory.button()
                     .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                     .setText(locale("ui.button.expand"));
-                const expandButtonBox = new LayoutBox()
+                const expandButtonBox = WidgetFactory.layoutBox()
                     .setPadding(
                         CONFIG.padding,
                         CONFIG.padding,
@@ -451,7 +462,7 @@ class AgendaUiDesk extends Border {
                     )
                     .setChild(expandButton);
                 expandButton.onClicked.add(
-                    ThrottleClickHandler.wrap((button, player) => {
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
                         console.log("AgendaDeskUI.expand");
                         if (!this.allowClick(player)) {
                             return;
@@ -461,18 +472,17 @@ class AgendaUiDesk extends Border {
                         world.addUI(this._ui);
                     })
                 );
-                this._collapsedUi.widget = new Border().setChild(
-                    expandButtonBox
-                );
+                this._collapsedUi.widget =
+                    WidgetFactory.border().setChild(expandButtonBox);
                 world.addUI(this._collapsedUi);
             })
         );
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._lockVoteButton)
             .addChild(this._collapseButton);
-        const box = new LayoutBox()
+        const box = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(panel);
         return box;
@@ -480,7 +490,7 @@ class AgendaUiDesk extends Border {
 
     _createWaitingForWidget() {
         const playerName = "?";
-        this._waitingFor = new Text()
+        this._waitingFor = WidgetFactory.text()
             .setText(
                 locale("ui.agenda.clippy.waiting_for_player_name", {
                     playerName,

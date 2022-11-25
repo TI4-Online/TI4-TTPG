@@ -81,7 +81,7 @@ class SeatTokenUI {
         const button = new Button().setFontSize(this._fontSize).setText(label);
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));
-        this._labelBox.setChild(draftSelection);
+        this._labelBox.setChild(draftSelection.getWidget());
     }
 }
 

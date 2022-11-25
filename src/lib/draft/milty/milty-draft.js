@@ -11,15 +11,15 @@ const { MiltySliceLayout } = require("./milty-slice-layout");
 const { MiltyUtil } = require("./milty-util");
 const { ObjectNamespace } = require("../../object-namespace");
 const { SeatTokenUI } = require("./seat-token-ui");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
+const { WidgetFactory } = require("../../ui/widget-factory");
 const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
 const {
     Player,
     Rotator,
-    UIElement,
     globalEvents,
     world,
 } = require("../../../wrapper/api");
-const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 
 const SELECTION_BORDER_SIZE = 4;
 
@@ -142,7 +142,7 @@ class MiltyDraft {
             .getWidgetAndSize(onFinishedButton);
         console.log(`draft ${w}x${h}`);
 
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.width = w;
         ui.height = h;
         ui.useWidgetSize = false;
@@ -175,7 +175,9 @@ class MiltyDraft {
     clearPlayerUIs() {
         this._uis.forEach((ui) => {
             world.removeUIElement(ui);
+            WidgetFactory.release(ui);
         });
+        this._uis = [];
         this._updateWaitingFor.forEach((handler) => {
             globalEvents.TI4.onTurnOrderChanged.remove(handler);
             globalEvents.TI4.onTurnChanged.remove(handler);

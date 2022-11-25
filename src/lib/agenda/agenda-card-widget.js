@@ -6,6 +6,7 @@ const {
     ImageWidget,
     refPackageId,
 } = require("../../wrapper/api");
+const { WidgetFactory } = require("../ui/widget-factory");
 
 const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
 
@@ -15,7 +16,7 @@ const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
  * At the moment, keep individual images under "ui".  If and when TTPG can
  * select a card in a cardsheet this could share images with the deck(s).
  */
-class AgendaCardWidget extends ImageWidget {
+class AgendaCardWidget {
     static setImagePath(widget, card) {
         assert(widget instanceof ImageWidget || widget instanceof ImageButton);
         assert(card instanceof Card);
@@ -41,19 +42,23 @@ class AgendaCardWidget extends ImageWidget {
         widget.setImageSize(500, 750);
     }
 
-    constructor(card) {
+    static getImageWidget(card) {
         assert(card instanceof Card);
-        super();
-        AgendaCardWidget.setImagePath(this, card);
+        const wdiget = WidgetFactory.imageWidget();
+        AgendaCardWidget.setImagePath(wdiget, card);
+        return wdiget;
+    }
+
+    static getImageButton(card) {
+        assert(card instanceof Card);
+        const wdiget = WidgetFactory.imageButton();
+        AgendaCardWidget.setImagePath(wdiget, card);
+        return wdiget;
+    }
+
+    constructor(card) {
+        throw new Error("static only");
     }
 }
 
-class AgendaCardButton extends ImageButton {
-    constructor(card) {
-        assert(card instanceof Card);
-        super();
-        AgendaCardWidget.setImagePath(this, card);
-    }
-}
-
-module.exports = { AgendaCardWidget, AgendaCardButton };
+module.exports = { AgendaCardWidget };

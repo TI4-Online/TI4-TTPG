@@ -2,28 +2,27 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const { AgendaWidgetSummary } = require("./agenda-widget-summary");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
-    Button,
     HorizontalAlignment,
-    HorizontalBox,
-    ImageWidget,
-    LayoutBox,
-    Text,
     TextJustification,
     VerticalAlignment,
-    VerticalBox,
     refPackageId,
 } = require("../../wrapper/api");
 
-class AgendaUiMain extends LayoutBox {
+class AgendaUiMain {
+    constructor() {
+        throw new Error("static only");
+    }
+
     static simpleNoMechy(text) {
         assert(typeof text === "string");
 
         const textWidget = AgendaUiMain.createMainText(text);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(textWidget);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(textWidget);
     }
 
     static simple(text) {
@@ -31,14 +30,14 @@ class AgendaUiMain extends LayoutBox {
 
         const textWidget = AgendaUiMain.createMainText(text);
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(textWidget, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleYesNo(text, yesHandler, noHandler) {
@@ -50,14 +49,14 @@ class AgendaUiMain extends LayoutBox {
             .addChild(AgendaUiMain.createMainText(text))
             .addChild(AgendaUiMain.createYesNo(yesHandler, noHandler));
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleWaiting(text) {
@@ -67,14 +66,14 @@ class AgendaUiMain extends LayoutBox {
             .addChild(AgendaUiMain.createMainText(text))
             .addChild(AgendaUiMain.createWaitingFor());
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleButton(text, buttonText, buttonHandler) {
@@ -86,14 +85,14 @@ class AgendaUiMain extends LayoutBox {
             .addChild(AgendaUiMain.createMainText(text))
             .addChild(AgendaUiMain.createButton(buttonText, buttonHandler));
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleButtonList(text, buttonTextsAndOnClicks) {
@@ -106,28 +105,28 @@ class AgendaUiMain extends LayoutBox {
         buttonTextsAndOnClicks.forEach((buttonTextAndOnClick) => {
             assert(typeof buttonTextAndOnClick.text === "string");
             assert(typeof buttonTextAndOnClick.onClick === "function");
-            const button = new Button()
+            const button = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(buttonTextAndOnClick.text);
             button.onClicked.add(buttonTextAndOnClick.onClick);
             leftPanel.addChild(button);
         });
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleWithState(text) {
         assert(typeof text === "string");
 
-        const summary = new AgendaWidgetSummary();
-        const summaryBox = new LayoutBox()
+        const summary = new AgendaWidgetSummary().getWidget();
+        const summaryBox = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(summary);
@@ -135,21 +134,15 @@ class AgendaUiMain extends LayoutBox {
         return summaryBox;
     }
 
-    constructor() {
-        super();
-
-        this.setVerticalAlignment(VerticalAlignment.Center);
-    }
-
     static createLeftPanel() {
-        return new VerticalBox().setChildDistance(
+        return WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing + CONFIG.fontSize
         );
     }
 
     static createMainText(text) {
         assert(typeof text === "string");
-        return new Text()
+        return WidgetFactory.text()
             .setText(text)
             .setJustification(TextJustification.Center)
             .setFontSize(CONFIG.fontSize)
@@ -159,15 +152,15 @@ class AgendaUiMain extends LayoutBox {
     static createYesNo(yesHandler, noHandler) {
         assert(typeof yesHandler === "function");
         assert(typeof noHandler === "function");
-        const yesButton = new Button()
+        const yesButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.clippy.yes"));
         yesButton.onClicked.add(yesHandler);
-        const noButton = new Button()
+        const noButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.clippy.no"));
         noButton.onClicked.add(noHandler);
-        return new HorizontalBox()
+        return WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(yesButton, 1)
             .addChild(noButton, 1);
@@ -176,7 +169,7 @@ class AgendaUiMain extends LayoutBox {
     static createButton(buttonText, buttonHandler) {
         assert(typeof buttonText === "string");
         assert(typeof buttonHandler === "function");
-        const button = new Button()
+        const button = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(buttonText);
         button.onClicked.add(buttonHandler);
@@ -184,10 +177,10 @@ class AgendaUiMain extends LayoutBox {
     }
 
     static createMechy() {
-        const img = new ImageWidget()
+        const img = WidgetFactory.imageWidget()
             .setImage("global/ui/mechy.png", refPackageId)
             .setImageSize(256 * CONFIG.scale, 256 * CONFIG.scale);
-        return new LayoutBox()
+        return WidgetFactory.layoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setChild(img);

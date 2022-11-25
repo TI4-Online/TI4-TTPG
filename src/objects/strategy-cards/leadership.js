@@ -5,16 +5,9 @@ const {
     FONT_SIZE_BODY,
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
-const {
-    refObject,
-    world,
-    Button,
-    CheckBox,
-    Color,
-    Slider,
-    Text,
-} = require("../../wrapper/api");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const { refObject, world, Color } = require("../../wrapper/api");
 
 const selections = {};
 
@@ -54,17 +47,17 @@ function widgetFactory(playerDesk, strategyCardObj) {
         primary: false,
     };
 
-    const primaryCheckBox = new CheckBox()
+    const primaryCheckBox = WidgetFactory.checkBox()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.leadership.text.primary"));
     primaryCheckBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
         getPlayerSelectionBySlot(playerSlot).primary = isChecked;
     });
 
-    const sliderText = new Text()
+    const sliderText = WidgetFactory.text()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.leadership.slider_text"));
-    const slider = new Slider()
+    const slider = WidgetFactory.slider()
         .setFontSize(FONT_SIZE_BODY)
         .setTextBoxWidth(FONT_SIZE_BODY * 3)
         .setStepSize(1)
@@ -76,7 +69,7 @@ function widgetFactory(playerDesk, strategyCardObj) {
     const reportTokensClicked = (button, player) => {
         onStrategyCardSelectionDone(playerDesk);
     };
-    const reportTokensButton = new Button()
+    const reportTokensButton = WidgetFactory.button()
         .setFontSize(FONT_SIZE_BODY)
         .setText(locale("strategy_card.leadership.button.report"));
     reportTokensButton.onClicked.add(

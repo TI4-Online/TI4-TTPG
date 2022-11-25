@@ -1,10 +1,17 @@
 const assert = require("assert");
 const { AgendaCardWidget } = require("./agenda-card-widget");
-const { MockCard } = require("../../wrapper/api");
+const { ImageButton, ImageWidget, MockCard } = require("../../wrapper/api");
 
-it("constructor", () => {
+it("getImageWidget", () => {
     const nsid = "card.agenda:pok/articles_of_war";
     const card = MockCard.__create(nsid);
-    const agendaCardWidget = new AgendaCardWidget(card);
-    assert(agendaCardWidget);
+    const agendaCardWidget = AgendaCardWidget.getImageWidget(card);
+    assert(agendaCardWidget instanceof ImageWidget);
+});
+
+it("getImageButton", () => {
+    const nsid = "card.agenda:pok/articles_of_war";
+    const card = MockCard.__create(nsid);
+    const agendaCardWidget = AgendaCardWidget.getImageButton(card);
+    assert(agendaCardWidget instanceof ImageButton);
 });

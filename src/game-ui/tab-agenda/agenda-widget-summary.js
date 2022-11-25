@@ -2,20 +2,17 @@ const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
 const {
-    Border,
+    AgendaWidgetAvailableVotes,
+} = require("./agenda-widget-available-votes");
+const {
     HorizontalAlignment,
     HorizontalBox,
-    LayoutBox,
-    Text,
     TextJustification,
     VerticalAlignment,
-    VerticalBox,
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const {
-    AgendaWidgetAvailableVotes,
-} = require("./agenda-widget-available-votes");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 let _agendaWidgetSummary = undefined;
 
@@ -23,7 +20,9 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
     if (!_agendaWidgetSummary) {
         return; // no active summary
     }
-    if (!_agendaWidgetSummary.getParent()) {
+    const widget = _agendaWidgetSummary.getWidget();
+    if (!widget.getParent()) {
+        WidgetFactory.release(widget);
         _agendaWidgetSummary = undefined;
         return; // orphaned summary, release reference
     }
@@ -34,10 +33,10 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
  * Agenda phase summary, used for main UI (streamer request).
  * Can handle
  */
-class AgendaWidgetSummary extends HorizontalBox {
+class AgendaWidgetSummary {
     constructor() {
-        super();
-        this.setChildDistance(CONFIG.spacing * 3);
+        this._horizontalBox = WidgetFactory.horizontalBox();
+        this._horizontalBox.setChildDistance(CONFIG.spacing * 3);
 
         this._createUI();
         this._updateUI();
@@ -46,19 +45,23 @@ class AgendaWidgetSummary extends HorizontalBox {
         _agendaWidgetSummary = this;
     }
 
+    getWidget() {
+        return this._horizontalBox;
+    }
+
     _createUI() {
         const agenda = world.TI4.agenda;
 
         const card = world.TI4.agenda.getAgendaCard();
         if (card) {
-            const leftPanel = new AgendaCardWidget(card);
+            const leftPanel = AgendaCardWidget.getImageWidget(card);
             const width = 200 * CONFIG.scale;
             leftPanel.setImageSize(width, (width * 750) / 500);
-            const leftBox = new LayoutBox()
+            const leftBox = WidgetFactory.layoutBox()
                 .setChild(leftPanel)
                 .setVerticalAlignment(VerticalAlignment.Center)
                 .setHorizontalAlignment(HorizontalAlignment.Center);
-            this.addChild(leftBox, 0);
+            this._horizontalBox.addChild(leftBox, 0);
         }
 
         let fontSize = CONFIG.fontSize;
@@ -67,38 +70,46 @@ class AgendaWidgetSummary extends HorizontalBox {
             fontSize = (fontSize * fitOutcomes) / agenda.getNumOutcomes();
         }
 
-        const rightPanel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        const rightPanel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
         const deskIndex = -1; // not a desk
         const availableVotes = new AgendaWidgetAvailableVotes(
             fontSize,
             deskIndex
         ).addResetButton();
-        rightPanel.addChild(availableVotes);
-        rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
+        rightPanel.addChild(availableVotes.getWidget());
+        rightPanel.addChild(
+            WidgetFactory.border().setColor(CONFIG.spacerColor)
+        );
 
         this._outcomeData = [];
 
-        const colName = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const colVotes = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const colPredictions = new VerticalBox().setChildDistance(
+        const colName = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const colVotes = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const colPredictions = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
 
         colName.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.outcomes"))
         );
         colVotes.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.votes"))
         );
         colPredictions.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.predictions"))
@@ -110,19 +121,20 @@ class AgendaWidgetSummary extends HorizontalBox {
             outcomeIndex++
         ) {
             const outcomeName = agenda.getOutcomeName(outcomeIndex);
-            const nameText = new Text()
+            const nameText = WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setText(outcomeName);
             colName.addChild(nameText);
 
-            const voteTotalText = new Text()
+            const voteTotalText = WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setText(" [0] ");
 
-            const votePanel = new HorizontalBox().addChild(voteTotalText);
+            const votePanel =
+                WidgetFactory.horizontalBox().addChild(voteTotalText);
             const voteTexts = [];
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const voteText = new Text()
+                const voteText = WidgetFactory.text()
                     .setFontSize(fontSize)
                     .setTextColor(playerDesk.color)
                     .setText("");
@@ -134,7 +146,7 @@ class AgendaWidgetSummary extends HorizontalBox {
             const predictionPanel = new HorizontalBox();
             const predictionTexts = [];
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const predictionText = new Text()
+                const predictionText = WidgetFactory.text()
                     .setFontSize(fontSize)
                     .setTextColor(playerDesk.color)
                     .setText("");
@@ -151,17 +163,19 @@ class AgendaWidgetSummary extends HorizontalBox {
             });
         }
 
-        const box = new HorizontalBox()
+        const box = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing * 3)
             .addChild(colName)
             .addChild(colVotes)
             .addChild(colPredictions);
         rightPanel.addChild(box);
 
-        rightPanel.addChild(new Border().setColor(CONFIG.spacerColor));
+        rightPanel.addChild(
+            WidgetFactory.border().setColor(CONFIG.spacerColor)
+        );
 
         const playerName = "?";
-        this._waitingFor = new Text()
+        this._waitingFor = WidgetFactory.text()
             .setText(
                 locale("ui.agenda.clippy.waiting_for_player_name", {
                     playerName,
@@ -172,12 +186,12 @@ class AgendaWidgetSummary extends HorizontalBox {
 
         rightPanel.addChild(this._waitingFor);
 
-        const rightBox = new LayoutBox()
+        const rightBox = WidgetFactory.layoutBox()
             .setChild(rightPanel)
             .setVerticalAlignment(VerticalAlignment.Center)
             .setHorizontalAlignment(HorizontalAlignment.Center);
 
-        this.addChild(rightBox, 1);
+        this._horizontalBox.addChild(rightBox, 1);
     }
 
     _updateUI() {

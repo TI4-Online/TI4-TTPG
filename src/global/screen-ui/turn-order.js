@@ -131,7 +131,7 @@ class TurnOrderScreenUI {
             .setImage("global/ui/white16x16.png", refPackageId)
             .setImageSize(BUTTON_SIZE, BUTTON_SIZE)
             .setTintColor([c, c, c, 1]);
-        button.onClicked.add((button, player) => {
+        button.onClicked.add((clickedButton, player) => {
             this.toggle(player);
         });
 
