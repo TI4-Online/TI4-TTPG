@@ -246,16 +246,9 @@ class WidgetFactory {
     static button() {
         let widget = WidgetFactory._alloc(_inventory.button);
         if (widget) {
-            //widget.onClicked.clear();
+            widget.onClicked.clear(); // cleared on recycle, be paranoid and go again
         }
-        widget = widget ? widget : new Button();
-        widget._alloc = widget._alloc || [];
-        widget._alloc.push(new Error().stack);
-        widget.onClicked.add((clickedButton, player) => {
-            const msg = widget._alloc.join("\n");
-            //console.log("XXX\n" + msg);
-        });
-        return widget;
+        return widget ? widget : new Button();
     }
 
     static canvas() {
