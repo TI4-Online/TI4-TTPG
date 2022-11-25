@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { AgendaCardButton } = require("../../lib/agenda/agenda-card-widget");
+const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
 const {
     AgendaWidgetAvailableVotes,
 } = require("./agenda-widget-available-votes");
@@ -141,7 +141,7 @@ class AgendaUiDesk {
         );
         const card = world.TI4.agenda.getAgendaCard();
         if (card) {
-            const button = new AgendaCardButton(card);
+            const button = AgendaCardWidget.getImageButton(card);
             const width = 48 * CONFIG.scale;
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
@@ -151,7 +151,7 @@ class AgendaUiDesk {
                     const scale = 3;
                     const width = 330 * scale;
                     const height = (width * 750) / 500;
-                    const popupButton = new AgendaCardButton(card);
+                    const popupButton = AgendaCardWidget.getImageButton(card);
                     popupButton.setImageSize(width, height);
 
                     this._zoomedAgendaCardUi = WidgetFactory.uiElement();

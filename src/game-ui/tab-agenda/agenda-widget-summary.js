@@ -54,7 +54,7 @@ class AgendaWidgetSummary {
 
         const card = world.TI4.agenda.getAgendaCard();
         if (card) {
-            const leftPanel = new AgendaCardWidget(card);
+            const leftPanel = AgendaCardWidget.getImageWidget(card);
             const width = 200 * CONFIG.scale;
             leftPanel.setImageSize(width, (width * 750) / 500);
             const leftBox = WidgetFactory.layoutBox()

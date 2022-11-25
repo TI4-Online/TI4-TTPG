@@ -24,11 +24,13 @@ const {
     UIElement,
     refPackageId,
 } = require("../../wrapper/api");
+const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
 
-const RECYCLE = true;
+const RECYCLE = false;
 const INVENTORY_CAP = 600;
 
 const _inventory = {
+    _placeHolder: [],
     border: [],
     button: [],
     canvas: [],
@@ -38,7 +40,6 @@ const _inventory = {
     imageWidget: [],
     layoutBox: [],
     multilineTextBox: [],
-    placeHolder: [],
     slider: [],
     text: [],
     textBox: [],
@@ -46,9 +47,18 @@ const _inventory = {
     uiElement: [],
 };
 
-class PlaceHolder extends Widget {
+// The onClicked.clear seems to fail sometimes?  This version works?
+class CheckButton extends Button {
     constructor() {
         super();
+        this._wrapped = new TriggerableMulticastDelegate();
+        super.onClicked.add((clickedButton, player) => {
+            this._wrapped.trigger(clickedButton, player);
+        });
+    }
+
+    get onClicked() {
+        return this._wrapped;
     }
 }
 
@@ -75,7 +85,6 @@ class WidgetFactory {
             const ui = widget;
             widget = ui.widget;
             ui.widget = undefined;
-            WidgetFactory.release(widget);
             ui.anchorX = 0.5;
             ui.anchorY = 0.5;
             ui.height = 90;
@@ -89,6 +98,7 @@ class WidgetFactory {
             ui.useWidgetSize = true;
             ui.width = 160;
             _inventory.uiElement.push(ui);
+            WidgetFactory.release(widget);
             return;
         }
 
@@ -226,16 +236,26 @@ class WidgetFactory {
         const widget = WidgetFactory._alloc(_inventory.border);
         if (widget) {
             const child = widget.getChild();
-            if (child && child instanceof PlaceHolder) {
-                _inventory.placeHolder.push(child);
+            if (child && child instanceof Widget) {
+                _inventory._placeHolder.push(child);
             }
         }
         return widget ? widget : new Border();
     }
 
     static button() {
-        const widget = WidgetFactory._alloc(_inventory.button);
-        return widget ? widget : new Button();
+        let widget = WidgetFactory._alloc(_inventory.button);
+        if (widget) {
+            //widget.onClicked.clear();
+        }
+        widget = widget ? widget : new Button();
+        widget._alloc = widget._alloc || [];
+        widget._alloc.push(new Error().stack);
+        widget.onClicked.add((clickedButton, player) => {
+            const msg = widget._alloc.join("\n");
+            //console.log("XXX\n" + msg);
+        });
+        return widget;
     }
 
     static canvas() {
@@ -267,8 +287,8 @@ class WidgetFactory {
         const widget = WidgetFactory._alloc(_inventory.layoutBox);
         if (widget) {
             const child = widget.getChild();
-            if (child && child instanceof PlaceHolder) {
-                _inventory.placeHolder.push(child);
+            if (child && child instanceof Widget) {
+                _inventory._placeHolder.push(child);
             }
         }
         return widget ? widget : new LayoutBox();
@@ -314,14 +334,14 @@ class WidgetFactory {
         // Placeholders live in "cannot clear child" widgets, expecting the
         // widget consumer will replace them.  It is possible they will not,
         // at least not immediately.  Check that a placeholder is free.
-        while (_inventory.placeHolder.length > 0) {
-            const widget = _inventory.placeHolder.pop();
+        while (_inventory._placeHolder.length > 0) {
+            const widget = _inventory._placeHolder.pop();
             if (!widget.getParent()) {
                 return widget;
             }
             // Otherwise this widget is still linked to another.  Forget it.
         }
-        return new PlaceHolder();
+        return new Widget();
     }
 
     static _alloc(inventoryArray) {
@@ -333,6 +353,7 @@ class WidgetFactory {
             }
             assert(widget._isReleased);
             widget._isReleased = false;
+            //assert(!inventoryArray.includes(widget));
         }
         return widget;
     }

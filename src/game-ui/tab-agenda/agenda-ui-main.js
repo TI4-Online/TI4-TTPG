@@ -5,21 +5,24 @@ const { AgendaWidgetSummary } = require("./agenda-widget-summary");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
-    LayoutBox,
     TextJustification,
     VerticalAlignment,
     refPackageId,
 } = require("../../wrapper/api");
 
-class AgendaUiMain extends LayoutBox {
+class AgendaUiMain {
+    constructor() {
+        throw new Error("static only");
+    }
+
     static simpleNoMechy(text) {
         assert(typeof text === "string");
 
         const textWidget = AgendaUiMain.createMainText(text);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(textWidget);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(textWidget);
     }
 
     static simple(text) {
@@ -32,9 +35,9 @@ class AgendaUiMain extends LayoutBox {
             .addChild(textWidget, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleYesNo(text, yesHandler, noHandler) {
@@ -51,9 +54,9 @@ class AgendaUiMain extends LayoutBox {
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleWaiting(text) {
@@ -68,9 +71,9 @@ class AgendaUiMain extends LayoutBox {
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleButton(text, buttonText, buttonHandler) {
@@ -87,9 +90,9 @@ class AgendaUiMain extends LayoutBox {
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleButtonList(text, buttonTextsAndOnClicks) {
@@ -114,9 +117,9 @@ class AgendaUiMain extends LayoutBox {
             .addChild(leftPanel, 1)
             .addChild(AgendaUiMain.createMechy(), 0);
 
-        const abstract = new AgendaUiMain();
-        abstract.setChild(panel);
-        return abstract;
+        return WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(panel);
     }
 
     static simpleWithState(text) {
@@ -129,12 +132,6 @@ class AgendaUiMain extends LayoutBox {
             .setChild(summary);
 
         return summaryBox;
-    }
-
-    constructor() {
-        super();
-
-        this.setVerticalAlignment(VerticalAlignment.Center);
     }
 
     static createLeftPanel() {
