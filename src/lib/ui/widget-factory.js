@@ -26,7 +26,7 @@ const {
 } = require("../../wrapper/api");
 
 const RECYCLE = true;
-const INVENTORY_CAP = 1000;
+const INVENTORY_CAP = 600;
 
 const _inventory = {
     border: [],

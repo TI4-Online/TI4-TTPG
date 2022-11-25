@@ -1,12 +1,13 @@
+const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Agenda } = require("../../lib/agenda/agenda");
 const { AgendaUiDesk } = require("./agenda-ui-desk");
 const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
-const { LayoutBox, globalEvents, world } = require("../../wrapper/api");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
+const { Widget, globalEvents, world } = require("../../wrapper/api");
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -14,7 +15,7 @@ function capitalizeFirstLetter(string) {
 
 class TabAgenda {
     constructor() {
-        this._widget = new LayoutBox();
+        this._layoutBox = WidgetFactory.layoutBox();
 
         // If the overall state changes for main/desks destroy and recreate.
         // This causes a screen flash, so minor updates just edit UI in place.
@@ -34,7 +35,7 @@ class TabAgenda {
     }
 
     getUI() {
-        return this._widget;
+        return this._layoutBox;
     }
 
     update() {
@@ -45,9 +46,10 @@ class TabAgenda {
     }
 
     _setMainUI(widget) {
-        const old = this._widget.getChild();
-        this._widget.setChild(widget);
-        if (old) {
+        assert(widget instanceof Widget);
+        const old = this._layoutBox.getChild();
+        this._layoutBox.setChild(widget);
+        if (old && old !== widget) {
             WidgetFactory.release(old);
         }
     }

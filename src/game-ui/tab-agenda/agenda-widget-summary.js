@@ -20,7 +20,9 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
     if (!_agendaWidgetSummary) {
         return; // no active summary
     }
-    if (!_agendaWidgetSummary.getParent()) {
+    const widget = _agendaWidgetSummary.getWidget();
+    if (!widget.getParent()) {
+        WidgetFactory.release(widget);
         _agendaWidgetSummary = undefined;
         return; // orphaned summary, release reference
     }
@@ -31,16 +33,20 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
  * Agenda phase summary, used for main UI (streamer request).
  * Can handle
  */
-class AgendaWidgetSummary extends HorizontalBox {
+class AgendaWidgetSummary {
     constructor() {
-        super();
-        this.setChildDistance(CONFIG.spacing * 3);
+        this._horizontalBox = WidgetFactory.horizontalBox();
+        this._horizontalBox.setChildDistance(CONFIG.spacing * 3);
 
         this._createUI();
         this._updateUI();
 
         // Track one to get update events.
         _agendaWidgetSummary = this;
+    }
+
+    getWidget() {
+        return this._horizontalBox;
     }
 
     _createUI() {
@@ -55,7 +61,7 @@ class AgendaWidgetSummary extends HorizontalBox {
                 .setChild(leftPanel)
                 .setVerticalAlignment(VerticalAlignment.Center)
                 .setHorizontalAlignment(HorizontalAlignment.Center);
-            this.addChild(leftBox, 0);
+            this._horizontalBox.addChild(leftBox, 0);
         }
 
         let fontSize = CONFIG.fontSize;
@@ -73,7 +79,7 @@ class AgendaWidgetSummary extends HorizontalBox {
             fontSize,
             deskIndex
         ).addResetButton();
-        rightPanel.addChild(availableVotes);
+        rightPanel.addChild(availableVotes.getWidget());
         rightPanel.addChild(
             WidgetFactory.border().setColor(CONFIG.spacerColor)
         );
@@ -185,7 +191,7 @@ class AgendaWidgetSummary extends HorizontalBox {
             .setVerticalAlignment(VerticalAlignment.Center)
             .setHorizontalAlignment(HorizontalAlignment.Center);
 
-        this.addChild(rightBox, 1);
+        this._horizontalBox.addChild(rightBox, 1);
     }
 
     _updateUI() {

@@ -77,7 +77,7 @@ class AgendaWidgetAvailableVotes {
             AgendaWidgetAvailableVotes.resetAll();
         });
 
-        this.addChild(button);
+        this._verticalBox.addChild(button);
 
         return this;
     }

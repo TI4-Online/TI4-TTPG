@@ -147,7 +147,7 @@ class AgendaUiDesk {
             box.setChild(button);
 
             button.onClicked.add(
-                ThrottleClickHandler.wrap((button, player) => {
+                ThrottleClickHandler.wrap((clickedButton, player) => {
                     const scale = 3;
                     const width = 330 * scale;
                     const height = (width * 750) / 500;
@@ -165,7 +165,7 @@ class AgendaUiDesk {
                     world.addUI(this._zoomedAgendaCardUi);
 
                     popupButton.onClicked.add(
-                        ThrottleClickHandler.wrap((button, player) => {
+                        ThrottleClickHandler.wrap((clickedButton, player) => {
                             world.removeUIElement(this._zoomedAgendaCardUi);
                             this._zoomedAgendaCardUi = undefined;
                         })
@@ -185,7 +185,7 @@ class AgendaUiDesk {
             .setText(locale("ui.agenda.clippy.play_when"));
 
         this._noWhensButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -193,7 +193,7 @@ class AgendaUiDesk {
             })
         );
         this._playWhenButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -217,7 +217,7 @@ class AgendaUiDesk {
             .setText(locale("ui.agenda.clippy.play_after"));
 
         this._noAftersButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -225,7 +225,7 @@ class AgendaUiDesk {
             })
         );
         this._playAfterButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -268,7 +268,7 @@ class AgendaUiDesk {
                 .setText(locale("ui.agenda.label.votes"))
         );
         colPredictions.addChild(
-            WidgetFactory.getTextext()
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setBold(true)
                 .setText(locale("ui.agenda.label.predictions"))
@@ -320,7 +320,7 @@ class AgendaUiDesk {
                 .setText(" [0] ");
 
             voteButton.onClicked.add(
-                ThrottleClickHandler.wrap((button, player) => {
+                ThrottleClickHandler.wrap((clickedButton, player) => {
                     if (!this.allowClick(player)) {
                         return;
                     }
@@ -331,13 +331,13 @@ class AgendaUiDesk {
                     );
                 })
             );
-            voteDecrButton.onClicked.add((button, player) => {
+            voteDecrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
                 this._callbacks.onVoteDecr(this._playerDesk, player);
             });
-            voteIncrButton.onClicked.add((button, player) => {
+            voteIncrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -367,7 +367,7 @@ class AgendaUiDesk {
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("+");
 
-            predictionDecrButton.onClicked.add((button, player) => {
+            predictionDecrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -377,7 +377,7 @@ class AgendaUiDesk {
                     player
                 );
             });
-            predictionIncrButton.onClicked.add((button, player) => {
+            predictionIncrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -427,7 +427,7 @@ class AgendaUiDesk {
             .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
             .setText(locale("ui.agenda.clippy.lock_vote"));
         this._lockVoteButton.onClicked.add(
-            ThrottleClickHandler.wrap((button, player) => {
+            ThrottleClickHandler.wrap((clickedButton, player) => {
                 if (!this.allowClick(player)) {
                     return;
                 }
@@ -462,7 +462,7 @@ class AgendaUiDesk {
                     )
                     .setChild(expandButton);
                 expandButton.onClicked.add(
-                    ThrottleClickHandler.wrap((button, player) => {
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
                         console.log("AgendaDeskUI.expand");
                         if (!this.allowClick(player)) {
                             return;
