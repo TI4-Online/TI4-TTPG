@@ -39,7 +39,9 @@ class AgendaWidgetSummary {
         // to release this object directly.
         if (this._horizontalBox._onFreed) {
             this._horizontalBox._onFreed.add(() => {
-                console.log("AgendaWidgetSummary onFreed");
+                if (!world.__isMock) {
+                    console.log("AgendaWidgetSummary onFreed");
+                }
                 _agendaWidgetSummary = undefined;
             });
         }
