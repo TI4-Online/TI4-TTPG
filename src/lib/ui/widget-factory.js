@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
 const {
     Border,
     Button,
@@ -20,48 +21,152 @@ const {
     Vector,
     VerticalAlignment,
     VerticalBox,
-    Widget,
     UIElement,
+    Widget,
     refPackageId,
+    world,
 } = require("../../wrapper/api");
-const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate");
 
-const RECYCLE = false;
+// ----------------------------------------------------------------------------
+
+const RECYCLE = true;
 const INVENTORY_CAP = 600;
 
-const _inventory = {
-    _placeHolder: [],
-    border: [],
-    button: [],
-    canvas: [],
-    checkBox: [],
-    horizontalBox: [],
-    imageButton: [],
-    imageWidget: [],
-    layoutBox: [],
-    multilineTextBox: [],
-    slider: [],
-    text: [],
-    textBox: [],
-    verticalBox: [],
-    uiElement: [],
-};
+if (!world.__isMock) {
+    console.log(`WidgetFactory RECYCLE=${RECYCLE} cap=${INVENTORY_CAP}`);
+}
 
-// The onClicked.clear seems to fail sometimes?  This version works?
-class CheckButton extends Button {
-    constructor() {
-        super();
-        this._wrapped = new TriggerableMulticastDelegate();
-        super.onClicked.add((clickedButton, player) => {
-            this._wrapped.trigger(clickedButton, player);
-        });
+/**
+ * Manage a widget type.
+ *
+ * Creating a widget first attempts to recycle from a freelist, freeing one
+ * adds to the list (up to a size cap).
+ */
+class WidgetInventoryEntry {
+    constructor(createOne) {
+        assert(typeof createOne === "function");
+        this._createOne = createOne;
+        this._free = [];
+        this._active = [];
     }
 
-    get onClicked() {
-        return this._wrapped;
+    push(widget) {
+        if (!RECYCLE) {
+            return;
+        }
+
+        if (widget._onFreed) {
+            widget._onFreed.trigger(widget);
+            widget._onFreed.clear();
+        }
+
+        // Remove from active.  REQUIRE it be active, otherwise it may have
+        // been afflicted by the Unreal JS widget proxy bug.  Likewise this
+        // catches any double-release bugs.
+        const index = this._active.indexOf(widget);
+        if (index < 0) {
+            return; // not created by WidgetFactory (or maybe double released).
+        }
+        this._active.splice(index, 1);
+
+        // If free is full abandon object.
+        if (this._free.length >= INVENTORY_CAP) {
+            return;
+        }
+
+        // Return to free.
+        this._free.push(widget);
+    }
+
+    popOrCreate() {
+        if (!RECYCLE) {
+            return this._createOne();
+        }
+
+        let widget = this._free.pop();
+        if (!widget) {
+            widget = this._createOne();
+        }
+        this._active.push(widget);
+
+        // Add a per-widget event triggered when freed.
+        // This is useful for paranoid callers who want to
+        // make sure they no longer attempt to update it later.
+        // (e.g. the agenda summary UI that can get dismissed
+        // in a variety of ways, this method safeguards against
+        // forgetting to clean up in a release path.)
+        widget._onFreed = new TriggerableMulticastDelegate();
+
+        assert(widget instanceof UIElement || widget instanceof Widget);
+        if (widget instanceof Widget) {
+            if (widget.getParent()) {
+                throw new Error(
+                    "widget has parent, last alloc: " + widget._alloc
+                );
+            }
+            assert(!widget.getParent());
+            assert(!widget.getOwningObject());
+        }
+
+        widget._alloc = new Error().stack;
+
+        return widget;
+    }
+
+    orphanPopped(widget) {
+        if (!RECYCLE) {
+            return;
+        }
+
+        const index = this._active.indexOf(widget);
+        assert(index >= 0);
+        this._active.splice(index, 1);
     }
 }
 
+// ----------------------------------------------------------------------------
+
+const _inventory = {
+    border: new WidgetInventoryEntry(() => new Border()),
+    button: new WidgetInventoryEntry(() => new Button()),
+    canvas: new WidgetInventoryEntry(() => new Canvas()),
+    checkBox: new WidgetInventoryEntry(() => new CheckBox()),
+    horizontalBox: new WidgetInventoryEntry(() => new HorizontalBox()),
+    imageButton: new WidgetInventoryEntry(() => new ImageButton()),
+    imageWidget: new WidgetInventoryEntry(() => new ImageWidget()),
+    layoutBox: new WidgetInventoryEntry(() => new LayoutBox()),
+    multilineTextBox: new WidgetInventoryEntry(() => new MultilineTextBox()),
+    slider: new WidgetInventoryEntry(() => new Slider()),
+    text: new WidgetInventoryEntry(() => new Text()),
+    textBox: new WidgetInventoryEntry(() => new TextBox()),
+    verticalBox: new WidgetInventoryEntry(() => new VerticalBox()),
+    uiElement: new WidgetInventoryEntry(() => new UIElement()),
+};
+
+// ----------------------------------------------------------------------------
+
+/**
+ * There are two related TTPG/Unreal bugs causing issues with UI Widgets.
+ *
+ * 1. reference counting isn't releasing them in multiplayer games, so
+ * creating and releasing them often leaks and slows things down.
+ *
+ * 2. a bug with MulticastDelegate in the proxy object is keeping old
+ * onClicked (for instance) handlers despite calling clear.  This appears
+ * to happen when garbage collecing the JavaScript object while the
+ * widget is still being used by a widget, and later retrieved by creating
+ * a new proxy object.
+ *
+ * This attempts to workaround both by:
+ *
+ * 1. Keeping a free list and re-allocating those existing Widgets rather
+ * than creating a new one.
+ *
+ * 2. Keeping an active list for in-use objects so the JavaScript object
+ * cannot be garbage collected.
+ *
+ * If and when the underlying bugs are fixed disable by `RECYCLE = false`.
+ */
 class WidgetFactory {
     /**
      * Release a widget, if this widget contains others release those too.
@@ -69,16 +174,8 @@ class WidgetFactory {
      * @param {Widget|UIElement} widget
      * @returns {WidgetFactory} self, for chaining
      */
-    static release(widget, isRecursiveCall) {
-        if (!RECYCLE) {
-            return;
-        }
-
-        // Watch out for double-release.
-        if (widget._isReleased) {
-            return;
-        }
-        widget._isReleased = true;
+    static release(widget) {
+        assert(widget instanceof UIElement || widget instanceof Widget);
 
         // If releasing UI release any connected widget.
         if (widget instanceof UIElement) {
@@ -103,11 +200,13 @@ class WidgetFactory {
         }
 
         assert(widget instanceof Widget);
-
         assert(!widget.getParent());
         assert(!widget.getOwningObject());
 
         // Reset some abstract class state.
+        widget.setEnabled(true);
+        widget.setVisible(true);
+
         if (widget instanceof TextWidgetBase) {
             widget.setFont("", refPackageId);
             widget.setFontSize(12);
@@ -130,17 +229,17 @@ class WidgetFactory {
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             for (const child of children) {
-                WidgetFactory.release(child, true);
+                WidgetFactory.release(child);
             }
         }
 
         if (widget instanceof Border) {
             const child = widget.getChild();
-            widget.setChild(WidgetFactory._placeholder());
+            widget.setChild(undefined);
             widget.setColor([1, 0, 0, 1]);
             _inventory.border.push(widget);
             if (child) {
-                WidgetFactory.release(child, true);
+                WidgetFactory.release(child);
             }
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
@@ -150,7 +249,7 @@ class WidgetFactory {
             const children = widget.getChildren();
             for (const child of children) {
                 widget.removeChild(child);
-                WidgetFactory.release(child, true);
+                WidgetFactory.release(child);
             }
             _inventory.canvas.push(widget);
         } else if (widget instanceof CheckBox) {
@@ -175,7 +274,7 @@ class WidgetFactory {
             _inventory.imageWidget.push(widget);
         } else if (widget instanceof LayoutBox) {
             const child = widget.getChild();
-            widget.setChild(WidgetFactory._placeholder());
+            widget.setChild(undefined);
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setMaximumHeight(-1);
             widget.setMinimumWidth(-1);
@@ -186,7 +285,7 @@ class WidgetFactory {
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             _inventory.layoutBox.push(widget);
             if (child) {
-                WidgetFactory.release(child, true);
+                WidgetFactory.release(child);
             }
         } else if (widget instanceof MultilineTextBox) {
             widget.setBackgroundTransparent(false);
@@ -218,137 +317,67 @@ class WidgetFactory {
             _inventory.verticalBox.push(widget);
         }
 
-        // If alloc/release are not balanced inventory could go out of control.
-        // Trim to a reasonable level.
-        if (!isRecursiveCall) {
-            for (const inventory of Object.values(_inventory)) {
-                const excess = INVENTORY_CAP - inventory.length;
-                if (excess > 0) {
-                    inventory.slice(INVENTORY_CAP);
-                }
-            }
-        }
-
         return this;
     }
 
     static border() {
-        const widget = WidgetFactory._alloc(_inventory.border);
-        if (widget) {
-            const child = widget.getChild();
-            if (child && child instanceof Widget) {
-                _inventory._placeHolder.push(child);
-            }
-        }
-        return widget ? widget : new Border();
+        const widget = _inventory.border.popOrCreate();
+        assert(!widget.getChild());
+        return widget;
     }
 
     static button() {
-        let widget = WidgetFactory._alloc(_inventory.button);
-        if (widget) {
-            widget.onClicked.clear(); // cleared on recycle, be paranoid and go again
-        }
-        return widget ? widget : new Button();
+        return _inventory.button.popOrCreate();
     }
 
     static canvas() {
-        const widget = WidgetFactory._alloc(_inventory.canvas);
-        return widget ? widget : new Canvas();
+        return _inventory.canvas.popOrCreate();
     }
 
     static checkBox() {
-        const widget = WidgetFactory._alloc(_inventory.checkBox);
-        return widget ? widget : new CheckBox();
+        return _inventory.checkBox.popOrCreate();
     }
 
     static horizontalBox() {
-        const widget = WidgetFactory._alloc(_inventory.horizontalBox);
-        return widget ? widget : new HorizontalBox();
+        return _inventory.horizontalBox.popOrCreate();
     }
 
     static imageButton() {
-        const widget = WidgetFactory._alloc(_inventory.imageButton);
-        return widget ? widget : new ImageButton();
+        return _inventory.imageButton.popOrCreate();
     }
 
     static imageWidget() {
-        const widget = WidgetFactory._alloc(_inventory.imageWidget);
-        return widget ? widget : new ImageWidget();
+        return _inventory.imageWidget.popOrCreate();
     }
 
     static layoutBox() {
-        const widget = WidgetFactory._alloc(_inventory.layoutBox);
-        if (widget) {
-            const child = widget.getChild();
-            if (child && child instanceof Widget) {
-                _inventory._placeHolder.push(child);
-            }
-        }
-        return widget ? widget : new LayoutBox();
+        const widget = _inventory.layoutBox.popOrCreate();
+        assert(!widget.getChild());
+        return widget;
     }
 
     static multilineTextBox() {
-        const widget = WidgetFactory._alloc(_inventory.multilineTextBox);
-        return widget ? widget : new MultilineTextBox();
+        return _inventory.multilineTextBox.popOrCreate();
     }
 
     static slider() {
-        const widget = WidgetFactory._alloc(_inventory.slider);
-        return widget ? widget : new Slider();
+        return _inventory.slider.popOrCreate();
     }
 
     static text() {
-        const widget = WidgetFactory._alloc(_inventory.text);
-        return widget ? widget : new Text();
+        return _inventory.text.popOrCreate();
     }
 
     static textBox() {
-        const widget = WidgetFactory._alloc(_inventory.textBox);
-        return widget ? widget : new TextBox();
+        return _inventory.textBox.popOrCreate();
     }
 
     static verticalBox() {
-        const widget = WidgetFactory._alloc(_inventory.verticalBox);
-        return widget ? widget : new VerticalBox();
+        return _inventory.verticalBox.popOrCreate();
     }
 
     static uiElement() {
-        const widget = WidgetFactory._alloc(_inventory.uiElement);
-        return widget ? widget : new UIElement();
-    }
-
-    /**
-     * Some widgets cannot release their child withough replacing it.
-     * Return a "cheap" widget to take the slot.
-     *
-     * @returns {Widget}
-     */
-    static _placeholder() {
-        // Placeholders live in "cannot clear child" widgets, expecting the
-        // widget consumer will replace them.  It is possible they will not,
-        // at least not immediately.  Check that a placeholder is free.
-        while (_inventory._placeHolder.length > 0) {
-            const widget = _inventory._placeHolder.pop();
-            if (!widget.getParent()) {
-                return widget;
-            }
-            // Otherwise this widget is still linked to another.  Forget it.
-        }
-        return new Widget();
-    }
-
-    static _alloc(inventoryArray) {
-        assert(Array.isArray(inventoryArray));
-        const widget = inventoryArray.pop();
-        if (widget) {
-            if (widget instanceof Widget) {
-                assert(!widget.getParent());
-            }
-            assert(widget._isReleased);
-            widget._isReleased = false;
-            //assert(!inventoryArray.includes(widget));
-        }
-        return widget;
+        return _inventory.uiElement.popOrCreate();
     }
 }
 
