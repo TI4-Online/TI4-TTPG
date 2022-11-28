@@ -204,9 +204,6 @@ class Explore {
 
         // Move objects.
         for (const moveObject of moveObjects) {
-            const nsid = ObjectNamespace.getNsid(moveObject);
-            console.log(`Explore.reserveTokenSpace: moving ${nsid} up ${dz}`);
-
             // Unlock (otherwise will hover instead of falling).
             const objectType = moveObject.getObjectType();
             if (objectType !== ObjectType.Regular) {
@@ -401,7 +398,6 @@ class Explore {
         if (!card) {
             return;
         }
-        console.log(`Explore.onExplorePlanetAction: dealt to Z (${above.z})`);
 
         Explore.resolveExplore(card, planet, pos, rot);
     }
