@@ -2,14 +2,10 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const { NavEntry } = require("./nav-entry");
+const { WidgetFactory } = require("../widget-factory");
 const {
-    Button,
     HorizontalAlignment,
-    HorizontalBox,
-    ImageButton,
-    LayoutBox,
     VerticalAlignment,
-    VerticalBox,
     refPackageId,
 } = require("../../../wrapper/api");
 
@@ -33,23 +29,23 @@ class NavFolder extends NavEntry {
             navPanel.setCurrentNavEntry(dstEntry);
         };
 
-        const icon = new ImageButton()
+        const icon = WidgetFactory.imageButton()
             .setImageSize(ICON_WIDTH, ICON_HEIGHT)
             .setImage(navEntry.getIconPath(), refPackageId);
         icon.onClicked.add(onClickedHandler);
 
-        const name = new Button()
+        const name = WidgetFactory.button()
             .setFontSize(NAV_ENTRY_FONTSIZE)
             .setText(` ${navEntry.getName()} `);
         name.onClicked.add(onClickedHandler);
 
-        const panel = new VerticalBox()
+        const panel = WidgetFactory.verticalBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Top)
             .addChild(icon)
             .addChild(name);
 
-        const box = new LayoutBox()
+        const box = WidgetFactory.layoutBox()
             .setOverrideWidth(NAV_ENTRY_WIDTH)
             .setChild(panel);
         return box;
@@ -59,7 +55,8 @@ class NavFolder extends NavEntry {
         assert(navPanel);
         assert(navFolder instanceof NavFolder);
 
-        const outerPanel = new VerticalBox().setChildDistance(NAV_SPACING);
+        const outerPanel =
+            WidgetFactory.verticalBox().setChildDistance(NAV_SPACING);
 
         // Get a mutable copy, we may prepend "up".
         const children = [...navFolder.getChildren()];
@@ -100,7 +97,7 @@ class NavFolder extends NavEntry {
                 !innerPanel ||
                 innerPanel.getChildAt(MAX_CHILDREN_PER_ROW - 1)
             ) {
-                innerPanel = new HorizontalBox()
+                innerPanel = WidgetFactory.horizontalBox()
                     .setChildDistance(NAV_SPACING)
                     .setHorizontalAlignment(HorizontalAlignment.Left);
                 outerPanel.addChild(innerPanel);
