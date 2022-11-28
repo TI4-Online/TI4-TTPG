@@ -65,11 +65,11 @@ class AutoRollerUI extends HorizontalBox {
             return true;
         }
 
-        const systemObj = world.TI4.getAllSystemTileObjects().filter(
-            (obj) =>
-                world.TI4.getSystemBySystemTileObject(obj).tile === system.tile
-        )[0];
-        if (!systemObj) {
+        const systemObj = world.TI4.getActiveSystemTileObject();
+        const systemObjSystem = systemObj
+            ? world.TI4.getSystemBySystemTileObject(systemObj)
+            : undefined;
+        if (!systemObj || systemObjSystem !== system) {
             return false; // should only happen during testing
         }
         const systemHex = Hex.fromPosition(systemObj.getPosition());
@@ -84,6 +84,8 @@ class AutoRollerUI extends HorizontalBox {
                 return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -259,6 +261,7 @@ class AutoRollerUI extends HorizontalBox {
 
         const ambushAvailable = system && AutoRollerUI._ambush(system);
         this._stepsAmbush.setEnabled(ambushAvailable);
+        this._stepsAmbush.setVisible(ambushAvailable);
     }
 
     _createAndLayoutInvasionPanel() {
