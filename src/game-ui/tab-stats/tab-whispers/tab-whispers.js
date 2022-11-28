@@ -6,7 +6,7 @@ class TabWhispers {
     }
 
     getUI() {
-        return this._tabWhispersUI;
+        return this._tabWhispersUI.getWidget();
     }
 
     updateUI() {

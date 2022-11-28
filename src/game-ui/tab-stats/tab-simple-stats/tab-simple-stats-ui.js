@@ -2,16 +2,11 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const { ColorUtil } = require("../../../lib/color/color-util");
 const { StatsScreenUI } = require("../../../global/screen-ui/stats");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 const CONFIG = require("../../game-ui-config");
 const {
-    Border,
-    Button,
     HorizontalAlignment,
-    HorizontalBox,
-    LayoutBox,
-    Text,
     VerticalAlignment,
-    VerticalBox,
     world,
 } = require("../../../wrapper/api");
 
@@ -23,44 +18,48 @@ const {
 // Token counts
 // Res/inf
 // Tradegoods
-class PlayerStatsUI extends Border {
+class PlayerStatsUI {
     constructor(playerDesk) {
         assert(playerDesk);
 
-        super();
+        this._mainWidget = WidgetFactory.border();
         this._colorName = `[${playerDesk.colorName}]`;
 
         const textColor = playerDesk.plasticColor;
         const majorFontSize = CONFIG.fontSize;
         const minorFontSize = majorFontSize / 2;
 
-        this._steamName = new Text()
+        this._steamName = WidgetFactory.text()
             .setFontSize(majorFontSize)
             .setTextColor(textColor);
-        this._factionName = new Text()
+        this._factionName = WidgetFactory.text()
             .setFontSize(majorFontSize)
             .setTextColor(textColor);
-        this._score = new Text()
+        this._score = WidgetFactory.text()
             .setFontSize(majorFontSize)
             .setTextColor(textColor);
-        this._strategyCardPanel = new HorizontalBox();
+        this._strategyCardPanel = WidgetFactory.horizontalBox();
         this._strategyCardTexts = [
-            new Text().setFontSize(majorFontSize).setTextColor(textColor), // reserve two
-            new Text().setFontSize(majorFontSize).setTextColor(textColor),
+            WidgetFactory.text()
+                .setFontSize(majorFontSize)
+                .setTextColor(textColor), // reserve two
+            WidgetFactory.text()
+                .setFontSize(majorFontSize)
+                .setTextColor(textColor),
         ];
-        this._commandTokens = new Text()
+        this._commandTokens = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
-        this._resources = new Text()
+        this._resources = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
-        this._influence = new Text()
+        this._influence = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
-        this._commodities = new Text()
+        this._commodities = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
-        this._tradegoods = new Text()
+        this._tradegoods = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
 
@@ -68,22 +67,22 @@ class PlayerStatsUI extends Border {
             this._strategyCardPanel.addChild(text);
         });
 
-        const resInfPanel = new HorizontalBox()
+        const resInfPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._resources)
             .addChild(this._influence);
 
-        const commoditiesTgsPanel = new HorizontalBox()
+        const commoditiesTgsPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._commodities)
             .addChild(this._tradegoods);
 
-        const factionScorePanel = new HorizontalBox()
+        const factionScorePanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._score)
             .addChild(this._factionName);
 
-        const overallPanel = new VerticalBox()
+        const overallPanel = WidgetFactory.verticalBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .addChild(this._steamName)
             .addChild(factionScorePanel)
@@ -92,10 +91,15 @@ class PlayerStatsUI extends Border {
             .addChild(resInfPanel)
             .addChild(commoditiesTgsPanel);
 
-        const overallBox = new LayoutBox()
+        const overallBox = WidgetFactory.layoutBox()
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(overallPanel);
-        this.setChild(overallBox);
+
+        this._mainWidget.setChild(overallBox);
+    }
+
+    getWidget() {
+        return this._mainWidget;
     }
 
     update(playerData) {
@@ -151,14 +155,15 @@ class PlayerStatsUI extends Border {
         const isActive = playerData.active;
         const colorPassed = ColorUtil.colorFromHex("#101010");
         const colorActive = ColorUtil.colorFromHex("#080808");
-        this.setColor(isActive ? colorActive : colorPassed);
+        this._mainWidget.setColor(isActive ? colorActive : colorPassed);
     }
 }
 
-class TabSimpleStatsUI extends VerticalBox {
+class TabSimpleStatsUI {
     constructor() {
-        super();
-        this.setChildDistance(CONFIG.spacing);
+        this._mainWidget = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
         // Per-player stats in desk index order.
         this._playerStatsUIs = [];
@@ -185,14 +190,16 @@ class TabSimpleStatsUI extends VerticalBox {
         }
 
         for (const row of rows) {
-            const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-            this.addChild(panel, 1);
+            const panel = WidgetFactory.horizontalBox().setChildDistance(
+                CONFIG.spacing
+            );
+            this._mainWidget.addChild(panel, 1);
             for (const playerStatsUI of row) {
-                panel.addChild(playerStatsUI, 1);
+                panel.addChild(playerStatsUI.getWidget(), 1);
             }
         }
 
-        const showOnScreenStatsButton = new Button()
+        const showOnScreenStatsButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.toggle_on_screen_stats"));
         showOnScreenStatsButton.onClicked.add((button, player) => {
@@ -200,7 +207,11 @@ class TabSimpleStatsUI extends VerticalBox {
             const playerSlot = player.getSlot();
             statsScreenUI.toggleVisibility(playerSlot);
         });
-        this.addChild(showOnScreenStatsButton);
+        this._mainWidget.addChild(showOnScreenStatsButton);
+    }
+
+    getWidget() {
+        return this._mainWidget;
     }
 
     update(data) {

@@ -54,6 +54,11 @@ class TabSimpleStats {
 
     constructor() {
         this._tabSimpleStatsUI = undefined;
+        this._onDataCallback = (data) => {
+            if (this._tabSimpleStatsUI) {
+                this._tabSimpleStatsUI.update(data);
+            }
+        };
     }
 
     getUI() {
@@ -64,16 +69,17 @@ class TabSimpleStats {
         const data = TabSimpleStats.getPlayerDataSync();
         this._tabSimpleStatsUI.update(data);
 
-        return this._tabSimpleStatsUI;
+        const widget = this._tabSimpleStatsUI.getWidget();
+        if (widget._onFreed) {
+            widget._onFreed.add(() => {
+                this._tabSimpleStatsUI = undefined;
+            });
+        }
+        return widget;
     }
 
     updateUI() {
-        const onDataCallback = (data) => {
-            if (this._tabSimpleStatsUI) {
-                this._tabSimpleStatsUI.update(data);
-            }
-        };
-        TabSimpleStats.getPlayerDataAsync(onDataCallback);
+        TabSimpleStats.getPlayerDataAsync(this._onDataCallback);
     }
 }
 
