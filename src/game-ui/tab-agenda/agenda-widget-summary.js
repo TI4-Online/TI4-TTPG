@@ -4,6 +4,7 @@ const { AgendaCardWidget } = require("../../lib/agenda/agenda-card-widget");
 const {
     AgendaWidgetAvailableVotes,
 } = require("./agenda-widget-available-votes");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
     HorizontalBox,
@@ -12,21 +13,13 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 let _agendaWidgetSummary = undefined;
 
 globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
-    if (!_agendaWidgetSummary) {
-        return; // no active summary
+    if (_agendaWidgetSummary) {
+        _agendaWidgetSummary._updateUI();
     }
-    const widget = _agendaWidgetSummary.getWidget();
-    if (!widget.getParent()) {
-        WidgetFactory.release(widget);
-        _agendaWidgetSummary = undefined;
-        return; // orphaned summary, release reference
-    }
-    _agendaWidgetSummary._updateUI();
 });
 
 /**
@@ -41,12 +34,26 @@ class AgendaWidgetSummary {
         this._createUI();
         this._updateUI();
 
-        // Track one to get update events.
-        _agendaWidgetSummary = this;
+        // WidgetFactory widgets get an "on freed" event when recycled.
+        // This is a bit clunky, it would be better to fix consumers
+        // to release this object directly.
+        if (this._horizontalBox._onFreed) {
+            this._horizontalBox._onFreed.add(() => {
+                console.log("AgendaWidgetSummary onFreed");
+                _agendaWidgetSummary = undefined;
+            });
+        }
     }
 
     getWidget() {
+        // Track one to get update events.
+        _agendaWidgetSummary = this;
+
         return this._horizontalBox;
+    }
+
+    clearWidget() {
+        _agendaWidgetSummary = undefined;
     }
 
     _createUI() {

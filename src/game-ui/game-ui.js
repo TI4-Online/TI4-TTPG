@@ -170,7 +170,7 @@ class GameUI {
             .setAddEndTurnButton(true);
         const navPanel = new NavPanel().startPeriodicUpdates();
 
-        panel.addChild(navPanel, 4);
+        panel.addChild(navPanel.getWidget(), 4);
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(turnOrderPanel, 1);
 
