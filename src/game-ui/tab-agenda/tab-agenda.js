@@ -48,10 +48,11 @@ class TabAgenda {
     _setMainUI(widget) {
         assert(widget instanceof Widget);
         const old = this._layoutBox.getChild();
-        this._layoutBox.setChild(widget);
         if (old && old !== widget) {
+            this._layoutBox.setChild(undefined);
             WidgetFactory.release(old);
         }
+        this._layoutBox.setChild(widget);
     }
 
     _maybeReplaceMain() {
