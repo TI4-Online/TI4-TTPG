@@ -2,15 +2,8 @@ const assert = require("../../../../wrapper/assert-wrapper");
 const locale = require("../../../../lib/locale");
 const CONFIG = require("../../../game-ui-config");
 const { BagDraft } = require("../../../../lib/draft/bag/bag-draft");
-const {
-    Button,
-    HorizontalBox,
-    LayoutBox,
-    Slider,
-    Text,
-    VerticalBox,
-    world,
-} = require("../../../../wrapper/api");
+const { WidgetFactory } = require("../../../../lib/ui/widget-factory");
+const { world } = require("../../../../wrapper/api");
 
 const SLIDER = {
     RED: { MIN: 1, DEFAULT: 2 },
@@ -18,21 +11,22 @@ const SLIDER = {
     FACTION: { MIN: 1, DEFAULT: 2 },
 };
 
-class TabBagDraftUI extends VerticalBox {
+class TabBagDraftUI {
     constructor(onClickHandlers) {
         assert(typeof onClickHandlers.onFinish === "function");
         assert(typeof onClickHandlers.onCancel === "function");
 
-        super();
+        this._box = WidgetFactory.layoutBox();
         this._callbacks = onClickHandlers;
 
-        this.setChildDistance(CONFIG.spacing);
         this._createDraftSettingsUI();
     }
 
-    _createDraftSettingsUI() {
-        this.removeAllChildren();
+    getWidget() {
+        return this._box;
+    }
 
+    _createDraftSettingsUI() {
         const playerCount = world.TI4.config.playerCount;
 
         const availRed = BagDraft.draftSystems(-1, true).length;
@@ -43,62 +37,72 @@ class TabBagDraftUI extends VerticalBox {
         const maxBlue = Math.floor(availBlue / playerCount);
         const maxFactions = Math.floor(availFactions / playerCount);
 
+        const old = this._box.getChild();
+        if (old) {
+            this._box.setChild(undefined);
+            WidgetFactory.release(old);
+        }
+        const verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._box.setChild(verticalBox);
+
         // RED
-        const redCountLabel = new Text()
+        const redCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.red_count"));
-        const redCountSlider = new Slider()
+        const redCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.RED.MIN)
             .setMaxValue(maxRed)
             .setStepSize(1)
             .setValue(SLIDER.RED.DEFAULT);
-        const redCountPanel = new HorizontalBox()
+        const redCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(redCountLabel, 2)
             .addChild(redCountSlider, 4);
-        this.addChild(redCountPanel);
+        verticalBox.addChild(redCountPanel);
 
         // BLUE
-        const blueCountLabel = new Text()
+        const blueCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.blue_count"));
-        const blueCountSlider = new Slider()
+        const blueCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.BLUE.MIN)
             .setMaxValue(maxBlue)
             .setStepSize(1)
             .setValue(SLIDER.BLUE.DEFAULT);
-        const blueCountPanel = new HorizontalBox()
+        const blueCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(blueCountLabel, 2)
             .addChild(blueCountSlider, 4);
-        this.addChild(blueCountPanel);
+        verticalBox.addChild(blueCountPanel);
 
         // FACTION
-        const factionCountLabel = new Text()
+        const factionCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.faction_count"));
-        const factionCountSlider = new Slider()
+        const factionCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(SLIDER.FACTION.MIN)
             .setMaxValue(maxFactions)
             .setStepSize(1)
             .setValue(SLIDER.FACTION.DEFAULT);
-        const factionCountPanel = new HorizontalBox()
+        const factionCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(factionCountLabel, 2)
             .addChild(factionCountSlider, 4);
-        this.addChild(factionCountPanel);
+        verticalBox.addChild(factionCountPanel);
 
         // FILLER
-        this.addChild(new LayoutBox(), 1);
+        verticalBox.addChild(WidgetFactory.layoutBox(), 1);
 
         // DONE
-        const onFinishedButton = new Button()
+        const onFinishedButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
@@ -113,13 +117,21 @@ class TabBagDraftUI extends VerticalBox {
                 this._createDraftInProgressUI();
             }
         });
-        this.addChild(onFinishedButton);
+        verticalBox.addChild(onFinishedButton);
     }
 
     _createDraftInProgressUI() {
-        this.removeAllChildren();
+        const old = this._box.getChild();
+        if (old) {
+            this._box.setChild(undefined);
+            WidgetFactory.release(old);
+        }
+        const verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._box.setChild(verticalBox);
 
-        const onCancelButton = new Button()
+        const onCancelButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
@@ -127,14 +139,14 @@ class TabBagDraftUI extends VerticalBox {
             this._createDraftSettingsUI();
         });
 
-        const draftInProgress = new Text()
+        const draftInProgress = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.in_progress"));
-        this.addChild(draftInProgress);
+        verticalBox.addChild(draftInProgress);
 
-        this.addChild(new LayoutBox(), 1);
+        verticalBox.addChild(WidgetFactory.layoutBox(), 1);
 
-        this.addChild(onCancelButton);
+        verticalBox.addChild(onCancelButton);
     }
 }
 

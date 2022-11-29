@@ -1,32 +1,36 @@
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { Button, LayoutBox, VerticalBox } = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
-class TabStatusUI extends VerticalBox {
+class TabStatusUI {
     constructor(onButtonCallbacks) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const dealActionCards = new Button()
+        const dealActionCards = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.deal_action_cards"));
         dealActionCards.onClicked.add(onButtonCallbacks.dealActionCards);
 
-        let box = new LayoutBox()
+        let box = WidgetFactory.layoutBox()
             .setMinimumHeight(CONFIG.fontSize * 4)
             .setChild(dealActionCards);
-        this.addChild(box);
+        this._verticalBox.addChild(box);
 
-        const endStatusPhase = new Button()
+        const endStatusPhase = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.end_status_phase"));
         endStatusPhase.onClicked.add(onButtonCallbacks.endStatusPhase);
 
-        box = new LayoutBox()
+        box = WidgetFactory.layoutBox()
             .setMinimumHeight(CONFIG.fontSize * 4)
             .setChild(endStatusPhase);
-        this.addChild(box);
+        this._verticalBox.addChild(box);
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 }
 

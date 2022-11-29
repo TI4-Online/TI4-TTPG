@@ -22,7 +22,7 @@ class TabDisplay {
     }
 
     getUI() {
-        return this._ui;
+        return this._ui.getWidget();
     }
 
     toggleBorders(isChecked) {

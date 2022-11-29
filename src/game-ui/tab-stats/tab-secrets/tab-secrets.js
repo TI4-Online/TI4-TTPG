@@ -76,7 +76,7 @@ class TabSecrets {
             this._tabSecretsUI = new TabSecretsUI();
         }
         this.updateUI();
-        return this._tabSecretsUI;
+        return this._tabSecretsUI.getWidget();
     }
 
     updateUI() {

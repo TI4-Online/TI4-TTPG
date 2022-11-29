@@ -354,7 +354,7 @@ class GameUI {
             .setName(locale("nav.help"))
             .setIconPath("global/ui/icons/help.png")
             .setWidgetFactory((navPanel, navEntry) => {
-                return new TabHelpUI();
+                return new TabHelpUI().getWidget();
             });
         rootFolder.addChild(helpEntry);
 

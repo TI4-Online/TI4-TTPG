@@ -2,54 +2,52 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
 const {
-    CheckBox,
-    HorizontalBox,
-    Slider,
-    Text,
-    VerticalBox,
-} = require("../../../wrapper/api");
-const {
     SystemTileBrightness,
 } = require("../../../lib/ui/system-tile-brightness");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 
-class TabDisplayUI extends VerticalBox {
+class TabDisplayUI {
     constructor(onClickHandlers) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const enableBorders = new CheckBox()
+        const enableBorders = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.display.enable_borders"));
         assert(typeof onClickHandlers.toggleBorders === "function");
         enableBorders.onCheckStateChanged.add(onClickHandlers.toggleBorders);
-        this.addChild(enableBorders);
+        this._verticalBox.addChild(enableBorders);
 
-        const teamBorders = new CheckBox()
+        const teamBorders = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.display.team_borders"));
         assert(typeof onClickHandlers.teamBorders === "function");
         teamBorders.onCheckStateChanged.add(onClickHandlers.teamBorders);
-        this.addChild(teamBorders);
+        this._verticalBox.addChild(teamBorders);
 
-        const brightnessLabel = new Text()
+        const brightnessLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.display.system_brightness"));
-        const brightnessSlider = new Slider()
+        const brightnessSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(50)
             .setMaxValue(100)
             .setStepSize(5)
             .setValue(SystemTileBrightness.get() * 100);
-        const brightnessPanel = new HorizontalBox()
+        const brightnessPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(brightnessLabel)
             .addChild(brightnessSlider, 1);
         brightnessSlider.onValueChanged.add(
             onClickHandlers.systemBrightnessChanged
         );
-        this.addChild(brightnessPanel);
+        this._verticalBox.addChild(brightnessPanel);
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 }
 

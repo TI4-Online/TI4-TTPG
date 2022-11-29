@@ -19,7 +19,7 @@ class TabBagDraft {
     }
 
     getUI() {
-        return this._ui;
+        return this._ui.getWidget();
     }
 
     _onFinish(settings, player) {
