@@ -2,102 +2,98 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const { ColorUtil } = require("../../../lib/color/color-util");
 const { WhisperHistory } = require("../../../lib/whisper/whisper-history");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 const CONFIG = require("../../game-ui-config");
 const {
-    Border,
     HorizontalAlignment,
-    HorizontalBox,
-    LayoutBox,
-    Text,
     TextJustification,
     VerticalAlignment,
-    VerticalBox,
 } = require("../../../wrapper/api");
 
 const MAX_PAIR_COUNT = 8;
 const WINDOW_BUCKETS = 60;
 const BLACK = ColorUtil.colorFromHex("#101010");
 
-class TabWhispersUI extends VerticalBox {
+class TabWhispersUI {
     constructor() {
-        super();
-        this.setChildDistance(CONFIG.spacing);
+        this._mainWidget = WidgetFactory.verticalBox();
+        this._mainWidget.setChildDistance(CONFIG.spacing);
 
         // Reserve space for the player a/b labels.
         const labelWeight = 1;
         const windowWeight = 2.5;
 
-        const headerWindowleft = new Text()
+        const headerWindowleft = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Left)
             .setText(locale("ui.whisper.newest"));
-        const headerWindowCenter = new Text()
+        const headerWindowCenter = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.whisper.who_sent"));
-        const headerWindowRight = new Text()
+        const headerWindowRight = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Right)
             .setText(locale("ui.whisper.oldest"));
 
-        const headerLabels = new HorizontalBox();
-        const headerWindow = new HorizontalBox()
+        const headerLabels = WidgetFactory.horizontalBox();
+        const headerWindow = WidgetFactory.horizontalBox()
             .addChild(headerWindowleft, 1)
             .addChild(headerWindowCenter, 1)
             .addChild(headerWindowRight, 1);
-        const header = new HorizontalBox()
+        const header = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing * 2)
             .addChild(headerLabels, labelWeight)
             .addChild(headerWindow, windowWeight);
 
-        this.addChild(header);
+        this._mainWidget.addChild(header);
 
         this._rows = [];
 
         for (let window = 0; window < MAX_PAIR_COUNT; window++) {
-            const label1 = new Text()
+            const label1 = WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setText("purple");
-            const slash = new Text().setFontSize(CONFIG.fontSize).setText("/");
-            const label2 = new Text()
+            const slash = WidgetFactory.text()
+                .setFontSize(CONFIG.fontSize)
+                .setText("/");
+            const label2 = WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setText("yellow");
 
-            const rowLabels = new HorizontalBox()
+            const rowLabels = WidgetFactory.horizontalBox()
                 .setChildDistance(CONFIG.spacing)
                 .addChild(label1)
                 .addChild(slash)
                 .addChild(label2);
-            const rowWindow = new HorizontalBox().setChildDistance(
+            const rowWindow = WidgetFactory.horizontalBox().setChildDistance(
                 CONFIG.scale * 2
             );
 
             // Sigh, wrap labels in a right-aligned box.
-            const rowLabelsBox = new LayoutBox()
+            const rowLabelsBox = WidgetFactory.layoutBox()
                 .setHorizontalAlignment(HorizontalAlignment.Right)
                 .setChild(rowLabels);
 
             // Gross dance to force the window borders to a fixed height.
-            const windowInner = new LayoutBox()
+            const windowInner = WidgetFactory.layoutBox()
                 .setOverrideHeight(CONFIG.scale * 10)
                 .setChild(rowWindow);
-            const windowOuter = new LayoutBox()
+            const windowOuter = WidgetFactory.layoutBox()
                 .setVerticalAlignment(VerticalAlignment.Center)
                 .setChild(windowInner);
 
-            const row = new HorizontalBox()
+            const row = WidgetFactory.horizontalBox()
                 .setChildDistance(CONFIG.spacing * 2)
                 .addChild(rowLabelsBox, labelWeight)
                 .addChild(windowOuter, windowWeight);
 
-            this
-                //.addChild(new Border().setColor(CONFIG.spacerColor)) // spacer
-                .addChild(row);
+            this._mainWidget.addChild(row);
 
             // Create the window of buckets.
             const window = [];
             for (let bucket = 0; bucket < WINDOW_BUCKETS; bucket++) {
-                const border = new Border().setColor(BLACK);
+                const border = WidgetFactory.border().setColor(BLACK);
                 window.push(border);
                 rowWindow.addChild(border, 1);
             }
@@ -107,6 +103,10 @@ class TabWhispersUI extends VerticalBox {
         }
 
         this.update();
+    }
+
+    getWidget() {
+        return this._mainWidget;
     }
 
     update() {

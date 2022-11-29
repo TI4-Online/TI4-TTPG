@@ -1,28 +1,32 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
-const { CheckBox, Text, VerticalBox } = require("../../../wrapper/api");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 
-class TabFogOfWarUI extends VerticalBox {
+class TabFogOfWarUI {
     constructor(onClickHandlers) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const enableFog = new CheckBox()
+        const enableFog = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.tab.map.fog.enable"));
         assert(typeof onClickHandlers.toggleEnable === "function");
         enableFog.onCheckStateChanged.add(onClickHandlers.toggleEnable);
 
-        this.addChild(enableFog);
+        this._verticalBox.addChild(enableFog);
 
-        this.addChild(
-            new Text()
+        this._verticalBox.addChild(
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setText(locale("ui.tab.map.fog.description"))
                 .setAutoWrap(true)
         );
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 }
 

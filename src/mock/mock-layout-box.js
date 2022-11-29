@@ -1,4 +1,3 @@
-const assert = require("../wrapper/assert-wrapper");
 const Widget = require("./mock-widget");
 
 class LayoutBox extends Widget {
@@ -9,9 +8,14 @@ class LayoutBox extends Widget {
     getChild() {
         return this._child;
     }
-    setChild(value) {
-        assert(value instanceof Widget);
-        this._child = value;
+    setChild(child) {
+        if (this._child) {
+            this._child._parent = undefined;
+        }
+        this._child = child;
+        if (child) {
+            child._parent = this;
+        }
         return this;
     }
     setHorizontalAlignment(value) {

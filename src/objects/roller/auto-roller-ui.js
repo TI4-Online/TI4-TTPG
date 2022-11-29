@@ -65,11 +65,11 @@ class AutoRollerUI extends HorizontalBox {
             return true;
         }
 
-        const systemObj = world.TI4.getAllSystemTileObjects().filter(
-            (obj) =>
-                world.TI4.getSystemBySystemTileObject(obj).tile === system.tile
-        )[0];
-        if (!systemObj) {
+        const systemObj = world.TI4.getActiveSystemTileObject();
+        const systemObjSystem = systemObj
+            ? world.TI4.getSystemBySystemTileObject(systemObj)
+            : undefined;
+        if (!systemObj || systemObjSystem !== system) {
             return false; // should only happen during testing
         }
         const systemHex = Hex.fromPosition(systemObj.getPosition());
@@ -84,6 +84,8 @@ class AutoRollerUI extends HorizontalBox {
                 return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -259,6 +261,7 @@ class AutoRollerUI extends HorizontalBox {
 
         const ambushAvailable = system && AutoRollerUI._ambush(system);
         this._stepsAmbush.setEnabled(ambushAvailable);
+        this._stepsAmbush.setVisible(ambushAvailable);
     }
 
     _createAndLayoutInvasionPanel() {
@@ -268,29 +271,26 @@ class AutoRollerUI extends HorizontalBox {
             .setChildDistance(VERTICAL_DISTANCE)
             .setVerticalAlignment(VerticalAlignment.Fill);
 
-        let localeText;
-        let combatType;
-
         const createInvasionPlanet = () => {
             const label = this._createPlanetLabel("?");
             this._invasionPanel.addChild(label, LABEL_WEIGHT);
 
-            localeText = "ui.roller.bombardment";
-            combatType = COMBAT_TYPE.BOMBARDMENT;
-            const bombardment = this._createButton(localeText, combatType);
+            const bombardment = this._createButton(
+                "ui.roller.bombardment",
+                COMBAT_TYPE.BOMBARDMENT
+            );
             this._invasionPanel.addChild(bombardment, BUTTON_WEIGHT);
 
-            localeText = "ui.roller.space_cannon_defense";
-            combatType = COMBAT_TYPE.SPACE_CANNON;
             const spaceCannonDefense = this._createButton(
-                localeText,
-                combatType
+                "ui.roller.space_cannon_defense",
+                COMBAT_TYPE.SPACE_CANNON
             );
             this._invasionPanel.addChild(spaceCannonDefense, BUTTON_WEIGHT);
 
-            localeText = "ui.roller.ground_combat";
-            combatType = COMBAT_TYPE.GROUND_COMBAT;
-            const groundCombat = this._createButton(localeText, combatType);
+            const groundCombat = this._createButton(
+                "ui.roller.ground_combat",
+                COMBAT_TYPE.GROUND_COMBAT
+            );
             this._invasionPanel.addChild(groundCombat, BUTTON_WEIGHT);
 
             return {
@@ -324,7 +324,6 @@ class AutoRollerUI extends HorizontalBox {
         }
 
         const planets = system ? system.planets : [];
-        let combatType;
         planets.forEach((planet, index) => {
             if (index >= this._invasionPlanets.length) {
                 return; // only support 3 planets
@@ -335,29 +334,26 @@ class AutoRollerUI extends HorizontalBox {
             const planetName = planet.getNameStr();
             invasionPlanet.label.setText(planetName);
 
-            combatType = COMBAT_TYPE.BOMBARDMENT;
             invasionPlanet.bombardment.onClicked.clear();
             invasionPlanet.bombardment.onClicked.add(
                 ThrottleClickHandler.wrap((button, player) => {
-                    this._onButton(combatType, planet, player);
+                    this._onButton(COMBAT_TYPE.BOMBARDMENT, planet, player);
                 })
             );
             invasionPlanet.bombardment.setEnabled(true);
 
-            combatType = COMBAT_TYPE.SPACE_CANNON;
             invasionPlanet.spaceCannonDefense.onClicked.clear();
             invasionPlanet.spaceCannonDefense.onClicked.add(
                 ThrottleClickHandler.wrap((button, player) => {
-                    this._onButton(combatType, planet, player);
+                    this._onButton(COMBAT_TYPE.SPACE_CANNON, planet, player);
                 })
             );
             invasionPlanet.spaceCannonDefense.setEnabled(true);
 
-            combatType = COMBAT_TYPE.GROUND_COMBAT;
             invasionPlanet.groundCombat.onClicked.clear();
             invasionPlanet.groundCombat.onClicked.add(
                 ThrottleClickHandler.wrap((button, player) => {
-                    this._onButton(combatType, planet, player);
+                    this._onButton(COMBAT_TYPE.GROUND_COMBAT, planet, player);
                 })
             );
             invasionPlanet.groundCombat.setEnabled(true);

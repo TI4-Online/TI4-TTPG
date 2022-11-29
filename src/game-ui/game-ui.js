@@ -170,7 +170,7 @@ class GameUI {
             .setAddEndTurnButton(true);
         const navPanel = new NavPanel().startPeriodicUpdates();
 
-        panel.addChild(navPanel, 4);
+        panel.addChild(navPanel.getWidget(), 4);
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(turnOrderPanel, 1);
 
@@ -354,7 +354,7 @@ class GameUI {
             .setName(locale("nav.help"))
             .setIconPath("global/ui/icons/help.png")
             .setWidgetFactory((navPanel, navEntry) => {
-                return new TabHelpUI();
+                return new TabHelpUI().getWidget();
             });
         rootFolder.addChild(helpEntry);
 

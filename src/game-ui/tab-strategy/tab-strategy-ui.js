@@ -1,25 +1,29 @@
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
-const { Button, LayoutBox, VerticalBox } = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
-class TabStrategyUI extends VerticalBox {
+class TabStrategyUI {
     constructor(onButtonCallbacks) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const placeTgsButton = new Button()
+        const placeTgsButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.place_trade_goods_and_set_turns"));
         placeTgsButton.onClicked.add(
             onButtonCallbacks.placeTradeGoodsAndSetTurns
         );
 
-        const box = new LayoutBox()
+        const box = WidgetFactory.layoutBox()
             .setMinimumHeight(CONFIG.fontSize * 4)
             .setChild(placeTgsButton);
 
-        this.addChild(box);
+        this._verticalBox.addChild(box);
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 }
 

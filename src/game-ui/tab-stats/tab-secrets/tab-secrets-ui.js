@@ -1,23 +1,20 @@
 const CONFIG = require("../../game-ui-config");
-const {
-    HorizontalBox,
-    Text,
-    TextJustification,
-} = require("../../../wrapper/api");
+const { TextJustification } = require("../../../wrapper/api");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 
-class TabSecretsUI extends HorizontalBox {
+class TabSecretsUI {
     constructor() {
-        super();
-
-        this.setChildDistance(CONFIG.spacing);
+        this._horizontalBox = WidgetFactory.horizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
         const fontSize = CONFIG.fontSize * 0.5;
         this._columns = new Array(2).fill(0).map(() => {
-            const column = new Text()
+            const column = WidgetFactory.text()
                 .setFontSize(fontSize)
                 .setJustification(TextJustification.Center)
                 .setAutoWrap(true);
-            this.addChild(column, 1);
+            this._horizontalBox.addChild(column, 1);
             return column;
         });
     }
@@ -40,6 +37,10 @@ class TabSecretsUI extends HorizontalBox {
                 .join("\n");
             column.setText(value);
         });
+    }
+
+    getWidget() {
+        return this._horizontalBox;
     }
 }
 

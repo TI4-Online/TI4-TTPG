@@ -20,7 +20,9 @@ class Border extends Widget {
             this._child._parent = undefined;
         }
         this._child = child;
-        child._parent = this;
+        if (child) {
+            child._parent = this;
+        }
         return this;
     }
 

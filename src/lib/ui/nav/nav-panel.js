@@ -3,16 +3,8 @@ const locale = require("../../../lib/locale");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const { ColorUtil } = require("../../color/color-util");
 const { NavFolder } = require("./nav-folder");
-const {
-    Border,
-    Button,
-    HorizontalBox,
-    LayoutBox,
-    Text,
-    VerticalAlignment,
-    VerticalBox,
-    Widget,
-} = require("../../../wrapper/api");
+const { WidgetFactory } = require("../widget-factory");
+const { VerticalAlignment, Widget } = require("../../../wrapper/api");
 
 const PATH_FONT_SIIZE = CONFIG.fontSize * 0.9;
 const PERIODIC_UPDATE_MSECS = 5000;
@@ -20,27 +12,22 @@ const PERIODIC_UPDATE_MSECS = 5000;
 /**
  * Wrap Widgets inside a panet with top-row of tabs to select between them.
  */
-class NavPanel extends LayoutBox {
+class NavPanel {
     constructor() {
-        super();
-
         this._currentNavEntry = undefined;
         this._periodicUpdateInterval = undefined;
 
         this._rootFolder = new NavFolder().setName(locale("nav.root"));
 
         // Path elements to the right of the root button.
-        // Center rather than fill to use "natural" path entry button height.
-        this._pathPanel = new HorizontalBox()
-            .setChildDistance(CONFIG.spacing)
-            .setVerticalAlignment(VerticalAlignment.Center);
+        this._pathBox = WidgetFactory.layoutBox();
 
         // Main contents for the current nav entry.
-        this._currentNavEntryBox = new LayoutBox();
+        this._currentNavEntryBox = WidgetFactory.layoutBox();
 
         // "Root" is a large button extending to the edge of path panel border.
         // The current path appears as clickable entries to the right.
-        const rootButton = new Button()
+        const rootButton = WidgetFactory.button()
             .setFontSize(PATH_FONT_SIIZE)
             .setText(" " + this._rootFolder.getName() + " ");
         rootButton.onClicked.add((clickedButton, player) => {
@@ -48,23 +35,25 @@ class NavPanel extends LayoutBox {
         });
 
         // "Top" layout holding root button and path.
-        const topPanel = new HorizontalBox()
+        const topPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(rootButton, 0)
-            .addChild(this._pathPanel, 1);
-        const topBox = new LayoutBox()
+            .addChild(this._pathBox, 1);
+        const topBox = WidgetFactory.layoutBox()
             .setOverrideHeight(PATH_FONT_SIIZE * 3)
             .setChild(topPanel);
-        const topBorder = new Border()
+        const topBorder = WidgetFactory.border()
             .setColor(ColorUtil.colorFromHex("#101010"))
             .setChild(topBox);
 
-        const panel = new VerticalBox()
+        this._mainWidget = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(topBorder, 0)
             .addChild(this._currentNavEntryBox, 1);
+    }
 
-        this.setChild(panel);
+    getWidget() {
+        return this._mainWidget;
     }
 
     startPeriodicUpdates() {
@@ -120,20 +109,33 @@ class NavPanel extends LayoutBox {
         }
 
         // Update path.
-        this._pathPanel.removeAllChildren();
+        // Center rather than fill to use "natural" path entry button height.
+        const pathPanel = WidgetFactory.horizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .setVerticalAlignment(VerticalAlignment.Center);
         for (const pathEntry of pathEntries) {
-            const sep = new Text().setFontSize(PATH_FONT_SIIZE).setText("/");
-            this._pathPanel.addChild(sep, 0);
+            const sep = WidgetFactory.text()
+                .setFontSize(PATH_FONT_SIIZE)
+                .setText("/");
+            pathPanel.addChild(sep, 0);
 
             const name = pathEntry.getName();
-            const button = new Button()
+            const button = WidgetFactory.button()
                 .setFontSize(PATH_FONT_SIIZE)
                 .setText(name);
             button.onClicked.add((clickedButton, player) => {
                 this.setCurrentNavEntry(pathEntry);
             });
-            this._pathPanel.addChild(button, 0);
+            pathPanel.addChild(button, 0);
         }
+
+        const oldPathPanel = this._pathBox.getChild();
+        if (oldPathPanel) {
+            this._pathBox.setChild(undefined);
+            WidgetFactory.release(oldPathPanel);
+        }
+
+        this._pathBox.setChild(pathPanel);
 
         // Fill empty space between left and right entries.
         //this._pathPanel.addChild(new LayoutBox(), 1);
@@ -148,6 +150,17 @@ class NavPanel extends LayoutBox {
         // already-there entry is an error.  Set temporary widget and replace.
         // Not needed: keep the current entry in place.
         // this._currentNavEntryBox.setChild(new LayoutBox());
+
+        // Release old main content.
+        const oldMainWidget = this._currentNavEntryBox.getChild();
+        if (
+            oldMainWidget &&
+            this._currentNavEntry &&
+            !this._currentNavEntry.getPersistWidget()
+        ) {
+            this._currentNavEntryBox.setChild(undefined);
+            WidgetFactory.release(oldMainWidget);
+        }
 
         // Update main window.
         const widget = navEntry.createWidget(this);

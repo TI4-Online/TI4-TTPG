@@ -2,34 +2,29 @@ const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
 const MAP_ATLAS_DB = require("../../../lib/map-string/map-atlas-db.json");
 const MAP_STRING_DB = require("../../../lib/map-string/map-string-db.json");
-const {
-    Button,
-    HorizontalBox,
-    LayoutBox,
-    Text,
-    TextBox,
-    VerticalBox,
-} = require("../../../wrapper/api");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 
-class PremadeMapUI extends VerticalBox {
+class PremadeMapUI {
     constructor(onClickHandlers) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
         this._onClickHandlers = onClickHandlers;
         this._scheduleUpdateHandle = undefined;
         this._selectedMapString = undefined;
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const topPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        this.addChild(topPanel, 0);
+        const topPanel = WidgetFactory.horizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._verticalBox.addChild(topPanel, 0);
         topPanel.addChild(
-            new Text()
+            WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize)
                 .setText(locale("ui.label.search"))
         );
 
-        this._searchText = new TextBox().setFontSize(CONFIG.fontSize);
+        this._searchText = WidgetFactory.textBox().setFontSize(CONFIG.fontSize);
         // Changing the UI causes the TextBox to lose focus.
         // this._searchText.onTextChanged.add((textBox, player, text) => {
         //     this.scheduleUpdate();
@@ -39,10 +34,14 @@ class PremadeMapUI extends VerticalBox {
         });
         topPanel.addChild(this._searchText, 1);
 
-        this._choicesBox = new LayoutBox();
-        this.addChild(this._choicesBox, 1);
+        this._choicesBox = WidgetFactory.layoutBox();
+        this._verticalBox.addChild(this._choicesBox, 1);
 
         this.update();
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 
     scheduleUpdate() {
@@ -92,12 +91,12 @@ class PremadeMapUI extends VerticalBox {
             candidate._lowerName = displayName.toLowerCase();
         }
 
-        const panel = new VerticalBox();
+        const panel = WidgetFactory.verticalBox();
         for (const candidate of candidates) {
             if (!accept(candidate)) {
                 continue;
             }
-            const button = new Button()
+            const button = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(candidate._displayName);
             button.onClicked.add((clickedButton, player) => {

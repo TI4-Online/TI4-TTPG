@@ -21,6 +21,7 @@
         "afterEach": "readonly",
         "beforeEach": "readonly",
         "expect": "readonly",
-        "jest": "readonly"
+        "jest": "readonly",
+        "gc": "readonly"
     }
 }

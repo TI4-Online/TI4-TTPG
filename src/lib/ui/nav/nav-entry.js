@@ -145,6 +145,10 @@ class NavEntry {
         this._persistWidget = value;
         return this;
     }
+
+    getPersistWidget() {
+        return this._persistWidget;
+    }
 }
 
 module.exports = { NavEntry, DEFAULT_ENTRY_ICON_PATH };

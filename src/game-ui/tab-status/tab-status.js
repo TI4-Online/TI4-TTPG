@@ -35,7 +35,7 @@ class TabStatus {
     }
 
     getUI() {
-        return this._ui;
+        return this._ui.getWidget();
     }
 }
 

@@ -1,45 +1,40 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
-const {
-    Button,
-    HorizontalBox,
-    LayoutBox,
-    MultilineTextBox,
-    Text,
-    VerticalBox,
-} = require("../../../wrapper/api");
+const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 
-class MapToolUI extends VerticalBox {
+class MapToolUI {
     constructor(onButtonCallbacks) {
-        super();
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
 
-        this.setChildDistance(CONFIG.spacing);
-
-        const customInputLabel = new Text()
+        const customInputLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.maptool.map_string"));
-        this.addChild(customInputLabel);
+        this._verticalBox.addChild(customInputLabel);
 
-        this._mapStringTextBox = new MultilineTextBox()
+        this._mapStringTextBox = WidgetFactory.multilineTextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1000);
-        const mapStringLayoutBox = new LayoutBox()
+        const mapStringLayoutBox = WidgetFactory.layoutBox()
             .setChild(this._mapStringTextBox)
             .setMinimumHeight(CONFIG.fontSize * 3);
-        this.addChild(mapStringLayoutBox);
+        this._verticalBox.addChild(mapStringLayoutBox);
 
         let panel = false;
 
         const addRow = () => {
-            panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-            this.addChild(panel);
+            panel = WidgetFactory.horizontalBox().setChildDistance(
+                CONFIG.spacing
+            );
+            this._verticalBox.addChild(panel);
         };
 
         const addButton = (localeText, onClickHandler) => {
             assert(typeof localeText === "string");
             assert(typeof onClickHandler === "function");
-            const button = new Button()
+            const button = WidgetFactory.button()
                 .setText(locale(localeText))
                 .setFontSize(CONFIG.fontSize);
             button.onClicked.add(onClickHandler);
@@ -64,6 +59,10 @@ class MapToolUI extends VerticalBox {
         addRow();
         addButton("ui.maptool.place_hyperlanes", f.placeHyperlanes);
         addButton("ui.maptool.clear", f.clear);
+    }
+
+    getWidget() {
+        return this._verticalBox;
     }
 
     getMapString() {
