@@ -278,7 +278,8 @@ class GameUI {
             .setIconPath("global/ui/icons/d6.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return autoRoller.getUI();
-            });
+            })
+            .setPersistWidget(true);
         actionPhaseFolder.addChild(autoRollerEntry);
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
             navPanel.setCurrentNavEntry(autoRollerEntry);
@@ -407,7 +408,8 @@ class GameUI {
             .setIconPath("global/ui/icons/ballot.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return tabAgenda.getUI();
-            });
+            })
+            .setPersistWidget(true);
         rootFolder.addChild(agendaPhaseEntry);
         globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
             if (agendaCard) {
