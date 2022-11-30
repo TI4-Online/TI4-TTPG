@@ -44,16 +44,16 @@ class AgendaCardWidget {
 
     static getImageWidget(card) {
         assert(card instanceof Card);
-        const wdiget = WidgetFactory.imageWidget();
-        AgendaCardWidget.setImagePath(wdiget, card);
-        return wdiget;
+        const widget = WidgetFactory.imageWidget();
+        AgendaCardWidget.setImagePath(widget, card);
+        return widget;
     }
 
     static getImageButton(card) {
         assert(card instanceof Card);
-        const wdiget = WidgetFactory.imageButton();
-        AgendaCardWidget.setImagePath(wdiget, card);
-        return wdiget;
+        const widget = WidgetFactory.imageButton();
+        AgendaCardWidget.setImagePath(widget, card);
+        return widget;
     }
 
     constructor(card) {

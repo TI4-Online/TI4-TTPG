@@ -29,8 +29,53 @@ const {
 
 // ----------------------------------------------------------------------------
 
+const _uiPeers = [];
+
+class UIElementWithDuplicationCheck extends UIElement {
+    static lookForAlreadyAttached(widget) {
+        const getAllWidgets = (widget, result = []) => {
+            if (!widget) {
+                return result;
+            }
+            result.push(widget);
+            if (widget instanceof Border || widget instanceof LayoutBox) {
+                getAllWidgets(widget.getChild(), result);
+            }
+            if (widget instanceof Panel) {
+                for (let i = 0; widget.getChildAt(i); i++) {
+                    getAllWidgets(widget.getChildAt(i), result);
+                }
+            }
+            return result;
+        };
+        for (const uiPeer of _uiPeers) {
+            const peerWidgets = getAllWidgets(uiPeer.widget);
+            if (peerWidgets.includes(widget)) {
+                throw new Error(
+                    [
+                        "[[[XXX",
+                        "WIDGET ALLOC:",
+                        ...widget._alloc,
+                        "UI ELEMENT ALLOC:",
+                        ...uiPeer._alloc,
+                        "XXX]]]",
+                    ].join("\n")
+                );
+            }
+        }
+    }
+    constructor() {
+        super();
+        _uiPeers.push(this);
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 const RECYCLE = true;
 const INVENTORY_CAP = 600;
+
+const dummyUi = new UIElement();
 
 if (!world.__isMock) {
     console.log(`WidgetFactory RECYCLE=${RECYCLE} cap=${INVENTORY_CAP}`);
@@ -83,44 +128,52 @@ class WidgetInventoryEntry {
             return this._createOne();
         }
 
-        let widget = this._free.pop();
+        let widget = undefined;
+        while (this._free.length > 0) {
+            widget = this._free.pop();
+            try {
+                dummyUi.widget = widget;
+                world.addUI(dummyUi);
+                world.removeUIElement(dummyUi);
+                break; // success! use this widget
+            } catch (e) {
+                console.log(
+                    `WidgetFactory WIDGET "${widget.constructor.name}" IN USE, trying again`
+                );
+                widget = undefined;
+            }
+        }
+
         if (!widget) {
             widget = this._createOne();
+
+            // Add a per-widget event triggered when freed.
+            // This is useful for paranoid callers who want to
+            // make sure they no longer attempt to update it later.
+            // (e.g. the agenda summary UI that can get dismissed
+            // in a variety of ways, this method safeguards against
+            // forgetting to clean up in a release path.)
+            widget._onFreed = new TriggerableMulticastDelegate();
+
+            // Track allocations to find leaks.
+            widget._alloc = [];
         }
         this._active.push(widget);
 
-        // Add a per-widget event triggered when freed.
-        // This is useful for paranoid callers who want to
-        // make sure they no longer attempt to update it later.
-        // (e.g. the agenda summary UI that can get dismissed
-        // in a variety of ways, this method safeguards against
-        // forgetting to clean up in a release path.)
-        widget._onFreed = new TriggerableMulticastDelegate();
-
         assert(widget instanceof UIElement || widget instanceof Widget);
         if (widget instanceof Widget) {
-            if (widget.getParent()) {
-                throw new Error(
-                    "widget has parent, last alloc: " + widget._alloc
-                );
-            }
-            assert(!widget.getParent());
-            assert(!widget.getOwningObject());
+            WidgetFactory.verifyNotParented(widget);
         }
 
-        widget._alloc = new Error().stack;
+        // Store the WidgetFactory call source.
+        while (widget._alloc.length > 5) {
+            widget._alloc.shift();
+        }
+        const stack = new Error().stack.split("\n");
+        const entry = stack[3] + " " + Date.now() / 1000;
+        widget._alloc.push(entry);
 
         return widget;
-    }
-
-    orphanPopped(widget) {
-        if (!RECYCLE) {
-            return;
-        }
-
-        const index = this._active.indexOf(widget);
-        assert(index >= 0);
-        this._active.splice(index, 1);
     }
 }
 
@@ -145,6 +198,8 @@ const _inventory = {
 
 // ----------------------------------------------------------------------------
 
+const _dummyWidgetBecauseUIElementWidgetUndefinedFails = new Widget();
+
 /**
  * There are two related TTPG/Unreal bugs causing issues with UI Widgets.
  *
@@ -168,6 +223,28 @@ const _inventory = {
  * If and when the underlying bugs are fixed disable by `RECYCLE = false`.
  */
 class WidgetFactory {
+    static verifyNotParented(widget, path = []) {
+        assert(!widget || widget instanceof Widget);
+
+        if (!widget) {
+            return;
+        }
+
+        const className = widget.constructor.name;
+        path.push(className);
+
+        if (widget.getParent()) {
+            throw new Error(
+                [
+                    "[[[",
+                    `WIDGET ALREADY PARENTED: ${path.join(".")}`,
+                    ...widget._alloc,
+                    "]]]",
+                ].join("\n\n")
+            );
+        }
+    }
+
     /**
      * Release a widget, if this widget contains others release those too.
      *
@@ -181,7 +258,7 @@ class WidgetFactory {
         if (widget instanceof UIElement) {
             const ui = widget;
             widget = ui.widget;
-            ui.widget = undefined;
+            ui.widget = _dummyWidgetBecauseUIElementWidgetUndefinedFails;
             ui.anchorX = 0.5;
             ui.anchorY = 0.5;
             ui.height = 90;
@@ -377,7 +454,8 @@ class WidgetFactory {
     }
 
     static uiElement() {
-        return _inventory.uiElement.popOrCreate();
+        const uiElement = _inventory.uiElement.popOrCreate();
+        return uiElement;
     }
 }
 

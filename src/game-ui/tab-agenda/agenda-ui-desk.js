@@ -41,8 +41,7 @@ class AgendaUiDesk {
         assert(typeof callbacks.onPredictIncr === "function");
         assert(typeof callbacks.onPredictDecr === "function");
 
-        this._border = WidgetFactory.border();
-        this._border.setColor(CONFIG.backgroundColor);
+        const border = WidgetFactory.border().setColor(CONFIG.backgroundColor);
 
         this._playerDesk = playerDesk;
         this._callbacks = callbacks;
@@ -53,12 +52,12 @@ class AgendaUiDesk {
         this._ui.scale = 1 / CONFIG.scale;
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
-        this._ui.widget = this._border;
+        this._ui.widget = border;
 
         this._collapsedUi = undefined;
         this._zoomedAgendaCardUi = undefined;
 
-        let panel = WidgetFactory.verticalBox().setChildDistance(
+        const panel = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
 
@@ -98,7 +97,7 @@ class AgendaUiDesk {
                 CONFIG.padding
             )
             .setChild(panel);
-        this._border.setChild(panelBox);
+        border.setChild(panelBox);
     }
 
     attach() {
@@ -107,9 +106,11 @@ class AgendaUiDesk {
     }
 
     detach() {
-        world.removeUIElement(this._ui);
-        WidgetFactory.release(this._ui);
-        this._ui = undefined;
+        if (this._ui) {
+            world.removeUIElement(this._ui);
+            WidgetFactory.release(this._ui);
+            this._ui = undefined;
+        }
         if (this._collapsedUi) {
             world.removeUIElement(this._collapsedUi);
             WidgetFactory.release(this._collapsedUi);
@@ -151,8 +152,9 @@ class AgendaUiDesk {
                     const scale = 3;
                     const width = 330 * scale;
                     const height = (width * 750) / 500;
-                    const popupButton = AgendaCardWidget.getImageButton(card);
-                    popupButton.setImageSize(width, height);
+                    const popupButton = AgendaCardWidget.getImageButton(
+                        card
+                    ).setImageSize(width, height);
 
                     this._zoomedAgendaCardUi = WidgetFactory.uiElement();
                     this._zoomedAgendaCardUi.position = this._ui.position.add([
@@ -167,6 +169,7 @@ class AgendaUiDesk {
                     popupButton.onClicked.add(
                         ThrottleClickHandler.wrap((clickedButton, player) => {
                             world.removeUIElement(this._zoomedAgendaCardUi);
+                            WidgetFactory.release(this._zoomedAgendaCardUi);
                             this._zoomedAgendaCardUi = undefined;
                         })
                     );
@@ -453,7 +456,8 @@ class AgendaUiDesk {
                 const expandButton = WidgetFactory.button()
                     .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                     .setText(locale("ui.button.expand"));
-                const expandButtonBox = WidgetFactory.layoutBox()
+                const expandButtonBox = WidgetFactory.layoutBox();
+                expandButtonBox
                     .setPadding(
                         CONFIG.padding,
                         CONFIG.padding,
@@ -468,12 +472,15 @@ class AgendaUiDesk {
                             return;
                         }
                         world.removeUIElement(this._collapsedUi);
+                        WidgetFactory.release(this._collapsedUi);
                         this._collapsedUi = undefined;
                         world.addUI(this._ui);
                     })
                 );
-                this._collapsedUi.widget =
-                    WidgetFactory.border().setChild(expandButtonBox);
+                this._collapsedUi.widget = WidgetFactory.border()
+                    .setColor(CONFIG.backgroundColor)
+                    .setChild(expandButtonBox);
+
                 world.addUI(this._collapsedUi);
             })
         );

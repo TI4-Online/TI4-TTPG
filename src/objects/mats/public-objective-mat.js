@@ -7,6 +7,8 @@ const {
     world,
 } = require("../../wrapper/api");
 
+const DEAL_OBJECTIVES_ON_GAME_SETUP = false;
+
 // place cards on game setup
 class PublicObjectMat {
     constructor(gameObject) {
@@ -14,9 +16,11 @@ class PublicObjectMat {
 
         this._obj = gameObject;
 
-        globalEvents.TI4.onGameSetup.add((config, player) => {
-            this.layoutCards();
-        });
+        if (DEAL_OBJECTIVES_ON_GAME_SETUP) {
+            globalEvents.TI4.onGameSetup.add((config, player) => {
+                this.layoutCards();
+            });
+        }
     }
 
     layoutCards() {

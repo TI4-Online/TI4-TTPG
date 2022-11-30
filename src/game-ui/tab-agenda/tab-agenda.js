@@ -296,8 +296,7 @@ class TabAgenda {
                 playerDesk,
                 outcomeNamesMutable,
                 callbacks
-            );
-            deskUi.attach();
+            ).attach();
             this._deskUIs.push(deskUi);
         }
     }
