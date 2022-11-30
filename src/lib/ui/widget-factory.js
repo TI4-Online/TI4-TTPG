@@ -119,6 +119,19 @@ class WidgetInventoryEntry {
             return;
         }
 
+        if (widget instanceof Widget) {
+            try {
+                dummyUi.widget = widget;
+                world.addUI(dummyUi);
+                world.removeUIElement(dummyUi);
+            } catch (e) {
+                console.log(
+                    `WidgetFactory WIDGET "${widget.constructor.name}" IN USE DURING FREE`
+                );
+                return;
+            }
+        }
+
         // Return to free.
         this._free.push(widget);
     }
@@ -131,16 +144,18 @@ class WidgetInventoryEntry {
         let widget = undefined;
         while (this._free.length > 0) {
             widget = this._free.pop();
-            try {
-                dummyUi.widget = widget;
-                world.addUI(dummyUi);
-                world.removeUIElement(dummyUi);
-                break; // success! use this widget
-            } catch (e) {
-                console.log(
-                    `WidgetFactory WIDGET "${widget.constructor.name}" IN USE, trying again`
-                );
-                widget = undefined;
+            if (widget instanceof Widget) {
+                try {
+                    dummyUi.widget = widget;
+                    world.addUI(dummyUi);
+                    world.removeUIElement(dummyUi);
+                    break; // success! use this widget
+                } catch (e) {
+                    console.log(
+                        `WidgetFactory WIDGET "${widget.constructor.name}" IN USE, trying again`
+                    );
+                    widget = undefined;
+                }
             }
         }
 
