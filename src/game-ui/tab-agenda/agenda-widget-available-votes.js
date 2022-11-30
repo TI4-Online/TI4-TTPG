@@ -54,6 +54,10 @@ class AgendaWidgetAvailableVotes {
 
         // Keep a reference for easy mass-reset.
         _deskIndexToWidgets[deskIndex] = this;
+
+        this._verticalBox._onFreed.add(() => {
+            delete _deskIndexToWidgets[deskIndex];
+        });
     }
 
     getWidget() {
