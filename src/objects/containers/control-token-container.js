@@ -16,6 +16,12 @@ class ControlTokenContainer {
         assert(container instanceof GameObject);
         assert(container instanceof Container);
 
+        // "Can't happen" paranoid safety check.
+        if (container._isControlTokenContainer) {
+            return;
+        }
+        container._isControlTokenContainer = true;
+
         // Might not have correct type on creation.
         //assert(gameObject.getType() === 1); // 3 technically ok
 

@@ -27,6 +27,12 @@ class UnitBag {
         assert(container instanceof Container);
         assert(ObjectNamespace.isUnitBag(container));
 
+        // "Can't happen" paranoid safety check.
+        if (container._isUnitBag) {
+            return;
+        }
+        container._isUnitBag = true;
+
         this._container = container;
         this._unit = ObjectNamespace.parseUnitBag(container).unit;
         this._UIElement = false;

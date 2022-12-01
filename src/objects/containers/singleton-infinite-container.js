@@ -18,6 +18,12 @@ class SingletonInfiniteContainer {
         assert(gameObject instanceof GameObject);
         assert(gameObject instanceof Container);
 
+        // "Can't happen" paranoid safety check.
+        if (gameObject._isSingletonInfiniteContainer) {
+            return;
+        }
+        gameObject._isSingletonInfiniteContainer = true;
+
         // Might not have correct type on creation.
         //assert(gameObject.getType() === 1); // 3 technically ok
 

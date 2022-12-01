@@ -142,6 +142,12 @@ class CommandTokenBag {
         assert(container instanceof Container);
         assert(ObjectNamespace.isCommandTokenBag(container));
 
+        // "Can't happen" paranoid safety check.
+        if (container._isCommandTokenBag) {
+            return;
+        }
+        container._isCommandTokenBag = true;
+
         this._container = container;
         this._UIElement = false;
         this._boxes = [];
