@@ -197,6 +197,8 @@
 
     "ui.setup.title": "TWILIGHT IMPERIUM",
     "ui.setup.subtitle": "4th Edition",
+    "ui.setup.strategy_phase": "Strategy\nPhase",
+    "ui.setup.status_phase": "Status\nPhase",
     "ui.setup.player_count": "Player count",
     "ui.setup.larger_hexes": "Larger hexes",
     "ui.setup.game_points": "Game points",

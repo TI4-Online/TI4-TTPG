@@ -23,11 +23,12 @@ const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
-const { TabStrategy } = require("./tab-strategy/tab-strategy");
+const { TabSecrets } = require("./tab-stats/tab-secrets/tab-secrets");
 const {
     TabSimpleStats,
 } = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
+const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
 const CONFIG = require("./game-ui-config");
@@ -42,13 +43,21 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
-const { TabSecrets } = require("./tab-stats/tab-secrets/tab-secrets");
+
+let _gameUI;
 
 /**
  * The "Savant", collected game UI and utilities organized into tabs.
  * This has grown rapidly, it deserves a user experience rethink.
  */
 class GameUI {
+    static getInstance() {
+        if (!_gameUI) {
+            _gameUI = new GameUI();
+        }
+        return _gameUI;
+    }
+
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
@@ -69,6 +78,10 @@ class GameUI {
         const frame = new Border()
             .setColor(CONFIG.spacerColor)
             .setChild(wrapperBox);
+
+        this._navPanel = undefined;
+        this._strategyPhaseEntry = undefined;
+        this._statusPhaseEntry = undefined;
 
         this._uiElement = new UIElement();
         this._uiElement.scale = 1 / CONFIG.scale;
@@ -93,6 +106,17 @@ class GameUI {
         // Resetting scripting may orphan zones.
         this.destroyNopeZone();
         this.createNopeZone();
+    }
+
+    showStrategyPhase() {
+        if (this._navPanel && this._strategyPhaseEntry) {
+            this._navPanel.setCurrentNavEntry(this._strategyPhaseEntry);
+        }
+    }
+    showStatusPhase() {
+        if (this._navPanel && this._statusPhaseEntry) {
+            this._navPanel.setCurrentNavEntry(this._statusPhaseEntry);
+        }
     }
 
     destroyNopeZone() {
@@ -168,14 +192,14 @@ class GameUI {
             .setSpacing(CONFIG.spacing)
             .setFitNameLength(13) // scale longer names
             .setAddEndTurnButton(true);
-        const navPanel = new NavPanel().startPeriodicUpdates();
+        this._navPanel = new NavPanel().startPeriodicUpdates();
 
-        panel.addChild(navPanel.getWidget(), 4);
+        panel.addChild(this._navPanel.getWidget(), 4);
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(turnOrderPanel, 1);
 
-        this.fillNavPanel(navPanel);
-        navPanel.setCurrentNavEntry(navPanel.getRootFolder());
+        this.fillNavPanel(this._navPanel);
+        this._navPanel.setCurrentNavEntry(this._navPanel.getRootFolder());
     }
 
     _createDraftFolder() {
@@ -364,13 +388,13 @@ class GameUI {
         rootFolder.addChild(mapFolder);
 
         // Phases.
-        const strategyPhaseEntry = new NavEntry()
+        this._strategyPhaseEntry = new NavEntry()
             .setName(locale("nav.strategy_phase"))
             .setIconPath("global/ui/icons/not_started.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabStrategy().getUI();
             });
-        rootFolder.addChild(strategyPhaseEntry);
+        rootFolder.addChild(this._strategyPhaseEntry);
         // Comment this out for now.  Switch to the strategy phase panel?
         // This triggers for status phase cleanup too, not ideal.
         // globalEvents.TI4.onStrategyCardMovementStopped.add(() => {
@@ -380,26 +404,26 @@ class GameUI {
         //     const unpickedStrategyCards =
         //         PlaceTradegoodUnpicked.getUnpickedStrategyCards();
         //     if (unpickedStrategyCards.length >= 6) {
-        //         navPanel.setCurrentNavEntry(strategyPhaseEntry);
+        //         navPanel.setCurrentNavEntry(this._strategyPhaseEntry);
         //     }
         // });
 
         const actionPhaseFolder = this._createActionPhaseFolder(navPanel);
         rootFolder.addChild(actionPhaseFolder);
 
-        const statusPhaseEntry = new NavEntry()
+        this._statusPhaseEntry = new NavEntry()
             .setName(locale("nav.status_phase"))
             .setIconPath("global/ui/icons/cleaning_services.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new TabStatus().getUI();
             });
-        rootFolder.addChild(statusPhaseEntry);
+        rootFolder.addChild(this._statusPhaseEntry);
         globalEvents.TI4.onTurnOrderEmpty.add(() => {
             if (world.TI4.agenda.isActive()) {
                 return; // agenda phase, ignore all have passed
             }
             // All players have passed, probably the action phase (?).
-            navPanel.setCurrentNavEntry(statusPhaseEntry);
+            navPanel.setCurrentNavEntry(this._statusPhaseEntry);
         });
 
         const tabAgenda = new TabAgenda(); // registers event handler, reuse
@@ -422,10 +446,12 @@ class GameUI {
     }
 }
 
-const gameUI = new GameUI();
+GameUI.getInstance(); // create even if mock
 
 if (!world.__isMock) {
     process.nextTick(() => {
-        gameUI.fill();
+        GameUI.getInstance().fill();
     });
 }
+
+module.exports = { GameUI };
