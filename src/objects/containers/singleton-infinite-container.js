@@ -9,7 +9,7 @@ const {
     GameObject,
     Player,
     globalEvents,
-    refObject,
+    refContainer,
 } = require("../../wrapper/api");
 
 class SingletonInfiniteContainer {
@@ -17,12 +17,6 @@ class SingletonInfiniteContainer {
         assert(gameObject);
         assert(gameObject instanceof GameObject);
         assert(gameObject instanceof Container);
-
-        // "Can't happen" paranoid safety check.
-        if (gameObject._isSingletonInfiniteContainer) {
-            return;
-        }
-        gameObject._isSingletonInfiniteContainer = true;
 
         // Might not have correct type on creation.
         //assert(gameObject.getType() === 1); // 3 technically ok
@@ -144,4 +138,6 @@ class SingletonInfiniteContainer {
     }
 }
 
-new SingletonInfiniteContainer(refObject);
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new SingletonInfiniteContainer(refContainer);
+assert(_doNotGC);

@@ -27,12 +27,6 @@ class UnitBag {
         assert(container instanceof Container);
         assert(ObjectNamespace.isUnitBag(container));
 
-        // "Can't happen" paranoid safety check.
-        if (container._isUnitBag) {
-            return;
-        }
-        container._isUnitBag = true;
-
         this._container = container;
         this._unit = ObjectNamespace.parseUnitBag(container).unit;
         this._UIElement = false;
@@ -176,26 +170,6 @@ class UnitBag {
     }
 }
 
-let _createOnlyOnceCalled = false;
-const createOnlyOnce = (obj) => {
-    assert(obj instanceof GameObject);
-    if (_createOnlyOnceCalled || world.__isMock) {
-        return;
-    }
-    _createOnlyOnceCalled = true;
-    new UnitBag(obj);
-};
-
-refContainer.onCreated.add((obj) => {
-    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
-    // AND PROBABLY CAUSES OTHER PROBLEMS.
-    process.nextTick(() => {
-        createOnlyOnce(obj);
-    });
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        createOnlyOnce(refContainer);
-    });
-}
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new UnitBag(refContainer);
+assert(_doNotGC);

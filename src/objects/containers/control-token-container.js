@@ -5,7 +5,7 @@ const {
     GameObject,
     Player,
     globalEvents,
-    refObject,
+    refContainer,
     world,
 } = require("../../wrapper/api");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -15,12 +15,6 @@ class ControlTokenContainer {
         assert(container);
         assert(container instanceof GameObject);
         assert(container instanceof Container);
-
-        // "Can't happen" paranoid safety check.
-        if (container._isControlTokenContainer) {
-            return;
-        }
-        container._isControlTokenContainer = true;
 
         // Might not have correct type on creation.
         //assert(gameObject.getType() === 1); // 3 technically ok
@@ -168,4 +162,6 @@ class ControlTokenContainer {
     }
 }
 
-new ControlTokenContainer(refObject);
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new ControlTokenContainer(refContainer);
+assert(_doNotGC);
