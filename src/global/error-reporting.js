@@ -40,6 +40,7 @@ class ErrorReporting {
             entry = {
                 stackTrace: err,
                 count: 0,
+                reportCount: 0,
                 players: world.getAllPlayers().map((x) => {
                     return x.getName() + (x.isHost() ? "*" : "");
                 }),
@@ -61,7 +62,12 @@ class ErrorReporting {
         if (age > 0 && age < 300) {
             return;
         }
+        // Suppress if keeps happening, should have enough data from earlier reports.
+        if (entry.reportCount > 3) {
+            return;
+        }
         entry.timestamp = now;
+        entry.reportCount += 1;
 
         // Send the error.
         const fetchOptions = {
