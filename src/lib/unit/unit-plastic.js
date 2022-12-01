@@ -64,6 +64,9 @@ class UnitPlastic {
             if (obj.getContainer()) {
                 continue; // inside a container
             }
+            if (obj.isHeld()) {
+                continue; // player holding plastic, ignore
+            }
             const unitPlastic = UnitPlastic.getOne(obj);
             if (unitPlastic) {
                 result.push(unitPlastic);
