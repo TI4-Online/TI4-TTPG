@@ -7,42 +7,31 @@ const {
 const {
     MiltySliceGenerator,
 } = require("../../../../lib/draft/milty/milty-slice-generator");
+const { WidgetFactory } = require("../../../../lib/ui/widget-factory");
 const CONFIG = require("../../../game-ui-config");
-const {
-    Border,
-    Button,
-    CheckBox,
-    Color,
-    HorizontalBox,
-    ImageButton,
-    LayoutBox,
-    Slider,
-    Text,
-    MultilineTextBox,
-    VerticalBox,
-    refPackageId,
-    world,
-} = require("../../../../wrapper/api");
+const { Color, refPackageId, world } = require("../../../../wrapper/api");
 
-class MiltyDraftSettingsUI extends VerticalBox {
+class MiltyDraftSettingsUI {
     constructor(sliceGenerator, factionGenerator, callbacks) {
         assert(sliceGenerator instanceof MiltySliceGenerator);
         assert(factionGenerator instanceof MiltyFactionGenerator);
         assert(typeof callbacks.onFinish === "function");
         assert(typeof callbacks.onCancel === "function");
 
-        super();
+        this._mainBox = WidgetFactory.layoutBox();
 
         this._sliceGenerator = sliceGenerator;
         this._factionGenerator = factionGenerator;
         this._callbacks = callbacks;
 
-        this.setChildDistance(CONFIG.spacing);
-
         this._createDraftSettingsUI({
             customInputString: "",
             factions: [],
         });
+    }
+
+    getWidget() {
+        return this._mainBox;
     }
 
     _createDraftSettingsUI(persistentMemory) {
@@ -52,17 +41,25 @@ class MiltyDraftSettingsUI extends VerticalBox {
         assert(this._sliceGenerator);
         assert(this._factionGenerator);
 
-        this.removeAllChildren();
+        const old = this._mainBox.getChild();
+        if (old) {
+            this._mainBox.setChild(undefined);
+            WidgetFactory.release(old);
+        }
+        const panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._mainBox.setChild(panel);
 
-        const customInputLabel = new Text()
+        const customInputLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.custom_input"));
-        this.addChild(customInputLabel);
-        const customInput = new MultilineTextBox()
+        panel.addChild(customInputLabel);
+        const customInput = WidgetFactory.multilineTextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1000)
             .setText(persistentMemory.customInputString);
-        const onCustomButton = new Button()
+        const onCustomButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.custom"));
         onCustomButton.onClicked.add((button, player) => {
@@ -70,30 +67,30 @@ class MiltyDraftSettingsUI extends VerticalBox {
             persistentMemory.customInputString = customInput.getText();
             this._createCustomSelectionUI(persistentMemory);
         });
-        const customHBox = new HorizontalBox()
+        const customHBox = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(customInput, 9)
             .addChild(onCustomButton, 3);
-        const customInputBox = new LayoutBox()
+        const customInputBox = WidgetFactory.layoutBox()
             .setChild(customHBox)
             .setMinimumHeight(CONFIG.fontSize * 3);
-        this.addChild(customInputBox);
+        panel.addChild(customInputBox);
 
-        const extraLegendariesAndWormholes = new CheckBox()
+        const extraLegendariesAndWormholes = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.extra_legendaries_and_wormholes"))
             .setIsChecked(true);
-        this.addChild(extraLegendariesAndWormholes);
+        panel.addChild(extraLegendariesAndWormholes);
         extraLegendariesAndWormholes.onCheckStateChanged.add(
             (checkbox, player, isChecked) => {
                 this._sliceGenerator.setExtraLegendariesAndWormholes(isChecked);
             }
         );
 
-        const sliceCountLabel = new Text()
+        const sliceCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.slice_count"));
-        const sliceCountSlider = new Slider()
+        const sliceCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(MiltySliceGenerator.minCount)
@@ -103,16 +100,16 @@ class MiltyDraftSettingsUI extends VerticalBox {
         sliceCountSlider.onValueChanged.add((slider, player, value) => {
             this._sliceGenerator.setCount(value);
         });
-        const sliceCountPanel = new HorizontalBox()
+        const sliceCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(sliceCountLabel, 2)
             .addChild(sliceCountSlider, 4);
-        this.addChild(sliceCountPanel);
+        panel.addChild(sliceCountPanel);
 
-        const factionCountLabel = new Text()
+        const factionCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.faction_count"));
-        const factionCountSlider = new Slider()
+        const factionCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(MiltyFactionGenerator.minCount)
@@ -122,24 +119,24 @@ class MiltyDraftSettingsUI extends VerticalBox {
         factionCountSlider.onValueChanged.add((slider, player, value) => {
             this._factionGenerator.setCount(value);
         });
-        const factionCountPanel = new HorizontalBox()
+        const factionCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(factionCountLabel, 2)
             .addChild(factionCountSlider, 4);
-        this.addChild(factionCountPanel);
+        panel.addChild(factionCountPanel);
 
-        const factionsFromCards = new CheckBox()
+        const factionsFromCards = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.factions_from_cards"))
             .setIsChecked(this._factionGenerator.getFactionsFromCards());
-        this.addChild(factionsFromCards);
+        panel.addChild(factionsFromCards);
         factionsFromCards.onCheckStateChanged.add(
             (checkbox, player, isChecked) => {
                 this._factionGenerator.setFactionsFromCards(isChecked);
             }
         );
 
-        const onFinishedButton = new Button()
+        const onFinishedButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
@@ -152,45 +149,53 @@ class MiltyDraftSettingsUI extends VerticalBox {
             }
         });
 
-        this.addChild(new LayoutBox(), 1);
+        panel.addChild(WidgetFactory.layoutBox(), 1);
 
-        this.addChild(onFinishedButton);
+        panel.addChild(onFinishedButton);
     }
 
     _createCustomSelectionUI(persistentMemory) {
         assert(typeof persistentMemory.customInputString === "string");
         assert(Array.isArray(persistentMemory.factions));
 
-        this.removeAllChildren();
+        const old = this._mainBox.getChild();
+        if (old) {
+            this._mainBox.setChild(undefined);
+            WidgetFactory.release(old);
+        }
+        const panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._mainBox.setChild(panel);
 
-        const sliceInputLabel = new Text()
+        const sliceInputLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.slice_input"));
-        this.addChild(sliceInputLabel);
-        const sliceInput = new MultilineTextBox()
+        panel.addChild(sliceInputLabel);
+        const sliceInput = WidgetFactory.multilineTextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1000)
             .setText(persistentMemory.customInputString);
-        const customInputBox = new LayoutBox()
+        const customInputBox = WidgetFactory.layoutBox()
             .setChild(sliceInput)
             .setMinimumHeight(CONFIG.fontSize * 2);
-        this.addChild(customInputBox);
+        panel.addChild(customInputBox);
 
-        const factionInputLabel = new Text()
+        const factionInputLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.faction_input"));
-        this.addChild(factionInputLabel);
+        panel.addChild(factionInputLabel);
 
-        const factionGridH1 = new HorizontalBox().setChildDistance(
+        const factionGridH1 = WidgetFactory.horizontalBox().setChildDistance(
             CONFIG.spacing * 0.75
         );
-        const factionGridH2 = new HorizontalBox().setChildDistance(
+        const factionGridH2 = WidgetFactory.horizontalBox().setChildDistance(
             CONFIG.spacing * 0.75
         );
-        const factionGridH3 = new HorizontalBox().setChildDistance(
+        const factionGridH3 = WidgetFactory.horizontalBox().setChildDistance(
             CONFIG.spacing * 0.75
         );
-        const factionGridV = new VerticalBox()
+        const factionGridV = WidgetFactory.verticalBox()
             .setHorizontalAlignment(2)
             .setChildDistance(CONFIG.spacing * 0.2)
             .addChild(factionGridH1)
@@ -229,7 +234,7 @@ class MiltyDraftSettingsUI extends VerticalBox {
                     faction.nsidName +
                     "_icon.png";
             }
-            const factionButton = new ImageButton()
+            const factionButton = WidgetFactory.imageButton()
                 .setImageSize(0, 100)
                 .setImage(image, refPackageId);
             factionButton.onClicked.add((button, player) => {
@@ -240,31 +245,31 @@ class MiltyDraftSettingsUI extends VerticalBox {
                 );
                 this._createCustomSelectionUI(newMemory);
             });
-            const factionBorder = new Border().setColor(color);
+            const factionBorder = WidgetFactory.border().setColor(color);
             if (keleresVariants.includes(faction.nsidName)) {
-                const keleresBorder = new Border()
+                const keleresBorder = WidgetFactory.border()
                     .setChild(factionButton)
                     .setColor(
                         variantColor[keleresVariants.indexOf(faction.nsidName)]
                     );
                 factionBorder.setChild(keleresBorder);
             } else {
-                const exBorder = new Border()
+                const exBorder = WidgetFactory.border()
                     .setChild(factionButton)
                     .setColor(color);
                 factionBorder.setChild(exBorder);
             }
 
-            const facName = new Text()
+            const facName = WidgetFactory.text()
                 .setFontSize(CONFIG.fontSize * 0.35)
                 .setJustification(2)
                 .setText(faction.nameAbbr);
-            const facVBox = new VerticalBox()
+            const facVBox = WidgetFactory.verticalBox()
                 .setHorizontalAlignment(2)
                 .setChildDistance(CONFIG.spacing * 0)
                 .addChild(factionBorder)
                 .addChild(facName);
-            const facBox = new LayoutBox()
+            const facBox = WidgetFactory.layoutBox()
                 .setOverrideWidth(150)
                 .setChild(facVBox);
 
@@ -273,9 +278,9 @@ class MiltyDraftSettingsUI extends VerticalBox {
             factionGridV.getChildAt(row).addChild(facBox);
         });
 
-        this.addChild(factionGridV);
+        panel.addChild(factionGridV);
 
-        const onFinishedButton = new Button()
+        const onFinishedButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
         onFinishedButton.onClicked.add((button, player) => {
@@ -290,35 +295,44 @@ class MiltyDraftSettingsUI extends VerticalBox {
                 this._createDraftInProgressUI(persistentMemory);
             }
         });
-        const onClearButton = new Button()
+        const onClearButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.clear"));
         onClearButton.onClicked.add((button, player) => {
             this._callbacks.onClear(player);
-            this._createCustomSelectionUI([sliceInput.getText(), []]);
+            persistentMemory.factions = [];
+            this._createCustomSelectionUI(persistentMemory);
         });
-        const onCancelButton = new Button()
+        const onCancelButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
             this._callbacks.onCancel(player);
             this._createDraftSettingsUI(persistentMemory);
         });
-        const buttonHBox = new HorizontalBox()
+        const buttonHBox = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(onFinishedButton, 1)
             .addChild(onClearButton, 1)
             .addChild(onCancelButton, 1);
 
-        this.addChild(new LayoutBox(), 1);
+        panel.addChild(WidgetFactory.layoutBox(), 1);
 
-        this.addChild(buttonHBox);
+        panel.addChild(buttonHBox);
     }
 
     _createDraftInProgressUI(persistentMemory) {
-        this.removeAllChildren();
+        const old = this._mainBox.getChild();
+        if (old) {
+            this._mainBox.setChild(undefined);
+            WidgetFactory.release(old);
+        }
+        const panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._mainBox.setChild(panel);
 
-        const onCancelButton = new Button()
+        const onCancelButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
@@ -326,14 +340,14 @@ class MiltyDraftSettingsUI extends VerticalBox {
             this._createDraftSettingsUI(persistentMemory);
         });
 
-        const draftInProgress = new Text()
+        const draftInProgress = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.in_progress"));
-        this.addChild(draftInProgress);
+        panel.addChild(draftInProgress);
 
-        this.addChild(new LayoutBox(), 1);
+        panel.addChild(WidgetFactory.layoutBox(), 1);
 
-        this.addChild(onCancelButton);
+        panel.addChild(onCancelButton);
     }
 }
 

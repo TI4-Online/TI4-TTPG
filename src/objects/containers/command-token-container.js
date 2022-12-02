@@ -137,7 +137,7 @@ class Reporter {
     }
 }
 
-class CommandTokenBag {
+class CommandTokenContainer {
     constructor(container) {
         assert(container instanceof Container);
         assert(ObjectNamespace.isCommandTokenBag(container));
@@ -259,27 +259,8 @@ class CommandTokenBag {
     }
 }
 
-let _createOnlyOnceCalled = false;
-const createOnlyOnce = (obj) => {
-    assert(obj instanceof GameObject);
-    if (_createOnlyOnceCalled || world.__isMock) {
-        return;
-    }
-    _createOnlyOnceCalled = true;
-    new CommandTokenBag(obj);
-    new Reporter(obj);
-};
-
-refContainer.onCreated.add((obj) => {
-    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
-    // AND PROBABLY CAUSES OTHER PROBLEMS.
-    process.nextTick(() => {
-        createOnlyOnce(obj);
-    });
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        createOnlyOnce(refContainer);
-    });
-}
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new CommandTokenContainer(refContainer);
+assert(_doNotGC);
+const _doNotGC2 = new Reporter(refContainer);
+assert(_doNotGC2);

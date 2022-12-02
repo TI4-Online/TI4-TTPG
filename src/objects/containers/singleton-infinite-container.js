@@ -9,7 +9,7 @@ const {
     GameObject,
     Player,
     globalEvents,
-    refObject,
+    refContainer,
 } = require("../../wrapper/api");
 
 class SingletonInfiniteContainer {
@@ -138,4 +138,6 @@ class SingletonInfiniteContainer {
     }
 }
 
-new SingletonInfiniteContainer(refObject);
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new SingletonInfiniteContainer(refContainer);
+assert(_doNotGC);

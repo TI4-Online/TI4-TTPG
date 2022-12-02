@@ -5,7 +5,7 @@ const {
     GameObject,
     Player,
     globalEvents,
-    refObject,
+    refContainer,
     world,
 } = require("../../wrapper/api");
 const { Spawn } = require("../../setup/spawn/spawn");
@@ -162,4 +162,6 @@ class ControlTokenContainer {
     }
 }
 
-new ControlTokenContainer(refObject);
+// Hold a reference to make sure the proxy object does not get removed.
+const _doNotGC = new ControlTokenContainer(refContainer);
+assert(_doNotGC);
