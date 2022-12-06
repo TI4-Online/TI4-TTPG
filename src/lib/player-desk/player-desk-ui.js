@@ -135,6 +135,7 @@ class PlayerDeskUI {
             this._setupFactionButton.onClicked.clear();
             this._setupFactionButton.onClicked.add(onClickHandler);
         }
+        this._setupFactionButton.setEnabled(config.canFaction);
 
         // Once a faction is selected enable ready button.
         if (!config.isReady) {
@@ -148,7 +149,7 @@ class PlayerDeskUI {
 
         // Show hide UI widgets.
         this._colorOptionsPanel.setVisible(config.showColors);
-        this._setupFactionButton.setVisible(config.canFaction);
+        this._setupFactionButton.setVisible(!config.isReady);
         this._readyButton.setVisible(!config.isReady);
 
         return this;
