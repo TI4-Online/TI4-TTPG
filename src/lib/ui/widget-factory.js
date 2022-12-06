@@ -29,49 +29,6 @@ const {
 
 // ----------------------------------------------------------------------------
 
-const _uiPeers = [];
-
-class UIElementWithDuplicationCheck extends UIElement {
-    static lookForAlreadyAttached(widget) {
-        const getAllWidgets = (widget, result = []) => {
-            if (!widget) {
-                return result;
-            }
-            result.push(widget);
-            if (widget instanceof Border || widget instanceof LayoutBox) {
-                getAllWidgets(widget.getChild(), result);
-            }
-            if (widget instanceof Panel) {
-                for (let i = 0; widget.getChildAt(i); i++) {
-                    getAllWidgets(widget.getChildAt(i), result);
-                }
-            }
-            return result;
-        };
-        for (const uiPeer of _uiPeers) {
-            const peerWidgets = getAllWidgets(uiPeer.widget);
-            if (peerWidgets.includes(widget)) {
-                throw new Error(
-                    [
-                        "[[[XXX",
-                        "WIDGET ALLOC:",
-                        ...widget._alloc,
-                        "UI ELEMENT ALLOC:",
-                        ...uiPeer._alloc,
-                        "XXX]]]",
-                    ].join("\n")
-                );
-            }
-        }
-    }
-    constructor() {
-        super();
-        _uiPeers.push(this);
-    }
-}
-
-// ----------------------------------------------------------------------------
-
 const RECYCLE = true;
 const INVENTORY_CAP = 600;
 
@@ -181,12 +138,16 @@ class WidgetInventoryEntry {
         }
 
         // Store the WidgetFactory call source.
-        while (widget._alloc.length > 5) {
-            widget._alloc.shift();
+        while (widget._alloc.length > 3) {
+            widget._alloc.pop();
         }
-        const stack = new Error().stack.split("\n");
-        const entry = stack[3] + " " + Date.now() / 1000;
-        widget._alloc.push(entry);
+        const stack = new Error().stack
+            .split("\n")
+            .slice(3)
+            .map((s) => s.replace(/.*\/Scripts\//, ""))
+            .map((s) => s.replace(/:[0-9]*[)]?$/, ""));
+        const entry = stack.slice(0, Math.min(stack.length, 3)).join(" + ");
+        widget._alloc.unshift(entry);
 
         return widget;
     }
@@ -238,6 +199,31 @@ const _dummyWidgetBecauseUIElementWidgetUndefinedFails = new Widget();
  * If and when the underlying bugs are fixed disable by `RECYCLE = false`.
  */
 class WidgetFactory {
+    static auditActive() {
+        let result = [];
+        for (const [widgetName, widgetInventoryEntry] of Object.entries(
+            _inventory
+        )) {
+            const allocToCount = {};
+            for (const entry of widgetInventoryEntry._active) {
+                if (entry._alloc && entry._alloc.length > 0) {
+                    const caller = entry._alloc[0];
+                    allocToCount[caller] = (allocToCount[caller] || 0) + 1;
+                }
+            }
+            for (const [alloc, count] of Object.entries(allocToCount)) {
+                result.push({ widgetName, alloc, count });
+            }
+        }
+        result.sort((a, b) => {
+            return a.count - b.count; // sorty by increasing count
+        });
+        result = result
+            .map((entry) => `${entry.count} ${entry.widgetName} ${entry.alloc}`)
+            .join("\n");
+        return result;
+    }
+
     static verifyNotParented(widget, path = []) {
         assert(!widget || widget instanceof Widget);
 
@@ -257,6 +243,44 @@ class WidgetFactory {
                     "]]]",
                 ].join("\n\n")
             );
+        }
+    }
+
+    static removeAllChildren(widget) {
+        assert(widget instanceof Panel || widget instanceof Canvas);
+
+        const children = [];
+        if (widget instanceof Panel) {
+            for (let i = 0; i < 1000; i++) {
+                const child = widget.getChildAt(i);
+                if (child) {
+                    children.push(child);
+                } else {
+                    break;
+                }
+            }
+            widget.removeAllChildren();
+        } else if (widget instanceof Canvas) {
+            for (const child of children) {
+                widget.removeChild(child);
+                children.push(child);
+            }
+        }
+
+        for (const child of children) {
+            WidgetFactory.release(child);
+        }
+    }
+
+    static setChild(widget, child) {
+        assert(widget instanceof Border || widget instanceof LayoutBox);
+        assert(child === undefined || child instanceof Widget);
+
+        const old = widget.getChild();
+        widget.setChild(child);
+
+        if (old) {
+            WidgetFactory.release(old);
         }
     }
 
@@ -307,42 +331,22 @@ class WidgetFactory {
             widget.setItalic(false);
         }
         if (widget instanceof Panel) {
-            const children = [];
-            for (let i = 0; i < 100; i++) {
-                const child = widget.getChildAt(i);
-                if (child) {
-                    children.push(child);
-                } else {
-                    break;
-                }
-            }
-            widget.removeAllChildren();
+            WidgetFactory.removeAllChildren(widget);
             widget.setChildDistance(0);
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setVerticalAlignment(VerticalAlignment.Fill);
-            for (const child of children) {
-                WidgetFactory.release(child);
-            }
         }
 
         if (widget instanceof Border) {
-            const child = widget.getChild();
-            widget.setChild(undefined);
+            WidgetFactory.setChild(widget, undefined);
             widget.setColor([1, 0, 0, 1]);
             _inventory.border.push(widget);
-            if (child) {
-                WidgetFactory.release(child);
-            }
         } else if (widget instanceof Button) {
             widget.onClicked.clear();
             widget.setText("");
             _inventory.button.push(widget);
         } else if (widget instanceof Canvas) {
-            const children = widget.getChildren();
-            for (const child of children) {
-                widget.removeChild(child);
-                WidgetFactory.release(child);
-            }
+            WidgetFactory.removeAllChildren(widget);
             _inventory.canvas.push(widget);
         } else if (widget instanceof CheckBox) {
             widget.onCheckStateChanged.clear();
@@ -365,8 +369,7 @@ class WidgetFactory {
             widget.setTintColor([1, 1, 1, 1]);
             _inventory.imageWidget.push(widget);
         } else if (widget instanceof LayoutBox) {
-            const child = widget.getChild();
-            widget.setChild(undefined);
+            WidgetFactory.setChild(widget, undefined);
             widget.setHorizontalAlignment(HorizontalAlignment.Fill);
             widget.setMaximumHeight(-1);
             widget.setMinimumWidth(-1);
@@ -376,9 +379,6 @@ class WidgetFactory {
             widget.setPadding(0, 0, 0, 0);
             widget.setVerticalAlignment(VerticalAlignment.Fill);
             _inventory.layoutBox.push(widget);
-            if (child) {
-                WidgetFactory.release(child);
-            }
         } else if (widget instanceof MultilineTextBox) {
             widget.setBackgroundTransparent(false);
             widget.setMaxLength(200);
@@ -473,5 +473,9 @@ class WidgetFactory {
         return uiElement;
     }
 }
+
+world._auditWidgets = () => {
+    return WidgetFactory.auditActive();
+};
 
 module.exports = { WidgetFactory };
