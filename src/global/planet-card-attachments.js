@@ -5,12 +5,11 @@ const {
 } = require("../objects/attachments/abstract-planet-attachment");
 const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { WidgetFactory } = require("../lib/ui/widget-factory");
 const {
     Card,
     GameObject,
-    ImageWidget,
     Rotator,
-    UIElement,
     Vector,
     globalEvents,
     refPackageId,
@@ -51,7 +50,7 @@ function addImageCardFace(card, image, tintColor, index) {
         row -= 0.5;
     }
 
-    const ui = new UIElement();
+    const ui = WidgetFactory.uiElement();
     ui.position = new Vector(
         BOT.x0 + row * BOT.dx,
         BOT.y0 + col * BOT.dy,
@@ -59,7 +58,7 @@ function addImageCardFace(card, image, tintColor, index) {
     );
     ui.rotation = new Rotator(180, 180, 0);
     ui.scale = 0.3;
-    ui.widget = new ImageWidget()
+    ui.widget = WidgetFactory.imageWidget()
         .setImage(image, refPackageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
@@ -80,7 +79,7 @@ function addImageCardBack(card, image, tintColor, index) {
     const col = index % TOP.numCols;
     let row = Math.floor(index / TOP.numCols);
 
-    const ui = new UIElement();
+    const ui = WidgetFactory.uiElement();
     ui.position = new Vector(
         TOP.x0 + row * TOP.dx,
         TOP.y0 + col * TOP.dy,
@@ -88,7 +87,7 @@ function addImageCardBack(card, image, tintColor, index) {
     );
     ui.rotation = new Rotator(0, 0, 0);
     ui.scale = 0.3;
-    ui.widget = new ImageWidget()
+    ui.widget = WidgetFactory.imageWidget()
         .setImage(image, refPackageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
@@ -144,6 +143,7 @@ function removeAttachmentsUI(card) {
 
     for (const ui of card.getUIs()) {
         card.removeUI(ui);
+        WidgetFactory.release(ui);
     }
     card.setDescription("");
     delete card.__hasAttachmentsUI;
@@ -154,6 +154,9 @@ globalEvents.TI4.onSystemChanged.add((systemTileObj) => {
 
     // Get card NSIDs.
     const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+    if (!system) {
+        return;
+    }
     const cardNsids = new Set();
     for (const planet of system.planets) {
         const cardNsid = planet.getPlanetCardNsid();
