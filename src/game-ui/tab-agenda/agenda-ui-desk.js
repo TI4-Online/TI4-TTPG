@@ -448,6 +448,7 @@ class AgendaUiDesk {
                     return;
                 }
                 world.removeUIElement(this._ui);
+                // do not recycle this._ui, hold for re-attach!
 
                 this._collapsedUi = WidgetFactory.uiElement();
                 this._collapsedUi.position = this._ui.position;
