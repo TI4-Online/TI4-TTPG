@@ -273,18 +273,24 @@ function doSwapSplitCombine(objs, player) {
             consumeBag.addObjects([obj], 0, true);
         }
     }
-    let pos = player.getCursorPosition().add([0, 0, 10]);
+    let pos = player.getCursorPosition();
+    pos.z = world.getTableHeight() + 10;
     for (let i = 0; i < match.produce.count; i++) {
+        // Remove from container before moving to final location.
+        // Bug report said it fell through the table after take.
         let obj;
+        const above = produceBag.getPosition().add([0, 0, 10]);
         if (isInfiniteContainer(produceBag)) {
             // See global/patch-infinite-container.js
             // Instead of taking from infinite bag, spawn (no need to find closest).
-            obj = Spawn.spawn(match.produce.nsid, pos, new Rotator(0, 0, 0));
+            obj = Spawn.spawn(match.produce.nsid, above, new Rotator(0, 0, 0));
         } else {
-            obj = produceBag.takeAt(0, pos, true);
+            obj = produceBag.takeAt(0, above, false);
         }
+        obj.setPosition(pos);
         obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0]);
-        pos = pos.add(obj.getExtent().multiply(2));
+        obj.snapToGround();
+        pos = pos.add(obj.getExtent().multiply(0.2));
     }
 }
 
