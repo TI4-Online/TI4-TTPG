@@ -1,17 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
-const {
-    Border,
-    Button,
-    Color,
-    HorizontalBox,
-    LayoutBox,
-    UIElement,
-    Vector,
-    VerticalBox,
-    globalEvents,
-    world,
-} = require("../wrapper/api");
+const { WidgetFactory } = require("../lib/ui/widget-factory");
+const { Color, Vector, globalEvents, world } = require("../wrapper/api");
 
 const HEIGHT = 32;
 const WIDTH = 400; // UI scale is 10x world
@@ -37,10 +27,10 @@ class DeskTurnOrder {
         }
     }
 
-    static updateAll(resetTurnOrder) {
+    static updateAll() {
         const passedPlayerSlotSet = world.TI4.turns.getPassedPlayerSlotSet();
         for (const deskTurnOrder of _deskTurnOrders) {
-            deskTurnOrder.update(resetTurnOrder, passedPlayerSlotSet);
+            deskTurnOrder.update(passedPlayerSlotSet);
         }
     }
 
@@ -48,9 +38,10 @@ class DeskTurnOrder {
         assert(typeof playerSlot === "number");
 
         this._playerSlot = playerSlot;
+
         this._border = undefined;
-        this._endTurnButton = new Button();
-        this._turnOrderPanel = new HorizontalBox();
+        this._endTurnButton = undefined;
+        this._turnOrderEntries = undefined;
         this._ui = undefined;
 
         this._onEndTurnClicked = (button, player) => {
@@ -70,7 +61,11 @@ class DeskTurnOrder {
     removeUI() {
         if (this._ui) {
             world.removeUIElement(this._ui);
+            WidgetFactory.release(this._ui);
             this._ui = undefined;
+            this._border = undefined;
+            this._endTurnButton = undefined;
+            this._turnOrderEntries = undefined;
         }
         return this;
     }
@@ -80,11 +75,18 @@ class DeskTurnOrder {
             this.removeUI();
         }
 
-        this._endTurnButton = new Button().setFontSize(12);
-        this._turnOrderPanel = new HorizontalBox();
-        this._border = new Border();
+        this._border = WidgetFactory.border();
 
+        this._endTurnButton = WidgetFactory.button().setFontSize(12);
         this._endTurnButton.onClicked.add(this._onEndTurnClicked);
+
+        const turnOrderPanel = WidgetFactory.horizontalBox();
+        this._turnOrderEntries = [];
+        for (let i = 0; i < world.TI4.config.playerCount; i++) {
+            const entry = WidgetFactory.border();
+            turnOrderPanel.addChild(entry, 1);
+            this._turnOrderEntries.push(entry);
+        }
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
             this._playerSlot
@@ -92,19 +94,19 @@ class DeskTurnOrder {
         const pos = playerDesk.localPositionToWorld(new Vector(42, 0, 0));
         pos.z = world.getTableHeight() + 0.01;
 
-        const panel = new VerticalBox()
+        const panel = WidgetFactory.verticalBox()
             .setChildDistance(0)
             .addChild(this._endTurnButton, 9)
-            .addChild(this._turnOrderPanel, 1);
+            .addChild(turnOrderPanel, 1);
 
-        const box = new LayoutBox()
+        const box = WidgetFactory.layoutBox()
             .setChild(panel)
             .setMinimumWidth(WIDTH)
             .setMaximumWidth(WIDTH)
             .setMinimumHeight(HEIGHT)
             .setMaximumHeight(HEIGHT);
 
-        this._ui = new UIElement();
+        this._ui = WidgetFactory.uiElement();
         this._ui.position = pos;
         this._ui.rotation = playerDesk.rot;
         this._ui.anchorY = 1; // bottom
@@ -114,8 +116,7 @@ class DeskTurnOrder {
         return this;
     }
 
-    update(resetTurnOrder, passedPlayerSlotSet) {
-        assert(typeof resetTurnOrder === "boolean");
+    update(passedPlayerSlotSet) {
         assert(passedPlayerSlotSet instanceof Set);
 
         const current = world.TI4.turns.getCurrentTurn();
@@ -126,7 +127,9 @@ class DeskTurnOrder {
 
         const v = 0.1;
         const gray = new Color(v, v, v, 1);
-        this._border.setColor(isActive ? current.plasticColor : gray);
+        if (this._border) {
+            this._border.setColor(isActive ? current.plasticColor : gray);
+        }
 
         if (isActive) {
             endTurnButtonText = locale("ui.button.your_turn_end_turn", {
@@ -140,23 +143,17 @@ class DeskTurnOrder {
                 next: capitalizeFirstLetter(nextName),
             });
         }
-        this._endTurnButton.setText(endTurnButtonText);
-        this._endTurnButton.setEnabled(isActive);
-
-        if (resetTurnOrder) {
-            this._turnOrderPanel.removeAllChildren();
-            for (const playerDesk of world.TI4.turns.getTurnOrder()) {
-                const inner = new Border().setColor(playerDesk.plasticColor);
-                this._turnOrderPanel.addChild(inner, 1);
-            }
+        if (this._endTurnButton) {
+            this._endTurnButton.setText(endTurnButtonText);
+            this._endTurnButton.setEnabled(isActive);
         }
 
-        // Passed?
+        // Update colors.
         const black = new Color(0, 0, 0, 1);
         world.TI4.turns.getTurnOrder().forEach((playerDesk, index) => {
             const passed = passedPlayerSlotSet.has(playerDesk.playerSlot);
             const color = passed ? black : playerDesk.plasticColor;
-            const inner = this._turnOrderPanel.getChildAt(index);
+            const inner = this._turnOrderEntries[index];
             if (inner) {
                 inner.setColor(color);
             }
@@ -167,25 +164,25 @@ class DeskTurnOrder {
 const initHandler = () => {
     globalEvents.onTick.remove(initHandler);
     DeskTurnOrder.resetAll();
-    DeskTurnOrder.updateAll(true);
+    DeskTurnOrder.updateAll();
 };
 globalEvents.onTick.add(initHandler);
 
 globalEvents.TI4.onPlayerCountChanged.add(() => {
     DeskTurnOrder.resetAll();
-    DeskTurnOrder.updateAll(true);
+    DeskTurnOrder.updateAll();
 });
 globalEvents.TI4.onPlayerColorChanged.add(() => {
     DeskTurnOrder.resetAll();
-    DeskTurnOrder.updateAll(true);
+    DeskTurnOrder.updateAll();
 });
 
 globalEvents.TI4.onTurnOrderChanged.add(() => {
-    DeskTurnOrder.updateAll(true);
+    DeskTurnOrder.updateAll();
 });
 globalEvents.TI4.onTurnChanged.add(() => {
-    DeskTurnOrder.updateAll(false);
+    DeskTurnOrder.updateAll();
 });
 globalEvents.TI4.onTurnPassedChanged.add(() => {
-    DeskTurnOrder.updateAll(false);
+    DeskTurnOrder.updateAll();
 });
