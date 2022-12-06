@@ -42,7 +42,9 @@ class AgendaWidgetSummary {
                 if (!world.__isMock) {
                     console.log("AgendaWidgetSummary onFreed");
                 }
-                _agendaWidgetSummary = undefined;
+                if (_agendaWidgetSummary === this) {
+                    _agendaWidgetSummary = undefined;
+                }
             });
         }
     }
