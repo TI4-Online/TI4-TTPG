@@ -20,21 +20,19 @@ class ReplaceObjects {
         const newNsidToOldNsid = {};
         const oldNsidToNewNsid = {};
         for (const [oldNsid, newNsid] of Object.entries(REPLACE_DATA)) {
-            if (newNsid.endsWith(".omega")) {
-                if (world.TI4.config.omega) {
-                    // Using omega, replace old versions.
-                    newNsidToOldNsid[newNsid] = oldNsid;
-                    oldNsidToNewNsid[oldNsid] = newNsid;
-                } else {
-                    // NOT USING OMEGA, replace omega versions.
-                    newNsidToOldNsid[oldNsid] = newNsid;
-                    oldNsidToNewNsid[newNsid] = oldNsid;
-                }
-            } else {
-                // Not ometa, always replace.
-                newNsidToOldNsid[newNsid] = oldNsid;
-                oldNsidToNewNsid[oldNsid] = newNsid;
-            }
+            newNsidToOldNsid[newNsid] = oldNsid;
+            oldNsidToNewNsid[oldNsid] = newNsid;
+        }
+
+        // Optionally use base Magen over the omega version.
+        if (world.TI4.config.baseMagen) {
+            const omega =
+                "card.technology.red:codex.ordinian/magen_defense_grid.omega";
+            const base = "card.technology.red:base/magen_defense_grid";
+            delete newNsidToOldNsid[omega];
+            delete oldNsidToNewNsid[base];
+            newNsidToOldNsid[base] = omega;
+            oldNsidToNewNsid[omega] = base;
         }
 
         // Get nsids for replacements (not the things getting replaced).
