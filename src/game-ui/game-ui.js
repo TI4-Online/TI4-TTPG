@@ -195,7 +195,7 @@ class GameUI {
 
         panel.addChild(this._navPanel.getWidget(), 4);
         panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
-        panel.addChild(turnOrderPanel, 1);
+        panel.addChild(turnOrderPanel.getWidget(), 1);
 
         this._navPanel.getWidget().__noMonkey = true;
 
