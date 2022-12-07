@@ -13,6 +13,7 @@ const {
     MultilineTextBox,
     Panel,
     Rotator,
+    ScreenUIElement,
     Slider,
     Text,
     TextBox,
@@ -120,6 +121,9 @@ class WidgetInventoryEntry {
         if (!widget) {
             widget = this._createOne();
 
+            // Add a field to verify object was not recreated when freeing.
+            widget._isWidgetFactory = true;
+
             // Add a per-widget event triggered when freed.
             // This is useful for paranoid callers who want to
             // make sure they no longer attempt to update it later.
@@ -133,7 +137,11 @@ class WidgetInventoryEntry {
         }
         this._active.push(widget);
 
-        assert(widget instanceof UIElement || widget instanceof Widget);
+        assert(
+            widget instanceof UIElement ||
+                widget instanceof ScreenUIElement ||
+                widget instanceof Widget
+        );
         if (widget instanceof Widget) {
             WidgetFactory.verifyNotParented(widget);
         }
@@ -171,6 +179,7 @@ const _inventory = {
     textBox: new WidgetInventoryEntry(() => new TextBox()),
     verticalBox: new WidgetInventoryEntry(() => new VerticalBox()),
     uiElement: new WidgetInventoryEntry(() => new UIElement()),
+    screenUIElement: new WidgetInventoryEntry(() => new ScreenUIElement()),
 };
 
 // ----------------------------------------------------------------------------
@@ -292,7 +301,15 @@ class WidgetFactory {
      * @returns {WidgetFactory} self, for chaining
      */
     static release(widget) {
-        assert(widget instanceof UIElement || widget instanceof Widget);
+        assert(
+            widget instanceof UIElement ||
+                widget instanceof ScreenUIElement ||
+                widget instanceof Widget
+        );
+
+        if (!RECYCLE || !widget._isWidgetFactory) {
+            return;
+        }
 
         if (widget.__noMonkey) {
             delete widget.__noMonkey;
@@ -316,6 +333,25 @@ class WidgetFactory {
             ui.useWidgetSize = true;
             ui.width = 160;
             _inventory.uiElement.push(ui);
+            WidgetFactory.release(widget);
+            return;
+        }
+        if (widget instanceof ScreenUIElement) {
+            const ui = widget;
+            widget = ui.widget;
+            ui.widget = _dummyWidgetBecauseUIElementWidgetUndefinedFails;
+            ui.anchorX = 0;
+            ui.anchorY = 0;
+            ui.height = 90;
+            ui.players = undefined;
+            ui.positionX = 0;
+            ui.positionY = 0;
+            ui.relativeHeight = false;
+            ui.relativePositionX = true;
+            ui.reliatvePositionY = true;
+            ui.relativeWidth = false;
+            ui.width = 160;
+            _inventory.screenUIElement.push(ui);
             WidgetFactory.release(widget);
             return;
         }
@@ -392,7 +428,7 @@ class WidgetFactory {
         } else if (widget instanceof Slider) {
             widget.onValueChanged.clear();
             widget.setMaxValue(1);
-            widget.setMinValue(1);
+            widget.setMinValue(0);
             widget.setStepSize(0.01);
             widget.setTextBoxWidth(35);
             widget.setValue(0);
@@ -455,6 +491,10 @@ class WidgetFactory {
 
     static multilineTextBox() {
         return _inventory.multilineTextBox.popOrCreate();
+    }
+
+    static screenUIElement() {
+        return _inventory.screenUIElement.popOrCreate();
     }
 
     static slider() {
