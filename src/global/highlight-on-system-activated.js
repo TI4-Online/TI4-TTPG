@@ -38,6 +38,7 @@ class SystemHighlight {
             const age = Date.now() - this._mintTimeMsecs;
             if (age / 1000 > DISPLAY_SECONDS && !infinite) {
                 this.detachUI();
+                _systemHighlight = false;
                 return;
             }
             this.updateImg();
@@ -82,6 +83,8 @@ function applyHighlight(obj, color) {
         _systemHighlight.detachUI();
         _systemHighlight = undefined;
     }
+
+    assert(!_imageWidget.getOwningObject());
 
     _systemHighlight = new SystemHighlight(obj, color);
 }
