@@ -346,6 +346,16 @@ module.exports = [
         },
     },
     {
+        // Active wormhole system is adjacent to all other wormholes.
+        isCombat: true,
+        localeName: "unit_modifier.name.emissary_taivra",
+        localeDescription: "unit_modifier.desc.emissary_taivra",
+        owner: "any",
+        priority: "mutate",
+        triggerNsid: "card.leader.agent.creuss:pok/emissary_taivra",
+        toggleActive: true,
+    },
+    {
         // "One in or adjacent Space Dock gets SPACE CANNON 5x3",
         isCombat: true,
         localeName: "unit_modifier.name.experimental_battlestation",
