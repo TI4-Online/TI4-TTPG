@@ -37,7 +37,7 @@ class MonkeyUtil {
                 return; // border can be empty, etc
             }
             assert(widget instanceof Widget);
-            if (!widget.isEnabled()) {
+            if (!widget.isEnabled() || !widget.isVisible()) {
                 return;
             }
             if (widget.__noMonkey) {
