@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "296011C7B8C621117928769C8EACC861",
-	"Name": "Promissory (base 5/10)",
+	"Name": "Promissory (base 5/9)",
 	"Metadata": "card.promissory:base/4",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -61,19 +61,19 @@
 		5
 	],
 	"CardNames": {
-		"0": "Antivirus",
-		"1": "Tekklar Legion",
-		"2": "Ceasefire (Orange)",
-		"3": "Political Secret (Orange)",
-		"4": "Support for the Throne (Orange)",
-		"5": "Trade Agreement (Orange)"
+		"0": "Political Secret (Orange)",
+		"1": "Support for the Throne (Orange)",
+		"2": "Trade Agreement (Orange)",
+		"3": "Ceasefire (Pink)",
+		"4": "Political Secret (Pink)",
+		"5": "Support for the Throne (Pink)"
 	},
 	"CardMetadata": {
-		"0": "card.promissory.nekro:base/antivirus",
-		"1": "card.promissory.norr:base/tekklar_legion",
-		"2": "card.promissory.orange:base/ceasefire",
-		"3": "card.promissory.orange:base/political_secret",
-		"4": "card.promissory.orange:base/support_for_the_throne",
-		"5": "card.promissory.orange:base/trade_agreement"
+		"0": "card.promissory.orange:base/political_secret",
+		"1": "card.promissory.orange:base/support_for_the_throne",
+		"2": "card.promissory.orange:base/trade_agreement",
+		"3": "card.promissory.pink:base/ceasefire",
+		"4": "card.promissory.pink:base/political_secret",
+		"5": "card.promissory.pink:base/support_for_the_throne"
 	}
 }

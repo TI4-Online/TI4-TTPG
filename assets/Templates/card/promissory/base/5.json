@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "C840ECBC94863D0C3B7941CC8779A36B",
-	"Name": "Promissory (base 6/10)",
+	"Name": "Promissory (base 6/9)",
 	"Metadata": "card.promissory:base/5",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -61,19 +61,19 @@
 		5
 	],
 	"CardNames": {
-		"0": "Ceasefire (Pink)",
-		"1": "Political Secret (Pink)",
-		"2": "Support for the Throne (Pink)",
-		"3": "Trade Agreement (Pink)",
-		"4": "Ceasefire (Purple)",
-		"5": "Political Secret (Purple)"
+		"0": "Trade Agreement (Pink)",
+		"1": "Ceasefire (Purple)",
+		"2": "Political Secret (Purple)",
+		"3": "Support for the Throne (Purple)",
+		"4": "Trade Agreement (Purple)",
+		"5": "Ceasefire (Red)"
 	},
 	"CardMetadata": {
-		"0": "card.promissory.pink:base/ceasefire",
-		"1": "card.promissory.pink:base/political_secret",
-		"2": "card.promissory.pink:base/support_for_the_throne",
-		"3": "card.promissory.pink:base/trade_agreement",
-		"4": "card.promissory.purple:base/ceasefire",
-		"5": "card.promissory.purple:base/political_secret"
+		"0": "card.promissory.pink:base/trade_agreement",
+		"1": "card.promissory.purple:base/ceasefire",
+		"2": "card.promissory.purple:base/political_secret",
+		"3": "card.promissory.purple:base/support_for_the_throne",
+		"4": "card.promissory.purple:base/trade_agreement",
+		"5": "card.promissory.red:base/ceasefire"
 	}
 }

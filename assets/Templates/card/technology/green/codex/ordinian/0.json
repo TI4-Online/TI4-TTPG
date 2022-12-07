@@ -1,8 +1,8 @@
 {
 	"Type": "Card",
-	"GUID": "1FE5DA4A6F7FB4328223AF2E24513CE4",
-	"Name": "Technology (Red) (base 2/2)",
-	"Metadata": "card.technology.red:base/1",
+	"GUID": "0C3CF219E7A8049FC1795A056321B2E1",
+	"Name": "Technology (Green) (codex.ordinian)",
+	"Metadata": "card.technology.green:codex.ordinian/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -34,8 +34,8 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/red/base/1.face.jpg",
-	"BackTexture": "global/card/technology/red.back.jpg",
+	"FrontTexture": "locale/card/technology/green/codex/ordinian/0.face.jpg",
+	"BackTexture": "global/card/technology/green.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
@@ -57,11 +57,11 @@
 		1
 	],
 	"CardNames": {
-		"0": "Magmus Reactor",
-		"1": "Valkyrie Particle Weave"
+		"0": "X-89 Bacterial Weapon Ω",
+		"1": "Yin Spinner Ω"
 	},
 	"CardMetadata": {
-		"0": "card.technology.red.muaat:base/magmus_reactor",
-		"1": "card.technology.red.norr:base/valkyrie_particle_weave"
+		"0": "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
+		"1": "card.technology.green.yin:codex.ordinian/yin_spinner.omega"
 	}
 }

@@ -12,6 +12,8 @@ const sharp = require("sharp");
 const assert = require("assert");
 const crypto = require("crypto");
 
+const KEEP_HOMEBREW = false;
+
 const SRC_TEXTURES_DIR = path.normalize("prebuild/Textures/");
 const DST_TEXTURES_DIR = path.normalize("assets/Textures/");
 const DST_TEMPLATES_DIR = path.normalize("assets/Templates/");
@@ -303,6 +305,13 @@ function getMatchingCards(pattern, locale) {
                     const json = JSON.parse(rawdata);
                     const nsid = json.id;
                     assert(nsid);
+                    if (
+                        !KEEP_HOMEBREW &&
+                        (nsid.includes(":homebrew") ||
+                            nsid.includes(":franken.homebrew"))
+                    ) {
+                        return;
+                    }
                     if (nsid.match(re)) {
                         assert(!nsidToJson[nsid]);
                         nsidToJson[nsid] = json;

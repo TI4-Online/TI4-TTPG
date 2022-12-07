@@ -1,8 +1,8 @@
 {
 	"Type": "Card",
-	"GUID": "1FE5DA4A6F7FB4328223AF2E24513CE4",
-	"Name": "Technology (Red) (base 2/2)",
-	"Metadata": "card.technology.red:base/1",
+	"GUID": "7CCF4D0A48DE82C9CA1197ED2D4838C2",
+	"Name": "Technology (Blue) (codex.ordinian)",
+	"Metadata": "card.technology.blue:codex.ordinian/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -34,12 +34,12 @@
 		"Y": 0,
 		"Z": 0
 	},
-	"FrontTexture": "locale/card/technology/red/base/1.face.jpg",
-	"BackTexture": "global/card/technology/red.back.jpg",
+	"FrontTexture": "locale/card/technology/blue/codex/ordinian/0.face.jpg",
+	"BackTexture": "global/card/technology/blue.back.jpg",
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 2,
+	"NumHorizontal": 1,
 	"NumVertical": 1,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -53,15 +53,12 @@
 	"MirrorBack": true,
 	"Model": "Rounded",
 	"Indices": [
-		0,
-		1
+		0
 	],
 	"CardNames": {
-		"0": "Magmus Reactor",
-		"1": "Valkyrie Particle Weave"
+		"0": "Wormhole Generator Ω"
 	},
 	"CardMetadata": {
-		"0": "card.technology.red.muaat:base/magmus_reactor",
-		"1": "card.technology.red.norr:base/valkyrie_particle_weave"
+		"0": "card.technology.blue.creuss:codex.ordinian/wormhole_generator.omega"
 	}
 }
