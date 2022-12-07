@@ -23,6 +23,7 @@ const {
     VerticalBox,
     UIElement,
     Widget,
+    globalEvents,
     refPackageId,
     world,
 } = require("../../wrapper/api");
@@ -261,7 +262,7 @@ class WidgetFactory {
             }
             widget.removeAllChildren();
         } else if (widget instanceof Canvas) {
-            for (const child of children) {
+            for (const child of widget.getChildren()) {
                 widget.removeChild(child);
                 children.push(child);
             }
@@ -292,6 +293,10 @@ class WidgetFactory {
      */
     static release(widget) {
         assert(widget instanceof UIElement || widget instanceof Widget);
+
+        if (widget.__noMonkey) {
+            delete widget.__noMonkey;
+        }
 
         // If releasing UI release any connected widget.
         if (widget instanceof UIElement) {
@@ -474,6 +479,14 @@ class WidgetFactory {
     }
 }
 
+globalEvents.onObjectDestroyed.add((object) => {
+    for (const ui of object.getUIs()) {
+        object.removeUIElement(ui);
+        WidgetFactory.release(ui);
+    }
+});
+
+// Attach a function a player can call from the console window.
 world._auditWidgets = () => {
     return WidgetFactory.auditActive();
 };
