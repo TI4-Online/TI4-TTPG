@@ -31,14 +31,11 @@ const { TabStatus } = require("./tab-status/tab-status");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
+const { WidgetFactory } = require("../lib/ui/widget-factory");
 const CONFIG = require("./game-ui-config");
 const {
-    Border,
     Card,
-    HorizontalBox,
-    LayoutBox,
     Rotator,
-    UIElement,
     Vector,
     globalEvents,
     world,
@@ -61,21 +58,21 @@ class GameUI {
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
-        this._layout = new LayoutBox().setPadding(
+        this._layout = WidgetFactory.layoutBox().setPadding(
             CONFIG.padding,
             CONFIG.padding,
             CONFIG.padding,
             CONFIG.padding
         );
 
-        const wrapper = new Border()
+        const wrapper = WidgetFactory.border()
             .setColor(CONFIG.backgroundColor)
             .setChild(this._layout);
         const b = CONFIG.spacing / 2;
-        const wrapperBox = new LayoutBox()
+        const wrapperBox = WidgetFactory.layoutBox()
             .setPadding(b, b, b, b)
             .setChild(wrapper);
-        const frame = new Border()
+        const frame = WidgetFactory.border()
             .setColor(CONFIG.spacerColor)
             .setChild(wrapperBox);
 
@@ -83,7 +80,7 @@ class GameUI {
         this._strategyPhaseEntry = undefined;
         this._statusPhaseEntry = undefined;
 
-        this._uiElement = new UIElement();
+        this._uiElement = WidgetFactory.uiElement();
         this._uiElement.scale = 1 / CONFIG.scale;
         this._uiElement.width = anchor.width * CONFIG.scale;
         this._uiElement.height = anchor.height * CONFIG.scale;
@@ -180,12 +177,14 @@ class GameUI {
 
     fillForSetup() {
         const gameSetup = new GameSetup();
-        this._layout.setChild(gameSetup.getUI());
+        WidgetFactory.setChild(this._layout, gameSetup.getUI());
     }
 
     fillForGame() {
-        const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
-        this._layout.setChild(panel);
+        const panel = WidgetFactory.horizontalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        WidgetFactory.setChild(this._layout, panel);
 
         const turnOrderPanel = new TurnOrderPanel()
             .setFontSize(CONFIG.fontSize)
@@ -195,7 +194,7 @@ class GameUI {
         this._navPanel = new NavPanel().startPeriodicUpdates();
 
         panel.addChild(this._navPanel.getWidget(), 4);
-        panel.addChild(new Border().setColor(CONFIG.spacerColor));
+        panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
         panel.addChild(turnOrderPanel, 1);
 
         this._navPanel.getWidget().__noMonkey = true;
