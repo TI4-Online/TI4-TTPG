@@ -279,7 +279,9 @@ class Explore {
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         let playerName = world.TI4.getNameByPlayerSlot(playerSlot);
         playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1); // capitalize
-        const planetName = planet.getNameStr();
+        const planetName = planet
+            ? planet.getNameStr()
+            : locale("token.frontier");
         let exploreResult = card.getCardDetails().name;
         exploreResult = exploreResult.replace(/ \(\d\)$/, ""); // strip off card number ("morale boost (2)")
         const msg = locale("ui.message.exploring", {
