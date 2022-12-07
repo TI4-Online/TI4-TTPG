@@ -1,5 +1,6 @@
 require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
+const { ActiveIdle } = require("../unit/active-idle");
 const { AdjacencyWormhole } = require("./adjacency-wormhole");
 const { Hex } = require("../hex");
 const {
@@ -142,4 +143,50 @@ it("wormhole_reconstruction", () => {
     const adjList = [...adjSet].sort();
     world.__clear();
     assert.deepEqual(adjList, ["<2,0,-2>", "<3,0,-3>"]);
+});
+
+it("emissary_taivra", () => {
+    world.__clear();
+
+    const emissary_taivra = new MockCard({
+        cardDetails: new MockCardDetails({
+            metadata: "card.leader.agent.creuss:pok/emissary_taivra",
+        }),
+        faceUp: true,
+    });
+    world.__addObject(emissary_taivra);
+
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "tile.system:base/26", // alpha
+            position: Hex.toPosition("<1,0,-1>"),
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "tile.system:base/39", // alpha
+            position: Hex.toPosition("<2,0,-2>"),
+        })
+    );
+    world.__addObject(
+        new MockGameObject({
+            templateMetadata: "tile.system:base/40", // beta
+            position: Hex.toPosition("<3,0,-3>"),
+        })
+    );
+
+    const hex = "<1,0,-1>";
+    const playerSlot = -1;
+
+    ActiveIdle.setActive(emissary_taivra, false);
+    let adjSet = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
+    const adjListIdle = [...adjSet].sort();
+
+    ActiveIdle.setActive(emissary_taivra, true);
+    adjSet = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
+    const adjListActive = [...adjSet].sort();
+
+    world.__clear();
+    assert.deepEqual(adjListIdle, ["<2,0,-2>"]);
+    assert.deepEqual(adjListActive, ["<2,0,-2>", "<3,0,-3>"]);
 });
