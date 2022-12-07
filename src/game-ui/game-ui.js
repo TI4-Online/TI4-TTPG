@@ -198,6 +198,8 @@ class GameUI {
         panel.addChild(new Border().setColor(CONFIG.spacerColor));
         panel.addChild(turnOrderPanel, 1);
 
+        this._navPanel.getWidget().__noMonkey = true;
+
         this.fillNavPanel(this._navPanel);
         this._navPanel.setCurrentNavEntry(this._navPanel.getRootFolder());
     }
