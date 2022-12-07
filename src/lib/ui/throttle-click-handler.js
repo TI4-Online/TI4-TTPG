@@ -15,18 +15,21 @@ class ThrottleClickHandler {
      */
     static wrap(clickHandler) {
         assert(typeof clickHandler === "function");
-        let lastClickMsecs = 0;
+        const playerSlotToLastClickMsecs = {};
         return (button, player) => {
             assert(button instanceof Button || button instanceof ImageButton);
             assert(player instanceof Player);
 
-            // Throttle if clicked again too soon.
+            const playerSlot = player.getSlot();
+            const lastClickMsecs = playerSlotToLastClickMsecs[playerSlot] || 0;
+
+            // Throttle if same player clicked again too soon.
             const nowMsecs = Date.now();
             if (nowMsecs < lastClickMsecs + THROTTLE_MSECS) {
                 console.log("throttle click");
                 return;
             }
-            lastClickMsecs = nowMsecs;
+            playerSlotToLastClickMsecs[playerSlot] = nowMsecs;
 
             clickHandler(button, player);
         };

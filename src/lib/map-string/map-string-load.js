@@ -88,16 +88,17 @@ class MapStringLoad {
             }
 
             // Place tile.
-            const animSpeed = 0; // do not animate, report of hitting things
             obj.setObjectType(ObjectType.Regular);
             const container = obj.getContainer();
             if (container) {
-                container.take(obj, pos, animSpeed > 0);
-                obj.setRotation(rot, animSpeed);
-            } else {
-                obj.setPosition(pos, animSpeed);
-                obj.setRotation(rot, animSpeed);
+                // Remove from container before moving to final location.
+                // Bug report said it fell through the table after take.
+                const above = container.getPosition().add([0, 0, 10]);
+                container.take(obj, above, false);
             }
+            obj.setPosition(pos, 0);
+            obj.setRotation(rot, 0);
+            obj.snapToGround();
             obj.setObjectType(ObjectType.Ground);
         };
 

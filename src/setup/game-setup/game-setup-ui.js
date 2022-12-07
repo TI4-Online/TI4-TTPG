@@ -2,19 +2,9 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Hex } = require("../../lib/hex");
 const { TableLayout } = require("../../table/table-layout");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const CONFIG = require("../../game-ui/game-ui-config");
-const {
-    Button,
-    CheckBox,
-    HorizontalBox,
-    LayoutBox,
-    Slider,
-    Text,
-    TextJustification,
-    VerticalBox,
-    refPackageId,
-    world,
-} = require("../../wrapper/api");
+const { TextJustification, refPackageId, world } = require("../../wrapper/api");
 
 let _playerCountSlider = undefined;
 let _setupButton = undefined;
@@ -39,19 +29,23 @@ class GameSetupUI {
     }
 
     create() {
-        const title = new Text()
+        const title = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize * 3)
             .setText(locale("ui.setup.title"))
             .setJustification(TextJustification.Center)
             .setFont("ambroise-firmin-bold.otf", refPackageId);
 
-        const col1Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const col2Panel = new VerticalBox().setChildDistance(CONFIG.spacing);
-        const colsPanel = new HorizontalBox()
+        const col1Panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const col2Panel = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const colsPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing * 4)
             .addChild(col1Panel, 1)
             .addChild(col2Panel, 1);
-        const fullPanel = new VerticalBox()
+        const fullPanel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(title)
             .addChild(colsPanel);
@@ -64,6 +58,11 @@ class GameSetupUI {
             world.TI4.config.playerCount,
             this._callbacks.onPlayerCountChanged
         );
+        if (_playerCountSlider._onFreed) {
+            _playerCountSlider._onFreed.add(() => {
+                _playerCountSlider = undefined;
+            });
+        }
 
         col1Panel.addChild(_playerCountSlider);
         col1Panel.addChild(
@@ -141,8 +140,13 @@ class GameSetupUI {
             "ui.setup.do_setup",
             this._callbacks.onSetupClicked
         );
+        if (_setupButton._onFreed) {
+            _setupButton._onFreed.add(() => {
+                _setupButton = undefined;
+            });
+        }
 
-        fullPanel.addChild(new LayoutBox(), 1); // weight 1 stretches to fill space
+        fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
         fullPanel.addChild(_setupButton);
 
         return fullPanel;
@@ -152,7 +156,9 @@ class GameSetupUI {
         assert(typeof localeText === "string");
 
         const labelText = locale(localeText);
-        const text = new Text().setFontSize(CONFIG.fontSize).setText(labelText);
+        const text = WidgetFactory.text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(labelText);
         return text;
     }
 
@@ -161,7 +167,7 @@ class GameSetupUI {
         assert(typeof onClicked === "function");
 
         const labelText = locale(localeLabel);
-        const button = new Button()
+        const button = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(labelText);
         button.onClicked.add(onClicked);
@@ -174,7 +180,7 @@ class GameSetupUI {
         assert(typeof onCheckStateChanged === "function");
 
         const labelText = locale(localeLabel);
-        const checkBox = new CheckBox()
+        const checkBox = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(labelText)
             .setIsChecked(isChecked);
@@ -190,11 +196,11 @@ class GameSetupUI {
         assert(typeof onValueChanged === "function");
 
         const labelText = locale(localeLabel);
-        const label = new Text()
+        const label = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(labelText);
 
-        const slider = new Slider()
+        const slider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(minValue)
@@ -203,7 +209,7 @@ class GameSetupUI {
             .setValue(value);
 
         slider.onValueChanged.add(onValueChanged);
-        return new VerticalBox().addChild(label).addChild(slider);
+        return WidgetFactory.verticalBox().addChild(label).addChild(slider);
     }
 }
 

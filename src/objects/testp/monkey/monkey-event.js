@@ -30,8 +30,7 @@ class MonkeyEvent {
      * @returns {boolean} true if event triggered
      */
     static globalUiClick() {
-        Broadcast.chatAll("MonkeyEvent.globalUiClick");
-        const candidates = MonkeyUtil.getClickableWidgets(world.getUIs());
+        const candidates = MonkeyUtil.getClickableGlobalWidgets();
         const candidate = MonkeyUtil.randomFrom(candidates);
         if (!candidate) {
             console.log("MonkeyEvent.globalUiClick: no widget");
@@ -44,10 +43,19 @@ class MonkeyEvent {
                 );
                 return false;
             }
+            let name;
+            if (candidate instanceof Button) {
+                name = candidate.getText();
+            } else if (candidate instanceof ImageButton) {
+                name = "<image>";
+            }
+            Broadcast.chatAll(`MonkeyEvent.globalUiClick: button "${name}"`);
             const clickingPlayer = world.getAllPlayers()[0];
             candidate.onClicked.trigger(candidate, clickingPlayer);
             return true;
         } else if (candidate instanceof CheckBox) {
+            const name = candidate.getText();
+            Broadcast.chatAll(`MonkeyEvent.globalUiClick: checkbox "${name}"`);
             const isChecked = !candidate.isChecked();
             candidate.setIsChecked(isChecked); // triggers onCheckStateChanged event
             return true;
@@ -62,12 +70,7 @@ class MonkeyEvent {
      * @returns {boolean} true if event triggered
      */
     static objectUiClick() {
-        Broadcast.chatAll("MonkeyEvent.objectUiClick");
-        const candidates = [];
-        for (const obj of world.getAllObjects()) {
-            const b = MonkeyUtil.getClickableWidgets(obj.getUIs());
-            candidates.push(...b);
-        }
+        const candidates = MonkeyUtil.getClickableObjectWidgets();
         const candidate = MonkeyUtil.randomFrom(candidates);
         if (!candidate) {
             console.log("MonkeyEvent.objectUiClick: no widget");
@@ -80,10 +83,19 @@ class MonkeyEvent {
                 );
                 return false;
             }
+            let name;
+            if (candidate instanceof Button) {
+                name = candidate.getText();
+            } else if (candidate instanceof ImageButton) {
+                name = "<image>";
+            }
+            Broadcast.chatAll(`MonkeyEvent.objectUiClick: button "${name}"`);
             const clickingPlayer = world.getAllPlayers()[0];
             candidate.onClicked.trigger(candidate, clickingPlayer);
             return true;
         } else if (candidate instanceof CheckBox) {
+            const name = candidate.getText();
+            Broadcast.chatAll(`MonkeyEvent.objectUiClick: checkbox "${name}"`);
             const isChecked = !candidate.isChecked();
             candidate.setIsChecked(isChecked); // triggers onCheckStateChanged event
             return true;
@@ -97,7 +109,29 @@ class MonkeyEvent {
      *
      * @returns {boolean} true if event triggered
      */
-    static clickCloseButton() {}
+    static clickCloseButton() {
+        Broadcast.chatAll("MonkeyEvent.clickCloseButton");
+        const candidates = MonkeyUtil.getClickableGlobalWidgets().filter(
+            (widget) => {
+                return (
+                    widget instanceof Button &&
+                    widget.getText().toLowerCase() === "close"
+                );
+            }
+        );
+        const candidate = MonkeyUtil.randomFrom(candidates);
+        if (!candidate) {
+            console.log("MonkeyEvent.clickCloseButton: no widget");
+            return false;
+        }
+        if (!candidate.onClicked.trigger) {
+            console.log("MonkeyEvent.clickCloseButton: button without trigger");
+            return false;
+        }
+        const clickingPlayer = world.getAllPlayers()[0];
+        candidate.onClicked.trigger(candidate, clickingPlayer);
+        return true;
+    }
 
     /**
      * Deal an action card to a player.  If they have at least one in hand trash one.
@@ -218,7 +252,9 @@ class MonkeyEvent {
             world.getTableHeight() + 10,
         ];
         Broadcast.chatAll("MonkeyEvent.placeAndReplaceUnit: drawing unit");
-        const unit = unitBag.takeAt(index, pos);
+        const above = unitBag.getPosition().add([0, 0, 10]);
+        const unit = unitBag.takeAt(index, above);
+        unit.setPosition(pos);
         assert(unit);
 
         return true;

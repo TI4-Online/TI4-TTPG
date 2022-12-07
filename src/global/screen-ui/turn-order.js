@@ -183,7 +183,7 @@ class TurnOrderScreenUI {
         // This goes away when screen UI can be fixed size.
         const inner = new LayoutBox()
             .setOverrideWidth(FANCY_WIDTH)
-            .setChild(turnOrderPanel);
+            .setChild(turnOrderPanel.getWidget());
 
         const c = 0.3;
         const frame = new Border().setColor([c, c, c, 1]).setChild(inner);
@@ -228,7 +228,7 @@ class TurnOrderScreenUI {
         // This goes away when screen UI can be fixed size.
         const inner = new LayoutBox()
             .setOverrideWidth(SIMPLE_WIDTH)
-            .setChild(turnOrderPanel);
+            .setChild(turnOrderPanel.getWidget());
 
         const c = 0.3;
         const frame = new Border().setColor([c, c, c, 1]).setChild(inner);

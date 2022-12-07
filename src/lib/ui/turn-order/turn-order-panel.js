@@ -2,17 +2,12 @@ const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const { TurnEntryFancy } = require("./turn-entry-fancy");
 const { TurnEntrySimple } = require("./turn-entry-simple");
-const {
-    Button,
-    VerticalBox,
-    globalEvents,
-    world,
-} = require("../../../wrapper/api");
+const { WidgetFactory } = require("../widget-factory");
+const { globalEvents, world } = require("../../../wrapper/api");
 
-class TurnOrderPanel extends VerticalBox {
+class TurnOrderPanel {
     constructor() {
-        super();
-        this.setChildDistance(0);
+        this._verticalBox = WidgetFactory.verticalBox().setChildDistance(0);
 
         this._config = {
             fontSize: 20,
@@ -58,6 +53,10 @@ class TurnOrderPanel extends VerticalBox {
         this.update();
     }
 
+    getWidget() {
+        return this._verticalBox;
+    }
+
     setFontSize(value) {
         this._config.fontSize = value;
         this.update();
@@ -72,7 +71,7 @@ class TurnOrderPanel extends VerticalBox {
 
     setSpacing(value) {
         assert(typeof value === "number");
-        this.setChildDistance(value);
+        this._verticalBox.setChildDistance(value);
         return this;
     }
 
@@ -103,7 +102,7 @@ class TurnOrderPanel extends VerticalBox {
             this._turnOrderEntries.length !== playerDeskOrder.length
         ) {
             this._turnOrderEntries = [];
-            this.removeAllChildren(); // only when count changes!
+            WidgetFactory.removeAllChildren(this._verticalBox);
             for (let i = 0; i < playerDeskOrder.length; i++) {
                 let entry;
                 if (this._useFancyWidgets) {
@@ -112,10 +111,10 @@ class TurnOrderPanel extends VerticalBox {
                     entry = new TurnEntrySimple();
                 }
                 this._turnOrderEntries.push(entry);
-                this.addChild(entry, 1);
+                this._verticalBox.addChild(entry, 1);
             }
             if (this._addEndTurnButton) {
-                const endTurnButton = new Button().setText(
+                const endTurnButton = WidgetFactory.button().setText(
                     locale("ui.button.end_turn")
                 );
                 endTurnButton.setFontSize(this._config.fontSize);
@@ -124,7 +123,7 @@ class TurnOrderPanel extends VerticalBox {
                         world.TI4.turns.endTurn(player);
                     }
                 });
-                this.addChild(endTurnButton, 1.5);
+                this._verticalBox.addChild(endTurnButton, 1.5);
             }
         }
 

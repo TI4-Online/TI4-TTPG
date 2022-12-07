@@ -246,6 +246,8 @@ class EndStatusPhase {
             // Saw a case where this only drew one token (with a very laggy host).
             // Maybe takeAt doesn't act immediately?  Instead of taking the "first"
             // each iteration get the contents and name the exact object to take.
+            // Update: maybe takeAt can glitch and the object falls through the table?
+            // Break into two steps: takeAt above, then setPosition to position.
             const items = commandTokenBag.getItems();
             for (let i = 0; i < count; i++) {
                 if (items.length === 0) {
@@ -253,11 +255,15 @@ class EndStatusPhase {
                     break;
                 } else {
                     const item = items.shift();
+                    const above = commandTokenBag.getPosition().add([0, 0, 10]);
+                    commandTokenBag.take(item, above, true);
+
                     const dropPosition = playerDesk.localPositionToWorld(
                         new Vector(32, 16 + i * 2, 0)
                     );
-                    dropPosition.z = world.getTableHeight() + 1 + i;
-                    commandTokenBag.take(item, dropPosition, true);
+                    dropPosition.z = world.getTableHeight() + 2 + i;
+                    item.setPosition(dropPosition);
+                    item.snapToGround();
                 }
             }
         }

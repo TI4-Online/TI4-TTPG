@@ -9,6 +9,7 @@ const {
     Panel,
     UIElement,
     Widget,
+    world,
 } = require("../../wrapper/api");
 
 class MonkeyUtil {
@@ -18,6 +19,25 @@ class MonkeyUtil {
         return array[index];
     }
 
+    static getClickableGlobalWidgets() {
+        return MonkeyUtil._getClickableWidgets(world.getUIs());
+    }
+
+    static getClickableObjectWidgets() {
+        const candidates = [];
+        for (const obj of world.getAllObjects()) {
+            if (!obj.isValid()) {
+                continue;
+            }
+            if (obj.getContainer()) {
+                continue;
+            }
+            const b = MonkeyUtil._getClickableWidgets(obj.getUIs());
+            candidates.push(...b);
+        }
+        return candidates;
+    }
+
     /**
      * Find clickable widgets (Button, ImageButton, Checkbox) inside UI.
      * Widgets may have __noMonkey to avoid.
@@ -25,7 +45,7 @@ class MonkeyUtil {
      * @param {Array.{UIElement}} uiElements
      * @returns {Array.{Button|ImageButton|CheckBox}}
      */
-    static getClickableWidgets(uiElements) {
+    static _getClickableWidgets(uiElements) {
         assert(Array.isArray(uiElements));
         uiElements.forEach((uiElement) =>
             assert(uiElement instanceof UIElement)
@@ -37,7 +57,7 @@ class MonkeyUtil {
                 return; // border can be empty, etc
             }
             assert(widget instanceof Widget);
-            if (!widget.isEnabled()) {
+            if (!widget.isEnabled() || !widget.isVisible()) {
                 return;
             }
             if (widget.__noMonkey) {

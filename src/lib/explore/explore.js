@@ -1,22 +1,22 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const PositionToPlanet = require("../system/position-to-planet");
+const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
 const { DealDiscard } = require("../card/deal-discard");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { UnitPlastic } = require("../unit/unit-plastic");
+const { WidgetFactory } = require("../ui/widget-factory");
 const { ATTACHMENTS } = require("../../objects/attachments/attachment.data");
 const {
-    Button,
     Card,
     GameObject,
     Player,
     Rotator,
     Vector,
     ObjectType,
-    UIElement,
     world,
 } = require("../../wrapper/api");
 
@@ -271,8 +271,26 @@ class Explore {
         }
     }
 
-    static resolveExplore(card, planet, pos, rot) {
+    static resolveExplore(card, planet, pos, rot, player) {
         assert(card instanceof Card);
+        assert(player instanceof Player);
+
+        const playerSlot = player.getSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        let playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1); // capitalize
+        const planetName = planet
+            ? planet.getNameStr()
+            : locale("token.frontier");
+        let exploreResult = card.getCardDetails().name;
+        exploreResult = exploreResult.replace(/ \(\d\)$/, ""); // strip off card number ("morale boost (2)")
+        const msg = locale("ui.message.exploring", {
+            playerName,
+            planetName,
+            exploreResult,
+        });
+        const color = playerDesk ? playerDesk.color : undefined;
+        Broadcast.chatAll(msg, color);
 
         // Is there an attachment?
         const nsid = ObjectNamespace.getNsid(card);
@@ -399,7 +417,7 @@ class Explore {
             return;
         }
 
-        Explore.resolveExplore(card, planet, pos, rot);
+        Explore.resolveExplore(card, planet, pos, rot, player);
     }
 
     /**
@@ -409,10 +427,14 @@ class Explore {
      * @param {Card} card1
      * @param {Card} card2
      */
-    static addResolveUI(card1, card2, planet, pos, rot) {
+    static addResolveUI(card1, card2, planet, pos, rot, player) {
+        assert(card1 instanceof Card);
+        assert(card2 instanceof Card);
+        assert(player instanceof Player);
+
         Explore.removeResolveUI(card1);
 
-        const button = new Button()
+        const button = WidgetFactory.button()
             .setFontSize(10)
             .setText(locale("ui.button.resolve_explore"));
         button.onClicked.add(() => {
@@ -420,11 +442,11 @@ class Explore {
             Explore.removeResolveUI(card1);
             Explore.removeResolveUI(card2);
             // resolve this card and discard the other one
-            Explore.resolveExplore(card1, planet, pos, rot);
+            Explore.resolveExplore(card1, planet, pos, rot, player);
             DealDiscard.discard(card2);
         });
 
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.widget = button;
 
         const extent = card1.getExtent();
@@ -442,6 +464,7 @@ class Explore {
     static removeResolveUI(card) {
         for (const ui of card.getUIs()) {
             card.removeUIElement(ui);
+            WidgetFactory.release(ui);
         }
     }
 
@@ -500,8 +523,8 @@ class Explore {
         }
 
         // create buttons to select which card to resolve
-        Explore.addResolveUI(card1, card2, planet, basePos, rot);
-        Explore.addResolveUI(card2, card1, planet, basePos, rot);
+        Explore.addResolveUI(card1, card2, planet, basePos, rot, player);
+        Explore.addResolveUI(card2, card1, planet, basePos, rot, player);
     }
 }
 

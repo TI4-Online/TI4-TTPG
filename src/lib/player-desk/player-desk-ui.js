@@ -2,19 +2,8 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { ThrottleClickHandler } = require("../ui/throttle-click-handler");
 const CONFIG = require("../../game-ui/game-ui-config");
-const {
-    Border,
-    Button,
-    HorizontalBox,
-    ImageButton,
-    LayoutBox,
-    Text,
-    TextJustification,
-    UIElement,
-    VerticalBox,
-    refPackageId,
-    world,
-} = require("../../wrapper/api");
+const { WidgetFactory } = require("../ui/widget-factory");
+const { TextJustification, refPackageId, world } = require("../../wrapper/api");
 
 const DESK_UI = {
     pos: { x: 40, y: 0, z: 3 },
@@ -50,18 +39,19 @@ class PlayerDeskUI {
 
         this._ui = undefined;
 
-        this._panel = new VerticalBox().setChildDistance(SPACING);
+        this._panel = WidgetFactory.verticalBox().setChildDistance(SPACING);
 
-        this._takeSeatButton = new Button()
+        this._takeSeatButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText("X");
+        this._takeSeatButton.__noMonkey = true; // not available for monkey runner
 
         this._changeColorButton = this._createColorSquareButton(
             this._playerDesk.plasticColor,
             this._callbacks.onToggleColors
         );
 
-        this._takeSeatPanel = new HorizontalBox()
+        this._takeSeatPanel = WidgetFactory.horizontalBox()
             .setChildDistance(SPACING)
             .addChild(this._takeSeatButton, 1)
             .addChild(this._changeColorButton);
@@ -70,13 +60,13 @@ class PlayerDeskUI {
             this._callbacks.onChangeColor
         );
 
-        this._setupFactionButton = new Button()
+        this._setupFactionButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
-            .setText("X");
+            .setText(locale("ui.desk.setup_faction"));
 
-        this._readyButton = new Button()
+        this._readyButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
-            .setText("X");
+            .setText(locale("ui.desk.ready"));
 
         this._panel
             .addChild(this._takeSeatPanel)
@@ -85,19 +75,19 @@ class PlayerDeskUI {
             .addChild(this._readyButton);
 
         // Pad panel.
-        const panelPadded = new LayoutBox()
+        const panelPadded = WidgetFactory.layoutBox()
             .setPadding(SPACING, SPACING, SPACING, SPACING)
             .setMinimumWidth(350 * EXTRA_SCALE)
             .setChild(this._panel);
 
         const pos = this._playerDesk.localPositionToWorld(DESK_UI.pos);
 
-        this._ui = new UIElement();
+        this._ui = WidgetFactory.uiElement();
         this._ui.anchorY = 0;
         this._ui.position = pos;
         this._ui.rotation = this._playerDesk.rot;
         this._ui.scale = EXTRA_SCALE / CONFIG.scale; // Bigger than normal
-        this._ui.widget = new Border()
+        this._ui.widget = WidgetFactory.border()
             .setColor(CONFIG.backgroundColor)
             .setChild(panelPadded);
 
@@ -113,6 +103,7 @@ class PlayerDeskUI {
     removeUI() {
         assert(this._ui);
         world.removeUIElement(this._ui);
+        WidgetFactory.release(this._ui);
         this._ui = undefined;
         return this;
     }
@@ -145,11 +136,12 @@ class PlayerDeskUI {
             this._setupFactionButton.onClicked.clear();
             this._setupFactionButton.onClicked.add(onClickHandler);
         }
+        this._setupFactionButton.setEnabled(config.canFaction);
 
         // Once a faction is selected enable ready button.
         if (!config.isReady) {
-            (localeText = "ui.button.ready"),
-                (onClickHandler = this._callbacks.onReady);
+            localeText = "ui.button.ready";
+            onClickHandler = this._callbacks.onReady;
             this._readyButton.setText(locale(localeText));
             this._readyButton.onClicked.clear();
             this._readyButton.onClicked.add(onClickHandler);
@@ -157,24 +149,16 @@ class PlayerDeskUI {
         }
 
         // Show hide UI widgets.
-        this._panel.removeAllChildren();
-        this._panel.addChild(this._takeSeatPanel);
-        if (config.showColors) {
-            this._panel.addChild(this._colorOptionsPanel);
-        }
-        if (config.canFaction) {
-            this._panel.addChild(this._setupFactionButton);
-        }
-        if (!config.isReady) {
-            this._panel.addChild(this._readyButton);
-        }
+        this._colorOptionsPanel.setVisible(config.showColors);
+        this._setupFactionButton.setVisible(!config.isReady);
+        this._readyButton.setVisible(!config.isReady);
 
         return this;
     }
 
     _createColorSquareButton(color, onClicked) {
         const size = Math.round(CONFIG.fontSize * 1.61);
-        const imageButton = new ImageButton()
+        const imageButton = WidgetFactory.imageButton()
             .setImage("global/ui/white16x16.png", refPackageId)
             .setImageSize(size, size)
             .setTintColor(color);
@@ -187,12 +171,12 @@ class PlayerDeskUI {
 
         // Create a swatch with not-setup peer colors.
         const labelText = locale("ui.desk.change_color");
-        const text = new Text()
+        const text = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setJustification(TextJustification.Center)
             .setText(labelText);
 
-        const colorChoices = new HorizontalBox();
+        const colorChoices = WidgetFactory.horizontalBox();
         for (const colorOption of this._colorOptions) {
             const imageButton = this._createColorSquareButton(
                 colorOption.plasticColorTint,
@@ -202,7 +186,9 @@ class PlayerDeskUI {
             );
             colorChoices.addChild(imageButton);
         }
-        return new VerticalBox().addChild(text).addChild(colorChoices);
+        return WidgetFactory.verticalBox()
+            .addChild(text)
+            .addChild(colorChoices);
     }
 }
 

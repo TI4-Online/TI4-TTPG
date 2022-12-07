@@ -1,13 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectSavedData } = require("../saved-data/object-saved-data");
-const {
-    Button,
-    GameObject,
-    Rotator,
-    Vector,
-    UIElement,
-} = require("../../wrapper/api");
+const { GameObject, Rotator, Vector } = require("../../wrapper/api");
+const { WidgetFactory } = require("../ui/widget-factory");
 
 const IS_ACTIVE_KEY = "isActive";
 
@@ -28,6 +23,7 @@ class ActiveIdle {
         // Don't be clever (yet), just remove all UI.
         for (const ui of obj.getUIs()) {
             obj.removeUIElement(ui);
+            WidgetFactory.release(ui);
         }
     }
 
@@ -41,7 +37,7 @@ class ActiveIdle {
 
         ActiveIdle.removeToggleActiveButton(obj);
 
-        const button = new Button().setFontSize(10).setText("<???>");
+        const button = WidgetFactory.button().setFontSize(10).setText("<???>");
 
         // Apply current state.
         const updateButton = (button) => {
@@ -59,7 +55,7 @@ class ActiveIdle {
             updateButton(button);
         });
 
-        const ui = new UIElement();
+        const ui = WidgetFactory.uiElement();
         ui.widget = button;
 
         const extent = obj.getExtent();

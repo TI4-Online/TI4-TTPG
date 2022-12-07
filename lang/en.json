@@ -52,6 +52,7 @@
     "ui.message.trade_agreement": "{receiver} cashing in {owner}'s Trade Agreement for {x} commodities.",
     "ui.message.trade_agreement_has_no_owner": "Trade Agreement has no owner, can't cash it in.",
     "ui.message.trade_agreement_has_no_faction": "Trade Agreement owner has no faction, can't cash it in.",
+    "ui.message.exploring": "{playerName} exploring {planetName}: {exploreResult}",
 
     "ui.message.helio_command_array": "{playerName} using Helio Command Array to remove each of their command tokens from the game board.",
     "ui.message.helio_command_array_has_no_owner": "No faction has Jace X. 4th Air Legion as a hero, cannot perform Helio Command Array.",
@@ -160,7 +161,7 @@
     "ui.label.score": "Score",
     "ui.label.resources": "Res",
     "ui.label.influence": "Inf",
-    "ui.label.tradegoodsAndCommodities": "TG/C",
+    "ui.label.tradegoodsAndCommodities": "C/TG",
     "ui.label.tokens": "Tokens",
 
     "ui.whisper.newest": "New",

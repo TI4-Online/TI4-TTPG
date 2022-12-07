@@ -461,7 +461,7 @@ class AbstractStrategyCard {
         assert(verticalBox instanceof VerticalBox);
         assert(playerDesk);
 
-        const onCloseClicked = (button, player) => {
+        const onCloseClicked = (clickedButton, player) => {
             this._removeUI(playerDesk);
         };
         const closeButton = WidgetFactory.button()
@@ -478,43 +478,48 @@ class AbstractStrategyCard {
         assert(playerDesk);
         assert(Array.isArray(this._automatorButtons));
 
+        const panel = WidgetFactory.verticalBox().setChildDistance(SPACING);
+
+        const automatorButtons = [];
+        let showing = false;
+        const updatePanel = () => {
+            for (const button of automatorButtons) {
+                button.setVisible(showing);
+            }
+        };
+
         const toggleButton = WidgetFactory.button()
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE / 2)
             .setText(locale(`strategy_card.automator.title`).toUpperCase());
-
-        // Wrap so toggle button doesn't stretch to edges.
-        const wrappedToggleButton = WidgetFactory.layoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setChild(toggleButton);
-
-        const panel = WidgetFactory.verticalBox()
-            .setChildDistance(SPACING)
-            .addChild(wrappedToggleButton);
-
-        let showing = false;
-        const updatePanel = () => {
-            panel.removeAllChildren();
-            panel.addChild(wrappedToggleButton);
-            if (showing) {
-                for (const automatorButton of this._automatorButtons) {
-                    const onClicked = (button, player) => {
-                        automatorButton.handler(playerDesk, player);
-                    };
-                    const button = WidgetFactory.button()
-                        .setFontSize(FONT_SIZE_BODY)
-                        .setText(automatorButton.actionName);
-                    button.onClicked.add(ThrottleClickHandler.wrap(onClicked));
-                    panel.addChild(button);
-                }
-            }
-        };
         toggleButton.onClicked.add(
             ThrottleClickHandler.wrap((button, player) => {
                 showing = !showing;
                 updatePanel();
             })
         );
+
+        // Wrap so toggle button doesn't stretch to edges.
+        const wrappedToggleButton = WidgetFactory.layoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(toggleButton);
+
+        panel.addChild(wrappedToggleButton);
+
+        // Always create buttons, show/hide visibility.
+        for (const automatorButton of this._automatorButtons) {
+            const button = WidgetFactory.button()
+                .setFontSize(FONT_SIZE_BODY)
+                .setText(automatorButton.actionName);
+            const onClicked = (clickedButton, player) => {
+                automatorButton.handler(playerDesk, player);
+            };
+            button.onClicked.add(ThrottleClickHandler.wrap(onClicked));
+            panel.addChild(button);
+            automatorButtons.push(button);
+        }
+
+        updatePanel();
 
         const p = 8 * SCALE;
         const padded = WidgetFactory.layoutBox()

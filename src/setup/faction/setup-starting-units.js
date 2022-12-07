@@ -65,7 +65,7 @@ class SetupStartingUnits extends AbstractSetup {
         }
         const rotate = 360 / Math.max(totalCount, 1);
 
-        let localPos = new Vector(3, 0, 2);
+        let localPos = new Vector(3, 0, 10);
         for (const [unit, count] of Object.entries(startingUnits)) {
             const bag = unitToBag[unit];
             assert(bag);
@@ -74,7 +74,8 @@ class SetupStartingUnits extends AbstractSetup {
                 const above = bag.getPosition().add([0, 0, 5 + i]);
                 const obj = bag.takeAt(0, above);
                 const pos = homeSystemObj.localPositionToWorld(localPos);
-                obj.setPosition(pos, 1);
+                obj.setPosition(pos);
+                obj.snapToGround();
                 localPos = localPos.rotateAngleAxis(rotate, [0, 0, 1]);
             }
         }

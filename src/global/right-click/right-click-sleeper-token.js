@@ -1,13 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const CONFIG = require("../../game-ui/game-ui-config");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { PopupPanel } = require("../../lib/ui/popup-panel");
 const {
     Container,
     GameObject,
     Player,
-    Vector,
     globalEvents,
     world,
 } = require("../../wrapper/api");
@@ -27,7 +24,7 @@ function replaceWithAndReturnTurn(
     assert(Array.isArray(replacementContainerNsids));
 
     const nsid = ObjectNamespace.getNsid(sleeperToken);
-    assert(nsid === "token.ul:pok/sleeper");
+    assert.equal(nsid, "token.ul:pok/sleeper");
 
     // Validate clicking player.
     const playerSlot = player.getSlot();
@@ -72,9 +69,12 @@ function replaceWithAndReturnTurn(
     }
 
     const pos = sleeperToken.getPosition();
+    pos.z = world.getTableHeight() + 1;
     replacementContainers.forEach((container, index) => {
-        const above = pos.add([index, 0, 10]);
-        container.takeAt(0, above, true);
+        const above = container.getPosition().add([0, 0, 10]);
+        const obj = container.takeAt(0, above, true);
+        obj.setPosition(pos);
+        pos.x = pos.x + 2;
     });
 
     // All containers are present and have capacity.
@@ -85,7 +85,7 @@ function addRightClickOptions(obj) {
     assert(obj instanceof GameObject);
 
     const nsid = ObjectNamespace.getNsid(obj);
-    assert(nsid === "token.ul:pok/sleeper");
+    assert.equal(nsid, "token.ul:pok/sleeper");
 
     // Sanity check only added once.
     assert(!obj.__hasRightClickSleeperTokenOptions);
@@ -108,29 +108,20 @@ function addRightClickOptions(obj) {
     });
 }
 
-// Do not add UI during onCreated, wait a second frame for good measure.
-function delayedAddRightClickOptions(obj) {
-    process.nextTick(() => {
-        process.nextTick(() => {
-            addRightClickOptions(obj);
-        });
-    });
-}
-
-function maybeDelayedAddRightClickOptions(obj) {
+function maybeAddRightClickOptions(obj) {
     const nsid = ObjectNamespace.getNsid(obj);
     if (nsid === "token.ul:pok/sleeper") {
-        delayedAddRightClickOptions(obj);
+        addRightClickOptions(obj);
     }
 }
 
 globalEvents.onObjectCreated.add((obj) => {
-    maybeDelayedAddRightClickOptions(obj);
+    maybeAddRightClickOptions(obj);
 });
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
     for (const obj of world.getAllObjects()) {
-        maybeDelayedAddRightClickOptions(obj);
+        maybeAddRightClickOptions(obj);
     }
 }

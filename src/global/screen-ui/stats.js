@@ -1,16 +1,12 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
-    Border,
     HorizontalAlignment,
-    HorizontalBox,
-    LayoutBox,
     PlayerPermission,
-    ScreenUIElement,
     Text,
     TextJustification,
     VerticalAlignment,
-    VerticalBox,
     globalEvents,
     world,
 } = require("../../wrapper/api");
@@ -62,35 +58,14 @@ class StatsScreenUI {
     constructor() {
         this._playerSlots = [];
         this._playerEntries = [];
-        this._uiAdded = false;
 
-        this._box = new LayoutBox()
-            .setPadding(0, DISTANCE_TO_EDGE, 0, DISTANCE_TO_EDGE)
-            .setOverrideWidth(WIDTH)
-            .setMinimumHeight(100);
-
-        const outer = new LayoutBox()
-            .setHorizontalAlignment(HorizontalAlignment.Right)
-            .setVerticalAlignment(VerticalAlignment.Bottom)
-            .setChild(this._box);
-
-        this._ui = new ScreenUIElement();
-        this._ui.relativeWidth = true;
-        this._ui.width = 0.2; // if too small the WIDTH is reduced
-        this._ui.relativeHeight = true;
-        this._ui.height = 0.3;
-        this._ui.relativePositionX = true;
-        this._ui.positionX = 1 - this._ui.width;
-        this._ui.relativePositionY = true;
-        this._ui.positionY = 1 - this._ui.height;
-        this._ui.widget = outer;
-
-        const playerPermission = new PlayerPermission().setPlayerSlots(
-            this._playerSlots
-        );
-        this._ui.players = playerPermission;
+        this._ui = undefined;
+        this._box = undefined;
 
         const delayedUpdate = () => {
+            if (!this._ui) {
+                return; // not showing
+            }
             world.TI4.asyncTaskQueue.add(() => {
                 this.update();
             });
@@ -106,6 +81,52 @@ class StatsScreenUI {
         this.update();
     }
 
+    _show() {
+        if (this._ui) {
+            return; // already showing
+        }
+        this._box = WidgetFactory.layoutBox()
+            .setPadding(0, DISTANCE_TO_EDGE, 0, DISTANCE_TO_EDGE)
+            .setOverrideWidth(WIDTH)
+            .setMinimumHeight(100);
+
+        const outer = WidgetFactory.layoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Right)
+            .setVerticalAlignment(VerticalAlignment.Bottom)
+            .setChild(this._box);
+
+        this.updateForPlayerCount();
+
+        this._ui = WidgetFactory.screenUIElement();
+        this._ui.relativeWidth = true;
+        this._ui.width = 0.2; // if too small the WIDTH is reduced
+        this._ui.relativeHeight = true;
+        this._ui.height = 0.3;
+        this._ui.relativePositionX = true;
+        this._ui.positionX = 1 - this._ui.width;
+        this._ui.relativePositionY = true;
+        this._ui.positionY = 1 - this._ui.height;
+        this._ui.widget = outer;
+
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            this._playerSlots
+        );
+        this._ui.players = playerPermission;
+
+        world.addScreenUI(this._ui);
+    }
+
+    _hide() {
+        if (!this._ui) {
+            return; // already hidden
+        }
+        world.removeScreenUIElement(this._ui);
+        WidgetFactory.release(this._ui);
+        this._ui = undefined;
+        this._box = undefined;
+        this._playerEntries = [];
+    }
+
     toggleVisibility(playerSlot) {
         assert(typeof playerSlot === "number");
 
@@ -118,25 +139,28 @@ class StatsScreenUI {
             this._playerSlots.push(playerSlot);
         }
 
-        const playerPermission = new PlayerPermission().setPlayerSlots(
-            this._playerSlots
-        );
-        this._ui.players = playerPermission;
-
-        if (this._playerSlots.length === 0 && this._uiAdded) {
-            world.removeScreenUIElement(this._ui);
-            this._uiAdded = false;
-        } else if (this._playerSlots.length > 0 && !this._uiAdded) {
-            world.addScreenUI(this._ui);
-            this._uiAdded = true;
+        if (this._playerSlots.length === 0 && this._ui) {
+            this._hide();
+        } else if (this._playerSlots.length > 0 && !this._ui) {
+            this._show();
+        } else {
+            // Visible to at least one player, just update permission.
+            const playerPermission = new PlayerPermission().setPlayerSlots(
+                this._playerSlots
+            );
+            this._ui.players = playerPermission;
         }
 
-        if (this._uiAdded) {
+        // Update after permission change.
+        if (this._ui) {
             world.updateScreenUI(this._ui);
         }
     }
 
     updateForPlayerCount() {
+        if (!this._box) {
+            return;
+        }
         console.log("StatsScreenUI.updateForPlayerCount");
 
         this._playerEntries = [];
@@ -186,7 +210,7 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(""); // empty spot
-        const colName = new VerticalBox().addChild(labelName);
+        const colName = WidgetFactory.verticalBox().addChild(labelName);
         this._playerEntries.forEach((playerEntry) => {
             colName.addChild(playerEntry.name);
         });
@@ -195,7 +219,7 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.label.score"));
-        const colScore = new VerticalBox().addChild(labelScore);
+        const colScore = WidgetFactory.verticalBox().addChild(labelScore);
         this._playerEntries.forEach((playerEntry) => {
             colScore.addChild(playerEntry.score);
         });
@@ -204,7 +228,7 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.label.resources"));
-        const colRes = new VerticalBox().addChild(labelRes);
+        const colRes = WidgetFactory.verticalBox().addChild(labelRes);
         this._playerEntries.forEach((playerEntry) => {
             colRes.addChild(playerEntry.resources);
         });
@@ -213,7 +237,7 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.label.influence"));
-        const colInf = new VerticalBox().addChild(labelInf);
+        const colInf = WidgetFactory.verticalBox().addChild(labelInf);
         this._playerEntries.forEach((playerEntry) => {
             colInf.addChild(playerEntry.influence);
         });
@@ -222,7 +246,8 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.label.tradegoodsAndCommodities"));
-        const colTradegoods = new VerticalBox().addChild(labelTradegoods);
+        const colTradegoods =
+            WidgetFactory.verticalBox().addChild(labelTradegoods);
         this._playerEntries.forEach((playerEntry) => {
             colTradegoods.addChild(playerEntry.tradegoods);
         });
@@ -231,35 +256,39 @@ class StatsScreenUI {
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
             .setText(locale("ui.label.tokens"));
-        const colTokens = new VerticalBox().addChild(labelTokens);
+        const colTokens = WidgetFactory.verticalBox().addChild(labelTokens);
         this._playerEntries.forEach((playerEntry) => {
             colTokens.addChild(playerEntry.tokens);
         });
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .addChild(colName, 3)
             .addChild(colScore, 2)
             .addChild(colRes, 2)
             .addChild(colInf, 2)
             .addChild(colTradegoods, 2)
             .addChild(colTokens, 3);
-        const padded = new LayoutBox()
+        const padded = WidgetFactory.layoutBox()
             .setPadding(PAD, PAD, PAD, PAD)
             .setChild(panel);
         const v = 0.02;
         const v2 = 0.3;
-        const border = new Border().setColor([v, v, v, 1]).setChild(padded);
-        const outerBorder = new Border()
+        const border = WidgetFactory.border()
+            .setColor([v, v, v, 1])
+            .setChild(padded);
+        const outerBorder = WidgetFactory.border()
             .setColor([v2, v2, v2, 1])
             .setChild(border);
-        this._box.setChild(outerBorder);
+        WidgetFactory.setChild(this._box, outerBorder);
     }
 
     update() {
         const callback = (data) => {
-            assert.equal(data.players.length, this._playerEntries.length);
             data.players.forEach((playerData, index) => {
                 const entry = this._playerEntries[index];
+                if (!entry) {
+                    return;
+                }
                 let t;
 
                 t = `${playerData.score}`;
