@@ -44,6 +44,7 @@ class PlayerDeskUI {
         this._takeSeatButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText("X");
+        this._takeSeatButton.__noMonkey = true; // not available for monkey runner
 
         this._changeColorButton = this._createColorSquareButton(
             this._playerDesk.plasticColor,
@@ -61,11 +62,11 @@ class PlayerDeskUI {
 
         this._setupFactionButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
-            .setText("X");
+            .setText(locale("ui.desk.setup_faction"));
 
         this._readyButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
-            .setText("X");
+            .setText(locale("ui.desk.ready"));
 
         this._panel
             .addChild(this._takeSeatPanel)
