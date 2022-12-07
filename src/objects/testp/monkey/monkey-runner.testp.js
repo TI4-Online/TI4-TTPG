@@ -9,6 +9,7 @@ assert(MonkeyEvent);
 const MONKEY_ACTIONS = [
     MonkeyEvent.globalUiClick, // REQUIRES GLOBAL.JS MONKEY-INTERPOSE
     MonkeyEvent.objectUiClick, // REQUIRES GLOBAL.JS MONKEY-INTERPOSE
+    MonkeyEvent.clickCloseButton, // REQUIRES GLOBAL.JS MONKEY-INTERPOSE
     MonkeyEvent.dealAndReplaceActionCard,
     MonkeyEvent.placeAndReplaceUnit,
     MonkeyEvent.activateSystem,
