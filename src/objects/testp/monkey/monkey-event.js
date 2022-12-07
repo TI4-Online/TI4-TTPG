@@ -30,7 +30,7 @@ class MonkeyEvent {
      * @returns {boolean} true if event triggered
      */
     static globalUiClick() {
-        const candidates = MonkeyUtil.getClickableWidgets(world.getUIs());
+        const candidates = MonkeyUtil.getClickableGlobalWidgets();
         const candidate = MonkeyUtil.randomFrom(candidates);
         if (!candidate) {
             console.log("MonkeyEvent.globalUiClick: no widget");
@@ -70,11 +70,7 @@ class MonkeyEvent {
      * @returns {boolean} true if event triggered
      */
     static objectUiClick() {
-        const candidates = [];
-        for (const obj of world.getAllObjects()) {
-            const b = MonkeyUtil.getClickableWidgets(obj.getUIs());
-            candidates.push(...b);
-        }
+        const candidates = MonkeyUtil.getClickableObjectWidgets();
         const candidate = MonkeyUtil.randomFrom(candidates);
         if (!candidate) {
             console.log("MonkeyEvent.objectUiClick: no widget");
@@ -115,14 +111,14 @@ class MonkeyEvent {
      */
     static clickCloseButton() {
         Broadcast.chatAll("MonkeyEvent.clickCloseButton");
-        const candidates = MonkeyUtil.getClickableWidgets(
-            world.getUIs()
-        ).filter((widget) => {
-            return (
-                widget instanceof Button &&
-                widget.getText().toLowerCase() === "close"
-            );
-        });
+        const candidates = MonkeyUtil.getClickableGlobalWidgets().filter(
+            (widget) => {
+                return (
+                    widget instanceof Button &&
+                    widget.getText().toLowerCase() === "close"
+                );
+            }
+        );
         const candidate = MonkeyUtil.randomFrom(candidates);
         if (!candidate) {
             console.log("MonkeyEvent.clickCloseButton: no widget");
