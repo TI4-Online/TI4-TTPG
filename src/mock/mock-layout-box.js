@@ -8,6 +8,9 @@ class LayoutBox extends Widget {
     getChild() {
         return this._child;
     }
+    getOverrideHeight() {
+        return 1;
+    }
     setChild(child) {
         if (this._child) {
             this._child._parent = undefined;
