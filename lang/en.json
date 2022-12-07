@@ -161,7 +161,7 @@
     "ui.label.score": "Score",
     "ui.label.resources": "Res",
     "ui.label.influence": "Inf",
-    "ui.label.tradegoodsAndCommodities": "TG/C",
+    "ui.label.tradegoodsAndCommodities": "C/TG",
     "ui.label.tokens": "Tokens",
 
     "ui.whisper.newest": "New",
