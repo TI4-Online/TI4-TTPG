@@ -109,13 +109,6 @@ class GameSetupUI {
         );
         col2Panel.addChild(
             this._createCheckbox(
-                "ui.setup.use_omega",
-                world.TI4.config.omega,
-                this._callbacks.onUseOmegaChanged
-            )
-        );
-        col2Panel.addChild(
-            this._createCheckbox(
                 "ui.setup.use_codex1",
                 world.TI4.config.codex1,
                 this._callbacks.onUseCodex1Changed
@@ -133,6 +126,13 @@ class GameSetupUI {
                 "ui.setup.use_codex3",
                 world.TI4.config.codex3,
                 this._callbacks.onUseCodex3Changed
+            )
+        );
+        col2Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_base_magen",
+                world.TI4.config.baseMagen,
+                this._callbacks.onUseBaseMagenChanged
             )
         );
 

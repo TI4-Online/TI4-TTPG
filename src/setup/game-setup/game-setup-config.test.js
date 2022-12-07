@@ -23,13 +23,6 @@ it("pok", () => {
     assert.equal(config.pok, false);
 });
 
-it("omega", () => {
-    const config = new GameSetupConfig();
-    assert.equal(config.omega, true);
-    config.setOmega(false);
-    assert.equal(config.omega, false);
-});
-
 it("codex1", () => {
     const config = new GameSetupConfig();
     assert.equal(config.codex1, true);
@@ -49,6 +42,13 @@ it("codex3", () => {
     assert.equal(config.codex3, true);
     config.setCodex3(false);
     assert.equal(config.codex3, false);
+});
+
+it("baseMagen", () => {
+    const config = new GameSetupConfig();
+    assert.equal(config.baseMagen, false);
+    config.setBaseMagen(true);
+    assert.equal(config.baseMagen, true);
 });
 
 it("franken", () => {
