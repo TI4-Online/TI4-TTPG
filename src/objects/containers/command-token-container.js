@@ -10,6 +10,7 @@ const {
     Container,
     GameObject,
     Rotator,
+    Text,
     UIElement,
     Vector,
     VerticalBox,
@@ -17,6 +18,8 @@ const {
     refContainer,
     world,
 } = require("../../wrapper/api");
+
+const USE_SIMPLE_NUMBERS = true;
 
 const BOX = {
     height: 4,
@@ -144,7 +147,8 @@ class CommandTokenContainer {
 
         this._container = container;
         this._UIElement = false;
-        this._boxes = [];
+        this._boxes = undefined;
+        this._simpleText = undefined;
 
         this._capacity = COMMAND_TOKENS.tokenCount;
 
@@ -215,34 +219,53 @@ class CommandTokenContainer {
     }
 
     createUI() {
-        const boxPanel = new VerticalBox().setChildDistance(BOX.gap);
-        this._boxes = [];
-        for (let i = 0; i < this._capacity; i++) {
-            const box = new Border();
-            boxPanel.addChild(box, 1);
-            this._boxes.push(box);
-        }
-
         this._UIElement = new UIElement();
-        this._UIElement.useWidgetSize = false;
-        this._UIElement.height =
-            (BOX.height + BOX.gap) * this._boxes.length - BOX.gap;
-        this._UIElement.width = BOX.width;
-        this._UIElement.position = new Vector(BOX.x, 0, 0.1);
-        this._UIElement.rotation = new Rotator(0, 90, 0);
-        this._UIElement.widget = boxPanel;
+        if (USE_SIMPLE_NUMBERS) {
+            this._simpleText = new Text()
+                .setFontSize(10)
+                .setTextColor(this._container.getPrimaryColor());
+            this._UIElement.anchorX = 1;
+            this._UIElement.position = new Vector(-3, 0, 0.1);
+            this._UIElement.rotation = new Rotator(0, -90, 0);
+            this._UIElement.widget = this._simpleText;
+        } else {
+            const boxesPanel = new VerticalBox().setChildDistance(BOX.gap);
+            this._boxes = [];
+            for (let i = 0; i < this._capacity; i++) {
+                const box = new Border();
+                boxesPanel.addChild(box, 1);
+                this._boxes.push(box);
+            }
+            this._UIElement.useWidgetSize = false;
+            this._UIElement.height =
+                (BOX.height + BOX.gap) * this._boxes.length - BOX.gap;
+            this._UIElement.width = BOX.width;
+            this._UIElement.position = new Vector(BOX.x, 0, 0.1);
+            this._UIElement.rotation = new Rotator(0, 90, 0);
+            this._UIElement.widget = boxesPanel;
+        }
 
         this._container.addUI(this._UIElement);
     }
 
     updateUI() {
         const currentNumber = this._container.getNumItems();
-        const emptyColor = new Color(0.2, 0.2, 0.2);
-        const fullColor = this._container.getPrimaryColor();
-        this._boxes.forEach((box, index) => {
-            const color = index < currentNumber ? fullColor : emptyColor;
-            box.setColor(color);
-        });
+        if (USE_SIMPLE_NUMBERS) {
+            let text;
+            if (this._capacity > 0) {
+                text = `${currentNumber}/${this._capacity}`;
+            } else {
+                text = `${currentNumber}`;
+            }
+            this._simpleText.setText(text);
+        } else {
+            const emptyColor = new Color(0.2, 0.2, 0.2);
+            const fullColor = this._container.getPrimaryColor();
+            this._boxes.forEach((box, index) => {
+                const color = index < currentNumber ? fullColor : emptyColor;
+                box.setColor(color);
+            });
+        }
     }
 
     onInserted(container, insertObjs, player) {
