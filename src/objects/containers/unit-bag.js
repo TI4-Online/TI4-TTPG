@@ -2,19 +2,16 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const {
-    Border,
     Color,
     Container,
     GameObject,
     Rotator,
-    Text,
-    UIElement,
     Vector,
-    VerticalBox,
     globalEvents,
     refContainer,
     world,
 } = require("../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 const USE_SIMPLE_NUMBERS = true;
 
@@ -44,6 +41,8 @@ class UnitBag {
             this._capacity = -1;
         }
 
+        this._reportedCount = -1;
+
         this.createUI();
         this.updateUI();
 
@@ -56,50 +55,22 @@ class UnitBag {
             this.updateUI();
         });
 
-        // Patch mutators.  When a script adds or removes it does not trigger
-        // the onInserted/onRemoved events.
-        container._addObjects = container.addObjects;
-        container.addObjects = (...args) => {
-            const r = container._addObjects(...args);
+        // Events do not trigger when scripts add/remove items.  An earlier
+        // version interposed on script accessors, but a few crash reports
+        // suggest that can get into an infinite loop somehow.  Keep it
+        // simple and simply periodically update.
+        let handle = undefined;
+        const periodicUpdate = () => {
             this.updateUI();
-            return r;
+            const delay = 0.5 + Math.random() * 0.5;
+            handle = setTimeout(periodicUpdate, delay);
         };
-        container._clear = container.clear;
-        container.clear = (...args) => {
-            const r = container._clear(...args);
-            this.updateUI();
-            return r;
-        };
-        container._insert = container.insert;
-        container.insert = (...args) => {
-            const r = container._insert(...args);
-            this.updateUI();
-            return r;
-        };
-        container._remove = container.remove;
-        container.remove = (...args) => {
-            const r = container._remove(...args);
-            this.updateUI();
-            return r;
-        };
-        container._removeAt = container.removeAt;
-        container.removeAt = (...args) => {
-            const r = container._removeAt(...args);
-            this.updateUI();
-            return r;
-        };
-        container._take = container.take;
-        container.take = (...args) => {
-            const r = container._take(...args);
-            this.updateUI();
-            return r;
-        };
-        container._takeAt = container.takeAt;
-        container.takeAt = (...args) => {
-            const r = container._takeAt(...args);
-            this.updateUI();
-            return r;
-        };
+        periodicUpdate();
+        container.onDestroyed.add(() => {
+            if (handle) {
+                clearTimeout(handle);
+            }
+        });
 
         // Workaround for TTPG issue: on reload containers reset to player color.
         // Reset to plastic color.
@@ -111,20 +82,28 @@ class UnitBag {
     }
 
     createUI() {
-        this._UIElement = new UIElement();
+        this._UIElement = WidgetFactory.uiElement();
         if (USE_SIMPLE_NUMBERS) {
-            this._simpleText = new Text()
+            this._simpleText = WidgetFactory.text()
                 .setFontSize(10)
                 .setTextColor(this._container.getPrimaryColor());
             this._UIElement.anchorX = 0;
             this._UIElement.position = new Vector(-3, 0, 0.1);
             this._UIElement.rotation = new Rotator(0, 90, 0);
             this._UIElement.widget = this._simpleText;
+            // Creator may change color.
+            process.nextTick(() => {
+                this._simpleText.setTextColor(
+                    this._container.getPrimaryColor()
+                );
+            });
         } else {
-            const boxesPanel = new VerticalBox().setChildDistance(BOX.gap);
+            const boxesPanel = WidgetFactory.terticalBox().setChildDistance(
+                BOX.gap
+            );
             this._boxes = [];
             for (let i = 0; i < this._capacity; i++) {
-                const box = new Border();
+                const box = WidgetFactory.border();
                 boxesPanel.addChild(box, 1);
                 this._boxes.push(box);
             }
@@ -142,6 +121,10 @@ class UnitBag {
 
     updateUI() {
         const currentNumber = this._container.getNumItems();
+        if (currentNumber === this._reportedCount) {
+            return;
+        }
+        this._reportedCount = currentNumber;
         if (USE_SIMPLE_NUMBERS) {
             let text;
             if (this._capacity > 0) {
