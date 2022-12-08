@@ -6,6 +6,9 @@ const {
 const {
     BunkerSliceGenerator,
 } = require("../../../../lib/draft/bunker/bunker-slice-generator");
+const {
+    ThrottleClickHandler,
+} = require("../../../../lib/ui/throttle-click-handler");
 const CONFIG = require("../../../game-ui-config");
 const {
     Button,
@@ -106,13 +109,18 @@ class BunkerDraftSettingsUI extends VerticalBox {
         const onFinishedButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.ready"));
-        onFinishedButton.onClicked.add((button, player) => {
-            const customInputValue = customInput.getText();
-            const success = this._callbacks.onFinish(customInputValue, player);
-            if (success) {
-                this._createDraftInProgressUI();
-            }
-        });
+        onFinishedButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                const customInputValue = customInput.getText();
+                const success = this._callbacks.onFinish(
+                    customInputValue,
+                    player
+                );
+                if (success) {
+                    this._createDraftInProgressUI();
+                }
+            })
+        );
 
         this.addChild(new LayoutBox(), 1);
 
@@ -128,6 +136,7 @@ class BunkerDraftSettingsUI extends VerticalBox {
         onCancelButton.onClicked.add((button, player) => {
             this._callbacks.onCancel(player);
             this._createDraftSettingsUI();
+            this._sliceGenerator.reset();
         });
 
         const draftInProgress = new Text()
