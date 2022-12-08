@@ -26,8 +26,17 @@ class ErrorReporting {
     error(err) {
         assert(typeof err === "string");
 
+        // Prune out early path.
+        const errArray = err
+            .split("\n")
+            .map((s) => s.replace(/file:\/\/.*\/Scripts\//, ""))
+            .map((s) => s.replace(/:[0-9]*[)]?$/, ""))
+            .map((s) => s.trim());
+        err = errArray.join("\n");
+
         // Log the error.
-        console.log("ErrorReporting.error:\n" + err);
+        const delim = "----------";
+        console.log(`ErrorReporting.error:\n${delim}\n${err}\n${delim}`);
 
         // Report to external store?
         if (!world.TI4.config.reportErrors) {
@@ -38,7 +47,7 @@ class ErrorReporting {
         let entry = this._stackToEntry[err];
         if (!entry) {
             entry = {
-                stackTrace: err,
+                stackTrace: errArray,
                 count: 0,
                 reportCount: 0,
                 players: world.getAllPlayers().map((x) => {
