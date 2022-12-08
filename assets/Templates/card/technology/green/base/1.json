@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "59BDA215418B93771273B9B241ABF35C",
-	"Name": "Technology (Green) (base 2/3)",
+	"Name": "Technology (Green) (base 2/2)",
 	"Metadata": "card.technology.green:base/1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -57,23 +57,20 @@
 		1,
 		2,
 		3,
-		4,
-		5
+		4
 	],
 	"CardNames": {
-		"0": "Production Biomes",
-		"1": "Neuroglaive",
-		"2": "Instinct Training",
-		"3": "Yin Spinner",
-		"4": "Yin Spinner Ω",
-		"5": "Mageon Implants"
+		"0": "Neuroglaive",
+		"1": "Instinct Training",
+		"2": "Yin Spinner",
+		"3": "Mageon Implants",
+		"4": "Transparasteel Plating"
 	},
 	"CardMetadata": {
-		"0": "card.technology.green.hacan:base/production_biomes",
-		"1": "card.technology.green.naalu:base/neuroglaive",
-		"2": "card.technology.green.xxcha:base/instinct_training",
-		"3": "card.technology.green.yin:base/yin_spinner",
-		"4": "card.technology.green.yin:base/yin_spinner.omega",
-		"5": "card.technology.green.yssaril:base/mageon_implants"
+		"0": "card.technology.green.naalu:base/neuroglaive",
+		"1": "card.technology.green.xxcha:base/instinct_training",
+		"2": "card.technology.green.yin:base/yin_spinner",
+		"3": "card.technology.green.yssaril:base/mageon_implants",
+		"4": "card.technology.green.yssaril:base/transparasteel_plating"
 	}
 }

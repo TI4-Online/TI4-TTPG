@@ -5,7 +5,7 @@
 	"Metadata": "token:base/fighter_3",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
-	"Restitution": 0.3,
+	"Restitution": 0.1,
 	"Density": 1,
 	"SurfaceType": "Plastic",
 	"Roughness": 1,
@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -51,8 +51,10 @@
 			"Texture": "global/tokens/base/fighter_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/fighter_3_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
@@ -66,21 +68,23 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
 			"Texture": "global/tokens/base/fighter_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/fighter_3_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -116,5 +120,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

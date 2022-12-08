@@ -40,6 +40,7 @@ const UPDATORS = [
     require("./updator-round"),
     require("./updator-timestamp"),
     require("./updator-turn"),
+    require("./updator-whisper-history"),
 ];
 let _addedPlayerNames = false;
 
@@ -288,6 +289,7 @@ class GameData {
             delete copy.setup;
             delete copy.scoreboard;
             delete copy.turn;
+            delete copy.whispers;
             for (const playerData of copy.players) {
                 delete playerData.steamName;
                 delete playerData.factionName;

@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 1,
-	"NumVertical": 3,
+	"NumHorizontal": 2,
+	"NumVertical": 1,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -54,17 +54,14 @@
 	"Model": "Rounded",
 	"Indices": [
 		0,
-		1,
-		2
+		1
 	],
 	"CardNames": {
 		"0": "Magmus Reactor",
-		"1": "Magmus Reactor Ω",
-		"2": "Valkyrie Particle Weave"
+		"1": "Valkyrie Particle Weave"
 	},
 	"CardMetadata": {
 		"0": "card.technology.red.muaat:base/magmus_reactor",
-		"1": "card.technology.red.muaat:base/magmus_reactor.omega",
-		"2": "card.technology.red.norr:base/valkyrie_particle_weave"
+		"1": "card.technology.red.norr:base/valkyrie_particle_weave"
 	}
 }

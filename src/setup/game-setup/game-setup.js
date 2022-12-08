@@ -25,11 +25,6 @@ function onUsePokChanged(checkBox, player, isChecked) {
     world.TI4.config.setPoK(isChecked);
 }
 
-function onUseOmegaChanged(checkBox, player, isChecked) {
-    assert(typeof isChecked === "boolean");
-    world.TI4.config.setOmega(isChecked);
-}
-
 function onUseCodex1Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex1(isChecked);
@@ -42,6 +37,11 @@ function onUseCodex2Changed(checkBox, player, isChecked) {
 function onUseCodex3Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex3(isChecked);
+}
+
+function onUseBaseMagenChanged(checkbox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    world.TI4.config.setBaseMagen(isChecked);
 }
 
 function onUseGameDataChanged(checkBox, player, isChecked) {
@@ -108,10 +108,10 @@ class GameSetup {
             onReportErrorsChanged,
             onUseLargerHexes,
             onUsePokChanged,
-            onUseOmegaChanged,
             onUseCodex1Changed,
             onUseCodex2Changed,
             onUseCodex3Changed,
+            onUseBaseMagenChanged,
             onUseGameDataChanged,
             onSetupClicked,
         }).create();

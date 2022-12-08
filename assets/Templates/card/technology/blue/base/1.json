@@ -39,8 +39,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 1,
-	"NumVertical": 3,
+	"NumHorizontal": 2,
+	"NumVertical": 1,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -54,17 +54,14 @@
 	"Model": "Rounded",
 	"Indices": [
 		0,
-		1,
-		2
+		1
 	],
 	"CardNames": {
-		"0": "Spacial Conduit Cylinder",
-		"1": "Chaos Mapping",
-		"2": "Lazax Gate Folding"
+		"0": "Chaos Mapping",
+		"1": "Lazax Gate Folding"
 	},
 	"CardMetadata": {
-		"0": "card.technology.blue.jolnar:base/spacial_conduit_cylinder",
-		"1": "card.technology.blue.saar:base/chaos_mapping",
-		"2": "card.technology.blue.winnu:base/lazax_gate_folding"
+		"0": "card.technology.blue.saar:base/chaos_mapping",
+		"1": "card.technology.blue.winnu:base/lazax_gate_folding"
 	}
 }

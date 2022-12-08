@@ -12,6 +12,6 @@ module.exports = (data) => {
         codex1: world.TI4.config.codex1,
         codex2: world.TI4.config.codex2,
         codex3: world.TI4.config.codex3,
-        omega: world.TI4.config.omega,
+        baseMagen: world.TI4.config.baseMagen,
     };
 };

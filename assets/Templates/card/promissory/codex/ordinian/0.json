@@ -1,0 +1,76 @@
+{
+	"Type": "Card",
+	"GUID": "14132280FC29B357BA0C79349CABF2C9",
+	"Name": "Promissory (codex.ordinian)",
+	"Metadata": "card.promissory:codex.ordinian/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"FrontTexture": "locale/card/promissory/codex/ordinian/0.face.jpg",
+	"BackTexture": "global/card/promissory.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 3,
+	"NumVertical": 2,
+	"Width": 4.2,
+	"Height": 6.3,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3,
+		4
+	],
+	"CardNames": {
+		"0": "Stymie Ω",
+		"1": "Cybernetic Enhancements Ω",
+		"2": "War Funding Ω",
+		"3": "Acquiescence Ω",
+		"4": "Greyfire Mutagen Ω"
+	},
+	"CardMetadata": {
+		"0": "card.promissory.arborec:codex.ordinian/stymie.omega",
+		"1": "card.promissory.l1z1x:codex.ordinian/cybernetic_enhancements.omega",
+		"2": "card.promissory.letnev:codex.ordinian/war_funding.omega",
+		"3": "card.promissory.winnu:codex.ordinian/acquiescence.omega",
+		"4": "card.promissory.yin:codex.ordinian/greyfire_mutagen.omega"
+	}
+}

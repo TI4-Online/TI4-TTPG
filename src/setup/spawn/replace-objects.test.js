@@ -28,9 +28,9 @@ it("static getReplacedObjects", () => {
     // Add a deck.
     const cardNsids = [
         "card.promissory.winnu:base/acquiescence", // REPLACE
-        "card.promissory.winnu:base/acquiescence.omega", // REPLACEMENT
+        "card.promissory.winnu:codex.ordinian/acquiescence.omega", // REPLACEMENT
         "card.promissory.yin:base/greyfire_mutagen", // (original, but missing replacement)
-        "card.promissory.letnev:base/war_funding.omega", // (replacment, but no original)
+        "card.promissory.letnev:codex.ordinian/war_funding.omega", // (replacment, but no original)
     ];
     world.__addObject(
         new MockCard({

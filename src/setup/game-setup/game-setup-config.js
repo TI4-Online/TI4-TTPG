@@ -16,10 +16,10 @@ class GameSetupConfig {
             playerCount: 6,
             gamePoints: 10,
             pok: true,
-            omega: true,
             codex1: true,
             codex2: true,
             codex3: true,
+            baseMagen: false,
             franken: false,
             reportErrors: true,
             timestamp: 0,
@@ -35,9 +35,6 @@ class GameSetupConfig {
     get pok() {
         return this._state.pok;
     }
-    get omega() {
-        return this._state.omega;
-    }
     get codex1() {
         return this._state.codex1;
     }
@@ -46,6 +43,9 @@ class GameSetupConfig {
     }
     get codex3() {
         return this._state.codex3;
+    }
+    get baseMagen() {
+        return this._state.baseMagen;
     }
     get franken() {
         return this._state.franken;
@@ -79,12 +79,6 @@ class GameSetupConfig {
         GlobalSavedData.set(KEY, this._state);
     }
 
-    setOmega(value) {
-        assert(typeof value === "boolean");
-        this._state.omega = value;
-        GlobalSavedData.set(KEY, this._state);
-    }
-
     setCodex1(value) {
         assert(typeof value === "boolean");
         this._state.codex1 = value;
@@ -100,6 +94,12 @@ class GameSetupConfig {
     setCodex3(value) {
         assert(typeof value === "boolean");
         this._state.codex3 = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setBaseMagen(value) {
+        assert(typeof value === "boolean");
+        this._state.baseMagen = value;
         GlobalSavedData.set(KEY, this._state);
     }
 

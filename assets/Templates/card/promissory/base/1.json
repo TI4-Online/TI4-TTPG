@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "EDC96C2AA199C7AF59A8962D2C976181",
-	"Name": "Promissory (base 2/10)",
+	"Name": "Promissory (base 2/9)",
 	"Metadata": "card.promissory:base/1",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -61,19 +61,19 @@
 		5
 	],
 	"CardNames": {
-		"0": "Ceasefire (Brown)",
-		"1": "Political Secret (Brown)",
-		"2": "Support for the Throne (Brown)",
-		"3": "Trade Agreement (Brown)",
-		"4": "Creuss Iff",
-		"5": "Ceasefire (Green)"
+		"0": "Political Secret (Brown)",
+		"1": "Support for the Throne (Brown)",
+		"2": "Trade Agreement (Brown)",
+		"3": "Creuss Iff",
+		"4": "Ceasefire (Green)",
+		"5": "Political Secret (Green)"
 	},
 	"CardMetadata": {
-		"0": "card.promissory.brown:base/ceasefire",
-		"1": "card.promissory.brown:base/political_secret",
-		"2": "card.promissory.brown:base/support_for_the_throne",
-		"3": "card.promissory.brown:base/trade_agreement",
-		"4": "card.promissory.creuss:base/creuss_iff",
-		"5": "card.promissory.green:base/ceasefire"
+		"0": "card.promissory.brown:base/political_secret",
+		"1": "card.promissory.brown:base/support_for_the_throne",
+		"2": "card.promissory.brown:base/trade_agreement",
+		"3": "card.promissory.creuss:base/creuss_iff",
+		"4": "card.promissory.green:base/ceasefire",
+		"5": "card.promissory.green:base/political_secret"
 	}
 }

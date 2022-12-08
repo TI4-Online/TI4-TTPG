@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "0A502B8344108A1E87C734F3033E5B5C",
-	"Name": "Promissory (base 1/10)",
+	"Name": "Promissory (base 1/9)",
 	"Metadata": "card.promissory:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -62,18 +62,18 @@
 	],
 	"CardNames": {
 		"0": "Stymie",
-		"1": "Stymie Ω",
-		"2": "Ceasefire (Blue)",
-		"3": "Political Secret (Blue)",
-		"4": "Support for the Throne (Blue)",
-		"5": "Trade Agreement (Blue)"
+		"1": "Ceasefire (Blue)",
+		"2": "Political Secret (Blue)",
+		"3": "Support for the Throne (Blue)",
+		"4": "Trade Agreement (Blue)",
+		"5": "Ceasefire (Brown)"
 	},
 	"CardMetadata": {
 		"0": "card.promissory.arborec:base/stymie",
-		"1": "card.promissory.arborec:base/stymie.omega",
-		"2": "card.promissory.blue:base/ceasefire",
-		"3": "card.promissory.blue:base/political_secret",
-		"4": "card.promissory.blue:base/support_for_the_throne",
-		"5": "card.promissory.blue:base/trade_agreement"
+		"1": "card.promissory.blue:base/ceasefire",
+		"2": "card.promissory.blue:base/political_secret",
+		"3": "card.promissory.blue:base/support_for_the_throne",
+		"4": "card.promissory.blue:base/trade_agreement",
+		"5": "card.promissory.brown:base/ceasefire"
 	}
 }

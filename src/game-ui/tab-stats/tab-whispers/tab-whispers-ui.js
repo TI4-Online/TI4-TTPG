@@ -8,11 +8,10 @@ const {
     HorizontalAlignment,
     TextJustification,
     VerticalAlignment,
+    refPackageId,
 } = require("../../../wrapper/api");
 
 const MAX_PAIR_COUNT = 8;
-const WINDOW_BUCKETS = 60;
-const BLACK = ColorUtil.colorFromHex("#101010");
 
 class TabWhispersUI {
     constructor() {
@@ -21,7 +20,7 @@ class TabWhispersUI {
 
         // Reserve space for the player a/b labels.
         const labelWeight = 1;
-        const windowWeight = 2.5;
+        const windowWeight = 2;
 
         const headerWindowleft = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
@@ -66,9 +65,7 @@ class TabWhispersUI {
                 .addChild(label1)
                 .addChild(slash)
                 .addChild(label2);
-            const rowWindow = WidgetFactory.horizontalBox().setChildDistance(
-                CONFIG.scale * 2
-            );
+            const rowCanvas = WidgetFactory.canvas();
 
             // Sigh, wrap labels in a right-aligned box.
             const rowLabelsBox = WidgetFactory.layoutBox()
@@ -77,8 +74,8 @@ class TabWhispersUI {
 
             // Gross dance to force the window borders to a fixed height.
             const windowInner = WidgetFactory.layoutBox()
-                .setOverrideHeight(CONFIG.scale * 10)
-                .setChild(rowWindow);
+                .setOverrideHeight(CONFIG.scale * 30)
+                .setChild(rowCanvas);
             const windowOuter = WidgetFactory.layoutBox()
                 .setVerticalAlignment(VerticalAlignment.Center)
                 .setChild(windowInner);
@@ -90,16 +87,39 @@ class TabWhispersUI {
 
             this._mainWidget.addChild(row);
 
-            // Create the window of buckets.
-            const window = [];
-            for (let bucket = 0; bucket < WINDOW_BUCKETS; bucket++) {
-                const border = WidgetFactory.border().setColor(BLACK);
-                window.push(border);
-                rowWindow.addChild(border, 1);
-            }
+            // Create the window of buckets.  Do not use individual UI, instead
+            // overlap two monospace text in a shared canvas.
+            const w = 1030; // Yuck, hard coding this requires layout cooperate
+            const h = windowInner.getOverrideHeight();
+            const fontSize = Math.floor(h * 0.5);
+            const textX = h * 0.15;
+            const textY = h * 0.16;
+            const textH = h - textY * 2;
+            const textW = w - textX * 2;
+            const bg = WidgetFactory.border().setColor(
+                ColorUtil.colorFromHex("#101010")
+            );
+            const forward = WidgetFactory.text()
+                .setFontSize(fontSize)
+                .setFont("VT323-Regular.ttf", refPackageId)
+                .setText("> ".repeat(30));
+            const backward = WidgetFactory.text()
+                .setFontSize(fontSize)
+                .setFont("VT323-Regular.ttf", refPackageId)
+                .setText(" <".repeat(30));
+            rowCanvas
+                .addChild(bg, 0, 0, w, h)
+                .addChild(forward, textX, textY, textW, textH)
+                .addChild(backward, textX, textY, textW, textH);
 
             // Keep references for update.
-            this._rows.push({ label1, label2, window });
+            this._rows.push({
+                label1,
+                label2,
+                forward,
+                backward,
+                bucketCount: 60,
+            });
         }
 
         this.update();
@@ -114,18 +134,21 @@ class TabWhispersUI {
         assert(Array.isArray(whisperPairs));
 
         this._rows.forEach((row, index) => {
-            const { label1, label2, window } = row;
-            label1.setText("-");
-            label2.setText("-");
-            label1.setTextColor([1, 1, 1, 1]);
-            label2.setTextColor([1, 1, 1, 1]);
-            for (const border of window) {
-                border.setColor(BLACK);
-            }
+            const { label1, label2, forward, backward, bucketCount } = row;
+            label1.setTextColor([1, 1, 1, 1]).setText("-");
+            label2.setTextColor([1, 1, 1, 1]).setText("-");
+            forward.setTextColor([1, 1, 1, 1]).setText("-");
+            backward.setTextColor([1, 1, 1, 1]).setText("-");
 
             const whisperPair = whisperPairs[index];
             if (whisperPair) {
-                whisperPair.summarizeToBorders(label1, label2, window, BLACK);
+                whisperPair.summarizeToText(
+                    label1,
+                    label2,
+                    forward,
+                    backward,
+                    bucketCount
+                );
             }
         });
     }

@@ -125,7 +125,7 @@ class WhisperPair {
         assert(numBuckets > 0);
 
         const buckets = new Array(numBuckets).fill(0).map((x) => []);
-        const bucketDuration = WINDOW_SIZE_SECONDS / buckets.length;
+        const bucketDuration = Math.floor(WINDOW_SIZE_SECONDS / buckets.length);
 
         const now = WhisperPair.timestamp();
         for (const entry of this._history) {
@@ -140,11 +140,11 @@ class WhisperPair {
                 continue;
             }
 
-            const bucketIndex = Math.floor(
-                (age * (buckets.length - 1)) / WINDOW_SIZE_SECONDS
-            );
+            const bucketIndex = Math.floor(age / bucketDuration);
             const bucket = buckets[bucketIndex];
-            assert(bucket);
+            if (!bucket) {
+                continue;
+            }
             assert(typeof entry.forward === "boolean");
             bucket.unshift(entry.forward);
         }
@@ -196,6 +196,77 @@ class WhisperPair {
                 border.setColor(forward ? colorA : colorB);
             });
         });
+    }
+
+    /**
+     *
+     * @param {number} bucketCount
+     * @returns {Object.{forward:string,backward:string}}
+     */
+    getHistoryAsText(bucketCount) {
+        assert(typeof bucketCount === "number");
+
+        const forwardValues = new Array(bucketCount).fill(0).map((x) => " ");
+        const backwardValues = new Array(bucketCount).fill(0).map((x) => " ");
+
+        const deskA = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotA);
+        const deskB = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotB);
+        const colorNameA = deskA ? deskA.colorName : "?";
+        const colorNameB = deskB ? deskB.colorName : "?";
+        const colorA = deskA ? deskA.plasticColor : [1, 1, 1, 1];
+        const colorB = deskB ? deskB.plasticColor : [1, 1, 1, 1];
+
+        const buckets = this._bucketize(bucketCount);
+        let nextBucketIndex = 0;
+        buckets.forEach((bucket, index) => {
+            // Start at the later of [correct bucket] or [next available bucket],
+            // draw communication exchanges in order and run past time window allotment.
+            nextBucketIndex = Math.max(nextBucketIndex, index);
+            bucket.forEach((forward) => {
+                const thisIndex = nextBucketIndex++;
+                const values = buckets[nextBucketIndex]
+                    ? forwardValues
+                    : backwardValues;
+                const value = buckets[nextBucketIndex] ? ">" : "<";
+                values[thisIndex] = value;
+            });
+        });
+
+        return {
+            colorNameA,
+            colorNameB,
+            colorA,
+            colorB,
+            forwardStr: forwardValues.join(""),
+            backwardStr: backwardValues.join(""),
+        };
+    }
+
+    summarizeToText(labelA, labelB, forward, backward, bucketCount) {
+        assert(labelA instanceof Text);
+        assert(labelB instanceof Text);
+        assert(forward instanceof Text);
+        assert(backward instanceof Text);
+        assert(typeof bucketCount === "number");
+
+        const {
+            colorNameA,
+            colorNameB,
+            colorA,
+            colorB,
+            forwardStr,
+            backwardStr,
+        } = this.getHistoryAsText(bucketCount);
+
+        labelA.setText(colorNameA);
+        labelA.setTextColor(colorA);
+        labelB.setText(colorNameB);
+        labelB.setTextColor(colorB);
+        forward.setTextColor(colorA);
+        backward.setTextColor(colorB);
+
+        forward.setText(forwardStr);
+        backward.setText(backwardStr);
     }
 }
 

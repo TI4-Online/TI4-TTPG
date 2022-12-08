@@ -22,7 +22,6 @@ class RestrictObjects {
             removeSources.add("base.only");
         } else {
             removeSources.add("pok");
-            removeSources.add("codex.affinity"); // everything codex2 is PoK
         }
         if (!world.TI4.config.codex1) {
             removeSources.add("codex.ordinian");

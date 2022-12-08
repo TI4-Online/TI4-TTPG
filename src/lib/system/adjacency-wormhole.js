@@ -80,25 +80,28 @@ class AdjacencyWormhole {
         // adjacent to all other systems that contain a wormhole during
         // this tactical action."
         if (nsid === "card.leader.agent.creuss:pok/emissary_taivra") {
-            const activeObj = world.TI4.getActiveSystemTileObject();
-            if (!activeObj) {
-                return;
-            }
-            const system = world.TI4.getSystemBySystemTileObject(activeObj);
-            let nonDelta = false;
-            for (const wormhole of system.wormholes) {
-                if (wormhole !== "delta") {
-                    nonDelta = true;
-                    break;
-                }
-            }
-            if (!nonDelta) {
-                return;
-            }
-
             if (!ActiveIdle.isActive(obj)) {
                 return; // not active
             }
+
+            // Double check the active system has a proper wormhold?
+            // Disable this for now, players may have a reason to do so
+            // (e.g. simulating a previous activation).
+            // const activeObj = world.TI4.getActiveSystemTileObject();
+            // if (!activeObj) {
+            //     return;
+            // }
+            // const system = world.TI4.getSystemBySystemTileObject(activeObj);
+            // let nonDelta = false;
+            // for (const wormhole of system.wormholes) {
+            //     if (wormhole !== "delta") {
+            //         nonDelta = true;
+            //         break;
+            //     }
+            // }
+            // if (!nonDelta) {
+            //     return;
+            // }
 
             this._connected.alpha.add("beta");
             this._connected.alpha.add("gamma");
