@@ -25,11 +25,44 @@ function lookAt(pos, yaw, distance, player) {
     player.setPositionAndRotation(lookFrom, rot);
 }
 
-globalEvents.onScriptButtonPressed.add((player, index) => {
+globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
     assert(player instanceof Player);
     assert(typeof index === "number");
 
-    //console.log(`onScriptButtonPressed: ${index}`);
+    //console.log(`onScriptButtonPressed: ${index} ctrl=${ctrl} alt=${alt}`);
+
+    // Ctrl-# looks at a player desk.
+    if (ctrl && !alt) {
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const playerDesk = playerDesks[index - 1];
+        if (playerDesk) {
+            const pos = playerDesk.center;
+            const yaw = playerDesk.rot.yaw;
+            lookAt(pos, yaw, 70, player);
+        }
+        return;
+    }
+
+    // Ctrl-Alt-# looks at a player desk at an angle (strategy, agenda popup view).
+    if (ctrl && alt) {
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const playerDesk = playerDesks[index - 1];
+        if (playerDesk) {
+            const lookAt = playerDesk.localPositionToWorld({
+                x: 10,
+                y: 0,
+                z: 25,
+            });
+            const lookFrom = playerDesk.localPositionToWorld({
+                x: -40,
+                y: 0,
+                z: 70,
+            });
+            const rot = lookFrom.findLookAtRotation(lookAt);
+            player.setPositionAndRotation(lookFrom, rot);
+        }
+        return;
+    }
 
     // [1-3] Spawn tokens.
     if (index === 1) {
