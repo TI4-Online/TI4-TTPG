@@ -11,17 +11,11 @@ const { PopupPanel } = require("../../lib/ui/popup-panel");
 const { Technology } = require("../../lib/technology/technology");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
 const {
-    Border,
-    Canvas,
     Card,
     GameObject,
     HorizontalAlignment,
-    HorizontalBox,
-    LayoutBox,
     Player,
     Rotator,
-    Text,
-    UIElement,
     Vector,
     VerticalAlignment,
     Zone,
@@ -30,6 +24,7 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 /**
  * MISSING ABILITIES:
@@ -122,7 +117,7 @@ class BuildAreaMat {
         return consumeFlags;
     }
 
-    static getConsumeEntry(obj, flags) {
+    static getConsumeEntries(obj, flags) {
         assert(obj instanceof GameObject);
         const { hasXxchaHeroCodex3, hasMirrorComputing } = flags;
 
@@ -130,36 +125,53 @@ class BuildAreaMat {
 
         // Consume tradegood(s)?
         if (nsid === "token:base/tradegood_commodity_1") {
-            return {
-                obj,
-                type: TYPE.TRADEGOOD,
-                value: hasMirrorComputing ? 2 : 1,
-                count: 1,
-            };
+            return [
+                {
+                    obj,
+                    type: TYPE.TRADEGOOD,
+                    value: hasMirrorComputing ? 2 : 1,
+                    count: 1,
+                },
+            ];
         }
         if (nsid === "token:base/tradegood_commodity_3") {
-            return {
-                obj,
-                type: TYPE.TRADEGOOD,
-                value: hasMirrorComputing ? 6 : 3,
-                count: 1,
-            };
+            return [
+                {
+                    obj,
+                    type: TYPE.TRADEGOOD,
+                    value: hasMirrorComputing ? 6 : 3,
+                    count: 1,
+                },
+            ];
         }
 
-        const planet = obj instanceof Card && world.TI4.getPlanetByCard(obj);
-        if (planet) {
-            let value = planet.raw.resources || 0;
-            if (hasXxchaHeroCodex3) {
-                value += planet.raw.influence || 0;
+        // Look at all cards in stack.  Zone should prevent stacking,
+        // but a report came in that cards stacked anyhow.  It is also
+        // possible (I think) to move a stack into the zone.
+        if (obj instanceof Card) {
+            const nsids = ObjectNamespace.getDeckNsids(obj);
+            const result = [];
+            for (const nsid of nsids) {
+                const planet = world.TI4.getPlanetByCardNsid(nsid);
+                if (planet) {
+                    let value = planet.raw.resources || 0;
+                    if (hasXxchaHeroCodex3) {
+                        value += planet.raw.influence || 0;
+                    }
+
+                    result.push({
+                        obj,
+                        type: TYPE.PLANET,
+                        name: planet.getNameStr(),
+                        value,
+                        count: 1,
+                    });
+                }
             }
-            return {
-                obj,
-                type: TYPE.PLANET,
-                name: planet.getNameStr(),
-                value,
-                count: 1,
-            };
+            return result;
         }
+
+        return [];
     }
 
     constructor(gameObject) {
@@ -216,9 +228,9 @@ class BuildAreaMat {
             0.13 + CONFIG.buttonLift
         );
 
-        const canvas = new Canvas();
+        const canvas = WidgetFactory.canvas();
         canvas.addChild(
-            new Border(), //.setColor([0.3, 0, 0]),
+            WidgetFactory.border(), //.setColor([0.3, 0, 0]),
             0,
             0,
             size.w,
@@ -226,17 +238,17 @@ class BuildAreaMat {
         );
 
         // Layout.
-        this._ui.cost = new Text().setFontSize(fontSize);
-        this._ui.resources = new Text().setFontSize(fontSize);
-        this._ui.unitCount = new Text().setFontSize(fontSize);
-        this._ui.production = new Text().setFontSize(fontSize);
+        this._ui.cost = WidgetFactory.text().setFontSize(fontSize);
+        this._ui.resources = WidgetFactory.text().setFontSize(fontSize);
+        this._ui.unitCount = WidgetFactory.text().setFontSize(fontSize);
+        this._ui.production = WidgetFactory.text().setFontSize(fontSize);
 
-        const panel = new HorizontalBox()
+        const panel = WidgetFactory.horizontalBox()
             .setChildDistance(size.h / 3)
             .addChild(this._ui.cost)
             .addChild(this._ui.resources)
             .addChild(this._ui.unitCount);
-        const box = new LayoutBox()
+        const box = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(panel);
@@ -255,7 +267,7 @@ class BuildAreaMat {
         );
 
         // Attach a canvas.
-        this._ui.uiE = new UIElement();
+        this._ui.uiE = WidgetFactory.uiElement();
         this._ui.uiE.useWidgetSize = false;
         this._ui.uiE.width = size.w;
         this._ui.uiE.height = size.h;
@@ -419,13 +431,11 @@ class BuildAreaMat {
             if (produceEntry) {
                 produce.push(produceEntry);
             }
-            const consumeEntry = BuildAreaMat.getConsumeEntry(
+            const consumeEntries = BuildAreaMat.getConsumeEntries(
                 obj,
                 consumeFlags
             );
-            if (consumeEntry) {
-                consume.push(consumeEntry);
-            }
+            consume.push(...consumeEntries);
             // AI Dev handling.
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "card.technology.red:pok/ai_development_algorithm") {

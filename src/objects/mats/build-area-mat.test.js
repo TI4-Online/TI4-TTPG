@@ -48,13 +48,15 @@ it("getConsumeFlags", () => {
     world.__clear();
 });
 
-it("getConsumeEntry", () => {
+it("getConsumeEntries", () => {
     const pos = new MockVector(0, 0, 0);
     const flags = {};
 
     let nsid = "token:base/tradegood_commodity_1";
     let obj = MockGameObject.__create(nsid, pos);
-    let consumeEntry = BuildAreaMat.getConsumeEntry(obj, flags);
+    let consumeEntries = BuildAreaMat.getConsumeEntries(obj, flags);
+    assert.equal(consumeEntries.length, 1);
+    let consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
     assert.equal(consumeEntry.value, 1);
@@ -62,7 +64,9 @@ it("getConsumeEntry", () => {
 
     nsid = "token:base/tradegood_commodity_3";
     obj = MockGameObject.__create(nsid, pos);
-    consumeEntry = BuildAreaMat.getConsumeEntry(obj, flags);
+    consumeEntries = BuildAreaMat.getConsumeEntries(obj, flags);
+    assert.equal(consumeEntries.length, 1);
+    consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
     assert.equal(consumeEntry.value, 3);
@@ -70,7 +74,10 @@ it("getConsumeEntry", () => {
 
     nsid = "card.planet:base/mecatol_rex";
     obj = MockCard.__create(nsid, pos);
-    consumeEntry = BuildAreaMat.getConsumeEntry(obj, flags);
+    consumeEntries = BuildAreaMat.getConsumeEntries(obj, flags);
+    assert.equal(consumeEntries.length, 1);
+    consumeEntry = consumeEntries[0];
+    assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.PLANET);
     assert.equal(consumeEntry.name, "Mecatol Rex");
@@ -92,9 +99,12 @@ it("xxcha hero codex 3", () => {
 
     nsid = "card.planet:base/mecatol_rex";
     const obj = MockCard.__create(nsid, pos);
-    const consumeEntry = BuildAreaMat.getConsumeEntry(obj, flags);
+    const consumeEntries = BuildAreaMat.getConsumeEntries(obj, flags);
     world.__clear();
 
+    assert.equal(consumeEntries.length, 1);
+    const consumeEntry = consumeEntries[0];
+    assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.PLANET);
     assert.equal(consumeEntry.name, "Mecatol Rex");
@@ -116,9 +126,11 @@ it("mirror computing", () => {
 
     nsid = "token:base/tradegood_commodity_3";
     const obj = MockGameObject.__create(nsid, pos);
-    const consumeEntry = BuildAreaMat.getConsumeEntry(obj, flags);
+    const consumeEntries = BuildAreaMat.getConsumeEntries(obj, flags);
     world.__clear();
 
+    assert.equal(consumeEntries.length, 1);
+    const consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
     assert.equal(consumeEntry.value, 6);
