@@ -33,25 +33,25 @@ class GameSetupConfig {
         return this._state.gamePoints;
     }
     get pok() {
-        return this._state.pok;
+        return this._state.pok ? true : false;
     }
     get codex1() {
-        return this._state.codex1;
+        return this._state.codex1 ? true : false;
     }
     get codex2() {
-        return this._state.codex2;
+        return this._state.codex2 ? true : false;
     }
     get codex3() {
-        return this._state.codex3;
+        return this._state.codex3 ? true : false;
     }
     get baseMagen() {
-        return this._state.baseMagen;
+        return this._state.baseMagen ? true : false;
     }
     get franken() {
-        return this._state.franken;
+        return this._state.franken ? true : false;
     }
     get reportErrors() {
-        return this._state.reportErrors;
+        return this._state.reportErrors ? true : false;
     }
     get timestamp() {
         return this._state.timestamp;

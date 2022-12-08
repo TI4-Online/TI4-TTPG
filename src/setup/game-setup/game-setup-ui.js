@@ -176,14 +176,14 @@ class GameSetupUI {
 
     _createCheckbox(localeLabel, isChecked, onCheckStateChanged) {
         assert(typeof localeLabel === "string");
-        assert(typeof isChecked === "boolean");
+        assert(!isChecked || typeof isChecked === "boolean");
         assert(typeof onCheckStateChanged === "function");
 
         const labelText = locale(localeLabel);
         const checkBox = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)
             .setText(labelText)
-            .setIsChecked(isChecked);
+            .setIsChecked(isChecked ? true : false);
         checkBox.onCheckStateChanged.add(onCheckStateChanged);
         return checkBox;
     }
