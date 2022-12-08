@@ -38,8 +38,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -51,8 +51,10 @@
 			"Texture": "global/tokens/base/commodity_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/commodity_3_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
@@ -80,8 +82,8 @@
 			},
 			"Scale":
 			{
-				"X": 1.25,
-				"Y": 1.25,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -93,8 +95,10 @@
 			"Texture": "global/tokens/base/tradegood_3_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/tokens/base/tradegood_3_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
@@ -144,5 +148,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
