@@ -28,9 +28,16 @@ class BagDraft {
         assert(typeof count === "number");
         assert(typeof isRed === "boolean");
 
+        const excludeTiles = new Set([
+            81, // muaat supernova
+            82, // mallice
+        ]);
+
         let systems = world.TI4.getAllSystems();
         systems = systems.filter(
-            (system) => (isRed ? system.red : system.blue) && system.tile !== 81
+            (system) =>
+                (isRed ? system.red : system.blue) &&
+                !excludeTiles.has(system.tile)
         );
         systems = Shuffle.shuffle(systems);
         if (count > 0) {
