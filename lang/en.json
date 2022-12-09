@@ -383,6 +383,7 @@
     "ui.agenda.clippy.post": "Play any ”after the speaker votes“ (Bribery), then proceed.",
     "ui.agenda.clippy.outcome": "The outcome is:\n{outcome}\nPredictions:\n{riders}\n\nReset cards after finishing the second agenda.",
 
+    "ui.agenda.representative_government": "Representative Government active",
     "ui.agenda.outcome_type.for_against": "For/against",
     "ui.agenda.outcome_type.player": "Elect player",
     "ui.agenda.outcome_type.strategy_card": "Elect strategy card",

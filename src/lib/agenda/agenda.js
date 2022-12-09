@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
 const { AgendaOutcome } = require("./agenda-outcome");
 const { AgendaStateMachine } = require("./agenda-state-machine");
 const { AgendaTurnOrder } = require("./agenda-turn-order");
@@ -12,7 +13,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
 
 /**
  * Shared information about the current agenda.
@@ -62,7 +63,42 @@ class Agenda {
         return deskIndexToPerPlanetBonus;
     }
 
+    static _isRepresentativeGovernmentActive() {
+        const nsidSet = new Set([
+            "card.agenda:pok/representative_government",
+            "card.agenda:base.only/representative_government",
+        ]);
+        const checkIsDiscardPile = true;
+        for (const obj of world.getAllObjects()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsidSet.has(nsid)) {
+                continue;
+            }
+            if (!CardUtil.isLooseCard(obj, checkIsDiscardPile)) {
+                continue;
+            }
+            if (world.TI4.agenda.getAgendaNsid() === nsid) {
+                continue; // currently being voted on
+            }
+            return true;
+        }
+        return false;
+    }
+
     static getDeskIndexToAvailableVotes() {
+        const deskIndexToAvailableVotes = {};
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            deskIndexToAvailableVotes[playerDesk.index] = 0;
+        }
+
+        // Representative government.
+        if (Agenda._isRepresentativeGovernmentActive()) {
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                deskIndexToAvailableVotes[playerDesk.index] = 1;
+            }
+            return deskIndexToAvailableVotes;
+        }
+
         const deskIndexToPerPlanetBonus = Agenda.getDeskIndexToPerPlanetBonus();
 
         const gromOmegaNsid =
@@ -83,11 +119,6 @@ class Agenda {
                 const closestDesk = world.TI4.getClosestPlayerDesk(pos);
                 gromOmegaDeskIndexSet.add(closestDesk.index);
             }
-        }
-
-        const deskIndexToAvailableVotes = {};
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            deskIndexToAvailableVotes[playerDesk.index] = 0;
         }
 
         for (const obj of world.getAllObjects()) {
@@ -190,6 +221,12 @@ class Agenda {
             if (agendaCard) {
                 this.clear();
                 this.init();
+
+                if (Agenda._isRepresentativeGovernmentActive()) {
+                    Broadcast.chatAll(
+                        locale("ui.agenda.representative_government")
+                    );
+                }
             } else {
                 this.clear();
             }
