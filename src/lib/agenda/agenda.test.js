@@ -234,6 +234,29 @@ it("static getDeskIndexToAvailableVotes", () => {
     });
 });
 
+it("static representative government", () => {
+    const representativeGovernment = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.agenda:pok/representative_government",
+            }),
+        ],
+        faceUp: true,
+    });
+    world.__clear();
+    world.__addObject(representativeGovernment);
+    const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
+    world.__clear();
+    assert.deepEqual(deskIndexToAvailableVotes, {
+        0: 1,
+        1: 1,
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 1,
+    });
+});
+
 it("constructor", () => {
     new Agenda();
 });
