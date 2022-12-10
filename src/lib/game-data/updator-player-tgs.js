@@ -8,6 +8,7 @@ module.exports = (data) => {
     data.players.forEach((playerData) => {
         playerData.commodities = 0;
         playerData.tradeGoods = 0;
+        playerData.maxCommodities = 0;
     });
 
     const tokensAndValues = [];
@@ -34,4 +35,13 @@ module.exports = (data) => {
             playerData.tradeGoods += value;
         }
     }
+
+    world.TI4.getAllPlayerDesks().forEach((playerDesk, index) => {
+        const playerSlot = playerDesk.playerSlot;
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        const playerData = data.players[playerDesk.index];
+        if (playerData && faction) {
+            playerData.maxCommodities = faction.raw?.commodities;
+        }
+    });
 };
