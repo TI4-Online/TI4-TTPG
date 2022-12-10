@@ -67,6 +67,7 @@ class TurnEntryFancy extends Canvas {
             .setBold(true)
             .setText("Player Name");
         this._playerNameOverlay = new LayoutBox();
+        this._playerNameStrike = new Border();
 
         this._strategyCardSolo = new Text()
             .setJustification(TextJustification.Center)
@@ -74,18 +75,21 @@ class TurnEntryFancy extends Canvas {
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setText("CONSTRUCTION");
         this._strategyCardSoloOverlay = new LayoutBox();
+        this._strategyCardSoloStrike = new Border();
         this._strategyCardLeft = new Text()
             .setJustification(TextJustification.Center)
             .setFontSize(STRATEGY_CARD_FONT_SIZE * 0.6)
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setText("CONSTRUCTION");
         this._strategyCardLeftOverlay = new LayoutBox();
+        this._strategyCardLeftStrike = new Border();
         this._strategyCardRight = new Text()
             .setJustification(TextJustification.Center)
             .setFontSize(STRATEGY_CARD_FONT_SIZE * 0.6)
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setText("CONSTRUCTION");
         this._strategyCardRightOverlay = new LayoutBox();
+        this._strategyCardRightStrike = new Border();
 
         this._score = new Text()
             .setJustification(TextJustification.Center)
@@ -111,6 +115,10 @@ class TurnEntryFancy extends Canvas {
         const h = 58;
         const strike = 1;
 
+        const strikeExtraWidth = 10;
+        const strikeLeft = w / 4 - strikeExtraWidth / 2;
+        const strikeWidth = w / 2 + strikeExtraWidth;
+
         this.addChild(this._canvasBackground, 0, 0, w, h)
             .addChild(this._factionIcon, 4, 4, 40, 40)
             .addChild(this._factionName, 0, 44, 48, 15)
@@ -124,27 +132,39 @@ class TurnEntryFancy extends Canvas {
                 strike
             )
             .addChild(strategyBoxSolo, 0, h / 2 - 4, w, h / 2)
-            .addChild(strategyBoxLeft, 40, h / 2 - 4, (w - 80) / 2, h / 2)
-            .addChild(strategyBoxRight, w / 2, h / 2 - 4, (w - 80) / 2, h / 2)
             .addChild(
                 this._strategyCardSoloOverlay,
-                w / 4,
+                strikeLeft,
                 (h * 3) / 4 - 3 - strike,
-                w / 2,
+                strikeWidth,
                 strike
+            )
+            .addChild(
+                strategyBoxLeft,
+                strikeLeft,
+                h / 2 - 4,
+                strikeWidth / 2 - 2,
+                h / 2
             )
             .addChild(
                 this._strategyCardLeftOverlay,
-                44,
+                strikeLeft,
                 (h * 3) / 4 - 4 - strike,
-                (w - 80) / 2 - 8,
+                strikeWidth / 2 - 2,
                 strike
             )
             .addChild(
+                strategyBoxRight,
+                w / 2 + 2,
+                h / 2 - 4,
+                strikeWidth / 2 - 2,
+                h / 2
+            )
+            .addChild(
                 this._strategyCardRightOverlay,
-                w / 2 + 4,
+                w / 2 + 2,
                 (h * 3) / 4 - 4 - strike,
-                (w - 80) / 2 - 8,
+                strikeWidth / 2 - 2,
                 strike
             );
     }
@@ -199,21 +219,26 @@ class TurnEntryFancy extends Canvas {
 
         this._factionName.setTextColor(fgColor);
         this._playerName.setTextColor(fgColor);
+        this._playerNameStrike.setColor(fgColor);
         this._score.setTextColor(fgColor);
+        this._strategyCardLeftStrike.setColor(fgColor);
+        this._strategyCardRightStrike.setColor(fgColor);
+        this._strategyCardSoloStrike.setColor(fgColor);
+
         this._canvasBackground.setColor(bgColor);
 
-        this._playerNameOverlay.setChild(new LayoutBox());
+        this._playerNameOverlay.setChild(undefined);
         if (config.isPassed) {
-            this._playerNameOverlay.setChild(new Border().setColor(fgColor));
+            this._playerNameOverlay.setChild(this._playerNameStrike);
         }
 
         // Strategy cards.
         this._strategyCardSolo.setText("");
         this._strategyCardLeft.setText("");
         this._strategyCardRight.setText("");
-        this._strategyCardSoloOverlay.setChild(new LayoutBox());
-        this._strategyCardLeftOverlay.setChild(new LayoutBox());
-        this._strategyCardRightOverlay.setChild(new LayoutBox());
+        this._strategyCardSoloOverlay.setChild(undefined);
+        this._strategyCardLeftOverlay.setChild(undefined);
+        this._strategyCardRightOverlay.setChild(undefined);
 
         if (config.strategyCards.length === 0) {
             this._strategyCardSolo.setText("—");
@@ -224,7 +249,7 @@ class TurnEntryFancy extends Canvas {
                 .setText(name.toUpperCase());
             if (config.strategyCardsFaceDown.includes(name)) {
                 this._strategyCardSoloOverlay.setChild(
-                    new Border().setColor(fgColor)
+                    this._strategyCardSoloStrike
                 );
             }
         } else if (config.strategyCards.length > 1) {
@@ -235,7 +260,7 @@ class TurnEntryFancy extends Canvas {
                 .setText(name1.toUpperCase());
             if (config.strategyCardsFaceDown.includes(name1)) {
                 this._strategyCardLeftOverlay.setChild(
-                    new Border().setColor(fgColor)
+                    this._strategyCardLeftStrike
                 );
             }
             this._strategyCardRight
@@ -243,7 +268,7 @@ class TurnEntryFancy extends Canvas {
                 .setText(name2.toUpperCase());
             if (config.strategyCardsFaceDown.includes(name2)) {
                 this._strategyCardRightOverlay.setChild(
-                    new Border().setColor(fgColor)
+                    this._strategyCardRightStrike
                 );
             }
         }
