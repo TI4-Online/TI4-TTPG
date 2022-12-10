@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { Facing } = require("../facing");
 const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitPlastic } = require("../unit/unit-plastic");
@@ -7,7 +8,6 @@ const {
     getExactPlanet,
 } = require("../../lib/system/position-to-planet");
 const { GameObject, world } = require("../../wrapper/api");
-const { Facing } = require("../facing");
 
 // Encode units in hexes
 // Upper case signals color.  No-color entries always first.
@@ -55,7 +55,11 @@ const ATTACHMENT_NSID_TO_TYPE_AND_CODE = {
     "token:pok/frontier": { type: TYPE.SPACE, code: "e" },
     "token.wormhole.creuss:pok/gamma": { type: TYPE.SPACE, code: "g" },
     "token.wormhole.exploration:pok/gamma": { type: TYPE.SPACE, code: "g" },
-    "token.exploration:pok/ion_storm": { type: TYPE.SPACE, code: "n" },
+    "token.exploration:pok/ion_storm": {
+        type: TYPE.SPACE,
+        code: "n",
+        flippable: true,
+    },
     "token.nekro:pok/dimensional_tear": { type: TYPE.SPACE, code: "h" },
     "token.vuilraith:pok/dimensional_tear": { type: TYPE.SPACE, code: "h" },
 
@@ -114,6 +118,11 @@ const ATTACHMENT_NSID_TO_TYPE_AND_CODE = {
     "token.attachment.exploration:pok/warfare_facility": {
         type: TYPE.PLANET,
         code: "w",
+        flippable: true,
+    },
+    "token.keleres:codex.vigil/custodia_vigilia": {
+        type: TYPE.PLANET,
+        code: "v",
         flippable: true,
     },
 };
