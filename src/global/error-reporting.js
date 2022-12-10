@@ -34,9 +34,9 @@ class ErrorReporting {
             .map((s) => s.trim());
         err = errArray.join("\n");
 
-        // Log the error.
-        const delim = "----------";
-        console.log(`ErrorReporting.error:\n${delim}\n${err}\n${delim}`);
+        // Log the error?  Normal error handling does that in red.
+        //const delim = "----------";
+        //console.log(`ErrorReporting.error:\n${delim}\n${err}\n${delim}`);
 
         // Report to external store?
         if (!world.TI4.config.reportErrors) {
