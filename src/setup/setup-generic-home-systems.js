@@ -89,7 +89,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
      *
      * @returns {Object} - map from player slot to position
      */
-    static getPlayerSlotToHomeSystemIndex() {
+    static getDeskIndexToHomeSystemIndex() {
         // Optimal placement is called "the assignment problem" and is tricky.
         // Make a simplifying assumption that tiles in clockwise order get the
         // player zone colors in clockwise order, choosing the best start.
@@ -126,13 +126,12 @@ class SetupGenericHomeSystems extends AbstractSetup {
             }
         }
 
-        const playerSlotToHomeSystemIndex = {};
+        const deskIndexToHomeSystemIndex = {};
         playerDeskArray.forEach((playerDesk, index) => {
-            index = (index + best) % playerCount;
-            const playerSlot = playerDesk.playerSlot;
-            playerSlotToHomeSystemIndex[playerSlot] = index;
+            let rotatedIndex = (index + best) % playerCount;
+            deskIndexToHomeSystemIndex[index] = rotatedIndex;
         });
-        return playerSlotToHomeSystemIndex;
+        return deskIndexToHomeSystemIndex;
     }
 
     static getHomeSystemPosition(playerDesk, offMap = false) {
@@ -157,23 +156,28 @@ class SetupGenericHomeSystems extends AbstractSetup {
             return best;
         }
 
-        const playerSlot = playerDesk.playerSlot;
-        const index = this.getPlayerSlotToHomeSystemIndex()[playerSlot];
+        const playerIndex = playerDesk.index;
+        const deskIndexToHomeSystemIndex = this.getDeskIndexToHomeSystemIndex();
+        const homeSystemIndex = deskIndexToHomeSystemIndex[playerIndex];
 
         const playerCount = world.TI4.config.playerCount;
         const hexDataArray = HOME_SYSTEM_POSITIONS[playerCount];
-        const hexData = hexDataArray[index];
+        const hexData = hexDataArray[homeSystemIndex];
 
         // Saw an error report where hexData was undefined in a stack trace
         // coming from PlayerDesk.changeColor.  Have not been able to
         // reproduce and added a unittest.  For now throw a better error.
         // Followup: index is undefined, during a change color call stack.
         // Fixing this by reworking color change to preserve the player slot.
+        // Saw another crash with missing index.  Adding some more state to log.
         if (!hexData) {
             const report = {
-                playerSlot,
+                offMap,
+                playerIndex,
                 playerCount,
-                index,
+                homeSystemIndex,
+                deskIndexToHomeSystemIndex,
+                hexDataArray,
             };
             throw new Error(`missing hexData: ${JSON.stringify(report)}`);
         }
@@ -235,4 +239,4 @@ class SetupGenericHomeSystems extends AbstractSetup {
     }
 }
 
-module.exports = { SetupGenericHomeSystems };
+module.exports = { SetupGenericHomeSystems, HOME_SYSTEM_POSITIONS };
