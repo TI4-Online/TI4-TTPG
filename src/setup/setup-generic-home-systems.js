@@ -55,7 +55,7 @@ const HOME_SYSTEM_POSITIONS = {
     ],
 };
 
-const SKINNY_OFF_MAP = ["<-1,5,-4>", "<4,-5,1>", "<1,-5,4>"];
+const SKINNY_OFF_MAP = ["<-1,5,-4>", "<4,-5,1>", "<-4,5,-1>"];
 
 class SetupGenericHomeSystems extends AbstractSetup {
     static addLabel(systemTileObj, labelText) {

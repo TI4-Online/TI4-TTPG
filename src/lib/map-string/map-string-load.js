@@ -114,7 +114,9 @@ class MapStringLoad {
 
         // Add Mallice
         if (world.TI4.config.pok && !skipMallice) {
-            placeTile({ tile: 82 }, "<-4,5,-1>");
+            // lower right: "<-4,5,-1>"
+            // lower left: "<1,-5,4>"
+            placeTile({ tile: 82 }, "<1,-5,4>");
         }
         return true;
     }
