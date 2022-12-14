@@ -1,4 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { ColorUtil } = require("../lib/color/color-util");
+const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
 const {
     Button,
     GameObject,
@@ -9,10 +12,10 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
-const { ColorUtil } = require("../lib/color/color-util");
-const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
+const { Broadcast } = require("../lib/broadcast");
 
-const SECONDS_KEY = "seconds";
+const KEY_VALUE = "value";
+const KEY_ACTIVE = "active";
 
 class Timer {
     constructor(gameObject) {
@@ -20,10 +23,19 @@ class Timer {
 
         this._obj = gameObject;
         this._periodicHandler = undefined;
+
+        // Anchor timestamp is when the timer was last started, and the value
+        // at that time (compute new value from anchor to avoid timer drift).
+        this._anchorTimestamp = undefined;
+        this._anchorValue = undefined;
+
+        // Value is what is currently being shown.
         this._value = Number.parseInt(
-            ObjectSavedData.get(this._obj, SECONDS_KEY, "0")
-        );
-        this._lastSaveValue = this._value;
+            ObjectSavedData.get(this._obj, KEY_VALUE, "0")
+        ); // value when last started
+
+        // If set, count down from this many seconds.
+        this._countdownFromSeconds = undefined;
 
         const scale = 2;
         const z = gameObject.getExtent().z + 0.01;
@@ -49,7 +61,28 @@ class Timer {
         globalEvents.TI4.onGameSetup.add(() => {
             this._startTimer();
         });
-        this._update(0);
+
+        const isActive = ObjectSavedData.get(this._obj, KEY_ACTIVE, false);
+        if (isActive) {
+            this._startTimer();
+        }
+
+        this._update();
+    }
+
+    startCountdown(seconds) {
+        assert(typeof seconds === "number");
+        assert(seconds > 0);
+
+        this._stopTimer();
+
+        Broadcast.chatAll(locale("timer.startCountdown"));
+
+        this._value = 0;
+        this._countdownFromSeconds = seconds;
+
+        this._startTimer();
+        this._update();
     }
 
     _toggleTimer() {
@@ -67,9 +100,15 @@ class Timer {
             clearInterval(this._periodicHandler);
             this._periodicHandler = undefined;
         }
+
+        this._anchorTimestamp = Date.now() / 1000;
+        this._anchorValue = this._value;
+
         this._periodicHandler = setInterval(() => {
-            this._update(1);
+            this._update();
         }, 1000);
+
+        ObjectSavedData.set(this._obj, KEY_ACTIVE, true);
     }
 
     _stopTimer() {
@@ -79,19 +118,47 @@ class Timer {
             clearInterval(this._periodicHandler);
             this._periodicHandler = undefined;
         }
+
+        this._anchorTimestamp = undefined;
+        this._anchorValue = undefined;
+
+        ObjectSavedData.set(this._obj, KEY_ACTIVE, false);
     }
 
-    _update(incrementBySeconds) {
-        assert(typeof incrementBySeconds === "number");
-        this._value += incrementBySeconds;
+    _update() {
+        // Update value?
+        if (this._periodicHandler) {
+            assert(typeof this._anchorTimestamp === "number");
+            assert(typeof this._anchorValue === "number");
 
-        if (this._value > this._lastSaveValue + 10) {
-            ObjectSavedData.set(this._obj, SECONDS_KEY, String(this._value));
+            const oldValue = this._value;
+            const now = Date.now() / 1000;
+            const delta = now - this._anchorTimestamp;
+            const newValue = this._anchorValue + delta;
+
+            this._value = newValue;
+
+            ObjectSavedData.set(this._obj, KEY_VALUE, String(this._value));
+
+            // Time ran out?
+            if (
+                this._countdownFromSeconds &&
+                oldValue <= this._countdownFromSeconds &&
+                newValue >= this._countdownFromSeconds
+            ) {
+                this._countdownExpired();
+            }
         }
 
-        let hours = Math.floor(this._value / 3600);
-        let minutes = Math.floor((this._value % 3600) / 60);
-        let seconds = Math.floor(this._value % 60);
+        let displayValue = this._value;
+        if (this._countdownFromSeconds) {
+            displayValue = this._countdownFromSeconds - this._value;
+            displayValue = Math.abs(displayValue); // start counting up
+        }
+
+        let hours = Math.floor(displayValue / 3600);
+        let minutes = Math.floor((displayValue % 3600) / 60);
+        let seconds = Math.floor(displayValue % 60);
 
         hours = String(hours).padStart(2, "0");
         minutes = String(minutes).padStart(2, "0");
@@ -100,28 +167,23 @@ class Timer {
         const text = `${hours}:${minutes}:${seconds}`;
         this._timerWidget.setText(text);
     }
-}
 
-let _createOnlyOnceCalled = false;
-const createOnlyOnce = (obj) => {
-    assert(obj instanceof GameObject);
-    if (_createOnlyOnceCalled) {
-        return;
+    _countdownExpired() {
+        console.log("Timer._countdownExpired");
+
+        Broadcast.chatAll(locale("timer.countdownExpired"));
+
+        const sound = world.importSound("bing_bong.wav", refPackageId);
+        if (!sound) {
+            console.log("no sound?");
+            return;
+        }
+        const startTime = 0;
+        const volume = 0.75; // [0:2] range
+        const loop = false;
+        sound.play(startTime, volume, loop);
     }
-    _createOnlyOnceCalled = true;
-    new Timer(obj);
-};
-
-refObject.onCreated.add((obj) => {
-    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
-    // AND PROBABLY CAUSES OTHER PROBLEMS.
-    process.nextTick(() => {
-        createOnlyOnce(obj);
-    });
-});
-
-if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        createOnlyOnce(refObject);
-    });
 }
+
+const timer = new Timer(refObject);
+refObject.__timer = timer;
