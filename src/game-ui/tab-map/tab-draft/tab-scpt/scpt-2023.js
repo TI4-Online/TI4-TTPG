@@ -102,6 +102,7 @@ class SCPT2023 {
             TURN_ORDER_TYPE.SNAKE
         );
 
+        this._eraseFactionPoolLines();
         this._miltyDraft.createPlayerUIs();
     }
 

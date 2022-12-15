@@ -441,8 +441,8 @@ class DealDiscard {
             // No deck, move card.
             //console.log("discard: moving to location");
             obj.setPosition(pos, 0);
-            obj.setRotaton(rot, 0);
-            obj.snapDown();
+            obj.setRotation(rot, 0);
+            obj.snapToGround();
             return true;
         }
 

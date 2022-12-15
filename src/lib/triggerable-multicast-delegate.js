@@ -67,7 +67,9 @@ class TriggerableMulticastDelegate {
                 if (this._exceptionHandler) {
                     this._exceptionHandler(exception);
                 } else {
-                    console.warn(exception.stack);
+                    console.log(
+                        `TriggerableMulticastDelegate.trigger error: ${exception.stack}`
+                    );
                 }
             }
         }
