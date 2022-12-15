@@ -38,8 +38,6 @@ class ScoreboardObj {
             let pos = Scoreboard.getScoreLocalPos(this._obj, i);
             let rot = new Rotator(0, 90, 0);
 
-            world.showPing(this._obj.localPositionToWorld(pos), [1, 0, 0]);
-
             if (gamePoints < 10) {
                 pos.z = this._obj.getSize().z + 0.01;
             } else {

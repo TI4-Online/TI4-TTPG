@@ -18,6 +18,7 @@ const {
 const { fetch, globalEvents, world } = require("../../wrapper/api");
 
 const UPDATORS = [
+    require("./updator-active-system"),
     require("./updator-config"),
     require("./updator-hex-summary"),
     require("./updator-laws"),
@@ -280,6 +281,7 @@ class GameData {
         if (round > prevRound) {
             // Make a copy, strip out and/or condense some values.
             const copy = JSON.parse(JSON.stringify(data));
+            delete copy.activeSystem;
             delete copy.config;
             delete copy.isFranken;
             delete copy.isPoK;

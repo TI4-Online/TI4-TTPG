@@ -15,7 +15,7 @@ module.exports = (data) => {
         const playerData = data.players[playerDesk.index];
         if (playerData && faction) {
             playerData.factionName = faction.nameFull;
-            playerData.factionShort = faction.nameAbbr;
+            playerData.factionShort = faction.nameAbbr.replace("'", "");
         }
     });
 };

@@ -969,5 +969,8 @@
     "strategy_card.automator.trade.get_tgs_and_cs": "Get tradegoods, commodities",
     "strategy_card.automator.imperial.draw_secret_objective": "Draw secret objective",
 
+    "timer.startCountdown": "Starting countdown timer",
+    "timer.countdownExpired": "Countdown timer expired!",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

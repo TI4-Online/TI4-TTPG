@@ -391,6 +391,9 @@ class EndStatusPhase {
             }
 
             const parsed = ObjectNamespace.parseCard(obj);
+            if (!parsed) {
+                continue;
+            }
 
             // refresh planets and legendary planet cards
             if (parsed.deck.includes("planet")) {

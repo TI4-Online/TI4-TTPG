@@ -1,34 +1,38 @@
 require("../global"); // setup world.TI4, etc
 const assert = require("assert");
-const { SetupGenericHomeSystems } = require("./setup-generic-home-systems");
+const {
+    SetupGenericHomeSystems,
+    HOME_SYSTEM_POSITIONS,
+} = require("./setup-generic-home-systems");
 const { world } = require("../wrapper/api");
 
-it("getPlayerSlotToHomeSystemIndex", () => {
-    for (let i = 1; i < 9; i++) {
-        world.TI4.config.setPlayerCount(i);
+it("getDeskIndexToHomeSystemIndex", () => {
+    for (let playerCount = 1; playerCount < 9; playerCount++) {
+        world.TI4.config.setPlayerCount(playerCount);
         const desks = world.TI4.getAllPlayerDesks();
-        assert.equal(i, desks.length);
-        const playerSlotToHomeSystemIndex =
-            SetupGenericHomeSystems.getPlayerSlotToHomeSystemIndex();
-        for (let j = 1; j < i; j++) {
-            const playerSlot = desks[j].playerSlot;
-            assert(typeof playerSlot === "number");
-            const v = playerSlotToHomeSystemIndex[playerSlot];
+        assert.equal(playerCount, desks.length);
+        const deskIndexToHomeSystemIndex =
+            SetupGenericHomeSystems.getDeskIndexToHomeSystemIndex();
+        for (let playerIndex = 0; playerIndex < playerCount; playerIndex++) {
+            const v = deskIndexToHomeSystemIndex[playerIndex];
             assert(typeof v === "number");
             assert(v >= 0);
-            assert(v <= i);
+            assert(v <= playerCount);
+            const hexDataArray = HOME_SYSTEM_POSITIONS[playerCount];
+            const hexData = hexDataArray[playerIndex];
+            assert(hexData);
         }
     }
     world.TI4.config.setPlayerCount(6);
 });
 
 it("getHomeSystemPosition", () => {
-    for (let i = 1; i < 9; i++) {
-        world.TI4.config.setPlayerCount(i);
+    for (let playerCount = 1; playerCount < 9; playerCount++) {
+        world.TI4.config.setPlayerCount(playerCount);
         const desks = world.TI4.getAllPlayerDesks();
-        assert.equal(i, desks.length);
-        for (let j = 1; j < i; j++) {
-            const playerDesk = desks[j];
+        assert.equal(playerCount, desks.length);
+        for (let playerIndex = 0; playerIndex < playerCount; playerIndex++) {
+            const playerDesk = desks[playerIndex];
             assert(playerDesk);
             const pos =
                 SetupGenericHomeSystems.getHomeSystemPosition(playerDesk);

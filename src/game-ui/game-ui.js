@@ -17,6 +17,7 @@ const { SCPT2022 } = require("./tab-map/tab-draft/tab-scpt/scpt-2022");
 const {
     SCPT2022Invitational,
 } = require("./tab-map/tab-draft/tab-scpt/scpt-2022-invitational");
+const { SCPT2023 } = require("./tab-map/tab-draft/tab-scpt/scpt-2023");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
 const { TabDisplay } = require("./tab-map/tab-display/tab-display");
@@ -220,7 +221,7 @@ class GameUI {
         draftFolder.addChild(scptFolder);
 
         const scpt2022 = new NavEntry()
-            .setName("2022")
+            .setName("Patreon 4 (2022)")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new SCPT2022().getUI();
             });
@@ -231,6 +232,12 @@ class GameUI {
                 return new SCPT2022Invitational().getUI();
             });
         scptFolder.addChild(scpt2022Invitatonal);
+        const scpt2023 = new NavEntry()
+            .setName("Patreon 5 (2023)")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new SCPT2023().getUI();
+            });
+        scptFolder.addChild(scpt2023);
 
         const bagDraft = new NavEntry()
             .setName(locale("nav.map.draft.bag"))

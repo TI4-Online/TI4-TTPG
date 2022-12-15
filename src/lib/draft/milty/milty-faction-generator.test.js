@@ -47,6 +47,26 @@ it("keleres", () => {
 //     console.log(report.join("\n"));
 // });
 
+it("getOnTableFactionCards", () => {
+    world.__clear();
+    const nsids = [
+        "card.faction_reference:base/jolnar",
+        "card.faction_token:base/mentak",
+        "card.faction_reference:codex.vigil/naalu.omega",
+        "card.faction_reference:codex.vigil/naalu.omega", // dup
+    ];
+    for (const nsid of nsids) {
+        const position = new MockVector(0, 0, world.getTableHeight());
+        const card = MockCard.__create(nsid, position);
+        world.__addObject(card);
+    }
+
+    const cards = MiltyFactionGenerator.getOnTableFactionCards();
+    world.__clear();
+
+    assert.equal(cards.length, 4); // includes duplicate!
+});
+
 it("getOnTableFactionCardNsidNames", () => {
     world.__clear();
     const nsids = [
