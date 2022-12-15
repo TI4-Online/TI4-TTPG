@@ -8,10 +8,7 @@ const {
     SCPT_DRAFTS_2023,
 } = require("../../../../lib/draft/scpt/scpt-draft-2023.data");
 const CONFIG = require("../../../game-ui-config");
-const {
-    HorizontalAlignment,
-    TextJustification,
-} = require("../../../../wrapper/api");
+const { TextJustification } = require("../../../../wrapper/api");
 
 const STEPS = [
     {
