@@ -21,7 +21,7 @@ class MiltyFactionGenerator {
         return value;
     }
 
-    static getOnTableFactionCardNsidNames() {
+    static getOnTableFactionCards() {
         const result = [];
 
         const checkDiscardPile = true;
@@ -37,6 +37,17 @@ class MiltyFactionGenerator {
             ) {
                 continue;
             }
+            result.push(obj);
+        }
+        return result;
+    }
+
+    static getOnTableFactionCardNsidNames() {
+        const result = [];
+
+        const cards = MiltyFactionGenerator.getOnTableFactionCards();
+        for (const obj of cards) {
+            const nsid = ObjectNamespace.getNsid(obj);
             const parsed = ObjectNamespace.parseNsid(nsid);
             const nsidName = parsed.name.split(".")[0];
             result.push(nsidName);
