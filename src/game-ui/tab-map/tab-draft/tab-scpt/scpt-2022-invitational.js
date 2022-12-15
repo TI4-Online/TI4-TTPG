@@ -69,7 +69,7 @@ class SCPT2022Invitational {
         });
         if (factionNsidNames.length < world.TI4.config.playerCount) {
             Broadcast.broadcastAll("Not enough face-up factions!");
-            //
+            this._miltyDraft = undefined;
             return;
         }
 
