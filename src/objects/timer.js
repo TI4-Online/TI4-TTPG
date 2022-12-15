@@ -15,6 +15,7 @@ const {
 const { Broadcast } = require("../lib/broadcast");
 
 const KEY_VALUE = "value";
+const KEY_COUNTDOWN = "countdown";
 const KEY_ACTIVE = "active";
 
 class Timer {
@@ -35,7 +36,9 @@ class Timer {
         ); // value when last started
 
         // If set, count down from this many seconds.
-        this._countdownFromSeconds = undefined;
+        this._countdownFromSeconds = Number.parseInt(
+            ObjectSavedData.get(this._obj, KEY_COUNTDOWN, "-1")
+        );
 
         const scale = 2;
         const z = gameObject.getExtent().z + 0.01;
@@ -80,6 +83,11 @@ class Timer {
 
         this._value = 0;
         this._countdownFromSeconds = seconds;
+        ObjectSavedData.set(
+            this._obj,
+            KEY_COUNTDOWN,
+            String(this._countdownFromSeconds)
+        );
 
         this._startTimer();
         this._update();
@@ -142,7 +150,7 @@ class Timer {
 
             // Time ran out?
             if (
-                this._countdownFromSeconds &&
+                this._countdownFromSeconds > 0 &&
                 oldValue <= this._countdownFromSeconds &&
                 newValue >= this._countdownFromSeconds
             ) {
@@ -151,7 +159,7 @@ class Timer {
         }
 
         let displayValue = this._value;
-        if (this._countdownFromSeconds) {
+        if (this._countdownFromSeconds > 0) {
             displayValue = this._countdownFromSeconds - this._value;
             displayValue = Math.abs(displayValue); // start counting up
         }
