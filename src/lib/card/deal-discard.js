@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const { Card, Rotator, world } = require("../../wrapper/api");
+const { TableLayout } = require("../../table/table-layout");
 
 const DECKS = [
     {
@@ -367,37 +368,82 @@ class DealDiscard {
             nsid.startsWith("card.faction_reference") ||
             nsid.startsWith("card.faction_token")
         ) {
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            const type = parsed.type;
-            for (const candidate of world.getAllObjects()) {
-                if (candidate.getContainer()) {
-                    continue;
-                }
-                if (!(candidate instanceof Card)) {
-                    continue;
-                }
-                if (candidate.getStackSize() <= 1) {
-                    continue; // look for decks, not cards
-                }
-                const nsids = ObjectNamespace.getDeckNsids(candidate);
-                let found = true;
-                for (const candidateNsid of nsids) {
-                    if (!candidateNsid.startsWith(type)) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    // All cards in deck are of this type.  Hopefully it is the right one!
+            // const parsed = ObjectNamespace.parseNsid(nsid);
+            // const type = parsed.type;
+            // for (const candidate of world.getAllObjects()) {
+            //     if (candidate.getContainer()) {
+            //         continue;
+            //     }
+            //     if (!(candidate instanceof Card)) {
+            //         continue;
+            //     }
+            //     if (candidate.getStackSize() <= 1) {
+            //         continue; // look for decks, not cards
+            //     }
+            //     const nsids = ObjectNamespace.getDeckNsids(candidate);
+            //     let found = true;
+            //     for (const candidateNsid of nsids) {
+            //         if (!candidateNsid.startsWith(type)) {
+            //             found = false;
+            //             break;
+            //         }
+            //     }
+            //     if (found) {
+            //         // All cards in deck are of this type.  Hopefully it is the right one!
+            //         obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            //         const toFront = true;
+            //         const offset = 0;
+            //         const animate = true;
+            //         const flipped = false;
+            //         candidate.addCards(obj, toFront, offset, animate, flipped);
+            //         return true;
+            //     }
+
+            // Move to a known location (would be better to just make a mat for them).
+            let pos;
+            if (nsid.startsWith("card.faction_reference")) {
+                pos = { x: -26, y: 30, z: 5 };
+            } else if (nsid.startsWith("card.faction_token")) {
+                pos = { x: -33, y: 30, z: 5 };
+            }
+            const yaw = 0;
+            let rot = new Rotator(0, yaw, 0);
+
+            const anchor = TableLayout.anchor.score;
+            pos = TableLayout.anchorPositionToWorld(anchor, pos);
+            rot = TableLayout.anchorRotationToWorld(anchor, rot);
+            pos.z = world.getTableHeight() + 10;
+
+            // Is there already a card there?
+            const traceHits = world.lineTrace(
+                [pos.x, pos.y, world.getTableHeight() + 10],
+                [pos.x, pos.y, world.getTableHeight() - 10]
+            );
+            for (const traceHit of traceHits) {
+                if (traceHit.object instanceof Card) {
+                    //console.log("discard: adding to deck");
                     obj.setTags(["DELETED_ITEMS_IGNORE"]);
                     const toFront = true;
                     const offset = 0;
-                    const animate = true;
+                    const animate = false;
                     const flipped = false;
-                    candidate.addCards(obj, toFront, offset, animate, flipped);
+                    traceHit.object.addCards(
+                        obj,
+                        toFront,
+                        offset,
+                        animate,
+                        flipped
+                    );
                     return true;
                 }
             }
+
+            // No deck, move card.
+            //console.log("discard: moving to location");
+            obj.setPosition(pos, 0);
+            obj.setRotaton(rot, 0);
+            obj.snapDown();
+            return true;
         }
 
         if (!DealDiscard.isKnownDeck(nsid)) {
