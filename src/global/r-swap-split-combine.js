@@ -310,7 +310,8 @@ function onR(obj, player) {
     }
 
     // Saw a crash from an object without nsid.  Double check before using.
-    if (!METADATA_TO_INFO[obj.getTemplateMetadata()]) {
+    const nsid = obj.getTemplateMetadata();
+    if (nsid.length === 0 || !METADATA_TO_INFO[nsid]) {
         return;
     }
 
@@ -325,6 +326,14 @@ function onR(obj, player) {
         _playerSlotToObjs[playerSlot] = objs;
         needsProcessing = true;
     }
+
+    // Be paranoid, verify object not already pending.
+    for (const peer of objs) {
+        if (obj.getId() === peer.getId()) {
+            return; // already in set!
+        }
+    }
+
     objs.push(obj);
 
     if (needsProcessing) {
