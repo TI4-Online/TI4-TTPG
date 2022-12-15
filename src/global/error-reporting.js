@@ -35,11 +35,12 @@ class ErrorReporting {
         err = errArray.join("\n");
 
         // Log the error?  Normal error handling does that in red.
-        //const delim = "----------";
-        //console.log(`ErrorReporting.error:\n${delim}\n${err}\n${delim}`);
+        const delim = "----------";
+        console.log(`ErrorReporting.error:\n${delim}\n${err}\n${delim}`);
 
         // Report to external store?
         if (!world.TI4.config.reportErrors) {
+            // Careful, if inside a try/catch the error might be lost.  (e.g. log above)
             return;
         }
 
