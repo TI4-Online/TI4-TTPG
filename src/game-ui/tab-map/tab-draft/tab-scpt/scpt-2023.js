@@ -89,8 +89,13 @@ class SCPT2023 {
             return;
         }
 
-        const playerDesks = world.TI4.getAllPlayerDesks();
+        // Discard faction cards.
+        const cards = MiltyFactionGenerator.getOnTableFactionCards();
+        const container = undefined;
         const player = undefined;
+        globalEvents.TI4.onContainerRejected.trigger(container, cards, player);
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
         world.TI4.turns.randomizeTurnOrder(
             playerDesks,
             player,
@@ -98,10 +103,6 @@ class SCPT2023 {
         );
 
         this._miltyDraft.createPlayerUIs();
-
-        if (scptDraftData.clock) {
-            this._startCountdown(scptDraftData.clock);
-        }
     }
 
     _cancel() {
@@ -244,6 +245,7 @@ class SCPT2023 {
         line.tag = LINE_TAG;
         world.addDrawingLine(line);
 
+        // Set random draft turn order.
         const playerDesks = world.TI4.getAllPlayerDesks();
         const player = undefined;
         world.TI4.turns.randomizeTurnOrder(
@@ -251,6 +253,9 @@ class SCPT2023 {
             player,
             TURN_ORDER_TYPE.FORWARD
         );
+
+        // Start timer.
+        this._startCountdown(28800);
     }
 
     _detectFactionPools() {
