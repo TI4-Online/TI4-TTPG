@@ -249,7 +249,7 @@ class SCPT2023 {
         world.TI4.turns.randomizeTurnOrder(
             playerDesks,
             player,
-            TURN_ORDER_TYPE.SNAKE
+            TURN_ORDER_TYPE.FORWARD
         );
     }
 
