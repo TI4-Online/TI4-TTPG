@@ -20,25 +20,25 @@ const STEPS = [
         onClicked: "createFactionPools",
     },
     {
-        label: "2. Draw one secret faction included in all pools.",
+        label: "2. Draw one shared face-down faction to the center, keep it face-down.",
     },
     {
-        label: "3. Draw one faction into each pool.",
+        label: "3. Draw one face-up faction into each pool.",
     },
     {
         label: "4. Deal two factions to each player.",
     },
     {
-        label: "5. In draft order each player places one of their two factions into a pool, then draws ONE new faction into their hand.",
+        label: "5. In draft order (not snake) each player places one of their two factions face-up into a pool, then draws one new faction into their hand.",
     },
     {
-        label: "6. Continue in draft order until all factions have been placed (do not draw a replacement after the first).",
+        label: "6. Continue in draft order (not snake) until all factions have been placed.  Do not draw more replacement factions.",
     },
     {
-        label: "7. After building the faction pools, reveal the secret faction.",
+        label: "7. After building the faction pools, reveal the center face-down faction.",
     },
     {
-        label: "8. Choose a random faction pool, discard the others.",
+        label: "8. Choose a random faction pool keeping the center faction, discard the other pools.",
         onClicked: "chooseFactionPool",
     },
     {
