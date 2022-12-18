@@ -224,10 +224,8 @@ class WhisperPair {
             nextBucketIndex = Math.max(nextBucketIndex, index);
             bucket.forEach((forward) => {
                 const thisIndex = nextBucketIndex++;
-                const values = buckets[nextBucketIndex]
-                    ? forwardValues
-                    : backwardValues;
-                const value = buckets[nextBucketIndex] ? ">" : "<";
+                const values = forward ? forwardValues : backwardValues;
+                const value = forward ? ">" : "<";
                 values[thisIndex] = value;
             });
         });
