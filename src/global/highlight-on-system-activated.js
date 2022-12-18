@@ -1,12 +1,11 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { WidgetFactory } = require("../lib/ui/widget-factory");
 const {
     Color,
     GameObject,
-    ImageWidget,
     Rotator,
-    UIElement,
     Vector,
     globalEvents,
     refPackageId,
@@ -22,9 +21,6 @@ const DISPLAY_SECONDS_APPROX = 15; // 30 in TTS
 const DISPLAY_SECONDS =
     Math.ceil(DISPLAY_SECONDS_APPROX / PULSE_SECONDS) * PULSE_SECONDS; // complete last pulse
 
-const _imageWidget = new ImageWidget(); // recycling avoids "new UI slowdown" issue (awaiting TTPG fix Nov-2022)
-let _systemHighlight = undefined;
-
 class SystemHighlight {
     constructor(obj, color, infinite) {
         assert(obj instanceof GameObject);
@@ -33,12 +29,11 @@ class SystemHighlight {
         this._mintTimeMsecs = Date.now();
         this._obj = obj;
         this._color = new Color(color.r, color.g, color.b, 1);
-        this._ui = new UIElement();
+        this._ui = undefined;
         this._updateHandler = () => {
             const age = Date.now() - this._mintTimeMsecs;
             if (age / 1000 > DISPLAY_SECONDS && !infinite) {
                 this.detachUI();
-                _systemHighlight = false;
                 return;
             }
             this.updateImg();
@@ -49,9 +44,10 @@ class SystemHighlight {
     }
 
     attachUI() {
+        this._ui = WidgetFactory.uiElement();
         this._ui.position = new Vector(0, 0, 0.13);
         this._ui.rotation = new Rotator(0, 0, 0);
-        this._ui.widget = _imageWidget
+        this._ui.widget = WidgetFactory.imageWidget()
             .setImageSize(OVERLAY_PNG_SIZE * OVERLAY_SCALE, 0)
             .setImage(OVERLAY_PNG, refPackageId);
         this._ui.useTransparency = true;
@@ -65,6 +61,8 @@ class SystemHighlight {
     detachUI() {
         globalEvents.onTick.remove(this._updateHandler);
         this._obj.removeUIElement(this._ui);
+        WidgetFactory.release(this._ui);
+        this._ui = undefined;
     }
 
     updateImg() {
@@ -78,15 +76,7 @@ class SystemHighlight {
 }
 
 function applyHighlight(obj, color) {
-    // Remove any old UI.
-    if (_systemHighlight) {
-        _systemHighlight.detachUI();
-        _systemHighlight = undefined;
-    }
-
-    assert(!_imageWidget.getOwningObject());
-
-    _systemHighlight = new SystemHighlight(obj, color);
+    new SystemHighlight(obj, color);
 }
 
 globalEvents.TI4.onSystemActivated.add((obj, player) => {
