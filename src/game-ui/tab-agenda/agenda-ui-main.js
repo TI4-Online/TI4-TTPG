@@ -260,6 +260,9 @@ class AgendaUiMain {
         assert(typeof onClickHandlers === "object");
         assert(typeof onClickHandlers.resetAvailableVotes === "function");
 
+        // Release current UI so widgets can be reused (available votes text).
+        WidgetFactory.setChild(this._widget, undefined);
+
         const agenda = world.TI4.agenda;
         let fontSize = CONFIG.fontSize;
         const fitOutcomes = 5;
@@ -389,17 +392,15 @@ class AgendaUiMain {
 
         assert(typeof onClickHandlers.resetCards === "function");
 
-        const label = WidgetFactory.text()
-            .setJustification(TextJustification.Center)
-            .setFontSize(CONFIG.fontSize)
-            .setAutoWrap(true)
-            .setText(locale("ui.agenda.clippy.outcome"));
-
         const outcome = WidgetFactory.text()
             .setJustification(TextJustification.Center)
             .setFontSize(CONFIG.fontSize)
             .setAutoWrap(true)
             .setText(outcomeSummary);
+
+        const outcomeBox = WidgetFactory.layoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(outcome);
 
         const resetCardsButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
@@ -411,9 +412,8 @@ class AgendaUiMain {
         const panel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .setVerticalAlignment(VerticalAlignment.Center)
-            .addChild(label)
-            .addChild(outcome)
-            .addChild(resetCardsButton);
+            .addChild(outcomeBox, 1)
+            .addChild(resetCardsButton, 0);
 
         WidgetFactory.setChild(this._widget, panel);
     }
