@@ -54,6 +54,18 @@ class SCPT2023 {
         assert(typeof scptDraftData === "object");
 
         console.log(`SCPT2023._start: ${scptDraftData.name}`);
+
+        // Make sure the correct number of factions exist.
+        const factionNsidNames =
+            MiltyFactionGenerator.getOnTableFactionCardNsidNames();
+        const numFactions = factionNsidNames.length;
+        if (numFactions !== 7) {
+            Broadcast.chatAll(
+                `Error: expected 7 factions but only found ${numFactions}`
+            );
+            return;
+        }
+
         if (this._miltyDraft) {
             console.log("SCPT2023._start: in progress, aborting");
             return;
@@ -78,8 +90,6 @@ class SCPT2023 {
         this._miltyDraft.setSpeakerIndex(speakerIndex);
 
         // Factions.
-        const factionNsidNames =
-            MiltyFactionGenerator.getOnTableFactionCardNsidNames();
         factionNsidNames.forEach((name) => {
             this._miltyDraft.addFaction(name);
         });

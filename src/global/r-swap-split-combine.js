@@ -93,11 +93,6 @@ const REPLACE_RULES = [
     },
 ];
 
-function isInfiniteContainer(obj) {
-    const infiniteTypes = [1, 3];
-    return obj instanceof Container && infiniteTypes.includes(obj.getType());
-}
-
 /**
  * Get the bag to produce or consume this item type.
  *
@@ -105,9 +100,12 @@ function isInfiniteContainer(obj) {
  * @param {number} playerSlot
  * @returns
  */
-function getBag(nsid, playerSlot) {
+function getUnitBag(nsid, playerSlot) {
     assert(typeof nsid === "string");
     assert(typeof playerSlot === "number");
+
+    assert(nsid.startsWith("unit"));
+    const wantNsid = "bag." + nsid;
 
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
@@ -117,32 +115,21 @@ function getBag(nsid, playerSlot) {
             continue; // ignore non-container
         }
 
-        if (isInfiniteContainer(obj)) {
-            // Infinite bag.  Do not assume the bag follows nsid conventions
-            // as infinite bags may share a template for different uses.
-            // Instead, compare with the nsid of the first entry in the bag.
-            const firstItem = obj.getItems()[0];
-            const contentsNsid = firstItem && firstItem.getTemplateMetadata();
-            if (nsid === contentsNsid) {
-                return obj;
-            }
-        } else {
-            // Normal container.  Unit containers follow "bag.unit:base/fighter",
-            // but *all* unit containers for that unit type do.  Also check the
-            // owning player slot id.
-            const wantNsid = "bag." + nsid;
-            const bagNsid = obj.getTemplateMetadata();
-            if (wantNsid !== bagNsid) {
-                continue; // container is for different type
-            }
-            const bagSlot = obj.getOwningPlayerSlot();
-            if (bagSlot >= 0 && bagSlot !== playerSlot) {
-                continue; // container is right type, but wrong player
-            }
-            return obj;
+        // Normal container.  Unit containers follow "bag.unit:base/fighter",
+        // but *all* unit containers for that unit type do.  Also check the
+        // owning player slot id.
+        const bagNsid = obj.getTemplateMetadata();
+        if (wantNsid !== bagNsid) {
+            continue; // container is for different type
         }
+        const bagSlot = obj.getOwningPlayerSlot();
+        if (bagSlot >= 0 && bagSlot !== playerSlot) {
+            continue; // container is right type, but wrong player
+        }
+        return obj;
     }
-    throw new Error(`getBag(${nsid}, ${playerSlot}) failed`);
+
+    throw new Error(`getUnitBag(${nsid}, ${playerSlot}) failed`);
 }
 
 /**
@@ -219,7 +206,7 @@ function doSwapSplitCombine(objs, player) {
     // All objects owned by a player should have owning player slot set.
     objs = objs.filter((obj) => {
         const objSlot = obj.getOwningPlayerSlot();
-        return objSlot == -1 || objSlot == playerSlot;
+        return objSlot === -1 || objSlot === playerSlot;
     });
 
     // Prefer swapping tokens to units (need one plastic!).  Move to front.
@@ -248,29 +235,27 @@ function doSwapSplitCombine(objs, player) {
     }
 
     // Make sure the produce can happen (empty unit bag?).
-    const produceBag = getBag(match.produce.nsid, playerSlot);
-    if (
-        !isInfiniteContainer(produceBag) &&
-        produceBag.getItems().length < match.produce.count
-    ) {
-        const message = locale("ui.error.empty_supply", {
-            unit_name: match.rule.produce.name,
-        });
-        player.showMessage(message);
-        player.sendChatMessage(message);
-        return; // not enough supply to produce
+    let produceBag = undefined;
+    if (match.produce.nsid.startsWith("unit")) {
+        produceBag = getUnitBag(match.produce.nsid, playerSlot);
+        if (produceBag.getItems().length < match.produce.count) {
+            const message = locale("ui.error.empty_supply", {
+                unit_name: match.rule.produce.name,
+            });
+            player.showMessage(message);
+            player.sendChatMessage(message);
+            return; // not enough supply to produce
+        }
     }
 
     // Fullfill rule.
     for (const obj of match.consume) {
         const consumeNsid = obj.getTemplateMetadata();
-        const consumeBag = getBag(consumeNsid, playerSlot);
-        if (isInfiniteContainer(consumeBag)) {
-            // See global/patch-infinite-container.js
-            // Instead of returning to infinite bag, destroy (no need to find closest).
-            obj.destroy();
-        } else {
+        if (consumeNsid.startsWith("unit")) {
+            const consumeBag = getUnitBag(consumeNsid, playerSlot);
             consumeBag.addObjects([obj], 0, true);
+        } else {
+            obj.destroy();
         }
     }
     let pos = player.getCursorPosition();
@@ -279,13 +264,22 @@ function doSwapSplitCombine(objs, player) {
         // Remove from container before moving to final location.
         // Bug report said it fell through the table after take.
         let obj;
-        const above = produceBag.getPosition().add([0, 0, 10]);
-        if (isInfiniteContainer(produceBag)) {
-            // See global/patch-infinite-container.js
-            // Instead of taking from infinite bag, spawn (no need to find closest).
-            obj = Spawn.spawn(match.produce.nsid, above, new Rotator(0, 0, 0));
-        } else {
+        const above = pos.add([0, 0, 10]);
+        if (produceBag) {
             obj = produceBag.takeAt(0, above, false);
+        } else {
+            obj = Spawn.spawn(match.produce.nsid, above, new Rotator(0, 0, 0));
+        }
+        if (!obj) {
+            // "can't happen" but got a report.
+            throw new Error(
+                "no obj: " +
+                    JSON.stringify({
+                        match: match,
+                        i,
+                        produceBag: produceBag ? true : false,
+                    })
+            );
         }
         obj.setPosition(pos);
         obj.setRotation([match.rule.faceDown ? -180 : 0, 0, 0]);
@@ -310,7 +304,8 @@ function onR(obj, player) {
     }
 
     // Saw a crash from an object without nsid.  Double check before using.
-    if (!METADATA_TO_INFO[obj.getTemplateMetadata()]) {
+    const nsid = obj.getTemplateMetadata();
+    if (nsid.length === 0 || !METADATA_TO_INFO[nsid]) {
         return;
     }
 
@@ -325,6 +320,14 @@ function onR(obj, player) {
         _playerSlotToObjs[playerSlot] = objs;
         needsProcessing = true;
     }
+
+    // Be paranoid, verify object not already pending.
+    for (const peer of objs) {
+        if (obj.getId() === peer.getId()) {
+            return; // already in set!
+        }
+    }
+
     objs.push(obj);
 
     if (needsProcessing) {

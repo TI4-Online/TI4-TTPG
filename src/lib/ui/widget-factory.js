@@ -33,6 +33,7 @@ const {
 
 const RECYCLE = true;
 const INVENTORY_CAP = 600;
+const VERIFY_DETACHED = false;
 
 const dummyUi = new UIElement();
 
@@ -78,7 +79,7 @@ class WidgetInventoryEntry {
             return;
         }
 
-        if (widget instanceof Widget) {
+        if (widget instanceof Widget && VERIFY_DETACHED) {
             try {
                 dummyUi.widget = widget;
                 world.addUI(dummyUi);
@@ -100,23 +101,7 @@ class WidgetInventoryEntry {
             return this._createOne();
         }
 
-        let widget = undefined;
-        while (this._free.length > 0) {
-            widget = this._free.pop();
-            if (widget instanceof Widget) {
-                try {
-                    dummyUi.widget = widget;
-                    world.addUI(dummyUi);
-                    world.removeUIElement(dummyUi);
-                    break; // success! use this widget
-                } catch (e) {
-                    console.log(
-                        `WidgetFactory WIDGET "${widget.constructor.name}" IN USE, trying again`
-                    );
-                    widget = undefined;
-                }
-            }
-        }
+        let widget = this._free.pop();
 
         if (!widget) {
             widget = this._createOne();

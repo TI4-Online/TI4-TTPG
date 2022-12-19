@@ -1,25 +1,56 @@
 const assert = require("../../wrapper/assert-wrapper");
-const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
 const { Agenda } = require("../../lib/agenda/agenda");
 const {
     HorizontalAlignment,
+    Text,
     globalEvents,
     world,
 } = require("../../wrapper/api");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
-let _deskIndexToWidgets = {};
+// Keep private text widgets for editing.  Double index for (1) which player desk
+// has the widget, and (2) which player desk within the widget.
+const _deskIndexToDeskIndexToVoteText = {};
+let _resetAllPending = false;
+
 globalEvents.TI4.onAgendaChanged.add((agendaCard) => {
-    _deskIndexToWidgets = {}; // release for garbage collection
+    AgendaWidgetAvailableVotes.resetAll();
+});
+globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
+    AgendaWidgetAvailableVotes.resetAll();
 });
 
 class AgendaWidgetAvailableVotes {
     static resetAll() {
-        for (const widget of Object.values(_deskIndexToWidgets)) {
-            assert(widget instanceof AgendaWidgetAvailableVotes);
-            widget.reset();
+        const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
+        for (const deskIndexToVoteText of Object.values(
+            _deskIndexToDeskIndexToVoteText
+        )) {
+            for (const [deskIndexAsString, voteText] of Object.entries(
+                deskIndexToVoteText
+            )) {
+                const deskIndex = Number.parseInt(deskIndexAsString);
+                const votes = deskIndexToAvailableVotes[deskIndex];
+                voteText.setText(votes);
+            }
         }
+    }
+
+    static _getVoteText(deskIndex1, deskIndex2) {
+        assert(typeof deskIndex1 === "number");
+        assert(typeof deskIndex2 === "number");
+        let deskIndexToVoteText = _deskIndexToDeskIndexToVoteText[deskIndex1];
+        if (!deskIndexToVoteText) {
+            deskIndexToVoteText = {};
+            _deskIndexToDeskIndexToVoteText[deskIndex1] = deskIndexToVoteText;
+        }
+        let voteText = deskIndexToVoteText[deskIndex2];
+        if (!voteText) {
+            voteText = new Text();
+            deskIndexToVoteText[deskIndex2] = voteText;
+        }
+        return voteText;
     }
 
     constructor(fontSize, deskIndex) {
@@ -34,9 +65,6 @@ class AgendaWidgetAvailableVotes {
             .setHorizontalAlignment(HorizontalAlignment.Center)
             .addChild(votesPanel);
 
-        this._fontSize = fontSize;
-        this._availableVotesText = [];
-
         world.TI4.getAllPlayerDesks().forEach((desk, index) => {
             if (index > 0) {
                 const delim = WidgetFactory.text()
@@ -44,46 +72,27 @@ class AgendaWidgetAvailableVotes {
                     .setText("|");
                 votesPanel.addChild(delim);
             }
-            const text = WidgetFactory.text()
+            const text = AgendaWidgetAvailableVotes._getVoteText(
+                deskIndex,
+                index
+            )
                 .setFontSize(fontSize)
-                .setTextColor(desk.plasticColor);
+                .setTextColor(desk.plasticColor)
+                .setText("-");
             votesPanel.addChild(text);
-            this._availableVotesText.push(text);
         });
-        this.reset();
 
-        // Keep a reference for easy mass-reset.
-        _deskIndexToWidgets[deskIndex] = this;
-
-        this._verticalBox._onFreed.add(() => {
-            delete _deskIndexToWidgets[deskIndex];
-        });
+        if (!_resetAllPending) {
+            _resetAllPending = true;
+            process.nextTick(() => {
+                _resetAllPending = false;
+                AgendaWidgetAvailableVotes.resetAll();
+            });
+        }
     }
 
     getWidget() {
         return this._verticalBox;
-    }
-
-    reset() {
-        const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
-        this._availableVotesText.forEach((text, index) => {
-            const available = deskIndexToAvailableVotes[index] || 0;
-            text.setText(available);
-        });
-        return this;
-    }
-
-    addResetButton() {
-        const button = WidgetFactory.button()
-            .setFontSize(this._fontSize)
-            .setText(locale("ui.agenda.clippy.reset_available_votes"));
-        button.onClicked.add((clickedButton, player) => {
-            AgendaWidgetAvailableVotes.resetAll();
-        });
-
-        this._verticalBox.addChild(button);
-
-        return this;
     }
 }
 

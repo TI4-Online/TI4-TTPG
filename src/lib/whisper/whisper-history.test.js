@@ -114,3 +114,23 @@ it("getAllInUpdateOrder", () => {
     // Use the sort test to check that, just check both are here.
     assert.equal(whisperPairs.length, 2);
 });
+
+it("getHistoryAsText", () => {
+    const desks = world.TI4.getAllPlayerDesks();
+    const src = new MockPlayer({ slot: desks[0].playerSlot });
+    const dst = new MockPlayer({ slot: desks[1].playerSlot });
+    const pair = new WhisperPair(src, dst);
+    pair.add(src, dst, "foo");
+    pair.add(dst, src, "bar"); // new first entry
+    const buckets = pair._bucketize(2);
+    assert.deepEqual(buckets, [[true, false], []]);
+    const summary = pair.getHistoryAsText(10);
+    delete summary.colorA;
+    delete summary.colorB;
+    assert.deepEqual(summary, {
+        backwardStr: " <        ",
+        colorNameA: "blue",
+        colorNameB: "white",
+        forwardStr: ">         ",
+    });
+});
