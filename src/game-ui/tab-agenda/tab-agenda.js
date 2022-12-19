@@ -1,13 +1,13 @@
-const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Agenda } = require("../../lib/agenda/agenda");
 const { AgendaUiDesk } = require("./agenda-ui-desk");
 const { AgendaUiMain } = require("./agenda-ui-main");
 const { Broadcast } = require("../../lib/broadcast");
 const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
-const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
-const { WidgetFactory } = require("../../lib/ui/widget-factory");
-const { Widget, globalEvents, world } = require("../../wrapper/api");
+const { globalEvents, world } = require("../../wrapper/api");
+const {
+    AgendaWidgetAvailableVotes,
+} = require("./agenda-widget-available-votes");
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -15,7 +15,7 @@ function capitalizeFirstLetter(string) {
 
 class TabAgenda {
     constructor() {
-        this._layoutBox = WidgetFactory.layoutBox();
+        this._agendaUiMain = new AgendaUiMain();
 
         // If the overall state changes for main/desks destroy and recreate.
         // This causes a screen flash, so minor updates just edit UI in place.
@@ -35,7 +35,7 @@ class TabAgenda {
     }
 
     getUI() {
-        return this._layoutBox;
+        return this._agendaUiMain.getWidget();
     }
 
     update() {
@@ -43,16 +43,6 @@ class TabAgenda {
         this._updateMain();
         this._maybeReplaceDesks();
         this._updateDesks();
-    }
-
-    _setMainUI(widget) {
-        assert(widget instanceof Widget);
-        const old = this._layoutBox.getChild();
-        if (old && old !== widget) {
-            this._layoutBox.setChild(undefined);
-            WidgetFactory.release(old);
-        }
-        this._layoutBox.setChild(widget);
     }
 
     _maybeReplaceMain() {
@@ -65,111 +55,62 @@ class TabAgenda {
         }
         this._stateMain = stateMain;
 
-        const onResetPlanetCards = () => {
-            Agenda.resetPlanetCards();
+        const onClickHandlers = {
+            resetCards: (button, player) => {
+                Agenda.resetPlanetCards();
+            },
+            resetAvailableVotes: (button, player) => {
+                AgendaWidgetAvailableVotes.resetAll();
+            },
+            yesHelp: (button, player) => {
+                agenda.start();
+            },
+            noHelp: (button, player) => {
+                agenda.clear();
+            },
+            forAgainst: (button, player) => {
+                agenda.resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+            },
+            electPlayer: (button, player) => {
+                agenda.resetOutcomeNames(OUTCOME_TYPE.PLAYER);
+            },
+            electStrategyCard: (button, player) => {
+                agenda.resetOutcomeNames(OUTCOME_TYPE.STRATEGY_CARD);
+            },
+            electOther: (button, player) => {
+                agenda.resetOutcomeNames(OUTCOME_TYPE.OTHER);
+            },
         };
-        const onStart = ThrottleClickHandler.wrap((button, player) => {
-            agenda.start();
-        });
-        const onCancel = ThrottleClickHandler.wrap((button, player) => {
-            agenda.clear();
-        });
-        const outcomeButtonTextsAndOnClicks = [
-            {
-                text: locale("ui.agenda.outcome_type.for_against"),
-                onClick: ThrottleClickHandler.wrap((button, player) => {
-                    agenda.resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
-                }),
-            },
-            {
-                text: locale("ui.agenda.outcome_type.player"),
-                onClick: ThrottleClickHandler.wrap((button, player) => {
-                    agenda.resetOutcomeNames(OUTCOME_TYPE.PLAYER);
-                }),
-            },
-            {
-                text: locale("ui.agenda.outcome_type.strategy_card"),
-                onClick: ThrottleClickHandler.wrap((button, player) => {
-                    agenda.resetOutcomeNames(OUTCOME_TYPE.STRATEGY_CARD);
-                }),
-            },
-            {
-                text: locale("ui.agenda.outcome_type.other"),
-                onClick: ThrottleClickHandler.wrap((button, player) => {
-                    agenda.resetOutcomeNames(OUTCOME_TYPE.OTHER);
-                }),
-            },
-        ];
 
         // Abort if not active.
         if (!agenda.isActive()) {
-            this._setMainUI(
-                AgendaUiMain.simpleButton(
-                    locale("ui.agenda.clippy.place_agenda_to_start"),
-                    locale("ui.agenda.clippy.reset_cards"),
-                    onResetPlanetCards
-                )
-            );
+            this._agendaUiMain.setPlaceAgendaToStart(onClickHandlers);
             return;
         }
 
         let summary;
         switch (stateMain) {
             case "WAITING_FOR_START.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simpleYesNo(
-                        locale("ui.agenda.clippy.would_you_like_help"),
-                        onStart,
-                        onCancel
-                    )
-                );
+                this._agendaUiMain.setWouldYouLikeHelp(onClickHandlers);
                 break;
             case "OUTCOME_TYPE.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simpleButtonList(
-                        locale("ui.agenda.clippy.outcome_category"),
-                        outcomeButtonTextsAndOnClicks
-                    )
-                );
+                this._agendaUiMain.setChooseOutcomeType(onClickHandlers);
                 break;
             case "WHEN.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simpleWithState(
-                        locale("ui.agenda.clippy.whens")
-                    )
-                );
+                this._agendaUiMain.setActiveAgendaPhase(onClickHandlers);
                 break;
             case "AFTER.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simpleWithState(
-                        locale("ui.agenda.clippy.afters")
-                    )
-                );
+                this._agendaUiMain.setActiveAgendaPhase(onClickHandlers);
                 break;
             case "VOTE.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simpleWithState(
-                        locale("ui.agenda.clippy.voting")
-                    )
-                );
-                break;
-            case "POST.MAIN":
-                this._setMainUI(
-                    AgendaUiMain.simple(locale("ui.agenda.clippy.post"))
-                );
+                this._agendaUiMain.setActiveAgendaPhase(onClickHandlers);
                 break;
             case "FINISH.MAIN":
                 summary = locale("ui.agenda.clippy.outcome", {
                     outcome: agenda.summarizeVotes(),
                     riders: agenda.summarizePredictions(),
                 });
-                this._setMainUI(
-                    AgendaUiMain.simpleButton(
-                        summary,
-                        locale("ui.agenda.clippy.reset_cards"),
-                        onResetPlanetCards
-                    )
-                );
+                this._agendaUiMain.setOutcome(onClickHandlers, summary);
                 Broadcast.chatAll(summary);
                 break;
             default:
