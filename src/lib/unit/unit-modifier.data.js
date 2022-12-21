@@ -1489,12 +1489,16 @@ module.exports = [
         priority: "adjust",
         triggerUnitAbility: "unit.flagship.visz_el_vir",
         filter: (auxData) => {
-            return auxData.self.has("mech");
+            return auxData.self.has("mech") && auxData.self.has("flagship");
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.unit === "mech" && unitAttrs.raw.groundCombat) {
                 unitAttrs.raw.groundCombat.dice =
                     (unitAttrs.raw.groundCombat.dice || 0) + 1;
+            }
+            if (unitAttrs.raw.unit === "mech" && unitAttrs.raw.spaceCombat) {
+                unitAttrs.raw.spaceCombat.dice =
+                    (unitAttrs.raw.spaceCombat.dice || 0) + 1;
             }
         },
     },
