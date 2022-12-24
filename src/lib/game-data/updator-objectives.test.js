@@ -39,6 +39,7 @@ it("objectives (token)", () => {
 
     assert.deepEqual(data.objectives, {
         Agenda: [],
+        Other: [],
         "Public Objectives I": ["Amass Wealth"],
         "Public Objectives II": [],
         Relics: [],
@@ -71,17 +72,33 @@ it("objectives (holder)", () => {
             holder: holder,
         })
     );
+    world.__addObject(
+        new MockCard({
+            allCardDetails: [
+                new MockCardDetails({
+                    name: "Support for the Throne (Blue)",
+                    metadata:
+                        "card.promissory.blue:base/support_for_the_throne",
+                }),
+            ],
+            holder: holder,
+        })
+    );
     UPDATOR(data);
     world.__clear();
 
     assert.deepEqual(data.objectives, {
         Agenda: [],
+        Other: ["Support for the Throne (Blue)"],
         "Public Objectives I": [],
         "Public Objectives II": [],
         Relics: [],
         "Secret Objectives": ["Become a Martyr"],
     });
-    assert.deepEqual(data.players[0].objectives, ["Become a Martyr"]);
+    assert.deepEqual(data.players[0].objectives, [
+        "Become a Martyr",
+        "Support for the Throne (Blue)",
+    ]);
 });
 
 it("strip off omega", () => {
@@ -115,6 +132,7 @@ it("strip off omega", () => {
 
     assert.deepEqual(data.objectives, {
         Agenda: [],
+        Other: [],
         "Public Objectives I": [],
         "Public Objectives II": [],
         Relics: [],
