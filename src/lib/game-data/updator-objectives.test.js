@@ -84,6 +84,17 @@ it("objectives (holder)", () => {
             holder: holder,
         })
     );
+    world.__addObject(
+        new MockCard({
+            allCardDetails: [
+                new MockCardDetails({
+                    name: "Shard of the Throne (PoK)",
+                    metadata: "card.relic:pok/shard_of_the_throne",
+                }),
+            ],
+            holder: holder,
+        })
+    );
     UPDATOR(data);
     world.__clear();
 
@@ -92,11 +103,12 @@ it("objectives (holder)", () => {
         Other: ["Support for the Throne (Blue)"],
         "Public Objectives I": [],
         "Public Objectives II": [],
-        Relics: [],
+        Relics: ["Shard of the Throne"],
         "Secret Objectives": ["Become a Martyr"],
     });
     assert.deepEqual(data.players[0].objectives, [
         "Become a Martyr",
+        "Shard of the Throne",
         "Support for the Throne (Blue)",
     ]);
 });

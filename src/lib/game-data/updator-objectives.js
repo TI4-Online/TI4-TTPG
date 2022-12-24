@@ -216,7 +216,7 @@ module.exports = (data) => {
     // Strip off omega suffix.
     for (const [k, v] of Object.entries(data.objectives)) {
         data.objectives[k] = v.map((name) => {
-            return name.replace(/ Ω$/, "");
+            return name.replace(/ Ω$/, "").replace(/ \(PoK\)$/, "");
         });
     }
     for (const playerData of data.players) {
@@ -224,7 +224,8 @@ module.exports = (data) => {
             continue;
         }
         playerData.objectives = playerData.objectives.map((name) => {
-            return name.replace(/ Ω$/, "");
+            return name.replace(/ Ω$/, "").replace(/ \(PoK\)$/, "");
         });
+        playerData.objectives.sort();
     }
 };
