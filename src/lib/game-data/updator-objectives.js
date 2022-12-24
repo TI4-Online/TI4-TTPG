@@ -134,6 +134,7 @@ module.exports = (data) => {
     };
 
     // Report all objectives, even those not scored.
+    const addedNsids = new Set();
     data.objectives = {
         "Public Objectives I": objectiveCards
             .filter((obj) => {
@@ -142,6 +143,8 @@ module.exports = (data) => {
             })
             .sort(sortBySnapPoints)
             .map((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                addedNsids.add(nsid);
                 return obj.getCardDetails().name;
             }),
         "Public Objectives II": objectiveCards
@@ -151,6 +154,8 @@ module.exports = (data) => {
             })
             .sort(sortBySnapPoints)
             .map((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                addedNsids.add(nsid);
                 return obj.getCardDetails().name;
             }),
         "Secret Objectives": objectiveCards
@@ -159,6 +164,8 @@ module.exports = (data) => {
                 return nsid.startsWith("card.objective.secret");
             })
             .map((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                addedNsids.add(nsid);
                 return obj.getCardDetails().name;
             }),
         Agenda: objectiveCards
@@ -167,6 +174,8 @@ module.exports = (data) => {
                 return nsid.startsWith("card.agenda");
             })
             .map((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                addedNsids.add(nsid);
                 return obj.getCardDetails().name;
             }),
         Relics: objectiveCards
@@ -175,9 +184,23 @@ module.exports = (data) => {
                 return nsid.startsWith("card.relic");
             })
             .map((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                addedNsids.add(nsid);
                 return obj.getCardDetails().name;
             }),
     };
+
+    // Add any unclaimed to other objectives.
+    data.objectives.Other = objectiveCards
+        .filter((obj) => {
+            const nsid = ObjectNamespace.getNsid(obj);
+            return !addedNsids.has(nsid);
+        })
+        .map((obj) => {
+            const nsid = ObjectNamespace.getNsid(obj);
+            addedNsids.add(nsid);
+            return obj.getCardDetails().name;
+        });
 
     // Add per-player objectives.
     data.players.forEach((playerData, index) => {
@@ -193,7 +216,7 @@ module.exports = (data) => {
     // Strip off omega suffix.
     for (const [k, v] of Object.entries(data.objectives)) {
         data.objectives[k] = v.map((name) => {
-            return name.replace(/ Ω$/, "");
+            return name.replace(/ Ω$/, "").replace(/ \(PoK\)$/, "");
         });
     }
     for (const playerData of data.players) {
@@ -201,7 +224,8 @@ module.exports = (data) => {
             continue;
         }
         playerData.objectives = playerData.objectives.map((name) => {
-            return name.replace(/ Ω$/, "");
+            return name.replace(/ Ω$/, "").replace(/ \(PoK\)$/, "");
         });
+        playerData.objectives.sort();
     }
 };
