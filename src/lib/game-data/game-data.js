@@ -38,6 +38,7 @@ const UPDATORS = [
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
     require("./updator-player-tgs"),
+    require("./updator-player-unit-upgrades"),
     require("./updator-round"),
     require("./updator-timestamp"),
     require("./updator-turn"),
@@ -55,7 +56,7 @@ const TIMESTAMP_DELAY_MSECS = 15 * 60 * 1000;
 const KEY_DELAY_MSECS = 45 * 1000;
 
 const TI4_STREAMER_BUDDY_KEY = "buddy";
-const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 5 * 1000;
+const TI4_STREAMER_BUDDY_KEY_DELAY_MSECS = 3 * 1000;
 
 /**
  * Periodic upload of (normally) anonymized game state.
