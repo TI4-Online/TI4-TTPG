@@ -1,7 +1,7 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
 const UPDATOR = require("./updator-timer");
-const { MockGameObject, MockRotator, world } = require("../../wrapper/api");
+const { MockGameObject, world } = require("../../wrapper/api");
 
 it("player.tgs", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
