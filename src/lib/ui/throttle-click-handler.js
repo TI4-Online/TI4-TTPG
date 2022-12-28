@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Button, ImageButton, Player } = require("../../wrapper/api");
+const { Broadcast } = require("../broadcast");
 
 const THROTTLE_MSECS = 500;
 
@@ -21,11 +22,12 @@ class ThrottleClickHandler {
             assert(player instanceof Player);
 
             const playerSlot = player.getSlot();
-            const lastClickMsecs = playerSlotToLastClickMsecs[playerSlot] || 0;
+            const lastClickMsecs = playerSlotToLastClickMsecs[playerSlot];
 
             // Throttle if same player clicked again too soon.
             const nowMsecs = Date.now();
-            if (nowMsecs < lastClickMsecs + THROTTLE_MSECS) {
+            if (lastClickMsecs && nowMsecs < lastClickMsecs + THROTTLE_MSECS) {
+                Broadcast.chatAll("Throttling extra click event", [1, 0, 0, 1]);
                 console.log("throttle click");
                 return;
             }
