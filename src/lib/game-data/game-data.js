@@ -40,6 +40,7 @@ const UPDATORS = [
     require("./updator-player-tgs"),
     require("./updator-player-unit-upgrades"),
     require("./updator-round"),
+    require("./updator-timer"),
     require("./updator-timestamp"),
     require("./updator-turn"),
     require("./updator-whisper-history"),
@@ -291,6 +292,7 @@ class GameData {
             delete copy.platform;
             delete copy.setup;
             delete copy.scoreboard;
+            delete copy.timer;
             delete copy.turn;
             delete copy.whispers;
             for (const playerData of copy.players) {
