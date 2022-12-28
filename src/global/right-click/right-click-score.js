@@ -46,8 +46,47 @@ function isScorable(obj) {
     return nsid.startsWith("card.objective");
 }
 
+function _isOnLawsOrObjectiveMat(card) {
+    const mats = [];
+    for (const obj of world.getAllObjects()) {
+        if (obj.getContainer()) {
+            continue;
+        }
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (nsid === "mat:base/objectives_1") {
+            mats.push(obj);
+        } else if (nsid === "mat:base/objectives_2") {
+            mats.push(obj);
+        } else if (nsid === "mat:base/laws") {
+            mats.push(obj);
+        } else if (nsid === "mat:base/agenda") {
+            mats.push(obj);
+        }
+    }
+
+    for (const mat of mats) {
+        const pos = mat.worldPositionToLocal(card.getPosition());
+        const extent = mat.getExtent();
+        if (Math.abs(pos.x) < extent.x && Math.abs(pos.y) < extent.y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function isSecretsHolderScorable(obj) {
     const nsid = ObjectNamespace.getNsid(obj);
+
+    // Special case for "classified documents leaks" where a secret becomes
+    // a public objective.  If a secret is on the laws or objective mats
+    // treat it as a place-token item.
+    if (
+        nsid.startsWith("card.objective.secret") &&
+        _isOnLawsOrObjectiveMat(obj)
+    ) {
+        return false;
+    }
+
     if (
         nsid.startsWith("card.promissory") &&
         nsid.endsWith("/support_for_the_throne")
