@@ -73,6 +73,25 @@ class Timer {
         this._update();
     }
 
+    getValue() {
+        return this._value;
+    }
+
+    getAnchorTimestamp() {
+        return this._anchorTimestamp;
+    }
+
+    getAnchorValue() {
+        return this._anchorValue;
+    }
+
+    getDirection() {
+        if (!this._periodicHandler) {
+            return 0; // not running
+        }
+        return this._countdownFromSeconds > 0 ? -1 : 1;
+    }
+
     startCountdown(seconds) {
         assert(typeof seconds === "number");
         assert(seconds > 0);
@@ -109,7 +128,7 @@ class Timer {
             this._periodicHandler = undefined;
         }
 
-        this._anchorTimestamp = Date.now() / 1000;
+        this._anchorTimestamp = Math.floor(Date.now() / 1000);
         this._anchorValue = this._value;
 
         this._periodicHandler = setInterval(() => {
@@ -140,7 +159,7 @@ class Timer {
             assert(typeof this._anchorValue === "number");
 
             const oldValue = this._value;
-            const now = Date.now() / 1000;
+            const now = Math.floor(Date.now() / 1000);
             const delta = now - this._anchorTimestamp;
             const newValue = this._anchorValue + delta;
 
