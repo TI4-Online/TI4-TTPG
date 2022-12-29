@@ -27,6 +27,9 @@ it("player.tgs", () => {
         getDirection: () => {
             return -1;
         },
+        getCountdownFrom: () => {
+            return 3600;
+        },
     };
 
     world.__clear();
@@ -40,5 +43,6 @@ it("player.tgs", () => {
         anchorTimestamp: 2,
         direction: -1,
         seconds: 1,
+        countDown: 3600,
     });
 });

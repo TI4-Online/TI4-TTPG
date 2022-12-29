@@ -85,6 +85,10 @@ class Timer {
         return this._anchorValue;
     }
 
+    getCountdownFrom() {
+        return this._countdownFromSeconds;
+    }
+
     getDirection() {
         if (!this._periodicHandler) {
             return 0; // not running

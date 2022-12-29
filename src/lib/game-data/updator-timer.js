@@ -7,6 +7,7 @@ module.exports = (data) => {
         anchorTimestamp: 0, // timestamp when started
         anchorSeconds: 0, // value when started
         direction: 0, // [-1, 0, 1]
+        countDown: 0,
     };
 
     const timerNsid = "tool:base/timer";
@@ -32,4 +33,5 @@ module.exports = (data) => {
     data.timer.anchorTimestamp = timer.__timer.getAnchorTimestamp();
     data.timer.anchorSeconds = timer.__timer.getAnchorValue();
     data.timer.direction = timer.__timer.getDirection();
+    data.timer.countDown = timer.__timer.getCountdownFrom();
 };
