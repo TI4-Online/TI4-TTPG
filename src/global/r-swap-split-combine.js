@@ -264,7 +264,7 @@ function doSwapSplitCombine(objs, player) {
         // Remove from container before moving to final location.
         // Bug report said it fell through the table after take.
         let obj;
-        const above = pos.add([0, 0, 10]);
+        const above = pos.add([0, 0, 10 + i * 3]);
         if (produceBag) {
             obj = produceBag.takeAt(0, above, false);
         } else {
