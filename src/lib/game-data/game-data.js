@@ -40,6 +40,7 @@ const UPDATORS = [
     require("./updator-player-tgs"),
     require("./updator-player-unit-upgrades"),
     require("./updator-round"),
+    require("./updator-speaker"),
     require("./updator-timer"),
     require("./updator-timestamp"),
     require("./updator-turn"),
