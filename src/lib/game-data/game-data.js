@@ -38,8 +38,10 @@ const UPDATORS = [
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
     require("./updator-player-tgs"),
+    require("./updator-player-unit-modifiers"),
     require("./updator-player-unit-upgrades"),
     require("./updator-round"),
+    require("./updator-speaker"),
     require("./updator-timer"),
     require("./updator-timestamp"),
     require("./updator-turn"),
@@ -301,7 +303,12 @@ class GameData {
                 delete playerData.factionShort;
                 delete playerData.team;
                 delete playerData.active;
+                delete playerData.commandTokens;
+                delete playerData.handSummary;
+                delete playerData.maxCommodities;
                 delete playerData.strategyCardsFaceDown;
+                delete playerData.unitModifiers;
+                delete playerData.unitUpgrades;
                 playerData.technologies = playerData.technologies.length;
             }
             this._history.push(copy);
@@ -341,6 +348,7 @@ class GameData {
         const doNotCache = {
             timestamp: data.timestamp,
             perf: data.perf,
+            timer: data.timer,
         };
         for (const key of Object.keys(doNotCache)) {
             delete data[key];

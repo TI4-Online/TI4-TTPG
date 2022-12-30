@@ -25,7 +25,8 @@ module.exports = (data) => {
         const parsed = ObjectNamespace.parseNsid(nsid);
         const parts = parsed.type.split(".");
         const leaderType = parts[2];
-        if (leaderType !== "commander" && leaderType !== "hero") {
+
+        if (leaderType === "mech") {
             continue;
         }
 
@@ -38,6 +39,7 @@ module.exports = (data) => {
         const playerData = data.players[closestDesk.index];
         assert(playerData);
 
+        // Nomad has three agents, just let the last found card win.
         playerData.leaders[leaderType] = obj.isFaceUp() ? "unlocked" : "locked";
     }
 };
