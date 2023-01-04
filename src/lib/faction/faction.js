@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const lodash = require("lodash");
+const { Broadcast } = require("../broadcast");
 const { FactionSchema } = require("./faction.schema");
 const { ObjectNamespace } = require("../object-namespace");
 const { FACTION_DATA } = require("./faction.data");
@@ -80,7 +81,11 @@ function _maybeInit() {
             const faction = Faction.getByNsidName(nsidName);
             if (!faction) {
                 const nsid = ObjectNamespace.getNsid(sheet);
-                throw new Error(`unknown faction from sheet "${nsid}"`);
+                Broadcast.chatAll(
+                    locale("ui.error.invalid_faction_sheet", { nsid }),
+                    Broadcast.ERROR
+                );
+                continue;
             }
             _playerSlotToFaction[slot] = faction;
 
