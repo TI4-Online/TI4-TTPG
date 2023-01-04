@@ -41,6 +41,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { TabStreamer } = require("./tab-streamer/tab-streamer");
 
 let _gameUI;
 
@@ -451,6 +452,14 @@ class GameUI {
 
         const statsFolder = this._createStatsFolder();
         rootFolder.addChild(statsFolder);
+
+        const streamerEntry = new NavEntry()
+            .setName(locale("nav.streamer"))
+            .setIconPath("global/ui/icons/video_camera.png")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new TabStreamer().getUI();
+            });
+        rootFolder.addChild(streamerEntry);
     }
 }
 

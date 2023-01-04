@@ -5,6 +5,7 @@
     "ui.error.not_owner": "That is not yours, {playerName}",
     "ui.error.commander_locked": "Commander is locked",
     "ui.error.invalid_map_string": "Invalid map string “{mapString}”",
+    "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"${nsid}\"",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",
@@ -245,6 +246,7 @@
     "nav.stats.simple": "Simple Stats",
     "nav.stats.secrets": "Secrets",
     "nav.stats.whispers": "Whispers",
+    "nav.streamer": "Streamer",
 
     "ui.tab.root": "Root",
     "ui.tab.help": "Help",
@@ -971,6 +973,16 @@
 
     "timer.startCountdown": "Starting countdown timer",
     "timer.countdownExpired": "Countdown timer expired!",
+
+    "hide_cursor.cannot_hide_player_desk_slot": "Cannot hide cursor for active player desk",
+    "hide_cursor.show": "Showing cursor for “{playerName}”",
+    "hide_cursor.hide": "Hiding cursor for “{playerName}”",
+
+    "streamer.desc.timestamp": "Anonymized game data timestamp, if in use.  Click to select for copying.",
+    "streamer.desc.toggle_hide_cursor": "Hide non-player cursor from everyone except the owning player.",
+    "streamer.button.toggle_hide_cursor": "Hide/show\ncursor",
+    "streamer.desc.buddy": "Send game data to “TI4 Streamer Buddy” application running on TTPG host's system.",
+    "streamer.button.buddy": "Activate\nBuddy",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
