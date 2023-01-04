@@ -576,7 +576,7 @@ class BuildAreaMat {
 
         if (!systemTileObj) {
             const msg = locale("ui.build.warp_target_missing");
-            player.sendChatMessage(msg, [1, 0, 0]);
+            Broadcast.chatOne(player, msg, Broadcast.ERROR);
             return;
         }
 
@@ -585,7 +585,7 @@ class BuildAreaMat {
             const msg = locale("ui.build.warp.output", {
                 warpTarget: system.getSummaryStr(),
             });
-            player.sendChatMessage(msg);
+            Broadcast.chatOne(player, msg);
         }
 
         const objs = [];

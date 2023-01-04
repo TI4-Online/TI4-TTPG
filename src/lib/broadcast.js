@@ -3,6 +3,10 @@ const { ColorUtil } = require("./color/color-util");
 const { Color, Player, globalEvents, world } = require("../wrapper/api");
 
 class Broadcast {
+    static get ERROR() {
+        return [1, 0, 0, 1];
+    }
+
     /**
      * Send a message to all players, both on-screen and in chat window.
      *

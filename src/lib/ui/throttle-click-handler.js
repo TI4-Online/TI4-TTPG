@@ -27,7 +27,10 @@ class ThrottleClickHandler {
             // Throttle if same player clicked again too soon.
             const nowMsecs = Date.now();
             if (lastClickMsecs && nowMsecs < lastClickMsecs + THROTTLE_MSECS) {
-                Broadcast.chatAll("Throttling extra click event", [1, 0, 0, 1]);
+                Broadcast.chatAll(
+                    "Throttling extra click event",
+                    Broadcast.ERROR
+                );
                 console.log("throttle click");
                 return;
             }

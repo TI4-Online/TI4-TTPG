@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../game-ui-config");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const { TextJustification, world } = require("../../wrapper/api");
 
@@ -49,7 +50,9 @@ class TabStreamerUI {
         const buttonToggleHideCursor = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("streamer.button.toggle_hide_cursor"));
-        buttonToggleHideCursor.onClicked.add(onClickHandlers.toggleHideCursor);
+        buttonToggleHideCursor.onClicked.add(
+            ThrottleClickHandler.wrap(onClickHandlers.toggleHideCursor)
+        );
 
         const entryToggleHideCursor = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
@@ -65,7 +68,9 @@ class TabStreamerUI {
         const buttonBuddy = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("streamer.button.buddy"));
-        buttonBuddy.onClicked.add(onClickHandlers.buddy);
+        buttonBuddy.onClicked.add(
+            ThrottleClickHandler.wrap(onClickHandlers.buddy)
+        );
 
         const entryBuddy = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
