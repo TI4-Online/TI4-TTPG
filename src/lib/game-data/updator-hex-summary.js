@@ -5,7 +5,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const {
     getClosestPlanet,
-    getExactPlanet,
+    //getExactPlanet,
 } = require("../../lib/system/position-to-planet");
 const { GameObject, world } = require("../../wrapper/api");
 
@@ -204,7 +204,7 @@ class HexItems {
         let planetIndex = -1; // space
         if (GROUND_UNIT_SET.has(unit)) {
             const pos = unitPlastic.gameObject.getPosition();
-            const planet = getExactPlanet(pos, this._systemTileObj);
+            const planet = getClosestPlanet(pos, this._systemTileObj);
             if (planet) {
                 planetIndex = planet.planetIndex;
             }
