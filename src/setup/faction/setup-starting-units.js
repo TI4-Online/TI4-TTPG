@@ -65,6 +65,8 @@ class SetupStartingUnits extends AbstractSetup {
         }
         const rotate = 360 / Math.max(totalCount, 1);
 
+        const objsForLaterUse = [];
+
         let localPos = new Vector(3, 0, 10);
         for (const [unit, count] of Object.entries(startingUnits)) {
             const bag = unitToBag[unit];
@@ -77,8 +79,19 @@ class SetupStartingUnits extends AbstractSetup {
                 obj.setPosition(pos);
                 obj.snapToGround();
                 localPos = localPos.rotateAngleAxis(rotate, [0, 0, 1]);
+                objsForLaterUse.push(obj);
             }
         }
+
+        // Reports of some players not seeing units.  There may be a bag.take
+        // bug?  As a (temporary) workaround, move these objects a second time
+        // to generate a second position update.
+        process.nextTick(() => {
+            for (const obj of objsForLaterUse) {
+                const pos = obj.getPosition().add([0, 0, 0.1]);
+                obj.setPosition(pos);
+            }
+        });
     }
 
     clean() {
