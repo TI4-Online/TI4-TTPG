@@ -308,6 +308,7 @@ class GameData {
                 delete playerData.handSummary;
                 delete playerData.maxCommodities;
                 delete playerData.strategyCardsFaceDown;
+                delete playerData.turnOrder;
                 delete playerData.unitModifiers;
                 delete playerData.unitUpgrades;
                 playerData.technologies = playerData.technologies.length;
