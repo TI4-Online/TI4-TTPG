@@ -146,6 +146,11 @@ class HexItems {
         this._systemTileObj = systemTileObj;
         this._system = world.TI4.getSystemBySystemTileObject(systemTileObj);
         this._entries = [];
+
+        // Add an empty entry for each region.
+        for (let i = 0; i < this._system.planets.length; i++) {
+            this._entries.push({ planetIndex: i });
+        }
     }
 
     addCommandToken(obj, colorCode) {
@@ -391,8 +396,9 @@ class HexItems {
                 stickyCount = count;
             }
 
-            assert(entry.code);
-            result.push(entry.code);
+            if (entry.code) {
+                result.push(entry.code);
+            }
         }
 
         return result.join("");
