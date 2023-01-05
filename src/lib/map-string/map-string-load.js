@@ -40,8 +40,7 @@ class MapStringLoad {
                 tileCount: unknown.length,
                 tileStr: unknown.join(", "),
             });
-            const color = [1, 0, 0, 1];
-            Broadcast.chatAll(msg, color);
+            Broadcast.chatAll(msg, Broadcast.ERROR);
             console.log(msg);
             return false;
         }

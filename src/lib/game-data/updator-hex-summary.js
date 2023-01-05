@@ -5,7 +5,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const {
     getClosestPlanet,
-    getExactPlanet,
+    //getExactPlanet,
 } = require("../../lib/system/position-to-planet");
 const { GameObject, world } = require("../../wrapper/api");
 
@@ -146,6 +146,11 @@ class HexItems {
         this._systemTileObj = systemTileObj;
         this._system = world.TI4.getSystemBySystemTileObject(systemTileObj);
         this._entries = [];
+
+        // Add an empty entry for each region.
+        for (let i = 0; i < this._system.planets.length; i++) {
+            this._entries.push({ planetIndex: i });
+        }
     }
 
     addCommandToken(obj, colorCode) {
@@ -204,7 +209,7 @@ class HexItems {
         let planetIndex = -1; // space
         if (GROUND_UNIT_SET.has(unit)) {
             const pos = unitPlastic.gameObject.getPosition();
-            const planet = getExactPlanet(pos, this._systemTileObj);
+            const planet = getClosestPlanet(pos, this._systemTileObj);
             if (planet) {
                 planetIndex = planet.planetIndex;
             }
@@ -391,8 +396,9 @@ class HexItems {
                 stickyCount = count;
             }
 
-            assert(entry.code);
-            result.push(entry.code);
+            if (entry.code) {
+                result.push(entry.code);
+            }
         }
 
         return result.join("");

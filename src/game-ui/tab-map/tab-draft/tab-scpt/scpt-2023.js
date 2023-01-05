@@ -319,7 +319,7 @@ class SCPT2023 {
             }
         }
         if (errors.length > 0) {
-            Broadcast.chatAll(`ERROR: ${errors.join("\n")}`, [1, 0, 0]);
+            Broadcast.chatAll(`ERROR: ${errors.join("\n")}`, Broadcast.ERROR);
             return false;
         }
 

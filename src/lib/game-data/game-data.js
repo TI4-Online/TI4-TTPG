@@ -38,6 +38,7 @@ const UPDATORS = [
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
     require("./updator-player-tgs"),
+    require("./updator-player-turn-order"),
     require("./updator-player-unit-modifiers"),
     require("./updator-player-unit-upgrades"),
     require("./updator-round"),
@@ -307,6 +308,7 @@ class GameData {
                 delete playerData.handSummary;
                 delete playerData.maxCommodities;
                 delete playerData.strategyCardsFaceDown;
+                delete playerData.turnOrder;
                 delete playerData.unitModifiers;
                 delete playerData.unitUpgrades;
                 playerData.technologies = playerData.technologies.length;

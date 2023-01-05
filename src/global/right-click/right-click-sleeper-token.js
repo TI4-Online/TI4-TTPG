@@ -63,7 +63,7 @@ function replaceWithAndReturnTurn(
             const nsid = ObjectNamespace.getNsid(container);
             const name = ObjectNamespace.parseNsid(nsid).name;
             const msg = locale("ui.error.empty_supply", { unit_name: name });
-            Broadcast.chatOne(player, msg, [1, 0, 0]);
+            Broadcast.chatOne(player, msg, Broadcast.ERROR);
             return;
         }
     }

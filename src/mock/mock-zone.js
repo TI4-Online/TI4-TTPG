@@ -20,6 +20,8 @@ class Zone {
 
     setAlwaysVisible(value) {}
     setColor(value) {}
+    setCursorHidden(value) {}
+    setId(value) {}
     setObjectVisibility(value) {}
     setPosition(value) {}
     setRotation(value) {}

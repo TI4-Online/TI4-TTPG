@@ -14,6 +14,7 @@ const {
     globalEvents,
     world,
 } = require("../wrapper/api");
+const { Broadcast } = require("../lib/broadcast");
 
 // NSID to short name for easier to read replace rules.
 const METADATA_TO_INFO = {
@@ -299,7 +300,7 @@ function onR(obj, player) {
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     if (!playerDesk) {
         const msg = locale("ui.error.only_seated_players_may_r");
-        player.sendChatMessage(msg, [1, 0, 0]);
+        Broadcast.chatOne(player, msg, Broadcast.ERROR);
         return;
     }
 

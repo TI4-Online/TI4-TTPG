@@ -141,6 +141,7 @@ const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
+const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
@@ -156,6 +157,7 @@ world.TI4 = {
     errorReporting: new ErrorReporting(),
     fogOfWar: new FogOfWar(),
     gameData: new GameData(),
+    hideCursor: new HideCursor(),
     homebrew: new Homebrew(),
     perfStats: new PerfStats(),
     turns: new Turns(true),

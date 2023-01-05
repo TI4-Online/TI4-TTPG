@@ -96,8 +96,7 @@ class MapTool {
 
         if (mapString.length === 0 || !MapStringParser.validate(mapString)) {
             const msg = locale("ui.error.invalid_map_string", { mapString });
-            const color = [1, 0, 0];
-            Broadcast.chatAll(msg, color);
+            Broadcast.chatAll(msg, Broadcast.ERROR);
             return;
         }
 
