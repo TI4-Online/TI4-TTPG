@@ -89,33 +89,6 @@ const infu = {
     76: 3.5,
 };
 
-function fixAdjAnomalies(s) {
-    const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
-    const neigh = [
-        [0, 1],
-        [0, 3],
-        [1, 2],
-        [1, 3],
-        [1, 4],
-        [3, 4],
-    ];
-    let good = false;
-    do {
-        s = Shuffle.shuffle(s);
-        good = true;
-        for (let j = 0; j < neigh.length; j++) {
-            if (
-                anom.includes(s[neigh[j][0]]) &&
-                anom.includes(s[neigh[j][1]])
-            ) {
-                good = false;
-                break;
-            }
-        }
-    } while (!good);
-    return s;
-}
-
 function miltyslices(
     numslice,
     extralegwh = true,
@@ -355,7 +328,7 @@ function miltyslices(
             }
 
             // Keep shuffling tiles in slice until no adjacent anomalies.
-            s = fixAdjAnomalies(s);
+            s = MiltySliceGenerator.fixAdjAnomalies(s);
 
             slices.push(s);
         }
@@ -381,6 +354,47 @@ class MiltySliceGenerator {
         value = Math.max(value, MiltySliceGenerator.minCount);
         value = Math.min(value, MiltySliceGenerator.maxCount);
         return value;
+    }
+
+    // if there are 2 anomalies, choose one randomly and swap it with one of the remaining valid spaces
+    static fixAdjAnomalies(s) {
+        const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
+        const validAnomPairs = {
+            0: [2, 4],
+            1: [],
+            2: [0, 3, 4],
+            3: [2],
+            4: [0, 2],
+        };
+
+        let anomPositions = [];
+        for (let i = 0; i < anom.length; i++) {
+            let j = s.indexOf(anom[i]);
+            if (j >= 0) {
+                anomPositions.push(j);
+            }
+        }
+        if (anomPositions.length < 2) {
+            return s;
+        }
+
+        let anomToSwap, anomToKeep;
+        if (anomPositions.includes(1)) {
+            // 1 is adjacent to all tiles, must always be swapped
+            anomToSwap = 1;
+            anomToKeep =
+                anomPositions.indexOf(1) == 0
+                    ? anomPositions[1]
+                    : anomPositions[0];
+        } else {
+            let shuffledAnom = Shuffle.shuffle(anomPositions);
+            anomToSwap = shuffledAnom[0];
+            anomToKeep = shuffledAnom[1];
+        }
+        let swapDest = Shuffle.drawRandom(validAnomPairs[anomToKeep]);
+
+        [s[anomToSwap], s[swapDest]] = [s[swapDest], s[anomToSwap]];
+        return s;
     }
 
     constructor() {

@@ -7,5 +7,10 @@ class Shuffle {
         }
         return a;
     }
+
+    // return one item randomly from an un-shuffled array
+    static drawRandom(a) {
+        return a[Math.floor(Math.random() * a.length)];
+    }
 }
 module.exports = { Shuffle };
