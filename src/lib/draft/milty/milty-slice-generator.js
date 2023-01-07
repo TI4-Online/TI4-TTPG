@@ -1,12 +1,10 @@
+const lodash = require("lodash");
 const assert = require("../../../wrapper/assert-wrapper");
 const { Shuffle } = require("../../../lib/shuffle");
 const { world } = require("../../../wrapper/api");
 
 // From MiltyDraft.com
 // @author BradleySigma
-
-// TODO XXX: REPLACE "reject and regenerate" with tile swaps to fix bad neighbors.
-// This can fail after 10K runs due to RNG!!
 
 const resu = {
     19: 0,
@@ -88,33 +86,6 @@ const infu = {
     75: 2,
     76: 3.5,
 };
-
-function fixAdjAnomalies(s) {
-    const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
-    const neigh = [
-        [0, 1],
-        [0, 3],
-        [1, 2],
-        [1, 3],
-        [1, 4],
-        [3, 4],
-    ];
-    let good = false;
-    do {
-        s = Shuffle.shuffle(s);
-        good = true;
-        for (let j = 0; j < neigh.length; j++) {
-            if (
-                anom.includes(s[neigh[j][0]]) &&
-                anom.includes(s[neigh[j][1]])
-            ) {
-                good = false;
-                break;
-            }
-        }
-    } while (!good);
-    return s;
-}
 
 function miltyslices(
     numslice,
@@ -354,8 +325,8 @@ function miltyslices(
                 break;
             }
 
-            // Keep shuffling tiles in slice until no adjacent anomalies.
-            s = fixAdjAnomalies(s);
+            // Swap tiles in slice so no adjacent anomalies.
+            s = MiltySliceGenerator.fixAdjAnomalies(s);
 
             slices.push(s);
         }
@@ -381,6 +352,50 @@ class MiltySliceGenerator {
         value = Math.max(value, MiltySliceGenerator.minCount);
         value = Math.min(value, MiltySliceGenerator.maxCount);
         return value;
+    }
+
+    // if there are 2 anomalies, choose a random valid pair of positions and swap the anomalies
+    // with whichever tiles are in those positions
+    static fixAdjAnomalies(s) {
+        const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
+        const validAnomPairs = [
+            [0, 2],
+            [0, 4],
+            [2, 3],
+            [2, 4],
+        ];
+
+        let anomPositions = [];
+        for (let i = 0; i < anom.length; i++) {
+            let j = s.indexOf(anom[i]);
+            if (j >= 0) {
+                anomPositions.push(j);
+            }
+        }
+        // less than 2 anomalies or already valid
+        if (
+            anomPositions.length < 2 ||
+            validAnomPairs.some((pair) => lodash.isEqual(pair, anomPositions))
+        ) {
+            return s;
+        }
+
+        // both anomalies get swapped even if one of them is already in a valid position
+        // slightly inefficient, but doesn't affect end result and easier to understand
+        let newPositions = Shuffle.choice(validAnomPairs);
+        let swaps = [
+            [anomPositions[0], newPositions[0]],
+            [anomPositions[1], newPositions[1]],
+        ];
+
+        let newSlice = lodash.clone(s);
+        for (let i = 0; i < swaps.length; i++) {
+            [newSlice[swaps[i][0]], newSlice[swaps[i][1]]] = [
+                newSlice[swaps[i][1]],
+                newSlice[swaps[i][0]],
+            ];
+        }
+        return newSlice;
     }
 
     constructor() {
