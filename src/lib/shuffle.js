@@ -9,7 +9,7 @@ class Shuffle {
     }
 
     // return one item randomly from an un-shuffled array
-    static drawRandom(a) {
+    static choice(a) {
         return a[Math.floor(Math.random() * a.length)];
     }
 }

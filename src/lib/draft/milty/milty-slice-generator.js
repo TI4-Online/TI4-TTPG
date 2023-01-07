@@ -1,3 +1,4 @@
+const lodash = require("lodash");
 const assert = require("../../../wrapper/assert-wrapper");
 const { Shuffle } = require("../../../lib/shuffle");
 const { world } = require("../../../wrapper/api");
@@ -353,16 +354,16 @@ class MiltySliceGenerator {
         return value;
     }
 
-    // if there are 2 anomalies, choose one randomly and swap it with one of the remaining valid spaces
+    // if there are 2 anomalies, choose a random valid pair of positions and swap the anomalies
+    // with whichever tiles are in those positions
     static fixAdjAnomalies(s) {
         const anom = [41, 42, 43, 44, 45, 67, 68, 79, 80];
-        const validAnomPairs = {
-            0: [2, 4],
-            1: [],
-            2: [0, 3, 4],
-            3: [2],
-            4: [0, 2],
-        };
+        const validAnomPairs = [
+            [0, 2],
+            [0, 4],
+            [2, 3],
+            [2, 4],
+        ];
 
         let anomPositions = [];
         for (let i = 0; i < anom.length; i++) {
@@ -371,27 +372,30 @@ class MiltySliceGenerator {
                 anomPositions.push(j);
             }
         }
-        if (anomPositions.length < 2) {
+        // less than 2 anomalies or already valid
+        if (
+            anomPositions.length < 2 ||
+            validAnomPairs.some((pair) => lodash.isEqual(pair, anomPositions))
+        ) {
             return s;
         }
 
-        let anomToSwap, anomToKeep;
-        if (anomPositions.includes(1)) {
-            // 1 is adjacent to all tiles, must always be swapped
-            anomToSwap = 1;
-            anomToKeep =
-                anomPositions.indexOf(1) == 0
-                    ? anomPositions[1]
-                    : anomPositions[0];
-        } else {
-            let shuffledAnom = Shuffle.shuffle(anomPositions);
-            anomToSwap = shuffledAnom[0];
-            anomToKeep = shuffledAnom[1];
-        }
-        let swapDest = Shuffle.drawRandom(validAnomPairs[anomToKeep]);
+        // both anomalies get swapped even if one of them is already in a valid position
+        // slightly inefficient, but doesn't affect end result and easier to understand
+        let newPositions = Shuffle.choice(validAnomPairs);
+        let swaps = [
+            [anomPositions[0], newPositions[0]],
+            [anomPositions[1], newPositions[1]],
+        ];
 
-        [s[anomToSwap], s[swapDest]] = [s[swapDest], s[anomToSwap]];
-        return s;
+        let newSlice = lodash.clone(s);
+        for (let i = 0; i < swaps.length; i++) {
+            [newSlice[swaps[i][0]], newSlice[swaps[i][1]]] = [
+                newSlice[swaps[i][1]],
+                newSlice[swaps[i][0]],
+            ];
+        }
+        return newSlice;
     }
 
     constructor() {
