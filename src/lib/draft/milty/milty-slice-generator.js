@@ -5,9 +5,6 @@ const { world } = require("../../../wrapper/api");
 // From MiltyDraft.com
 // @author BradleySigma
 
-// TODO XXX: REPLACE "reject and regenerate" with tile swaps to fix bad neighbors.
-// This can fail after 10K runs due to RNG!!
-
 const resu = {
     19: 0,
     20: 1,
@@ -327,7 +324,7 @@ function miltyslices(
                 break;
             }
 
-            // Keep shuffling tiles in slice until no adjacent anomalies.
+            // Swap tiles in slice so no adjacent anomalies.
             s = MiltySliceGenerator.fixAdjAnomalies(s);
 
             slices.push(s);
