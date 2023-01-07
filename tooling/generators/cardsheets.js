@@ -228,6 +228,18 @@ class CardData {
 
     face() {
         if (!this._face) {
+            // Representative government is a little funky, two versions with same name but different source.
+            // For now just force the correct one for PoK.
+            if (this._nsid === "card.agenda:pok/representative_government") {
+                this._face = AssetFilenames.cardImage(
+                    "card.agenda:pok/representative_government_pok",
+                    "face",
+                    this._locale
+                );
+                assert(this._face);
+                return this._face;
+            }
+
             this._face = AssetFilenames.cardImage(
                 this._nsid,
                 "face",
