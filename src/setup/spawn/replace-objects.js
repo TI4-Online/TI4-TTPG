@@ -73,6 +73,9 @@ class ReplaceObjects {
                         } else {
                             cardObj = obj; // cannot take final card
                         }
+                        console.log(
+                            `ReplaceObjects: removing "${nsid}", favoring "${replaceWithNsid}"`
+                        );
                         result.push(cardObj);
                     }
                 }
@@ -80,6 +83,9 @@ class ReplaceObjects {
                 const nsid = ObjectNamespace.getNsid(obj);
                 const replaceWithNsid = oldNsidToNewNsid[nsid];
                 if (seenNewNsidSet.has(replaceWithNsid)) {
+                    console.log(
+                        `ReplaceObjects: removing "${nsid}", favoring "${replaceWithNsid}"`
+                    );
                     result.push(obj);
                 }
             }
@@ -92,6 +98,7 @@ class ReplaceObjects {
         const removeObjs = ReplaceObjects.getReplacedObjects(objs);
         const removedCount = removeObjs.length;
         for (const obj of removeObjs) {
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
         return removedCount;
