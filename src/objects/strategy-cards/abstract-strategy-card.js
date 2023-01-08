@@ -378,7 +378,7 @@ class AbstractStrategyCard {
             WidgetFactory.verticalBox().setChildDistance(SPACING);
 
         // Create widget header.
-        this._createHeader(verticalBox);
+        this._createHeader(verticalBox, playerDesk);
 
         // Create widget body.
         const bodyWidgets = this._bodyWidgetFactory(
@@ -442,11 +442,18 @@ class AbstractStrategyCard {
         if (ui) {
             world.removeUIElement(ui);
             WidgetFactory.release(ui);
+        } else {
+            // Searching for why "close" isn't working for some players sometime.
+            Broadcast.chatAll(
+                "AbstractStrategyCard: removeUI already removed?",
+                Broadcast.ERROR
+            );
         }
     }
 
-    _createHeader(verticalBox) {
+    _createHeader(verticalBox, playerDesk) {
         assert(verticalBox instanceof VerticalBox);
+        assert(playerDesk);
 
         const parsed = ObjectNamespace.parseStrategyCard(this._gameObject);
         const nsidName = parsed.card;
@@ -454,7 +461,20 @@ class AbstractStrategyCard {
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE)
             .setText(locale(`strategy_card.${nsidName}.text`).toUpperCase());
-        verticalBox.addChild(headerText);
+
+        const onCloseClicked = (clickedButton, player) => {
+            this._removeUI(playerDesk);
+        };
+        const closeButton = WidgetFactory.button()
+            .setFontSize(FONT_SIZE_TITLE * 0.75)
+            .setText("X");
+        closeButton.onClicked.add(ThrottleClickHandler.wrap(onCloseClicked));
+
+        const header = WidgetFactory.horizontalBox()
+            .addChild(headerText, 1)
+            .addChild(closeButton, 0);
+
+        verticalBox.addChild(header);
     }
 
     _createFooter(verticalBox, playerDesk) {
