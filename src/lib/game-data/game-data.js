@@ -34,6 +34,7 @@ const UPDATORS = [
     require("./updator-player-hand-summary"),
     require("./updator-player-leaders"),
     require("./updator-player-planet-totals"),
+    require("./updator-player-relic-cards"),
     require("./updator-player-score"),
     require("./updator-player-strategy-cards"),
     require("./updator-player-tech"),
