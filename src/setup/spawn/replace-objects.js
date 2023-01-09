@@ -56,6 +56,7 @@ class ReplaceObjects {
 
         // Now find to-be-replaced objects, but only if replacement exists.
         const result = [];
+        const newToOld = {};
         for (const obj of objs) {
             if (obj.getContainer()) {
                 continue;
@@ -73,6 +74,7 @@ class ReplaceObjects {
                         } else {
                             cardObj = obj; // cannot take final card
                         }
+                        newToOld[replaceWithNsid] = nsid;
                         result.push(cardObj);
                     }
                 }
@@ -80,9 +82,18 @@ class ReplaceObjects {
                 const nsid = ObjectNamespace.getNsid(obj);
                 const replaceWithNsid = oldNsidToNewNsid[nsid];
                 if (seenNewNsidSet.has(replaceWithNsid)) {
+                    newToOld[replaceWithNsid] = nsid;
                     result.push(obj);
                 }
             }
+
+            //if (!world.__isMock) {
+            //    for (const [newNsid, oldNsid] of Object.entries(newToOld)) {
+            //        console.log(
+            //            `ReplaceObjects: removing "${oldNsid}", favoring "${newNsid}"`
+            //        );
+            //    }
+            //}
         }
 
         return result;
@@ -92,6 +103,7 @@ class ReplaceObjects {
         const removeObjs = ReplaceObjects.getReplacedObjects(objs);
         const removedCount = removeObjs.length;
         for (const obj of removeObjs) {
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
         }
         return removedCount;

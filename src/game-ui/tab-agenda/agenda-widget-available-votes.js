@@ -1,13 +1,14 @@
 const assert = require("../../wrapper/assert-wrapper");
 const CONFIG = require("../game-ui-config");
 const { Agenda } = require("../../lib/agenda/agenda");
+const { ObjectNamespace } = require("../../lib/object-namespace");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
     Text,
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 // Keep private text widgets for editing.  Double index for (1) which player desk
 // has the widget, and (2) which player desk within the widget.
@@ -24,6 +25,7 @@ globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
 class AgendaWidgetAvailableVotes {
     static resetAll() {
         const deskIndexToAvailableVotes = Agenda.getDeskIndexToAvailableVotes();
+        const speakerDeskIndex = this._getSpeakerDeskIndex();
         for (const deskIndexToVoteText of Object.values(
             _deskIndexToDeskIndexToVoteText
         )) {
@@ -32,9 +34,25 @@ class AgendaWidgetAvailableVotes {
             )) {
                 const deskIndex = Number.parseInt(deskIndexAsString);
                 const votes = deskIndexToAvailableVotes[deskIndex];
-                voteText.setText(votes);
+                const speaker = deskIndex === speakerDeskIndex ? "*" : "";
+                voteText.setText(votes + speaker);
             }
         }
+    }
+
+    static _getSpeakerDeskIndex() {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "token:base/speaker") {
+                const pos = obj.getPosition();
+                const desk = world.TI4.getClosestPlayerDesk(pos);
+                return desk.index;
+            }
+        }
+        return -1; //missing token?
     }
 
     static _getVoteText(deskIndex1, deskIndex2) {

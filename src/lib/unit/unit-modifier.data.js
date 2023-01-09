@@ -1041,17 +1041,17 @@ module.exports = [
             }
         },
     },
-    {
-        // "Copy abilities from other agents",
-        isCombat: true,
-        localeName: "unit_modifier.name.ssruu",
-        localeDescription: "unit_modifier.desc.ssruu",
-        owner: "self",
-        priority: "mutate",
-        toggleActive: true,
-        triggerNsid: "card.leader.agent.yssaril:pok/ssruu",
-        // TODO XXX
-    },
+    // {
+    //     // "Copy abilities from other agents",
+    //     isCombat: true,
+    //     localeName: "unit_modifier.name.ssruu",
+    //     localeDescription: "unit_modifier.desc.ssruu",
+    //     owner: "self",
+    //     priority: "mutate",
+    //     toggleActive: true,
+    //     triggerNsid: "card.leader.agent.yssaril:pok/ssruu",
+    //     // TODO XXX
+    // },
     {
         // "+1 die to a unit ability (anti-fighter barrage, bombardment, space cannon)",
         isCombat: true,

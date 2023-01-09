@@ -191,6 +191,14 @@ class PlayerDesk {
     constructor(attrs, index) {
         assert(typeof index === "number");
 
+        const playerCount = world.TI4.config.playerCount;
+        assert(typeof playerCount === "number");
+        if (index < 0 || index >= playerCount) {
+            throw new Error(
+                `PlayerDesk index ${index} out of range (playerCount ${playerCount})`
+            );
+        }
+
         this._index = index;
         this._colorName = attrs.colorName;
         this._pos = new Vector(

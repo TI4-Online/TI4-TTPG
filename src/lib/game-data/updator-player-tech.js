@@ -35,7 +35,16 @@ module.exports = (data) => {
     if (!_nsidToName) {
         _nsidToName = {};
         TECHNOLOGY_DATA.forEach((techData) => {
-            _nsidToName[techData.cardNsid] = locale(techData.localeName);
+            const name = locale(techData.localeName);
+            _nsidToName[techData.cardNsid] = name;
+            const aliasNsids = techData.aliasNsids || [];
+            for (const aliasNsid of aliasNsids) {
+                _nsidToName[aliasNsid] = name;
+                if (aliasNsid.endsWith(".omega")) {
+                    const stripped = aliasNsid.replace(/.omega$/, "");
+                    _nsidToName[stripped] = name;
+                }
+            }
         });
     }
 

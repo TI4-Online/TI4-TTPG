@@ -45,6 +45,9 @@ module.exports = [
     {
         localeName: "technology.name.x_89_bacterial_weapon",
         cardNsid: "card.technology.green:base/x89_bacterial_weapon",
+        aliasNsids: [
+            "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
+        ],
         type: "Green",
         requirements: {
             Green: 3,
@@ -69,6 +72,9 @@ module.exports = [
     {
         localeName: "technology.name.magen_defense_grid",
         cardNsid: "card.technology.red:base/magen_defense_grid",
+        aliasNsids: [
+            "card.technology.red:codex.ordinian/magen_defense_grid.omega",
+        ],
         type: "Red",
         requirements: {
             Red: 1,
@@ -382,6 +388,9 @@ module.exports = [
     {
         localeName: "technology.name.magmus_reactor",
         cardNsid: "card.technology.red.muaat:base/magmus_reactor",
+        aliasNsids: [
+            "card.technology.red.muaat:codex.ordinian/magmus_reactor.omega",
+        ],
         type: "Red",
         requirements: {
             Red: 2,
@@ -434,6 +443,9 @@ module.exports = [
     {
         localeName: "technology.name.wormhole_generator",
         cardNsid: "card.technology.blue.creuss:base/wormhole_generator",
+        aliasNsids: [
+            "card.technology.blue.creuss:codex.ordinian/wormhole_generator.omega",
+        ],
         type: "Blue",
         requirements: {
             Blue: 2,
@@ -617,6 +629,9 @@ module.exports = [
     {
         localeName: "technology.name.yin_spinner",
         cardNsid: "card.technology.green.yin:base/yin_spinner",
+        aliasNsids: [
+            "card.technology.green.yin:codex.ordinian/yin_spinner.omega",
+        ],
         type: "Green",
         requirements: {
             Green: 2,

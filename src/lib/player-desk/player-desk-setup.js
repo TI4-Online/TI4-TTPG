@@ -59,6 +59,17 @@ class PlayerDeskSetup {
 
     constructor(playerDesk) {
         assert(playerDesk);
+
+        const index = playerDesk.index;
+        const playerCount = world.TI4.config.playerCount;
+        assert(typeof index === "number");
+        assert(typeof playerCount === "number");
+        if (index < 0 || index >= playerCount) {
+            throw new Error(
+                `PlayerDeskSetup index ${index} out of range (playerCount ${playerCount})`
+            );
+        }
+
         this._playerDesk = playerDesk;
     }
 
