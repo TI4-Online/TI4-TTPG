@@ -237,9 +237,11 @@ function doSwapSplitCombine(objs, player) {
 
     // Make sure the produce can happen (empty unit bag?).
     let produceBag = undefined;
+    let produceBagItems = undefined;
     if (match.produce.nsid.startsWith("unit")) {
         produceBag = getUnitBag(match.produce.nsid, playerSlot);
-        if (produceBag.getItems().length < match.produce.count) {
+        produceBagItems = produceBag.getItems();
+        if (produceBagItems.length < match.produce.count) {
             const message = locale("ui.error.empty_supply", {
                 unit_name: match.rule.produce.name,
             });
@@ -265,20 +267,26 @@ function doSwapSplitCombine(objs, player) {
         // Remove from container before moving to final location.
         // Bug report said it fell through the table after take.
         let obj;
+        let success = true;
         const above = pos.add([0, 0, 10 + i * 3]);
         if (produceBag) {
-            obj = produceBag.takeAt(0, above, false);
+            obj = produceBagItems.shift();
+            success = produceBag.take(obj, above, false);
         } else {
             obj = Spawn.spawn(match.produce.nsid, above, new Rotator(0, 0, 0));
         }
-        if (!obj) {
+        if (!obj || !success) {
             // "can't happen" but got a report.
             throw new Error(
                 "no obj: " +
                     JSON.stringify({
-                        match: match,
+                        matchRule: match.rule,
+                        matchConumeLength: match.consume.length,
                         i,
+                        obj: obj ? true : false,
                         produceBag: produceBag ? true : false,
+                        produceBagItemsLength: produceBagItems.length,
+                        success,
                     })
             );
         }
