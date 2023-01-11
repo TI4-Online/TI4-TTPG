@@ -11,6 +11,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
+const assert = require("../../wrapper/assert-wrapper");
 
 const SIMPLE_WIDTH = 175;
 const SIMPLE_ENTRY_HEIGHT = 35;
@@ -19,8 +20,16 @@ const FANCY_ENTRY_HEIGHT = 58;
 const PAD = 14;
 const BUTTON_SIZE = 10;
 
+const PLAYER_STATE = {
+    FANCY: 1,
+    SIMPLE: 2,
+    NONE: 3,
+};
+
 class TurnOrderScreenUI {
     constructor() {
+        this._playerSlotToPlayerState = {};
+
         this._simplePlayerSlots = [];
         this._fancyPlayerSlots = Array.from(Array(20).keys());
 
@@ -41,87 +50,110 @@ class TurnOrderScreenUI {
     }
 
     resetHeight() {
-        if (this._simpleUI) {
-            this._simpleUI.height =
-                SIMPLE_ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
-            world.updateScreenUI(this._simpleUI);
-        }
+        this._simpleUI.height =
+            SIMPLE_ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
+        world.updateScreenUI(this._simpleUI);
 
-        if (this._fancyUI) {
-            this._fancyUI.height =
-                FANCY_ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
-            world.updateScreenUI(this._fancyUI);
-        }
+        this._fancyUI.height =
+            FANCY_ENTRY_HEIGHT * world.TI4.config.playerCount + PAD;
+        world.updateScreenUI(this._fancyUI);
     }
 
     toggle(player) {
         console.log(`TurnOrderScreenUI.toggle "${player.getName()}"`);
 
         const playerSlot = player.getSlot();
-        let index;
+        let playerState =
+            this._playerSlotToPlayerState[playerSlot] || PLAYER_STATE.FANCY;
+        if (playerState === PLAYER_STATE.FANCY) {
+            playerState = PLAYER_STATE.SIMPLE;
+        } else if (playerState === PLAYER_STATE.SIMPLE) {
+            playerState = PLAYER_STATE.NONE;
+        } else if ((playerState = PLAYER_STATE.NONE)) {
+            playerState = PLAYER_STATE.FANCY;
+        } else {
+            throw new Error(`bad state ${playerState}`);
+        }
+        this._playerSlotToPlayerState[playerSlot] = playerState;
 
-        if (this._simpleUI) {
-            index = this._simplePlayerSlots.indexOf(playerSlot);
+        this.setFancyUI(playerSlot, playerState === PLAYER_STATE.FANCY);
+        this.setSimpleUI(playerSlot, playerState === PLAYER_STATE.SIMPLE);
+    }
+
+    moveToggleButtonToTop() {
+        world.removeScreenUIElement(this._toggleUI);
+        world.addScreenUI(this._toggleUI);
+    }
+
+    setFancyUI(playerSlot, visible) {
+        assert(typeof playerSlot === "number");
+        assert(typeof visible === "boolean");
+
+        const index = this._fancyPlayerSlots.indexOf(playerSlot);
+        if (visible) {
             if (index >= 0) {
-                this._simplePlayerSlots.splice(index, 1);
-            } else {
-                this._simplePlayerSlots.push(playerSlot);
+                return; // already visible
             }
-            const playerPermission = new PlayerPermission().setPlayerSlots(
-                this._simplePlayerSlots
-            );
-            this._simpleUI.players = playerPermission;
-
-            if (this._simplePlayerSlots.length === 0 && this._simpleUIadded) {
-                world.removeScreenUIElement(this._simpleUI);
-                this._simpleUIadded = false;
-            } else if (
-                this._simplePlayerSlots.length > 0 &&
-                !this._simpleUIadded
-            ) {
-                world.addScreenUI(this._simpleUI);
-                this._simpleUIadded = true;
-
-                // Move to top.
-                world.removeScreenUIElement(this._toggleUI);
-                world.addScreenUI(this._toggleUI);
+            this._fancyPlayerSlots.push(playerSlot);
+        } else {
+            if (index < 0) {
+                return; // already hidden
             }
-
-            if (this._simpleUIadded) {
-                world.updateScreenUI(this._simpleUI);
-            }
+            this._fancyPlayerSlots.splice(index, 1);
         }
 
-        if (this._fancyUI) {
-            index = this._fancyPlayerSlots.indexOf(playerSlot);
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            this._fancyPlayerSlots
+        );
+        this._fancyUI.players = playerPermission;
+
+        if (this._fancyPlayerSlots.length === 0 && this._fancyUIadded) {
+            world.removeScreenUIElement(this._fancyUI);
+            this._fancyUIadded = false;
+        } else if (this._fancyPlayerSlots.length > 0 && !this._fancyUIadded) {
+            world.addScreenUI(this._fancyUI);
+            this._fancyUIadded = true;
+            this.moveToggleButtonToTop();
+        }
+
+        if (this._fancyUIadded) {
+            world.updateScreenUI(this._fancyUI);
+        }
+    }
+
+    setSimpleUI(playerSlot, visible) {
+        assert(typeof playerSlot === "number");
+        assert(typeof visible === "boolean");
+
+        const index = this._simplePlayerSlots.indexOf(playerSlot);
+        if (visible) {
             if (index >= 0) {
-                this._fancyPlayerSlots.splice(index, 1);
-            } else {
-                this._fancyPlayerSlots.push(playerSlot);
+                return; // already visible
             }
-            const playerPermission = new PlayerPermission().setPlayerSlots(
-                this._fancyPlayerSlots
-            );
-            this._fancyUI.players = playerPermission;
-
-            if (this._fancyPlayerSlots.length === 0 && this._fancyUIadded) {
-                world.removeScreenUIElement(this._fancyUI);
-                this._fancyUIadded = false;
-            } else if (
-                this._fancyPlayerSlots.length > 0 &&
-                !this._fancyUIadded
-            ) {
-                world.addScreenUI(this._fancyUI);
-                this._fancyUIadded = true;
-
-                // Move to top.
-                world.removeScreenUIElement(this._toggleUI);
-                world.addScreenUI(this._toggleUI);
+            this._simplePlayerSlots.push(playerSlot);
+        } else {
+            if (index < 0) {
+                return; // already hidden
             }
+            this._simplePlayerSlots.splice(index, 1);
+        }
 
-            if (this._fancyUIadded) {
-                world.updateScreenUI(this._fancyUI);
-            }
+        const playerPermission = new PlayerPermission().setPlayerSlots(
+            this._simplePlayerSlots
+        );
+        this._simpleUI.players = playerPermission;
+
+        if (this._simplePlayerSlots.length === 0 && this._simpleUIadded) {
+            world.removeScreenUIElement(this._simpleUI);
+            this._simpleUIadded = false;
+        } else if (this._simplePlayerSlots.length > 0 && !this._simpleUIadded) {
+            world.addScreenUI(this._simpleUI);
+            this._simpleUIadded = true;
+            this.moveToggleButtonToTop();
+        }
+
+        if (this._simpleUIadded) {
+            world.updateScreenUI(this._simpleUI);
         }
     }
 
