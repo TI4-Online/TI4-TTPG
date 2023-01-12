@@ -7,6 +7,8 @@ module.exports = (data) => {
     const agendaCards = [];
     const controlTokens = [];
 
+    const activeAgendaCard =
+        world.TI4.agenda.isActive() && world.TI4.agenda.getAgendaCard();
     const checkDiscardPile = true;
     const allowFaceDown = false;
     for (const obj of world.getAllObjects()) {
@@ -25,6 +27,9 @@ module.exports = (data) => {
             continue;
         }
         if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
+            continue;
+        }
+        if (obj === activeAgendaCard) {
             continue;
         }
         agendaCards.push(obj);
