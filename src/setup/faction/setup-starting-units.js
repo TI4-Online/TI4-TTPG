@@ -73,10 +73,9 @@ class SetupStartingUnits extends AbstractSetup {
             assert(bag);
             assert(bag.getNumItems() >= count);
             for (let i = 0; i < count; i++) {
-                const above = bag.getPosition().add([0, 0, 5 + i]);
-                const obj = bag.takeAt(0, above);
                 const pos = homeSystemObj.localPositionToWorld(localPos);
-                obj.setPosition(pos);
+                const above = pos.add([0, 0, 1]);
+                const obj = bag.takeAt(0, above);
                 obj.snapToGround();
                 localPos = localPos.rotateAngleAxis(rotate, [0, 0, 1]);
                 objsForLaterUse.push(obj);

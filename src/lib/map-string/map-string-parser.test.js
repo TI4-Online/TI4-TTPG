@@ -144,3 +144,11 @@ it("format with missing tile", () => {
         (mapTiles[3] = { tile: 3 }),
         assert.equal(format(mapTiles), "1 -1 3");
 });
+
+// it("wacky rotation values", () => {
+//     // It takes the regex a good amount of time to reject this...
+//     const s =
+//         "66 91a60 63 83b180 35 86a120 78 87b240 30 64 89a60 79 62 90b 44 77 58 72 53 71 80 65 68 29 85a120 46 76 50 28 26 57 34 25 0 59 67 0 24 40 05 37 39 12 49 0 70 13 42 74 56 41 31 0 0 0 0 0 0 0 0";
+//     const valid = validate(s);
+//     assert.equal(valid, false);
+// });

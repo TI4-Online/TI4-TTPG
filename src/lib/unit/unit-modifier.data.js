@@ -1196,12 +1196,25 @@ module.exports = [
         priority: "adjust",
         triggerNsid: "card.promissory.norr:base/tekklar_legion",
         filter: (auxData) => {
-            return auxData.rollType === "groundCombat";
+            if (auxData.rollType !== "groundCombat") {
+                return false;
+            }
+            const faction = auxData.self.faction;
+            if (faction && faction.nsidName === "norr") {
+                return true; // applies when other player has it out
+            }
+            const playerSlot = auxData.self.playerSlot;
+            const cardNsid = "card.promissory.norr:base/tekklar_legion";
+            const returnCardObject = false;
+            if (CardUtil.hasCard(playerSlot, cardNsid, returnCardObject)) {
+                return true; // player has the card
+            }
+            return false; // not n'orr, card held by another player
         },
         applyEach: (unitAttrs, auxData) => {
             if (unitAttrs.raw.groundCombat) {
                 const faction = auxData.self.faction;
-                const bonus = faction && faction.nsidName == "norr" ? -1 : 1;
+                const bonus = faction && faction.nsidName === "norr" ? -1 : 1;
                 unitAttrs.raw.groundCombat.hit -= bonus;
             }
         },

@@ -47,6 +47,7 @@ class SetupHomeSystem extends AbstractSetup {
                 continue;
             }
             onMapPos = obj.getPosition();
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
             obj.destroy();
             break;
         }
@@ -70,7 +71,9 @@ class SetupHomeSystem extends AbstractSetup {
         // Spawn ("oops ALL X")
         const rot = new Rotator(0, 0, 0);
         for (const [nsid, pos] of Object.entries(nsidToPosition)) {
-            const obj = Spawn.spawn(nsid, pos, rot);
+            const above = pos.add([0, 0, 1]);
+            const obj = Spawn.spawn(nsid, above, rot);
+            obj.snapToGround();
             obj.setObjectType(ObjectType.Ground);
             obj.setOwningPlayerSlot(playerSlot);
         }

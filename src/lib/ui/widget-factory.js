@@ -31,7 +31,7 @@ const {
 
 // ----------------------------------------------------------------------------
 
-const RECYCLE = true;
+const RECYCLE = false; // widget bug fixed 12-Jan-2023
 const INVENTORY_CAP = 600;
 const VERIFY_DETACHED = false;
 

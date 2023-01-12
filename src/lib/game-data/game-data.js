@@ -294,8 +294,10 @@ class GameData {
             delete copy.mapString;
             delete copy.objectives;
             delete copy.platform;
-            delete copy.setup;
             delete copy.scoreboard;
+            delete copy.setup;
+            delete copy.setupTimestamp;
+            delete copy.speaker;
             delete copy.timer;
             delete copy.turn;
             delete copy.whispers;
