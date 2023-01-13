@@ -9,6 +9,7 @@ const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
+    Panel,
     Text,
     TextJustification,
     VerticalAlignment,
@@ -40,6 +41,15 @@ class AgendaUiMain {
             voteText = new Text();
             deskIndexToVoteText[deskIndex] = voteText;
         }
+        const parent = voteText.getParent();
+        if (parent) {
+            if (parent instanceof Panel) {
+                parent.removeAllChildren();
+            } else {
+                throw new Error("unhandled parent type");
+            }
+        }
+
         return voteText;
     }
 

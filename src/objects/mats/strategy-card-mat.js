@@ -8,6 +8,7 @@ const {
     Text,
     TextJustification,
     UIElement,
+    UIZoomVisibility,
     Vector,
     VerticalBox,
     refObject,
@@ -54,8 +55,9 @@ const _panel = new VerticalBox()
     .addChild(_subtitleRow);
 
 const _uiElement = new UIElement();
+_uiElement.zoomVisibility = UIZoomVisibility.Both;
 _uiElement.anchorY = 0;
-_uiElement.position = new Vector(0, 13, 0.14);
+_uiElement.position = new Vector(0, 13, 0.15);
 _uiElement.rotation = new Rotator(0, 90, 0);
 _uiElement.widget = _panel;
 _uiElement.scale = 1 / SCALE;

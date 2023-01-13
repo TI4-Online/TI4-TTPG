@@ -5,6 +5,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
+    Panel,
     Text,
     globalEvents,
     world,
@@ -68,6 +69,15 @@ class AgendaWidgetAvailableVotes {
             voteText = new Text();
             deskIndexToVoteText[deskIndex2] = voteText;
         }
+        const parent = voteText.getParent();
+        if (parent) {
+            if (parent instanceof Panel) {
+                parent.removeAllChildren();
+            } else {
+                throw new Error("unhandled parent type");
+            }
+        }
+
         return voteText;
     }
 
