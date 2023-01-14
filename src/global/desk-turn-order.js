@@ -92,7 +92,7 @@ class DeskTurnOrder {
             this._playerSlot
         );
         const pos = playerDesk.localPositionToWorld(new Vector(42, 0, 0));
-        pos.z = world.getTableHeight() + 0.01;
+        pos.z = world.getTableHeight() + 0.2;
 
         const panel = WidgetFactory.verticalBox()
             .setChildDistance(0)

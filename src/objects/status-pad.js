@@ -164,7 +164,7 @@ class StatusPad {
 
         const ui = new UIElement();
         ui.anchorY = 0;
-        ui.position = new Vector(0, 0, 0.09 + CONFIG.buttonLift);
+        ui.position = new Vector(0, 0, 0.29 + CONFIG.buttonLift);
         ui.rotation = new Rotator(0, 0, 180);
         ui.scale = 0.2;
         ui.widget = new Border().setChild(layoutBox);

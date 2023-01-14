@@ -91,7 +91,7 @@ class GameUI {
         this._uiElement.position = new Vector(
             anchor.pos.x,
             anchor.pos.y,
-            world.getTableHeight() + 0.1
+            world.getTableHeight() + 0.2
         );
         this._uiElement.rotation = new Rotator(0, anchor.yaw, 0);
         this._uiElement.widget = frame;
