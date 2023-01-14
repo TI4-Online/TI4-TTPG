@@ -14,9 +14,34 @@ const MECATOL_REX_SYSTEM_TILE = 18;
  * @returns {boolean} true if the map string is valid and can be parsed, otherwise false
  */
 const validate = function (mapString) {
-    return /^\s*(?:\{[-]*\d+([abAB]\d)*\})?(?:\s*,?\s*[-]*\d+(?:[abAB]\d)?)*\s*$/.test(
-        mapString
-    );
+    // The following regex is correct, but can take a very long time with slightly malformed strings.
+    //return /^\s*(?:\{[-]*\d+([abAB]\d)*\})?(?:\s*,?\s*[-]*\d+(?:[abAB]\d)?)*\s*$/.test(
+    //    mapString
+    //);
+
+    // Instead, break it up and use a simple check for each.
+    const entries = mapString.split(/[ ,]/).filter((entry) => entry.length > 0);
+    if (entries.length === 0) {
+        return true;
+    }
+
+    // The first entry *may* be {4} or {4a1} in curly braces to signify non-standard.
+    // If it matches prune it before checking remaining.
+    const first = entries[0];
+    const firstRegex = /^\{[-]*\d+([abAB]\d)?\}$/;
+    if (firstRegex.test(first)) {
+        entries.shift();
+    }
+
+    const entryRegex = /^[-]*\d+(?:[abAB]\d)?$/;
+    for (const entry of entries) {
+        if (!entryRegex.test(entry)) {
+            //console.log(`bad entry "${entry}" from "${mapString}"`);
+            return false;
+        }
+    }
+
+    return true;
 };
 
 /**
