@@ -40,6 +40,11 @@ module.exports = (data) => {
         return obj.getCardDetails().name;
     });
 
+    // Filter to unique.
+    data.laws = data.laws.filter(
+        (value, index, self) => self.indexOf(value) === index
+    );
+
     // Report per-player laws.
     const playerDesks = world.TI4.getAllPlayerDesks();
     const playerSlotToLawsNames = {};
