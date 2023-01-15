@@ -223,6 +223,9 @@ class PlayerDesk {
         this._showColors = false;
         this._factionSetupInProgress = false;
         this._ready = false;
+
+        // Game object for anchoring UI.
+        this._frozenDummyObject = undefined;
     }
 
     get center() {
@@ -248,6 +251,44 @@ class PlayerDesk {
     }
     get rot() {
         return this._rot;
+    }
+
+    /**
+     * Find or create a frozen dummy object associated with this desk.
+     *
+     * Dummy objects are useful for anchoring complex UI.  TTPG/Unreal
+     * replication is capped at 64 KB, this way that UI limit is per
+     * object vs aggregate world-space UI.
+     *
+     * @returns {GameObject}
+     */
+    getFrozenDummyObject() {
+        if (!this._frozenDummyObject) {
+            // See if already exists in world.
+            const savedData = `__playerDeskFrozenDummy:${this.index + 1}/${
+                world.TI4.config.playerCount
+            }__`;
+            for (const obj of world.getAllObjects()) {
+                if (obj.getSavedData() === savedData) {
+                    this._frozenDummyObject = obj;
+                    break;
+                }
+            }
+
+            // Spawn if missing.
+            if (!this._frozenDummyObject) {
+                const templateId = "83FDE12C4E6D912B16B85E9A00422F43"; // cube
+                const pos = this.center.subtract([0, 0, 5]);
+                const rot = this.rot;
+                const obj = world.createObjectFromTemplate(templateId, pos);
+                obj.setRotation(rot, 0);
+                obj.setSavedData(savedData);
+                obj.freeze();
+                this._frozenDummyObject = obj;
+            }
+        }
+
+        return this._frozenDummyObject;
     }
 
     resetUI() {
