@@ -5,6 +5,7 @@ const {
     Button,
     Canvas,
     CheckBox,
+    ContentButton,
     HorizontalAlignment,
     HorizontalBox,
     ImageButton,
@@ -12,6 +13,7 @@ const {
     LayoutBox,
     MultilineTextBox,
     Panel,
+    RichText,
     Rotator,
     ScreenUIElement,
     Slider,
@@ -154,11 +156,13 @@ const _inventory = {
     button: new WidgetInventoryEntry(() => new Button()),
     canvas: new WidgetInventoryEntry(() => new Canvas()),
     checkBox: new WidgetInventoryEntry(() => new CheckBox()),
+    contentButton: new WidgetInventoryEntry(() => new ContentButton()),
     horizontalBox: new WidgetInventoryEntry(() => new HorizontalBox()),
     imageButton: new WidgetInventoryEntry(() => new ImageButton()),
     imageWidget: new WidgetInventoryEntry(() => new ImageWidget()),
     layoutBox: new WidgetInventoryEntry(() => new LayoutBox()),
     multilineTextBox: new WidgetInventoryEntry(() => new MultilineTextBox()),
+    richText: new WidgetInventoryEntry(() => new RichText()),
     slider: new WidgetInventoryEntry(() => new Slider()),
     text: new WidgetInventoryEntry(() => new Text()),
     textBox: new WidgetInventoryEntry(() => new TextBox()),
@@ -379,6 +383,10 @@ class WidgetFactory {
             widget.setText("");
             widget.setIsChecked(false);
             _inventory.checkBox.push(widget);
+        } else if (widget instanceof ContentButton) {
+            widget.onClicked.clear();
+            widget.setChild(undefined);
+            _inventory.contentButton.push(widget);
         } else if (widget instanceof HorizontalBox) {
             _inventory.horizontalBox.push(widget);
         } else if (widget instanceof ImageButton) {
@@ -410,6 +418,11 @@ class WidgetFactory {
             widget.setMaxLength(200);
             widget.setText("");
             _inventory.multilineTextBox.push(widget);
+        } else if (widget instanceof RichText) {
+            widget.setAutoWrap(false);
+            widget.setJustification(TextJustification.Left);
+            widget.setText("");
+            _inventory.text.push(widget);
         } else if (widget instanceof Slider) {
             widget.onValueChanged.clear();
             widget.setMaxValue(1);
@@ -419,6 +432,7 @@ class WidgetFactory {
             widget.setValue(0);
             _inventory.slider.push(widget);
         } else if (widget instanceof Text) {
+            widget.setAutoWrap(false);
             widget.setJustification(TextJustification.Left);
             widget.setText("");
             _inventory.text.push(widget);
@@ -456,6 +470,10 @@ class WidgetFactory {
         return _inventory.checkBox.popOrCreate();
     }
 
+    static contentButton() {
+        return _inventory.contentButton.popOrCreate();
+    }
+
     static horizontalBox() {
         return _inventory.horizontalBox.popOrCreate();
     }
@@ -476,6 +494,10 @@ class WidgetFactory {
 
     static multilineTextBox() {
         return _inventory.multilineTextBox.popOrCreate();
+    }
+
+    static richText() {
+        return _inventory.richText.popOrCreate();
     }
 
     static screenUIElement() {
