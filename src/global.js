@@ -135,6 +135,7 @@ const {
     DEFAULT_ASYNC_DELAY,
 } = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
+const { CardUtil } = require("./lib/card/card-util");
 const { ErrorReporting } = require("./global/error-reporting");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
@@ -150,6 +151,8 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    CardUtil: CardUtil,
+
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
     borders: new Borders(),
