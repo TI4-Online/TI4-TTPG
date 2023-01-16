@@ -5,6 +5,10 @@ class Color {
         this.b = b;
         this.a = a;
     }
+
+    toHex() {
+        return "00000000";
+    }
 }
 
 module.exports = Color;

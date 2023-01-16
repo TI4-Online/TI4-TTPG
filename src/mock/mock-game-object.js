@@ -59,6 +59,8 @@ class GameObject {
         this.onDestroyed.trigger(this);
     }
 
+    freeze() {}
+
     getContainer() {
         return this._container;
     }
