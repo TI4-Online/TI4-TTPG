@@ -186,6 +186,14 @@ class GameObject {
     worldPositionToLocal(position) {
         return position; // true if object at origin with no rotation...
     }
+
+    localRotationToWorld(rotation) {
+        return rotation; // true if object at origin with no rotation...
+    }
+
+    worldRotationToLocal(rotation) {
+        return rotation; // true if object at origin with no rotation...
+    }
 }
 
 module.exports = GameObject;
