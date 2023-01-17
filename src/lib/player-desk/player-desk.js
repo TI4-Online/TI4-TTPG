@@ -19,6 +19,7 @@ const {
     Player,
     Rotator,
     Vector,
+    UIElement,
     globalEvents,
     world,
 } = require("../../wrapper/api");
@@ -226,6 +227,8 @@ class PlayerDesk {
 
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
+
+        this.getFrozenDummyObject();
     }
 
     get center() {
@@ -263,32 +266,72 @@ class PlayerDesk {
      * @returns {GameObject}
      */
     getFrozenDummyObject() {
+        const pos = this.center.subtract([0, 0, 5]); // under table
+        const rot = this.rot;
+        const savedData = `__playerDeskFrozenDummy:${this.index + 1}/${
+            world.TI4.config.playerCount
+        }__`;
+
+        // See if already exists in world.
         if (!this._frozenDummyObject) {
-            // See if already exists in world.
-            const savedData = `__playerDeskFrozenDummy:${this.index + 1}/${
-                world.TI4.config.playerCount
-            }__`;
             for (const obj of world.getAllObjects()) {
                 if (obj.getSavedData() === savedData) {
                     this._frozenDummyObject = obj;
                     break;
                 }
             }
-
-            // Spawn if missing.
-            if (!this._frozenDummyObject) {
-                const templateId = "83FDE12C4E6D912B16B85E9A00422F43"; // cube
-                const pos = this.center.subtract([0, 0, 5]);
-                const rot = this.rot;
-                const obj = world.createObjectFromTemplate(templateId, pos);
-                obj.setRotation(rot, 0);
-                obj.setSavedData(savedData);
-                obj.freeze();
-                this._frozenDummyObject = obj;
-            }
+        }
+        // Spawn if missing.
+        if (!this._frozenDummyObject) {
+            const templateId = "83FDE12C4E6D912B16B85E9A00422F43"; // cube
+            const obj = world.createObjectFromTemplate(templateId, pos);
+            obj.setRotation(rot, 0);
+            obj.setSavedData(savedData);
+            obj.freeze();
+            this._frozenDummyObject = obj;
         }
 
+        // Reset position (paranoia).
+        this._frozenDummyObject.setPosition(pos);
+        this._frozenDummyObject.setRotation(rot);
+        this._frozenDummyObject.freeze();
+
         return this._frozenDummyObject;
+    }
+
+    addUI(uiElement) {
+        assert(uiElement instanceof UIElement);
+
+        const frozenObj = this.getFrozenDummyObject();
+
+        // Convert to local space.
+        uiElement.position = frozenObj.worldPositionToLocal(uiElement.position);
+        uiElement.rotation = frozenObj.worldRotationToLocal(uiElement.rotation);
+
+        frozenObj.addUI(uiElement);
+    }
+
+    removeUIElement(uiElement) {
+        assert(uiElement instanceof UIElement);
+
+        const frozenObj = this.getFrozenDummyObject();
+        frozenObj.removeUI(uiElement);
+
+        // Restore world space transform.
+        uiElement.position = frozenObj.localPositionToWorld(uiElement.position);
+        uiElement.rotation = frozenObj.localRotationToWorld(uiElement.rotation);
+    }
+
+    updateUI(uiElement) {
+        assert(uiElement instanceof UIElement);
+
+        const frozenObj = this.getFrozenDummyObject();
+
+        // Convert to local space.
+        uiElement.position = frozenObj.worldPositionToLocal(uiElement.position);
+        uiElement.rotation = frozenObj.worldRotationToLocal(uiElement.rotation);
+
+        frozenObj.updateUI(uiElement);
     }
 
     resetUI() {
@@ -324,12 +367,12 @@ class PlayerDesk {
         }
 
         if (!this._playerDeskUI) {
-            this.addUI();
+            this._addPlayerDeskUI();
         }
         this._playerDeskUI.update(config);
     }
 
-    addUI() {
+    _addPlayerDeskUI() {
         const colorOptions = this.getColorOptions();
 
         assert(!this._playerDeskUI);
@@ -389,7 +432,7 @@ class PlayerDesk {
         this._playerDeskUI.addUI();
     }
 
-    removeUI() {
+    _removePlayerDeskUI() {
         if (this._playerDeskUI) {
             this._playerDeskUI.removeUI();
             this._playerDeskUI = false;
@@ -723,7 +766,7 @@ globalEvents.TI4.onPlayerCountAboutToChange.add((newPlayerCount, player) => {
     if (_playerDesks) {
         for (const playerDesk of _playerDesks) {
             assert(playerDesk instanceof PlayerDesk);
-            playerDesk.removeUI();
+            playerDesk._removePlayerDeskUI();
         }
     }
 
