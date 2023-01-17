@@ -351,7 +351,10 @@ class AbstractStrategyCard {
                 y: 0,
                 z: 5,
             });
-            world.updateUI(ui);
+            ui.rotation = playerDesk.localRotationToWorld(
+                new Rotator(35, 0, 0)
+            );
+            playerDesk.updateUI(ui);
             nextOffset += deltaOffset;
         }
     }
@@ -417,7 +420,9 @@ class AbstractStrategyCard {
         ui.scale = 1 / SCALE;
         ui.widget = widget;
 
-        world.addUI(ui);
+        // TTPG/Unreal has a cap on single-instance objects, world UI is one bucket.
+        // Spread out strategy card UI to per-player objects.
+        playerDesk.addUI(ui);
 
         assert(!this._playerSlotToUi[playerSlot]);
         this._playerSlotToUi[playerSlot] = ui;
@@ -440,7 +445,7 @@ class AbstractStrategyCard {
         const ui = this._playerSlotToUi[playerSlot];
         this._playerSlotToUi[playerSlot] = undefined;
         if (ui) {
-            world.removeUIElement(ui);
+            playerDesk.removeUIElement(ui);
             WidgetFactory.release(ui);
         } else {
             // Searching for why "close" isn't working for some players sometime.
