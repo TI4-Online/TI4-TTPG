@@ -23,6 +23,7 @@ module.exports = (data) => {
 
     const controlTokens = [];
     const objectiveCards = [];
+    let agendaMat = undefined;
 
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
@@ -40,8 +41,15 @@ module.exports = (data) => {
             continue; // make sure later cannot add again
         }
 
-        // At this point everything is a card.  Secrets can be in card holders!
+        // Find the agenda mat.
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (nsid === "mat:base/agenda") {
+            agendaMat = obj;
+            continue;
+        }
+
         if (!(obj instanceof Card)) {
+            // At this point everything is a card.  Secrets can be in card holders!
             continue;
         }
         if (!obj.isFaceUp()) {
@@ -53,7 +61,6 @@ module.exports = (data) => {
         }
 
         // Find objective cards.  Can be in a card holder (secrets)!
-        const nsid = ObjectNamespace.getNsid(obj);
         if (nsid.startsWith("card.objective.")) {
             objectiveCards.push(obj);
             continue; // make sure later cannot add again
@@ -212,6 +219,30 @@ module.exports = (data) => {
             playerData.objectives = objectives;
         }
     });
+
+    // Special case for "classified documents leaks": if a secret is on the
+    // agenda mat, promote it to a public.
+    if (agendaMat) {
+        const secretsOnMat = objectiveCards
+            .filter((obj) => {
+                const nsid = ObjectNamespace.getNsid(obj);
+                return nsid.startsWith("card.objective.secret");
+            })
+            .filter((obj) => {
+                const pos = agendaMat.worldPositionToLocal(obj.getPosition());
+                const extent = agendaMat.getExtent();
+                if (Math.abs(pos.x) < extent.x && Math.abs(pos.y) < extent.y) {
+                    return true;
+                }
+            })
+            .map((obj) => {
+                return "*" + obj.getCardDetails().name;
+            });
+        data.objectives["Secret Objectives"] = data.objectives[
+            "Secret Objectives"
+        ].filter((name) => !secretsOnMat.includes(name));
+        data.objectives["Public Objectives I"].push(...secretsOnMat);
+    }
 
     // Strip off omega suffix.
     for (const [k, v] of Object.entries(data.objectives)) {
