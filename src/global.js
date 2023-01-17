@@ -251,6 +251,7 @@ require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-fetch-planet");
 require("./global/right-click/right-click-iihq-modernization");
+require("./global/right-click/right-click-infantry-2");
 require("./global/right-click/right-click-maban-omega");
 require("./global/right-click/right-click-mageon-implants");
 require("./global/right-click/right-click-purge");
