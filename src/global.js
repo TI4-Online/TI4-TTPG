@@ -232,7 +232,7 @@ world.TI4 = {
 
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
-require("./global/card-descriptions"); // these appear when face down, disable for now
+//require("./global/card-descriptions"); // these appear when face down, disable for now
 require("./global/chat-commands");
 require("./global/desk-turn-order");
 require("./global/export-game");
