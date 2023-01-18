@@ -61,6 +61,9 @@ class CombatRoller {
     }
 
     getRollReport(unitToDice) {
+        const playerSlot = this._player.getSlot();
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+
         // Generate one message per unit type with to-hit required and roll values.
         const unitMessages = [];
         for (const [unit, dice] of Object.entries(unitToDice)) {
@@ -107,13 +110,13 @@ class CombatRoller {
             }
         }
         const landed = locale("ui.message.player_landed_hits", {
-            playerName: this._player.getName(),
+            playerName,
             hits: totalHits,
         });
 
         return (
             locale("ui.message.player_rolled", {
-                playerName: this._player.getName(),
+                playerName,
                 report: perUnitReport,
             }) +
             "\n" +

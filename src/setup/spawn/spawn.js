@@ -3,6 +3,7 @@ const locale = require("../../lib/locale");
 const { Hex } = require("../../lib/hex");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { world } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 
 const NSID_TO_TEMPLATE = {};
 Object.assign(NSID_TO_TEMPLATE, require("./template/nsid-bag-token.json"));
@@ -212,9 +213,9 @@ class Spawn {
 
         const obj = world.createObjectFromTemplate(templateId, position);
         if (!obj) {
-            throw new Error(
-                `spawn failed for "${nsid}" (template id "${templateId}")`
-            );
+            const msg = `Spawn failed for "${nsid}" (template id "${templateId}"), this happens if you have more than one version of the TI4 mod.`;
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            throw new Error(msg);
         }
 
         obj.setRotation(rotation);

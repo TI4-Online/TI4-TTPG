@@ -318,7 +318,7 @@ class AgendaUiDesk {
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("+")
                 .setEnabled(false);
-            const voteTotalText = WidgetFactory.text()
+            const voteText = WidgetFactory.richText()
                 .setFontSize(CONFIG.fontSize)
                 .setText(" [0] ");
 
@@ -351,16 +351,7 @@ class AgendaUiDesk {
                 .addChild(voteButton)
                 .addChild(voteDecrButton)
                 .addChild(voteIncrButton)
-                .addChild(voteTotalText);
-            const voteTexts = [];
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const voteText = WidgetFactory.text()
-                    .setFontSize(CONFIG.fontSize)
-                    .setTextColor(playerDesk.plasticColor)
-                    .setText("");
-                votePanel.addChild(voteText);
-                voteTexts.push(voteText);
-            }
+                .addChild(voteText);
             colVotes.addChild(votePanel);
 
             const predictionDecrButton = WidgetFactory.button()
@@ -369,6 +360,9 @@ class AgendaUiDesk {
             const predictionIncrButton = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
                 .setText("+");
+            const predictionText = WidgetFactory.richText().setFontSize(
+                CONFIG.fontSize
+            );
 
             predictionDecrButton.onClicked.add((clickedButton, player) => {
                 if (!this.allowClick(player)) {
@@ -393,16 +387,8 @@ class AgendaUiDesk {
 
             const predictionPanel = WidgetFactory.horizontalBox()
                 .addChild(predictionDecrButton)
-                .addChild(predictionIncrButton);
-            const predictionTexts = [];
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const predictionText = WidgetFactory.text()
-                    .setFontSize(CONFIG.fontSize)
-                    .setTextColor(playerDesk.plasticColor)
-                    .setText("");
-                predictionPanel.addChild(predictionText);
-                predictionTexts.push(predictionText);
-            }
+                .addChild(predictionIncrButton)
+                .addChild(predictionText);
             colPredictions.addChild(predictionPanel);
 
             this._outcomeData.push({
@@ -410,11 +396,10 @@ class AgendaUiDesk {
                 voteButton,
                 voteDecrButton,
                 voteIncrButton,
-                voteTotalText,
-                voteTexts,
+                voteText,
                 predictionDecrButton,
                 predictionIncrButton,
-                predictionTexts,
+                predictionText,
             });
         }
 
@@ -512,6 +497,15 @@ class AgendaUiDesk {
 
     update() {
         const agenda = world.TI4.agenda;
+        const deskIndexToColor = world.TI4.getAllPlayerDesks().map(
+            (playerDesk) => {
+                return playerDesk.plasticColor
+                    .toHex()
+                    .substring(0, 6)
+                    .toLowerCase();
+            }
+        );
+
         const deskIndex = this._playerDesk.index;
         let enabled;
         let msg;
@@ -543,36 +537,41 @@ class AgendaUiDesk {
             outcome.voteDecrButton.setEnabled(enabled);
             outcome.voteIncrButton.setEnabled(enabled);
 
+            let voteTexts = [];
             let total = 0;
+
             const peerCount = world.TI4.config.playerCount;
             for (let peerIndex = 0; peerIndex < peerCount; peerIndex++) {
-                msg = "";
                 const peerOutcomeIndex = agenda.getVoteOutcomeIndex(peerIndex);
                 if (peerOutcomeIndex === outcomeIndex) {
                     const votes = agenda.getVoteCount(peerIndex);
                     if (votes > 0) {
                         total += votes;
-                        msg = `${votes} `;
+                        const color = deskIndexToColor[peerIndex];
+                        voteTexts.push(`[color=#${color}]${votes}[/color]`);
                     }
                 }
-                outcome.voteTexts[peerIndex].setText(msg);
             }
-            outcome.voteTotalText.setText(` [${total}] `);
+            let msg = ` [${total}] ${voteTexts.join(" ")}`;
+            outcome.voteText.setText(msg);
 
             enabled = !locked;
             outcome.predictionDecrButton.setEnabled(enabled);
             outcome.predictionIncrButton.setEnabled(enabled);
+            let predictionsTexts = [];
             for (let peerIndex = 0; peerIndex < peerCount; peerIndex++) {
-                msg = "";
                 const predictions = agenda.getPredictionCount(
                     peerIndex,
                     outcomeIndex
                 );
                 if (predictions > 0) {
                     msg = new Array(predictions + 1).join("X");
+                    const color = deskIndexToColor[peerIndex];
+                    predictionsTexts.push(`[color=#${color}]${msg}[/color]`);
                 }
-                outcome.predictionTexts[peerIndex].setText(msg);
             }
+            msg = predictionsTexts.join("");
+            outcome.predictionText.setText(msg);
         }
 
         // Lock votes.

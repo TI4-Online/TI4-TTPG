@@ -15,8 +15,9 @@ const MAX_CHILDREN_PER_ROW = 3;
 
 const ICON_WIDTH = 70 * CONFIG.scale;
 const ICON_HEIGHT = ICON_WIDTH;
-const NAV_ENTRY_WIDTH = 235 * CONFIG.scale;
-const NAV_SPACING = 20 * CONFIG.scale;
+const NAV_ENTRY_WIDTH = 240 * CONFIG.scale;
+const NAV_ENTRY_PAD_V = 12 * CONFIG.scale;
+const NAV_SPACING = 10 * CONFIG.scale;
 const NAV_ENTRY_FONTSIZE = CONFIG.fontSize * 0.9;
 
 class NavFolder extends NavEntry {
@@ -29,26 +30,29 @@ class NavFolder extends NavEntry {
             navPanel.setCurrentNavEntry(dstEntry);
         };
 
-        const icon = WidgetFactory.imageButton()
+        const icon = WidgetFactory.imageWidget()
             .setImageSize(ICON_WIDTH, ICON_HEIGHT)
             .setImage(navEntry.getIconPath(), refPackageId);
-        icon.onClicked.add(onClickedHandler);
 
-        const name = WidgetFactory.button()
+        const name = WidgetFactory.text()
             .setFontSize(NAV_ENTRY_FONTSIZE)
             .setText(` ${navEntry.getName()} `);
-        name.onClicked.add(onClickedHandler);
 
         const panel = WidgetFactory.verticalBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setVerticalAlignment(VerticalAlignment.Top)
+            .setVerticalAlignment(VerticalAlignment.Center)
             .addChild(icon)
             .addChild(name);
 
         const box = WidgetFactory.layoutBox()
             .setOverrideWidth(NAV_ENTRY_WIDTH)
+            .setPadding(0, 0, NAV_ENTRY_PAD_V, NAV_ENTRY_PAD_V)
             .setChild(panel);
-        return box;
+
+        const contentButton = WidgetFactory.contentButton().setChild(box);
+        contentButton.onClicked.add(onClickedHandler);
+
+        return contentButton;
     }
 
     static _createFolderContentsWidget(navPanel, navFolder) {

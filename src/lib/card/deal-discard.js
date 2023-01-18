@@ -1,7 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { CheckDeckUnique } = require("./check-deck-unique");
 const { ObjectNamespace } = require("../object-namespace");
-const { Card, Rotator, world } = require("../../wrapper/api");
 const { TableLayout } = require("../../table/table-layout");
+const { Card, Rotator, world } = require("../../wrapper/api");
 
 const DECKS = [
     {
@@ -422,18 +423,14 @@ class DealDiscard {
             for (const traceHit of traceHits) {
                 if (traceHit.object instanceof Card) {
                     //console.log("discard: adding to deck");
+                    const deck = traceHit.object;
                     obj.setTags(["DELETED_ITEMS_IGNORE"]);
                     const toFront = true;
                     const offset = 0;
                     const animate = false;
                     const flipped = false;
-                    traceHit.object.addCards(
-                        obj,
-                        toFront,
-                        offset,
-                        animate,
-                        flipped
-                    );
+                    CheckDeckUnique.checkDeckAfterAddingCard(deck, obj);
+                    deck.addCards(obj, toFront, offset, animate, flipped);
                     return true;
                 }
             }
@@ -461,6 +458,7 @@ class DealDiscard {
             const offset = 0;
             const animate = true;
             const flipped = false;
+            CheckDeckUnique.checkDeckAfterAddingCard(deck, obj);
             deck.addCards(obj, toFront, offset, animate, flipped);
         } else {
             // Start a new discard pile.

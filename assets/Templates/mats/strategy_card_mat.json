@@ -51,8 +51,10 @@
 			"Texture": "locale/mats/decks_mat.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -88,64 +90,80 @@
 			"Y": -10.4,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 15.2
+			"SnapRotation": 2,
+			"RotationOffset": 15.2,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 13.52,
 			"Y": -4.79,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 36.2
+			"SnapRotation": 2,
+			"RotationOffset": 36.2,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 8.41,
 			"Y": -0.73,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 56.8
+			"SnapRotation": 2,
+			"RotationOffset": 56.8,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 2.21,
 			"Y": 1.24,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 77.1
+			"SnapRotation": 2,
+			"RotationOffset": 77.1,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -4.26,
 			"Y": 0.91,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 97.4
+			"SnapRotation": 2,
+			"RotationOffset": 97.4,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -10.24,
 			"Y": -1.67,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 117.8
+			"SnapRotation": 2,
+			"RotationOffset": 117.8,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -14.96,
 			"Y": -6.2,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 138.7
+			"SnapRotation": 2,
+			"RotationOffset": 138.7,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -17.7,
 			"Y": -12.1,
 			"Z": 0,
 			"Range": 3,
-			"SnapRotation": true,
-			"RotationOffset": 160.1
+			"SnapRotation": 2,
+			"RotationOffset": 160.1,
+			"Shape": 0,
+			"FlipValidity": 0
 		}
 	],
 	"ZoomViewDirection":
@@ -153,5 +171,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

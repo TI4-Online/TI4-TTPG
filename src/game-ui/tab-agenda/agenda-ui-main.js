@@ -9,8 +9,6 @@ const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     HorizontalAlignment,
-    Panel,
-    Text,
     TextJustification,
     VerticalAlignment,
     globalEvents,
@@ -19,92 +17,100 @@ const {
 } = require("../../wrapper/api");
 
 // Keep private text widgets for editing.
-const _outcomeIndexToDeskIndexToVoteText = {};
+const _outcomeIndexToWidgets = {};
 
 globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
     AgendaUiMain._updateVoteAndPredictionText();
 });
 
 class AgendaUiMain {
-    static _getVoteText(outcomeIndex, deskIndex) {
+    static _getWidgets(outcomeIndex, alloc) {
         assert(typeof outcomeIndex === "number");
-        assert(typeof deskIndex === "number");
-        let deskIndexToVoteText =
-            _outcomeIndexToDeskIndexToVoteText[outcomeIndex];
-        if (!deskIndexToVoteText) {
-            deskIndexToVoteText = {};
-            _outcomeIndexToDeskIndexToVoteText[outcomeIndex] =
-                deskIndexToVoteText;
+        assert(typeof alloc === "boolean");
+
+        let result = _outcomeIndexToWidgets[outcomeIndex];
+        if (!result) {
+            const outcomeName = WidgetFactory.text();
+            const votesText = WidgetFactory.richText();
+            const predictionsText = WidgetFactory.richText();
+            result = {
+                outcomeName,
+                votesText,
+                predictionsText,
+            };
+            _outcomeIndexToWidgets[outcomeIndex] = result;
         }
-        let voteText = deskIndexToVoteText[deskIndex];
-        if (!voteText) {
-            voteText = new Text();
-            deskIndexToVoteText[deskIndex] = voteText;
-        }
-        const parent = voteText.getParent();
-        if (parent) {
-            if (parent instanceof Panel) {
+
+        if (alloc) {
+            let parent = result.outcomeName.getParent();
+            if (parent) {
                 parent.removeAllChildren();
-            } else {
-                throw new Error("unhandled parent type");
+            }
+            parent = result.votesText.getParent();
+            if (parent) {
+                parent.removeAllChildren();
+            }
+            parent = result.predictionsText.getParent();
+            if (parent) {
+                parent.removeAllChildren();
             }
         }
 
-        return voteText;
-    }
-
-    static _getPredictionText(outcomeIndex, deskIndex) {
-        return AgendaUiMain._getVoteText(outcomeIndex, deskIndex + 100);
+        return result;
     }
 
     static _updateVoteAndPredictionText() {
         const agenda = world.TI4.agenda;
+        const deskIndexToColor = world.TI4.getAllPlayerDesks().map(
+            (playerDesk) => {
+                return playerDesk.plasticColor
+                    .toHex()
+                    .substring(0, 6)
+                    .toLowerCase();
+            }
+        );
 
         for (
             let outcomeIndex = 0;
             outcomeIndex < agenda.getNumOutcomes();
             outcomeIndex++
         ) {
-            let deskIndex = -2; // for outcome name
-            AgendaUiMain._getVoteText(outcomeIndex, deskIndex).setText(
-                agenda.getOutcomeName(outcomeIndex)
-            );
+            const { outcomeName, votesText, predictionsText } =
+                AgendaUiMain._getWidgets(outcomeIndex, false);
 
+            outcomeName.setText(agenda.getOutcomeName(outcomeIndex));
+
+            let voteTexts = [];
             let total = 0;
             const peerCount = world.TI4.config.playerCount;
             for (let peerIndex = 0; peerIndex < peerCount; peerIndex++) {
-                const text = AgendaUiMain._getVoteText(outcomeIndex, peerIndex);
                 const peerOutcomeIndex = agenda.getVoteOutcomeIndex(peerIndex);
                 if (peerOutcomeIndex === outcomeIndex) {
                     const votes = agenda.getVoteCount(peerIndex);
                     if (votes > 0) {
                         total += votes;
+                        const color = deskIndexToColor[peerIndex];
+                        voteTexts.push(`[color=#${color}]${votes}[/color]`);
                     }
-                    text.setText(`${votes} `);
-                } else {
-                    text.setText("");
                 }
             }
-            deskIndex = -1; // vote total
-            AgendaUiMain._getVoteText(outcomeIndex, deskIndex).setText(
-                `[${total}] `
-            );
+            let msg = ` [${total}] ${voteTexts.join(" ")}`;
+            votesText.setText(msg);
 
+            let predictionsTexts = [];
             for (let peerIndex = 0; peerIndex < peerCount; peerIndex++) {
-                const text = AgendaUiMain._getPredictionText(
-                    outcomeIndex,
-                    peerIndex
-                );
                 const predictions = agenda.getPredictionCount(
                     peerIndex,
                     outcomeIndex
                 );
                 if (predictions > 0) {
-                    text.setText(new Array(predictions + 1).join("X"));
-                } else {
-                    text.setText("");
+                    msg = new Array(predictions + 1).join("X");
+                    const color = deskIndexToColor[peerIndex];
+                    predictionsTexts.push(`[color=#${color}]${msg}[/color]`);
                 }
             }
+            msg = predictionsTexts.join("");
+            predictionsText.setText(msg);
         }
     }
 
@@ -337,43 +343,17 @@ class AgendaUiMain {
             outcomeIndex < agenda.getNumOutcomes();
             outcomeIndex++
         ) {
-            let deskIndex = -2; // for outcome name
-            const outcomeName = AgendaUiMain._getVoteText(
-                outcomeIndex,
-                deskIndex
-            ).setFontSize(fontSize);
+            const { outcomeName, votesText, predictionsText } =
+                AgendaUiMain._getWidgets(outcomeIndex, true);
+
+            outcomeName.setFontSize(fontSize);
             colName.addChild(outcomeName);
 
-            deskIndex = -1; // vote total
-            const voteTotal = AgendaUiMain._getVoteText(
-                outcomeIndex,
-                deskIndex
-            ).setFontSize(fontSize);
+            votesText.setFontSize(fontSize);
+            colVotes.addChild(votesText);
 
-            const votePanel = WidgetFactory.horizontalBox()
-                .setChildDistance(0)
-                .addChild(voteTotal);
-            colVotes.addChild(votePanel);
-
-            const predictionPanel =
-                WidgetFactory.horizontalBox().setChildDistance(0);
-            colPredictions.addChild(predictionPanel);
-
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                const deskIndex = playerDesk.index;
-                const vote = AgendaUiMain._getVoteText(outcomeIndex, deskIndex)
-                    .setFontSize(fontSize)
-                    .setTextColor(playerDesk.color);
-                votePanel.addChild(vote);
-
-                const predictionText = AgendaUiMain._getPredictionText(
-                    outcomeIndex,
-                    deskIndex
-                )
-                    .setFontSize(fontSize)
-                    .setTextColor(playerDesk.color);
-                predictionPanel.addChild(predictionText);
-            }
+            predictionsText.setFontSize(fontSize);
+            colPredictions.addChild(predictionsText);
         }
 
         const resetAvailableVotesButton = WidgetFactory.button()
