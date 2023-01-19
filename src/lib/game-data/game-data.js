@@ -295,7 +295,6 @@ class GameData {
             delete copy.objectives;
             delete copy.platform;
             delete copy.scoreboard;
-            delete copy.setup;
             delete copy.setupTimestamp;
             delete copy.speaker;
             delete copy.timer;
