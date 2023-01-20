@@ -99,11 +99,13 @@ class CommandToken {
     }
 
     static _sortTokensByRegion(sheetAndTokens) {
-        assert(sheetAndTokens.commandSheet);
-
         sheetAndTokens.tactics = [];
         sheetAndTokens.fleet = [];
         sheetAndTokens.strategy = [];
+
+        if (!sheetAndTokens.commandSheet) {
+            return; // no command sheet (players removed after elimination?)
+        }
 
         for (const token of sheetAndTokens.commandTokens) {
             let pos = token.getPosition();
