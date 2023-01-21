@@ -130,6 +130,13 @@ class GameSetupUI {
         );
         col2Panel.addChild(
             this._createCheckbox(
+                "ui.setup.use_codex4",
+                world.TI4.config.codex4,
+                this._callbacks.onUseCodex4Changed
+            ).setEnabled(false)
+        );
+        col2Panel.addChild(
+            this._createCheckbox(
                 "ui.setup.use_base_magen",
                 world.TI4.config.baseMagen,
                 this._callbacks.onUseBaseMagenChanged

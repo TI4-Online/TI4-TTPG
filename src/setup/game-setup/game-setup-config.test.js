@@ -43,6 +43,12 @@ it("codex3", () => {
     config.setCodex3(false);
     assert.equal(config.codex3, false);
 });
+it("codex4", () => {
+    const config = new GameSetupConfig();
+    assert.equal(config.codex4, false); // not yet
+    config.setCodex3(false);
+    assert.equal(config.codex4, false);
+});
 
 it("baseMagen", () => {
     const config = new GameSetupConfig();

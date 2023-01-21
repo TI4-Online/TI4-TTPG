@@ -19,6 +19,7 @@ class GameSetupConfig {
             codex1: true,
             codex2: true,
             codex3: true,
+            codex4: false,
             baseMagen: false,
             franken: false,
             reportErrors: true,
@@ -43,6 +44,9 @@ class GameSetupConfig {
     }
     get codex3() {
         return this._state.codex3 ? true : false;
+    }
+    get codex4() {
+        return this._state.codex4 ? true : false;
     }
     get baseMagen() {
         return this._state.baseMagen ? true : false;
@@ -94,6 +98,12 @@ class GameSetupConfig {
     setCodex3(value) {
         assert(typeof value === "boolean");
         this._state.codex3 = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setCodex4(value) {
+        assert(typeof value === "boolean");
+        this._state.codex4 = value;
         GlobalSavedData.set(KEY, this._state);
     }
 
