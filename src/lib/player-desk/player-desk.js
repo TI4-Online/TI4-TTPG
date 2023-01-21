@@ -227,8 +227,6 @@ class PlayerDesk {
 
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
-
-        this.getFrozenDummyObject();
     }
 
     get center() {
