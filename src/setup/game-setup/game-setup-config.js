@@ -19,7 +19,7 @@ class GameSetupConfig {
             codex1: true,
             codex2: true,
             codex3: true,
-            codex4: false,
+            codex4: true,
             baseMagen: false,
             franken: false,
             reportErrors: true,

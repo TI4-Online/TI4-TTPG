@@ -173,7 +173,7 @@ class SetupGenericHomeSystems extends AbstractSetup {
         if (!hexData) {
             const report = {
                 offMap,
-                playerIndex,
+                playerIndex, // saw playerIndex 4 with playerCount 4!
                 playerCount,
                 homeSystemIndex,
                 deskIndexToHomeSystemIndex,

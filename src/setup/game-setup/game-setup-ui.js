@@ -133,7 +133,9 @@ class GameSetupUI {
                 "ui.setup.use_codex4",
                 world.TI4.config.codex4,
                 this._callbacks.onUseCodex4Changed
-            ).setEnabled(false)
+            )
+                .setEnabled(false)
+                .setVisible(false)
         );
         col2Panel.addChild(
             this._createCheckbox(

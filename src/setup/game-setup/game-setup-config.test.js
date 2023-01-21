@@ -45,7 +45,7 @@ it("codex3", () => {
 });
 it("codex4", () => {
     const config = new GameSetupConfig();
-    assert.equal(config.codex4, false); // not yet
+    assert.equal(config.codex4, true);
     config.setCodex3(false);
     assert.equal(config.codex4, false);
 });
