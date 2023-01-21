@@ -550,6 +550,19 @@ class PlayerDesk {
         assert(ColorUtil.isColor(colorTint));
         assert(ColorUtil.isColor(plasticColorTint));
 
+        // An error report came in from a deeper part suggesting the desk was
+        // not valid.  Check it before starting to prevent partial change, as
+        // well as trying to locate the root cause.
+        const index = this.index;
+        const playerCount = world.TI4.config.playerCount;
+        assert(typeof index === "number");
+        assert(typeof playerCount === "number");
+        if (index < 0 || index >= playerCount) {
+            throw new Error(
+                `PlayerDesk.changeColor index ${index} out of range (playerCount ${playerCount})`
+            );
+        }
+
         let legalColorName = false;
         for (const attrs of PLAYER_DESK_COLORS) {
             if (attrs.colorName === colorName) {
