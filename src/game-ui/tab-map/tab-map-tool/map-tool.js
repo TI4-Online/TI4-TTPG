@@ -246,9 +246,16 @@ class MapTool {
     placeFrontierTokens() {
         console.log("MapTool.placeFrontierTokens");
         const emptyPositions = [];
+        const skipSystems = [
+            81, // Muaat hero supernova tile
+        ];
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
-            if (system.planets.length === 0 && !system.hyperlane) {
+            if (
+                system.planets.length === 0 &&
+                !system.hyperlane &&
+                !skipSystems.includes(system.tile)
+            ) {
                 const dy = -2.5 * Hex.SCALE;
                 emptyPositions.push(obj.getPosition().add([0, dy, 1]));
             }
