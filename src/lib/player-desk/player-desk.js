@@ -313,7 +313,7 @@ class PlayerDesk {
         assert(uiElement instanceof UIElement);
 
         const frozenObj = this.getFrozenDummyObject();
-        frozenObj.removeUI(uiElement);
+        frozenObj.removeUIElement(uiElement);
 
         // Restore world space transform.
         uiElement.position = frozenObj.localPositionToWorld(uiElement.position);

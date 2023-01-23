@@ -45,6 +45,8 @@ class AgendaUiDesk {
         this._outcomeNamesMutable = outcomeNamesMutable;
         this._callbacks = callbacks;
 
+        this._agendaCard = world.TI4.agenda.getAgendaCard();
+
         const localPos = new Vector(30, 0, 20);
         const localRot = new Rotator(25, 0, 0);
         this._ui = this._createDeskUI();
@@ -161,25 +163,34 @@ class AgendaUiDesk {
     }
 
     _createZoomedAgendaCardUI() {
-        const card = world.TI4.agenda.getAgendaCard();
+        const clickHandler = ThrottleClickHandler.wrap(
+            (clickedButton, player) => {
+                this._hideZoomedAgendaCardWidget();
+            }
+        );
+
+        // This "can't happen" but might in some unittest cases.
+        // If it *does* happen do something reasonable.
+        if (!this._agendaCard) {
+            const button = WidgetFactory.button()
+                .setFontSize(CONFIG.fontSize)
+                .setText("???");
+            button.onClicked.add(clickHandler);
+            const ui = WidgetFactory.uiElement();
+            ui.widget = button;
+            return ui;
+        }
 
         const scale = 3;
         const width = 330 * scale;
         const height = (width * 750) / 500;
-        const popupButton = AgendaCardWidget.getImageButton(card).setImageSize(
-            width,
-            height
-        );
-
-        popupButton.onClicked.add(
-            ThrottleClickHandler.wrap((clickedButton, player) => {
-                this._hideZoomedAgendaCardWidget();
-            })
-        );
+        const zoomedCard = AgendaCardWidget.getImageButton(this._agendaCard) // may be missing for homebrew!
+            .setImageSize(width, height);
+        zoomedCard.onClicked.add(clickHandler);
 
         const ui = WidgetFactory.uiElement();
         ui.scale = 1 / scale;
-        ui.widget = popupButton;
+        ui.widget = zoomedCard;
 
         return ui;
     }
