@@ -6,55 +6,78 @@ const {
 const { globalEvents } = require("../../wrapper/api");
 
 const KEY = GLOBAL_SAVED_DATA_KEY.GAME_SETUP_CONFIG;
+const DEFAULT = {
+    playerCount: 6,
+    gamePoints: 10,
+    pok: true,
+    codex1: true,
+    codex2: true,
+    codex3: true,
+    codex4: true,
+    baseMagen: false,
+    franken: false,
+    reportErrors: true,
+    timestamp: 0,
+};
 
 /**
  * Keep persistent game setup configuration.
  */
 class GameSetupConfig {
     constructor() {
-        this._state = GlobalSavedData.get(KEY, {
-            playerCount: 6,
-            gamePoints: 10,
-            pok: true,
-            codex1: true,
-            codex2: true,
-            codex3: true,
-            baseMagen: false,
-            franken: false,
-            reportErrors: true,
-            timestamp: 0,
-        });
+        this._state = GlobalSavedData.get(KEY, DEFAULT);
+    }
+
+    /**
+     * Get state value.
+     *
+     * Value cannot be undefined.  If it is, it means that key was added later
+     * and saved games (or initial states, if not updated) lack it.  In that
+     * case provide the default.
+     *
+     * @param {string} key
+     * @param {?} defaultValue
+     * @returns {?}
+     */
+    _getState(key, defaultValue) {
+        assert(typeof key === "string");
+        assert(defaultValue !== undefined);
+        const result = this._state[key];
+        return result === undefined ? defaultValue : result;
     }
 
     get playerCount() {
-        return this._state.playerCount;
+        return this._getState("playerCount", DEFAULT.playerCount);
     }
     get gamePoints() {
-        return this._state.gamePoints;
+        return this._getState("gamePoints", DEFAULT.gamePoints);
     }
     get pok() {
-        return this._state.pok ? true : false;
+        return this._getState("pok", DEFAULT.pok);
     }
     get codex1() {
-        return this._state.codex1 ? true : false;
+        return this._getState("codex1", DEFAULT.codex1);
     }
     get codex2() {
-        return this._state.codex2 ? true : false;
+        return this._getState("codex2", DEFAULT.codex2);
     }
     get codex3() {
-        return this._state.codex3 ? true : false;
+        return this._getState("codex3", DEFAULT.codex3);
+    }
+    get codex4() {
+        return this._getState("codex4", DEFAULT.codex4);
     }
     get baseMagen() {
-        return this._state.baseMagen ? true : false;
+        return this._getState("baseMagen", DEFAULT.baseMagen);
     }
     get franken() {
-        return this._state.franken ? true : false;
+        return this._getState("franken", DEFAULT.franken);
     }
     get reportErrors() {
-        return this._state.reportErrors ? true : false;
+        return this._getState("reportErrors", DEFAULT.reportErrors);
     }
     get timestamp() {
-        return this._state.timestamp;
+        return this._getState("timestamp", DEFAULT.timestamp);
     }
 
     setPlayerCount(value, player) {
@@ -94,6 +117,12 @@ class GameSetupConfig {
     setCodex3(value) {
         assert(typeof value === "boolean");
         this._state.codex3 = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setCodex4(value) {
+        assert(typeof value === "boolean");
+        this._state.codex4 = value;
         GlobalSavedData.set(KEY, this._state);
     }
 

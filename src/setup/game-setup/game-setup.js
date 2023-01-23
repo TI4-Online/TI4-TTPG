@@ -29,7 +29,6 @@ function onUseCodex1Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex1(isChecked);
 }
-
 function onUseCodex2Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex2(isChecked);
@@ -37,6 +36,10 @@ function onUseCodex2Changed(checkBox, player, isChecked) {
 function onUseCodex3Changed(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setCodex3(isChecked);
+}
+function onUseCodex4Changed(checkBox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    world.TI4.config.setCodex4(isChecked);
 }
 
 function onUseBaseMagenChanged(checkbox, player, isChecked) {
@@ -111,6 +114,7 @@ class GameSetup {
             onUseCodex1Changed,
             onUseCodex2Changed,
             onUseCodex3Changed,
+            onUseCodex4Changed,
             onUseBaseMagenChanged,
             onUseGameDataChanged,
             onSetupClicked,

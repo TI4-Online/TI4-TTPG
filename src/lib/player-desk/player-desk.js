@@ -227,8 +227,6 @@ class PlayerDesk {
 
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
-
-        this.getFrozenDummyObject();
     }
 
     get center() {
@@ -315,21 +313,28 @@ class PlayerDesk {
         assert(uiElement instanceof UIElement);
 
         const frozenObj = this.getFrozenDummyObject();
-        frozenObj.removeUI(uiElement);
+        frozenObj.removeUIElement(uiElement);
 
         // Restore world space transform.
         uiElement.position = frozenObj.localPositionToWorld(uiElement.position);
         uiElement.rotation = frozenObj.localRotationToWorld(uiElement.rotation);
     }
 
-    updateUI(uiElement) {
+    updateUI(uiElement, updatePosition) {
         assert(uiElement instanceof UIElement);
+        assert(typeof updatePosition === "boolean");
 
         const frozenObj = this.getFrozenDummyObject();
 
         // Convert to local space.
-        uiElement.position = frozenObj.worldPositionToLocal(uiElement.position);
-        uiElement.rotation = frozenObj.worldRotationToLocal(uiElement.rotation);
+        if (updatePosition) {
+            uiElement.position = frozenObj.worldPositionToLocal(
+                uiElement.position
+            );
+            uiElement.rotation = frozenObj.worldRotationToLocal(
+                uiElement.rotation
+            );
+        }
 
         frozenObj.updateUI(uiElement);
     }
@@ -549,6 +554,19 @@ class PlayerDesk {
         assert(typeof colorName === "string");
         assert(ColorUtil.isColor(colorTint));
         assert(ColorUtil.isColor(plasticColorTint));
+
+        // An error report came in from a deeper part suggesting the desk was
+        // not valid.  Check it before starting to prevent partial change, as
+        // well as trying to locate the root cause.
+        const index = this.index;
+        const playerCount = world.TI4.config.playerCount;
+        assert(typeof index === "number");
+        assert(typeof playerCount === "number");
+        if (index < 0 || index >= playerCount) {
+            throw new Error(
+                `PlayerDesk.changeColor index ${index} out of range (playerCount ${playerCount})`
+            );
+        }
 
         let legalColorName = false;
         for (const attrs of PLAYER_DESK_COLORS) {

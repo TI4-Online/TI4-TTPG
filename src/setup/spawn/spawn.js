@@ -191,6 +191,14 @@ class Spawn {
         if (nsid === "token.keleres:codex.vigil/custodia_vigilia") {
             return locale("token.attachment.custodia_vigilia");
         }
+
+        // Try with only first part of name (errata strategy cards).
+        const name0 = parsedNsid.name.split(".")[0];
+        candidate = `${parsedNsid.type}.${name0}`;
+        candidateResult = locale(candidate);
+        if (candidateResult !== candidate) {
+            return candidateResult;
+        }
     }
 
     /**

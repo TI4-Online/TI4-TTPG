@@ -22,20 +22,39 @@ it("static groupNSIDs", () => {
 });
 
 it("static suggestName deck", () => {
-    let name = Spawn.suggestName("card.action:base/whatever");
+    const name = Spawn.suggestName("card.action:base/whatever");
     assert.equal(name, locale("deck.action"));
     assert(name !== "deck.action"); // locale has the translation
 });
 
+it("static suggestName strategy cards", () => {
+    const nsidToName = {
+        "tile.strategy:base/construction": "Construction",
+        "tile.strategy:base/construction.errata": "Construction",
+        "tile.strategy:base/diplomacy": "Diplomacy",
+        "tile.strategy:base/diplomacy.errata": "Diplomacy",
+        "tile.strategy:base/imperial": "Imperial",
+        "tile.strategy:base/leadership": "Leadership",
+        "tile.strategy:base/politics": "Politics",
+        "tile.strategy:base/technology": "Technology",
+        "tile.strategy:base/trade": "Trade",
+        "tile.strategy:base/warfare": "Warfare",
+    };
+    for (const [nsid, name] of Object.entries(nsidToName)) {
+        const suggestedName = Spawn.suggestName(nsid);
+        assert.equal(suggestedName, name);
+    }
+});
+
 it("static suggestName command token", () => {
-    let name = Spawn.suggestName("token.command:base/arborec");
+    const name = Spawn.suggestName("token.command:base/arborec");
     const abbr = locale("faction.abbr.arborec");
     const cmp = locale("token.command", { faction: abbr });
     assert.equal(name, cmp);
 });
 
 it("static suggestName control token", () => {
-    let name = Spawn.suggestName("token.control:base/arborec");
+    const name = Spawn.suggestName("token.control:base/arborec");
     const abbr = locale("faction.abbr.arborec");
     const cmp = locale("token.control", { faction: abbr });
     assert.equal(name, cmp);

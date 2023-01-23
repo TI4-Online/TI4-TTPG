@@ -32,10 +32,13 @@ class PremadeMap {
             }
         }
 
+        const skipSystems = [
+            81, // Muaat hero supernova tile
+        ];
         const clearedSet = new Set();
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
-            if (system.home) {
+            if (system.home || skipSystems.includes(system.tile)) {
                 continue;
             }
             if (!tilesBag || clearedSet.has(system.tile)) {

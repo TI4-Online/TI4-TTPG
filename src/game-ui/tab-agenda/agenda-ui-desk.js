@@ -41,22 +41,58 @@ class AgendaUiDesk {
         assert(typeof callbacks.onPredictIncr === "function");
         assert(typeof callbacks.onPredictDecr === "function");
 
-        const border = WidgetFactory.border().setColor(CONFIG.backgroundColor);
-
         this._playerDesk = playerDesk;
+        this._outcomeNamesMutable = outcomeNamesMutable;
         this._callbacks = callbacks;
+
+        this._agendaCard = world.TI4.agenda.getAgendaCard();
 
         const localPos = new Vector(30, 0, 20);
         const localRot = new Rotator(25, 0, 0);
-        this._ui = WidgetFactory.uiElement();
-        this._ui.scale = 1 / CONFIG.scale;
+        this._ui = this._createDeskUI();
         this._ui.position = playerDesk.localPositionToWorld(localPos);
         this._ui.rotation = playerDesk.localRotationToWorld(localRot);
-        this._ui.widget = border;
 
-        this._collapsedUi = undefined;
-        this._zoomedAgendaCardUi = undefined;
+        localPos.x = localPos.x - 1;
+        this._collapsedUi = this._createCollapsedUI();
+        this._collapsedUi.position = playerDesk.localPositionToWorld(localPos);
+        this._collapsedUi.rotation = playerDesk.localRotationToWorld(localRot);
 
+        localPos.x = localPos.x - 1;
+        this._zoomedAgendaCardUi = this._createZoomedAgendaCardUI();
+        this._zoomedAgendaCardUi.position =
+            playerDesk.localPositionToWorld(localPos);
+        this._zoomedAgendaCardUi.rotation =
+            playerDesk.localRotationToWorld(localRot);
+    }
+
+    _showDeskUI() {
+        this._ui.widget.setVisible(true);
+        this._playerDesk.updateUI(this._ui, false);
+    }
+    _hideDeskUI() {
+        this._ui.widget.setVisible(false);
+        this._playerDesk.updateUI(this._ui, false);
+    }
+    _hideCollapsedUI() {
+        this._collapsedUi.widget.setVisible(false);
+        this._playerDesk.updateUI(this._collapsedUi, false);
+    }
+    _showCollapsedUI() {
+        this._collapsedUi.widget.setVisible(true);
+        this._playerDesk.updateUI(this._collapsedUi, false);
+    }
+    _showZoomedAgendaCardWidget() {
+        this._zoomedAgendaCardUi.widget.setVisible(true);
+        this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
+    }
+    _hideZoomedAgendaCardWidget() {
+        this._zoomedAgendaCardUi.widget.setVisible(false);
+        this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
+    }
+
+    _createDeskUI() {
+        const border = WidgetFactory.border().setColor(CONFIG.backgroundColor);
         const panel = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
@@ -64,7 +100,7 @@ class AgendaUiDesk {
         panel.addChild(
             new AgendaWidgetAvailableVotes(
                 CONFIG.fontSize,
-                playerDesk.index
+                this._playerDesk.index
             ).getWidget()
         );
         panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
@@ -84,7 +120,7 @@ class AgendaUiDesk {
             .setChild(midPanel);
         panel.addChild(midBox);
 
-        panel.addChild(this._createOutcomesWidget(outcomeNamesMutable));
+        panel.addChild(this._createOutcomesWidget(this._outcomeNamesMutable));
         panel.addChild(this._createLockCollapseWidget());
         panel.addChild(WidgetFactory.border().setColor(CONFIG.spacerColor));
         panel.addChild(this._createWaitingForWidget());
@@ -98,26 +134,125 @@ class AgendaUiDesk {
             )
             .setChild(panel);
         border.setChild(panelBox);
+
+        const ui = WidgetFactory.uiElement();
+        ui.scale = 1 / CONFIG.scale;
+        ui.widget = border;
+
+        return ui;
+    }
+
+    _createAgendaCardWidget() {
+        const box = WidgetFactory.layoutBox().setVerticalAlignment(
+            VerticalAlignment.Center
+        );
+        const card = world.TI4.agenda.getAgendaCard();
+        if (card) {
+            const button = AgendaCardWidget.getImageButton(card);
+            const width = 48 * CONFIG.scale;
+            button.setImageSize(width, (width * 750) / 500);
+            box.setChild(button);
+
+            button.onClicked.add(
+                ThrottleClickHandler.wrap((clickedButton, player) => {
+                    this._showZoomedAgendaCardWidget();
+                })
+            );
+        }
+        return box;
+    }
+
+    _createZoomedAgendaCardUI() {
+        const clickHandler = ThrottleClickHandler.wrap(
+            (clickedButton, player) => {
+                this._hideZoomedAgendaCardWidget();
+            }
+        );
+
+        // This "can't happen" but might in some unittest cases.
+        // If it *does* happen do something reasonable.
+        if (!this._agendaCard) {
+            const button = WidgetFactory.button()
+                .setFontSize(CONFIG.fontSize)
+                .setText("???");
+            button.onClicked.add(clickHandler);
+            const ui = WidgetFactory.uiElement();
+            ui.widget = button;
+            return ui;
+        }
+
+        const scale = 3;
+        const width = 330 * scale;
+        const height = (width * 750) / 500;
+        const zoomedCard = AgendaCardWidget.getImageButton(this._agendaCard) // may be missing for homebrew!
+            .setImageSize(width, height);
+        zoomedCard.onClicked.add(clickHandler);
+
+        const ui = WidgetFactory.uiElement();
+        ui.scale = 1 / scale;
+        ui.widget = zoomedCard;
+
+        return ui;
+    }
+
+    _createCollapsedUI() {
+        const expandButton = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
+            .setText(locale("ui.button.expand"));
+        const expandButtonBox = WidgetFactory.layoutBox();
+        expandButtonBox
+            .setPadding(
+                CONFIG.padding,
+                CONFIG.padding,
+                CONFIG.padding,
+                CONFIG.padding
+            )
+            .setChild(expandButton);
+        expandButton.onClicked.add(
+            ThrottleClickHandler.wrap((clickedButton, player) => {
+                console.log("AgendaDeskUI.expand");
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._showDeskUI();
+                this._hideCollapsedUI();
+            })
+        );
+        const widget = WidgetFactory.border()
+            .setColor(CONFIG.backgroundColor)
+            .setChild(expandButtonBox);
+
+        const ui = WidgetFactory.uiElement();
+        ui.widget = widget;
+
+        return ui;
     }
 
     attach() {
-        world.addUI(this._ui);
+        // Add several UI items: from back to front expand button, main UI, and zoomed card.
+        // Instead of adding/removing, just hide the items.
+        this._playerDesk.addUI(this._ui);
+        this._playerDesk.addUI(this._collapsedUi);
+        this._playerDesk.addUI(this._zoomedAgendaCardUi);
+        this._showDeskUI();
+        this._hideCollapsedUI();
+        this._hideZoomedAgendaCardWidget();
         return this;
     }
 
     detach() {
         if (this._ui) {
-            world.removeUIElement(this._ui);
+            this._playerDesk.removeUIElement(this._ui);
             WidgetFactory.release(this._ui);
             this._ui = undefined;
         }
         if (this._collapsedUi) {
-            world.removeUIElement(this._collapsedUi);
+            this._playerDesk.removeUIElement(this._collapsedUi);
             WidgetFactory.release(this._collapsedUi);
             this._collapsedUi = undefined;
         }
         if (this._zoomedAgendaCardUi) {
-            world.removeUIElement(this._zoomedAgendaCardUi);
+            this._playerDesk.removeUIElement(this._zoomedAgendaCardUi);
             WidgetFactory.release(this._zoomedAgendaCardUi);
             this._zoomedAgendaCardUi = undefined;
         }
@@ -134,49 +269,6 @@ class AgendaUiDesk {
         const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
         const msg = locale("ui.error.not_owner", { playerName });
         Broadcast.broadcastOne(player, msg);
-    }
-
-    _createAgendaCardWidget() {
-        const box = WidgetFactory.layoutBox().setVerticalAlignment(
-            VerticalAlignment.Center
-        );
-        const card = world.TI4.agenda.getAgendaCard();
-        if (card) {
-            const button = AgendaCardWidget.getImageButton(card);
-            const width = 48 * CONFIG.scale;
-            button.setImageSize(width, (width * 750) / 500);
-            box.setChild(button);
-
-            button.onClicked.add(
-                ThrottleClickHandler.wrap((clickedButton, player) => {
-                    const scale = 3;
-                    const width = 330 * scale;
-                    const height = (width * 750) / 500;
-                    const popupButton = AgendaCardWidget.getImageButton(
-                        card
-                    ).setImageSize(width, height);
-
-                    this._zoomedAgendaCardUi = WidgetFactory.uiElement();
-                    this._zoomedAgendaCardUi.position = this._ui.position.add([
-                        0, 0, 1,
-                    ]);
-                    this._zoomedAgendaCardUi.rotation = this._ui.rotation;
-                    this._zoomedAgendaCardUi.scale = 1 / scale;
-                    this._zoomedAgendaCardUi.widget =
-                        WidgetFactory.layoutBox().setChild(popupButton);
-                    world.addUI(this._zoomedAgendaCardUi);
-
-                    popupButton.onClicked.add(
-                        ThrottleClickHandler.wrap((clickedButton, player) => {
-                            world.removeUIElement(this._zoomedAgendaCardUi);
-                            WidgetFactory.release(this._zoomedAgendaCardUi);
-                            this._zoomedAgendaCardUi = undefined;
-                        })
-                    );
-                })
-            );
-        }
-        return box;
     }
 
     _createWhensWidget() {
@@ -432,42 +524,8 @@ class AgendaUiDesk {
                 if (!this.allowClick(player)) {
                     return;
                 }
-                world.removeUIElement(this._ui);
-                // do not recycle this._ui, hold for re-attach!
-
-                this._collapsedUi = WidgetFactory.uiElement();
-                this._collapsedUi.position = this._ui.position;
-                this._collapsedUi.rotation = this._ui.rotation;
-
-                const expandButton = WidgetFactory.button()
-                    .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
-                    .setText(locale("ui.button.expand"));
-                const expandButtonBox = WidgetFactory.layoutBox();
-                expandButtonBox
-                    .setPadding(
-                        CONFIG.padding,
-                        CONFIG.padding,
-                        CONFIG.padding,
-                        CONFIG.padding
-                    )
-                    .setChild(expandButton);
-                expandButton.onClicked.add(
-                    ThrottleClickHandler.wrap((clickedButton, player) => {
-                        console.log("AgendaDeskUI.expand");
-                        if (!this.allowClick(player)) {
-                            return;
-                        }
-                        world.removeUIElement(this._collapsedUi);
-                        WidgetFactory.release(this._collapsedUi);
-                        this._collapsedUi = undefined;
-                        world.addUI(this._ui);
-                    })
-                );
-                this._collapsedUi.widget = WidgetFactory.border()
-                    .setColor(CONFIG.backgroundColor)
-                    .setChild(expandButtonBox);
-
-                world.addUI(this._collapsedUi);
+                this._hideDeskUI();
+                this._showCollapsedUI();
             })
         );
 
