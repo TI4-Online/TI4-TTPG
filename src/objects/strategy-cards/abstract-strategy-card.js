@@ -354,7 +354,7 @@ class AbstractStrategyCard {
             ui.rotation = playerDesk.localRotationToWorld(
                 new Rotator(35, 0, 0)
             );
-            playerDesk.updateUI(ui);
+            playerDesk.updateUI(ui, true);
             nextOffset += deltaOffset;
         }
     }

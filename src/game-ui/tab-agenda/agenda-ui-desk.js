@@ -48,61 +48,45 @@ class AgendaUiDesk {
         const localPos = new Vector(30, 0, 20);
         const localRot = new Rotator(25, 0, 0);
         this._ui = this._createDeskUI();
-        this._uiPos = playerDesk.localPositionToWorld(localPos);
-        this._uiRot = playerDesk.localRotationToWorld(localRot);
-        this._ui.position = this._uiPos;
-        this._ui.rotation = this._uiRot;
+        this._ui.position = playerDesk.localPositionToWorld(localPos);
+        this._ui.rotation = playerDesk.localRotationToWorld(localRot);
 
         localPos.x = localPos.x - 1;
         this._collapsedUi = this._createCollapsedUI();
-        this._collapsedUiPos = playerDesk.localPositionToWorld(localPos);
-        this._collapsedUiRot = playerDesk.localRotationToWorld(localRot);
-        this._collapsedUi.position = this._collapsedUiPos;
-        this._collapsedUi.rotation = this._collapsedUiRot;
+        this._collapsedUi.position = playerDesk.localPositionToWorld(localPos);
+        this._collapsedUi.rotation = playerDesk.localRotationToWorld(localRot);
 
         localPos.x = localPos.x - 1;
         this._zoomedAgendaCardUi = this._createZoomedAgendaCardUI();
-        this._zoomedUiPos = playerDesk.localPositionToWorld(localPos);
-        this._zoomedUiRot = playerDesk.localRotationToWorld(localRot);
-        this._zoomedAgendaCardUi.position = this._zoomedUiPos;
-        this._zoomedAgendaCardUi.rotation = this._zoomedUiRot;
+        this._zoomedAgendaCardUi.position =
+            playerDesk.localPositionToWorld(localPos);
+        this._zoomedAgendaCardUi.rotation =
+            playerDesk.localRotationToWorld(localRot);
     }
 
     _showDeskUI() {
         this._ui.widget.setVisible(true);
-        this._ui.position = this._uiPos;
-        this._ui.rotation = this._uiRot;
-        this._playerDesk.updateUI(this._ui); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._ui, false);
     }
     _hideDeskUI() {
         this._ui.widget.setVisible(false);
-        this._ui.position = this._uiPos;
-        this._ui.rotation = this._uiRot;
-        this._playerDesk.updateUI(this._ui); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._ui, false);
     }
     _hideCollapsedUI() {
         this._collapsedUi.widget.setVisible(false);
-        this._collapsedUi.position = this._collapsedUiPos;
-        this._collapsedUi.rotation = this._collapsedUiRot;
-        this._playerDesk.updateUI(this._collapsedUi); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._collapsedUi, false);
     }
     _showCollapsedUI() {
         this._collapsedUi.widget.setVisible(true);
-        this._collapsedUi.position = this._collapsedUiPos;
-        this._collapsedUi.rotation = this._collapsedUiRot;
-        this._playerDesk.updateUI(this._collapsedUi); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._collapsedUi, false);
     }
     _showZoomedAgendaCardWidget() {
         this._zoomedAgendaCardUi.widget.setVisible(true);
-        this._zoomedAgendaCardUi.position = this._zoomedUiPos;
-        this._zoomedAgendaCardUi.rotation = this._zoomedUiRot;
-        this._playerDesk.updateUI(this._zoomedAgendaCardUi); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
     }
     _hideZoomedAgendaCardWidget() {
         this._zoomedAgendaCardUi.widget.setVisible(false);
-        this._zoomedAgendaCardUi.position = this._zoomedUiPos;
-        this._zoomedAgendaCardUi.rotation = this._zoomedUiRot;
-        this._playerDesk.updateUI(this._zoomedAgendaCardUi); // reset pos/rot before this!
+        this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
     }
 
     _createDeskUI() {

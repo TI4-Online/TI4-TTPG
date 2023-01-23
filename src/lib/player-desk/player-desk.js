@@ -320,14 +320,21 @@ class PlayerDesk {
         uiElement.rotation = frozenObj.localRotationToWorld(uiElement.rotation);
     }
 
-    updateUI(uiElement) {
+    updateUI(uiElement, updatePosition) {
         assert(uiElement instanceof UIElement);
+        assert(typeof updatePosition === "boolean");
 
         const frozenObj = this.getFrozenDummyObject();
 
         // Convert to local space.
-        uiElement.position = frozenObj.worldPositionToLocal(uiElement.position);
-        uiElement.rotation = frozenObj.worldRotationToLocal(uiElement.rotation);
+        if (updatePosition) {
+            uiElement.position = frozenObj.worldPositionToLocal(
+                uiElement.position
+            );
+            uiElement.rotation = frozenObj.worldRotationToLocal(
+                uiElement.rotation
+            );
+        }
 
         frozenObj.updateUI(uiElement);
     }
