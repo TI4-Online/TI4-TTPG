@@ -21,6 +21,11 @@ const MIN_DELAY_FRAMES = 10;
 
 const _spectatorPlayerSlotToFollow = {};
 
+/**
+ * Periodically update a streamer's camera to match the view from a player.
+ * Constantly resetting the camera position makes it hard to interact with
+ * the world / UI.
+ */
 class FollowCamera {
     /**
      * Start following another player's camera.  Do not use the constructor directly!

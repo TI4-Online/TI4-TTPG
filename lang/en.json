@@ -150,6 +150,7 @@
     "ui.action.system.distant_suns_explore": "Explore {planetName} with Distant Suns",
     "ui.action.system.rift_roll": "Roll for Gravity Rift",
     "ui.action.system.auto_rift_roll": "Grav Rift all ships in system",
+    "ui.action.system.plague": "Plague {planetName}",
     "ui.button.end_turn": "END TURN",
 
     "ui.label.speaker": "Speaker",
@@ -987,6 +988,9 @@
     "streamer.button.buddy": "Activate\nBuddy",
 
     "streamer.follow_camera": "FOLLOWING {followPlayerName}\nInteracting may be unreliable\nPress ctrl+alt+NUMPAD-0 to exit",
+
+    "plague.roll_name": "Plague",
+    "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

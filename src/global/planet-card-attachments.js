@@ -11,6 +11,7 @@ const {
     GameObject,
     Rotator,
     Vector,
+    UIZoomVisibility,
     globalEvents,
     refPackageId,
     world,
@@ -62,6 +63,7 @@ function addImageCardFace(card, image, tintColor, index) {
         .setImage(image, refPackageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
+    ui.zoomVisibility = UIZoomVisibility.Both;
 
     card.addUI(ui);
 }
@@ -91,6 +93,7 @@ function addImageCardBack(card, image, tintColor, index) {
         .setImage(image, refPackageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
+    ui.zoomVisibility = UIZoomVisibility.Both;
 
     card.addUI(ui);
 }
