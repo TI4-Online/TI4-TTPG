@@ -209,6 +209,15 @@ class AgendaUiMain {
         assert(typeof onClickHandlers.electStrategyCard === "function");
         assert(typeof onClickHandlers.electOther === "function");
 
+        // There's a window between one player clicking and actually
+        // moving to the next UI.  Reject any extra clicks that happen.
+        const onlyOne = ThrottleClickHandler.onlyOne({
+            forAgainst: onClickHandlers.forAgainst,
+            electPlayer: onClickHandlers.electPlayer,
+            electStrategyCard: onClickHandlers.electStrategyCard,
+            electOther: onClickHandlers.electOther,
+        });
+
         const label = WidgetFactory.text()
             .setJustification(TextJustification.Center)
             .setFontSize(CONFIG.fontSize)
@@ -218,30 +227,22 @@ class AgendaUiMain {
         const forAgainstButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.outcome_type.for_against"));
-        forAgainstButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.forAgainst)
-        );
+        forAgainstButton.onClicked.add(onlyOne.forAgainst);
 
         const electPlayerButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.outcome_type.player"));
-        electPlayerButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.electPlayer)
-        );
+        electPlayerButton.onClicked.add(onlyOne.electPlayer);
 
         const electStrategyCardButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.outcome_type.strategy_card"));
-        electStrategyCardButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.electStrategyCard)
-        );
+        electStrategyCardButton.onClicked.add(onlyOne.electStrategyCard);
 
         const electOtherButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.outcome_type.other"));
-        electOtherButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.electOther)
-        );
+        electOtherButton.onClicked.add(onlyOne.electOther);
 
         const leftPanel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
