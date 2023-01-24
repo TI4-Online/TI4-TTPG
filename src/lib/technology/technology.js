@@ -122,10 +122,15 @@ class Technology {
         }
 
         return TECHNOLOGY_DATA.filter((tech) => {
-            return playerTechnologiesNsid.some((nsid) =>
-                // startsWith is used to support omega cards
-                nsid.startsWith(tech.cardNsid)
-            );
+            return playerTechnologiesNsid.some((nsid) => {
+                if (nsid === tech.cardNsid) {
+                    return true;
+                }
+                if (tech.aliasNsids && tech.aliasNsids.includes(nsid)) {
+                    return true;
+                }
+                return false;
+            });
         });
     }
 
