@@ -1,11 +1,11 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { AbstractRightClickCard } = require("./abstract-right-click-card");
+const { Broadcast } = require("../../lib/broadcast");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { RollGroup } = require("../../lib/dice/roll-group");
 const { SimpleDieBuilder } = require("../../lib/dice/simple-die");
 const { Card, Player, Vector, world } = require("../../wrapper/api");
-const { RollGroup } = require("../../lib/dice/roll-group");
-const { Broadcast } = require("../../lib/broadcast");
 
 const ACTION_NAME = "*" + locale("ui.menu.infantry_2");
 const DELETE_DIE_AFTER_N_SECONDS = 10;
