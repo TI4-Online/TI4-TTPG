@@ -53,6 +53,26 @@ class ThrottleClickHandler {
         }
         return onButtonCallbacks;
     }
+
+    /**
+     * Wrap values in a dictionary.  Only propagate the first click to any
+     * function (e.g. choosing agenda type).
+     *
+     * @param {Object.{key:string, value:function}} onButtonCallbacks
+     * @return {Object.{key:string, value:function}}
+     */
+    static onlyOne(onButtonCallbacks) {
+        let isClicked = false;
+        for (const [key, value] of Object.entries(onButtonCallbacks)) {
+            onButtonCallbacks[key] = (button, player) => {
+                if (!isClicked) {
+                    isClicked = true;
+                    value(button, player);
+                }
+            };
+        }
+        return onButtonCallbacks;
+    }
 }
 
 module.exports = { ThrottleClickHandler };
