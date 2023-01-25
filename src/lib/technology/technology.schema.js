@@ -20,7 +20,7 @@ const TECHNOLOGY_SCHEMA_JSON = {
         source: { type: "string" },
         unitPosition: { type: "integer" },
     },
-    required: ["localeName", "cardNsid", "type", "requirements", "abbrev"],
+    required: ["localeName", "cardNsid", "type", "requirements"],
 };
 
 // Lazy instantiate on first use.

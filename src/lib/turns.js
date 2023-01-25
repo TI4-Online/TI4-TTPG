@@ -256,11 +256,7 @@ class Turns {
         // for the current turn player as a new turn.
 
         const playerSlot = playerDesk.playerSlot;
-        const currentTurnPlayer = world.getPlayerBySlot(playerSlot);
-        let name = currentTurnPlayer && currentTurnPlayer.getName();
-        if (!name || name.length === 0) {
-            name = `<${playerDesk.colorName}>`;
-        }
+        let name = world.TI4.getNameByPlayerSlot(playerSlot);
         Broadcast.broadcastAll(
             locale("ui.message.newTurn", {
                 playerName: name,

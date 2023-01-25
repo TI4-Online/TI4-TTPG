@@ -151,7 +151,7 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
-    CardUtil: CardUtil,
+    CardUtil,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),

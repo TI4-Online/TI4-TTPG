@@ -69,7 +69,7 @@ const SYSTEM_SCHEMA = {
         img: { type: "string" },
         imgFaceDown: { type: "string" },
     },
-    required: ["tile", "source", "img"],
+    required: ["tile", "source"],
 };
 
 // Lazy instantiate on first use.

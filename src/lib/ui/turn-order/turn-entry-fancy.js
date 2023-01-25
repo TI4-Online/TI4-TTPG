@@ -199,10 +199,10 @@ class TurnEntryFancy extends Canvas {
             factionName = "Keleres";
         }
         factionName = factionName.toUpperCase();
-        const factionIcon = faction
-            ? faction.icon
-            : "global/factions/bobert_icon.png";
-
+        const factionIcon =
+            faction && faction.icon
+                ? faction.icon
+                : "global/factions/bobert_icon.png";
         this._factionIcon.setImage(factionIcon, refPackageId);
         this._factionName.setText(factionName);
 

@@ -289,9 +289,10 @@ class Spawn {
     static injectNsidToTemplate(nsid, templateId) {
         assert(typeof nsid === "string");
         assert(typeof templateId === "string");
-        if (NSID_TO_TEMPLATE[nsid]) {
+        const old = NSID_TO_TEMPLATE[nsid];
+        if (old && templateId !== old) {
             throw new Error(
-                `Spawn.injectNsidToTemplate: nsid "${nsid}" already registered`
+                `Spawn.injectNsidToTemplate: nsid "${nsid}" already registered with different template`
             );
         }
         NSID_TO_TEMPLATE[nsid] = templateId;
