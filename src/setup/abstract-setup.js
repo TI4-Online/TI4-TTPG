@@ -97,12 +97,6 @@ class AbstractSetup {
         const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
             // Get the DECK nsids, will need to merge into one deck.
             const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            if (parsedNsid.source.startsWith("homebrew")) {
-                return false; // ignore homebrew
-            }
-            if (parsedNsid.source.startsWith("franken")) {
-                return false; // ignore franken
-            }
             return parsedNsid.type.startsWith(nsidPrefix);
         });
         mergeDeckNsids.sort();

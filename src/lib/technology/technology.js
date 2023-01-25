@@ -17,11 +17,14 @@ let _technologiesByFaction = {};
 let _settings = undefined; // filled by checkCache
 const types = ["Red", "Yellow", "Green", "Blue", "unitUpgrade"];
 
+const _injectedSources = new Set();
+
 const isSourceEnabled = (source) => {
     return (
         source === undefined || // base technology
         (source === "PoK" && world.TI4.config.pok) ||
-        (source === "Codex 3" && world.TI4.config.codex3)
+        (source === "Codex 3" && world.TI4.config.codex3) ||
+        _injectedSources.has(source)
     );
 };
 
@@ -95,7 +98,9 @@ class Technology {
                 )}" error "${err}"`
             );
         });
+        rawTechnology.name = locale(rawTechnology.localeName);
         TECHNOLOGY_DATA.push(rawTechnology);
+        _injectedSources.add(rawTechnology.source);
         invalidateCache();
     }
 

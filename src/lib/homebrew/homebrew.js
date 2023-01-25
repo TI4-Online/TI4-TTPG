@@ -17,7 +17,7 @@ class Homebrew {
     inject(table) {
         if (table.localeStrings) {
             // "faction.abbr.<x>", "faction.full.<x>"
-            for (const [key, value] of table.localeStrings) {
+            for (const [key, value] of Object.entries(table.localeStrings)) {
                 assert(typeof key === "string");
                 assert(typeof value === "string");
                 locale.inject(key, value);

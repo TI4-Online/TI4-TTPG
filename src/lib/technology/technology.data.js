@@ -369,7 +369,7 @@ module.exports = [
         requirements: {
             Yellow: 2,
         },
-        abbrev: " FF II",
+        abbrev: "FF II",
         faction: "saar",
         unitPosition: 11,
     },
@@ -381,7 +381,7 @@ module.exports = [
             Red: 3,
             Yellow: 1,
         },
-        abbrev: " PWS II",
+        abbrev: "PWS II",
         faction: "muaat",
         unitPosition: 0,
     },

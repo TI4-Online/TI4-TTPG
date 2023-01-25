@@ -38,7 +38,7 @@ const THREE_PLANET_POSITION = [
 ];
 const THREE_PLANET_RADIUS = [2, 2, 2];
 
-function _maybeInit(tile) {
+function _maybeInit() {
     if (!_tileToSystem) {
         _tileToSystem = {};
         for (const rawAttrs of SYSTEM_ATTRS) {
@@ -349,15 +349,17 @@ class System {
 
     static injectSystem(rawSystem) {
         assert(rawSystem);
+        _maybeInit();
+
         SystemSchema.validate(rawSystem, (err) => {
-            throw new Error('System.injectSystem "${err}"');
+            throw new Error(`System.injectSystem "${err.message}"`);
         });
 
         // Add this new system.
         const system = new System(rawSystem);
         if (_tileToSystem[system.tile]) {
             throw new Error(
-                'System.injectSystem already have system "${system.tile}"'
+                `System.injectSystem already have system "${system.tile}"`
             );
         }
         _tileToSystem[system.tile] = system;

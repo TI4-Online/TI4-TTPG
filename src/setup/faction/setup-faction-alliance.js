@@ -28,6 +28,13 @@ class SetupFactionAlliance extends AbstractSetup {
             return name === this.faction.nsidName;
         });
 
+        if (!card || card.getStackSize() === 0) {
+            console.log(
+                `SetupFactionAlliance: missing "${this.faction.nsidName}"`
+            );
+            return;
+        }
+
         // See the comment in CloneReplace for why.
         card = CloneReplace.cloneReplace(card);
 
