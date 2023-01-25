@@ -13,7 +13,6 @@ const {
 
 const TECHNOLOGY_DATA = require("./technology.data");
 const { Technology } = require("./technology");
-const { CardUtil } = require("../card/card-util");
 const { TechnologySchema } = require("./technology.schema");
 
 // Clear/reset a `jest.spyOn` leaves the function gutted.  Remember original.
@@ -178,13 +177,15 @@ describe("getOwnedPlayerTechnologies", () => {
     });
 
     it("with a playerSlot", () => {
+        // Reset does not restore spyOn functions, manually reset with original.
+        jest.resetAllMocks();
         const _world_getAllObjects = world.getAllObjects;
         jest.spyOn(world, "getAllObjects").mockReturnValue([
             new MockCard({
                 allCardDetails: [
                     new MockCardDetails({
                         metadata:
-                            "card.technology.green:base/x89_bacterial_weapon.omega",
+                            "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
                     }),
                 ],
             }),
