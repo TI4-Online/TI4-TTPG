@@ -264,7 +264,7 @@ class PlayerDesk {
      * @returns {GameObject}
      */
     getFrozenDummyObject() {
-        const pos = this.center.subtract([0, 0, 5]); // under table
+        const pos = this.center.subtract([0, 0, 10]); // under table
         const rot = this.rot;
         const savedData = `__playerDeskFrozenDummy:${this.index + 1}/${
             world.TI4.config.playerCount

@@ -50,12 +50,11 @@ class FactionTokenUI {
             throw new Error(`unknown faction "${factionNsidName}`);
         }
 
+        const packageId = faction.packageId ? faction.packageId : refPackageId;
+
         const button = WidgetFactory.imageButton()
             .setImageSize(this._imageSize, this._imageSize)
-            .setImage(
-                Faction.getByNsidName(factionNsidName).icon,
-                refPackageId
-            );
+            .setImage(Faction.getByNsidName(factionNsidName).icon, packageId);
         this._factionText.setText(faction.nameAbbr);
         const draftSelection = new DraftSelectionWidget().setChild(button);
         button.onClicked.add(onClickedGenerator(draftSelection));

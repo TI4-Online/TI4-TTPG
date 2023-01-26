@@ -203,7 +203,9 @@ class TurnEntryFancy extends Canvas {
             faction && faction.icon
                 ? faction.icon
                 : "global/factions/bobert_icon.png";
-        this._factionIcon.setImage(factionIcon, refPackageId);
+        const packageId =
+            faction && faction.packageId ? faction.packageId : refPackageId;
+        this._factionIcon.setImage(factionIcon, packageId);
         this._factionName.setText(factionName);
 
         this._playerName.setFontSize(nameFontSize).setText(name);

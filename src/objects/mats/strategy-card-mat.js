@@ -1,7 +1,7 @@
-const { Border } = require("@tabletop-playground/api");
 const { GameUI } = require("../../game-ui/game-ui");
 const locale = require("../../lib/locale");
 const {
+    Border,
     Button,
     HorizontalBox,
     Rotator,
