@@ -2,6 +2,8 @@
  * Numpad key actions
  */
 const assert = require("../wrapper/assert-wrapper");
+const locale = require("../lib/locale");
+const { Broadcast } = require("../lib/broadcast");
 const { Spawn } = require("../setup/spawn/spawn");
 const { TableLayout } = require("../table/table-layout");
 const {
@@ -32,7 +34,7 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
     //console.log(`onScriptButtonPressed: ${index} ctrl=${ctrl} alt=${alt}`);
 
     // Ctrl-# looks at a player desk.
-    if (ctrl && !alt) {
+    if (ctrl && !alt && index < 10) {
         const playerDesks = world.TI4.getAllPlayerDesks();
         const playerDesk = playerDesks[index - 1];
         if (playerDesk) {
@@ -44,7 +46,7 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
     }
 
     // Ctrl-Alt-# looks at a player desk at an angle (strategy, agenda popup view).
-    if (ctrl && alt) {
+    if (ctrl && alt && index < 10) {
         const playerDesks = world.TI4.getAllPlayerDesks();
         const playerDesk = playerDesks[index - 1];
         if (playerDesk) {
@@ -116,6 +118,15 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
     }
 
     if (index === 10) {
+        if (!ctrl) {
+            Broadcast.chatOne(
+                player,
+                locale("ui.error.numpad0_control"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
         // Graveyard held objects.
         const container = undefined;
         const rejectedObjs = player.getHeldObjects();
