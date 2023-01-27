@@ -7,6 +7,7 @@ const {
     Text,
     TextBox,
     UIElement,
+    UIZoomVisibility,
     Vector,
     refObject,
     refPackageId,
@@ -204,30 +205,15 @@ class CustomStrategyCard {
         this._ui.position = new Vector(0, 0, 0.17);
         this._ui.useWidgetSize = false;
         this._ui.widget = canvas;
+        this._ui.zoomVisibility = UIZoomVisibility.Both;
         this._obj.addUI(this._ui);
     }
 }
 
-let _createOnlyOnceCalled = false;
-const createOnlyOnce = (obj) => {
-    assert(obj instanceof GameObject);
-    if (_createOnlyOnceCalled || world.__isMock) {
-        return;
-    }
-    _createOnlyOnceCalled = true;
-    new CustomStrategyCard(obj);
-};
-
 refObject.onCreated.add((obj) => {
-    // DO NOT CREATE UI IN ONCREATED CALLBACK, IT WILL LINGER ACROSS RELOAD
-    // AND PROBABLY CAUSES OTHER PROBLEMS.
-    process.nextTick(() => {
-        createOnlyOnce(obj);
-    });
+    new CustomStrategyCard(obj);
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    process.nextTick(() => {
-        createOnlyOnce(refObject);
-    });
+    new CustomStrategyCard(refObject);
 }
