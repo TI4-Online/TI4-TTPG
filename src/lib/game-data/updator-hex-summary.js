@@ -208,8 +208,7 @@ class HexItems {
 
         let planetIndex = -1; // space
         if (GROUND_UNIT_SET.has(unit)) {
-            const pos = unitPlastic.gameObject.getPosition();
-            const planet = getClosestPlanet(pos, this._systemTileObj);
+            const planet = unitPlastic._planet;
             if (planet) {
                 planetIndex = planet.planetIndex;
             }
@@ -425,6 +424,7 @@ module.exports = (data) => {
     // Get units, associating cardboard with nearest plastic.
     const unitPlastics = UnitPlastic.getAll();
     UnitPlastic.assignTokens(unitPlastics);
+    UnitPlastic.assignPlanets(unitPlastics);
     for (const unitPlastic of unitPlastics) {
         const hex = unitPlastic.hex;
         const hexItems = hexToHexItems[hex];
