@@ -1,6 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const {
-    Border,
     LayoutBox,
     Text,
     UIElement,
