@@ -363,6 +363,7 @@
     "ui.agenda.clippy.reset_available_votes": "Reset available votes",
     "ui.agenda.clippy.no_whens": "No WHENs",
     "ui.agenda.clippy.no_afters": "No AFTERs",
+    "ui.agenda.clippy.lock_no_whens_afters": "Lock-in no whens/afters\n(Otherwise reset on play)",
     "ui.agenda.clippy.play_when": "Play WHEN",
     "ui.agenda.clippy.play_after": "Play AFTER",
     "ui.agenda.clippy.play_predict": "Predict outcome",

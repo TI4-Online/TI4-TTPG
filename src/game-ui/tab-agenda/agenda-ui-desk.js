@@ -33,6 +33,7 @@ class AgendaUiDesk {
         assert(typeof callbacks.onPlayWhen === "function");
         assert(typeof callbacks.onNoAfters === "function");
         assert(typeof callbacks.onPlayAfter === "function");
+        assert(typeof callbacks.onLockWhensAfters === "function");
         assert(typeof callbacks.onOutcomeEdit === "function");
         assert(typeof callbacks.onVoteOutcome === "function");
         assert(typeof callbacks.onVoteIncr === "function");
@@ -114,6 +115,7 @@ class AgendaUiDesk {
         );
         midRight.addChild(this._createWhensWidget());
         midRight.addChild(this._createAftersWidget());
+        midRight.addChild(this._createLockWhensAftersWidget());
         midPanel.addChild(midRight);
         const midBox = WidgetFactory.layoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
@@ -298,8 +300,8 @@ class AgendaUiDesk {
 
         const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(this._noWhensButton)
-            .addChild(this._playWhenButton);
+            .addChild(this._noWhensButton, 1)
+            .addChild(this._playWhenButton, 1);
         return panel;
     }
 
@@ -330,9 +332,26 @@ class AgendaUiDesk {
 
         const panel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(this._noAftersButton)
-            .addChild(this._playAfterButton);
+            .addChild(this._noAftersButton, 1)
+            .addChild(this._playAfterButton, 1);
         return panel;
+    }
+
+    _createLockWhensAftersWidget() {
+        this._lockWhensAftersButton = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize * BUTTON_SCALE)
+            .setText(locale("ui.agenda.clippy.lock_no_whens_afters"));
+
+        this._lockWhensAftersButton.onClicked.add(
+            ThrottleClickHandler.wrap((clickedButton, player) => {
+                if (!this.allowClick(player)) {
+                    return;
+                }
+                this._callbacks.onLockWhensAfters(this._playerDesk, player);
+            })
+        );
+
+        return this._lockWhensAftersButton;
     }
 
     _createOutcomesWidget(outcomeNamesMutable) {
@@ -578,6 +597,9 @@ class AgendaUiDesk {
         enabled = !agenda.getNoAfters(deskIndex);
         this._noAftersButton.setEnabled(enabled);
         this._playAfterButton.setEnabled(enabled);
+
+        enabled = !agenda.getWhensAftersLocked(deskIndex);
+        this._lockWhensAftersButton.setEnabled(enabled);
 
         // Outcomes.
         for (

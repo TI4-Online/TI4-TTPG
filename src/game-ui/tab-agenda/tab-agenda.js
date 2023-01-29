@@ -172,6 +172,13 @@ class TabAgenda {
                 agenda.resetNoAfters();
                 agenda.playAfter(playerDesk.index, clickingPlayer);
             },
+            onLockWhensAfters: (playerDesk, clickingPlayer) => {
+                agenda.setWhensAftersLocked(
+                    playerDesk.index,
+                    true,
+                    clickingPlayer
+                );
+            },
             onOutcomeEdit: (outcomeIndex, outcomeName) => {
                 agenda.setOutcomeName(outcomeIndex, outcomeName);
             },
