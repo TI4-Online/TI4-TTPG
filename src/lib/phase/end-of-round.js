@@ -124,7 +124,7 @@ class EndStatusPhase {
         );
         const cyberneticEnhancements2 = CardUtil.hasCard(
             playerSlot,
-            "card.promissory.l1z1x:base/cybernetic_enhancements.omega",
+            "card.promissory.l1z1x:codex.ordinian/cybernetic_enhancements.omega",
             true
         );
         if (cyberneticEnhancements1 || cyberneticEnhancements2) {
