@@ -204,6 +204,7 @@ class Agenda {
 
         this._noWhensDeskIndexSet = undefined;
         this._noAftersDeskIndexSet = undefined;
+        this._whensAftersLockedDeskSet = undefined;
         this._voteLockedDeskIndexSet = undefined;
         this._deskIndexToOutcomeIndex = undefined;
         this._deskIndexToVoteCount = undefined;
@@ -330,6 +331,7 @@ class Agenda {
 
         this._noWhensDeskIndexSet = undefined;
         this._noAftersDeskIndexSet = undefined;
+        this._whensAftersLockedDeskSet = undefined;
         this._voteLockedDeskIndexSet = undefined;
         this._deskIndexToOutcomeIndex = undefined;
         this._deskIndexToVoteCount = undefined;
@@ -347,6 +349,7 @@ class Agenda {
 
         this._noWhensDeskIndexSet = new Set();
         this._noAftersDeskIndexSet = new Set();
+        this._whensAftersLockedDeskSet = new Set();
         this._voteLockedDeskIndexSet = new Set();
         this._deskIndexToOutcomeIndex = {};
         this._deskIndexToVoteCount = {};
@@ -580,13 +583,20 @@ class Agenda {
     }
 
     resetNoWhens() {
-        this._noWhensDeskIndexSet.clear();
+        for (const deskIndex of [...this._noWhensDeskIndexSet]) {
+            if (!this._whensAftersLockedDeskSet.has(deskIndex)) {
+                this._noWhensDeskIndexSet.delete(deskIndex);
+            }
+        }
 
         if (
             this._agendaStateMachine &&
             this._agendaStateMachine.name === "WHEN"
         ) {
             world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
+                if (this._noWhensDeskIndexSet.has(playerDesk.index)) {
+                    return;
+                }
                 world.TI4.turns.setPassed(playerDesk.playerSlot, false);
             });
         }
@@ -633,13 +643,20 @@ class Agenda {
     }
 
     resetNoAfters() {
-        this._noAftersDeskIndexSet.clear();
+        for (const deskIndex of [...this._noAftersDeskIndexSet]) {
+            if (!this._whensAftersLockedDeskSet.has(deskIndex)) {
+                this._noAftersDeskIndexSet.delete(deskIndex);
+            }
+        }
 
         if (
             this._agendaStateMachine &&
             this._agendaStateMachine.name === "AFTER"
         ) {
             world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
+                if (this._noAftersDeskIndexSet.has(playerDesk.index)) {
+                    return;
+                }
                 world.TI4.turns.setPassed(playerDesk.playerSlot, false);
             });
         }
@@ -655,6 +672,31 @@ class Agenda {
 
         this._playForPhase(deskIndex, "AFTER", clickingPlayer);
 
+        this._postInvalidate();
+        return this;
+    }
+
+    getWhensAftersLocked(deskIndex) {
+        assert(typeof deskIndex === "number");
+        assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
+        return (
+            this._whensAftersLockedDeskSet &&
+            this._whensAftersLockedDeskSet.has(deskIndex)
+        );
+    }
+
+    setWhensAftersLocked(deskIndex, value, clickingPlayer) {
+        assert(typeof deskIndex === "number");
+        assert(deskIndex >= 0 && deskIndex < world.TI4.config.playerCount);
+        assert(typeof value === "boolean");
+        assert(!clickingPlayer || clickingPlayer instanceof Player);
+        assert(this._whensAftersLockedDeskSet);
+
+        if (value) {
+            this._whensAftersLockedDeskSet.add(deskIndex);
+        } else {
+            this._whensAftersLockedDeskSet.delete(deskIndex);
+        }
         this._postInvalidate();
         return this;
     }

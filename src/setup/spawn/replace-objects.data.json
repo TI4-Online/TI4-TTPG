@@ -1,7 +1,7 @@
 {
-    "card.technology.green.yin:base/yin_spinner": "card.technology.green.yin:base/yin_spinner.omega",
+    "card.technology.green.yin:base/yin_spinner": "card.technology.green.yin:codex.ordinian/yin_spinner.omega",
     "card.technology.green:base/x89_bacterial_weapon": "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
-    "card.technology.blue.creuss:base/wormhole_generator": "card.technology.blue.creuss:base/wormhole_generator.omega",
+    "card.technology.blue.creuss:base/wormhole_generator": "card.technology.blue.creuss:codex.ordinian/wormhole_generator.omega",
     "card.technology.red:base/magen_defense_grid": "card.technology.red:codex.ordinian/magen_defense_grid.omega",
     "card.technology.red.muaat:base/magmus_reactor": "card.technology.red.muaat:codex.ordinian/magmus_reactor.omega",
     "card.promissory.l1z1x:base/cybernetic_enhancements": "card.promissory.l1z1x:codex.ordinian/cybernetic_enhancements.omega",
