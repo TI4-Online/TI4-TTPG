@@ -207,7 +207,7 @@ class AutoGravRiftRoller {
         points.push(points[0].clone());
         normals.push(normals[0].clone());
 
-        const surviveColor = new Color(0, 205 / 255, 188 / 255);
+        const surviveColor = new Color(0, 0, 255); // use blue instead of green for colorblind
         const destroyColor = new Color(255 / 255, 105 / 255, 30 / 255);
 
         const color = die.isHit() ? surviveColor : destroyColor;
