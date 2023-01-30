@@ -137,7 +137,9 @@ class Faction {
     static injectFaction(factionAttrs) {
         assert(factionAttrs);
         FactionSchema.validate(factionAttrs, (err) => {
-            throw new Error(`Faction.injectFaction schema error "${err}"`);
+            throw new Error(
+                `Faction.injectFaction schema error "${JSON.stringify(err)}"`
+            );
         });
         assert(Array.isArray(FACTION_DATA));
         FACTION_DATA.push(factionAttrs);
