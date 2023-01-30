@@ -5,7 +5,7 @@ const { Spawn } = require("../spawn/spawn");
 const { Rotator, Vector, world } = require("../../wrapper/api");
 
 const EXTRA_P0 = { x: 32, y: -20, z: 10 }; // start higher than leaders
-const EXTRA_DY = 6;
+const SCALE = 0.8;
 
 class SetupFactionExtra extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -15,32 +15,42 @@ class SetupFactionExtra extends AbstractSetup {
 
     setup() {
         const extra = this.faction.raw.unpackExtra;
-        if (!extra) {
+        if (!extra || extra.length === 0) {
             return; // nothing to unpack
         }
-        let nextPos = new Vector(EXTRA_P0.x, EXTRA_P0.y, EXTRA_P0.z);
+
+        // Create a container for extras.
+        const pos = this.playerDesk.localPositionToWorld(EXTRA_P0);
+        const rot = this.playerDesk.rot;
+        const box = Spawn.spawn("bag:base/generic", pos, rot);
+        box.clear(); // paranoia
+        box.setPrimaryColor([0.4, 0.4, 0.4]);
+        box.setScale(new Vector(SCALE, SCALE, SCALE / 2));
+        box.setName(`${this.faction.nameFull} Extras`);
+
+        const above = pos.add([0, 0, 10]);
         extra.forEach((extra) => {
             if (extra.tokenNsid && extra.bagNsid) {
-                extra.bagPos = nextPos;
-                this.spawnTokensAndBag(extra);
-                nextPos.y += EXTRA_DY;
+                extra.bagPos = above;
+                const obj = this.spawnTokensAndBag(extra);
+                box.addObjects([obj]);
             } else if (extra.tokenNsid) {
                 const count = extra.tokenCount || 1;
                 for (let i = 0; i < count; i++) {
-                    const pos = this.playerDesk.localPositionToWorld(nextPos);
+                    const pos = above;
                     const rot = this.playerDesk.rot;
                     const playerSlot = this.playerDesk.playerSlot;
                     const token = Spawn.spawn(extra.tokenNsid, pos, rot);
                     token.setOwningPlayerSlot(playerSlot);
-                    nextPos.y += EXTRA_DY;
+                    box.addObjects([token]);
                 }
             } else if (extra.cardNsid) {
-                const pos = this.playerDesk.localPositionToWorld(nextPos);
+                const pos = this.playerDesk.localPositionToWorld(above);
                 const rot = new Rotator(0, 0, 180).compose(this.playerDesk.rot);
                 const playerSlot = this.playerDesk.playerSlot;
                 const card = Spawn.spawn(extra.cardNsid, pos, rot);
                 card.setOwningPlayerSlot(playerSlot);
-                nextPos.y += EXTRA_DY;
+                box.addObjects([card]);
             } else {
                 throw new Error("unknown faction.unpackExtra");
             }
@@ -61,12 +71,14 @@ class SetupFactionExtra extends AbstractSetup {
             });
         }
 
+        const extrasBoxName = `${this.faction.nameFull} Extras`;
+
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            if (!extraNsids.has(nsid)) {
+            if (obj.getName() !== extrasBoxName && !extraNsids.has(nsid)) {
                 continue;
             }
             const pos = obj.getPosition();
