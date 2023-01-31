@@ -138,7 +138,7 @@ class Faction {
         assert(factionAttrs);
         FactionSchema.validate(factionAttrs, (err) => {
             throw new Error(
-                `Faction.injectFaction schema error "${JSON.stringify(err)}"`
+                `Faction.injectFaction schema error "${err.message}"`
             );
         });
         assert(Array.isArray(FACTION_DATA));
@@ -188,6 +188,10 @@ class Faction {
 
     get playerSlot() {
         return this._playerSlot;
+    }
+
+    get packageId() {
+        return this._factionAttrs.packageId;
     }
 }
 

@@ -352,7 +352,9 @@ class System {
         _maybeInit();
 
         SystemSchema.validate(rawSystem, (err) => {
-            throw new Error(`System.injectSystem "${err.message}"`);
+            throw new Error(
+                `System.injectSystem schema error "${err.message}"`
+            );
         });
 
         // Add this new system.

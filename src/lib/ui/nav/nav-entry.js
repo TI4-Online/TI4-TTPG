@@ -1,5 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { Widget } = require("../../../wrapper/api");
+const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 
 const DEFAULT_ENTRY_ICON_PATH = "global/ui/icons/document.png";
 
@@ -24,6 +25,16 @@ class NavEntry {
 
         this._parentNavEntry = undefined;
         this._children = undefined;
+
+        this._onShow = new TriggerableMulticastDelegate();
+        this._onHide = new TriggerableMulticastDelegate();
+    }
+
+    get onShow() {
+        return this._onShow;
+    }
+    get onHide() {
+        return this._onHide;
     }
 
     getName() {
@@ -75,6 +86,8 @@ class NavEntry {
             this._persistedWidget = widget;
         }
 
+        this.onShow.trigger();
+
         return widget;
     }
 
@@ -88,6 +101,8 @@ class NavEntry {
         if (this._destroyWidget) {
             this._destroyWidget(this);
         }
+
+        this.onHide.trigger();
     }
 
     /**

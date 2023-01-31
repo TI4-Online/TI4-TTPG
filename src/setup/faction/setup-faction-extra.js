@@ -30,11 +30,7 @@ class SetupFactionExtra extends AbstractSetup {
 
         const above = pos.add([0, 0, 10]);
         extra.forEach((extra) => {
-            if (extra.tokenNsid && extra.bagNsid) {
-                extra.bagPos = above;
-                const obj = this.spawnTokensAndBag(extra);
-                box.addObjects([obj]);
-            } else if (extra.tokenNsid) {
+            if (extra.tokenNsid) {
                 const count = extra.tokenCount || 1;
                 for (let i = 0; i < count; i++) {
                     const pos = above;
@@ -64,9 +60,6 @@ class SetupFactionExtra extends AbstractSetup {
             extra.forEach((extra) => {
                 if (extra.tokenNsid) {
                     extraNsids.add(extra.tokenNsid);
-                }
-                if (extra.bagNsid) {
-                    extraNsids.add(extra.bagNsid);
                 }
             });
         }

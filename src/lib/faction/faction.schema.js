@@ -78,8 +78,6 @@ const FACTION_SCHEMA = {
                     cardNsid: { type: "string" },
                     tokenNsid: { type: "string" }, // "token.wormhole.creuss:base/alpha"
                     tokenCount: { type: "integer" },
-                    bagNsid: { type: "string" }, // optinal, if given make token bag
-                    bagType: { type: "integer" },
                 },
             },
         },
