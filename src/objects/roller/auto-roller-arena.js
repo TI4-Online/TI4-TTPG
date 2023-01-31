@@ -216,8 +216,10 @@ class AutoRollerArena {
 }
 
 // Make sure there are no lingering platforms.
-process.nextTick(() => {
-    AutoRollerArena.destroyArenaPlatform();
-});
+if (!world.__isMock) {
+    process.nextTick(() => {
+        AutoRollerArena.destroyArenaPlatform();
+    });
+}
 
 module.exports = { AutoRollerArena };
