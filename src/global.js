@@ -124,6 +124,7 @@ globalEvents.onPlayerJoined.add((player) => {
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
 require("./lib/whisper/whisper-history");
+require("./global/reposition-collisions-stuck");
 
 if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
