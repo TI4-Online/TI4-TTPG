@@ -1,6 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AutoRoller } = require("../objects/roller/auto-roller");
+const { AutoRollerArena } = require("../objects/roller/auto-roller-arena");
 const {
     BunkerDraftSettings,
 } = require("./tab-map/tab-draft/tab-bunker/bunker-draft-settings");
@@ -313,6 +314,12 @@ class GameUI {
                 return autoRoller.getUI();
             })
             .setPersistWidget(true);
+        autoRollerEntry.onShow.add(() => {
+            AutoRollerArena.createArenaPlatform();
+        });
+        autoRollerEntry.onHide.add(() => {
+            AutoRollerArena.destroyArenaPlatform();
+        });
         actionPhaseFolder.addChild(autoRollerEntry);
         globalEvents.TI4.onSystemActivated.add((systemTileObj, player) => {
             navPanel.setCurrentNavEntry(autoRollerEntry);

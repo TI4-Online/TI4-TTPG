@@ -3,6 +3,8 @@ const { Hex } = require("../../lib/hex");
 const { TableLayout } = require("../../table/table-layout");
 const PositionToPlanet = require("../../lib/system/position-to-planet");
 const { ObjectType, Rotator, Vector, world } = require("../../wrapper/api");
+const { Spawn } = require("../../setup/spawn/spawn");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 
 const LOCAL_POS = new Vector(2.0, 9.5, 0); // (2.2, 31, 0) if turn order is on left
 const LOCAL_ROT = new Rotator(0, 0, 0);
@@ -179,6 +181,43 @@ class AutoRollerArena {
             unitPlastic.gameObject.setObjectType(objectType);
         }
     }
+
+    static createArenaPlatform() {
+        console.log("AutoRollerArena.createArenaPlatform");
+
+        const platformNsid = "tool:base/arena_platform";
+        const anchor = TableLayout.anchor.gameUI;
+        const pos = TableLayout.anchorPositionToWorld(anchor, LOCAL_POS);
+        const rot = TableLayout.anchorRotationToWorld(anchor, LOCAL_ROT);
+        const obj = Spawn.spawn(platformNsid, pos, rot);
+        obj.setTags(["DELETED_ITEMS_IGNORE"]);
+        obj.freeze();
+
+        // What happens if there are objects in the space?
+        // Looks like they just lift on top without any physics excitment.
+    }
+
+    static destroyArenaPlatform() {
+        console.log("AutoRollerArena.destroyArenaPlatform");
+
+        const platformNsid = "tool:base/arena_platform";
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== platformNsid) {
+                continue;
+            }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
+        }
+    }
 }
+
+// Make sure there are no lingering platforms.
+process.nextTick(() => {
+    AutoRollerArena.destroyArenaPlatform();
+});
 
 module.exports = { AutoRollerArena };
