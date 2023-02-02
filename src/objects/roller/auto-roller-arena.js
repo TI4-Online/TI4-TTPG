@@ -1,10 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Hex } = require("../../lib/hex");
-const { TableLayout } = require("../../table/table-layout");
-const PositionToPlanet = require("../../lib/system/position-to-planet");
-const { ObjectType, Rotator, Vector, world } = require("../../wrapper/api");
-const { Spawn } = require("../../setup/spawn/spawn");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const PositionToPlanet = require("../../lib/system/position-to-planet");
+const { Spawn } = require("../../setup/spawn/spawn");
+const { TableLayout } = require("../../table/table-layout");
+const { ObjectType, Rotator, Vector, world } = require("../../wrapper/api");
 
 const LOCAL_POS = new Vector(2.0, 9.5, 0); // (2.2, 31, 0) if turn order is on left
 const LOCAL_ROT = new Rotator(0, 0, 0);
