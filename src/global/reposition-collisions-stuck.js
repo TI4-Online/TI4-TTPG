@@ -8,58 +8,31 @@ const { ObjectNamespace } = require("../lib/object-namespace");
  * physics doesn't always dampen to a resting state.
  *
  * Listen for collisions, if an object gets too many over a span of time,
- * reposition that object (pick up, snap to ground).
- *
- * FOR NOW JUST REPORT WHAT IS HAPPENING.  DO NOT MOVE ANYTHING!
+ * reposition that object (snap to ground).
  */
 
 const HISTORY_SECONDS = 30;
 const MAX_COLLISIONS = 60;
 
 const _pairToCollisionHistory = {}; // between specific objects
-let _active = true;
-
-const _report = () => {
-    console.log("collisions report");
-
-    const pairs = Object.entries(_pairToCollisionHistory)
-        .map(([pair, history]) => {
-            return `${String(history.length).padStart(3, "0")} ${pair}`;
-        })
-        .sort()
-        .reverse();
-
-    // Message size is limited to 2k characters.
-    let msg = ["COLLISIONS:"];
-    let size = msg[0].length + 2;
-    for (const pair of pairs) {
-        if (size + pair.length + 2 > 1900) {
-            break;
-        }
-        msg.push(pair);
-    }
-    msg = msg.join("\n");
-    console.log(msg);
-    world.TI4.errorReporting.error(msg);
-};
+const _fixedPairs = [];
 
 const _onHitHandler = (obj, otherObj, first, impactPoint, impulse) => {
     assert(obj instanceof GameObject);
-
-    if (!_active) {
-        return;
-    }
 
     // Compute deterministic key.
     let id1 = obj.getId();
     let id2 = otherObj ? otherObj.getId() : "NULL";
     let nsid1 = ObjectNamespace.getNsid(obj);
     let nsid2 = otherObj ? ObjectNamespace.getNsid(otherObj) : "NULL";
+    let type1 = obj.getObjectType();
+    let type2 = otherObj ? otherObj.getObjectType() : "-1";
     if (id1 > id2) {
         [id1, id2] = [id2, id1];
         [nsid1, nsid2] = [nsid2, nsid1];
+        [type1, type2] = [type2, type1];
     }
-    const pair = `"${id1}" (${nsid1}) + "${id2}" (${nsid2})`;
+    const pair = `[${id1} ${nsid1} ${type1}] + [${id2} ${nsid2} ${type2}]`;
 
     // Get history.
     let history = _pairToCollisionHistory[pair];
@@ -83,10 +56,21 @@ const _onHitHandler = (obj, otherObj, first, impactPoint, impulse) => {
         return; // all is well
     }
 
-    // Do a *single* report.  The goal is to get a sense of frequency and
-    // what objects aren't settling.
-    _active = false;
-    _report();
+    // Try moving the top object.  There may be other objects on top of it,
+    // so only move a minute amount.
+    const z1 = obj.getPosition().z;
+    const z2 = otherObj ? otherObj.getPosition().z : -1;
+    const resetObj = z1 > z2 ? obj : otherObj;
+    resetObj.snapToGround();
+    delete _pairToCollisionHistory[pair];
+
+    if (_fixedPairs.length < 10) {
+        _fixedPairs.push(pair);
+        if (_fixedPairs.length === 1 || _fixedPairs.length === 10) {
+            const msg = `FIXED COLLISIONS:\n${_fixedPairs.join("\n")}`;
+            world.TI4.errorReporting.error(msg);
+        }
+    }
 };
 
 const _periodicCleanup = () => {
