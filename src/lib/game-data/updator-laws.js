@@ -1,7 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
-const { world } = require("../../wrapper/api");
+const { ObjectSavedData } = require("../saved-data/object-saved-data");
+const { Card, world } = require("../../wrapper/api");
 
 module.exports = (data) => {
     const agendaCards = [];
@@ -22,14 +23,26 @@ module.exports = (data) => {
         }
 
         // Agenda (laws in play).
+        if (!(obj instanceof Card)) {
+            continue;
+        }
         const nsid = ObjectNamespace.getNsid(obj);
         if (!nsid.startsWith("card.agenda")) {
             continue;
         }
-        if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
+        if (obj === activeAgendaCard) {
             continue;
         }
-        if (obj === activeAgendaCard) {
+
+        const isLoose = CardUtil.isLooseCard(
+            obj,
+            checkDiscardPile,
+            allowFaceDown
+        );
+        const isInScoringHolder =
+            obj.isInHolder() && obj.getHolder().getOwningPlayerSlot() < 0;
+
+        if (!isLoose && !isInScoringHolder) {
             continue;
         }
         agendaCards.push(obj);
@@ -45,7 +58,7 @@ module.exports = (data) => {
         (value, index, self) => self.indexOf(value) === index
     );
 
-    // Report per-player laws.
+    // Assign per-player laws with control tokens on them.
     const playerDesks = world.TI4.getAllPlayerDesks();
     const playerSlotToLawsNames = {};
     agendaCards.forEach((card) => {
@@ -71,6 +84,33 @@ module.exports = (data) => {
                 }
             });
     });
+
+    // Assign per-player laws in a player's scoring card holder.
+    agendaCards.forEach((card) => {
+        if (!card.isInHolder()) {
+            return;
+        }
+        const cardHolder = card.getHolder();
+        const deskIndex = ObjectSavedData.get(cardHolder, "deskIndex");
+        if (deskIndex === undefined) {
+            return;
+        }
+        const playerDesk = playerDesks[deskIndex];
+        if (!playerDesk) {
+            return;
+        }
+        const playerSlot = playerDesk.playerSlot;
+        let lawsNames = playerSlotToLawsNames[playerSlot];
+        if (!lawsNames) {
+            lawsNames = [];
+            playerSlotToLawsNames[playerSlot] = lawsNames;
+        }
+        const lawName = card.getCardDetails().name;
+        if (!lawsNames.includes(lawName)) {
+            lawsNames.push(lawName);
+        }
+    });
+
     data.players.forEach((playerData, index) => {
         const playerDesk = playerDesks[index];
         assert(playerDesk);
