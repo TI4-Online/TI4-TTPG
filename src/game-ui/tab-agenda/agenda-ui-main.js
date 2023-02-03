@@ -155,6 +155,10 @@ class AgendaUiMain {
         assert(typeof onClickHandlers.yesHelp === "function");
         assert(typeof onClickHandlers.noHelp === "function");
 
+        const onlyOne = ThrottleClickHandler.onlyOne({
+            yesHelp: onClickHandlers.yesHelp,
+            noHelp: onClickHandlers.noHelp,
+        });
         const label = WidgetFactory.text()
             .setJustification(TextJustification.Center)
             .setFontSize(CONFIG.fontSize)
@@ -164,16 +168,12 @@ class AgendaUiMain {
         const yesButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.clippy.yes"));
-        yesButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.yesHelp)
-        );
+        yesButton.onClicked.add(onlyOne.yesHelp);
 
         const noButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.agenda.clippy.no"));
-        noButton.onClicked.add(
-            ThrottleClickHandler.wrap(onClickHandlers.noHelp)
-        );
+        noButton.onClicked.add(onlyOne.noHelp);
 
         const leftPanel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
