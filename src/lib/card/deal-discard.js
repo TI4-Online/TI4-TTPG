@@ -493,4 +493,4 @@ class DealDiscard {
     }
 }
 
-module.exports = { DealDiscard };
+module.exports = { DealDiscard, DECKS };
