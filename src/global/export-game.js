@@ -8,6 +8,7 @@ const LOCALHOST_POST = false;
 
 const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-config"),
+    require("../lib/game-data/updator-decks"),
     require("../lib/game-data/updator-hex-summary"), // might be too concise?
     require("../lib/game-data/updator-laws"),
     require("../lib/game-data/updator-map-string"),
@@ -38,6 +39,9 @@ function sendToDiscord(webhook, message) {
     assert(webhook.startsWith("https://discord.com/api/webhooks/"));
 
     console.log(`sendToDiscord |${message.length}|: "${message}"`);
+
+    // Prevent discord markdown.
+    message = "`" + message + "`";
 
     // https://discord.com/developers/docs/resources/webhook#execute-webhook
     const fetchOptions = {
