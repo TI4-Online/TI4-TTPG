@@ -452,8 +452,12 @@ class AutoRollerUI extends HorizontalBox {
         this._arenaWarpOut.setEnabled(enabled);
 
         const imgPath = system ? system.raw.img : "global/ui/tiles/blank.png";
+        const imgPackageId =
+            system && system.raw.packageId
+                ? system.raw.packageId
+                : refPackageId;
         const tint = system ? [1, 1, 1, 1] : [0.1, 0.1, 0.1, 1];
-        this._systemImage.setImage(imgPath, refPackageId);
+        this._systemImage.setImage(imgPath, imgPackageId);
         this._systemImage.setTintColor(tint);
     }
 

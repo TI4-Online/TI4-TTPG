@@ -68,26 +68,44 @@ class AgendaUiDesk {
     }
 
     _showDeskUI() {
+        if (!this._ui) {
+            return; // race with destroy
+        }
         this._ui.widget.setVisible(true);
         this._playerDesk.updateUI(this._ui, false);
     }
     _hideDeskUI() {
+        if (!this._ui) {
+            return; // race with destroy
+        }
         this._ui.widget.setVisible(false);
         this._playerDesk.updateUI(this._ui, false);
     }
     _hideCollapsedUI() {
+        if (!this._collapsedUi) {
+            return; // race with destroy
+        }
         this._collapsedUi.widget.setVisible(false);
         this._playerDesk.updateUI(this._collapsedUi, false);
     }
     _showCollapsedUI() {
+        if (!this._collapsedUi) {
+            return; // race with destroy
+        }
         this._collapsedUi.widget.setVisible(true);
         this._playerDesk.updateUI(this._collapsedUi, false);
     }
     _showZoomedAgendaCardWidget() {
+        if (!this._zoomedAgendaCardUi) {
+            return; // race with destroy
+        }
         this._zoomedAgendaCardUi.widget.setVisible(true);
         this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
     }
     _hideZoomedAgendaCardWidget() {
+        if (!this._zoomedAgendaCardUi) {
+            return; // race with destroy
+        }
         this._zoomedAgendaCardUi.widget.setVisible(false);
         this._playerDesk.updateUI(this._zoomedAgendaCardUi, false);
     }

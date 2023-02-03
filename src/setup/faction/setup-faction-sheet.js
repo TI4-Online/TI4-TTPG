@@ -21,7 +21,12 @@ class SetupFactionSheet extends AbstractSetup {
         const sheetNsid = `sheet.faction:${this.faction.nsidSource}/${this.faction.nsidName}`;
         const sheet = Spawn.spawn(sheetNsid, pos, rot);
         sheet.setObjectType(ObjectType.Ground);
-        assert(ObjectNamespace.getNsid(sheet) === sheetNsid);
+        const objNsid = ObjectNamespace.getNsid(sheet);
+        if (objNsid !== sheetNsid) {
+            throw new Error(
+                `SetupFactionSheet: sheet has nsid "${objNsid}", expected "${sheetNsid}"`
+            );
+        }
     }
 
     clean() {

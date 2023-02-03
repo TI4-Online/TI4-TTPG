@@ -82,11 +82,12 @@ function drawTechButton(
     }
 
     if (factionNsidName) {
+        const faction = world.TI4.getFactionByNsidName(factionNsidName);
+        const factionPackageId = faction.packageId
+            ? faction.packageId
+            : refPackageId;
         const factionIcon = WidgetFactory.imageWidget()
-            .setImage(
-                world.TI4.getFactionByNsidName(factionNsidName).icon,
-                packageId
-            )
+            .setImage(faction.icon, factionPackageId)
             .setImageSize(IMAGE_SIZE, IMAGE_SIZE);
         canvas.addChild(
             factionIcon,
