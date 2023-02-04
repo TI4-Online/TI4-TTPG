@@ -12,6 +12,7 @@ module.exports = (data) => {
     });
 
     const tokensAndValues = [];
+    let strategyCardMat = undefined;
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
             continue;
@@ -21,11 +22,26 @@ module.exports = (data) => {
             tokensAndValues.push({ token: obj, value: 1 });
         } else if (nsid === "token:base/tradegood_commodity_3") {
             tokensAndValues.push({ token: obj, value: 3 });
+        } else if (nsid === "mat:base/strategy_card") {
+            strategyCardMat = obj;
         }
     }
 
     for (const { token, value } of tokensAndValues) {
         const pos = token.getPosition();
+
+        // Ignore if on the strategy card mat.
+        if (strategyCardMat) {
+            const matPos = strategyCardMat.worldPositionToLocal(pos);
+            const extent = strategyCardMat.getExtent();
+            if (
+                Math.abs(matPos.x) < extent.x &&
+                Math.abs(matPos.y) < extent.y
+            ) {
+                continue;
+            }
+        }
+
         const closestDesk = world.TI4.getClosestPlayerDesk(pos);
         const index = closestDesk.index;
         const playerData = data.players[index];
