@@ -188,28 +188,32 @@ class AdjacencyHyperlane {
                 );
                 var hexIndex = 0;
                 for (const adjacentHex of adjacentNeighborsForHyperlaneTile.getAdjacent()) {
-                    if (hyperlanes.includes(hexIndex)) {
-                        const newPos = Hex.toPosition(adjacentHex);
-                        const newSystemObj =
-                            world.TI4.getSystemTileObjectByPosition(newPos);
-                        if (newSystemObj) {
-                            const newSystem =
-                                world.TI4.getSystemBySystemTileObject(
-                                    newSystemObj
-                                );
-                            if (newSystem.raw.hyperlane) {
-                                untracedHyperlanes.push(
-                                    new HyperlaneConnection(
-                                        hyperlaneHex,
-                                        adjacentHex,
-                                        hexIndex
-                                    )
-                                );
-                            } else {
-                                adjacentHexSet.add(adjacentHex);
-                            }
-                        }
+                    if (!hyperlanes.includes(hexIndex)) {
+                        continue;
                     }
+                    const newPos = Hex.toPosition(adjacentHex);
+                    const newSystemObj =
+                        world.TI4.getSystemTileObjectByPosition(newPos);
+                    if (!newSystemObj) {
+                        continue;
+                    }
+                    const newSystem =
+                        world.TI4.getSystemBySystemTileObject(newSystemObj);
+                    if (!newSystem) {
+                        continue;
+                    }
+                    if (newSystem.raw.hyperlane) {
+                        untracedHyperlanes.push(
+                            new HyperlaneConnection(
+                                hyperlaneHex,
+                                adjacentHex,
+                                hexIndex
+                            )
+                        );
+                    } else {
+                        adjacentHexSet.add(adjacentHex);
+                    }
+
                     hexIndex++;
                 }
             }
