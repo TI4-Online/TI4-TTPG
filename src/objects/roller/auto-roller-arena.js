@@ -144,6 +144,11 @@ class AutoRollerArena {
             }
         );
 
+        // Sort by height to preserve stacks.
+        unitPlastics.sort((a, b) => {
+            return a.gameObject.getPosition().z - b.gameObject.getPosition().z;
+        });
+
         for (const unitPlastic of unitPlastics) {
             const src = unitPlastic.gameObject.getPosition();
             const hexLocal = activeSystemObj.worldPositionToLocal(src);
@@ -168,6 +173,11 @@ class AutoRollerArena {
         let unitPlastics = world.TI4.getAllUnitPlastics();
         unitPlastics =
             AutoRollerArena._filterToUnitPlasticsInsideArena(unitPlastics);
+
+        // Sort by height to preserve stacks.
+        unitPlastics.sort((a, b) => {
+            return a.gameObject.getPosition().z - b.gameObject.getPosition().z;
+        });
 
         for (const unitPlastic of unitPlastics) {
             const src = unitPlastic.gameObject.getPosition();
