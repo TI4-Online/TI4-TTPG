@@ -51,7 +51,7 @@ class ChooseFactionUi {
 
         this._selectMulitple = false;
         this._factionNsidNameToBorder = {};
-        this._factionNsidNameToLabel = {};
+        this._factionNsidNameToButton = {};
         this._factionNsidNameToIsSelected = {};
     }
 
@@ -147,6 +147,25 @@ class ChooseFactionUi {
 
     // --------------------------------
 
+    update() {
+        for (const button of Object.values(this._factionNsidNameToButton)) {
+            button.setEnabled(true);
+        }
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const playerSlot = playerDesk.playerSlot;
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            if (!faction) {
+                continue;
+            }
+            this.setIsSelected(faction, false);
+            const button = this._factionNsidNameToButton[faction.nsidName];
+            if (!button) {
+                continue;
+            }
+            button.setEnabled(false);
+        }
+    }
+
     /**
      * Is the given faction selected?
      *
@@ -201,6 +220,8 @@ class ChooseFactionUi {
             col.addChild(this._createFactionWidget(faction));
         });
 
+        this.update();
+
         return widget;
     }
 
@@ -242,6 +263,7 @@ class ChooseFactionUi {
         contentButton.onClicked = (button, player) => {
             this._toggle(faction);
         };
+        this._factionNsidNameToButton[faction.nsidName] = contentButton;
 
         const pad = Math.ceil(CONFIG.spacing * 0.5);
         const buttonBox = new LayoutBox()

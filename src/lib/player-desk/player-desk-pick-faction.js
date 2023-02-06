@@ -9,6 +9,7 @@ const {
     LayoutBox,
     VerticalBox,
     UIElement,
+    globalEvents,
     world,
 } = require("../../wrapper/api");
 const { ChooseFactionUi } = require("../ui/choose-faction-ui");
@@ -27,6 +28,7 @@ class PlayerDeskPickFaction {
         assert(playerDesk);
 
         this._playerDesk = playerDesk;
+        this._chooseFactionUi = undefined;
 
         this._ui = new UIElement();
         this._ui.anchorY = 0;
@@ -34,11 +36,18 @@ class PlayerDeskPickFaction {
         this._ui.rotation = playerDesk.rot;
         this._ui.scale = 1 / CONFIG.scale;
         this._ui.widget = this.getWidget();
-        world.addUI(this._ui);
+        playerDesk.addUI(this._ui);
+
+        this._onFactionChangedHandler = () => {
+            if (this._chooseFactionUi) {
+                this._chooseFactionUi.update();
+            }
+        };
+        globalEvents.TI4.onFactionChanged.add(this._onFactionChangedHandler);
     }
 
     getWidget() {
-        const chooseFactionUi = new ChooseFactionUi()
+        this._chooseFactionUi = new ChooseFactionUi()
             .setNumCols(NUM_COLS)
             .setFitNameLength(FIT_NAME_LENGTH)
             .setButtonSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -48,13 +57,13 @@ class PlayerDeskPickFaction {
             .setText(locale("ui.button.ok"))
             .setEnabled(false);
         chooseButton.onClicked.add((button, player) => {
-            const faction = chooseFactionUi.getSelectedFactions()[0];
+            const faction = this._chooseFactionUi.getSelectedFactions()[0];
             if (faction) {
                 this.onChooseFaction(faction);
             }
         });
-        chooseFactionUi.onFactionStateChanged.add(() => {
-            const selected = chooseFactionUi.getSelectedFactions();
+        this._chooseFactionUi.onFactionStateChanged.add(() => {
+            const selected = this._chooseFactionUi.getSelectedFactions();
             chooseButton.setEnabled(selected.length === 1);
         });
 
@@ -62,9 +71,21 @@ class PlayerDeskPickFaction {
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.random"));
         randomButton.onClicked.add((button, player) => {
-            const factions = ChooseFactionUi.getOrderedFactions();
+            const activeFactionNsids = new Set();
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const playerSlot = playerDesk.playerSlot;
+                const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+                if (faction) {
+                    activeFactionNsids.add(faction.nsidName);
+                }
+            }
+            const factions = ChooseFactionUi.getOrderedFactions().filter(
+                (faction) => {
+                    return !activeFactionNsids.has(faction.nsidName);
+                }
+            );
             const faction = factions[floor(Math.random() * factions.length)];
-            chooseFactionUi.setIsSelected(faction, true);
+            this._chooseFactionUi.setIsSelected(faction, true);
         });
 
         const cancelButton = new Button()
@@ -82,7 +103,7 @@ class PlayerDeskPickFaction {
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(chooseFactionUi.getWidget())
+            .addChild(this._chooseFactionUi.getWidget())
             .addChild(bottomButtons);
 
         const pad = CONFIG.spacing;
@@ -101,7 +122,8 @@ class PlayerDeskPickFaction {
             `PlayerDeskPickFaction.onCancel ${this._playerDesk.colorName}`
         );
 
-        world.removeUIElement(this._ui);
+        globalEvents.TI4.onFactionChanged.remove(this._onFactionChangedHandler);
+        this._playerDesk.removeUIElement(this._ui);
         this._playerDesk.resetUI();
     }
 
@@ -111,7 +133,8 @@ class PlayerDeskPickFaction {
             `PlayerDeskPickFaction.onChooseFaction ${this._playerDesk.colorName} "${faction.nsidName}"`
         );
 
-        world.removeUIElement(this._ui);
+        globalEvents.TI4.onFactionChanged.remove(this._onFactionChangedHandler);
+        this._playerDesk.removeUIElement(this._ui);
 
         this._playerDesk._factionSetupInProgress = true;
         const onFinished = () => {
