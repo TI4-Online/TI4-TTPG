@@ -133,6 +133,8 @@
     "ui.button.away": "AWAY",
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
+    "ui.button.setup": "SETUP",
+    "ui.button.random": "RANDOM",
     "ui.button.cancel": "CANCEL",
     "ui.button.ready": "READY",
     "ui.button.clear": "CLEAR",
@@ -140,7 +142,7 @@
     "ui.button.resolve_explore": "Resolve",
     "ui.button.collapse": "Collapse",
     "ui.button.expand": "Expand",
-    "ui.button.current_and_next_turn": "{current}‘s turn, next {next}",
+    "ui.button.current_and_next_turn": "{current}’s turn, next {next}",
     "ui.button.your_turn_end_turn": "YOUR TURN {current}, CLICK TO END TURN",
     "ui.button.toggle_on_screen_stats": "Toggle on-screen stats (per player)",
 

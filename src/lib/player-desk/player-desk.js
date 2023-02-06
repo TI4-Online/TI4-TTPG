@@ -6,6 +6,7 @@ const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskColor, PLAYER_DESK_COLORS } = require("./player-desk-color");
 const { PlayerDeskSetup } = require("./player-desk-setup");
+const { PlayerDeskPickFaction } = require("./player-desk-pick-faction");
 const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
 const { PlayerDeskUI } = require("./player-desk-ui");
 const { TableLayout } = require("../../table/table-layout");
@@ -23,6 +24,8 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+
+const PICK_FACTION_UI = true;
 
 const TAKE_SEAT_CAMERA = {
     pos: { x: -90, y: 0, z: 70 },
@@ -215,6 +218,17 @@ class PlayerDesk {
         this._color = ColorUtil.colorFromHex(colorAttrs.hexColor);
         this._plasticColor = ColorUtil.colorFromHex(colorAttrs.plasticHexColor);
 
+        this._chatColor = ColorUtil.colorFromHex(
+            colorAttrs.chatHexColor
+                ? colorAttrs.chatHexColor
+                : colorAttrs.plasticHexColor
+        );
+        this._widgetchatColor = ColorUtil.colorFromHex(
+            colorAttrs.widgetHexColor
+                ? colorAttrs.widgetHexColor
+                : colorAttrs.plasticHexColor
+        );
+
         this._ui = false;
         this._nameUI = false;
 
@@ -237,6 +251,12 @@ class PlayerDesk {
     }
     get plasticColor() {
         return this._plasticColor;
+    }
+    get chatColor() {
+        return this._chatColor;
+    }
+    get widgetColor() {
+        return this._widgetColor;
     }
     get colorName() {
         return this._colorName;
@@ -409,10 +429,13 @@ class PlayerDesk {
                 this.resetUI();
             },
             onSetupFaction: (button, player) => {
-                if (!FactionToken.getByPlayerDesk(this)) {
+                if (!FactionToken.getByPlayerDesk(this) && PICK_FACTION_UI) {
                     // No faction token, show faction selector.
-                    // TODO XXX
-                    // For now fall through and unpack a random one.
+                    console.log(
+                        "PlayerDesk.onSetupFaction: no token, showing UI"
+                    );
+                    new PlayerDeskPickFaction(this);
+                    return;
                 }
                 // Have a faction token, use it.
                 this._factionSetupInProgress = true;

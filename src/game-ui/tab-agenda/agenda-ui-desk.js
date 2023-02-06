@@ -169,7 +169,7 @@ class AgendaUiDesk {
         const card = world.TI4.agenda.getAgendaCard();
         if (card) {
             const button = AgendaCardWidget.getImageButton(card);
-            const width = 48 * CONFIG.scale;
+            const width = 90 * CONFIG.scale; // 48 fits with two rows of buttons, have more now
             button.setImageSize(width, (width * 750) / 500);
             box.setChild(button);
 

@@ -2,53 +2,76 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ColorUtil } = require("../color/color-util");
 const { world } = require("../../wrapper/api");
 
+/**
+ * Supply colors for different contexts:
+ * - hexColor: deprecated, should always use a specialized color!
+ * - plasticHexColor: plastic units
+ * - chatHexColor: chat window text, defaults to plastic color
+ * - widgetHexColor: ui text widget & background color, defaults to plastic color
+ */
 const PLAYER_DESK_COLORS = [
     {
         colorName: "green",
         hexColor: "#00C60A", //"#5AE35A",
         plasticHexColor: "#007406", //"#00A306",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 1,
     },
     {
         colorName: "red",
         hexColor: "#FF0505", //"#FF2417",
         plasticHexColor: "#CB0000", //"#D00404", //"#CB0000",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 16,
     },
     {
         colorName: "yellow",
         hexColor: "#FFD900", //"#FFDA00",
         plasticHexColor: "#D7B700", ////"#FFDA00",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 9,
     },
     {
         colorName: "pink",
         hexColor: "#FF74D6", //"#FF84D6",
         plasticHexColor: "#F46FCD", //"#F46FCD",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 5,
     },
     {
         colorName: "orange",
         hexColor: "#FF8C00", //"#FF932B",
         plasticHexColor: "#FF8C00", //"#FF7603",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 6,
     },
     {
         colorName: "purple",
         hexColor: "#C800FF",
         plasticHexColor: "#7500b7", // "#A300FF" "#5E219C",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 4,
     },
     {
         colorName: "blue",
         hexColor: "#07B2FF", //"#07B2FF",
         plasticHexColor: "#07B2FF", //"#07B2FF",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 15,
     },
     {
         colorName: "white",
         hexColor: "#F0F0F0", //"#BABABA",
         plasticHexColor: "#E0E0E0", //"#C1C1C1",
+        chatHexColor: undefined,
+        widgetHexColor: undefined,
         defaultPlayerSlot: 18,
     },
 ];

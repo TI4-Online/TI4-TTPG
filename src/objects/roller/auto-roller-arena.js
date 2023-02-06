@@ -144,6 +144,11 @@ class AutoRollerArena {
             }
         );
 
+        // Sort by height to preserve stacks.
+        unitPlastics.sort((a, b) => {
+            return a.gameObject.getPosition().z - b.gameObject.getPosition().z;
+        });
+
         for (const unitPlastic of unitPlastics) {
             const src = unitPlastic.gameObject.getPosition();
             const hexLocal = activeSystemObj.worldPositionToLocal(src);
@@ -168,6 +173,11 @@ class AutoRollerArena {
         let unitPlastics = world.TI4.getAllUnitPlastics();
         unitPlastics =
             AutoRollerArena._filterToUnitPlasticsInsideArena(unitPlastics);
+
+        // Sort by height to preserve stacks.
+        unitPlastics.sort((a, b) => {
+            return a.gameObject.getPosition().z - b.gameObject.getPosition().z;
+        });
 
         for (const unitPlastic of unitPlastics) {
             const src = unitPlastic.gameObject.getPosition();
@@ -195,6 +205,17 @@ class AutoRollerArena {
 
         // What happens if there are objects in the space?
         // Looks like they just lift on top without any physics excitment.
+
+        // Do not let anyone unlock or move it!
+        obj.onTick.add(() => {
+            const objectType = obj.getObjectType();
+            if (objectType != ObjectType.Ground) {
+                console.log("AutoRollerArenda: re-freezing platform");
+                obj.setPosition(pos);
+                obj.setRotation(rot);
+                obj.freeze();
+            }
+        });
     }
 
     static destroyArenaPlatform() {

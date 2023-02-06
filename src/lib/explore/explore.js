@@ -118,7 +118,6 @@ class Explore {
                             ),
                             action: (player) => {
                                 assert(player instanceof Player);
-                                const overrideTrait = false;
                                 Explore.doubleExplore(
                                     systemTileObj,
                                     planet,
