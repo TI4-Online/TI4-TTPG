@@ -19,7 +19,7 @@ const PICK_UI = {
     pos: { x: 40, y: 0, z: 4 },
 };
 const BUTTON_WIDTH = 150 * CONFIG.scale;
-const BUTTON_HEIGHT = 60 * CONFIG.scale;
+const BUTTON_HEIGHT = 50 * CONFIG.scale;
 const NUM_COLS = 4;
 const FIT_NAME_LENGTH = 8;
 
@@ -54,7 +54,7 @@ class PlayerDeskPickFaction {
 
         const chooseButton = new Button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.button.ok"))
+            .setText(locale("ui.button.setup"))
             .setEnabled(false);
         chooseButton.onClicked.add((button, player) => {
             const faction = this._chooseFactionUi.getSelectedFactions()[0];
