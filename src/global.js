@@ -137,12 +137,14 @@ const {
 } = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
 const { CardUtil } = require("./lib/card/card-util");
+const { CommandToken } = require("./lib/command-token/command-token");
 const { ErrorReporting } = require("./global/error-reporting");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
+const { Hex } = require("./lib/hex");
 const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { System, Planet } = require("./lib/system/system");
@@ -152,7 +154,10 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    // Export some modules (to work around require cycles, or for homebrew use).
     CardUtil,
+    CommandToken,
+    Hex,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
