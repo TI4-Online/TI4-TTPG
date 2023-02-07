@@ -26,11 +26,13 @@ const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-player-relic-cards"),
     require("../lib/game-data/updator-player-score"),
     require("../lib/game-data/updator-player-strategy-cards"),
+    require("../lib/game-data/updator-player-table-cards"),
     require("../lib/game-data/updator-player-tech"),
     require("../lib/game-data/updator-player-tgs"),
     require("../lib/game-data/updator-round"),
     require("../lib/game-data/updator-timestamp"),
     require("../lib/game-data/updator-turn"),
+    require("../lib/game-data/updator-unpicked-strategy-cards"),
 ];
 
 function sendToDiscord(webhook, message) {

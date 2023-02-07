@@ -47,6 +47,7 @@ const UPDATORS = [
     require("./updator-timer"),
     require("./updator-timestamp"),
     require("./updator-turn"),
+    require("./updator-unpicked-strategy-cards"),
     require("./updator-whisper-history"),
 ];
 let _addedPlayerNames = false;
@@ -299,6 +300,7 @@ class GameData {
             delete copy.speaker;
             delete copy.timer;
             delete copy.turn;
+            delete copy.unpickedStrategyCards;
             delete copy.whispers;
             for (const playerData of copy.players) {
                 delete playerData.steamName;
