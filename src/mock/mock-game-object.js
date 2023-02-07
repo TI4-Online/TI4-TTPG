@@ -12,6 +12,7 @@ class GameObject {
     constructor(data) {
         this._container = (data && data.container) || undefined;
         this._extent = (data && data.extent) || new Vector(1, 1, 1);
+        this._extentCenter = (data && data.extent) || new Vector(0, 0, 0);
         this._isHeld = (data && data.isHeld) || false;
         this._isInHolder = (data && data.isInHolder) || false;
         this._id = (data && data.id) || "abcd" + _nextId++;
@@ -67,6 +68,9 @@ class GameObject {
 
     getExtent() {
         return this._extent;
+    }
+    getExtentCenter() {
+        return this._extentCenter;
     }
 
     getId() {
