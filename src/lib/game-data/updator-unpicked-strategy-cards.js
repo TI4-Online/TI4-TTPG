@@ -27,6 +27,14 @@ module.exports = (data) => {
         if (FindTurnOrder.isStrategyCardPicked(obj)) {
             continue; // picked, ignore it
         }
+
+        // Add an entry for it starting with zero tradegoods,
+        // update those in the next pass.
+        const parsed = ObjectNamespace.parseStrategyCard(obj);
+        const localeName = "tile.strategy." + parsed.card;
+        const strategyCardName = locale(localeName);
+        data.unpickedStrategyCards[strategyCardName] = 0;
+
         unpicked.push(obj);
     }
 
