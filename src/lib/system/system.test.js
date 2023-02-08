@@ -154,3 +154,16 @@ it("inject", () => {
     const system = System.getByTileNumber(12349431);
     assert.equal(system.tile, 12349431);
 });
+
+it("legendary planets", () => {
+    SYSTEM_ATTRS.forEach((systemAttrs) => {
+        const system = new System(systemAttrs);
+        for (const planet of system.planets) {
+            if (planet.raw.legendary) {
+                const nsid = planet.raw.legendaryCard;
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                assert.equal(parsed.type, "card.legendary_planet");
+            }
+        }
+    });
+});

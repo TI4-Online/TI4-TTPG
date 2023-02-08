@@ -125,10 +125,17 @@ class MapTool {
                 );
                 nsidTypeAndNameToPos[key] = pos.add([0, 0, 4]);
 
-                if (planet.raw.legendary) {
+                // Not all legendary planets have a legendary card (e.g. nanoforge).
+                if (planet.raw.legendary && planet.raw.legendaryCard) {
                     const nsid = planet.raw.legendaryCard;
                     const parsed = ObjectNamespace.parseNsid(nsid);
-                    assert(parsed.type === "card.legendary_planet");
+                    if (parsed.type !== "card.legendary_planet") {
+                        throw new Error(
+                            `${planetNsidName} bad legendaryCard "${nsid}" from system ${JSON.stringify(
+                                system.raw
+                            )}`
+                        );
+                    }
                     key = `${parsed.type}/${parsed.name}`;
                     nsidTypeAndNameToPos[key] = pos.add([0, 0, 3]);
                 }
