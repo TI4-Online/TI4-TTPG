@@ -3,6 +3,8 @@ const { Broadcast } = require("../lib/broadcast");
 const { Player, fetch, globalEvents, world } = require("../wrapper/api");
 const { AsyncTaskQueue } = require("../lib/async-task-queue/async-task-queue");
 
+const SEND_AS_FILE = true;
+
 const COMMAND = "!export";
 const LOCALHOST_POST = false;
 
@@ -35,12 +37,18 @@ const GAME_DATA_UPDATORS = [
     require("../lib/game-data/updator-unpicked-strategy-cards"),
 ];
 
-function sendToDiscord(webhook, message) {
+/**
+ * Send "application/json" encoded message, appears in chat.
+ *
+ * @param {string} webhook
+ * @param {string} message
+ */
+function sendMessageToDiscord(webhook, message) {
     assert(typeof webhook === "string");
     assert(typeof message === "string");
     assert(webhook.startsWith("https://discord.com/api/webhooks/"));
 
-    console.log(`sendToDiscord |${message.length}|: "${message}"`);
+    console.log(`sendMessageToDiscord |${message.length}|`);
 
     // Prevent discord markdown.
     message = "`" + message + "`";
@@ -51,6 +59,48 @@ function sendToDiscord(webhook, message) {
         body: JSON.stringify({ content: message }),
         method: "POST",
     };
+    const promise = fetch(webhook, fetchOptions);
+    promise.then((res) => console.log(JSON.stringify(res.json())));
+}
+
+/**
+ * Send "multipart/form-data" encoded message, file linked in chat but not printed.
+ *
+ * @param {string} webhook
+ * @param {string} message
+ */
+function sendFileToDiscord(webhook, message) {
+    assert(typeof webhook === "string");
+    assert(typeof message === "string");
+    assert(webhook.startsWith("https://discord.com/api/webhooks/"));
+
+    console.log(`sendFileToDiscord |${message.length}|`);
+
+    // Encode as multipart form body.
+    const boundary = "--boundary37c923cbd674951d";
+    const crlf = "\n"; // DO NOT USE ACTUAL CRLF, ONLY USE EITHER (BOTH FAIL)
+    message = [
+        `--${boundary}`,
+        'Content-Disposition: form-data; name="payload_json"',
+        "",
+        `{"content": "TTPG export ${world.TI4.config.timestamp}"}`,
+        `--${boundary}`,
+        'Content-Disposition: form-data; name="files[0]"; filename="export.json"',
+        "Content-Type: application/json",
+        "",
+        message,
+        `--${boundary}--`,
+    ].join(crlf);
+
+    // https://discord.com/developers/docs/resources/webhook#execute-webhook
+    const fetchOptions = {
+        headers: {
+            "Content-Type": `multipart/form-data; boundary=${boundary}`,
+        },
+        body: message,
+        method: "POST",
+    };
+
     const promise = fetch(webhook, fetchOptions);
     promise.then((res) => console.log(JSON.stringify(res.json())));
 }
@@ -89,22 +139,26 @@ function gatherAndExport(webhook) {
         return;
     }
 
-    // Message size is limited to 2k characters.
-    // Break up into chunks.
-    let chunks = message.match(/(.|[\r\n]){1,1800}/g);
+    if (SEND_AS_FILE) {
+        sendFileToDiscord(webhook, message);
+    } else {
+        // Message size is limited to 2k characters.
+        // Break up into chunks.
+        let chunks = message.match(/(.|[\r\n]){1,1800}/g);
 
-    // Prefix the game id (setup timestamp) and chunk index.
-    chunks = chunks.map((chunk, index, array) => {
-        return `[${setupTimestamp} ${index + 1}/${array.length}] ${chunk}`;
-    });
-
-    // Send one at a time.
-    // Use async queue to spread out the load.
-    const async = new AsyncTaskQueue(1000);
-    for (const chunk of chunks) {
-        async.add(() => {
-            sendToDiscord(webhook, chunk);
+        // Prefix the game id (setup timestamp) and chunk index.
+        chunks = chunks.map((chunk, index, array) => {
+            return `[${setupTimestamp} ${index + 1}/${array.length}] ${chunk}`;
         });
+
+        // Send one at a time.
+        // Use async queue to spread out the load.
+        const async = new AsyncTaskQueue(1000);
+        for (const chunk of chunks) {
+            async.add(() => {
+                sendMessageToDiscord(webhook, chunk);
+            });
+        }
     }
 }
 
