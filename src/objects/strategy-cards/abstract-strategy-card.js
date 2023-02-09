@@ -71,12 +71,17 @@ class AbstractStrategyCard {
 
         const handleOnPlayButtonClicked = (button, player) => {
             // Report.
-            const playerName = world.TI4.getNameByPlayerSlot(player.getSlot());
+            const playerSlot = player.getSlot();
+            const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+            const color = playerDesk
+                ? playerDesk.chatColor
+                : player.getPrimaryColor();
             const msg = locale("ui.message.strategy_card_play", {
                 playerName,
                 cardName,
             });
-            Broadcast.broadcastAll(msg);
+            Broadcast.broadcastAll(msg, color);
 
             // Tell any listeners.
             globalEvents.TI4.onStrategyCardPlayed.trigger(
@@ -155,7 +160,7 @@ class AbstractStrategyCard {
 
         const playerSlot = playerDesk.playerSlot;
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-        const msgColor = playerDesk.color;
+        const msgColor = playerDesk.chatColor;
         const cardName =
             AbstractStrategyCard.getStrategyCardName(strategyCardObj);
 
@@ -191,7 +196,7 @@ class AbstractStrategyCard {
 
         const playerSlot = playerDesk.playerSlot;
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-        const msgColor = playerDesk.color;
+        const msgColor = playerDesk.chatColor;
         const cardName =
             AbstractStrategyCard.getStrategyCardName(strategyCardObj);
 
@@ -227,7 +232,7 @@ class AbstractStrategyCard {
 
         const playerSlot = playerDesk.playerSlot;
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-        const msgColor = playerDesk.color;
+        const msgColor = playerDesk.chatColor;
         const cardName =
             AbstractStrategyCard.getStrategyCardName(strategyCardObj);
 

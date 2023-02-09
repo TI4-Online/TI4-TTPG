@@ -4,6 +4,8 @@ const { ThrottleClickHandler } = require("../ui/throttle-click-handler");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { WidgetFactory } = require("../ui/widget-factory");
 const { TextJustification, refPackageId, world } = require("../../wrapper/api");
+const { PlayerDeskColor } = require("./player-desk-color");
+const { ColorUtil } = require("../color/color-util");
 
 const DESK_UI = {
     pos: { x: 40, y: 0, z: 3 },
@@ -47,7 +49,7 @@ class PlayerDeskUI {
         this._takeSeatButton.__noMonkey = true; // not available for monkey runner
 
         this._changeColorButton = this._createColorSquareButton(
-            this._playerDesk.plasticColor,
+            this._playerDesk.widgetColor,
             this._callbacks.onToggleColors
         );
 
@@ -122,7 +124,7 @@ class PlayerDeskUI {
 
         // Button to toggle color selection.
         this._changeColorButton.setEnabled(!config.isReady);
-        this._changeColorButton.setTintColor(this._playerDesk.plasticColor);
+        this._changeColorButton.setTintColor(this._playerDesk.widgetColor);
 
         if (config.canFaction) {
             if (config.hasFaction) {
@@ -157,6 +159,9 @@ class PlayerDeskUI {
     }
 
     _createColorSquareButton(color, onClicked) {
+        assert(color);
+        assert(typeof onClicked === "function");
+
         const size = Math.round(CONFIG.fontSize * 1.61);
         const imageButton = WidgetFactory.imageButton()
             .setImage("global/ui/white16x16.png", refPackageId)
@@ -178,8 +183,16 @@ class PlayerDeskUI {
 
         const colorChoices = WidgetFactory.horizontalBox();
         for (const colorOption of this._colorOptions) {
+            const colorName = colorOption.colorName;
+            assert(colorName);
+            const colorAttrs = PlayerDeskColor.getColorAttrs(colorName);
+            const widgetColor = ColorUtil.colorFromHex(
+                colorAttrs.widgetHexColor
+                    ? colorAttrs.widgetHexColor
+                    : colorAttrs.plasticHexColor
+            );
             const imageButton = this._createColorSquareButton(
-                colorOption.plasticColorTint,
+                widgetColor,
                 (button, player) => {
                     onClicked(colorOption, player);
                 }

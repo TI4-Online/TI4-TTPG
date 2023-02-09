@@ -227,7 +227,7 @@ class BunkerDraftUI {
                 world.TI4.config.playerCount
             );
 
-            const homeColor = playerDesk.plasticColor;
+            const homeColor = playerDesk.widgetColor;
             const mutedColor = Color.lerp(homeColor, [0, 0, 0, 1], 0.5);
             const tilePosArray = BunkerSliceLayout._getTilePositions(anchorPos);
             tilePosArray.forEach((tilePos, index) => {

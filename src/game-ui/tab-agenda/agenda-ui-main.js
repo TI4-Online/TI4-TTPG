@@ -63,7 +63,7 @@ class AgendaUiMain {
         const agenda = world.TI4.agenda;
         const deskIndexToColor = world.TI4.getAllPlayerDesks().map(
             (playerDesk) => {
-                return playerDesk.plasticColor
+                return playerDesk.widgetColor
                     .toHex()
                     .substring(0, 6)
                     .toLowerCase();

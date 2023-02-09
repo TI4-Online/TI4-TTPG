@@ -128,7 +128,7 @@ class DeskTurnOrder {
         const v = 0.1;
         const gray = new Color(v, v, v, 1);
         if (this._border) {
-            this._border.setColor(isActive ? current.plasticColor : gray);
+            this._border.setColor(isActive ? current.widgetColor : gray);
         }
 
         if (isActive) {
@@ -152,7 +152,7 @@ class DeskTurnOrder {
         const black = new Color(0, 0, 0, 1);
         world.TI4.turns.getTurnOrder().forEach((playerDesk, index) => {
             const passed = passedPlayerSlotSet.has(playerDesk.playerSlot);
-            const color = passed ? black : playerDesk.plasticColor;
+            const color = passed ? black : playerDesk.widgetColor;
             const inner = this._turnOrderEntries[index];
             if (inner) {
                 inner.setColor(color);

@@ -212,7 +212,7 @@ class DraftSelectionManager {
                         playerName,
                         categoryName,
                     });
-                    Broadcast.broadcastAll(msg, playerDesk.color);
+                    Broadcast.broadcastAll(msg, playerDesk.chatColor);
                     return;
                 }
 
@@ -229,7 +229,7 @@ class DraftSelectionManager {
                             categoryName,
                             selectionName,
                         });
-                        Broadcast.broadcastAll(msg, playerDesk.color);
+                        Broadcast.broadcastAll(msg, playerDesk.chatColor);
                         return;
                     }
                 }
@@ -247,7 +247,7 @@ class DraftSelectionManager {
                         categoryName,
                         selectionName,
                     });
-                    Broadcast.broadcastAll(msg, playerDesk.color);
+                    Broadcast.broadcastAll(msg, playerDesk.chatColor);
                     return;
                 }
 
@@ -259,7 +259,7 @@ class DraftSelectionManager {
                 this._setDraftSelection(
                     categoryName,
                     selectionName,
-                    playerDesk.color
+                    playerDesk.widgetColor
                 );
                 this._updateFinish();
                 const msg = locale("ui.draft.selected", {
@@ -267,7 +267,7 @@ class DraftSelectionManager {
                     categoryName,
                     selectionName,
                 });
-                Broadcast.broadcastAll(msg, playerDesk.color);
+                Broadcast.broadcastAll(msg, playerDesk.chatColor);
 
                 // Advance turn.
                 if (

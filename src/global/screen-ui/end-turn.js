@@ -87,8 +87,8 @@ class EndTurnScreenUI {
 
     update() {
         const currentDesk = world.TI4.turns.getCurrentTurn();
-        this._button.setTextColor(currentDesk.plasticColor);
-        this._border.setColor(currentDesk.plasticColor);
+        this._button.setTextColor(currentDesk.widgetColor);
+        this._border.setColor(currentDesk.widgetColor);
 
         // Only the active turn player can see it.
         const playerSlots = currentDesk ? [currentDesk.playerSlot] : [];

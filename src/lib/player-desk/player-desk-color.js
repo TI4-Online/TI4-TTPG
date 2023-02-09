@@ -111,6 +111,16 @@ class PlayerDeskColor {
         playerDesk._plasticColor = ColorUtil.colorFromHex(
             colorAttrs.plasticHexColor
         );
+        playerDesk._chatColor = ColorUtil.colorFromHex(
+            colorAttrs.chatHexColor
+                ? colorAttrs.chatHexColor
+                : colorAttrs.plasticHexColor
+        );
+        playerDesk._widgetColor = ColorUtil.colorFromHex(
+            colorAttrs.widgetHexColor
+                ? colorAttrs.widgetHexColor
+                : colorAttrs.plasticHexColor
+        );
 
         // Apply to the player slot too.
         world.setSlotColor(playerDesk.playerSlot, playerDesk._color);

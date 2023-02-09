@@ -52,7 +52,7 @@ class Plague {
         const playerSlot = player.getSlot();
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        const color = playerDesk.plasticColor;
+        const color = playerDesk.chatColor;
 
         const planetName = planet.getNameStr();
         const msg = locale("plague.message", { planetName, infantryCount });

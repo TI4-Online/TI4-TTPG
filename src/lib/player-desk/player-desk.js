@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
-const { ColorUtil } = require("../color/color-util");
 const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
 const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
@@ -111,15 +110,14 @@ class PlayerDesk {
         );
         if (deskState.length === _playerDesks.length) {
             for (let i = 0; i < _playerDesks.length; i++) {
-                _playerDesks[i]._color = ColorUtil.colorFromHex(deskState[i].c);
-                _playerDesks[i]._plasticColor = ColorUtil.colorFromHex(
-                    deskState[i].pc
-                );
-                _playerDesks[i]._colorName = deskState[i].cn;
-                _playerDesks[i]._playerSlot = deskState[i].s;
-                _playerDesks[i]._ready = deskState[i].r;
+                const playerDesk = _playerDesks[i];
 
-                PlayerDeskColor.reset(_playerDesks[i]);
+                playerDesk._colorName = deskState[i].cn;
+                playerDesk._playerSlot = deskState[i].s;
+                playerDesk._ready = deskState[i].r;
+
+                // Apply color
+                PlayerDeskColor.change(playerDesk, playerDesk._colorName);
             }
         }
 
@@ -182,8 +180,6 @@ class PlayerDesk {
         return new PlayerDesk(
             {
                 colorName: "white",
-                hexColor: "#000000",
-                plasticHexColor: "#000000",
                 pos: { x: 0, y: 0 },
                 yaw: 0,
                 defaultPlayerSlot: playerSlot,
@@ -213,22 +209,6 @@ class PlayerDesk {
         this._rot = new Rotator(0, (attrs.yaw + 360 + 90) % 360, 0);
         this._playerSlot = attrs.defaultPlayerSlot;
 
-        // Base attrs might be just color name.  ALWAYS look up color values.
-        const colorAttrs = PlayerDeskColor.getColorAttrs(attrs.colorName);
-        this._color = ColorUtil.colorFromHex(colorAttrs.hexColor);
-        this._plasticColor = ColorUtil.colorFromHex(colorAttrs.plasticHexColor);
-
-        this._chatColor = ColorUtil.colorFromHex(
-            colorAttrs.chatHexColor
-                ? colorAttrs.chatHexColor
-                : colorAttrs.plasticHexColor
-        );
-        this._widgetchatColor = ColorUtil.colorFromHex(
-            colorAttrs.widgetHexColor
-                ? colorAttrs.widgetHexColor
-                : colorAttrs.plasticHexColor
-        );
-
         this._ui = false;
         this._nameUI = false;
 
@@ -241,20 +221,31 @@ class PlayerDesk {
 
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
+
+        // Base attrs might be just color name.  ALWAYS look up color values.
+        PlayerDeskColor.change(this, attrs.colorName);
     }
 
     get center() {
         return this._center;
     }
+
+    // Player primary color.
     get color() {
         return this._color;
     }
+
+    // Game object color.
     get plasticColor() {
         return this._plasticColor;
     }
+
+    // Chat text color.
     get chatColor() {
         return this._chatColor;
     }
+
+    // UI widget (Text, Border) color.
     get widgetColor() {
         return this._widgetColor;
     }
@@ -418,11 +409,9 @@ class PlayerDesk {
                 this.resetUI();
             },
             onChangeColor: (colorOption, player) => {
-                const { colorName, colorTint, plasticColorTint } = colorOption;
+                const { colorName } = colorOption;
                 assert(colorName);
-                assert(colorTint);
-                assert(plasticColorTint);
-                if (!this.changeColor(colorName, colorTint, plasticColorTint)) {
+                if (!this.changeColor(colorName)) {
                     player.showMessage(locale("ui.desk.color_in_use"));
                 }
                 this._showColors = false;
@@ -558,8 +547,6 @@ class PlayerDesk {
         return PLAYER_DESK_COLORS.map((attrs) => {
             return {
                 colorName: attrs.colorName,
-                colorTint: ColorUtil.colorFromHex(attrs.hexColor),
-                plasticColorTint: ColorUtil.colorFromHex(attrs.plasticHexColor),
             };
         });
     }
@@ -571,12 +558,12 @@ class PlayerDesk {
      * clean up any per-color components and restore in the new color after.
      *
      * @param {string} colorName - for promissory notes ("Ceasefile (Blue)")
-     * @param {Color} colorTint
      */
-    changeColor(colorName, colorTint, plasticColorTint) {
+    changeColor(colorName) {
         assert(typeof colorName === "string");
-        assert(ColorUtil.isColor(colorTint));
-        assert(ColorUtil.isColor(plasticColorTint));
+
+        const colorAttrs = PlayerDeskColor.getColorAttrs(colorName);
+        assert(colorAttrs);
 
         // An error report came in from a deeper part suggesting the desk was
         // not valid.  Check it before starting to prevent partial change, as
@@ -692,8 +679,6 @@ class PlayerDesk {
         const deskState = [];
         for (let i = 0; i < _playerDesks.length; i++) {
             deskState.push({
-                c: ColorUtil.colorToHex(_playerDesks[i].color),
-                pc: ColorUtil.colorToHex(_playerDesks[i].plasticColor),
                 cn: _playerDesks[i].colorName,
                 s: _playerDesks[i]._playerSlot,
                 r: _playerDesks[i]._ready,

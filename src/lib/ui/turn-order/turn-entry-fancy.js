@@ -213,7 +213,7 @@ class TurnEntryFancy extends Canvas {
 
         // Color.
         const v = 0.02;
-        const plrColor = playerDesk.plasticColor;
+        const plrColor = playerDesk.widgetColor;
         const altColor = new Color(v, v, v);
 
         const fgColor = config.isTurn ? altColor : plrColor;
@@ -243,7 +243,7 @@ class TurnEntryFancy extends Canvas {
         this._strategyCardRightOverlay.setChild(undefined);
 
         if (config.strategyCards.length === 0) {
-            this._strategyCardSolo.setText("—");
+            this._strategyCardSolo.setText("—").setTextColor(fgColor);
         } else if (config.strategyCards.length === 1) {
             const name = config.strategyCards[0];
             this._strategyCardSolo

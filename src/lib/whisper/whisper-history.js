@@ -170,8 +170,8 @@ class WhisperPair {
         const deskB = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotB);
         const nameA = deskA ? deskA.colorName : "?";
         const nameB = deskB ? deskB.colorName : "?";
-        const colorA = deskA ? deskA.plasticColor : [1, 1, 1, 1];
-        const colorB = deskB ? deskB.plasticColor : [1, 1, 1, 1];
+        const colorA = deskA ? deskA.widgetColor : [1, 1, 1, 1];
+        const colorB = deskB ? deskB.widgetColor : [1, 1, 1, 1];
 
         labelA.setText(nameA);
         labelA.setTextColor(colorA);
@@ -213,8 +213,8 @@ class WhisperPair {
         const deskB = world.TI4.getPlayerDeskByPlayerSlot(this._playerSlotB);
         const colorNameA = deskA ? deskA.colorName : "?";
         const colorNameB = deskB ? deskB.colorName : "?";
-        const colorA = deskA ? deskA.plasticColor : [1, 1, 1, 1];
-        const colorB = deskB ? deskB.plasticColor : [1, 1, 1, 1];
+        const colorA = deskA ? deskA.widgetColor : [1, 1, 1, 1];
+        const colorB = deskB ? deskB.widgetColor : [1, 1, 1, 1];
 
         const buckets = this._bucketize(bucketCount);
         let nextBucketIndex = 0;

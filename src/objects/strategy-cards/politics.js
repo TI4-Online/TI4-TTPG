@@ -27,7 +27,7 @@ new AbstractStrategyCard(refObject)
                 count,
                 playerColor: world.TI4.getNameByPlayerSlot(playerSlot),
             });
-            Broadcast.chatAll(msg, playerDesk.color);
+            Broadcast.chatAll(msg, playerDesk.chatColor);
 
             const nsidPrefix = "card.action";
             DealDiscard.deal(nsidPrefix, count, playerSlot);

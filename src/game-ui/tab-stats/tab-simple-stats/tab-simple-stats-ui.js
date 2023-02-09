@@ -25,7 +25,7 @@ class PlayerStatsUI {
         this._mainWidget = WidgetFactory.border();
         this._colorName = `[${playerDesk.colorName}]`;
 
-        const textColor = playerDesk.plasticColor;
+        const textColor = playerDesk.widgetColor;
         const majorFontSize = CONFIG.fontSize;
         const minorFontSize = majorFontSize / 2;
 

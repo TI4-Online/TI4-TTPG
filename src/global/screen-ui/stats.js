@@ -165,7 +165,7 @@ class StatsScreenUI {
 
         this._playerEntries = [];
         world.TI4.getAllPlayerDesks().forEach((playerDesk) => {
-            const color = playerDesk.plasticColor;
+            const color = playerDesk.widgetColor;
             const name = new Text()
                 .setFontSize(FONT_SIZE)
                 .setTextColor(color)
