@@ -147,9 +147,10 @@ const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Hex } = require("./lib/hex");
 const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
+const { ObjectNamespace } = require("./lib/object-namespace");
+const { PerfStats } = require("./lib/perf/perf-stats");
 const { System, Planet } = require("./lib/system/system");
 const { Turns } = require("./lib/turns");
-const { PerfStats } = require("./lib/perf/perf-stats");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
@@ -158,6 +159,7 @@ world.TI4 = {
     CardUtil,
     CommandToken,
     Hex,
+    ObjectNamespace,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
