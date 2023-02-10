@@ -118,7 +118,7 @@ class RightClickInfantry2 extends AbstractRightClickCard {
             const playerSlot = clickingPlayer.getSlot();
             const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-            const color = playerDesk.plasticColor;
+            const color = playerDesk.chatColor;
 
             const unitMessage = [
                 card.getCardDetails().name,

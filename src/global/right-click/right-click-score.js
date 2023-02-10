@@ -241,7 +241,7 @@ function score(scoreableObj, player) {
             ? scoreableObj.getCardDetails().name
             : scoreableObj.getName();
     const msg = locale("ui.message.score", { playerName, scoredName });
-    Broadcast.chatAll(msg, playerDesk.color);
+    Broadcast.chatAll(msg, playerDesk.chatColor);
 
     // Mark scored.
     if (isSecretsHolderScorable(scoreableObj)) {

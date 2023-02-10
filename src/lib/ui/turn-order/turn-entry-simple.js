@@ -92,7 +92,7 @@ class TurnEntrySimple extends Border {
         // Color.
         const v1 = 0.03;
         const v2 = 0.05;
-        const plrColor = playerDesk.plasticColor;
+        const plrColor = playerDesk.widgetColor;
         const altColor = new Color(v1, v1, v1);
         const passColor = new Color(v2, v2, v2);
 

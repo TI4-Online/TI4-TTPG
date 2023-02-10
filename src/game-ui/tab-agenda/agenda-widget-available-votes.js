@@ -28,7 +28,7 @@ class AgendaWidgetAvailableVotes {
             deskIndexToAvailableVotes
         )) {
             const deskIndex = Number.parseInt(deskIndexAsString);
-            const color = playerDesks[deskIndex].plasticColor
+            const color = playerDesks[deskIndex].widgetColor
                 .toHex()
                 .substring(0, 6)
                 .toLowerCase();

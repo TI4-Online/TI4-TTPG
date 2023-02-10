@@ -261,7 +261,7 @@ class Turns {
             locale("ui.message.newTurn", {
                 playerName: name,
             }),
-            playerDesk._color
+            playerDesk._chatColor
         );
 
         // Update state.
@@ -302,7 +302,7 @@ class Turns {
         if (!name || name.length === 0) {
             name = `<${playerDesk.colorName}>`;
         }
-        const color = playerDesk ? playerDesk.color : undefined;
+        const color = playerDesk ? playerDesk.chatColor : undefined;
         Broadcast.broadcastAll(
             locale("ui.message.end_turn", {
                 playerName: name,

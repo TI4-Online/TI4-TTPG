@@ -125,8 +125,8 @@ class PlayerDeskPlayerNameUI {
         const v = 0.05;
         const altColor = new Color(v, v, v);
         const isTurn = world.TI4.turns.getCurrentTurn() === this._playerDesk;
-        const fgColor = isTurn ? altColor : this._playerDesk.plasticColor;
-        const bgColor = isTurn ? this._playerDesk.plasticColor : altColor;
+        const fgColor = isTurn ? altColor : this._playerDesk.widgetColor;
+        const bgColor = isTurn ? this._playerDesk.widgetColor : altColor;
 
         this._outerBorders.forEach((border) => {
             border.setColor(fgColor);

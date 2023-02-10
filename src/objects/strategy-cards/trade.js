@@ -14,12 +14,14 @@ const { refObject, world, Color } = require("../../wrapper/api");
 const onAllowReplenishClicked = (button, player) => {
     const playerSlot = player.getSlot();
     const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    const color = playerDesk ? playerDesk.chatColor : player.getPlayerColor();
     Broadcast.chatAll(
         locale("strategy_card.trade.message.allow_replenish", {
             playerName,
             targetPlayerName: button.getText(),
         }),
-        player.getPlayerColor()
+        color
     );
 };
 
@@ -43,7 +45,7 @@ const createReplenishPlayersSection = (owningPlayerDesk) => {
         let primaryAllowReplenishButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(deskOwningPlayer || playerDesk.colorName) // in case the player is currently not seated
-            .setTextColor(playerDesk.color);
+            .setTextColor(playerDesk.widgetColor);
         primaryAllowReplenishButton.onClicked.add(
             ThrottleClickHandler.wrap(onAllowReplenishClicked)
         );

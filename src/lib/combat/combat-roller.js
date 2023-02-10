@@ -23,7 +23,7 @@ class CombatRoller {
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
             player.getSlot()
         );
-        this._color = playerDesk ? playerDesk.color : undefined;
+        this._color = playerDesk ? playerDesk.chatColor : undefined;
     }
 
     /**

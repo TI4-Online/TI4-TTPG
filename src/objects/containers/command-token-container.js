@@ -45,19 +45,6 @@ function holdsObject(container, obj) {
     return true;
 }
 
-function getFactionName(obj) {
-    assert(obj instanceof GameObject);
-
-    // cant get the faction name from the container because the container has name "*"
-    // therefore get it from the command token object
-    if (!ObjectNamespace.isCommandToken(obj)) {
-        return "?"; // not a proper command token, how did it get in there?
-    }
-    const nsidName = ObjectNamespace.parseCommandToken(obj).name;
-    const faction = world.TI4.getFactionByNsidName(nsidName);
-    return faction ? faction.nameFull : nsidName;
-}
-
 class Reporter {
     constructor(container) {
         assert(container instanceof Container);
@@ -90,23 +77,27 @@ class Reporter {
         // ensure each inserted object belongs in the container before counting
         // it toward the number of inserted objects
         let addedValidObject = false;
-        let factionName = null;
         for (const obj of objects) {
             if (!holdsObject(container, obj)) {
                 continue;
             }
             this._insertedCounter++;
             addedValidObject = true;
-            factionName = getFactionName(obj);
         }
         if (addedValidObject && !this._firstInserted) {
             this._firstInserted = true;
             setTimeout(() => {
+                const playerSlot = container.getOwningPlayerSlot();
+                const playerDesk =
+                    world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+                const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+                const color = playerDesk ? playerDesk.chatColor : undefined;
                 Broadcast.chatAll(
                     locale("ui.message.command_tokens_inserted", {
-                        factionName: factionName,
+                        factionName: playerName,
                         count: this._insertedCounter,
-                    })
+                    }),
+                    color
                 );
                 this._insertedCounter = 0;
                 this._firstInserted = false;
@@ -124,11 +115,17 @@ class Reporter {
         if (!this._firstRemoved) {
             this._firstRemoved = true;
             setTimeout(() => {
+                const playerSlot = container.getOwningPlayerSlot();
+                const playerDesk =
+                    world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+                const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+                const color = playerDesk ? playerDesk.chatColor : undefined;
                 Broadcast.chatAll(
                     locale("ui.message.command_tokens_removed", {
-                        factionName: getFactionName(object),
+                        factionName: playerName,
                         count: this._removedCounter,
-                    })
+                    }),
+                    color
                 );
                 this._removedCounter = 0;
                 this._firstRemoved = false;

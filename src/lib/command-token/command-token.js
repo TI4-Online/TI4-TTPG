@@ -359,7 +359,7 @@ class CommandToken {
         assert(clickingPlayer instanceof Player);
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        const msgColor = playerDesk ? playerDesk.color : undefined;
+        const msgColor = playerDesk ? playerDesk.chatColor : undefined;
 
         const playerSlotToCommandTokenBag =
             CommandToken.getPlayerSlotToCommandTokenBag();
