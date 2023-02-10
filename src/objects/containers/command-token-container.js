@@ -198,9 +198,12 @@ class CommandTokenContainer {
             this._UIElement.widget = this._simpleText;
             // Creator may change color.
             process.nextTick(() => {
-                this._simpleText.setTextColor(
-                    this._container.getPrimaryColor()
-                );
+                const playerSlot = this._container.getOwningPlayerSlot();
+                const playerDesk =
+                    world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+                if (playerDesk) {
+                    this._simpleText.setTextColor(playerDesk.widgetColor);
+                }
             });
         } else {
             const boxesPanel = WidgetFactory.verticalBox().setChildDistance(
