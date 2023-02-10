@@ -13,7 +13,7 @@ const PLAYER_DESK_COLORS = [
     {
         colorName: "green", // TTS 007306
         hexColor: "#00C60A",
-        plasticHexColor: "#00A300", // 007406 00A306 5AE35A
+        plasticHexColor: "#007306", // 007306 00A306 5AE35A
         chatHexColor: "#00FF00",
         widgetHexColor: "#00FF00",
         defaultPlayerSlot: 1,
@@ -52,8 +52,8 @@ const PLAYER_DESK_COLORS = [
     },
     {
         colorName: "purple", // TTS 7400B7
-        hexColor: "#C800FF",
-        plasticHexColor: "#8000FF", // 7500b7, A300FF, 5E219C
+        hexColor: "#B252FF",
+        plasticHexColor: "#7400B7", //"#8000FF", // 7500b7, A300FF, 5E219C
         chatHexColor: "#AF69EF", //"#D7A1F9", //"#BB86FC",
         widgetHexColor: "#572780",
         defaultPlayerSlot: 4,
@@ -61,7 +61,7 @@ const PLAYER_DESK_COLORS = [
     {
         colorName: "blue", // TTS 07B2FF v
         hexColor: "#00CFFF", //"#07B2FF",
-        plasticHexColor: "#00CFFF", //"#07B2FF",
+        plasticHexColor: "#07B2FF", //"#07B2FF",
         chatHexColor: "#00CFFF",
         widgetHexColor: "#00CFFF",
         defaultPlayerSlot: 15,
