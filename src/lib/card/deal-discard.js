@@ -311,6 +311,52 @@ class DealDiscard {
     }
 
     /**
+     * Wait a moment, then join any cards at the location.
+     *
+     * Saw a case where mass discarding at the end of a draft had a loose
+     * card beneath a deck.
+     *
+     * @param {Vector} pos
+     */
+    static _delayedMergeDiscards(pos) {
+        if (world.__isMock) {
+            return;
+        }
+
+        // Watch for the discard not fully connecting.  Saw this mass-discarding
+        // into an empty spot cleaning a draft.
+        const delayedFixDiscard = () => {
+            let firstDeck = undefined;
+            const traceHits = world.lineTrace(
+                [pos.x, pos.y, world.getTableHeight() + 10],
+                [pos.x, pos.y, world.getTableHeight() - 10]
+            );
+            for (const traceHit of traceHits) {
+                const card = traceHit.object;
+                if (!(card instanceof Card)) {
+                    continue;
+                }
+                if (card.isHeld()) {
+                    continue;
+                }
+                if (firstDeck) {
+                    console.log("delayedFixDiscard: merging");
+                    card.setTags(["DELETED_ITEMS_IGNORE"]);
+                    const toFront = true;
+                    const offset = 0;
+                    const animate = false;
+                    const flipped = false;
+                    CheckDeckUnique.checkDeckAfterAddingCard(firstDeck, card);
+                    firstDeck.addCards(card, toFront, offset, animate, flipped);
+                } else {
+                    firstDeck = card;
+                }
+            }
+        };
+        setTimeout(delayedFixDiscard, 100);
+    }
+
+    /**
      * Discard a card.
      *
      * @param {Card} obj
@@ -415,6 +461,8 @@ class DealDiscard {
             rot = TableLayout.anchorRotationToWorld(anchor, rot);
             pos.z = world.getTableHeight() + 10;
 
+            DealDiscard._delayedMergeDiscards(pos);
+
             // Is there already a card there?
             const traceHits = world.lineTrace(
                 [pos.x, pos.y, world.getTableHeight() + 10],
@@ -440,6 +488,7 @@ class DealDiscard {
             obj.setPosition(pos, 0);
             obj.setRotation(rot, 0);
             obj.snapToGround();
+
             return true;
         }
 
