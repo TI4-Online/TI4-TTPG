@@ -15,7 +15,7 @@ const {
 } = require("../../wrapper/api");
 
 // Value that lets token be a little off sheet.
-const ON_SHEET_DISTANCE_SQ = 90;
+const ON_SHEET_DISTANCE_SQ = 200;
 
 /**
  * Find command tokens on the command sheet or reinforcements.
@@ -47,17 +47,19 @@ class CommandToken {
                 continue;
             }
 
-            const playerSlot = obj.getOwningPlayerSlot();
-            if (playerSlot < 0) {
-                continue;
-            }
-            if (restrictToSlot && playerSlot !== restrictToSlot) {
-                continue;
-            }
-
             const isSheet = ObjectNamespace.isCommandSheet(obj);
             const isToken = ObjectNamespace.isCommandToken(obj);
             if (!isSheet && !isToken) {
+                continue;
+            }
+
+            const pos = obj.getPosition();
+            const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+            if (!playerDesk) {
+                continue;
+            }
+            const playerSlot = playerDesk.playerSlot;
+            if (restrictToSlot !== undefined && playerSlot !== restrictToSlot) {
                 continue;
             }
 
@@ -76,17 +78,12 @@ class CommandToken {
                 // There should be only one sheet per player slot.  BUT if
                 // there is an another, keep the closest to player area.
                 if (sheetAndTokens.commandSheet) {
-                    const playerDesk = playerSlotToPlayerDesk[playerSlot];
-                    if (playerDesk) {
-                        const dNew = playerDesk.center.distance(
-                            obj.getPosition()
-                        );
-                        const dCurrent = playerDesk.center.distance(
-                            sheetAndTokens.commandSheet.getPosition()
-                        );
-                        if (dNew < dCurrent) {
-                            sheetAndTokens.commandSheet = obj;
-                        }
+                    const dNew = playerDesk.center.distance(obj.getPosition());
+                    const dCurrent = playerDesk.center.distance(
+                        sheetAndTokens.commandSheet.getPosition()
+                    );
+                    if (dNew < dCurrent) {
+                        sheetAndTokens.commandSheet = obj;
                     }
                 } else {
                     sheetAndTokens.commandSheet = obj;
@@ -117,7 +114,7 @@ class CommandToken {
 
             const angle = (Math.atan2(pos.y, pos.x) * 180) / Math.PI;
             const dSq = pos.magnitudeSquared();
-            token.__debug = `${pos.y}/${pos.x}=${angle} @ ${dSq}`;
+            //token.__debug = `${pos.y}/${pos.x}=${angle} @ ${dSq}`;
 
             if (dSq > ON_SHEET_DISTANCE_SQ) {
                 continue; // not close enough to command sheet
