@@ -184,11 +184,31 @@ class GameObject {
     updateUI(uiElement) {}
 
     localPositionToWorld(position) {
-        return position; // true if object at origin with no rotation...
+        if (Array.isArray(position)) {
+            position = new Vector(position[0], position[1], position[2]);
+        }
+        if (!(position instanceof Vector)) {
+            position = new Vector(
+                position.x || 0,
+                position.y || 0,
+                position.z || 0
+            );
+        }
+        return position.add(this._position); // does not account for rotation
     }
 
     worldPositionToLocal(position) {
-        return position; // true if object at origin with no rotation...
+        if (Array.isArray(position)) {
+            position = new Vector(position[0], position[1], position[2]);
+        }
+        if (!(position instanceof Vector)) {
+            position = new Vector(
+                position.x || 0,
+                position.y || 0,
+                position.z || 0
+            );
+        }
+        return position.subtract(this._position); // does not account for rotation
     }
 
     localRotationToWorld(rotation) {
