@@ -259,9 +259,9 @@ class EndStatusPhase {
                     commandTokenBag.take(item, above, true);
 
                     const dropPosition = playerDesk.localPositionToWorld(
-                        new Vector(32, 16 + i * 2, 0)
+                        new Vector(33, 16 + i * 2, 0)
                     );
-                    dropPosition.z = world.getTableHeight() + 2 + i;
+                    dropPosition.z = world.getTableHeight() + 5 + i;
                     item.setPosition(dropPosition);
                     item.snapToGround();
                 }
