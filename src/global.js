@@ -130,6 +130,7 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const { Adjacency } = require("./lib/system/adjacency");
 const { Agenda } = require("./lib/agenda/agenda");
 const {
     AsyncTaskQueue,
@@ -150,16 +151,19 @@ const { Homebrew } = require("./lib/homebrew/homebrew");
 const { ObjectNamespace } = require("./lib/object-namespace");
 const { PerfStats } = require("./lib/perf/perf-stats");
 const { System, Planet } = require("./lib/system/system");
+const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     // Export some modules (to work around require cycles, or for homebrew use).
+    Adjacency,
     CardUtil,
     CommandToken,
     Hex,
     ObjectNamespace,
+    Technology,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
