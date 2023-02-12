@@ -218,40 +218,6 @@ class AbstractStrategyCard {
         return secondaryButton;
     }
 
-    /**
-     * Create the "pass" button, not added to any parent.
-     *
-     * @param {PlayerDesk} playerDesk
-     * @param {GameObject} strategyCardObj
-     * @returns {Button}
-     */
-    static createButtonPlayPass(playerDesk, strategyCardObj) {
-        assert(playerDesk);
-        assert(strategyCardObj instanceof GameObject);
-        assert(ObjectNamespace.isStrategyCard(strategyCardObj));
-
-        const playerSlot = playerDesk.playerSlot;
-        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-        const msgColor = playerDesk.chatColor;
-        const cardName =
-            AbstractStrategyCard.getStrategyCardName(strategyCardObj);
-
-        const onPassClicked = (button, player) => {
-            Broadcast.chatAll(
-                locale(`strategy_card.base.message.pass`, {
-                    playerName,
-                    cardName,
-                }),
-                msgColor
-            );
-        };
-        const passButton = WidgetFactory.button()
-            .setFontSize(FONT_SIZE_BODY)
-            .setText(locale("strategy_card.base.button.pass"));
-        passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
-        return passButton;
-    }
-
     constructor(gameObject) {
         assert(gameObject instanceof GameObject);
         assert(ObjectNamespace.isStrategyCard(gameObject));
@@ -491,6 +457,27 @@ class AbstractStrategyCard {
         assert(verticalBox instanceof VerticalBox);
         assert(playerDesk);
 
+        const playerSlot = playerDesk.playerSlot;
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.chatColor;
+        const cardName = AbstractStrategyCard.getStrategyCardName(
+            this._gameObject
+        );
+
+        const onPassClicked = (button, player) => {
+            Broadcast.chatAll(
+                locale(`strategy_card.base.message.pass`, {
+                    playerName,
+                    cardName,
+                }),
+                msgColor
+            );
+        };
+        const passButton = WidgetFactory.button()
+            .setFontSize(FONT_SIZE_BODY)
+            .setText(locale("strategy_card.base.button.pass"));
+        passButton.onClicked.add(ThrottleClickHandler.wrap(onPassClicked));
+
         const onCloseClicked = (clickedButton, player) => {
             this._removeUI(playerDesk);
         };
@@ -500,7 +487,7 @@ class AbstractStrategyCard {
             .setText(locale("strategy_card.base.button.close").toUpperCase());
         closeButton.onClicked.add(ThrottleClickHandler.wrap(onCloseClicked));
 
-        verticalBox.addChild(closeButton);
+        verticalBox.addChild(passButton).addChild(closeButton);
     }
 
     _createAutomoatorButtons(verticalBox, playerDesk) {
@@ -581,12 +568,7 @@ class AbstractStrategyCard {
             this._gameObject
         );
 
-        const passButton = AbstractStrategyCard.createButtonPlayPass(
-            playerDesk,
-            this._gameObject
-        );
-
-        return [primaryButton, secondaryButton, passButton];
+        return [primaryButton, secondaryButton];
     }
 }
 
