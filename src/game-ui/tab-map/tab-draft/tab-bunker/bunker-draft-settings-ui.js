@@ -19,6 +19,7 @@ const {
     Text,
     MultilineTextBox,
     VerticalBox,
+    world,
 } = require("../../../../wrapper/api");
 
 class BunkerDraftSettingsUI extends VerticalBox {
@@ -44,6 +45,14 @@ class BunkerDraftSettingsUI extends VerticalBox {
         assert(this._factionGenerator);
 
         this.removeAllChildren();
+
+        if (world.TI4.config.playerCount > 6) {
+            const tooMany = new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setText(locale("ui.draft.bunker_too_many_players"));
+            this.addChild(tooMany);
+            return;
+        }
 
         const customInputLabel = new Text()
             .setFontSize(CONFIG.fontSize)

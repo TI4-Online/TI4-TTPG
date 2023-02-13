@@ -13,6 +13,7 @@ module.exports = (data) => {
 
     const tokensAndValues = [];
     let strategyCardMat = undefined;
+    let artuno = undefined;
     for (const obj of world.getAllObjects()) {
         if (obj.getContainer()) {
             continue;
@@ -24,6 +25,8 @@ module.exports = (data) => {
             tokensAndValues.push({ token: obj, value: 3 });
         } else if (nsid === "mat:base/strategy_card") {
             strategyCardMat = obj;
+        } else if (nsid === "card.leader.agent.nomad:pok/artuno_the_betrayer") {
+            artuno = obj;
         }
     }
 
@@ -37,6 +40,18 @@ module.exports = (data) => {
             if (
                 Math.abs(matPos.x) < extent.x &&
                 Math.abs(matPos.y) < extent.y
+            ) {
+                continue;
+            }
+        }
+
+        // Ignore if on artuno the betrayer (nomad agent).
+        if (artuno) {
+            const artPos = artuno.worldPositionToLocal(pos);
+            const extent = artuno.getExtent();
+            if (
+                Math.abs(artPos.x) < extent.x &&
+                Math.abs(artPos.y) < extent.y
             ) {
                 continue;
             }

@@ -336,6 +336,7 @@
     "ui.draft.slice_input": "Slice input:",
     "ui.draft.faction_input": "Faction input:",
     "ui.draft.slice_count": "Slice count",
+    "ui.draft.bunker_too_many_players": "Bunker draft is only available for 6 or fewer players",
     "ui.draft.bunker_count": "Bunker count",
     "ui.draft.faction_count": "Faction count",
     "ui.draft.red_count": "Red system count",

@@ -1,7 +1,7 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
 const UPDATOR = require("./updator-player-command-tokens");
-const { MockGameObject, MockVector, world } = require("../../wrapper/api");
+const { MockGameObject, world } = require("../../wrapper/api");
 
 it("player.commandTokens", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
@@ -11,21 +11,19 @@ it("player.commandTokens", () => {
         }),
     };
 
-    const slot = playerDesks[0].playerSlot;
+    const playerDesk = playerDesks[0];
     world.__clear();
 
     world.__addObject(
         new MockGameObject({
             templateMetadata: "sheet:base/command",
-            owningPlayerSlot: slot,
-            position: new MockVector(0, 0, 0),
+            position: playerDesk.center,
         })
     );
     world.__addObject(
         new MockGameObject({
             templateMetadata: "token.command:base/arborec",
-            owningPlayerSlot: slot,
-            position: new MockVector(8, 0, 0),
+            position: playerDesk.center.add([8, 0, 0]),
         })
     );
 
