@@ -59,6 +59,12 @@ globalEvents.onObjectDestroyed.add((obj) => {
     if (obj.getTags().includes(IGNORE_TAG)) {
         return;
     }
+
+    const container = obj.getContainer();
+    if (container && container.getTags().includes(IGNORE_TAG)) {
+        return;
+    }
+
     const nsid = ObjectNamespace.getNsid(obj);
     if (IGNORE_SET.has(nsid)) {
         return;
