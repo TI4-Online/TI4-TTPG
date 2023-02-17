@@ -243,6 +243,7 @@
     "nav.map.premade": "Premade",
     "nav.map.draft": "Draft",
     "nav.map.draft.bunker": "Bunker Draft",
+    "nav.map.draft.franken": "Franken Draft",
     "nav.map.draft.milty": "Milty Draft",
     "nav.map.draft.scpt": "SCPT",
     "nav.map.draft.bag": "Bag Draft",
@@ -355,6 +356,7 @@
     "ui.draft.already_have": "{playerName} already has a {categoryName}",
     "ui.draft.selected": "{playerName} selected {categoryName} “{selectionName}”",
     "ui.draft.in_progress": "Draft in progress, see player areas",
+    "ui.draft.start_draft": "Start draft",
 
     "ui.agenda.vote_count": "{voteCount} {#voteCount|vote|votes}",
     "ui.agenda.clippy.yes": "Yes",
@@ -667,7 +669,7 @@
     "technology.name.neural_motivator": "Neural Motivator",
     "technology.name.psychoarchaeology": "Psychoarchaeology",
     "technology.name.dacxive_animators": "Dacxive Animators",
-    "technology.name.bio_stims": "Bio-Stims",
+    "technology.name.biostims": "Bio-Stims",
     "technology.name.hyper_metabolism": "Hyper Metabolism",
     "technology.name.x_89_bacterial_weapon": "X-89 Bacterial Weapon",
     "technology.name.plasma_scoring": "Plasma Scoring",
@@ -996,6 +998,10 @@
 
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
+
+    "franken.config": "Choose how many of each type to place in each draft box.",
+    "franken.finish_draft": "Create factions from draft components",
+    "action.update": "Update",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

@@ -5,6 +5,9 @@ const { AutoRollerArena } = require("../objects/roller/auto-roller-arena");
 const {
     BunkerDraftSettings,
 } = require("./tab-map/tab-draft/tab-bunker/bunker-draft-settings");
+const {
+    FrankenDraftSettings,
+} = require("./tab-map/tab-draft/tab-franken/franken-settings");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
 const {
@@ -40,6 +43,7 @@ const {
     Rotator,
     Vector,
     globalEvents,
+    refPackageId,
     world,
 } = require("../wrapper/api");
 const { TabStreamer } = require("./tab-streamer/tab-streamer");
@@ -56,6 +60,10 @@ class GameUI {
             _gameUI = new GameUI();
         }
         return _gameUI;
+    }
+
+    static isDev() {
+        return refPackageId === "DEE44C689452447E8ED6FDDBEB19BB23";
     }
 
     constructor() {
@@ -254,6 +262,16 @@ class GameUI {
                 return new BunkerDraftSettings().getUI();
             });
         draftFolder.addChild(bunkerDraft);
+
+        if (GameUI.isDev()) {
+            const franken = new NavEntry()
+                .setName(locale("nav.map.draft.franken"))
+                .setIconPath("global/ui/icons/franken.png")
+                .setWidgetFactory((navPanel, navEntry) => {
+                    return new FrankenDraftSettings().getUI();
+                });
+            draftFolder.addChild(franken);
+        }
 
         return draftFolder;
     }

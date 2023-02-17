@@ -104,6 +104,15 @@ class Technology {
         invalidateCache();
     }
 
+    static getByNsidName(nsidName) {
+        const localeName = `technology.name.${nsidName}`;
+        for (const entry of TECHNOLOGY_DATA) {
+            if (entry.localeName === localeName) {
+                return entry;
+            }
+        }
+    }
+
     static getOwnedPlayerTechnologies(playerSlot) {
         assert(Number.isInteger(playerSlot));
 
