@@ -19,6 +19,7 @@ const {
     world,
 } = require("../../../wrapper/api");
 const { Technology } = require("../../technology/technology");
+const { PlayerDeskColor } = require("../../player-desk/player-desk-color");
 
 /**
  * Custom components:
@@ -161,6 +162,7 @@ class Franken {
         const nsid = "bag:base/generic";
         const container = Spawn.spawn(nsid, pos, rot);
         assert(container);
+        assert(container instanceof Container);
         container.setMaxItems(500);
         container.setTags(["DELETED_ITEMS_IGNORE"]);
         container.snapToGround();
@@ -202,9 +204,9 @@ class Franken {
         const cardNsids = ObjectNamespace.getDeckNsids(deck);
         for (let i = cardNsids.length - 1; i >= 0; i--) {
             const cardNsid = cardNsids[i];
-            const undraftable = undraftableNsids.has(cardNsid);
+            const isUndraftable = undraftableNsids.has(cardNsid);
             const prune = nsidPruner(cardNsid);
-            if (undraftable || prune) {
+            if (isUndraftable || prune) {
                 let cardObj;
                 if (deck.getStackSize() > 1) {
                     //console.log(`${nsid}: ${i}/${obj.getStackSize()}`);
@@ -214,7 +216,7 @@ class Franken {
                 }
                 assert(cardObj instanceof Card);
 
-                if (undraftable) {
+                if (isUndraftable) {
                     const index = 0;
                     const showAnimation = false;
                     undraftableContainer.addObjects(
@@ -232,8 +234,8 @@ class Franken {
         return deck;
     }
 
-    static createPromissoryNotesDeck(pos, rot, undraftableContainer) {
-        assert(undraftableContainer instanceof Container);
+    static createPromissoryNotesDeck(pos, rot, undraftable) {
+        assert(undraftable instanceof Container);
 
         const colors = new Set([
             "white",
@@ -257,15 +259,15 @@ class Franken {
             rot,
             "card.promissory",
             nsidPruner,
-            undraftableContainer
+            undraftable
         );
         deck.setName(DRAFT_SETTINGS.promissoryNotes.label);
 
         return deck;
     }
 
-    static createFlagshipDeck(pos, rot, undraftableContainer) {
-        assert(undraftableContainer instanceof Container);
+    static createFlagshipDeck(pos, rot, undraftable) {
+        assert(undraftable instanceof Container);
 
         const flagships = new Set();
         const flagshipToFactionName = {};
@@ -294,7 +296,7 @@ class Franken {
             rot,
             "card.technology.unit_upgrade",
             nsidPruner,
-            undraftableContainer
+            undraftable
         );
         deck.setName(DRAFT_SETTINGS.flagships.label);
 
@@ -314,8 +316,8 @@ class Franken {
         return deck;
     }
 
-    static createMechDeck(pos, rot, undraftableContainer) {
-        assert(undraftableContainer instanceof Container);
+    static createMechDeck(pos, rot, undraftable) {
+        assert(undraftable instanceof Container);
 
         const mechs = new Set();
         const mechToFactionName = {};
@@ -344,7 +346,7 @@ class Franken {
             rot,
             "card.leader",
             nsidPruner,
-            undraftableContainer
+            undraftable
         );
         deck.setName(DRAFT_SETTINGS.mechs.label);
 
@@ -364,8 +366,8 @@ class Franken {
         return deck;
     }
 
-    static createFactionTechDeck(pos, rot, undraftableContainer) {
-        assert(undraftableContainer instanceof Container);
+    static createFactionTechDeck(pos, rot, undraftable) {
+        assert(undraftable instanceof Container);
 
         const tech = new Set();
         const techToFactionName = {};
@@ -399,7 +401,7 @@ class Franken {
             rot,
             "card.technology",
             nsidPruner,
-            undraftableContainer
+            undraftable
         );
         deck.setName(DRAFT_SETTINGS.factionTech.label);
 
@@ -419,8 +421,8 @@ class Franken {
         return deck;
     }
 
-    static createLeaderDeck(leaderType, pos, rot, undraftableContainer) {
-        assert(undraftableContainer instanceof Container);
+    static createLeaderDeck(leaderType, pos, rot, undraftable) {
+        assert(undraftable instanceof Container);
 
         const nsidPruner = (nsid) => {
             const parsed = ObjectNamespace.parseNsid(nsid);
@@ -433,7 +435,7 @@ class Franken {
             rot,
             "card.leader",
             nsidPruner,
-            undraftableContainer
+            undraftable
         );
         if (leaderType === "agent") {
             deck.setName(DRAFT_SETTINGS.agents.label);
@@ -581,24 +583,16 @@ class Franken {
                         return tech;
                     }
 
-                    let color = undefined;
-                    if (techData.type === "Blue") {
-                        color = "#3232ff";
-                    } else if (techData.type === "Green") {
-                        color = "#008000";
-                    } else if (techData.type === "Yellow") {
-                        color = "#e5e500";
-                    } else if (techData.type === "Red") {
-                        color = "#cc0000";
-                    } else if (techData.type === "unitUpgrade") {
-                        color = "#ffffff";
-                    } else if (techData.type === "") {
-                        color = "#ffffff"; // valefar assimilator x/y
-                    } else {
-                        console.log(
-                            `Franken.createStartingTech: unknown type "${techData.type}"`
-                        );
-                        color = "#ffffff";
+                    let color = "#ffffff";
+                    const type = techData.type.toLowerCase();
+                    if (
+                        type === "blue" ||
+                        type === "green" ||
+                        type === "yellow" ||
+                        type === "red"
+                    ) {
+                        const attrs = PlayerDeskColor.getColorAttrs(type);
+                        color = attrs.widgetHexColor;
                     }
                     return `[color=${color}]${techData.name}[/color]`;
                 })
@@ -649,6 +643,60 @@ class Franken {
         }
         console.log(`Draft values: ${JSON.stringify(values)}`);
 
+        const draftBags = this._createDraftBags();
+        const sources = this._createSources();
+
+        for (const [key, settings] of Object.entries(this._draftSettings)) {
+            const source = sources[key];
+            const count = settings._value;
+            console.log(`Franken.startDraft: dealing ${key} x${count})`);
+            assert(source instanceof Card || source instanceof Container);
+            assert(typeof count === "number");
+
+            let getItem = undefined;
+            if (source instanceof Card) {
+                getItem = () => {
+                    const numCards = 1;
+                    const fromFront = true;
+                    const offset = Math.floor(
+                        source.getStackSize() * Math.random()
+                    );
+                    return source.takeCards(numCards, fromFront, offset);
+                };
+            } else if (source instanceof Container) {
+                getItem = () => {
+                    const index = Math.floor(
+                        source.getNumItems() * Math.random()
+                    );
+                    const pos = source.getPosition().add([0, 0, 15]);
+                    const showAnimation = false;
+                    return source.takeAt(index, pos, showAnimation);
+                };
+            }
+
+            for (const draftBag of draftBags) {
+                for (let i = 0; i < count; i++) {
+                    const item = getItem();
+                    assert(item);
+                    draftBag.addObjects([item]);
+                }
+            }
+        }
+    }
+
+    _createDraftBags() {
+        return world.TI4.getAllPlayerDesks().map((playerDesk) => {
+            const pos = playerDesk.localPositionToWorld(new Vector(50, 0, 0));
+            const rot = playerDesk.rot;
+            const bag = Franken.spawnContainer(pos, rot);
+            bag.setPrimaryColor(playerDesk.plasticColor);
+            bag.setName(`Franken Components (${playerDesk.colorName})`);
+            this._deleteOnCancel.push(bag);
+            return bag;
+        });
+    }
+
+    _createSources() {
         let posStorage = new Vector(0, -62, world.getTableHeight() + 5);
         const nextPos = () => {
             posStorage.y = posStorage.y + 12;
@@ -661,82 +709,87 @@ class Franken {
 
         let pos = nextPos();
         const rot = new Rotator(0, 0, 0);
-        const undraftableContainer = Franken.spawnContainer(pos, rot);
-        undraftableContainer.setName("Undraftable");
-        this._deleteOnCancel.push(undraftableContainer);
+        const undraftable = Franken.spawnContainer(pos, rot);
+        undraftable.setName("Undraftable");
+        this._deleteOnCancel.push(undraftable);
+
+        const result = { undraftable };
 
         pos = nextPos();
-        let deck = Franken.createPromissoryNotesDeck(
+        result.promissoryNotes = Franken.createPromissoryNotesDeck(
             pos,
             rot,
-            undraftableContainer
+            undraftable
         );
-        this._deleteOnCancel.push(deck);
+        this._deleteOnCancel.push(result.promissoryNotes);
 
         pos = nextPos();
-        deck = Franken.createFlagshipDeck(pos, rot, undraftableContainer);
-        this._deleteOnCancel.push(deck);
+        result.flagships = Franken.createFlagshipDeck(pos, rot, undraftable);
+        this._deleteOnCancel.push(result.flagships);
 
         pos = nextPos();
-        deck = Franken.createFactionTechDeck(pos, rot, undraftableContainer);
-        this._deleteOnCancel.push(deck);
+        result.factionTech = Franken.createFactionTechDeck(
+            pos,
+            rot,
+            undraftable
+        );
+        this._deleteOnCancel.push(result.factionTech);
 
         pos = nextPos();
-        deck = Franken.createLeaderDeck(
+        result.agents = Franken.createLeaderDeck(
             "agent",
             pos,
             rot,
-            undraftableContainer
+            undraftable
         );
-        this._deleteOnCancel.push(deck);
+        this._deleteOnCancel.push(result.agents);
 
         pos = nextPos();
-        deck = Franken.createLeaderDeck(
+        result.commanders = Franken.createLeaderDeck(
             "commander",
             pos,
             rot,
-            undraftableContainer
+            undraftable
         );
-        this._deleteOnCancel.push(deck);
+        this._deleteOnCancel.push(result.commanders);
 
         pos = nextPos();
-        deck = Franken.createLeaderDeck("hero", pos, rot, undraftableContainer);
-        this._deleteOnCancel.push(deck);
+        result.heroes = Franken.createLeaderDeck("hero", pos, rot, undraftable);
+        this._deleteOnCancel.push(result.heroes);
 
         pos = nextPos();
-        deck = Franken.createMechDeck(pos, rot, undraftableContainer);
-        this._deleteOnCancel.push(deck);
+        result.mechs = Franken.createMechDeck(pos, rot, undraftable);
+        this._deleteOnCancel.push(result.mechs);
 
         pos = nextPos();
-        const homeSystemsContainer = Franken.createSystems("home", pos, rot);
-        this._deleteOnCancel.push(homeSystemsContainer);
+        result.homeSystems = Franken.createSystems("home", pos, rot);
+        this._deleteOnCancel.push(result.homeSystems);
 
         pos = nextPos();
-        const blueSystemsContainer = Franken.createSystems("blue", pos, rot);
-        this._deleteOnCancel.push(blueSystemsContainer);
+        result.blueSystems = Franken.createSystems("blue", pos, rot);
+        this._deleteOnCancel.push(result.blueSystems);
 
         pos = nextPos();
-        const redSystemsContainer = Franken.createSystems("red", pos, rot);
-        this._deleteOnCancel.push(redSystemsContainer);
+        result.redSystems = Franken.createSystems("red", pos, rot);
+        this._deleteOnCancel.push(result.redSystems);
 
         pos = nextPos();
-        const factionAbilitiesContainer = Franken.createFactionAbilities(
-            pos,
-            rot
-        );
-        this._deleteOnCancel.push(factionAbilitiesContainer);
+        result.factionAbilities = Franken.createFactionAbilities(pos, rot);
+        this._deleteOnCancel.push(result.factionAbilities);
 
         pos = nextPos();
-        const commoditiesContainer = Franken.createCommodities(pos, rot);
-        this._deleteOnCancel.push(commoditiesContainer);
+        result.commodities = Franken.createCommodities(pos, rot);
+        this._deleteOnCancel.push(result.commodities);
 
         pos = nextPos();
-        const startingUnitsContainer = Franken.createStartingUnits(pos, rot);
-        this._deleteOnCancel.push(startingUnitsContainer);
+        result.startingUnits = Franken.createStartingUnits(pos, rot);
+        this._deleteOnCancel.push(result.startingUnits);
 
         pos = nextPos();
-        const startingTechContainer = Franken.createStartingTech(pos, rot);
-        this._deleteOnCancel.push(startingTechContainer);
+        result.startingTech = Franken.createStartingTech(pos, rot);
+        this._deleteOnCancel.push(result.startingTech);
+
+        return result;
     }
 
     cancel() {

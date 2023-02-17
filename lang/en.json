@@ -999,7 +999,7 @@
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
-    "franken.config": "Choose how many of each type to place in each draft box.",
+    "franken.config": "Choose how many of each type per draft box.",
     "franken.finish_draft": "Create factions from draft components",
     "action.update": "Update",
 
