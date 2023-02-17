@@ -27,12 +27,12 @@ function updateNameDescUI() {
             .setAutoWrap(true)
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(2.5 * SCALE)
-            .setTextColor([0, 0, 0, 1]);
+            .setTextColor([1, 1, 1, 1]);
         _descText = new RichText()
             .setAutoWrap(true)
             .setFont("myriad-pro-semibold.ttf", refPackageId)
             .setFontSize(2.5 * SCALE)
-            .setTextColor([0, 0, 0, 1]);
+            .setTextColor([1, 1, 1, 1]);
 
         const descIndent = new LayoutBox()
             .setPadding(2 * SCALE, 0, 0, 0)
