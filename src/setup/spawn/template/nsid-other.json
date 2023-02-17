@@ -4,5 +4,6 @@
     "tool:base/quick_roller": "FAC91E978D47C90DF8CCDCA76B2F8DA5",
     "card.other.portrait:base/munitions_reserves": "2A581AD7E94B599AD85FB3B48542254C",
     "tool:base/timer": "DC445A09A04B312D99BE7A86765E379E",
-    "tool:base/arena_platform": "323E16F4BA4003D803FFCF97C229D823"
+    "tool:base/arena_platform": "323E16F4BA4003D803FFCF97C229D823",
+    "tile:homebrew/name_desc": "B2BED4B1624EB991C4045786412535BC"
 }

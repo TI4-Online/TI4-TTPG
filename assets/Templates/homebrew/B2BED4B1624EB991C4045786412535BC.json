@@ -1,8 +1,8 @@
 {
 	"Type": "Card",
-	"GUID": "BE4940817848D19C83EE778EABF7340A",
-	"Name": "Blank (Wide)",
-	"Metadata": "",
+	"GUID": "B2BED4B1624EB991C4045786412535BC",
+	"Name": "Tile name/desc",
+	"Metadata": "tile:homebrew/name_desc",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0,
@@ -25,7 +25,7 @@
 	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": true,
-	"ScriptName": "",
+	"ScriptName": "lib/homebrew/tile-name-desc.js",
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
@@ -47,23 +47,23 @@
 	"NumVertical": 1,
 	"Width": 6.3,
 	"Height": 4.2,
-	"Thickness": 0.05,
-	"HiddenInHand": true,
-	"UsedWithCardHolders": true,
-	"CanStack": true,
+	"Thickness": 0.2,
+	"HiddenInHand": false,
+	"UsedWithCardHolders": false,
+	"CanStack": false,
 	"UsePrimaryColorForSide": false,
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
 	"EmissiveFront": false,
-	"Model": "Rounded",
+	"Model": "Square",
 	"Indices": [ 0 ],
 	"CardNames":
 	{
 	},
 	"CardMetadata":
 	{
-		"0": "card.blank.wide:homebrew/blank"
+		"0": "tile:homebrew/name_desc"
 	},
 	"CardTags":
 	{
