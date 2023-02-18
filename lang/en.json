@@ -139,6 +139,7 @@
     "ui.button.ready": "READY",
     "ui.button.clear": "CLEAR",
     "ui.button.custom": "CUSTOM",
+    "ui.button.start": "START",
     "ui.button.resolve_explore": "Resolve",
     "ui.button.collapse": "Collapse",
     "ui.button.expand": "Expand",
@@ -983,6 +984,7 @@
 
     "timer.startCountdown": "Starting countdown timer",
     "timer.countdownExpired": "Countdown timer expired!",
+    "timer.countdown": "Countdown",
 
     "hide_cursor.cannot_hide_player_desk_slot": "Cannot hide cursor for active player desk",
     "hide_cursor.show": "Showing cursor for “{playerName}”",
