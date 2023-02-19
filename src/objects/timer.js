@@ -4,6 +4,7 @@ const CONFIG = require("../game-ui/game-ui-config");
 const { Broadcast } = require("../lib/broadcast");
 const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectSavedData } = require("../lib/saved-data/object-saved-data");
+const { ThrottleClickHandler } = require("../lib/ui/throttle-click-handler");
 const {
     Border,
     Button,
@@ -344,25 +345,29 @@ class Timer {
         const startButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.start"));
-        startButton.onClicked.add((button, player) => {
-            this._obj.removeUIElement(this._editUI);
-            this._editUI = undefined;
+        startButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._obj.removeUIElement(this._editUI);
+                this._editUI = undefined;
 
-            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-            if (countDownCheckbox.isChecked()) {
-                this.startCountdown(totalSeconds);
-            } else {
-                this.startCountup(totalSeconds);
-            }
-        });
+                const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+                if (countDownCheckbox.isChecked()) {
+                    this.startCountdown(totalSeconds);
+                } else {
+                    this.startCountup(totalSeconds);
+                }
+            })
+        );
 
         const cancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
-        cancelButton.onClicked.add((button, player) => {
-            this._obj.removeUIElement(this._editUI);
-            this._editUI = undefined;
-        });
+        cancelButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._obj.removeUIElement(this._editUI);
+                this._editUI = undefined;
+            })
+        );
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
