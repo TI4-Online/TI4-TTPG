@@ -50,6 +50,9 @@ const FACTION_SCHEMA = {
         // Any special setup instructions (e.g. "choose 2 tech").
         startingMessage: { type: "string" },
 
+        // NSID of the instruction card for starting tech specific choices e.g. ["keleres", "choose2"]
+        startingTechChoice: { type: "string" },
+
         startingTech: {
             type: "array",
             items: { type: "string" }, // NSID names "plasma_scoring"
