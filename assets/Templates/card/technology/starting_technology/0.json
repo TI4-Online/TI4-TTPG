@@ -1,0 +1,73 @@
+{
+	"Type": "Card",
+	"GUID": "7707ACAC4F14541280A21180F9C4B4A0",
+	"Name": "Starting Technologies",
+	"Metadata": "card.starting_technology:base/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"Tags": [],
+	"FrontTexture": "locale/card/technology/starting_technology/starting_techs.jpg",
+	"BackTexture": "global/card/technology/unknown.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 3,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"EmissiveFront": false,
+	"Model": "Rounded",
+	"Indices": [ 0, 1, 2 ],
+	"CardNames":
+	{
+		"0": "Keleres Starting Technology",
+		"1": "Argent Flight Starting Technology",
+		"2": "Winnu Starting Technology"
+	},
+	"CardMetadata":
+	{
+		"0": "card.starting_technology:base/keleres",
+		"1": "card.starting_technology:base/argent",
+		"2": "card.starting_technology:base/winnu"
+	}
+}

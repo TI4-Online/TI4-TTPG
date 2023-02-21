@@ -178,5 +178,6 @@
     "card.technology.yellow:base/2": "31A68EC79D933D8A14D70A3CBB4C8D46",
     "card.technology.yellow:pok/0": "E009B2706DB6D3D39A0F745363573F34",
     "card.technology.yellow:codex.vigil/0": "921ED7DDA1482633D36D0598A3AB9C72",
-    "card.technology.yellow:codex.ordinian/0": "3C38D0D8338E5285E93CF92C36054641"
+    "card.technology.yellow:codex.ordinian/0": "3C38D0D8338E5285E93CF92C36054641",
+    "card.starting_technology:base/0": "7707ACAC4F14541280A21180F9C4B4A0"
 }

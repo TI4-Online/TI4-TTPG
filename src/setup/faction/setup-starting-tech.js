@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
+const { CloneReplace } = require("../../lib/card/clone-replace");
 const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
@@ -16,7 +17,7 @@ class SetupStartingTech extends AbstractSetup {
             const pos = this.playerDesk.pos.add([-5, 0, 5]);
             const rot = this.playerDesk.rot;
 
-            const nsidPrefix = "card.starting_technology.";
+            const nsidPrefix = "card.starting_technology";
             let card = this.spawnDecksThenFilter(
                 pos,
                 rot,
@@ -31,7 +32,7 @@ class SetupStartingTech extends AbstractSetup {
             // See the comment in CloneReplace for why.
             card = CloneReplace.cloneReplace(card);
 
-            TechCardUtil.moveCardsToCardHolder(card, playerSlot);
+            CardUtil.moveCardsToCardHolder(card, this.playerDesk.playerSlot);
         }
 
         TechCardUtil.moveCardsToCardHolder(
