@@ -10,8 +10,11 @@ const { Card, globalEvents } = require("../wrapper/api");
 class CardDescriptions {
     static _getDescription(card) {
         assert(card instanceof Card);
-        const nsid = ObjectNamespace.getNsid(card);
-        const key = `${nsid}.description`;
+        const parsed = ObjectNamespace.parseCard(card);
+        if (!parsed) {
+            return;
+        }
+        const key = `desc.${parsed.type}.${parsed.name}`;
         const result = locale(key);
         return result === key ? undefined : result;
     }
@@ -26,8 +29,9 @@ class CardDescriptions {
 
     static maybeRemoveDescription(card) {
         assert(card instanceof Card);
-        const description = CardDescriptions._getDescription(card);
-        if (description) {
+        // At this point card is already a deck.
+        // For now just clear descriptions on decks.
+        if (card.getDescription().length > 0) {
             card.setDescription("");
         }
     }

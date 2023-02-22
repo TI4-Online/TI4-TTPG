@@ -247,7 +247,7 @@ world.TI4 = {
 
 require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
-//require("./global/card-descriptions"); // these appear when face down, disable for now
+require("./global/card-descriptions");
 require("./global/chat-commands");
 require("./global/desk-turn-order");
 require("./global/export-game");
@@ -259,7 +259,6 @@ require("./global/on-container-rejected");
 require("./global/on-turn-changed-sound");
 require("./global/planet-card-attachments");
 require("./global/r-swap-split-combine");
-require("./global/restrict-drawing-lines");
 require("./global/right-click/heroes/helio-command-array");
 require("./global/right-click/heroes/dimensional-anchor");
 require("./global/right-click/heroes/multiverse-shift");

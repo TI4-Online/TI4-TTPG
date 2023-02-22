@@ -15,7 +15,6 @@ const {
 } = require("../../wrapper/api");
 
 const SCALE = 8;
-const DESC_LINE_CHARS = 40;
 const ACTION_NAME = "*" + locale("action.update");
 
 let _nameText = undefined;
@@ -69,34 +68,8 @@ function updateNameDescUI() {
         refObject.__updateNameDescUI = updateNameDescUI;
     }
 
-    // If the description has newlines leave it alone.
-    const origDesc = refObject.getDescription();
-    const rewrapDesc = origDesc.indexOf("\n") < 0;
-    if (rewrapDesc) {
-        const words = refObject
-            .getDescription()
-            .replace(/\n/g, " ")
-            .split(" ")
-            .filter((word) => word.length > 0);
-        const lines = [""];
-        for (const word of words) {
-            let line = lines.pop();
-            if (line.length + word.length + 1 <= DESC_LINE_CHARS) {
-                line += " " + word;
-                lines.push(line);
-            } else {
-                line += "\n";
-                lines.push(line);
-                line = word;
-                lines.push(line);
-            }
-        }
-        const desc = lines.join("");
-        refObject.setDescription(desc);
-    }
-
     const name = refObject.getName().toUpperCase(); // UPPER
-    const desc = origDesc; // Use newlines if originally there
+    const desc = refObject.getDescription();
     _nameText.setText(name);
     _descText.setText(desc);
 }

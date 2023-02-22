@@ -1005,5 +1005,7 @@
     "franken.finish_draft": "Create factions from draft components",
     "action.update": "Update",
 
+    "desc.card.action.plague": "Place this card face-up anywhere on the table, then use the system tile menu to select plague",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
