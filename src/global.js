@@ -153,6 +153,7 @@ const { PerfStats } = require("./lib/perf/perf-stats");
 const { System, Planet } = require("./lib/system/system");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
+const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 
 // Register some functions in world to reduce require dependencies.
@@ -164,6 +165,8 @@ world.TI4 = {
     Hex,
     ObjectNamespace,
     Technology,
+    UnitAttrs,
+    UnitPlastic,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
