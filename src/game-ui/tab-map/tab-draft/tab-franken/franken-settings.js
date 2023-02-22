@@ -6,8 +6,11 @@ class FrankenDraftSettings {
         const franken = new Franken();
 
         const callbacks = {
-            startDraft: (options) => {
-                franken.startDraft();
+            startDraft: () => {
+                return franken.startDraft();
+            },
+            finishDraft: () => {
+                return franken.finishDraft();
             },
             onCancel: () => {
                 franken.cancel();

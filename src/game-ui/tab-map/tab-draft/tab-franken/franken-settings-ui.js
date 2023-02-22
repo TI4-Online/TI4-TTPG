@@ -7,6 +7,7 @@ const CONFIG = require("../../../game-ui-config");
 const {
     Border,
     Button,
+    CheckBox,
     HorizontalBox,
     LayoutBox,
     Slider,
@@ -14,7 +15,7 @@ const {
     VerticalBox,
 } = require("../../../../wrapper/api");
 
-const SLIDER_FONT_SIZE = CONFIG.fontSize * 0.9;
+const SLIDER_FONT_SIZE = CONFIG.fontSize * 0.75;
 
 class FrankenDraftSettingsUI {
     static _createSlider(params) {
@@ -47,9 +48,23 @@ class FrankenDraftSettingsUI {
         return panel;
     }
 
+    static _createCheckbox(params) {
+        assert(typeof params.label === "string");
+        assert(typeof params.default === "boolean");
+        assert(typeof params.onCheckStateChanged === "function");
+
+        const checkBox = new CheckBox()
+            .setFontSize(SLIDER_FONT_SIZE)
+            .setIsChecked(params.default)
+            .setText(params.label);
+        checkBox.onCheckStateChanged.add(params.onCheckStateChanged);
+        return checkBox;
+    }
+
     constructor(franken, callbacks) {
         assert(typeof callbacks.startDraft === "function");
         assert(typeof callbacks.onCancel === "function");
+        assert(typeof callbacks.finishDraft === "function");
 
         this._draftSettings = franken.getDraftSettings();
         this._callbacks = callbacks;
@@ -85,24 +100,56 @@ class FrankenDraftSettingsUI {
 
         let entries = Object.values(this._draftSettings);
         entries.sort((a, b) => {
+            // Sliders first.
+            if (
+                typeof a.default === "boolean" &&
+                typeof b.default === "number"
+            ) {
+                return 1;
+            }
+            if (
+                typeof b.default === "boolean" &&
+                typeof a.default === "number"
+            ) {
+                return -1;
+            }
+
+            // Then alpha by label.
             if (a.label === b.label) {
                 return 0;
             }
             return a.label < b.label ? -1 : 1;
         });
         entries.forEach((entry, index) => {
-            const slider = FrankenDraftSettingsUI._createSlider({
-                label: entry.label,
-                min: entry.min,
-                max: entry.max,
-                default: entry.default,
-                onValueChanged: (slider, player, value) => {
-                    entry._value = value;
-                },
-            });
+            let widget = undefined;
+            if (typeof entry.default === "number") {
+                widget = FrankenDraftSettingsUI._createSlider({
+                    label: entry.label,
+                    min: entry.min,
+                    max: entry.max,
+                    default: entry.default,
+                    onValueChanged: (slider, player, value) => {
+                        entry._value = value;
+                    },
+                });
+            } else if (typeof entry.default === "boolean") {
+                widget = FrankenDraftSettingsUI._createCheckbox({
+                    label: entry.label,
+                    default: entry.default,
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        entry._value = isChecked;
+                    },
+                });
+            } else {
+                throw new Error(
+                    `unknown type for "${
+                        entry.label
+                    }" (${typeof entry.default})`
+                );
+            }
             const parent =
                 index < Math.ceil(entries.length / 2) ? columns[0] : columns[1];
-            parent.addChild(slider);
+            parent.addChild(widget);
         });
 
         const startDraftButton = new Button()
@@ -110,8 +157,10 @@ class FrankenDraftSettingsUI {
             .setText(locale("ui.draft.start_draft"));
         startDraftButton.onClicked.add(
             ThrottleClickHandler.wrap((button, player) => {
-                this._createDraftInProgressUI();
-                this._callbacks.startDraft();
+                const success = this._callbacks.startDraft();
+                if (success) {
+                    this._createDraftInProgressUI();
+                }
             })
         );
         this._widget.addChild(startDraftButton);
