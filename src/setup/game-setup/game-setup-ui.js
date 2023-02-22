@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { DelayedSliderHandler } = require("../../lib/ui/delayed-slider-handler");
 const { Hex } = require("../../lib/hex");
 const { TableLayout } = require("../../table/table-layout");
+const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { TextJustification, refPackageId, world } = require("../../wrapper/api");
@@ -179,6 +181,8 @@ class GameSetupUI {
         const button = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(labelText);
+
+        onClicked = ThrottleClickHandler.wrap(onClicked);
         button.onClicked.add(onClicked);
         return button;
     }
@@ -217,6 +221,7 @@ class GameSetupUI {
             .setStepSize(1)
             .setValue(value);
 
+        onValueChanged = DelayedSliderHandler.wrap(onValueChanged);
         slider.onValueChanged.add(onValueChanged);
         return WidgetFactory.verticalBox().addChild(label).addChild(slider);
     }

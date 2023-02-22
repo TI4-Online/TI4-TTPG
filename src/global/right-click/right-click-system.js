@@ -18,8 +18,9 @@ const {
     world,
 } = require("../../wrapper/api");
 
-// Do not offer these as right click actions until able to right click ground-mode objects with regular cursor.
-const ADD_CUSTOM_ACTIONS = false;
+// Show right click options?  These are just the static choices, dynamic things
+// like distant suns exploration or the plague action card do not appear.
+const ADD_CUSTOM_ACTIONS = true;
 
 function getNamesAndActions(player, systemTileObj) {
     assert(!player || player instanceof Player);

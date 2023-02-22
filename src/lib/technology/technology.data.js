@@ -24,7 +24,7 @@ module.exports = [
         abbrev: "Dacxive",
     },
     {
-        localeName: "technology.name.bio_stims",
+        localeName: "technology.name.biostims",
         cardNsid: "card.technology.green:pok/biostims",
         type: "Green",
         requirements: {

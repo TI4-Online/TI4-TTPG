@@ -2,7 +2,6 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
-const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
 const { world } = require("../../wrapper/api");
 const { TechnologySchema } = require("./technology.schema");
@@ -104,6 +103,15 @@ class Technology {
         invalidateCache();
     }
 
+    static getByNsidName(nsidName) {
+        const localeName = `technology.name.${nsidName}`;
+        for (const entry of TECHNOLOGY_DATA) {
+            if (entry.localeName === localeName) {
+                return entry;
+            }
+        }
+    }
+
     static getOwnedPlayerTechnologies(playerSlot) {
         assert(Number.isInteger(playerSlot));
 
@@ -142,7 +150,7 @@ class Technology {
     static getTechnologies(playerSlot) {
         let factionNsidName = false;
         if (playerSlot) {
-            const faction = Faction.getByPlayerSlot(playerSlot);
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
             factionNsidName = faction ? faction.raw.faction : "N/A";
         }
         return getTechnologies(factionNsidName).all;
@@ -151,7 +159,7 @@ class Technology {
     static getTechnologiesByType(playerSlot) {
         let factionNsidName = false;
         if (playerSlot) {
-            const faction = Faction.getByPlayerSlot(playerSlot);
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
             factionNsidName = faction ? faction.raw.faction : "N/A";
         }
         return getTechnologies(factionNsidName).byType;
