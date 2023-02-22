@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Faction } = require("../faction/faction");
+const { Franken } = require("../draft/franken/franken");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
 const { Technology } = require("../technology/technology");
@@ -21,6 +22,11 @@ class Homebrew {
                 assert(typeof key === "string");
                 assert(typeof value === "string");
                 locale.inject(key, value);
+            }
+        }
+        if (table.factionAbilities) {
+            for (const ability of table.factionAbilities) {
+                Franken.injectFactionAbility(ability);
             }
         }
         if (table.factions) {

@@ -1,9 +1,14 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const _ = require("lodash");
+const { Broadcast } = require("../../broadcast");
+const { FactionAbilitySchema } = require("./franken.schema");
+const { FactionSchema } = require("../../faction/faction.schema");
 const { ObjectNamespace } = require("../../object-namespace");
+const { PlayerDeskColor } = require("../../player-desk/player-desk-color");
 const { ReplaceObjects } = require("../../../setup/spawn/replace-objects");
 const { Spawn } = require("../../../setup/spawn/spawn");
+const { Technology } = require("../../technology/technology");
 const {
     FACTION_ABILITIES,
     UNDRAFTABLE,
@@ -19,10 +24,6 @@ const {
     ZonePermission,
     world,
 } = require("../../../wrapper/api");
-const { Technology } = require("../../technology/technology");
-const { PlayerDeskColor } = require("../../player-desk/player-desk-color");
-const { Broadcast } = require("../../broadcast");
-const { FactionSchema } = require("../../faction/faction.schema");
 
 /**
  * Custom components:
@@ -154,6 +155,18 @@ class Franken {
                 zone.destroy();
             }
         }
+    }
+
+    static injectFactionAbility(entry) {
+        const err = FactionAbilitySchema.validate(entry);
+        if (err) {
+            throw new Error(
+                `Franken.injectFactionAbility error: ${
+                    err.message
+                } for ${JSON.stringify(entry)}`
+            );
+        }
+        FACTION_ABILITIES.push(entry);
     }
 
     static abilityNameToNsidName(name) {
