@@ -42,7 +42,8 @@ const FACTION_DATA = [
         promissoryNotes: ["strike_wing_ambuscade"],
         icon: "global/factions/argent_icon.png",
         source: "pok",
-        startingTech: ["sarween_tools", "neural_motivator", "plasma_scoring"],
+        startingTech: [],
+        startingTechChoice: "argent",
         startingUnits: {
             carrier: 1,
             destroyer: 2,
@@ -188,6 +189,7 @@ const FACTION_DATA = [
         promissoryNotes: ["keleres_rider"],
         icon: "global/factions/keleres_icon.png",
         source: "codex.vigil",
+        startingTechChoice: "keleres",
         startingTech: [],
         startingUnits: {
             carrier: 2,
@@ -687,6 +689,7 @@ const FACTION_DATA = [
         promissoryNotes: ["acquiescence"],
         icon: "global/factions/winnu_icon.png",
         source: "base",
+        startingTechChoice: "winnu",
         startingTech: [],
         startingUnits: {
             carrier: 1,
