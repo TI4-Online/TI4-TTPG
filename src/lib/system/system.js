@@ -353,7 +353,7 @@ class System {
 
         SystemSchema.validate(rawSystem, (err) => {
             throw new Error(
-                `System.injectSystem schema error "${err.message}"`
+                `System.injectSystem schema error ${JSON.stringify(err)}`
             );
         });
 
