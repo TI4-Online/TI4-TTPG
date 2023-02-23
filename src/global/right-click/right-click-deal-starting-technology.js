@@ -12,9 +12,11 @@ function getStartinTechNameAndActions(faction) {
 
     return faction.raw.startingTechChoices.map((tech) => {
         return {
-            actionName: "*" + locale("ui.menu.deal", {
-                card: locale(`technology.name.${tech}`)
-            }),
+            actionName:
+                "*" +
+                locale("ui.menu.deal", {
+                    card: locale(`technology.name.${tech}`),
+                }),
             tooltip: undefined,
         };
     });
@@ -45,11 +47,16 @@ class RightClickDealStatringTechnology extends AbstractRightClickCard {
     }
 
     onRightClick(card, player, selectedActionName) {
-        const drawTechActionPrefix = "*" + locale("ui.menu.deal", {
-            card: ""
-        });
+        const drawTechActionPrefix =
+            "*" +
+            locale("ui.menu.deal", {
+                card: "",
+            });
         if (selectedActionName.startsWith(drawTechActionPrefix)) {
-            const techName = selectedActionName.replace(drawTechActionPrefix, "");
+            const techName = selectedActionName.replace(
+                drawTechActionPrefix,
+                ""
+            );
             Technology.onTechResearched(techName, player.getSlot(), true);
         }
     }
