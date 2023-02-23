@@ -29,7 +29,7 @@
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
-    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced “Object zoom for ground”",
+    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced 'Ground Object Interaction'",
 
     "ui.help.whisper": "Whisper: \"/w {part of name}\"",
 
