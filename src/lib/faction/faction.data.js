@@ -44,6 +44,7 @@ const FACTION_DATA = [
         source: "pok",
         startingTech: [],
         startingTechChoice: "argent",
+        startingTechChoices: ["sarween_tools", "neural_motivator", "plasma_scoring"],
         startingUnits: {
             carrier: 1,
             destroyer: 2,

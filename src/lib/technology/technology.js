@@ -1,7 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
 const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
+const { TechCardUtil } = require("../card/tech-card-util");
+const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
 const { world } = require("../../wrapper/api");
 const { TechnologySchema } = require("./technology.schema");
@@ -169,6 +172,91 @@ class Technology {
         assert(types.includes(type));
         return Technology.getTechnologiesByType(playerSlot)[type];
     }
+
+    static countPlayerTechsByType(playerSlot) {
+        const playerTechnologies = {
+            Blue: 0,
+            Red: 0,
+            Yellow: 0,
+            Green: 0,
+        };
+    
+        Technology.getOwnedPlayerTechnologies(playerSlot)
+            .filter((tech) =>
+                ["Blue", "Red", "Yellow", "Green"].includes(tech.type)
+            )
+            .forEach((tech) => {
+                playerTechnologies[tech.type]++;
+            });
+    
+        return playerTechnologies;
+    };
+
+    static onTechResearched(technologyName, playerSlot, skipBroadcast) {
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+        const msgColor = playerDesk.color;
+
+        debugger;
+    
+        const technology = Technology.getTechnologies(playerSlot).find(
+            (tech) => tech.name === technologyName
+        );
+
+        TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
+    
+        if (skipBroadcast) {
+            return;
+        }
+    
+        if (technology.localeName == "strategy_card.technology.button.nekro") {
+            let messageKey = "strategy_card.technology.message.nekro";
+            let messageParameters = {
+                playerName,
+            };
+            Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
+            return;
+        }
+    
+        const ownedTechnologies = Technology.countPlayerTechsByType(playerSlot);
+        const skippedTechs = {};
+    
+        for (let requirement in technology.requirements) {
+            const required = technology.requirements[requirement];
+            const owned = ownedTechnologies[requirement];
+    
+            if (required > owned) {
+                skippedTechs[requirement] = required - owned;
+            }
+        }
+
+        let messageKey = "strategy_card.technology.message.researched";
+        const messageParameters = {
+            playerName,
+            technologyName: technologyName,
+            skips: "",
+        };
+    
+        if (Object.keys(skippedTechs).length) {
+            messageKey = "strategy_card.technology.message.researched_and_skips";
+            for (let requirement in skippedTechs) {
+                if (messageParameters.skips) {
+                    messageParameters.skips += ", ";
+                }
+    
+                const techType = locale(`technology.type.${requirement}`);
+    
+                messageParameters.skips += `${skippedTechs[requirement]} ${techType}`;
+            }
+            console.log(
+                `skippedTechs: ${JSON.stringify(skippedTechs)} - skips: ${
+                    messageParameters.skips
+                }`
+            );
+        }
+    
+        Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
+    };
 }
 
 module.exports = { Technology };
