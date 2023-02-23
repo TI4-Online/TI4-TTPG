@@ -42,6 +42,30 @@ class SetupStartingTech extends AbstractSetup {
     }
 
     clean() {
+        // Find starting tech choice card
+        if (this._faction.raw.startingTechChoice) {
+            const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
+                if (!nsid.startsWith("card.starting_technology")) {
+                    return false;
+                }
+
+
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                if (!parsed.name.endsWith(this._faction.raw.faction)) {
+                    return false;
+                }
+                const pos = cardOrDeckObj.getPosition();
+                const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+                return closestDesk === this._playerDesk;
+            });
+
+            if (cards.length > 0) {
+                cards.forEach(card => card.destroy());
+            } else {
+                console.error("Faction starting technology choice was not found");
+            }
+        }
+
         // Find tech deck.
         let techDeck = false;
         for (const obj of world.getAllObjects()) {
