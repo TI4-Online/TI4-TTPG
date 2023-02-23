@@ -5,11 +5,9 @@ const {
     FONT_SIZE_BODY,
     SCALE,
 } = require("./abstract-strategy-card");
-const { Broadcast } = require("../../lib/broadcast");
 const { ColorUtil } = require("../../lib/color/color-util");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { Technology } = require("../../lib/technology/technology");
-const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const { Color, refObject, refPackageId, world } = require("../../wrapper/api");
@@ -63,7 +61,7 @@ function drawTechButton(
 
     const clickHandler = (button, player) => {
         const techName = button.getText();
-        onTechResearched(techName, playerSlot);
+        Technology.onTechResearched(techName, playerSlot);
     };
     const textColor = techIcons[tech.type].color;
     ColorUtil.validate(textColor);
@@ -123,91 +121,13 @@ function drawTechButton(
     }
 }
 
-const countPlayerTechsByType = (playerSlot) => {
-    const playerTechnologies = {
-        Blue: 0,
-        Red: 0,
-        Yellow: 0,
-        Green: 0,
-    };
-
-    Technology.getOwnedPlayerTechnologies(playerSlot)
-        .filter((tech) =>
-            ["Blue", "Red", "Yellow", "Green"].includes(tech.type)
-        )
-        .forEach((tech) => {
-            playerTechnologies[tech.type]++;
-        });
-
-    return playerTechnologies;
-};
-
-const onTechResearched = (technologyName, playerSlot) => {
-    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-    const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-    const msgColor = playerDesk.color;
-
-    const technology = Technology.getTechnologies(playerSlot).find(
-        (tech) => tech.name === technologyName
-    );
-
-    if (technology.localeName == "strategy_card.technology.button.nekro") {
-        let messageKey = "strategy_card.technology.message.nekro";
-        let messageParameters = {
-            playerName,
-        };
-        Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
-        return;
-    }
-
-    const ownedTechnologies = countPlayerTechsByType(playerSlot);
-    const skippedTechs = {};
-
-    for (let requirement in technology.requirements) {
-        const required = technology.requirements[requirement];
-        const owned = ownedTechnologies[requirement];
-
-        if (required > owned) {
-            skippedTechs[requirement] = required - owned;
-        }
-    }
-
-    let messageKey = "strategy_card.technology.message.researched";
-    const messageParameters = {
-        playerName,
-        technologyName: technologyName,
-        skips: "",
-    };
-
-    if (Object.keys(skippedTechs).length) {
-        messageKey = "strategy_card.technology.message.researched_and_skips";
-        for (let requirement in skippedTechs) {
-            if (messageParameters.skips) {
-                messageParameters.skips += ", ";
-            }
-
-            const techType = locale(`technology.type.${requirement}`);
-
-            messageParameters.skips += `${skippedTechs[requirement]} ${techType}`;
-        }
-        console.log(
-            `skippedTechs: ${JSON.stringify(skippedTechs)} - skips: ${
-                messageParameters.skips
-            }`
-        );
-    }
-
-    TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
-    Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
-};
-
 function widgetFactory(playerDesk, strategyCardObj) {
     const playerSlot = playerDesk.playerSlot;
     const technologies = Technology.getTechnologiesByType(
         playerDesk.playerSlot
     );
     const ownedTechnologies = Technology.getOwnedPlayerTechnologies(playerSlot);
-    const playerTechnologies = countPlayerTechsByType(playerSlot);
+    const playerTechnologies = Technology.countPlayerTechsByType(playerSlot);
     let xOffset = 0;
     let yOffsetMax = 0;
 
