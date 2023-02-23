@@ -10,7 +10,7 @@ function getStartinTechNameAndActions(faction) {
         return [];
     }
 
-    return faction.raw.startingTechChoices.map(tech => {
+    return faction.raw.startingTechChoices.map((tech) => {
         return {
             actionName: "*" + locale("ui.menu.deal", {
                 card: locale(`technology.name.${tech}`)
@@ -33,7 +33,7 @@ class RightClickDealStatringTechnology extends AbstractRightClickCard {
 
     getRightClickActionNamesAndTooltips(card) {
         assert(card instanceof Card);
-        
+
         const nsid = ObjectNamespace.getNsid(card);
         const parsed = ObjectNamespace.parseNsid(nsid);
         const faction = world.TI4.getFactionByNsidName(parsed.name);

@@ -180,7 +180,7 @@ class Technology {
             Yellow: 0,
             Green: 0,
         };
-    
+
         Technology.getOwnedPlayerTechnologies(playerSlot)
             .filter((tech) =>
                 ["Blue", "Red", "Yellow", "Green"].includes(tech.type)
@@ -188,27 +188,25 @@ class Technology {
             .forEach((tech) => {
                 playerTechnologies[tech.type]++;
             });
-    
+
         return playerTechnologies;
-    };
+    }
 
     static onTechResearched(technologyName, playerSlot, skipBroadcast) {
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
         const msgColor = playerDesk.color;
 
-        debugger;
-    
         const technology = Technology.getTechnologies(playerSlot).find(
             (tech) => tech.name === technologyName
         );
 
         TechCardUtil.moveCardsToCardHolder([technology.cardNsid], playerSlot);
-    
+
         if (skipBroadcast) {
             return;
         }
-    
+
         if (technology.localeName == "strategy_card.technology.button.nekro") {
             let messageKey = "strategy_card.technology.message.nekro";
             let messageParameters = {
@@ -217,14 +215,14 @@ class Technology {
             Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
             return;
         }
-    
+
         const ownedTechnologies = Technology.countPlayerTechsByType(playerSlot);
         const skippedTechs = {};
-    
+
         for (let requirement in technology.requirements) {
             const required = technology.requirements[requirement];
             const owned = ownedTechnologies[requirement];
-    
+
             if (required > owned) {
                 skippedTechs[requirement] = required - owned;
             }
@@ -236,16 +234,17 @@ class Technology {
             technologyName: technologyName,
             skips: "",
         };
-    
+
         if (Object.keys(skippedTechs).length) {
-            messageKey = "strategy_card.technology.message.researched_and_skips";
+            messageKey =
+                "strategy_card.technology.message.researched_and_skips";
             for (let requirement in skippedTechs) {
                 if (messageParameters.skips) {
                     messageParameters.skips += ", ";
                 }
-    
+
                 const techType = locale(`technology.type.${requirement}`);
-    
+
                 messageParameters.skips += `${skippedTechs[requirement]} ${techType}`;
             }
             console.log(
@@ -254,9 +253,9 @@ class Technology {
                 }`
             );
         }
-    
+
         Broadcast.chatAll(locale(messageKey, messageParameters), msgColor);
-    };
+    }
 }
 
 module.exports = { Technology };

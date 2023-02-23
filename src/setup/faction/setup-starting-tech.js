@@ -49,7 +49,6 @@ class SetupStartingTech extends AbstractSetup {
                     return false;
                 }
 
-
                 const parsed = ObjectNamespace.parseNsid(nsid);
                 if (!parsed.name.endsWith(this._faction.raw.faction)) {
                     return false;
@@ -60,9 +59,11 @@ class SetupStartingTech extends AbstractSetup {
             });
 
             if (cards.length > 0) {
-                cards.forEach(card => card.destroy());
+                cards.forEach((card) => card.destroy());
             } else {
-                console.error("Faction starting technology choice was not found");
+                console.error(
+                    "Faction starting technology choice was not found"
+                );
             }
         }
 
