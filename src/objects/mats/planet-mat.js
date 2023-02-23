@@ -56,8 +56,10 @@ class PlanetMat {
             const actionName = locale("ui.menu.fetch_planet", {
                 planetName,
             });
+            const customActionName = "*" + actionName;
             this._actionNameToPlanet[actionName] = planet;
-            this._obj.addCustomAction(actionName);
+            this._actionNameToPlanet[customActionName] = planet;
+            this._obj.addCustomAction(customActionName);
 
             // Also add to popup.
             this._popup.addAction(actionName, (obj, player, actionName) => {
