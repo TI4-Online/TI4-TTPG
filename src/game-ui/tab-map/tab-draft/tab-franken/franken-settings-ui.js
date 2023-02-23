@@ -63,6 +63,7 @@ class FrankenDraftSettingsUI {
 
     constructor(franken, callbacks) {
         assert(typeof callbacks.startDraft === "function");
+        assert(typeof callbacks.createAndFillDraftBoxes === "function");
         assert(typeof callbacks.onCancel === "function");
         assert(typeof callbacks.finishDraft === "function");
 
@@ -169,9 +170,26 @@ class FrankenDraftSettingsUI {
     _createDraftInProgressUI() {
         this._widget.removeAllChildren();
 
-        const draftInProgress = new Text()
+        const prune = new Text()
+            .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.draft.in_progress"));
+            .setText(locale("franken.prune"));
+        this._widget.addChild(prune);
+
+        const startDraftButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("franken.fill_draft_boxes"));
+        startDraftButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._callbacks.createAndFillDraftBoxes();
+            })
+        );
+        this._widget.addChild(startDraftButton);
+
+        const draftInProgress = new Text()
+            .setAutoWrap(true)
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("franken.draft"));
         this._widget.addChild(draftInProgress);
 
         const finishDraftButton = new Button()

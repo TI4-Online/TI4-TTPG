@@ -1001,8 +1001,12 @@
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
-    "franken.config": "Choose how many of each type per draft box.",
+    "franken.config": "Choose how many of each type per draft box:",
+    "franken.prune": "Remove and delete any draftable items you wish to ban, then:",
+    "franken.fill_draft_boxes": "Fill draft containers from draftable items",
+    "franken.draft": "Draft items, passing containers to the next player.  When finished:",
     "franken.finish_draft": "Create factions from draft components",
+
     "action.update": "Update",
 
     "desc.card.action.plague": "Place this card face-up anywhere on the table, then use the system tile menu to select plague",
