@@ -40,9 +40,6 @@ class RightClickDealStatringTechnology extends AbstractRightClickCard {
         const parsed = ObjectNamespace.parseNsid(nsid);
         const faction = world.TI4.getFactionByNsidName(parsed.name);
 
-        console.log(`factionName: ${parsed.name}`);
-        console.log(`faction: ${faction}`);
-
         return getStartinTechNameAndActions(faction);
     }
 
