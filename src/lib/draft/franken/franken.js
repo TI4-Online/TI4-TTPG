@@ -161,9 +161,7 @@ class Franken {
         const err = FactionAbilitySchema.validate(entry);
         if (err) {
             throw new Error(
-                `Franken.injectFactionAbility error: ${
-                    err.message
-                } for ${JSON.stringify(entry)}`
+                `Franken.injectFactionAbility error ${JSON.stringify(err)}`
             );
         }
         FACTION_ABILITIES.push(entry);
@@ -724,6 +722,12 @@ class Franken {
             playerDesk.setReady(true);
         }
 
+        this._sources = this._createSources();
+
+        return true;
+    }
+
+    createAndFillDraftBoxes() {
         const values = {};
         for (const [key, entry] of Object.entries(this._draftSettings)) {
             values[key] = entry._value;
@@ -732,7 +736,7 @@ class Franken {
 
         this._createDraftZones();
         const draftBags = this._createDraftBags();
-        const sources = this._createSources();
+        const sources = this._sources;
 
         for (const [key, settings] of Object.entries(this._draftSettings)) {
             const source = sources[key];
@@ -845,6 +849,9 @@ class Franken {
         this._deleteOnCancel.push(undraftable);
 
         const result = { undraftable };
+
+        // Also keep a handle for pulling items post-draft.
+        this._undraftableContainer = undraftable;
 
         pos = nextPos();
         result.promissoryNotes = Franken.createPromissoryNotesDeck(
@@ -960,12 +967,8 @@ class Franken {
             }
         }
 
-        // Look for triggers, build list of undraftable.
-        const deskIndexToUndraftables = {};
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            deskIndexToUndraftables[playerDesk.index] = [];
-        }
-
+        // Look for triggers, build map from undraftable item nsid to { desk, count }.
+        const undraftableNsidToDestination = {};
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
@@ -980,10 +983,11 @@ class Franken {
                 assert(triggerObj instanceof GameObject);
                 const pos = triggerObj.getPosition();
                 const desk = world.TI4.getClosestPlayerDesk(pos);
-                const undraftables = deskIndexToUndraftables[desk.index];
-                if (!undraftables.includes(undraftable)) {
-                    undraftables.push(undraftable);
-                }
+                const undraftableNSID = undraftable.nsid;
+                undraftableNsidToDestination[undraftableNSID] = {
+                    desk,
+                    count: undraftable.count,
+                };
             };
 
             const undraftable = nsidToEntry[nsid];
@@ -1002,7 +1006,35 @@ class Franken {
             }
         }
 
-        // Add undraftables.
+        // Add undraftables from container.
+        for (const obj of this._undraftableContainer.getItems()) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            const dst = undraftableNsidToDestination[nsid];
+            if (!dst || dst.count <= 0) {
+                continue;
+            }
+            dst.count -= 1;
+
+            // Should this have a better position?
+            const pos = dst.desk.center.add([0, 0, 10]);
+            const success = this._undraftableContainer.take(obj, pos);
+            assert(success);
+            obj.snapToGround();
+        }
+
+        // Spawn any remaining undraftables.
+        for (const [nsid, dst] of Object.entries(
+            undraftableNsidToDestination
+        )) {
+            if (dst.count <= 0) {
+                continue;
+            }
+            const pos = dst.desk.center.add([0, 0, 10]);
+            const rot = dst.desk.rot;
+            const obj = Spawn.spawn(nsid, pos, rot);
+            assert(obj);
+            obj.snapToGround();
+        }
     }
 
     _gatherFactionDefinitions() {
@@ -1040,12 +1072,29 @@ class Franken {
             return faction;
         };
 
+        const genericNoteColors = new Set([
+            "white",
+            "blue",
+            "purple",
+            "yellow",
+            "red",
+            "green",
+            "pink",
+            "orange",
+            "brown",
+        ]);
         for (const obj of world.getAllObjects()) {
             if (obj.getContainer()) {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
-            const parsed = nsid ? ObjectNamespace.parseNsid(nsid) : undefined;
+            if (!nsid) {
+                continue;
+            }
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            if (!parsed) {
+                continue;
+            }
             const parsedName = parsed.name.split(".")[0]; // remove .omega, etc
             const json =
                 nsid === "tile:homebrew/name_desc"
@@ -1088,18 +1137,20 @@ class Franken {
             }
 
             if (nsid.startsWith("card.promissory")) {
-                const faction = getFaction(obj);
                 const noteFactionNsidName = parsed.type.split(".")[2];
-                const noteName = parsedName;
-                const noteFaction =
-                    world.TI4.getFactionByNsidName(noteFactionNsidName);
-                if (!noteFaction) {
-                    throw new Error(`unknown note faction from "${nsid}"`);
+                if (!genericNoteColors.has(noteFactionNsidName)) {
+                    const faction = getFaction(obj);
+                    const noteName = parsedName;
+                    const noteFaction =
+                        world.TI4.getFactionByNsidName(noteFactionNsidName);
+                    if (!noteFaction) {
+                        throw new Error(`unknown note faction from "${nsid}"`);
+                    }
+                    faction.faction = noteFaction.nsidName; // use promissory note for faction id
+                    faction.icon = noteFaction.icon;
+                    faction.packageId = noteFaction.packageId;
+                    faction.promissoryNotes.push(noteName);
                 }
-                faction.faction = noteFaction.faction; // use promissory note for faction id
-                faction.icon = noteFaction.icon;
-                faction.packageId = noteFaction.packageId;
-                faction.promissoryNotes.push(noteName);
             }
 
             if (json && json.startingTech) {
@@ -1149,10 +1200,16 @@ class Franken {
         )) {
             const onError = (err) => {
                 const playerName = deskIndexStrToPlayerName[deskIndexStr];
-                const msg = `Faction error for ${playerName}: ${err.message}`;
+                const msg = `Faction error for ${playerName}: ${
+                    err.message
+                } (${JSON.stringify(err)})`;
                 errors.push(msg);
             };
             FactionSchema.validate(faction, onError);
+        }
+
+        if (errors.length > 0) {
+            Broadcast.chatAll(errors.join("\n"), Broadcast.ERROR);
         }
     }
 
