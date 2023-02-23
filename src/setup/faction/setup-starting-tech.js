@@ -95,7 +95,9 @@ class SetupStartingTech extends AbstractSetup {
         if (!techDeck) {
             return;
         }
-        const startingTechNsidNames = this._faction.raw.startingTech.concat(this._faction.raw.startingTechChoices || []);
+        const startingTechNsidNames = this._faction.raw.startingTech.concat(
+            this._faction.raw.startingTechChoices || []
+        );
         const cards = CardUtil.gatherCards((nsid, cardOrDeckObj) => {
             if (!nsid.startsWith("card.technology")) {
                 return false;
