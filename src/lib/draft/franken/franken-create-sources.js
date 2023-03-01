@@ -637,4 +637,4 @@ class FrankenCreateSources {
     }
 }
 
-module.exports = { FrankenCreateSources };
+module.exports = { FrankenCreateSources, _abilityNameToNsidName };
