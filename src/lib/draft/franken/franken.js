@@ -198,6 +198,11 @@ class Franken {
         return result;
     }
 
+    gainUndraftables() {
+        FrankenUndraftable.spawnUndraftableItems(this._undraftableContainer);
+        return true;
+    }
+
     /**
      * Set up factions.
      */
@@ -206,8 +211,9 @@ class Franken {
 
         this._gatherFactionDefinitions();
         this._fillFactionSheets();
-        FrankenUndraftable.spawnUndraftableItems(this._undraftableContainer);
         this._destroyExtras();
+
+        return true;
     }
 
     _gatherFactionDefinitions() {

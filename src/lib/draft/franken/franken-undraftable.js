@@ -139,10 +139,13 @@ class FrankenUndraftable {
                 obj instanceof Card
                     ? new Rotator(0, dst.desk.rot.yaw, 180)
                     : dst.desk.rot;
-            const success = undraftableContainer.take(obj, pos);
-            assert(success);
-            obj.setRotation(rot);
-            obj.snapToGround();
+
+            // DO NOT TAKE!  Leave undraftable item in container,
+            // create a copy.
+            const json = obj.toJSONString();
+            const clone = world.createObjectFromJSON(json, pos);
+            clone.setRotation(rot);
+            clone.snapToGround();
         }
 
         // Spawn any remaining undraftables.

@@ -1002,10 +1002,12 @@
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
     "franken.config": "Choose how many of each type per draft box:",
-    "franken.prune": "Remove and delete any draftable items you wish to ban, then:",
-    "franken.fill_draft_boxes": "Fill draft containers from draftable items",
-    "franken.draft": "Draft items, passing containers to the next player.  When finished:",
-    "franken.finish_draft": "Create factions from draft components",
+    "franken.prune": "1. Delete any draftable items you wish to ban",
+    "franken.fill_draft_boxes": "2. Fill draft containers from draftable items",
+    "franken.draft": "3. Draft items, passing containers to the next player",
+    "franken.gain_undraftables": "4. Allocate undraftable items from current choices",
+    "franken.finalize": "5. Choose final components to use as faction, delete others",
+    "franken.finish_draft": "6. Create factions from draft components on table",
 
     "action.update": "Update",
 

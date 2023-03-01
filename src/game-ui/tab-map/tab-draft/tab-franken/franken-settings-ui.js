@@ -12,6 +12,7 @@ const {
     LayoutBox,
     Slider,
     Text,
+    TextJustification,
     VerticalBox,
 } = require("../../../../wrapper/api");
 
@@ -65,6 +66,7 @@ class FrankenDraftSettingsUI {
         assert(typeof callbacks.startDraft === "function");
         assert(typeof callbacks.createAndFillDraftBoxes === "function");
         assert(typeof callbacks.onCancel === "function");
+        assert(typeof callbacks.gainUndraftables === "function");
         assert(typeof callbacks.finishDraft === "function");
 
         this._draftSettings = franken.getDraftSettings();
@@ -173,6 +175,7 @@ class FrankenDraftSettingsUI {
         const prune = new Text()
             .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
             .setText(locale("franken.prune"));
         this._widget.addChild(prune);
 
@@ -189,8 +192,28 @@ class FrankenDraftSettingsUI {
         const draftInProgress = new Text()
             .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
+
             .setText(locale("franken.draft"));
         this._widget.addChild(draftInProgress);
+
+        const gainUndraftablesButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("franken.gain_undraftables"));
+        gainUndraftablesButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._callbacks.gainUndraftables();
+            })
+        );
+        this._widget.addChild(gainUndraftablesButton);
+
+        const finalize = new Text()
+            .setAutoWrap(true)
+            .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
+
+            .setText(locale("franken.finalize"));
+        this._widget.addChild(finalize);
 
         const finishDraftButton = new Button()
             .setFontSize(CONFIG.fontSize)
