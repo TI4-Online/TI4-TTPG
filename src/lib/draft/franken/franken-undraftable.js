@@ -2,7 +2,14 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../object-namespace");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { UNDRAFTABLE } = require("./franken.data");
-const { Container, GameObject, world } = require("../../../wrapper/api");
+const {
+    Card,
+    Container,
+    GameObject,
+    Rotator,
+    Vector,
+    world,
+} = require("../../../wrapper/api");
 
 function _abilityNameToNsidName(name) {
     return name
@@ -84,9 +91,6 @@ class FrankenUndraftable {
                     desk,
                     count: undraftable.count,
                 };
-                console.log(
-                    `XXX ADD "${undraftableNSID}" x${undraftable.count}`
-                );
             };
 
             const undraftables = nsidToEntries[nsid];
@@ -109,6 +113,17 @@ class FrankenUndraftable {
             }
         }
 
+        const deskIndexToNextPos = [];
+        const nextPos = (desk) => {
+            let thisPos = deskIndexToNextPos[desk.index];
+            if (!thisPos) {
+                thisPos = new Vector(0, -20, 10);
+            }
+            const nextPos = thisPos.add([0, 3, 0]);
+            deskIndexToNextPos[desk.index] = nextPos;
+            return desk.localPositionToWorld(thisPos);
+        };
+
         // Add undraftables from container.
         for (const obj of undraftableContainer.getItems()) {
             const nsid = ObjectNamespace.getNsid(obj);
@@ -119,8 +134,11 @@ class FrankenUndraftable {
             dst.count -= 1;
 
             // Should this have a better position?
-            const pos = dst.desk.center.add([0, 0, 10]);
-            const rot = dst.desk.rot;
+            const pos = nextPos(dst.desk);
+            const rot =
+                obj instanceof Card
+                    ? new Rotator(0, dst.desk.rot.yaw, 180)
+                    : dst.desk.rot;
             const success = undraftableContainer.take(obj, pos);
             assert(success);
             obj.setRotation(rot);
@@ -132,7 +150,7 @@ class FrankenUndraftable {
             undraftableNsidToDestination
         )) {
             for (let i = 0; i < dst.count; i++) {
-                const pos = dst.desk.center.add([0, 0, 10]);
+                const pos = nextPos(dst.desk);
                 const rot = dst.desk.rot;
                 const obj = Spawn.spawn(nsid, pos, rot);
                 assert(obj);
