@@ -2,20 +2,23 @@ const assert = require("../../../wrapper/assert-wrapper");
 const _ = require("lodash");
 const { Broadcast } = require("../../broadcast");
 const { FactionAbilitySchema } = require("./franken.schema");
-const { FactionSchema } = require("../../faction/faction.schema");
-const { ObjectNamespace } = require("../../object-namespace");
 const { FACTION_ABILITIES } = require("./franken.data");
+const { FrankenCreateSources } = require("./franken-create-sources");
+const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
+const { FrankenUndraftable } = require("./franken-undraftable");
+const { FrankenGenerateFaction } = require("./franken-generate-faction");
+const { Spawn } = require("../../../setup/spawn/spawn");
 const {
     Card,
     Container,
     GameObject,
+    ObjectType,
+    Vector,
     Zone,
     ZonePermission,
+    globalEvents,
     world,
 } = require("../../../wrapper/api");
-const { FrankenCreateSources } = require("./franken-create-sources");
-const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
-const { FrankenUndraftable } = require("./franken-undraftable");
 
 class Franken {
     static destroyLingeringDraftZones() {
@@ -43,6 +46,7 @@ class Franken {
         this._draftSettings = _.cloneDeep(FRANKEN_DRAFT_CONFIG);
         this._deleteOnCancel = [];
         this._draftZones = [];
+        this._factionSheets = [];
 
         // Draft settings UI updates "_value" field.
         for (const entry of Object.values(this._draftSettings)) {
@@ -80,6 +84,7 @@ class Franken {
             playerDesk.setReady(true);
         }
 
+        this._factionSheets = this._createFactionSheets();
         this._sources = this._createSources();
 
         return true;
@@ -147,7 +152,30 @@ class Franken {
             }
         }
 
+        // Delete source boxes.
+        for (const [key, obj] of Object.entries(sources)) {
+            if (key === "undraftable") {
+                continue; // keep this for later
+            }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
+        }
+
         return true;
+    }
+
+    _createFactionSheets() {
+        const localPos = new Vector(18, 0, 10);
+        const nsid = "sheet.faction:homebrew.franken/?";
+        return world.TI4.getAllPlayerDesks().map((playerDesk) => {
+            const pos = playerDesk.localPositionToWorld(localPos);
+            const rot = playerDesk.rot;
+            const sheet = Spawn.spawn(nsid, pos, rot);
+            assert(sheet);
+            sheet.snapToGround();
+            sheet.setObjectType(ObjectType.Ground);
+            return sheet;
+        });
     }
 
     _createDraftBags() {
@@ -209,191 +237,46 @@ class Franken {
     finishDraft() {
         console.log("MiltyDraft.finishDraft");
 
-        this._gatherFactionDefinitions();
-        this._fillFactionSheets();
+        world.TI4.config.setFranken(true);
+
+        const factions = this._gatherFactionDefinitions();
+        this._fillFactionSheets(factions);
         this._destroyExtras();
 
+        globalEvents.TI4.onFactionChanged.trigger();
+
+        world.TI4.GameUI.goHome();
         return true;
     }
 
     _gatherFactionDefinitions() {
-        const deskIndexStrToPlayerName = {};
-        const deskIndexStrToFaction = {};
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            deskIndexStrToPlayerName[playerDesk.index] =
-                world.TI4.getNameByPlayerSlot(playerDesk.playerSlot);
-            deskIndexStrToFaction[playerDesk.index] = {
-                abilities: [],
-                commodities: 0,
-                home: -1,
-                icon: undefined,
-                leaders: {
-                    agents: [],
-                    commanders: [],
-                    heroes: [],
-                },
-                promissoryNotes: [],
-                source: "franken",
-                startingTech: [],
-                startingUnits: {},
-                techs: [],
-                units: [],
-                unpackExtra: [],
-            };
-        }
+        const factions = FrankenGenerateFaction.gatherFactionDefinitions();
+        assert(Array.isArray(factions));
+        assert(factions.length === world.TI4.config.playerCount);
 
-        const getFaction = (obj) => {
-            assert(obj instanceof GameObject);
-            const pos = obj.getPosition();
-            const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-            const faction = deskIndexStrToFaction[closestDesk.index];
-            assert(faction);
-            return faction;
-        };
-
-        const genericNoteColors = new Set([
-            "white",
-            "blue",
-            "purple",
-            "yellow",
-            "red",
-            "green",
-            "pink",
-            "orange",
-            "brown",
-        ]);
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (!nsid) {
-                continue;
-            }
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            if (!parsed) {
-                continue;
-            }
-            const parsedName = parsed.name.split(".")[0]; // remove .omega, etc
-            const json =
-                nsid === "tile:homebrew/name_desc"
-                    ? JSON.parse(obj.getSavedData())
-                    : undefined;
-
-            if (json && json.abilities) {
-                const faction = getFaction(obj);
-                faction.abilities.push(...json.abilities);
-            }
-
-            if (json && json.commodities) {
-                const faction = getFaction(obj);
-                faction.commodities = json.commodities;
-            }
-
-            const system = world.TI4.getSystemBySystemTileObject(obj);
-            if (system && system.home) {
-                const faction = getFaction(obj);
-                faction.home = system.tile;
-            }
-
-            if (nsid.startsWith("card.leader")) {
-                const faction = getFaction(obj);
-                const leaderType = parsed.type.split(".")[2];
-                const leaderName = parsedName;
-                if (leaderType === "agent") {
-                    faction.leaders.agents.push(leaderName);
-                } else if (leaderType === "commander") {
-                    faction.leaders.commanders.push(leaderName);
-                } else if (leaderType === "hero") {
-                    faction.leaders.heroes.push(leaderName);
-                } else if (leaderType === "mech") {
-                    faction.units.push(leaderName);
-                } else {
-                    throw new Error(
-                        `unknown leader type "${leaderType}" ("${leaderName}")`
-                    );
-                }
-            }
-
-            if (nsid.startsWith("card.promissory")) {
-                const noteFactionNsidName = parsed.type.split(".")[2];
-                if (!genericNoteColors.has(noteFactionNsidName)) {
-                    const faction = getFaction(obj);
-                    const noteName = parsedName;
-                    const noteFaction =
-                        world.TI4.getFactionByNsidName(noteFactionNsidName);
-                    if (!noteFaction) {
-                        throw new Error(`unknown note faction from "${nsid}"`);
-                    }
-                    faction.faction = noteFaction.nsidName; // use promissory note for faction id
-                    faction.icon = noteFaction.icon;
-                    faction.packageId = noteFaction.packageId;
-                    faction.promissoryNotes.push(noteName);
-                }
-            }
-
-            if (json && json.startingTech) {
-                const faction = getFaction(obj);
-                faction.startingTech = json.startingTech;
-            }
-
-            if (json && json.startingUnits) {
-                const faction = getFaction(obj);
-                faction.startingUnits = json.startingUnits;
-            }
-
-            if (nsid.startsWith("card.technology")) {
-                const faction = getFaction(obj);
-                const techName = parsedName;
-                faction.techs.push(techName);
-            }
-
-            // Flagship uses a special franken card.
-            if (
-                nsid.startsWith("card.technology.unit_upgrade") &&
-                parsed.source.startsWith("franken")
-            ) {
-                const faction = getFaction(obj);
-                const techName = parsedName;
-                faction.units.push(techName);
-            }
-
-            // Find other level-1 units if level-2 card.  Assume any
-            // unit upgrade ending with "_2" has a corresponding level
-            // one without that suffix (empty, not "_1").
-            if (
-                nsid.startsWith("card.technology.unit_upgrade") &&
-                parsedName.endsWith("_2")
-            ) {
-                const faction = getFaction(obj);
-                const unit_2 = parsedName;
-                const unit_1 = unit_2.slice(0, -2);
-                faction.units.push(unit_1);
-                faction.units.push(unit_2);
-            }
-        }
-
+        const playerDesks = world.TI4.getAllPlayerDesks();
         const errors = [];
-        for (const [deskIndexStr, faction] of Object.entries(
-            deskIndexStrToFaction
-        )) {
-            const onError = (err) => {
-                const playerName = deskIndexStrToPlayerName[deskIndexStr];
-                const msg = `Faction error for ${playerName}: ${
-                    err.message
-                } (${JSON.stringify(err)})`;
-                errors.push(msg);
-            };
-            FactionSchema.validate(faction, onError);
-        }
+        factions.forEach((faction, index) => {
+            const playerSlot = playerDesks[index].playerSlot;
+            FrankenGenerateFaction.isValid(faction, playerSlot, errors);
+        });
 
         if (errors.length > 0) {
             Broadcast.chatAll(errors.join("\n"), Broadcast.ERROR);
         }
+        return factions;
     }
 
-    _fillFactionSheets() {
-        // XXX TODO
+    _fillFactionSheets(factions) {
+        assert(Array.isArray(factions));
+        assert(factions.length === world.TI4.config.playerCount);
+
+        factions.forEach((faction, index) => {
+            const obj = this._factionSheets[index];
+            const frankenFactionSheet = obj.__frankenFactionSheet;
+            assert(frankenFactionSheet);
+            frankenFactionSheet.setFactionAttrs(faction.raw);
+        });
     }
 
     _destroyExtras() {
@@ -420,6 +303,9 @@ class Franken {
 
     cancel() {
         console.log("Franken.cancel");
+
+        this._deleteOnCancel.push(...this._factionSheets);
+        this._factionSheets = [];
 
         this._destroyExtras();
 

@@ -40,6 +40,7 @@ class FrankenUndraftable {
         // Build map from trigger to undraftable entry.
         const abilityToEntries = {};
         const nsidToEntries = {};
+        const undraftableNsidToObjects = {};
         for (const undraftable of UNDRAFTABLE) {
             if (undraftable.triggerAbility) {
                 const key = _abilityNameToNsidName(undraftable.triggerAbility);
@@ -68,6 +69,9 @@ class FrankenUndraftable {
                     entries.push(undraftable);
                 }
             }
+            if (undraftable.nsid) {
+                undraftableNsidToObjects[undraftable.nsid] = [];
+            }
         }
 
         // Look for triggers, build map from undraftable item nsid to { desk, count }.
@@ -77,6 +81,9 @@ class FrankenUndraftable {
                 continue;
             }
             const nsid = ObjectNamespace.getNsid(obj);
+            if (!nsid) {
+                continue;
+            }
             const json =
                 nsid === "tile:homebrew/name_desc"
                     ? JSON.parse(obj.getSavedData())
@@ -109,6 +116,26 @@ class FrankenUndraftable {
                             addUndraftable(obj, undraftable);
                         }
                     }
+                }
+            }
+
+            // Keep track of undraftable objects already on the table.
+            if (undraftableNsidToObjects[nsid]) {
+                undraftableNsidToObjects[nsid].push(obj);
+            }
+        }
+
+        // Substract any already-on-table undraftables from plan
+        // (in case called multiple times).
+        for (const [nsid, dst] of Object.entries(
+            undraftableNsidToDestination
+        )) {
+            const objs = undraftableNsidToObjects[nsid];
+            for (const obj of objs) {
+                const pos = obj.getPosition();
+                const desk = world.TI4.getClosestPlayerDesk(pos);
+                if (dst.desk.index === desk.index) {
+                    dst.count = Math.max(0, dst.count - 1);
                 }
             }
         }
