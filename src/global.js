@@ -144,6 +144,7 @@ const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
 const { GameData } = require("./lib/game-data/game-data");
 const { GameSetupConfig } = require("./setup/game-setup/game-setup-config");
+const { GameUI } = require("./game-ui/game-ui");
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Hex } = require("./lib/hex");
 const { HideCursor } = require("./lib/streamer/hide-cursor");
@@ -162,6 +163,7 @@ world.TI4 = {
     Adjacency,
     CardUtil,
     CommandToken,
+    GameUI,
     Hex,
     ObjectNamespace,
     Technology,
@@ -245,7 +247,6 @@ world.TI4 = {
     },
 };
 
-require("./game-ui/game-ui");
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
 require("./global/chat-commands");
