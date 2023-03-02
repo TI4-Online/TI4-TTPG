@@ -66,6 +66,12 @@ class GameUI {
         return refPackageId === "DEE44C689452447E8ED6FDDBEB19BB23";
     }
 
+    static goHome() {
+        const navPanel = GameUI.getInstance()._navPanel;
+        const root = navPanel.getRootFolder();
+        navPanel.setCurrentNavEntry(root);
+    }
+
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
