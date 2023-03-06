@@ -5,7 +5,7 @@
     "ui.error.not_owner": "That is not yours, {playerName}",
     "ui.error.commander_locked": "Commander is locked",
     "ui.error.invalid_map_string": "Invalid map string “{mapString}”",
-    "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"${nsid}\"",
+    "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"{nsid}\"",
     "ui.error.numpad0_control": "Use control + numpad-0 to trash objects",
 
     "ui.help.numpad": "Numpad keys:",
