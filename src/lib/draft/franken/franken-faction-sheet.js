@@ -139,13 +139,14 @@ class FrankenFactionSheet {
 
     _addAbilitiesPanel() {
         const panel = new VerticalBox().setChildDistance(2 * UI_SCALE);
+        const box = new LayoutBox().setMinimumHeight(450).setChild(panel);
 
         const ui = new UIElement();
         ui.anchorX = 0;
-        ui.anchorY = 0;
-        ui.position = new Vector(4.68, 7.69, this._uiZ);
+        ui.anchorY = 1;
+        ui.position = new Vector(-1, 7.69, this._uiZ);
         ui.scale = 1 / UI_SCALE;
-        ui.widget = panel;
+        ui.widget = box;
         ui.zoomVisibility = UIZoomVisibility.Both;
         this._obj.addUI(ui);
 
@@ -168,7 +169,7 @@ class FrankenFactionSheet {
 
         const descIndent = new LayoutBox()
             .setPadding(1.7 * UI_SCALE, 0, 0, 0)
-            .setOverrideWidth(57 * UI_SCALE)
+            .setOverrideWidth(56 * UI_SCALE)
             .setChild(descText);
 
         const panel = new VerticalBox().addChild(nameText).addChild(descIndent);
