@@ -269,15 +269,13 @@ class GameUI {
             });
         draftFolder.addChild(bunkerDraft);
 
-        if (GameUI.isDev()) {
-            const franken = new NavEntry()
-                .setName(locale("nav.map.draft.franken"))
-                .setIconPath("global/ui/icons/franken.png")
-                .setWidgetFactory((navPanel, navEntry) => {
-                    return new FrankenDraftSettings().getUI();
-                });
-            draftFolder.addChild(franken);
-        }
+        const franken = new NavEntry()
+            .setName(locale("nav.map.draft.franken"))
+            .setIconPath("global/ui/icons/franken.png")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new FrankenDraftSettings().getUI();
+            });
+        draftFolder.addChild(franken);
 
         return draftFolder;
     }
