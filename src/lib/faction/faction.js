@@ -77,10 +77,21 @@ function _maybeInit() {
         }
         // Translate sheet to faction, make sure to share same Faction objects!
         for (const [slot, sheet] of Object.entries(slotToSheet)) {
-            const nsidName = ObjectNamespace.parseFactionSheet(sheet).faction;
-            const faction = Faction.getByNsidName(nsidName);
+            const nsid = ObjectNamespace.getNsid(sheet);
+            let faction = undefined;
+            if (nsid === "sheet.faction:homebrew.franken/?") {
+                const json = sheet.getSavedData();
+                if (json && json.length > 0) {
+                    const factionAttrs = JSON.parse(json);
+                    faction = new Faction(factionAttrs);
+                }
+            } else {
+                const nsidName =
+                    ObjectNamespace.parseFactionSheet(sheet).faction;
+                faction = Faction.getByNsidName(nsidName);
+            }
+
             if (!faction) {
-                const nsid = ObjectNamespace.getNsid(sheet);
                 Broadcast.chatAll(
                     locale("ui.error.invalid_faction_sheet", { nsid }),
                     Broadcast.ERROR

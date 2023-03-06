@@ -3,14 +3,19 @@ const { GameObject, world } = require("../../../wrapper/api");
 const { ObjectNamespace } = require("../../object-namespace");
 const { FactionSchema } = require("../../faction/faction.schema");
 const { Faction } = require("../../faction/faction");
+const { UnitAttrs } = require("../../unit/unit-attrs");
+
+const TEST_AGAINST_SCHEMA = false;
 
 class FrankenGenerateFaction {
-    static gatherFactionDefinitions() {
+    static gatherFactionDefinitions(destroyObjs) {
+        assert(Array.isArray(destroyObjs));
+
         const factions = [];
-        const destroyObjs = [];
 
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             factions[playerDesk.index] = {
+                faction: "",
                 abilities: [],
                 commodities: 0,
                 home: -1,
@@ -21,7 +26,7 @@ class FrankenGenerateFaction {
                     heroes: [],
                 },
                 promissoryNotes: [],
-                source: "franken",
+                source: "", // must use correct source to find tokens
                 startingTech: [],
                 startingUnits: {},
                 techs: [],
@@ -84,6 +89,11 @@ class FrankenGenerateFaction {
             if (system && system.home) {
                 const faction = getFaction(obj);
                 faction.home = system.tile;
+
+                // To support "oops all X" home system tiles get an owner.
+                const pos = obj.getPosition();
+                const closestDesk = world.TI4.getClosestPlayerDesk(pos);
+                obj.setOwningPlayerSlot(closestDesk.playerSlot);
             }
 
             if (nsid.startsWith("card.leader")) {
@@ -116,6 +126,7 @@ class FrankenGenerateFaction {
                         throw new Error(`unknown note faction from "${nsid}"`);
                     }
                     faction.faction = noteFaction.nsidName; // use promissory note for faction id
+                    faction.source = noteFaction.nsidSource;
                     faction.icon = noteFaction.icon;
                     faction.packageId = noteFaction.packageId;
                     faction.promissoryNotes.push(noteName);
@@ -165,32 +176,85 @@ class FrankenGenerateFaction {
             }
         }
 
-        for (const obj of destroyObjs) {
-            obj.setTags(["DELETED_ITEMS_IGNORE"]);
-            obj.destroy();
-        }
-
         return factions.map((factionAttrs) => {
             return new Faction(factionAttrs);
         });
     }
 
-    static isValid(faction, playerSlot, errors) {
+    static isValid(faction, errors) {
         assert(faction);
         assert(Array.isArray(errors));
+        assert(errors.length === 0);
 
-        let result = true;
+        // Manually check fields.
+        if (faction.raw.faction === "") {
+            errors.push("missing promissory note");
+        }
+        if (faction.raw.abilities.length === 0) {
+            errors.push("missing abilities");
+        }
+        if (faction.raw.commodities === 0) {
+            errors.push("missing commodities");
+        }
+        if (faction.raw.home === -1) {
+            errors.push("missing home system");
+        }
+        if (world.TI4.config.pok) {
+            if (faction.raw.leaders.agents.length === 0) {
+                errors.push("missing agent");
+            }
+            if (faction.raw.leaders.commanders.length === 0) {
+                errors.push("missing commander");
+            }
+            if (faction.raw.leaders.heroes.length === 0) {
+                errors.push("missing hero");
+            }
+        }
+        if (faction.raw.promissoryNotes.length === 0) {
+            errors.push("missing promissory note");
+        }
+        if (faction.raw.startingTech.length === 0) {
+            errors.push("missing starting tech");
+        }
+        if (Object.keys(faction.raw.startingUnits).length === 0) {
+            errors.push("missing starting units");
+        }
+        if (faction.raw.techs.length === 0) {
+            errors.push("missing faction tech");
+        }
 
-        const onError = (err) => {
-            result = false;
-            const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
-            const msg = `Faction error for ${playerName}: ${
-                err.message
-            } (${JSON.stringify(err)})`;
-            errors.push(msg);
-        };
-        FactionSchema.validate(faction, onError);
-        return result;
+        let foundMech = false;
+        let foundFlagship = false;
+        for (const unit of faction.raw.units) {
+            const unitAttrs = UnitAttrs.getNsidNameUnitUpgrade(unit);
+            if (!unitAttrs) {
+                console.log(`bad unit "${unit}"`);
+                continue;
+            }
+            if (unitAttrs.unit === "mech") {
+                foundMech = true;
+            } else if (unitAttrs.unit === "flagship") {
+                foundFlagship = true;
+            }
+        }
+        if (!foundMech) {
+            errors.push("missing mech");
+        }
+        if (!foundFlagship) {
+            errors.push("missing flagship");
+        }
+
+        // Schema messages are not user friendly.  Trust the above is enough.
+        if (TEST_AGAINST_SCHEMA) {
+            const onError = (err) => {
+                const msg = `Faction schema error: ${
+                    err.message
+                } (${JSON.stringify(err)})`;
+                errors.push(msg);
+            };
+            FactionSchema.validate(faction, onError);
+        }
+        return errors.length === 0;
     }
 }
 

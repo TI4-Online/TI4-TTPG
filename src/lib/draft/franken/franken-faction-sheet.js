@@ -76,7 +76,7 @@ class FrankenFactionSheet {
         this._abilitiesPanel.removeAllChildren();
         abilities.forEach((ability) => {
             const { nameText, descText } = this._addAbility();
-            nameText.setText(ability.name);
+            nameText.setText(ability.name.toUpperCase());
             descText.setText(ability.description);
         });
 

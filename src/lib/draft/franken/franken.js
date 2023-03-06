@@ -7,6 +7,15 @@ const { FrankenCreateSources } = require("./franken-create-sources");
 const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
 const { FrankenUndraftable } = require("./franken-undraftable");
 const { FrankenGenerateFaction } = require("./franken-generate-faction");
+const {
+    SetupFactionTokens,
+} = require("../../../setup/faction/setup-faction-tokens");
+const {
+    SetupStartingTech,
+} = require("../../../setup/faction/setup-starting-tech");
+const {
+    SetupStartingUnits,
+} = require("../../../setup/faction/setup-starting-units");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const {
     Card,
@@ -19,6 +28,7 @@ const {
     globalEvents,
     world,
 } = require("../../../wrapper/api");
+const { FrankenFinalize } = require("./franken-finalize");
 
 class Franken {
     static destroyLingeringDraftZones() {
@@ -239,9 +249,27 @@ class Franken {
 
         world.TI4.config.setFranken(true);
 
-        const factions = this._gatherFactionDefinitions();
+        const destroyObjs = [];
+        const factions = this._gatherFactionDefinitions(destroyObjs);
+        if (!factions) {
+            return false; // at least one incomplete, abort
+        }
+        for (const obj of destroyObjs) {
+            assert(obj instanceof GameObject);
+            if (obj.isValid()) {
+                obj.setTags(["DELETED_ITEMS_IGNORE"]);
+                if (obj instanceof Container) {
+                    obj.clear();
+                }
+                obj.destroy();
+            }
+        }
+
         this._fillFactionSheets(factions);
         this._destroyExtras();
+        this._unpackFactions(factions);
+
+        FrankenFinalize.setTurnOrder();
 
         globalEvents.TI4.onFactionChanged.trigger();
 
@@ -249,22 +277,29 @@ class Franken {
         return true;
     }
 
-    _gatherFactionDefinitions() {
-        const factions = FrankenGenerateFaction.gatherFactionDefinitions();
+    _gatherFactionDefinitions(destroyObjs) {
+        const factions =
+            FrankenGenerateFaction.gatherFactionDefinitions(destroyObjs);
         assert(Array.isArray(factions));
         assert(factions.length === world.TI4.config.playerCount);
 
+        let sawError = false;
         const playerDesks = world.TI4.getAllPlayerDesks();
-        const errors = [];
         factions.forEach((faction, index) => {
             const playerSlot = playerDesks[index].playerSlot;
-            FrankenGenerateFaction.isValid(faction, playerSlot, errors);
+            const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+            const errors = [];
+            FrankenGenerateFaction.isValid(faction, errors);
+            if (errors.length > 0) {
+                const msg = `**** Errors for ${playerName}: ${errors.join(
+                    ", "
+                )}`;
+                Broadcast.chatAll(msg, Broadcast.ERROR);
+                sawError = true;
+            }
         });
 
-        if (errors.length > 0) {
-            Broadcast.chatAll(errors.join("\n"), Broadcast.ERROR);
-        }
-        return factions;
+        return sawError ? undefined : factions;
     }
 
     _fillFactionSheets(factions) {
@@ -276,6 +311,21 @@ class Franken {
             const frankenFactionSheet = obj.__frankenFactionSheet;
             assert(frankenFactionSheet);
             frankenFactionSheet.setFactionAttrs(faction.raw);
+        });
+    }
+
+    _unpackFactions(factions) {
+        assert(Array.isArray(factions));
+        assert(factions.length === world.TI4.config.playerCount);
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        factions.forEach((faction, index) => {
+            const playerDesk = playerDesks[index];
+            assert(playerDesk);
+
+            new SetupStartingTech(playerDesk, faction).setup();
+            new SetupStartingUnits(playerDesk, faction).setup();
+            new SetupFactionTokens(playerDesk, faction).setup();
         });
     }
 
@@ -304,6 +354,7 @@ class Franken {
     cancel() {
         console.log("Franken.cancel");
 
+        // Delete the faction sheets on cancel.
         this._deleteOnCancel.push(...this._factionSheets);
         this._factionSheets = [];
 

@@ -324,6 +324,22 @@ class FrankenCreateSources {
         return deck;
     }
 
+    static createAllianceCards(undraftable) {
+        assert(undraftable instanceof Container);
+
+        const pos = undraftable.getPosition().add([0, 0, 10]);
+        const rot = undraftable.getRotation();
+        FrankenCreateSources._spawnDeck(
+            pos,
+            rot,
+            "card.alliance",
+            () => {
+                return true;
+            },
+            undraftable
+        );
+    }
+
     static createSystems(systemType, pos, rot) {
         assert(typeof systemType === "string");
 
@@ -541,6 +557,8 @@ class FrankenCreateSources {
         undraftable.setName("Undraftable");
 
         const result = { undraftable };
+
+        FrankenCreateSources.createAllianceCards(undraftable);
 
         pos = nextPos();
         result.promissoryNotes = FrankenCreateSources.createPromissoryNotesDeck(

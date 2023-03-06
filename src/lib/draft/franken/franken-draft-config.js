@@ -72,13 +72,13 @@ const FRANKEN_DRAFT_CONFIG = {
     },
     blueSystems: {
         default: 3,
-        min: 1,
+        min: 0,
         available: 37,
         label: "Systems: Blue",
     },
     redSystems: {
         default: 2,
-        min: 1,
+        min: 0,
         available: 18,
         label: "Systems: Red",
     },
