@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
+const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
 const { Technology } = require("../technology/technology");
@@ -40,6 +41,11 @@ class Homebrew {
                 table.nsidToTemplateId
             )) {
                 Spawn.injectNsidToTemplate(nsid, tempateId);
+            }
+        }
+        if (table.replace) {
+            for (const [removeNSID, useNSID] of Object.entries(table.replace)) {
+                ReplaceObjects.injectReplace(removeNSID, useNSID);
             }
         }
         if (table.systems) {
