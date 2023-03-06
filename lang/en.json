@@ -180,6 +180,7 @@
 
     "ui.menu.place_agenda_top": "Place agenda top",
     "ui.menu.place_agenda_bottom": "Place agenda bottom",
+    "ui.menu.deal": "Deal {card}",
     "ui.menu.purge": "Purge",
     "ui.menu.score": "Score",
     "ui.menu.edit": "Edit",
