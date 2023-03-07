@@ -671,6 +671,172 @@ const UNDRAFTABLE = [
         triggerNsid:
             "card.technology.unit_upgrade.saar:base/floating_factory_2",
     },
+
+    // Alliance cards.
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/arborec",
+        count: 1,
+        triggerNsid: "card.leader.commander.arborec:pok/dirzuga_rophal",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/argent",
+        count: 1,
+        triggerNsid: "card.leader.commander.argent:pok/trrakan_aun_zulok",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/creuss",
+        count: 1,
+        triggerNsid: "card.leader.commander.creuss:pok/sai_seravus",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/empyrean",
+        count: 1,
+        triggerNsid: "card.leader.commander.empyrean:pok/xuange",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/hacan",
+        count: 1,
+        triggerNsid: "card.leader.commander.hacan:pok/gila_the_silvertongue",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/jolnar",
+        count: 1,
+        triggerNsid: "card.leader.commander.jolnar:pok/ta_zern",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:codex.vigil/keleres_argent",
+        count: 1,
+        triggerNsid:
+            "card.leader.commander.keleres_argent:codex.vigil/suffi_an",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/l1z1x",
+        count: 1,
+        triggerNsid: "card.leader.commander.l1z1x:pok/2ram",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/letnev",
+        count: 1,
+        triggerNsid: "card.leader.commander.letnev:pok/rear_admiral_farran",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/mahact",
+        count: 1,
+        triggerNsid: "card.leader.commander.mahact:pok/il_na_viroset",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/mentak",
+        count: 1,
+        triggerNsid: "card.leader.commander.mentak:pok/sula_mentarion",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/muaat",
+        count: 1,
+        triggerNsid: "card.leader.commander.muaat:pok/magmus",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/naalu",
+        count: 1,
+        triggerNsid: "card.leader.commander.naalu:pok/maban",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:codex.vigil/naalu.omega",
+        count: 1,
+        triggerNsid: "card.leader.commander.naalu:codex.vigil/maban.omega",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/naazrokha",
+        count: 1,
+        triggerNsid: "card.leader.commander.naazrokha:pok/dart_and_tai",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/nekro",
+        count: 1,
+        triggerNsid: "card.leader.commander.nekro:pok/nekro_acidos",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/nomad",
+        count: 1,
+        triggerNsid: "card.leader.commander.nomad:pok/navarch_feng",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/norr",
+        count: 1,
+        triggerNsid: "card.leader.commander.norr:pok/ghom_sekkus",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/saar",
+        count: 1,
+        triggerNsid: "card.leader.commander.saar:pok/rowl_sarrig",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/sol",
+        count: 1,
+        triggerNsid: "card.leader.commander.sol:pok/claire_gibson",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/ul",
+        count: 1,
+        triggerNsid: "card.leader.commander.ul:pok/tungstantus",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/vuilraith",
+        count: 1,
+        triggerNsid:
+            "card.leader.commander.vuilraith:pok/that_which_molds_flesh",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/winnu",
+        count: 1,
+        triggerNsid: "card.leader.commander.winnu:pok/rickar_rickani",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/xxcha",
+        count: 1,
+        triggerNsid: "card.leader.commander.xxcha:pok/elder_qanoj",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/yin",
+        count: 1,
+        triggerNsid: "card.leader.commander.yin:pok/brother_omar",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:codex.vigil/yin.omega",
+        count: 1,
+        triggerNsid: "card.leader.commander.yin:codex.vigil/brother_omar.omega",
+    },
+    {
+        name: "Alliance",
+        nsid: "card.alliance:pok/yssaril",
+        count: 1,
+        triggerNsid: "card.leader.commander.yssaril:pok/so_ata",
+    },
 ];
 
 // Keleres is regsitered as several flavors, keep the argent one

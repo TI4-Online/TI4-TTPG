@@ -5,7 +5,7 @@
     "ui.error.not_owner": "That is not yours, {playerName}",
     "ui.error.commander_locked": "Commander is locked",
     "ui.error.invalid_map_string": "Invalid map string “{mapString}”",
-    "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"${nsid}\"",
+    "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"{nsid}\"",
     "ui.error.numpad0_control": "Use control + numpad-0 to trash objects",
 
     "ui.help.numpad": "Numpad keys:",
@@ -29,7 +29,7 @@
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
-    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced “Object zoom for ground”",
+    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced 'Ground Object Interaction'",
 
     "ui.help.whisper": "Whisper: \"/w {part of name}\"",
 
@@ -1002,8 +1002,14 @@
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
-    "franken.config": "Choose how many of each type per draft box.",
-    "franken.finish_draft": "Create factions from draft components",
+    "franken.config": "Choose how many of each type per draft box:",
+    "franken.prune": "1. Delete any draftable items you wish to ban",
+    "franken.fill_draft_boxes": "2. Fill draft containers from draftable items",
+    "franken.draft": "3. Draft items, passing containers to the next player",
+    "franken.gain_undraftables": "4. Allocate undraftable items from current choices",
+    "franken.finalize": "5. Choose final components to use as faction, delete others",
+    "franken.finish_draft": "6. Create factions from draft components on table",
+
     "action.update": "Update",
 
     "desc.card.action.plague": "Place this card face-up anywhere on the table, then use the system tile menu to select plague",

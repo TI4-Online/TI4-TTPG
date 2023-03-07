@@ -10,12 +10,14 @@ const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
 const { Technology } = require("../../lib/technology/technology");
 const { UnitPlastic } = require("../../lib/unit/unit-plastic");
+const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
     Card,
     GameObject,
     HorizontalAlignment,
     Player,
     Rotator,
+    UIZoomVisibility,
     Vector,
     VerticalAlignment,
     Zone,
@@ -24,7 +26,6 @@ const {
     refObject,
     world,
 } = require("../../wrapper/api");
-const { WidgetFactory } = require("../../lib/ui/widget-factory");
 
 /**
  * MISSING ABILITIES:
@@ -276,35 +277,39 @@ class BuildAreaMat {
         this._ui.uiE.anchorY = 0;
         this._ui.uiE.position = pos;
         this._ui.uiE.widget = canvas;
+        this._ui.uiE.zoomVisibility = UIZoomVisibility.Both;
         this._obj.addUI(this._ui.uiE);
     }
 
     _createPopupUI() {
-        this._popup
-            .addAction(locale("ui.build.report"), (obj, player, actionName) => {
-                this.reportBuild();
-            })
-            .addAction(
-                locale("ui.build.warp_to_home"),
-                (obj, player, actionName) => {
+        const namesAndActions = [
+            {
+                name: locale("ui.build.report"),
+                action: (obj, player, actionName) => {
+                    this.reportBuild();
+                },
+            },
+            {
+                name: locale("ui.build.warp_to_home"),
+                action: (obj, player, actionName) => {
                     const playerSlot = this._getPlayerSlot();
                     const systemTileObj =
                         BuildAreaMat.getHomeSystem(playerSlot);
                     this.moveUnitsToSystem(systemTileObj, player);
-                }
-            )
-            .addAction(
-                locale("ui.build.warp_to_last_actived"),
-                (obj, player, actionName) => {
+                },
+            },
+            {
+                name: locale("ui.build.warp_to_last_actived"),
+                action: (obj, player, actionName) => {
                     const playerSlot = this._getPlayerSlot();
                     const systemTileObj =
                         BuildAreaMat.getLastActivatedSystem(playerSlot);
                     this.moveUnitsToSystem(systemTileObj, player);
-                }
-            )
-            .addAction(
-                locale("ui.build.toggle_privacy"),
-                (obj, player, actionName) => {
+                },
+            },
+            {
+                name: locale("ui.build.toggle_privacy"),
+                action: (obj, player, actionName) => {
                     assert(this._zone);
                     const oldValue = this._zone.isAlwaysVisible();
                     const newValue = !oldValue;
@@ -314,8 +319,23 @@ class BuildAreaMat {
                             ? ZonePermission.OwnersOnly
                             : ZonePermission.Everybody
                     );
+                },
+            },
+        ];
+
+        for (const entry of namesAndActions) {
+            // Add to popup menu.
+            this._popup.addAction(entry.name, entry.action);
+
+            // Add to context menu.
+            const customActionName = "*" + entry.name;
+            this._obj.addCustomAction(customActionName);
+            this._obj.onCustomAction.add((obj, player, clickedActionName) => {
+                if (clickedActionName === customActionName) {
+                    entry.action(obj, player, customActionName);
                 }
-            );
+            });
+        }
     }
 
     _destroyZone() {

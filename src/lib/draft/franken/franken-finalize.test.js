@@ -1,26 +1,13 @@
 require("../../../global"); // register world.TI4
 const assert = require("assert");
-const { FACTION_ABILITIES, UNDRAFTABLE } = require("./franken.data");
-const { FactionAbilitySchema, UndraftableSchema } = require("./franken.schema");
+const { FrankenFinalize } = require("./franken-finalize");
 const { MockGameObject, world } = require("../../../wrapper/api");
-
-it("faction abilities", () => {
-    for (const ability of FACTION_ABILITIES) {
-        assert(FactionAbilitySchema.validate(ability));
-    }
-});
-
-it("undraftable", () => {
-    for (const undraftable of UNDRAFTABLE) {
-        assert(UndraftableSchema.validate(undraftable));
-    }
-});
 
 it("_setTurnOrder", () => {
     world.__clear();
 
     // Get a list of desks, move front to back.
-    const desks = world.TI4.getAllPlayerDesks();
+    const desks = [...world.TI4.getAllPlayerDesks()];
     const move = desks.shift();
     desks.push(move);
 
@@ -29,11 +16,14 @@ it("_setTurnOrder", () => {
         world.__addObject(
             new MockGameObject({
                 position: desk.pos,
-                templateMetadata: "tile.strategy:base/trade",
+                templateMetadata: "tile:homebrew/name_desc",
                 savedData: json,
             })
         );
     });
+
+    FrankenFinalize.setTurnOrder();
+    world.__clear();
 
     const expectedOrder = desks.map((desk) => desk.index);
     const observedOrder = world.TI4.turns

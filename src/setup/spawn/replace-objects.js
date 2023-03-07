@@ -1,3 +1,4 @@
+const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
 const REPLACE_DATA = require("./replace-objects.data.json");
@@ -6,6 +7,18 @@ const REPLACE_DATA = require("./replace-objects.data.json");
  * Remove deprecated objects
  */
 class ReplaceObjects {
+    /**
+     * For some specific homebrew allow new rules for replacement.
+     * Map from remove NSID to use NSID.
+     *
+     * @param {Object} dict
+     */
+    static injectReplace(removeNSID, useNSID) {
+        assert(typeof removeNSID === "string");
+        assert(typeof useNSID === "string");
+        REPLACE_DATA[removeNSID] = useNSID;
+    }
+
     /**
      * Find all objects where the replacement is available.
      * Extracts cards from stacks.

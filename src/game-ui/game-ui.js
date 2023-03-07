@@ -66,6 +66,12 @@ class GameUI {
         return refPackageId === "DEE44C689452447E8ED6FDDBEB19BB23";
     }
 
+    static goHome() {
+        const navPanel = GameUI.getInstance()._navPanel;
+        const root = navPanel.getRootFolder();
+        navPanel.setCurrentNavEntry(root);
+    }
+
     constructor() {
         const anchor = TableLayout.anchor.gameUI;
 
@@ -263,15 +269,13 @@ class GameUI {
             });
         draftFolder.addChild(bunkerDraft);
 
-        if (GameUI.isDev()) {
-            const franken = new NavEntry()
-                .setName(locale("nav.map.draft.franken"))
-                .setIconPath("global/ui/icons/franken.png")
-                .setWidgetFactory((navPanel, navEntry) => {
-                    return new FrankenDraftSettings().getUI();
-                });
-            draftFolder.addChild(franken);
-        }
+        const franken = new NavEntry()
+            .setName(locale("nav.map.draft.franken"))
+            .setIconPath("global/ui/icons/franken.png")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new FrankenDraftSettings().getUI();
+            });
+        draftFolder.addChild(franken);
 
         return draftFolder;
     }

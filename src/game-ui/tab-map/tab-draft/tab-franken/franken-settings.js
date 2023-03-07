@@ -9,6 +9,12 @@ class FrankenDraftSettings {
             startDraft: () => {
                 return franken.startDraft();
             },
+            createAndFillDraftBoxes: () => {
+                return franken.createAndFillDraftBoxes();
+            },
+            gainUndraftables: () => {
+                return franken.gainUndraftables();
+            },
             finishDraft: () => {
                 return franken.finishDraft();
             },

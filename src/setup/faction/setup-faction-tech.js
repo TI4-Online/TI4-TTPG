@@ -35,8 +35,18 @@ class SetupFactionTech extends AbstractSetup {
             if (factionName !== matchFactionName) {
                 return false;
             }
-            // Check if legal name.  Include "name.omega", etc versions.
+
             const parsed = ObjectNamespace.parseNsid(nsid);
+            if (!parsed) {
+                return false;
+            }
+
+            // Reject Franken flagships.
+            if (parsed.source.startsWith("franken")) {
+                return false;
+            }
+
+            // Check if legal name.  Include "name.omega", etc versions.
             const name = parsed.name.split(".")[0];
             if (!acceptNames.has(name)) {
                 // Unwanted card in the deck, or a typo?

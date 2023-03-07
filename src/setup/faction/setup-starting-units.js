@@ -55,7 +55,9 @@ class SetupStartingUnits extends AbstractSetup {
             }
         }
         if (!homeSystemObj) {
-            console.warn("SetupStartingUnits: missing home system");
+            console.warn(
+                `SetupStartingUnits: missing home system ("${homeSystemNsid}")`
+            );
             return;
         }
 
