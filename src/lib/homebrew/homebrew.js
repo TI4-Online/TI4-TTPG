@@ -3,11 +3,14 @@ const locale = require("../locale");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
 const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
+const { SetupGenericTech } = require("../../setup/setup-generic-tech");
+const { SetupTableDecks } = require("../../setup/setup-table-decks");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
 const { Technology } = require("../technology/technology");
 const { UnitAttrs } = require("../unit/unit-attrs");
 const { UnitModifier } = require("../unit/unit-modifier");
+const { world } = require("../../wrapper/api");
 
 class Homebrew {
     constructor() {}
@@ -67,6 +70,23 @@ class Homebrew {
             for (const unitModifier of table.unitModifiers) {
                 UnitModifier.injectUnitModifier(unitModifier);
             }
+        }
+    }
+
+    /**
+     * Delete and respawn decks.
+     *
+     * If homebrew messes with the generic tech, agenda, action, etc decks the
+     * ones on the table need to be recreated.
+     */
+    resetOnTableDecks() {
+        const setupTableDecks = new SetupTableDecks();
+        setupTableDecks.clean();
+        setupTableDecks.setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const setupGenericTech = new SetupGenericTech(playerDesk);
+            setupGenericTech.clean();
+            setupGenericTech.setup();
         }
     }
 }
