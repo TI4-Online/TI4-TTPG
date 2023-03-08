@@ -6,7 +6,11 @@ const { PlayerDeskColor } = require("../../player-desk/player-desk-color");
 const { ReplaceObjects } = require("../../../setup/spawn/replace-objects");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { Technology } = require("../../technology/technology");
-const { FACTION_ABILITIES, REMOVE_CARDS } = require("./franken.data");
+const {
+    FACTION_ABILITIES,
+    MERGE_ABILITIES,
+    REMOVE_CARDS,
+} = require("./franken.data");
 const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
 const {
     Card,
@@ -386,13 +390,52 @@ class FrankenCreateSources {
         const container = FrankenCreateSources._spawnContainer(pos, rot);
         container.setName(FRANKEN_DRAFT_CONFIG.factionAbilities.label);
 
+        // Build merged abilities information.
+        const abilityNameToAbility = {};
+        for (const ability of FACTION_ABILITIES) {
+            abilityNameToAbility[ability.name] = ability;
+        }
+        const suppressSet = new Set();
+        for (const abilityNames of Object.values(MERGE_ABILITIES)) {
+            for (const abilityName of abilityNames) {
+                assert(abilityNameToAbility);
+                suppressSet.add(abilityName);
+            }
+        }
+
         const above = pos.add([0, 0, 10]);
         for (const ability of FACTION_ABILITIES) {
-            const name = ability.name;
-            const desc = ability.description;
+            let name = ability.name;
+            let desc = ability.description;
+            const abilities = [_abilityNameToNsidName(ability.name)];
+
+            // Suppress linked abilities.
+            if (suppressSet.has(name)) {
+                console.log(`suppress "${name}"`);
+                continue;
+            }
+
+            // Add linked abilities if this is the trigger.
+            const mergeAbiltiyNames = MERGE_ABILITIES[name];
+            if (mergeAbiltiyNames) {
+                for (const mergeAbiltiyName of mergeAbiltiyNames) {
+                    console.log(`merge "${mergeAbiltiyName}"`);
+                    abilities.push(_abilityNameToNsidName(mergeAbiltiyName));
+
+                    // Add text.
+                    const mergeAbility = abilityNameToAbility[mergeAbiltiyName];
+                    assert(mergeAbility);
+                    desc =
+                        desc +
+                        `\n\n${mergeAbility.name.toUpperCase()}\n${
+                            mergeAbility.description
+                        }`;
+                }
+            }
+
             const json = JSON.stringify({
                 franken: true,
-                abilities: [_abilityNameToNsidName(ability.name)],
+                abilities,
             });
 
             const nsid = "tile:homebrew/name_desc";

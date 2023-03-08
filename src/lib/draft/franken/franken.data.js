@@ -839,6 +839,10 @@ const UNDRAFTABLE = [
     },
 ];
 
+const MERGE_ABILITIES = {
+    Awaken: ["Terragenesis"],
+};
+
 // Keleres is regsitered as several flavors, keep the argent one
 // where things are duplicated.
 const REMOVE_CARDS = [
@@ -854,4 +858,9 @@ const REMOVE_CARDS = [
     "card.alliance:codex.vigil/keleres_xxcha",
 ];
 
-module.exports = { FACTION_ABILITIES, UNDRAFTABLE, REMOVE_CARDS };
+module.exports = {
+    FACTION_ABILITIES,
+    MERGE_ABILITIES,
+    UNDRAFTABLE,
+    REMOVE_CARDS,
+};
