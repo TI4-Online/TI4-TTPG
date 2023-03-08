@@ -3,7 +3,9 @@ const locale = require("../locale");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
 const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
+const { RestrictObjects } = require("../../setup/spawn/restrict-objects");
 const { SetupGenericTech } = require("../../setup/setup-generic-tech");
+const { SetupStrategyCards } = require("../../setup/setup-strategy-cards");
 const { SetupTableDecks } = require("../../setup/setup-table-decks");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
@@ -44,6 +46,11 @@ class Homebrew {
                 table.nsidToTemplateId
             )) {
                 Spawn.injectNsidToTemplate(nsid, tempateId);
+            }
+        }
+        if (table.remove) {
+            for (const nsid of table.remove) {
+                RestrictObjects.injectRestrictNsid(nsid);
             }
         }
         if (table.replace) {
@@ -89,6 +96,13 @@ class Homebrew {
             setupGenericTech.clean();
             setupGenericTech.setup();
         }
+    }
+
+    resetStrategyCards() {
+        console.log("Homebrew.resetStrategyCards");
+        const setupStrategyCards = new SetupStrategyCards();
+        setupStrategyCards.clean();
+        setupStrategyCards.setup();
     }
 }
 

@@ -139,6 +139,12 @@ class FrankenGenerateFaction {
                 destroyObjs.push(obj);
             }
 
+            if (json && json.startingTechChoice) {
+                const faction = getFaction(obj);
+                faction.startingTechChoice = json.startingTechChoice;
+                destroyObjs.push(obj);
+            }
+
             if (json && json.startingUnits) {
                 const faction = getFaction(obj);
                 faction.startingUnits = json.startingUnits;
@@ -213,7 +219,10 @@ class FrankenGenerateFaction {
         if (faction.raw.promissoryNotes.length === 0) {
             errors.push("missing promissory note");
         }
-        if (faction.raw.startingTech.length === 0) {
+        if (
+            faction.raw.startingTech.length === 0 &&
+            !faction.raw.startingTechChoice
+        ) {
             errors.push("missing starting tech");
         }
         if (Object.keys(faction.raw.startingUnits).length === 0) {

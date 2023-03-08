@@ -10,7 +10,7 @@ const {
     refObject,
     refPackageId,
 } = require("../../../wrapper/api");
-const { FACTION_ABILITIES } = require("./franken.data");
+const { FACTION_ABILITIES, STARTING_TECH_CHOICE } = require("./franken.data");
 const { _abilityNameToNsidName } = require("./franken-create-sources");
 const locale = require("../../locale");
 const { Technology } = require("../../technology/technology");
@@ -85,31 +85,37 @@ class FrankenFactionSheet {
 
         this._startingPanel.removeAllChildren();
         const startingTechText = this._addStartingTech();
-        const startingTechValue = factionAttrs.startingTech
-            .map((tech) => {
-                const techData = Technology.getByNsidName(tech);
-                if (!techData) {
-                    console.log(
-                        `Franken.createStartingTech: unknown tech "${tech}"`
-                    );
-                    return tech;
-                }
+        if (factionAttrs.startingTechChoice) {
+            const startingTechValue =
+                STARTING_TECH_CHOICE[factionAttrs.startingTechChoice];
+            startingTechText.setText(startingTechValue);
+        } else {
+            const startingTechValue = factionAttrs.startingTech
+                .map((tech) => {
+                    const techData = Technology.getByNsidName(tech);
+                    if (!techData) {
+                        console.log(
+                            `Franken.createStartingTech: unknown tech "${tech}"`
+                        );
+                        return tech;
+                    }
 
-                let color = "#ffffff";
-                const type = techData.type.toLowerCase();
-                if (
-                    type === "blue" ||
-                    type === "green" ||
-                    type === "yellow" ||
-                    type === "red"
-                ) {
-                    const attrs = PlayerDeskColor.getColorAttrs(type);
-                    color = attrs.widgetHexColor;
-                }
-                return `[color=${color}]${techData.name}[/color]`;
-            })
-            .join("\n");
-        startingTechText.setText(startingTechValue);
+                    let color = "#ffffff";
+                    const type = techData.type.toLowerCase();
+                    if (
+                        type === "blue" ||
+                        type === "green" ||
+                        type === "yellow" ||
+                        type === "red"
+                    ) {
+                        const attrs = PlayerDeskColor.getColorAttrs(type);
+                        color = attrs.widgetHexColor;
+                    }
+                    return `[color=${color}]${techData.name}[/color]`;
+                })
+                .join("\n");
+            startingTechText.setText(startingTechValue);
+        }
 
         const startingUnitsText = this._addStartingUnits();
         const startingUnitsValue = Object.entries(factionAttrs.startingUnits)
