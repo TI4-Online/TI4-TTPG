@@ -128,8 +128,10 @@ class BunkerDraftUI {
         };
     }
 
-    addBunkers(bunkerDataArray) {
+    addBunkers(bunkerDataArray, bunkerOffset) {
         assert(Array.isArray(bunkerDataArray));
+        assert(typeof bunkerOffset === "boolean");
+
         bunkerDataArray.forEach((bunkerData) => {
             assert(Array.isArray(bunkerData.bunker));
             assert(!bunkerData.color || ColorUtil.isColor(bunkerData.color));
@@ -160,7 +162,7 @@ class BunkerDraftUI {
                 ? bunkerData.color
                 : ColorUtil.colorFromHex(DEFAULT_SLICE_COLORS[index]);
 
-            new BunkerSliceUI(this._canvas, offset, this._scale)
+            new BunkerSliceUI(this._canvas, offset, this._scale, bunkerOffset)
                 .setSlice(bunkerData.bunker)
                 .setColor(color)
                 .setLabel(bunkerData.label, bunkerData.onClickedGenerator);
@@ -174,13 +176,14 @@ class BunkerDraftUI {
         return this;
     }
 
-    addInnerRing(innerRing, seatDataArray) {
+    addInnerRing(innerRing, seatDataArray, bunkerOffset) {
         assert(Array.isArray(innerRing));
         assert(innerRing.length === 6);
         innerRing.forEach((tile) => {
             assert(typeof tile === "number");
         });
         assert(Array.isArray(seatDataArray));
+        assert(typeof bunkerOffset === "boolean");
 
         const { tileW, tileH } = this._bunkerSize;
         const center = {
@@ -229,7 +232,11 @@ class BunkerDraftUI {
 
             const homeColor = playerDesk.widgetColor;
             const mutedColor = Color.lerp(homeColor, [0, 0, 0, 1], 0.5);
-            const tilePosArray = BunkerSliceLayout._getTilePositions(anchorPos);
+            const tilePosArray = BunkerSliceLayout._getTilePositions(
+                anchorPos,
+                undefined,
+                bunkerOffset
+            );
             tilePosArray.forEach((tilePos, index) => {
                 const hex = Hex.fromPosition(tilePos);
                 const img = new ImageWidget()

@@ -24,6 +24,7 @@ const SPEAKER_TOKEN_POS = { x: 46, y: 0, z: 5 };
 
 class BunkerDraft {
     constructor() {
+        this._bunkerOffset = false;
         this._bunkerDataArray = [];
         this._innerRing = [];
         this._factionDataArray = [];
@@ -35,6 +36,12 @@ class BunkerDraft {
         this._draftSelectionManager = new DraftSelectionManager()
             .setBorderSize(SELECTION_BORDER_SIZE * this._scale)
             .setAdvanceTurnOnSelection(true);
+    }
+
+    setBunkerOffset(value) {
+        assert(typeof value === "boolean");
+        this._bunkerOffset = value;
+        return this;
     }
 
     resetBunkers() {
@@ -136,8 +143,12 @@ class BunkerDraft {
             playerDesk,
             this._scale
         )
-            .addBunkers(this._bunkerDataArray)
-            .addInnerRing(this._innerRing, this._seatDataArray)
+            .addBunkers(this._bunkerDataArray, this._bunkerOffset)
+            .addInnerRing(
+                this._innerRing,
+                this._seatDataArray,
+                this._bunkerOffset
+            )
             .addFactions(this._factionDataArray)
             .addSeats(this._seatDataArray)
             .getWidgetAndSize(onFinishedButton);
@@ -228,7 +239,11 @@ class BunkerDraft {
         }
 
         // Unpack bunker.
-        BunkerSliceLayout.doLayoutBunker(bunkerData.bunker, playerSlot);
+        BunkerSliceLayout.doLayoutBunker(
+            bunkerData.bunker,
+            playerSlot,
+            this._bunkerOffset
+        );
 
         // Unpack faction?  No, just place the token and let players click the
         // unpack button.  This is also a pause for Keleres to change flavors.

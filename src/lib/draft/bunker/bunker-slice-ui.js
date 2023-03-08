@@ -38,11 +38,12 @@ class BunkerSliceUI {
         return Math.min(255, Math.floor(FONT_SIZE * scale));
     }
 
-    constructor(canvas, canvasOffset, scale) {
+    constructor(canvas, canvasOffset, scale, bunkerOffset) {
         assert(canvas instanceof Canvas);
         assert(typeof canvasOffset.x === "number");
         assert(typeof canvasOffset.y === "number");
         assert(typeof scale === "number" && scale >= 1);
+        assert(typeof bunkerOffset === "boolean");
 
         // Tile positions in "tile size" space.
         let offsets = [
@@ -79,7 +80,8 @@ class BunkerSliceUI {
             );
             return layoutBox;
         });
-        this._homeSystemBox = this._tileBoxes.shift();
+        const hsIndex = bunkerOffset ? 4 : 0;
+        this._homeSystemBox = this._tileBoxes.splice(hsIndex, 1)[0];
 
         // Summary.
         this._summaryFontSize = BunkerSliceUI.getFontSize(scale);
