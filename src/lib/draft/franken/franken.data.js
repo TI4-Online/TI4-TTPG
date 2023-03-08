@@ -351,6 +351,14 @@ const FACTION_ABILITIES = [
 ];
 
 /**
+ * Combine multiple abilities on one option.
+ */
+const MERGE_ABILITIES = {
+    Awaken: ["Terragenesis"],
+    Devour: ["Amalgamation"],
+};
+
+/**
  * - undraftable : array of {name, nsid, count, triggerNsid|triggerNsids|triggerAbility} objects
  */
 const UNDRAFTABLE = [
@@ -839,10 +847,6 @@ const UNDRAFTABLE = [
     },
 ];
 
-const MERGE_ABILITIES = {
-    Awaken: ["Terragenesis"],
-};
-
 // Keleres is regsitered as several flavors, keep the argent one
 // where things are duplicated.
 const REMOVE_CARDS = [
@@ -858,9 +862,16 @@ const REMOVE_CARDS = [
     "card.alliance:codex.vigil/keleres_xxcha",
 ];
 
+const STARTING_TECH_CHOICE = {
+    argent: "Choose 2 from Neural Motivator, Sarween Tools, and Plasma Scoring",
+    keleres: "Choose 2 non-faction technologies owned by other players",
+    winnu: "Choose any 1 technology that has no prerequisites",
+};
+
 module.exports = {
     FACTION_ABILITIES,
     MERGE_ABILITIES,
     UNDRAFTABLE,
     REMOVE_CARDS,
+    STARTING_TECH_CHOICE,
 };

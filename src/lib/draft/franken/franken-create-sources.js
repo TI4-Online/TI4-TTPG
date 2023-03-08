@@ -10,6 +10,7 @@ const {
     FACTION_ABILITIES,
     MERGE_ABILITIES,
     REMOVE_CARDS,
+    STARTING_TECH_CHOICE,
 } = require("./franken.data");
 const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
 const {
@@ -509,10 +510,32 @@ class FrankenCreateSources {
 
         const above = pos.add([0, 0, 10]);
         for (const faction of world.TI4.getAllFactions()) {
-            // Skip factions with no starting tech (includes tech choice).
-            if (faction.raw.startingTech.length === 0) {
+            if (
+                faction.raw.faction === "keleres_mentak" ||
+                faction.raw.faction === "keleres_xxcha"
+            ) {
+                continue; // only include one keleres
+            }
+            if (faction.raw.startingTechChoice) {
+                // Special for starting tech choice.
+                const name = `Tech ${faction.nameAbbr}`;
+                const desc =
+                    STARTING_TECH_CHOICE[faction.raw.startingTechChoice] || "";
+                const json = JSON.stringify({
+                    franken: true,
+                    startingTechChoice: faction.raw.startingTechChoice,
+                });
+                const nsid = "tile:homebrew/name_desc";
+                const nameDescTile = Spawn.spawn(nsid, above, rot);
+                nameDescTile.setName(name);
+                nameDescTile.setDescription(desc);
+                nameDescTile.setSavedData(json);
+
+                container.addObjects([nameDescTile]);
                 continue;
             }
+
+            // Static starting tech.
             const name = `Tech ${faction.nameAbbr}`;
             const desc = faction.raw.startingTech
                 .map((tech) => {

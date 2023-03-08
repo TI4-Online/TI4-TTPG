@@ -106,7 +106,7 @@ const FRANKEN_DRAFT_CONFIG = {
     factionAbilities: {
         default: 4,
         min: 1,
-        available: 58,
+        available: 56,
         label: "Faction Abilities",
         tint: "#000000",
     },
