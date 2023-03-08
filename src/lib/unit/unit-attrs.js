@@ -27,11 +27,24 @@ function _maybeInit() {
 
         // Unit override/upgrade card.
         if (rawAttrs.triggerNsid) {
-            assert(!_triggerNsidToUnitUpgrade[rawAttrs.triggerNsid]);
+            if (_triggerNsidToUnitUpgrade[rawAttrs.triggerNsid]) {
+                console.log(
+                    `UnitAttrs._maybeInit WARNING: duplicate "${rawAttrs.triggerNsid}", overwriting earlier with later version`
+                );
+            }
             _triggerNsidToUnitUpgrade[rawAttrs.triggerNsid] = unitUpgrade;
 
             const parsed = ObjectNamespace.parseNsid(rawAttrs.triggerNsid);
-            assert(!_nsidNameToUnitUpgrade[parsed.name]);
+            if (!parsed) {
+                throw new Error(
+                    `UnitAttrs._maybeInit: bad nsid "${rawAttrs.triggerNsid}"`
+                );
+            }
+            if (_nsidNameToUnitUpgrade[parsed.name]) {
+                console.log(
+                    `UnitAttrs._maybeInit WARNING: duplicate "${parsed.name}", overwriting earlier with later version`
+                );
+            }
             _nsidNameToUnitUpgrade[parsed.name] = unitUpgrade;
         }
     }

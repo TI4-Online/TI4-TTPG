@@ -80,6 +80,7 @@ class Homebrew {
      * ones on the table need to be recreated.
      */
     resetOnTableDecks() {
+        console.log("Homebrew.resetOnTableDecks");
         const setupTableDecks = new SetupTableDecks();
         setupTableDecks.clean();
         setupTableDecks.setup();
