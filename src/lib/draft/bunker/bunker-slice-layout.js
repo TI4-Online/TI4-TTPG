@@ -64,33 +64,50 @@ class BunkerSliceLayout {
         return Hex.toPosition(hex);
     }
 
-    static _getTilePositions(anchorPos, yaw) {
+    static _getTilePositions(anchorPos, yaw, bunkerOffset) {
         assert(typeof anchorPos.x === "number");
         assert(yaw === undefined || typeof yaw === "number");
+        assert(typeof bunkerOffset === "boolean");
 
         if (yaw === undefined) {
             yaw = anchorPos.findLookAtRotation([0, 0, anchorPos.z]).yaw;
         }
 
-        return BUNKER_HEXES.map((hex) => {
+        let bunkerHexes = BUNKER_HEXES;
+        if (bunkerOffset) {
+            bunkerHexes = [
+                bunkerHexes[4], // front of list is home
+                bunkerHexes[0], // rest in order
+                bunkerHexes[1],
+                bunkerHexes[2],
+                bunkerHexes[3],
+            ];
+        }
+
+        return bunkerHexes.map((hex) => {
             return Hex.toPosition(hex)
                 .rotateAngleAxis(yaw, [0, 0, 1])
                 .add(anchorPos);
         });
     }
 
-    static _toMapString(bunker, deskIndex, playerCount) {
+    static _toMapString(bunker, deskIndex, playerCount, bunkerOffset) {
         assert(Array.isArray(bunker));
         assert(bunker.length === 4);
         assert(typeof deskIndex === "number");
         assert(typeof playerCount === "number");
+        assert(typeof bunkerOffset === "boolean");
 
         // Get tile positions.
         const anchorPos = BunkerSliceLayout._getAnchorPosition(
             deskIndex,
             playerCount
         );
-        const tilePosArray = BunkerSliceLayout._getTilePositions(anchorPos);
+        const tilePosArray = BunkerSliceLayout._getTilePositions(
+            anchorPos,
+            undefined,
+            bunkerOffset
+        );
 
         // Convert to map string index values.
         const idxArray = tilePosArray.map((pos) => {
@@ -162,9 +179,10 @@ class BunkerSliceLayout {
         return MapStringParser.format(mapStringArray);
     }
 
-    static doLayoutBunker(bunker, playerSlot) {
+    static doLayoutBunker(bunker, playerSlot, bunkerOffset) {
         assert(Array.isArray(bunker));
         assert(typeof playerSlot === "number");
+        assert(typeof bunkerOffset === "boolean");
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
         assert(playerDesk);
@@ -187,10 +205,19 @@ class BunkerSliceLayout {
         });
         if (genericHomeSystemTiles.length === 1) {
             const tile = genericHomeSystemTiles[0];
-            const pos = BunkerSliceLayout._getAnchorPosition(
+            let pos = BunkerSliceLayout._getAnchorPosition(
                 deskIndex,
                 playerCount
             );
+            if (bunkerOffset) {
+                const tilePositions = BunkerSliceLayout._getTilePositions(
+                    pos,
+                    undefined,
+                    bunkerOffset
+                );
+                pos = tilePositions[0];
+                pos = Hex.toPosition(Hex.fromPosition(pos));
+            }
             pos.z = tile.getPosition().z;
             tile.setPosition(pos);
         }
@@ -198,7 +225,8 @@ class BunkerSliceLayout {
         const mapString = BunkerSliceLayout._toMapString(
             bunker,
             deskIndex,
-            playerCount
+            playerCount,
+            bunkerOffset
         );
         console.log(
             `BunkerSliceLayout.doLayoutBunker ${playerSlot}: ${mapString}`

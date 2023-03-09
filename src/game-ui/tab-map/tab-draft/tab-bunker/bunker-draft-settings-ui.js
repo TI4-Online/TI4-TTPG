@@ -104,6 +104,15 @@ class BunkerDraftSettingsUI extends VerticalBox {
             .addChild(factionCountSlider, 4);
         this.addChild(factionCountPanel);
 
+        const bunkerOffset = new CheckBox()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.bunker_offset"))
+            .setIsChecked(false);
+        this.addChild(bunkerOffset);
+        bunkerOffset.onCheckStateChanged.add((checkbox, player, isChecked) => {
+            this._callbacks.setBunkerOffset(isChecked);
+        });
+
         const factionsFromCards = new CheckBox()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.factions_from_cards"))

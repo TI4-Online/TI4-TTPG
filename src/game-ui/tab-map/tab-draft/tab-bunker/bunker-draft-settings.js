@@ -18,6 +18,7 @@ class BunkerDraftSettings {
         this._sliceGenerator = new BunkerSliceGenerator();
         this._factionGenerator = new MiltyFactionGenerator();
         this._bunkerDraft = undefined;
+        this._bunkerOffset = false;
         const callbacks = {
             onFinish: (customConfig, player) => {
                 assert(player instanceof Player);
@@ -27,7 +28,9 @@ class BunkerDraftSettings {
                     this._bunkerDraft = undefined;
                 }
 
-                this._bunkerDraft = new BunkerDraft();
+                this._bunkerDraft = new BunkerDraft().setBunkerOffset(
+                    this._bunkerOffset
+                );
 
                 // UI may have adjusted any settings (e.g. bunker count).
                 const bunkersAndInner = this._sliceGenerator.simpleGenerate();
@@ -106,6 +109,9 @@ class BunkerDraftSettings {
                 }
                 this._bunkerDraft = undefined;
                 this._sliceGenerator.reset();
+            },
+            setBunkerOffset: (value) => {
+                this._bunkerOffset = value;
             },
         };
         this._ui = new BunkerDraftSettingsUI(

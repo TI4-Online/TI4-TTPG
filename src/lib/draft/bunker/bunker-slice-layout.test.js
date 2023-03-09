@@ -33,7 +33,11 @@ it("getTilePositions", () => {
     let deskIndex = 1; // findLookAtRotation returns zero in mock, use a matching slot
     let playerCount = 6;
     let anchor = BunkerSliceLayout._getAnchorPosition(deskIndex, playerCount);
-    let posArray = BunkerSliceLayout._getTilePositions(anchor);
+    let posArray = BunkerSliceLayout._getTilePositions(
+        anchor,
+        undefined,
+        false
+    );
     let hexes = posArray.map((pos) => Hex.fromPosition(pos));
     assert.deepEqual(hexes, [
         "<-3,1,2>", // home
@@ -48,7 +52,12 @@ it("toMapString", () => {
     const bunker = [19, 20, 30, 40];
     let deskIndex = 1;
     let playerCount = 6;
-    let str = BunkerSliceLayout._toMapString(bunker, deskIndex, playerCount);
+    let str = BunkerSliceLayout._toMapString(
+        bunker,
+        deskIndex,
+        playerCount,
+        false
+    );
     assert.equal(
         str,
         "{-1} -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 30 20 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 40 0 19"
