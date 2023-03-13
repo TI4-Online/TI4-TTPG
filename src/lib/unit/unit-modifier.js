@@ -43,24 +43,41 @@ function _maybeInit() {
         const unitModifier = new UnitModifier(rawModifier);
 
         if (rawModifier.triggerNsid) {
+            if (_triggerNsidToUnitModifier[rawModifier.triggerNsid]) {
+                console.log(
+                    `UnitModifiers WARNING: duplicate triggerNsid "${rawModifier.triggerNsid}", overwriting`
+                );
+            }
             _triggerNsidToUnitModifier[rawModifier.triggerNsid] = unitModifier;
         }
         if (rawModifier.triggerNsids) {
             for (const triggerNsid of rawModifier.triggerNsids) {
-                assert(!_triggerNsidToUnitModifier[triggerNsid]);
+                if (_triggerNsidToUnitModifier[triggerNsid]) {
+                    console.log(
+                        `UnitModifiers WARNING: duplicate triggerNsid "${triggerNsid}", overwriting`
+                    );
+                }
                 _triggerNsidToUnitModifier[triggerNsid] = unitModifier;
             }
         }
 
         if (rawModifier.triggerFactionAbility) {
             const ability = rawModifier.triggerFactionAbility;
-            assert(!_factionAbilityToUnitModifier[ability]);
+            if (_factionAbilityToUnitModifier[ability]) {
+                console.log(
+                    `UnitModifiers WARNING: duplicate faction ability "${ability}", overwriting`
+                );
+            }
             _factionAbilityToUnitModifier[ability] = unitModifier;
         }
 
         if (rawModifier.triggerUnitAbility) {
             const ability = rawModifier.triggerUnitAbility;
-            assert(!_unitAbilityToUnitModifier[ability]);
+            if (_unitAbilityToUnitModifier[ability]) {
+                console.log(
+                    `UnitModifiers WARNING: duplicate unit ability "${ability}", overwriting`
+                );
+            }
             _unitAbilityToUnitModifier[ability] = unitModifier;
         }
 

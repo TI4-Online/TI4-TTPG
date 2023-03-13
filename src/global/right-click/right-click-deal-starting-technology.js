@@ -2,11 +2,11 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { Technology } = require("../../lib/technology/technology");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { Card, GameObject, world } = require("../../wrapper/api");
+const { Card, world } = require("../../wrapper/api");
 const { AbstractRightClickCard } = require("./abstract-right-click-card");
 
 function getStartinTechNameAndActions(faction) {
-    if (!faction.raw.startingTechChoices) {
+    if (!faction || !faction.raw.startingTechChoices) {
         return [];
     }
 
