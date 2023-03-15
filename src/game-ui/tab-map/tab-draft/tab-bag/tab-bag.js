@@ -14,8 +14,8 @@ class TabBagDraft {
             },
         };
 
-        this._bagDraft = undefined;
-        this._ui = new TabBagDraftUI(callbacks);
+        this._bagDraft = new BagDraft();
+        this._ui = new TabBagDraftUI(callbacks, this._bagDraft);
     }
 
     getUI() {
@@ -26,11 +26,7 @@ class TabBagDraft {
         assert(player instanceof Player);
         console.log(`TabBagDraft._onFinish: ${JSON.stringify(settings)}`);
 
-        this._bagDraft = new BagDraft()
-            .setBlueCount(settings.blue)
-            .setRedCount(settings.red)
-            .setFactionCount(settings.faction)
-            .start();
+        this._bagDraft.start();
 
         return true;
     }
