@@ -93,7 +93,7 @@ class TabBagDraftUI {
 
         const medCountLabel = WidgetFactory.text()
             .setFontSize(fontSize)
-            .setText(locale("ui.draft.blue_high_count"));
+            .setText(locale("ui.draft.blue_med_count"));
         const medCountSlider = WidgetFactory.slider()
             .setFontSize(fontSize)
             .setTextBoxWidth(fontSize * 4)

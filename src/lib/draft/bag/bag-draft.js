@@ -305,7 +305,7 @@ class BagDraft {
         }
 
         for (const bag of this._bags) {
-            for (let i = 0; i < this._factionCount; i++) {
+            for (let i = 0; i < this._config.faction._value; i++) {
                 const faction = factions.pop();
                 assert(faction);
                 let factionReference = FactionToken.findOrSpawnFactionReference(
