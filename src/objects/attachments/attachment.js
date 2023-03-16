@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { AttachmentSchema } = require("./attachment.schema");
-const { ATTACHMENT_DATA } = require("./attachment.data");
-const { globalEvents, world } = require("../../wrapper/api");
+const { ATTACHMENTS } = require("./attachment.data");
+const { globalEvents } = require("../../wrapper/api");
 
 let _cardNsidNameToAttachment = undefined;
 let _tokenNsidNameToAttachment = undefined;
@@ -15,7 +15,8 @@ globalEvents.TI4.onGameSetup.add(() => {
 function _maybeInit() {
     if (!_cardNsidNameToAttachment) {
         _cardNsidNameToAttachment = {};
-        ATTACHMENT_DATA.forEach((attachmentAttrs) => {
+        _tokenNsidNameToAttachment = {};
+        ATTACHMENTS.forEach((attachmentAttrs) => {
             const attachment = new Attachment(attachmentAttrs);
             _cardNsidNameToAttachment[attachment.raw.cardNsid] = attachment;
             _tokenNsidNameToAttachment[attachment.raw.tokenNsid] = attachment;
@@ -55,8 +56,8 @@ class Attachment {
                 )}`
             );
         });
-        assert(Array.isArray(ATTACHMENT_DATA));
-        ATTACHMENT_DATA.push(attachmentAttrs);
+        assert(Array.isArray(ATTACHMENTS));
+        ATTACHMENTS.push(attachmentAttrs);
         _cardNsidNameToAttachment = undefined;
         _tokenNsidNameToAttachment = undefined;
     }

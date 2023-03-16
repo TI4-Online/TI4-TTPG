@@ -28,7 +28,7 @@ const ATTACHMENT_SCHEMA = {
         faceUp: ATTACHMENT_HELPER_SCHEMA,
         faceDown: ATTACHMENT_HELPER_SCHEMA,
     },
-    required: ["localeName", "cardNsid", "tokenNsid", "faceUp"],
+    required: ["localeName", "cardNsid", "tokenNsid"],
 };
 
 // Laxy instantiate on first use.
