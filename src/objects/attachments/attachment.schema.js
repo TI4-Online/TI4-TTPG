@@ -22,7 +22,7 @@ const ATTACHMENT_HELPER_SCHEMA = {
 const ATTACHMENT_SCHEMA = {
     type: "object",
     properties: {
-        packageId: { type: "strung" },
+        packageId: { type: "string" },
         localeName: { type: "string" },
         cardNsid: { type: "string" },
         tokenNsid: { type: "string" },
