@@ -10,7 +10,7 @@ const { Plague } = require("../actions/plague");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const { WidgetFactory } = require("../ui/widget-factory");
-const { ATTACHMENTS } = require("../../objects/attachments/attachment.data");
+const { Attachment } = require("../../objects/attachments/attachment");
 const {
     Card,
     GameObject,
@@ -312,18 +312,13 @@ class Explore {
 
         // Is there an attachment?
         const nsid = ObjectNamespace.getNsid(card);
-        let attachmentData = false;
-        let tokenNsid = false;
-        for (const attachment of ATTACHMENTS) {
-            if (attachment.cardNsid === nsid) {
-                attachmentData = attachment;
-                tokenNsid = attachment.tokenNsid;
-                break;
-            }
-        }
-        if (!tokenNsid) {
+        let attachmentData = Attachment.getByCardNsidName(nsid);
+
+        if (!attachmentData) {
             return;
         }
+
+        const tokenNsid = attachmentData.tokenNsid;
 
         // Flip if planet has a tech.
         const tokenRot = new Rotator(rot.pitch, rot.yaw, 0);

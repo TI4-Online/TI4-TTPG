@@ -131,6 +131,9 @@ if (!world.__isMock) {
 }
 
 const {
+    AbstractPlanetAttachment,
+} = require("./objects/attachments/abstract-planet-attachment");
+const {
     AbstractStrategyCard,
 } = require("./objects/strategy-cards/abstract-strategy-card");
 const { Adjacency } = require("./lib/system/adjacency");
@@ -166,6 +169,7 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     // Export some modules (to work around require cycles, or for homebrew use).
+    AbstractPlanetAttachment,
     AbstractStrategyCard,
     Adjacency,
     Broadcast,

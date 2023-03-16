@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Attachment } = require("../../objects/attachments/attachment");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
 const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
@@ -76,6 +77,11 @@ class Homebrew {
         if (table.unitModifiers) {
             for (const unitModifier of table.unitModifiers) {
                 UnitModifier.injectUnitModifier(unitModifier);
+            }
+        }
+        if (table.attachments) {
+            for (const attachment of table.attachments) {
+                Attachment.injectAttachment(attachment);
             }
         }
     }

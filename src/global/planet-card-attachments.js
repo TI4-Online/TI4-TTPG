@@ -32,7 +32,7 @@ const BOT = {
     numCols: 2,
 };
 
-function addImageCardFace(card, image, tintColor, index) {
+function addImageCardFace(card, packageId, image, tintColor, index) {
     assert(card instanceof Card);
     assert(typeof image === "string");
     assert(ColorUtil.isColor(tintColor));
@@ -60,7 +60,7 @@ function addImageCardFace(card, image, tintColor, index) {
     ui.rotation = new Rotator(180, 180, 0);
     ui.scale = 0.3;
     ui.widget = WidgetFactory.imageWidget()
-        .setImage(image, refPackageId)
+        .setImage(image, packageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
     ui.zoomVisibility = UIZoomVisibility.Both;
@@ -68,7 +68,7 @@ function addImageCardFace(card, image, tintColor, index) {
     card.addUI(ui);
 }
 
-function addImageCardBack(card, image, tintColor, index) {
+function addImageCardBack(card, packageId, image, tintColor, index) {
     assert(card instanceof Card);
     assert(typeof image === "string");
     assert(ColorUtil.isColor(tintColor));
@@ -90,7 +90,7 @@ function addImageCardBack(card, image, tintColor, index) {
     ui.rotation = new Rotator(0, 0, 0);
     ui.scale = 0.3;
     ui.widget = WidgetFactory.imageWidget()
-        .setImage(image, refPackageId)
+        .setImage(image, packageId)
         .setImageSize(50, 50)
         .setTintColor(tintColor);
     ui.zoomVisibility = UIZoomVisibility.Both;
@@ -123,12 +123,13 @@ function addAttachmentsUI(card) {
         const isFaceUp = attachment.isAttachedFaceUp() || !attrs.faceDown;
         const faceAttrs = attrs[isFaceUp ? "faceUp" : "faceDown"];
         const image = faceAttrs.image;
+        const packageId = attrs.packageId || refPackageId;
         const tintColorHex = faceAttrs.tintColorHex || "#ffffff";
         const tintColor = ColorUtil.colorFromHex(tintColorHex);
         assert(image);
 
-        addImageCardFace(card, image, tintColor, index);
-        addImageCardBack(card, image, tintColor, index);
+        addImageCardFace(card, packageId, image, tintColor, index);
+        addImageCardBack(card, packageId, image, tintColor, index);
         attachmentNames.push(locale(attrs.localeName));
     });
     card.setDescription(attachmentNames.join("\n"));
