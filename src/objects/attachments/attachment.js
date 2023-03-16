@@ -70,8 +70,8 @@ class Attachment {
         return this._attachmentAttrs;
     }
 
-    get localName() {
-        return this._attachmentAttrs.localName;
+    get localeName() {
+        return this._attachmentAttrs.localeName;
     }
 
     get cardNsid() {

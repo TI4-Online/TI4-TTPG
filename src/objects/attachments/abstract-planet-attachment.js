@@ -25,7 +25,7 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
         }
         return new AbstractPlanetAttachment(
             gameObject,
-            attrs,
+            attrs.raw,
             attrs.localeName
         ).attachIfOnSystem();
     }
