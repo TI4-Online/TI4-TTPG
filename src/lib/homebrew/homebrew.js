@@ -1,6 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
-const { Attachment } = require("../../objects/attachments");
+const { Attachment } = require("../../objects/attachments/attachment");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
 const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
