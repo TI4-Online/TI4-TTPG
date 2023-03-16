@@ -74,6 +74,10 @@ class Attachment {
         return this._attachmentAttrs.localeName;
     }
 
+    get packageId() {
+        return this._attachmentAttrs.packageId;
+    }
+
     get cardNsid() {
         return this._attachmentAttrs.cardNsid;
     }

@@ -123,7 +123,7 @@ function addAttachmentsUI(card) {
         const isFaceUp = attachment.isAttachedFaceUp() || !attrs.faceDown;
         const faceAttrs = attrs[isFaceUp ? "faceUp" : "faceDown"];
         const image = faceAttrs.image;
-        const packageId = attachment.packageId || refPackageId;
+        const packageId = attrs.packageId || refPackageId;
         const tintColorHex = faceAttrs.tintColorHex || "#ffffff";
         const tintColor = ColorUtil.colorFromHex(tintColorHex);
         assert(image);
