@@ -113,7 +113,7 @@ class FactionSchema {
     /**
      * Validate schema, returns error does not throw.
      *
-     * @param {object} system attributes
+     * @param {object} faction attributes
      * @param {function} onError - takes the error as single argument
      * @returns {boolean} true if valid
      */

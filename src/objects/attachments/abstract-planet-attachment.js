@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSystemAttachment } = require("./abstract-system-attachment");
 const { Explore } = require("../../lib/explore/explore");
 const { ObjectNamespace } = require("../../lib/object-namespace");
-const { ATTACHMENTS } = require("./attachment.data");
+const { Attachment } = require("./attachment");
 const { GameObject, Vector } = require("../../wrapper/api");
 
 /**
@@ -10,7 +10,7 @@ const { GameObject, Vector } = require("../../wrapper/api");
  */
 class AbstractPlanetAttachment extends AbstractSystemAttachment {
     /**
-     * Set up a known attachment token (registered in attachment.data).
+     * Set up a known attachment token (registered in attachment.data and via homebrew.injectAttachment).
      *
      * @param {GameObject} gameObject
      * @returns {AbstractPlanetAttachment}
@@ -18,13 +18,8 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
     static createForKnownAttachmentToken(gameObject) {
         assert(gameObject instanceof GameObject);
         const nsid = ObjectNamespace.getNsid(gameObject);
-        let attrs = false;
-        for (const candidate of ATTACHMENTS) {
-            if (nsid === candidate.tokenNsid) {
-                attrs = candidate;
-                break;
-            }
-        }
+        let attrs = Attachment.getByTokenNsidName(nsid);
+
         if (!attrs) {
             throw new Error(`KnownPlanetAttachment: no attrs for "${nsid}"`);
         }

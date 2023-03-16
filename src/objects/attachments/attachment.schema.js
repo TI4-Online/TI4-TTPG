@@ -24,10 +24,11 @@ const ATTACHMENT_SCHEMA = {
     properties: {
         localeName: { type: "string" },
         cardNsid: { type: "string" },
+        tokenNsid: { type: "string" },
         faceUp: ATTACHMENT_HELPER_SCHEMA,
         faceDown: ATTACHMENT_HELPER_SCHEMA,
     },
-    required: ["localeName"],
+    required: ["localeName", "cardNsid", "tokenNsid", "faceUp"],
 };
 
 // Laxy instantiate on first use.
