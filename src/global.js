@@ -130,6 +130,9 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const {
+    AbstractStrategyCard,
+} = require("./objects/strategy-cards/abstract-strategy-card");
 const { Adjacency } = require("./lib/system/adjacency");
 const { Agenda } = require("./lib/agenda/agenda");
 const {
@@ -137,6 +140,7 @@ const {
     DEFAULT_ASYNC_DELAY,
 } = require("./lib/async-task-queue/async-task-queue");
 const { Borders } = require("./lib/borders/borders");
+const { Broadcast } = require("./lib/broadcast");
 const { CardUtil } = require("./lib/card/card-util");
 const { CommandToken } = require("./lib/command-token/command-token");
 const { ErrorReporting } = require("./global/error-reporting");
@@ -151,6 +155,8 @@ const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { ObjectNamespace } = require("./lib/object-namespace");
 const { PerfStats } = require("./lib/perf/perf-stats");
+const { RollGroup } = require("./lib/dice/roll-group");
+const { SimpleDieBuilder } = require("./lib/dice/simple-die");
 const { System, Planet } = require("./lib/system/system");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
@@ -160,12 +166,16 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     // Export some modules (to work around require cycles, or for homebrew use).
+    AbstractStrategyCard,
     Adjacency,
+    Broadcast,
     CardUtil,
     CommandToken,
     GameUI,
     Hex,
     ObjectNamespace,
+    RollGroup,
+    SimpleDieBuilder,
     Technology,
     UnitAttrs,
     UnitPlastic,
