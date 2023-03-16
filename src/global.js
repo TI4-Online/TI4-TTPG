@@ -130,6 +130,9 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const {
+    AbstractPlanetAttachment,
+} = require("./objects/attachments/abstract-planet-attachment");
 const { Adjacency } = require("./lib/system/adjacency");
 const { Agenda } = require("./lib/agenda/agenda");
 const {
@@ -160,6 +163,7 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
     // Export some modules (to work around require cycles, or for homebrew use).
+    AbstractPlanetAttachment,
     Adjacency,
     CardUtil,
     CommandToken,
