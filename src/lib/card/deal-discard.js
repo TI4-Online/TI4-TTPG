@@ -535,7 +535,15 @@ class DealDiscard {
 
         // If discards go to the main deck, shuffle after discarding.
         if (!getDiscard) {
-            deck.shuffle();
+            // Wait until the card get added to shuffle, otherwise the added
+            // card is on the bottom.
+            if (obj !== deck) {
+                obj.onDestroyed.add(() => {
+                    process.nextTick(() => {
+                        deck.shuffle();
+                    });
+                });
+            }
         }
 
         return true;
