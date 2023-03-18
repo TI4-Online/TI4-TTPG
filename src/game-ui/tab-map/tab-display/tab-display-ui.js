@@ -5,6 +5,9 @@ const {
     SystemTileBrightness,
 } = require("../../../lib/ui/system-tile-brightness");
 const { WidgetFactory } = require("../../../lib/ui/widget-factory");
+const {
+    ThrottleClickHandler,
+} = require("../../../lib/ui/throttle-click-handler");
 
 class TabDisplayUI {
     constructor(onClickHandlers) {
@@ -25,6 +28,17 @@ class TabDisplayUI {
         assert(typeof onClickHandlers.teamBorders === "function");
         teamBorders.onCheckStateChanged.add(onClickHandlers.teamBorders);
         this._verticalBox.addChild(teamBorders);
+
+        const toggleBordersPerPlayer = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.tab.map.display.toggle_per_player_borders"));
+        toggleBordersPerPlayer.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                onClickHandlers.toggleBordersPerPlayerSlot(player.getSlot());
+            })
+        );
+        // TODO XXX ENABLE THIS WHEN SUPPORTED
+        //this._verticalBox.addChild(toggleBordersPerPlayer);
 
         const brightnessLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
