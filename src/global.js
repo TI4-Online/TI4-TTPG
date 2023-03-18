@@ -130,6 +130,8 @@ if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
 }
 
+const assert = require("./wrapper/assert-wrapper");
+const locale = require("./lib/locale");
 const {
     AbstractPlanetAttachment,
 } = require("./objects/attachments/abstract-planet-attachment");
@@ -183,6 +185,10 @@ world.TI4 = {
     Technology,
     UnitAttrs,
     UnitPlastic,
+
+    // More libraries for homebrew access
+    assert,
+    locale,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
