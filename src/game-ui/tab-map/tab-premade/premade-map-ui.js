@@ -3,6 +3,9 @@ const CONFIG = require("../../game-ui-config");
 const MAP_ATLAS_DB = require("../../../lib/map-string/map-atlas-db.json");
 const MAP_STRING_DB = require("../../../lib/map-string/map-string-db.json");
 const { WidgetFactory } = require("../../../lib/ui/widget-factory");
+const {
+    ThrottleClickHandler,
+} = require("../../../lib/ui/throttle-click-handler");
 
 class PremadeMapUI {
     constructor(onClickHandlers) {
@@ -37,6 +40,22 @@ class PremadeMapUI {
         this._choicesBox = WidgetFactory.layoutBox();
         this._verticalBox.addChild(this._choicesBox, 1);
 
+        this._verticalBox.addChild(
+            WidgetFactory.border().setColor(CONFIG.spacerColor)
+        );
+
+        const randomFromList = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.label.random_from_list"));
+        randomFromList.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                console.log("randomFromList");
+                this.randomFromList();
+            })
+        );
+        this._verticalBox.addChild(randomFromList, 0);
+
+        this._candiates = [];
         this.update();
     }
 
@@ -76,7 +95,7 @@ class PremadeMapUI {
             return true;
         };
 
-        const candidates = [];
+        let candidates = [];
         candidates.push(...MAP_STRING_DB);
         candidates.push(...MAP_ATLAS_DB);
 
@@ -91,11 +110,10 @@ class PremadeMapUI {
             candidate._lowerName = displayName.toLowerCase();
         }
 
+        candidates = candidates.filter((x) => accept(x));
+
         const panel = WidgetFactory.verticalBox();
         for (const candidate of candidates) {
-            if (!accept(candidate)) {
-                continue;
-            }
             const button = WidgetFactory.button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(candidate._displayName);
@@ -106,6 +124,16 @@ class PremadeMapUI {
             panel.addChild(button);
         }
         this._choicesBox.setChild(panel);
+        this._candiates = candidates;
+    }
+
+    randomFromList() {
+        if (this._candiates.length === 0) {
+            return;
+        }
+        const index = Math.floor(Math.random() * this._candiates.length);
+        const candidate = this._candiates[index];
+        this._onClickHandlers.useMap(candidate);
     }
 }
 

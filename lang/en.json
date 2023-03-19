@@ -169,6 +169,7 @@
     "ui.label.influence": "Inf",
     "ui.label.tradegoodsAndCommodities": "C/TG",
     "ui.label.tokens": "Tokens",
+    "ui.label.random_from_list": "Random from list",
 
     "ui.whisper.newest": "New",
     "ui.whisper.who_sent": "Whispers",
