@@ -31,7 +31,7 @@ const {
     world,
 } = require("../../wrapper/api");
 
-const ZONE_HEIGHT = 10;
+const ZONE_HEIGHT = 15;
 const SYSTEM_UI_STAND_IN_SHRINK = 0.5;
 
 // Zones persist across save/load.
@@ -180,7 +180,7 @@ class FogOfWarZone {
      */
     getZonePos() {
         let pos = this._systemTileObj.getPosition();
-        pos.z = world.getTableHeight() + ZONE_HEIGHT / 2 - 0.5;
+        pos.z = world.getTableHeight() + ZONE_HEIGHT / 2 - 2.5; // make sure dips lower than system tile
         return pos;
     }
 

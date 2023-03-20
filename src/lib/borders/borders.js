@@ -407,6 +407,15 @@ class Borders {
         return this;
     }
 
+    getVisible(playerSlot) {
+        return true; // XXX TODO
+    }
+
+    setVisible(playerSlot, value) {
+        // XXX TODO
+        return this;
+    }
+
     getTeams() {
         return this._teams;
     }

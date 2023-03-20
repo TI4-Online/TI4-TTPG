@@ -504,9 +504,20 @@ class DealDiscard {
             // Add to existing discard pile.
             obj.setTags(["DELETED_ITEMS_IGNORE"]);
             const toFront = true;
-            const offset = 0;
+            let offset = 0;
             const animate = true;
             const flipped = false;
+
+            // If there is no discard pile, shuffle the deck along with adding
+            // this card.  Because the card does not get added until the
+            // discard animation finishes, shuffle now and insert at a random
+            // offset (could also wait for the animation to finish, this is
+            // simpler and safer).
+            if (!getDiscard) {
+                deck.shuffle();
+                offset = Math.floor(Math.random() * deck.getStackSize());
+            }
+
             CheckDeckUnique.checkDeckAfterAddingCard(deck, obj);
             deck.addCards(obj, toFront, offset, animate, flipped);
         } else {
@@ -531,19 +542,6 @@ class DealDiscard {
             deck.setPosition(pos, 1);
             deck.setRotation(rot, 1);
             deck.snap();
-        }
-
-        // If discards go to the main deck, shuffle after discarding.
-        if (!getDiscard) {
-            // Wait until the card get added to shuffle, otherwise the added
-            // card is on the bottom.
-            if (obj !== deck) {
-                obj.onDestroyed.add(() => {
-                    process.nextTick(() => {
-                        deck.shuffle();
-                    });
-                });
-            }
         }
 
         return true;

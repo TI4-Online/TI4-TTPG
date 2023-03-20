@@ -35,7 +35,6 @@ class TabBagDraft {
         console.log("TabBagDraft._onCancel");
         if (this._bagDraft) {
             this._bagDraft.cancel();
-            this._bagDraft = undefined;
         }
     }
 }

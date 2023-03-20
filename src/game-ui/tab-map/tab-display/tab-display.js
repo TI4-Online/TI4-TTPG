@@ -13,6 +13,9 @@ class TabDisplay {
             teamBorders: (checkBox, player, isChecked) => {
                 this.teamBorders(isChecked);
             },
+            toggleBordersPerPlayerSlot: (playerSlot) => {
+                this.toggleBordersPerPlayerSlot(playerSlot);
+            },
             systemBrightnessChanged: (slider, player, value) => {
                 const u = value / slider.getMaxValue();
                 this.updateBrightness(u);
@@ -33,6 +36,15 @@ class TabDisplay {
     teamBorders(isChecked) {
         console.log(`TabDisplay.teamBorders ${isChecked}`);
         world.TI4.borders.setTeams(isChecked);
+    }
+
+    toggleBordersPerPlayerSlot(playerSlot) {
+        const oldValue = world.TI4.borders.getVisible(playerSlot);
+        const newValue = !oldValue;
+        console.log(
+            `TabDisplay.toggleBordersPerPlayerSlot "${playerSlot}" (${oldValue} -> ${newValue})`
+        );
+        world.TI4.borders.setVisible(playerSlot, newValue);
     }
 
     updateBrightness(value) {

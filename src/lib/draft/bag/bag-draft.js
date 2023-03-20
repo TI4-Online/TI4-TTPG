@@ -30,16 +30,19 @@ const DEFAULT_CONFIG = {
     minAlpha: { min: 0, default: 2, max: 3 },
     minBeta: { min: 0, default: 2, max: 3 },
     minLegendary: { min: 0, default: 1, max: 2 },
+    useFactionsOnTable: false,
 };
 
 class BagDraft {
-    static draftFactions(count) {
+    static draftFactions(count, useFactionsOnTable) {
         assert(typeof count === "number");
+        assert(typeof useFactionsOnTable === "boolean");
         let factions = new MiltyFactionGenerator()
             .setCount(
                 count,
                 true // override value bounds checking
             )
+            .setFactionsFromCards(useFactionsOnTable)
             .generate();
         factions = Shuffle.shuffle(factions);
         assert(factions.length === count);
@@ -49,8 +52,10 @@ class BagDraft {
     static getDefaultConfig() {
         const config = lodash.cloneDeep(DEFAULT_CONFIG);
         for (const entry of Object.values(config)) {
-            assert(typeof entry.default === "number");
-            entry._value = entry.default;
+            if (typeof entry === "object") {
+                assert(typeof entry.default === "number");
+                entry._value = entry.default;
+            }
         }
         return config;
     }
@@ -270,7 +275,8 @@ class BagDraft {
         );
 
         const factions = BagDraft.draftFactions(
-            this._bags.length * this._config.faction._value
+            this._bags.length * this._config.faction._value,
+            this._config.useFactionsOnTable
         );
 
         for (const bag of this._bags) {

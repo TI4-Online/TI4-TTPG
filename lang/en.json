@@ -169,6 +169,7 @@
     "ui.label.influence": "Inf",
     "ui.label.tradegoodsAndCommodities": "C/TG",
     "ui.label.tokens": "Tokens",
+    "ui.label.random_from_list": "Random from list",
 
     "ui.whisper.newest": "New",
     "ui.whisper.who_sent": "Whispers",
@@ -272,6 +273,7 @@
     "ui.tab.map.display.system_brightness": "System brightness:",
     "ui.tab.map.display.enable_borders": "Enable borders",
     "ui.tab.map.display.team_borders": "Team borders",
+    "ui.tab.map.display.toggle_per_player_borders": "Toggle border visibility (per player)",
     "ui.tab.map.fog": "Fog",
     "ui.tab.map.fog.enable": "Enable fog",
     "ui.tab.map.fog.description": "Updated when changing turns, players see only systems where they have units or control planets, as well as adjacent systems.\n\nActivating a system temporarily reveals that system (but not adjacent) to the activating player.",

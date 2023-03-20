@@ -85,6 +85,12 @@ class MiltyFactionGenerator {
         return this._factionsFromCards;
     }
 
+    /**
+     * Use factions on the table?
+     *
+     * @param {boolean} value
+     * @returns {MiltyFactionGenerator} self, for chaining
+     */
     setFactionsFromCards(value) {
         assert(typeof value === "boolean");
         this._factionsFromCards = value;

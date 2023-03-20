@@ -30,7 +30,7 @@ class TabBagDraftUI {
         assert(typeof config.minBeta.max === "number");
         assert(typeof config.minLegendary.max === "number");
 
-        const fontSize = CONFIG.fontSize * 0.9;
+        const fontSize = CONFIG.fontSize * 0.75;
         const playerCount = world.TI4.config.playerCount;
 
         const availFactions = world.TI4.getAllFactions().length - 3; // at most one keleres, minus one for linked faction
@@ -46,13 +46,28 @@ class TabBagDraftUI {
             this._box.setChild(undefined);
             WidgetFactory.release(old);
         }
-        const verticalBox = WidgetFactory.verticalBox().setChildDistance(
+        const leftBox = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
+        const rightBox = WidgetFactory.verticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        const leftRightPanel = WidgetFactory.horizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(leftBox, 1)
+            .addChild(WidgetFactory.border().setColor(CONFIG.spacerColor), 0)
+            .addChild(rightBox, 1);
+        const verticalBox = WidgetFactory.verticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(leftRightPanel);
         this._box.setChild(verticalBox);
+
+        const weightLabel = 4;
+        const wightSlider = 3;
 
         // RED
         const redCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.red_count"));
         const redCountSlider = WidgetFactory.slider()
@@ -67,12 +82,13 @@ class TabBagDraftUI {
         });
         const redCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(redCountLabel, 2)
-            .addChild(redCountSlider, 4);
-        verticalBox.addChild(redCountPanel);
+            .addChild(redCountLabel, weightLabel)
+            .addChild(redCountSlider, wightSlider);
+        leftBox.addChild(redCountPanel);
 
         // BLUE
         const highCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.blue_high_count"));
         const highCountSlider = WidgetFactory.slider()
@@ -87,11 +103,12 @@ class TabBagDraftUI {
         });
         const highCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(highCountLabel, 2)
-            .addChild(highCountSlider, 4);
-        verticalBox.addChild(highCountPanel);
+            .addChild(highCountLabel, weightLabel)
+            .addChild(highCountSlider, wightSlider);
+        leftBox.addChild(highCountPanel);
 
         const medCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.blue_med_count"));
         const medCountSlider = WidgetFactory.slider()
@@ -106,11 +123,12 @@ class TabBagDraftUI {
         });
         const medCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(medCountLabel, 2)
-            .addChild(medCountSlider, 4);
-        verticalBox.addChild(medCountPanel);
+            .addChild(medCountLabel, weightLabel)
+            .addChild(medCountSlider, wightSlider);
+        leftBox.addChild(medCountPanel);
 
         const lowCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.blue_low_count"));
         const lowCountSlider = WidgetFactory.slider()
@@ -125,12 +143,13 @@ class TabBagDraftUI {
         });
         const lowCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(lowCountLabel, 2)
-            .addChild(lowCountSlider, 4);
-        verticalBox.addChild(lowCountPanel);
+            .addChild(lowCountLabel, weightLabel)
+            .addChild(lowCountSlider, wightSlider);
+        leftBox.addChild(lowCountPanel);
 
         // FACTION
         const factionCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.faction_count"));
         const factionCountSlider = WidgetFactory.slider()
@@ -145,16 +164,13 @@ class TabBagDraftUI {
         });
         const factionCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(factionCountLabel, 2)
-            .addChild(factionCountSlider, 4);
-        verticalBox.addChild(factionCountPanel);
-
-        verticalBox.addChild(
-            WidgetFactory.border().setColor(CONFIG.spacerColor)
-        );
+            .addChild(factionCountLabel, weightLabel)
+            .addChild(factionCountSlider, wightSlider);
+        leftBox.addChild(factionCountPanel);
 
         // ALPHA
         const alphaCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.alpha_min"));
         const alphaCountSlider = WidgetFactory.slider()
@@ -169,12 +185,13 @@ class TabBagDraftUI {
         });
         const alphaCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(alphaCountLabel, 2)
-            .addChild(alphaCountSlider, 4);
-        verticalBox.addChild(alphaCountPanel);
+            .addChild(alphaCountLabel, weightLabel)
+            .addChild(alphaCountSlider, wightSlider);
+        rightBox.addChild(alphaCountPanel);
 
         // BETA
         const betaCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.beta_min"));
         const betaCountSlider = WidgetFactory.slider()
@@ -189,12 +206,13 @@ class TabBagDraftUI {
         });
         const betaCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(betaCountLabel, 2)
-            .addChild(betaCountSlider, 4);
-        verticalBox.addChild(betaCountPanel);
+            .addChild(betaCountLabel, weightLabel)
+            .addChild(betaCountSlider, wightSlider);
+        rightBox.addChild(betaCountPanel);
 
         // LEGENDARY
         const legendaryCountLabel = WidgetFactory.text()
+            .setAutoWrap(true)
             .setFontSize(fontSize)
             .setText(locale("ui.draft.legendary_min"));
         const legendaryCountSlider = WidgetFactory.slider()
@@ -209,9 +227,20 @@ class TabBagDraftUI {
         });
         const legendaryCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(legendaryCountLabel, 2)
-            .addChild(legendaryCountSlider, 4);
-        verticalBox.addChild(legendaryCountPanel);
+            .addChild(legendaryCountLabel, weightLabel)
+            .addChild(legendaryCountSlider, wightSlider);
+        rightBox.addChild(legendaryCountPanel);
+
+        // USE FACTIONS ON TABLE
+        const useFactionsOnTable = WidgetFactory.checkBox()
+            .setFontSize(fontSize)
+            .setText(locale("ui.draft.factions_from_cards"));
+        useFactionsOnTable.onCheckStateChanged.add(
+            (checkBox, player, isChecked) => {
+                config.useFactionsOnTable = isChecked;
+            }
+        );
+        verticalBox.addChild(useFactionsOnTable);
 
         // FILLER
         verticalBox.addChild(WidgetFactory.layoutBox(), 1);

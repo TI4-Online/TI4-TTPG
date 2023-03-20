@@ -326,10 +326,13 @@ class Explore {
             tokenRot.roll = 180;
         }
 
-        // Find token, might be in a bag.
+        // Find token.
         let tokenObj = false;
         if (!attachmentData.spawn) {
             for (const obj of world.getAllObjects()) {
+                if (!obj.getContainer()) {
+                    continue; // only use tokens from the bag (do not move on-table tokens!)
+                }
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid === tokenNsid) {
                     tokenObj = obj;
@@ -412,7 +415,7 @@ class Explore {
                 planet.position
             );
         } else {
-            pos = systemTileObj.getPosition();
+            pos = systemTileObj.localPositionToWorld([0, -3, 0]);
         }
         pos.z = world.getTableHeight() + systemTileObj.getSize().z;
 
