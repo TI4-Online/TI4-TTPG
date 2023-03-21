@@ -221,6 +221,7 @@
     "ui.setup.use_game_data": "Send anonymized game data",
     "ui.setup.report_errors": "Send error reports",
     "ui.setup.do_setup": "START GAME",
+    "ui.setup.suggest_6p_skinny": "Recommend “6P Skinny Table” for better player/viewer experience",
 
     "ui.desk.take_seat": "TAKE SEAT",
     "ui.desk.leave_seat": "LEAVE SEAT",
