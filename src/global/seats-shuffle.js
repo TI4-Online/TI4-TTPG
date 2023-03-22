@@ -2,12 +2,22 @@ const assert = require("../wrapper/assert-wrapper");
 const { PlayerDesk } = require("../lib/player-desk/player-desk");
 const { Shuffle } = require("../lib/shuffle");
 const { Player, globalEvents, world } = require("../wrapper/api");
+const { Broadcast } = require("../lib/broadcast");
+const locale = require("../lib/locale");
 
 function consider(player, message) {
     assert(player instanceof Player);
     assert(typeof message === "string");
 
     if (message !== "!seats") {
+        return;
+    }
+
+    if (!player.isHost()) {
+        Broadcast.chatAll(
+            locale("ui.error.must_be_host_to_use_seats"),
+            Broadcast.ERROR
+        );
         return;
     }
 
