@@ -14,6 +14,9 @@ const {
     world,
 } = require("../wrapper/api");
 
+// Numpad-0 "graveyards" held objects.  Require players enable it.
+const _numpadZeroAccess = {};
+
 function lookAt(pos, yaw, distance, player) {
     assert(typeof pos.x === "number");
     assert(typeof yaw === "number");
@@ -118,12 +121,38 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
     }
 
     if (index === 10) {
-        if (!ctrl) {
-            Broadcast.chatOne(
-                player,
-                locale("ui.error.numpad0_control"),
-                Broadcast.ERROR
-            );
+        const key = player.getName();
+        let value = _numpadZeroAccess[key] || 0;
+        const needed = 3;
+        if (value < needed) {
+            if (ctrl) {
+                // Player may press control-numpad0 several times to access
+                value += 1;
+                _numpadZeroAccess[key] = value;
+                if (value < needed) {
+                    Broadcast.chatOne(
+                        player,
+                        locale("ui.error.numpad0_progress", {
+                            remaining: needed - value,
+                        }),
+                        Broadcast.ERROR
+                    );
+                } else {
+                    Broadcast.chatOne(
+                        player,
+                        locale("ui.error.numpad0_granted"),
+                        Broadcast.ERROR
+                    );
+                }
+            } else {
+                Broadcast.chatOne(
+                    player,
+                    locale("ui.error.numpad0_control", {
+                        remaining: needed - value,
+                    }),
+                    Broadcast.ERROR
+                );
+            }
             return;
         }
 

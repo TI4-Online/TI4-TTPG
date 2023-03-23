@@ -6,7 +6,10 @@
     "ui.error.commander_locked": "Commander is locked",
     "ui.error.invalid_map_string": "Invalid map string “{mapString}”",
     "ui.error.invalid_faction_sheet": "Faction sheet with unknown faction \"{nsid}\"",
-    "ui.error.numpad0_control": "Use control + numpad-0 to trash objects",
+    "ui.error.numpad0_control": "Numpad-0 restricted, press control + numpad-0 {remaining} {#remaining|time|times} to access numpad-0 to trash objects}",
+    "ui.error.numpad0_progress": "Press control + numpad-0 {remaining} more {#remaining|time|times} to access",
+    "ui.error.numpad0_granted": "Numpad-0 access granted",
+    "ui.error.must_be_host_to_use_seats": "Only the host can use the !seats command",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",
@@ -221,6 +224,7 @@
     "ui.setup.use_game_data": "Send anonymized game data",
     "ui.setup.report_errors": "Send error reports",
     "ui.setup.do_setup": "START GAME",
+    "ui.setup.suggest_6p_skinny": "Recommend “6P Skinny Table” for better player/viewer experience",
 
     "ui.desk.take_seat": "TAKE SEAT",
     "ui.desk.leave_seat": "LEAVE SEAT",

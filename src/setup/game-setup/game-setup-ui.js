@@ -1,12 +1,19 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
+const { ColorUtil } = require("../../lib/color/color-util");
 const { DelayedSliderHandler } = require("../../lib/ui/delayed-slider-handler");
 const { Hex } = require("../../lib/hex");
+const { PlayerDeskColor } = require("../../lib/player-desk/player-desk-color");
 const { TableLayout } = require("../../table/table-layout");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const CONFIG = require("../../game-ui/game-ui-config");
-const { TextJustification, refPackageId, world } = require("../../wrapper/api");
+const {
+    TextJustification,
+    globalEvents,
+    refPackageId,
+    world,
+} = require("../../wrapper/api");
 
 let _playerCountSlider = undefined;
 let _setupButton = undefined;
@@ -147,6 +154,26 @@ class GameSetupUI {
             )
         );
 
+        fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
+
+        if (TableLayout.GET_TABLE() !== "6p-skinny") {
+            const wrongTableWarning = this._createText(
+                locale("ui.setup.suggest_6p_skinny")
+            );
+            const wrongColorHex =
+                PlayerDeskColor.getColorAttrs("red").widgetHexColor;
+            const wrongColor = ColorUtil.colorFromHex(wrongColorHex);
+            wrongTableWarning
+                .setJustification(TextJustification.Center)
+                .setTextColor(wrongColor)
+                .setVisible(world.TI4.config.playerCount <= 6);
+            fullPanel.addChild(wrongTableWarning);
+
+            globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
+                wrongTableWarning.setVisible(playerCount <= 6);
+            });
+        }
+
         _setupButton = this._createButton(
             "ui.setup.do_setup",
             this._callbacks.onSetupClicked
@@ -156,8 +183,6 @@ class GameSetupUI {
                 _setupButton = undefined;
             });
         }
-
-        fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
         fullPanel.addChild(_setupButton);
 
         return fullPanel;
@@ -223,7 +248,9 @@ class GameSetupUI {
 
         onValueChanged = DelayedSliderHandler.wrap(onValueChanged);
         slider.onValueChanged.add(onValueChanged);
-        return WidgetFactory.verticalBox().addChild(label).addChild(slider);
+        return WidgetFactory.horizontalBox()
+            .addChild(label, 5)
+            .addChild(slider, 5);
     }
 }
 
