@@ -32,6 +32,11 @@ class MapStringSave {
             const hex = Hex.fromPosition(obj.getPosition());
             const index = MapStringHex.hexStringToIdx(hex);
 
+            // Watch for tiles way outside map.
+            if (index > 150) {
+                continue;
+            }
+
             // Assemble tile data.
             const entry = {
                 tile: tile,
