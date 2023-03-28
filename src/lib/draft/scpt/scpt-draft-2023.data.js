@@ -16,7 +16,18 @@ const SCPT_DRAFTS_2023 = [
     },
     {
         name: "Prelims",
-        enabled: false,
+        enabled: true,
+        slices: "63,40,72,46,68|45,64,34,62,49|36,25,24,50,41|48,22,66,79,32|39,61,59,43,71|42,26,73,78,21|47,70,65,44,19",
+        labels: [
+            "Gone Girl",
+            "Big-Lore, Not Four",
+            "DOOT DOOT!",
+            "Ginger As She Goes",
+            "It's Finger",
+            "It's Pronounced Kay All Dree",
+            "It's Pronounced Celery",
+        ].join("|"),
+        clock: 28800,
     },
     {
         name: "Semi-finals",
