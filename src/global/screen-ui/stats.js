@@ -311,4 +311,12 @@ class StatsScreenUI {
     }
 }
 
+const actionName = "*" + locale("ui.menu.toggle_stats");
+world.addCustomAction(actionName);
+globalEvents.onCustomAction.add((player, id) => {
+    if (id === actionName) {
+        StatsScreenUI.getInstance().toggleVisibility(player.getSlot());
+    }
+});
+
 module.exports = { StatsScreenUI };

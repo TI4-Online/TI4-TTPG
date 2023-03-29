@@ -2,6 +2,7 @@ const TriggerableMulticastDelegate = require("../lib/triggerable-multicast-deleg
 
 class GlobalScriptingEvents {
     onChatMessage = new TriggerableMulticastDelegate();
+    onCustomAction = new TriggerableMulticastDelegate();
     onDiceRolled = new TriggerableMulticastDelegate();
     onObjectCreated = new TriggerableMulticastDelegate();
     onObjectDestroyed = new TriggerableMulticastDelegate();

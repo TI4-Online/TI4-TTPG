@@ -53,6 +53,8 @@ class GameWorld {
         return "ScriptReload";
     }
 
+    addCustomAction() {}
+
     addDrawingLine(value) {
         this._drawingLines.push(value);
     }
