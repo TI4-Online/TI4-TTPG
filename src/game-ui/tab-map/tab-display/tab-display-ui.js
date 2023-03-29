@@ -37,8 +37,7 @@ class TabDisplayUI {
                 onClickHandlers.toggleBordersPerPlayerSlot(player.getSlot());
             })
         );
-        // TODO XXX ENABLE THIS WHEN SUPPORTED
-        //this._verticalBox.addChild(toggleBordersPerPlayer);
+        this._verticalBox.addChild(toggleBordersPerPlayer);
 
         const brightnessLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
@@ -58,6 +57,12 @@ class TabDisplayUI {
             onClickHandlers.systemBrightnessChanged
         );
         this._verticalBox.addChild(brightnessPanel);
+
+        // Disable toggle when borders are not enabled.
+        toggleBordersPerPlayer.setEnabled(enableBorders.isChecked());
+        enableBorders.onCheckStateChanged.add(() => {
+            toggleBordersPerPlayer.setEnabled(enableBorders.isChecked());
+        });
     }
 
     getWidget() {

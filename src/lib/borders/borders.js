@@ -15,6 +15,7 @@ const {
     Color,
     DrawingLine,
     GameObject,
+    PlayerPermission,
     Vector,
     globalEvents,
     world,
@@ -388,10 +389,18 @@ class Borders {
         this._teams = false;
         this._lines = undefined;
         this._thickness = DEFAULT_THICKNESS;
+        this._playerSlots = [];
+
+        for (let playerSlot = 0; playerSlot < 20; playerSlot++) {
+            this._playerSlots.push(playerSlot);
+        }
 
         this._doUpdate = () => {
             this.drawLinesAsync();
         };
+
+        // Need to re-enable.
+        this.clearLines();
     }
 
     setEnabled(value) {
@@ -408,11 +417,40 @@ class Borders {
     }
 
     getVisible(playerSlot) {
-        return true; // XXX TODO
+        assert(typeof playerSlot === "number");
+        return this._playerSlots.includes(playerSlot);
     }
 
     setVisible(playerSlot, value) {
-        // XXX TODO
+        assert(typeof playerSlot === "number");
+        assert(typeof value === "boolean");
+
+        const index = this._playerSlots.indexOf(playerSlot);
+        if (index >= 0) {
+            if (!value) {
+                this._playerSlots.splice(index, 1);
+            }
+        } else {
+            if (value) {
+                this._playerSlots.push(playerSlot);
+            }
+        }
+
+        const playerPermission = new PlayerPermission();
+        playerPermission.setPlayerSlots(this._playerSlots);
+
+        const lines = [];
+        for (const candidate of world.getDrawingLines()) {
+            if (candidate.tag === BORDER_DRAWING_LINE_TAG) {
+                lines.push(candidate);
+            }
+        }
+        for (const line of lines) {
+            world.removeDrawingLineObject(line);
+            line.players = playerPermission;
+            world.addDrawingLine(line);
+        }
+
         return this;
     }
 
@@ -483,12 +521,15 @@ class Borders {
                 if (!linkedSegments) {
                     return; // seen in one error report, how can this happen?
                 }
+                const playerPermission = new PlayerPermission();
+                playerPermission.setPlayerSlots(this._playerSlots);
                 this._lines = [];
                 for (const linkedSegment of linkedSegments) {
                     const line = Borders.createDrawingLine(
                         linkedSegment,
                         this._thickness
                     );
+                    line.players = playerPermission;
                     world.addDrawingLine(line);
                     this._lines.push(line);
                 }
@@ -521,5 +562,19 @@ class Borders {
         this._lines = undefined;
     }
 }
+
+/*
+const actionName = "*" + locale("ui.menu.toggle_borders");
+world.addCustomAction(actionName);
+globalEvents.onCustomAction.add((player, id) => {
+    if (id === actionName) {
+        world.TI4.borders.setEnabled(true);
+        const playerSlot = player.getSlot();
+        const oldValue = world.TI4.borders.getVisible(playerSlot);
+        const newValue = !oldValue;
+        world.TI4.borders.setVisible(playerSlot, newValue);
+    }
+});
+*/
 
 module.exports = { Borders, AREA };
