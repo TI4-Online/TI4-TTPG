@@ -2,6 +2,7 @@ require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const UPDATOR = require("./updator-player-turn-order");
 const { MockGameObject, world } = require("../../wrapper/api");
+const { FindTurnOrder } = require("../phase/find-turn-order");
 
 it("order", () => {
     const playerDesks = world.TI4.getAllPlayerDesks();
@@ -44,6 +45,8 @@ it("order", () => {
         })
     );
 
+    const order = FindTurnOrder.order();
+    world.TI4.turns.setTurnOrder(order);
     UPDATOR(data);
     world.__clear();
 
