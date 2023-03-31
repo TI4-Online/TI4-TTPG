@@ -13,18 +13,21 @@ function updateDescription(deck, onTop) {
         return;
     }
 
-    let desc;
+    // Descriptions are hidden for face-down decks, but the
+    // name is visible.  Edit the name.
+
+    let name = locale("tile.strategy.politics");
     if (onTop === undefined) {
-        desc = locale("tile.strategy.politics");
+        name = locale("tile.strategy.politics");
     } else {
-        desc = deck.getDescription();
+        name = deck.getName();
         const localeStr = onTop
             ? "ui.menu.place_agenda_top"
             : "ui.menu.place_agenda_bottom";
         const str = locale(localeStr);
-        desc = desc + "\n" + str;
+        name = name + "\n" + str;
     }
-    deck.setDescription(desc);
+    deck.setName(name);
 }
 
 function _placeAgenda(agendaCard, onTop) {
