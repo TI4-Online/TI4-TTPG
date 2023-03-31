@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { world } = require("../../wrapper/api");
-const { FindTurnOrder } = require("../phase/find-turn-order");
 
 module.exports = (data) => {
     assert(data.players.length === world.TI4.config.playerCount);
@@ -8,7 +7,7 @@ module.exports = (data) => {
         playerData.turnOrder = -1;
     });
 
-    const order = FindTurnOrder.order();
+    const order = world.TI4.turns.getTurnOrder();
     order.forEach((playerDesk, index) => {
         const playerData = data.players[playerDesk.index];
         if (playerData) {
