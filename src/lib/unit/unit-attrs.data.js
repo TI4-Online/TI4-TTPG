@@ -746,7 +746,7 @@ module.exports = [
     },
     {
         unit: "flagship",
-        upgradeLevel: 1,
+        upgradeLevel: 2,
         localeName: "unit.flagship.memoria_ii",
         triggerNsid: "card.technology.unit_upgrade.nomad:pok/memoria_2",
         antiFighterBarrage: { dice: 3, hit: 5 },
