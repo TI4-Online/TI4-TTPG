@@ -38,6 +38,11 @@ class RightClickDealStatringTechnology extends AbstractRightClickCard {
 
         const nsid = ObjectNamespace.getNsid(card);
         const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            throw new Error(
+                `getRightClickActionNamesAndTooltips: bad nsid "${nsid}"`
+            );
+        }
         const faction = world.TI4.getFactionByNsidName(parsed.name);
 
         return getStartinTechNameAndActions(faction);
