@@ -112,6 +112,9 @@ class MiltySliceUI {
         for (let i = 0; i < 5; i++) {
             const tile = miltySlice[i];
             const system = world.TI4.getSystemByTileNumber(tile);
+            if (!system) {
+                throw new Error(`setSlice: bad tile "${tile}"`);
+            }
             const imgPath = system.raw.img;
             const tileBox = this._tileBoxes[i];
             tileBox.setChild(

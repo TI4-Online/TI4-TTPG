@@ -14,6 +14,10 @@ class MiltyUtil {
             if (typeof tile !== "number") {
                 return `tile "${tile}" is not a number`;
             }
+            const system = world.TI4.getSystemByTileNumber(tile);
+            if (!system) {
+                return `bad tile "${tile}"`;
+            }
         }
         return false;
     }
