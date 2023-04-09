@@ -59,3 +59,9 @@ it("static suggestName control token", () => {
     const cmp = locale("token.control", { faction: abbr });
     assert.equal(name, cmp);
 });
+
+it("inject", () => {
+    const nsid = "the_type:homebrew.the_source/the_name";
+    const templateId = "x";
+    Spawn.injectNsidToTemplate(nsid, templateId);
+});
