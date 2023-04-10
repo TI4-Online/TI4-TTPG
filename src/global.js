@@ -124,7 +124,7 @@ globalEvents.onPlayerJoined.add((player) => {
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
 require("./lib/whisper/whisper-history");
-require("./global/reposition-collisions-stuck");
+//require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
 require("./global/seats-shuffle");
 
 if (!world.__isMock) {
