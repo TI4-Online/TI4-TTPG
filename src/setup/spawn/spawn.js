@@ -57,7 +57,9 @@ class Spawn {
             _typeSet = new Set();
             for (const nsid of Object.keys(NSID_TO_TEMPLATE)) {
                 const parsed = ObjectNamespace.parseNsid(nsid);
-                _typeSet.add(parsed.type);
+                if (parsed) {
+                    _typeSet.add(parsed.type);
+                }
             }
         }
 
@@ -289,6 +291,11 @@ class Spawn {
     static injectNsidToTemplate(nsid, templateId) {
         assert(typeof nsid === "string");
         assert(typeof templateId === "string");
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            throw new Error(`inject: "${nsid}" is not a valid NSID`);
+        }
+
         const old = NSID_TO_TEMPLATE[nsid];
         if (old && templateId !== old) {
             console.log(
