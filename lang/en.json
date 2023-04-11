@@ -161,7 +161,7 @@
     "ui.action.system.plague": "Plague {planetName}",
     "ui.button.end_turn": "END TURN",
 
-    "ui.message.system_enable_right_click": "Enable the setting:\n> Escape \n> Settings \n> Game \n> Show advanced interface settings \n> Ground Object Interaction / Zoom and open context menu\n(Some dynamic items like Plague and Naz-Rokha mech explore are only in the pop-up menu)",
+    "ui.message.system_enable_right_click": "To right click system tiles enable the setting:\n> Escape \n> Settings \n> Game \n> Show advanced interface settings \n> Ground Object Interaction / Zoom and open context menu\n(Some dynamic items like Plague and Naaz-Rokha mech explore are only in the pop-up menu)",
 
     "ui.label.speaker": "Speaker",
     "ui.label.movement": "Movement",
