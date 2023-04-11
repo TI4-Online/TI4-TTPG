@@ -17,10 +17,22 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 
 // Show right click options?  These are just the static choices, dynamic things
 // like distant suns exploration or the plague action card do not appear.
 const ADD_CUSTOM_ACTIONS = true;
+
+// TODO XXX
+//const _injectedActions = [];
+
+function injectRightClickSystemAction(params) {
+    assert(typeof params.name === "string");
+    assert(typeof params.show === "function");
+    assert(typeof params.onClick === "function");
+
+    // XXX TODO
+}
 
 function getNamesAndActions(player, systemTileObj) {
     assert(!player || player instanceof Player);
@@ -80,6 +92,21 @@ function getNamesAndActions(player, systemTileObj) {
             },
         });
     }
+
+    // Inform players about setting to right click ground mode objects.
+    namesAndActions.push({
+        name: locale("ui.action.system.enable_right_click"),
+        action: (player) => {
+            Broadcast.broadcastOne(
+                player,
+                locale("ui.message.system_enable_right_click"),
+                [1, 1, 0, 1]
+            );
+        },
+        fontSizeScale: 0.5,
+        popupOnly: true,
+    });
+
     return namesAndActions;
 }
 
@@ -112,11 +139,17 @@ function addRightClickOptions(systemTileObj) {
     if (ADD_CUSTOM_ACTIONS) {
         const namesAndActions = getNamesAndActions(null, systemTileObj);
         for (const nameAndAction of namesAndActions) {
+            if (nameAndAction.popupOnly) {
+                continue;
+            }
             systemTileObj.addCustomAction("*" + nameAndAction.name);
         }
         systemTileObj.onCustomAction.add((obj, player, actionName) => {
             assert(player instanceof Player);
             for (const nameAndAction of namesAndActions) {
+                if (nameAndAction.popupOnly) {
+                    continue;
+                }
                 if ("*" + nameAndAction.name === actionName) {
                     nameAndAction.action(player);
                     break;
@@ -172,3 +205,5 @@ if (world.getExecutionReason() === "ScriptReload") {
         }
     }
 }
+
+module.exports = { injectRightClickSystemAction };
