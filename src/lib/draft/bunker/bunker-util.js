@@ -1,6 +1,7 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { FactionAliases } = require("../../faction/faction-aliases");
 const { world } = require("../../../wrapper/api");
+const { Broadcast } = require("../../broadcast");
 
 class BunkerUtil {
     static getSliceError(bunkerSlice) {
@@ -58,6 +59,21 @@ class BunkerUtil {
             });
     }
 
+    static parseInnerString(innerStr) {
+        assert(typeof innerStr === "string");
+        const tiles = Array.from(innerStr.matchAll(/\d+/g)).map((str) =>
+            Number.parseInt(str)
+        );
+        if (tiles.length !== world.TI4.config.playerCount) {
+            Broadcast.chatAll(
+                "wrong number of fixed tiles (must match player count",
+                Broadcast.ERROR
+            );
+            return false;
+        }
+        return tiles;
+    }
+
     static parseCustomConfig(customStr) {
         assert(typeof customStr === "string");
 
@@ -111,6 +127,11 @@ class BunkerUtil {
                     result.slices = BunkerUtil.parseSliceSetString(
                         partParts[1]
                     );
+                }
+            } else if (part.startsWith("inner=") || part.startsWith("eqs=")) {
+                const partParts = part.split("=");
+                if (partParts.length > 1) {
+                    result.inner = BunkerUtil.parseInnerString(partParts[1]);
                 }
             }
         }
