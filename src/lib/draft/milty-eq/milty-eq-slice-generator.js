@@ -17,7 +17,7 @@ const MED = "med";
 const LOW = "low";
 
 // These are the equidistant planets.
-const INNER_RING_CHOICES = [
+const EQS_CHOICES = [
     // 3 red
     { weight: 5 + 1, value: [RED, RED, RED, HIGH, MED, LOW] }, // 6
     { weight: 5 + 2, value: [RED, RED, RED, HIGH, LOW, LOW] }, // 5
@@ -64,7 +64,7 @@ const MIN_LEGENDARY_CHOICES = [
 ];
 
 /**
- * Information about one bunker.
+ * Information about one slice.
  */
 class EqSlice {
     constructor() {
@@ -88,8 +88,8 @@ class EqSlice {
 }
 
 /**
- * A "Bunker" is a four system "slice" wrapped around a home system.
- * There is an innder circle of other systems.
+ * An "EqSlice" is four systems wrapped around a home system.
+ * There are a series of equidistant systems.
  */
 class MiltyEqSliceGenerator {
     static get minCount() {
@@ -146,9 +146,9 @@ class MiltyEqSliceGenerator {
      *
      * @return {Array.{string}}
      */
-    static _chooseInnerRingTileTypes(playerCount) {
+    static _chooseEqsTileTypes(playerCount) {
         assert(typeof playerCount === "number");
-        let result = MiltyEqSliceGenerator._weightedChoice(INNER_RING_CHOICES);
+        let result = MiltyEqSliceGenerator._weightedChoice(EQS_CHOICES);
         result = [...result]; // return a copy
         result = Shuffle.shuffle(result);
         while (result.length > playerCount) {
@@ -158,11 +158,11 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Which tile tiers make up a single bunker?
+     * Which tile tiers make up a single slice?
      *
      * @return {Array.{string}}
      */
-    static _chooseOneBunkerTileTypes() {
+    static _chooseOneSliceTileTypes() {
         let result = MiltyEqSliceGenerator._weightedChoice(BUNKER_CHOICES);
         result = [...result]; // return a copy
         return Shuffle.shuffle(result);
@@ -282,7 +282,7 @@ class MiltyEqSliceGenerator {
     /**
      * Choose one available tile.  May consider tiles aready used by peer entries.
      *
-     * @param {Array.{Object.{tileType,tile}}} entries - bunker or inner ring
+     * @param {Array.{Object.{tileType,tile}}} entries - slice or inner ring
      * @param {Array.{number}} availableTiles - choose from this collection
      * @returns {number} - tile from availableTiles
      */
@@ -458,20 +458,60 @@ class MiltyEqSliceGenerator {
         }
     }
 
+    static _maybeFixBadSlice(slice, reserve) {
+        assert(slice instanceof EqSlice);
+        assert(slice.getEntries().length === 4);
+        assert(typeof reserve === "object");
+        assert(Array.isArray(reserve.low));
+        assert(Array.isArray(reserve.med));
+        assert(Array.isArray(reserve.high));
+
+        const tiles = slice.getEntries().map((entry) => entry.tile);
+
+        let res = 0;
+        let inf = 0;
+        let planetCount = 0;
+        let reds = [];
+        for (const tile of tiles) {
+            const system = world.TI4.getSystemByTileNumber(tile);
+            assert(system);
+            if (system.red) {
+                reds.push(tile);
+            }
+            for (const planet of system.planets) {
+                res += planet.raw.resources;
+                inf += planet.raw.influence;
+                planetCount += 1;
+            }
+        }
+
+        console.log(
+            JSON.stringify({
+                res,
+                inf,
+                planetCount,
+                reds: reds.length,
+                high: reserve.high.length,
+                med: reserve.med.length,
+                low: reserve.low.length,
+            })
+        );
+    }
+
     constructor() {
         this.reset();
     }
 
     reset() {
         this._playerCount = world.TI4.config.playerCount;
-        this._bunkerCount = Math.min(
+        this._sliceCount = Math.min(
             world.TI4.config.playerCount + 2,
             MiltyEqSliceGenerator.maxCount
         );
-        this._bunkers = undefined; // {Array.{Bunker}}
-        this._innerRingEntries = undefined; // {Array.{tileType:string,tile:number}}
+        this._slices = undefined; // {Array.{Slice}}
+        this._eqsEntries = undefined; // {Array.{tileType:string,tile:number}}
 
-        // Tiles not (yet) used in any bunker or inner ring.
+        // Tiles not (yet) used in any slice or inner ring.
         this._unused = {
             high: Shuffle.shuffle([...TILE_TIERS.high]),
             med: Shuffle.shuffle([...TILE_TIERS.med]),
@@ -489,18 +529,18 @@ class MiltyEqSliceGenerator {
     }
 
     getSliceCount() {
-        return this._bunkerCount;
+        return this._sliceCount;
     }
 
     /**
      * Simple endpoint to run the full generator.
      *
-     * @param {number} bunkerCount
-     * @returns {Object.{bunkers,innerRing}}
+     * @param {number} sliceCount
+     * @returns {Object.{slices,eqs}}
      */
     simpleGenerate() {
-        return this.pickInnerRingTileTypes()
-            .pickBunkerTileTypes()
+        return this.pickEqsTileTypes()
+            .pickSliceTileTypes()
             .pickRedTiles()
             .assignRedTiles()
             .maybeDowngradeOtherWithGoodRed() // do before picking blue
@@ -509,6 +549,7 @@ class MiltyEqSliceGenerator {
             .maybeSwapInLegendaries()
             .assignBlueTiles()
             .separateAnomalies()
+            .fixBadSlices()
             .generate();
     }
 
@@ -516,7 +557,7 @@ class MiltyEqSliceGenerator {
      * Override default player count.
      *
      * @param {number} playerCount
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     setPlayerCount(playerCount) {
         assert(typeof playerCount === "number");
@@ -525,26 +566,27 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Generate how many bunkers?
+     * Generate how many slices?
      *
-     * @param {number} bunkerCount
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @param {number} sliceCount
+     * @returns {MiltyEqGenerator} self, for chaining
      */
-    setSliceCount(bunkerCount) {
-        assert(typeof bunkerCount === "number");
-        this._bunkerCount = bunkerCount;
+    setSliceCount(sliceCount) {
+        assert(typeof sliceCount === "number");
+        this._sliceCount = sliceCount;
         return this;
     }
 
     /**
      * Choose how many red tiles to place in the inner ring.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
-    pickInnerRingTileTypes() {
-        const innerRedTileTypes =
-            MiltyEqSliceGenerator._chooseInnerRingTileTypes(this._playerCount);
-        this._innerRingEntries = innerRedTileTypes.map((tileType) => {
+    pickEqsTileTypes() {
+        const innerRedTileTypes = MiltyEqSliceGenerator._chooseEqsTileTypes(
+            this._playerCount
+        );
+        this._eqsEntries = innerRedTileTypes.map((tileType) => {
             assert(typeof tileType === "string");
             return {
                 tileType,
@@ -555,23 +597,23 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Choose the four tile types for each bunker.
+     * Choose the four tile types for each slice.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
-    pickBunkerTileTypes() {
-        assert(!this._bunkers);
-        this._bunkers = new Array(this._bunkerCount).fill(0).map(() => {
+    pickSliceTileTypes() {
+        assert(!this._slices);
+        this._slices = new Array(this._sliceCount).fill(0).map(() => {
             return new EqSlice();
         });
 
-        // Fill in bunker entries.
-        for (const bunker of this._bunkers) {
-            const bunkerTileTypes =
-                MiltyEqSliceGenerator._chooseOneBunkerTileTypes();
-            assert(bunkerTileTypes.length === 4);
-            bunkerTileTypes.forEach((tileType, index) => {
-                const entry = bunker.getEntry(index);
+        // Fill in slice entries.
+        for (const slice of this._slices) {
+            const sliceTileTypes =
+                MiltyEqSliceGenerator._chooseOneSliceTileTypes();
+            assert(sliceTileTypes.length === 4);
+            sliceTileTypes.forEach((tileType, index) => {
+                const entry = slice.getEntry(index);
                 assert(typeof tileType === "string");
                 assert(entry);
                 entry.tileType = tileType;
@@ -582,22 +624,22 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Choose the available red tiles to assign to inner ring, bunkers.
+     * Choose the available red tiles to assign to inner ring, slices.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     pickRedTiles() {
-        if (!this._bunkers) {
-            throw new Error("must set bunker tile types first");
+        if (!this._slices) {
+            throw new Error("must set slice tile types first");
         }
 
         let numReds = 0;
         const tileTypes = [];
-        for (const entry of this._innerRingEntries) {
+        for (const entry of this._eqsEntries) {
             tileTypes.push(entry.tileType);
         }
-        for (const bunker of this._bunkers) {
-            for (const entry of bunker.getEntries()) {
+        for (const slice of this._slices) {
+            for (const entry of slice.getEntries()) {
                 tileTypes.push(entry.tileType);
             }
         }
@@ -613,24 +655,24 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Choose the available blue tiles to assign to inner ring, bunkers.
+     * Choose the available blue tiles to assign to inner ring, slices.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     pickBlueTiles() {
-        if (!this._bunkers) {
-            throw new Error("must set bunker tile types first");
+        if (!this._slices) {
+            throw new Error("must set slice tile types first");
         }
-        if (!this._innerRingEntries) {
+        if (!this._eqsEntries) {
             throw new Error("must set inner ring tile types first");
         }
 
         const tileTypes = [];
-        for (const entry of this._innerRingEntries) {
+        for (const entry of this._eqsEntries) {
             tileTypes.push(entry.tileType);
         }
-        for (const bunker of this._bunkers) {
-            for (const entry of bunker.getEntries()) {
+        for (const slice of this._slices) {
+            for (const entry of slice.getEntries()) {
                 tileTypes.push(entry.tileType);
             }
         }
@@ -713,7 +755,7 @@ class MiltyEqSliceGenerator {
     /**
      * Make sure at least two of each wormhole in available tiles.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     maybeSwapInWormholes() {
         const tiles = [];
@@ -798,26 +840,26 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * Fill in each bunker's red tiles, removing from available.
+     * Fill in each slice's red tiles, removing from available.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     assignRedTiles() {
-        if (!this._bunkers) {
-            throw new Error("must set bunker tile types first");
+        if (!this._slices) {
+            throw new Error("must set slice tile types first");
         }
-        if (!this._innerRingEntries) {
+        if (!this._eqsEntries) {
             throw new Error("must set inner ring tile types first");
         }
 
         const redEntries = [];
-        for (const entry of this._innerRingEntries) {
+        for (const entry of this._eqsEntries) {
             if (entry.tileType === RED) {
                 redEntries.push(entry);
             }
         }
-        for (const bunker of this._bunkers) {
-            for (const entry of bunker.getEntries()) {
+        for (const slice of this._slices) {
+            for (const entry of slice.getEntries()) {
                 if (entry.tileType === RED) {
                     redEntries.push(entry);
                 }
@@ -834,22 +876,22 @@ class MiltyEqSliceGenerator {
     }
 
     /**
-     * If a bunker has a red tile with a planet, downgrade a blue tile.
+     * If a slice has a red tile with a planet, downgrade a blue tile.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     maybeDowngradeOtherWithGoodRed() {
-        if (!this._bunkers) {
-            throw new Error("must set bunker tile types first");
+        if (!this._slices) {
+            throw new Error("must set slice tile types first");
         }
-        if (!this._innerRingEntries) {
+        if (!this._eqsEntries) {
             throw new Error("must set inner ring tile types first");
         }
 
-        for (const bunker of this._bunkers) {
-            const entries = bunker.getEntries();
+        for (const slice of this._slices) {
+            const entries = slice.getEntries();
             let downgrade = false;
-            for (const entry of bunker.getEntries()) {
+            for (const entry of slice.getEntries()) {
                 if (entry.tileType === RED) {
                     assert(entry.tile);
                     const system = world.TI4.getSystemByTileNumber(entry.tile);
@@ -882,20 +924,20 @@ class MiltyEqSliceGenerator {
     /**
      * Assign blue tile numbers.
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     assignBlueTiles() {
-        if (!this._bunkers) {
-            throw new Error("must set bunker tile types first");
+        if (!this._slices) {
+            throw new Error("must set slice tile types first");
         }
-        if (!this._innerRingEntries) {
+        if (!this._eqsEntries) {
             throw new Error("must set inner ring tile types first");
         }
 
-        // Array of arrays, each is a connected set (bunker or inner ring).
-        const entriesArray = [this._innerRingEntries];
-        for (const bunker of this._bunkers) {
-            entriesArray.push(bunker.getEntries());
+        // Array of arrays, each is a connected set (slice or inner ring).
+        const entriesArray = [this._eqsEntries];
+        for (const slice of this._slices) {
+            entriesArray.push(slice.getEntries());
         }
 
         // Use a random fill order because if choices consider what is already
@@ -946,22 +988,34 @@ class MiltyEqSliceGenerator {
     /**
      * Separate anomalies (makes and effort, can possibly lead to invalid result)
      *
-     * @returns {BunkerSliceGenerator} self, for chaining
+     * @returns {MiltyEqGenerator} self, for chaining
      */
     separateAnomalies() {
-        for (const bunker of this._bunkers) {
-            MiltyEqSliceGenerator._separateAnomalies(bunker.getEntries());
+        for (const slice of this._slices) {
+            MiltyEqSliceGenerator._separateAnomalies(slice.getEntries());
+        }
+        return this;
+    }
+
+    /**
+     * If a slice is really awkward try to swap some tiles out.
+     *
+     * @returns {MiltyEqGenerator} self, for chaining
+     */
+    fixBadSlices() {
+        for (const slice of this._slices) {
+            MiltyEqSliceGenerator._maybeFixBadSlice(slice, this._unused);
         }
         return this;
     }
 
     generate() {
-        let innerRing = this._innerRingEntries.map((entry) => entry.tile);
+        let eqs = this._eqsEntries.map((entry) => entry.tile);
         return {
-            slices: this._bunkers.map((bunker) => {
-                return bunker.getEntries().map((entry) => entry.tile);
+            slices: this._slices.map((slice) => {
+                return slice.getEntries().map((entry) => entry.tile);
             }),
-            eqs: innerRing,
+            eqs: eqs,
         };
     }
 }

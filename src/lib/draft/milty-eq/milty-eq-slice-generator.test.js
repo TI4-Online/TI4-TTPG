@@ -39,26 +39,24 @@ it("weightedChoice", () => {
     assert(a < c / 4);
 });
 
-it("_chooseInnerRingTileTypes", () => {
+it("_chooseEqsTileTypes", () => {
     let playerCount = 6;
-    let innerRingTileTypes =
-        MiltyEqSliceGenerator._chooseInnerRingTileTypes(playerCount);
-    assert(innerRingTileTypes.length === playerCount);
-    innerRingTileTypes.forEach((tileType) => {
+    let eqsTileTypes = MiltyEqSliceGenerator._chooseEqsTileTypes(playerCount);
+    assert(eqsTileTypes.length === playerCount);
+    eqsTileTypes.forEach((tileType) => {
         assert(typeof tileType === "string");
     });
 
     playerCount = 4;
-    innerRingTileTypes =
-        MiltyEqSliceGenerator._chooseInnerRingTileTypes(playerCount);
-    assert(innerRingTileTypes.length === playerCount);
-    innerRingTileTypes.forEach((tileType) => {
+    eqsTileTypes = MiltyEqSliceGenerator._chooseEqsTileTypes(playerCount);
+    assert(eqsTileTypes.length === playerCount);
+    eqsTileTypes.forEach((tileType) => {
         assert(typeof tileType === "string");
     });
 });
 
-it("_chooseOneBunkerTileTypes", () => {
-    const bunkerTileTypes = MiltyEqSliceGenerator._chooseOneBunkerTileTypes();
+it("_chooseOneSliceTileTypes", () => {
+    const bunkerTileTypes = MiltyEqSliceGenerator._chooseOneSliceTileTypes();
     assert.equal(bunkerTileTypes.length, 4);
 });
 
@@ -107,9 +105,9 @@ it("promoteWormholeRandomizeTier", () => {
 it("normal use", () => {
     const result = new MiltyEqSliceGenerator()
         .setSliceCount(6)
-        .pickInnerRingTileTypes()
-        .pickBunkerTileTypes()
-        .pickInnerRingTileTypes()
+        .pickEqsTileTypes()
+        .pickSliceTileTypes()
+        .pickEqsTileTypes()
         .pickRedTiles()
         .assignRedTiles()
         .maybeDowngradeOtherWithGoodRed() // do before picking blue
@@ -118,6 +116,7 @@ it("normal use", () => {
         .maybeSwapInLegendaries()
         .assignBlueTiles()
         .separateAnomalies()
+        .fixBadSlices()
         .generate();
     assert(result);
 });
