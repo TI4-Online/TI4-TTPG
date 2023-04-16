@@ -132,6 +132,10 @@ it("summarize", () => {
     tiles = [27];
     summary = System.summarize(tiles);
     assert.equal(summary, "4/2 G");
+
+    tiles = [65];
+    summary = System.summarize(tiles);
+    assert.equal(summary, "2/1 L");
 });
 
 it("inject", () => {
