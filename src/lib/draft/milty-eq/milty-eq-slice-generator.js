@@ -473,67 +473,157 @@ class MiltyEqSliceGenerator {
         assert(Array.isArray(reserve.med));
         assert(Array.isArray(reserve.high));
 
-        // Never replace wormholes or legendaries.
-        const tiles = slice
-            .getEntries()
-            .map((entry) => entry.tile)
-            .filter((tile) => {
-                const system = world.TI4.getSystemByTileNumber(tile);
-                if (system.wormholes.length > 0) {
-                    return false;
-                }
-                if (system.raw.legendary) {
-                    return false;
-                }
-                return true;
-            });
+        let tiles = slice.getEntries().map((entry) => entry.tile);
 
         const tileToResInf = {};
-        let oRes = 0;
-        let oInf = 0;
-        let planetCount = 0;
-        for (const tile of tiles) {
-            const system = world.TI4.getSystemByTileNumber(tile);
-            assert(system);
-            tileToResInf[tile] = { res: 0, inf: 0 };
+        for (const system of world.TI4.getAllSystems()) {
+            const tile = system.tile;
+            tileToResInf[tile] = { res: 0, inf: 0, planetCount: 0 };
             for (const planet of system.planets) {
                 if (planet.raw.resources >= planet.raw.influence) {
                     tileToResInf[tile].res += planet.raw.resources;
-                    oRes += planet.raw.resources;
                 } else {
                     tileToResInf[tile].inf += planet.raw.influence;
-                    oInf += planet.raw.influence;
                 }
-                planetCount += 1;
+                tileToResInf[tile].planetCount += 1;
             }
         }
+
+        let oRes = 0;
+        let oInf = 0;
+        for (const tile of tiles) {
+            oRes += tileToResInf[tile].res;
+            oInf += tileToResInf[tile].inf;
+        }
+
+        // Never replace wormholes or legendaries OR REDS (preserve red count).
+        tiles = tiles.filter((tile) => {
+            const system = world.TI4.getSystemByTileNumber(tile);
+            if (system.wormholes.length > 0) {
+                return false;
+            }
+            if (system.raw.legendary) {
+                return false;
+            }
+            if (system.red) {
+                return false;
+            }
+            return true;
+        });
 
         // Swap out the tile with the fewest combined r+i.
-        let swapTile = undefined;
+        let swapOutTile = undefined;
         for (const tile of tiles) {
-            if (
-                !swapTile ||
-                tileToResInf[swapTile].res + tileToResInf[swapTile].inf >
-                    tileToResInf[tile].res + tileToResInf[tile].inf
-            ) {
-                swapTile = tile;
+            const best = swapOutTile
+                ? tileToResInf[swapOutTile].res + tileToResInf[swapOutTile].inf
+                : 0;
+            const current = tileToResInf[tile].res + tileToResInf[tile].inf;
+            if (current > best) {
+                swapOutTile = tile;
             }
         }
+        if (!swapOutTile) {
+            console.log("MiltyEqSliceGenerator._fixBadSlice: no swap-out tile");
+            return;
+        }
+
+        const reserveTiles = [];
+        reserveTiles.push(...reserve.high);
+        reserveTiles.push(...reserve.med);
+        reserveTiles.push(...reserve.low);
+        Shuffle.shuffle(reserveTiles); // ~11 entries
+
+        // Fix the problem.  Notice these are not if/else, the last problem dominates.
+        let swapInTile = undefined;
 
         // Optimal res < 2.
-        // Optimal inf < 3.
-        // |planets| < 3.
+        if (oRes < 2) {
+            let bestTile = undefined;
+            let bestValue = undefined;
+            for (const tile of reserveTiles) {
+                const value = tileToResInf[tile].res;
+                if (!bestTile || value > bestValue) {
+                    bestTile = tile;
+                    bestValue = value;
+                    if (Math.random() < 0.5) {
+                        break; // maybe stop with this one
+                    }
+                }
+            }
+            swapInTile = bestTile;
+        }
 
-        console.log(
-            JSON.stringify({
-                oRes,
-                oInf,
-                planetCount,
-                high: reserve.high.length,
-                med: reserve.med.length,
-                low: reserve.low.length,
-            })
-        );
+        // Optimal inf < 3.
+        if (oInf < 3) {
+            let bestTile = undefined;
+            let bestValue = undefined;
+            for (const tile of reserveTiles) {
+                const value = tileToResInf[tile].inf;
+                if (!bestTile || value > bestValue) {
+                    bestTile = tile;
+                    bestValue = value;
+                    if (Math.random() < 0.5) {
+                        break; // maybe stop with this one
+                    }
+                }
+            }
+            swapInTile = bestTile;
+        }
+
+        // |planets| < 3.
+        // if (planetCount < 3) {
+        //     let bestTile = undefined;
+        //     let bestValue = undefined;
+        //     for (const tile of reserveTiles) {
+        //         const value =
+        //             world.TI4.getSystemByTileNumber(tile).planets.length;
+        //         if (!bestTile || value > bestValue) {
+        //             bestTile = tile;
+        //             bestValue = value;
+        //         }
+        //     }
+        // }
+
+        if (!world.__isMock) {
+            console.log(
+                `MiltyEqSliceGenerator._fixBadSlice: oRes=${oRes}, oInf=${oInf}`
+            );
+            if (!swapInTile) {
+                console.log(
+                    "MiltyEqSliceGenerator._fixBadSlice: no swap-in tile"
+                );
+                return;
+            }
+            console.log(
+                `MiltyEqSliceGenerator._fixBadSlice: swap out ${swapOutTile}, swap in ${swapInTile}`
+            );
+        }
+
+        // Prune out the swap-in tile (do not bother returning the other).
+        let index = reserve.high.indexOf(swapInTile);
+        let tier = undefined;
+        if (index >= 0) {
+            reserve.high.splice(index, 1);
+            tier = "HIGH";
+        }
+        index = reserve.med.indexOf(swapInTile);
+        if (index >= 0) {
+            reserve.med.splice(index, 1);
+            tier = "MED";
+        }
+        index = reserve.low.indexOf(swapInTile);
+        if (index >= 0) {
+            reserve.low.splice(index, 1);
+            tier = "LOW";
+        }
+
+        // Update the entry.
+        for (const entry of slice.getEntries()) {
+            if (entry.tile === swapOutTile) {
+                entry.tile = swapInTile;
+                entry.tileType = tier;
+            }
+        }
     }
 
     constructor() {
