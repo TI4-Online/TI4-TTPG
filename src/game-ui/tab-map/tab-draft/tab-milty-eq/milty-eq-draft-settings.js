@@ -32,6 +32,10 @@ class MiltyEqDraftSettings {
 
                 this._miltyEqDraft = new MiltyEqDraft();
 
+                // Reset slice generator, restore slice count after.
+                const sliceCount = miltyEqSliceGenerator.getSliceCount();
+                miltyEqSliceGenerator.reset().setSliceCount(sliceCount);
+
                 const generated = miltyEqSliceGenerator.simpleGenerate();
                 assert(Array.isArray(generated.eqs));
                 assert(Array.isArray(generated.slices));

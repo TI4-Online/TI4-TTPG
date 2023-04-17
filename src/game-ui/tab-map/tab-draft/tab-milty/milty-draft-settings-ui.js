@@ -54,11 +54,21 @@ class MiltyDraftSettingsUI {
         const customInputLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.custom_input"));
-        panel.addChild(customInputLabel);
         const customInput = WidgetFactory.multilineTextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1000)
             .setText(persistentMemory.customInputString);
+        const customInputBox = WidgetFactory.layoutBox()
+            .setChild(customInput)
+            .setMinimumHeight(CONFIG.fontSize * 4.5);
+        const customLeft = WidgetFactory.verticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(customInputLabel)
+            .addChild(customInputBox);
+
+        const customButtonLabel = WidgetFactory.text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.faction_input"));
         const onCustomButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.custom"));
@@ -67,14 +77,17 @@ class MiltyDraftSettingsUI {
             persistentMemory.customInputString = customInput.getText();
             this._createCustomSelectionUI(persistentMemory);
         });
+        const customRight = WidgetFactory.verticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(customButtonLabel)
+            .addChild(onCustomButton);
+
         const customHBox = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(customInput, 9)
-            .addChild(onCustomButton, 3);
-        const customInputBox = WidgetFactory.layoutBox()
-            .setChild(customHBox)
-            .setMinimumHeight(CONFIG.fontSize * 3);
-        panel.addChild(customInputBox);
+            .addChild(customLeft, 9)
+            .addChild(WidgetFactory.border().setColor(CONFIG.spacerColor))
+            .addChild(customRight, 3);
+        panel.addChild(customHBox);
 
         const extraLegendariesAndWormholes = WidgetFactory.checkBox()
             .setFontSize(CONFIG.fontSize)

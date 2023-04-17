@@ -66,7 +66,7 @@ class BunkerUtil {
         );
         if (tiles.length !== world.TI4.config.playerCount) {
             Broadcast.chatAll(
-                "wrong number of fixed tiles (must match player count",
+                "wrong number of fixed tiles (must match player count)",
                 Broadcast.ERROR
             );
             return false;

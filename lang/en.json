@@ -142,6 +142,7 @@
     "ui.button.ready": "READY",
     "ui.button.clear": "CLEAR",
     "ui.button.custom": "CUSTOM",
+    "ui.button.pick": "PICK",
     "ui.button.start": "START",
     "ui.button.resolve_explore": "Resolve",
     "ui.button.collapse": "Collapse",

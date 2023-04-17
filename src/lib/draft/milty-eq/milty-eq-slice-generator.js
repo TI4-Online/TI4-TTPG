@@ -18,6 +18,13 @@ const LOW = "low";
 
 // These are the equidistant planets.
 const EQS_CHOICES = [
+    // 4 red (rare)
+    { weight: 1, value: [RED, RED, RED, RED, HIGH, MED] }, // 5
+    { weight: 2, value: [RED, RED, RED, RED, HIGH, LOW] }, // 4
+    { weight: 3, value: [RED, RED, RED, RED, MED, MED] }, // 4
+    { weight: 2, value: [RED, RED, RED, RED, MED, LOW] }, // 3
+    { weight: 1, value: [RED, RED, RED, RED, LOW, LOW] }, // 2
+
     // 3 red
     { weight: 5 + 1, value: [RED, RED, RED, HIGH, MED, LOW] }, // 6
     { weight: 5 + 2, value: [RED, RED, RED, HIGH, LOW, LOW] }, // 5
@@ -466,31 +473,62 @@ class MiltyEqSliceGenerator {
         assert(Array.isArray(reserve.med));
         assert(Array.isArray(reserve.high));
 
-        const tiles = slice.getEntries().map((entry) => entry.tile);
+        // Never replace wormholes or legendaries.
+        const tiles = slice
+            .getEntries()
+            .map((entry) => entry.tile)
+            .filter((tile) => {
+                const system = world.TI4.getSystemByTileNumber(tile);
+                if (system.wormholes.length > 0) {
+                    return false;
+                }
+                if (system.raw.legendary) {
+                    return false;
+                }
+                return true;
+            });
 
-        let res = 0;
-        let inf = 0;
+        const tileToResInf = {};
+        let oRes = 0;
+        let oInf = 0;
         let planetCount = 0;
-        let reds = [];
         for (const tile of tiles) {
             const system = world.TI4.getSystemByTileNumber(tile);
             assert(system);
-            if (system.red) {
-                reds.push(tile);
-            }
+            tileToResInf[tile] = { res: 0, inf: 0 };
             for (const planet of system.planets) {
-                res += planet.raw.resources;
-                inf += planet.raw.influence;
+                if (planet.raw.resources >= planet.raw.influence) {
+                    tileToResInf[tile].res += planet.raw.resources;
+                    oRes += planet.raw.resources;
+                } else {
+                    tileToResInf[tile].inf += planet.raw.influence;
+                    oInf += planet.raw.influence;
+                }
                 planetCount += 1;
             }
         }
 
+        // Swap out the tile with the fewest combined r+i.
+        let swapTile = undefined;
+        for (const tile of tiles) {
+            if (
+                !swapTile ||
+                tileToResInf[swapTile].res + tileToResInf[swapTile].inf >
+                    tileToResInf[tile].res + tileToResInf[tile].inf
+            ) {
+                swapTile = tile;
+            }
+        }
+
+        // Optimal res < 2.
+        // Optimal inf < 3.
+        // |planets| < 3.
+
         console.log(
             JSON.stringify({
-                res,
-                inf,
+                oRes,
+                oInf,
                 planetCount,
-                reds: reds.length,
                 high: reserve.high.length,
                 med: reserve.med.length,
                 low: reserve.low.length,
@@ -526,6 +564,7 @@ class MiltyEqSliceGenerator {
             low: [],
             red: [],
         };
+        return this;
     }
 
     getSliceCount() {
