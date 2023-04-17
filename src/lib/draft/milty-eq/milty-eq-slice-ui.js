@@ -15,7 +15,7 @@ const {
     world,
 } = require("../../../wrapper/api");
 
-const DEFAULT_SLICE_SCALE = 10;
+const DEFAULT_SLICE_SCALE = 15;
 const TILE_W = 30;
 const TILE_H = TILE_W * 0.866;
 const FONT_SIZE = 4;
