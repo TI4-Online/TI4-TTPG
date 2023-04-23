@@ -174,8 +174,8 @@ class BunkerDraft {
             playerDesk.setReady(true);
 
             const ui = this._createUI(playerDesk);
-            this._uis.push(ui);
-            world.addUI(ui);
+            this._uis.push({ ui, playerDesk });
+            playerDesk.addUI(ui);
         }
         this._updateWaitingFor.forEach((handler) => {
             globalEvents.TI4.onTurnOrderChanged.add(handler);
@@ -185,8 +185,8 @@ class BunkerDraft {
     }
 
     clearPlayerUIs() {
-        this._uis.forEach((ui) => {
-            world.removeUIElement(ui);
+        this._uis.forEach(({ ui, playerDesk }) => {
+            playerDesk.removeUIElement(ui);
             WidgetFactory.release(ui);
         });
         this._uis = [];
