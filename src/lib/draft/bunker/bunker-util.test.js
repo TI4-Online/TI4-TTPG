@@ -93,3 +93,23 @@ it("parseCustomConfig (no slice)", () => {
         "not-a-faction-name",
     ]);
 });
+
+it("parseCustomConfig (inner)", () => {
+    const sliceString = "1 2 3 4|6 7 8 9&inner=10 11 12 13 14 15";
+    const parsed = BunkerUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [
+        [1, 2, 3, 4],
+        [6, 7, 8, 9],
+    ]);
+    assert.deepEqual(parsed.inner, [10, 11, 12, 13, 14, 15]);
+});
+
+it("parseCustomConfig (eq)", () => {
+    const sliceString = "1 2 3 4|6 7 8 9&eqs=10 11 12 13 14 15";
+    const parsed = BunkerUtil.parseCustomConfig(sliceString);
+    assert.deepEqual(parsed.slices, [
+        [1, 2, 3, 4],
+        [6, 7, 8, 9],
+    ]);
+    assert.deepEqual(parsed.inner, [10, 11, 12, 13, 14, 15]);
+});

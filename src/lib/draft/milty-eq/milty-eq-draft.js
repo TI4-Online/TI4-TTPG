@@ -1,19 +1,16 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
-const { Broadcast } = require("../../broadcast");
 const { ColorUtil } = require("../../color/color-util");
 const { DraftSelectionManager } = require("../draft-selection-manager");
 const { FactionToken } = require("../../faction/faction-token");
 const { MapStringLoad } = require("../../map-string/map-string-load");
-const { MapStringSave } = require("../../map-string/map-string-save");
-const { MiltyDraftUI } = require("./milty-draft-ui");
-const { MiltySliceLayout } = require("./milty-slice-layout");
-const { MiltyUtil } = require("./milty-util");
+const { MiltyEqDraftUI } = require("./milty-eq-draft-ui");
+const { MiltyEqSliceLayout } = require("./milty-eq-slice-layout");
 const { ObjectNamespace } = require("../../object-namespace");
-const { SeatTokenUI } = require("./seat-token-ui");
+const { SeatTokenUI } = require("../milty/seat-token-ui");
 const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 const { WidgetFactory } = require("../../ui/widget-factory");
-const { DEFAULT_SLICE_SCALE } = require("./milty-slice-ui");
+const { DEFAULT_SLICE_SCALE } = require("./milty-eq-slice-ui");
 const {
     Player,
     Rotator,
@@ -25,9 +22,10 @@ const SELECTION_BORDER_SIZE = 4;
 
 const SPEAKER_TOKEN_POS = { x: 46, y: 0, z: 5 };
 
-class MiltyDraft {
+class MiltyEqDraft {
     constructor() {
         this._sliceDataArray = [];
+        this._eqs = [];
         this._factionDataArray = [];
         this._seatDataArray = [];
         this._uis = [];
@@ -52,12 +50,6 @@ class MiltyDraft {
         assert(!color || ColorUtil.isColor(color));
         assert(typeof label === "string");
 
-        const error = MiltyUtil.getSliceError(slice);
-        if (error) {
-            Broadcast.chatAll(error);
-            return;
-        }
-
         const sliceData = {
             slice,
             color,
@@ -71,6 +63,14 @@ class MiltyDraft {
                 sliceData
             );
         this._sliceDataArray.push(sliceData);
+        return this;
+    }
+
+    setEqTiles(eqs) {
+        assert(Array.isArray(eqs));
+        assert(eqs.length === world.TI4.config.playerCount);
+
+        this._eqs = eqs;
         return this;
     }
 
@@ -132,11 +132,12 @@ class MiltyDraft {
             })
         );
 
-        const { widget, w, h, updateWaitingFor } = new MiltyDraftUI(
+        const { widget, w, h, updateWaitingFor } = new MiltyEqDraftUI(
             playerDesk,
             this._scale
         )
             .addSlices(this._sliceDataArray)
+            .addEqs(this._eqs, this._seatDataArray)
             .addFactions(this._factionDataArray)
             .addSeats(this._seatDataArray)
             .getWidgetAndSize(onFinishedButton);
@@ -221,20 +222,18 @@ class MiltyDraft {
         const playerDesks = world.TI4.getAllPlayerDesks();
         const playerDesk = playerDesks[seatData.deskIndex];
         assert(playerDesk);
-        const playerSlot = playerDesk.playerSlot; // new slot
         if (chooserPlayer) {
             playerDesk.seatPlayer(chooserPlayer);
         }
 
         // Unpack slice.
-        const sliceStr = sliceData.slice.join(" ");
-        MiltySliceLayout.doLayout(sliceStr, playerSlot);
+        MiltyEqSliceLayout.doLayoutSlice(sliceData.slice, seatData.deskIndex);
 
         // Unpack faction?  No, just place the token and let players click the
         // unpack button.  This is also a pause for Keleres to change flavors.
         // Old way: "new PlayerDeskSetup(playerDesk).setupFactionAsync(factionData.nsidName);"
         console.log(
-            `MiltyDraft._applyPlayerChoices: ${playerDesk.colorName} faction ${factionData.nsidName}`
+            `MiltyEqDraft._applyPlayerChoices: ${playerDesk.colorName} faction ${factionData.nsidName}`
         );
         const factionReference = FactionToken.findOrSpawnFactionReference(
             factionData.nsidName
@@ -245,7 +244,7 @@ class MiltyDraft {
                 new Rotator(0, 0, 180).compose(playerDesk.rot)
             );
         } else {
-            `MiltyDraft._applyPlayerChoices: NO FACTION REFERENCE`;
+            `MiltyEqDraft._applyPlayerChoices: NO FACTION REFERENCE`;
         }
 
         playerDesk.setReady(false);
@@ -257,6 +256,10 @@ class MiltyDraft {
 
         // Position Mecatol and Mallice.
         MapStringLoad.load("{18}", false);
+
+        // Unpack eqs & hyperlanes (hyperlanes may shift eqs).
+        const mapString = MiltyEqSliceLayout.getMapString([], this._eqs);
+        MapStringLoad.load(mapString, false);
 
         // Remember player slot to chooser-player.
         const playerSlotToChooserPlayer = {};
@@ -274,30 +277,6 @@ class MiltyDraft {
             const playerSlot = playerDesk.playerSlot;
             const player = playerSlotToChooserPlayer[playerSlot];
             this._applyPlayerChoices(playerSlot, player);
-        }
-
-        // Apply hyperlanes.
-        const mapStringBefore = MapStringSave.save();
-        const mapStringAfter = MiltySliceLayout._addHyperlanes(mapStringBefore);
-        if (mapStringAfter !== mapStringBefore) {
-            console.log(
-                `MiltyDraft.applyChoices: adding hyperlanes:\n${mapStringBefore}\n${mapStringAfter}`
-            );
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
-                if (!ObjectNamespace.isSystemTile(obj)) {
-                    continue;
-                }
-                const tile = ObjectNamespace.parseSystemTile(obj).tile;
-                if (tile <= 0) {
-                    continue;
-                }
-                obj.setTags(["DELETED_ITEMS_IGNORE"]);
-                obj.destroy();
-            }
-            MapStringLoad.load(mapStringAfter);
         }
 
         // Set turn order.
@@ -335,8 +314,10 @@ class MiltyDraft {
             speakerToken.setRotation(rot);
         }
 
+        world.TI4.GameUI.goHome();
+
         return this;
     }
 }
 
-module.exports = { MiltyDraft };
+module.exports = { MiltyEqDraft };

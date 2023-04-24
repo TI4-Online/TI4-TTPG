@@ -285,6 +285,7 @@ class System {
         let inf = 0;
         let tech = [];
         let wormholes = [];
+        let legendaries = [];
 
         for (const tile of tiles) {
             const system = System.getByTileNumber(tile);
@@ -296,6 +297,9 @@ class System {
                     for (const planetTech of planet.raw.tech) {
                         tech.push(planetTech.substring(0, 1).toUpperCase());
                     }
+                }
+                if (planet.raw.legendary) {
+                    legendaries.push("L");
                 }
             }
             for (const wormhole of system.wormholes) {
@@ -321,6 +325,9 @@ class System {
         }
         if (wormholes.length > 0) {
             result.push(wormholes.sort().join(""));
+        }
+        if (legendaries.length > 0) {
+            result.push(legendaries.sort().join(""));
         }
         return result.join(" ");
     }

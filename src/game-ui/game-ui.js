@@ -47,6 +47,9 @@ const {
     world,
 } = require("../wrapper/api");
 const { TabStreamer } = require("./tab-streamer/tab-streamer");
+const {
+    MiltyEqDraftSettings,
+} = require("./tab-map/tab-draft/tab-milty-eq/milty-eq-draft-settings");
 
 let _gameUI;
 
@@ -225,11 +228,23 @@ class GameUI {
 
         const miltyDraftEntry = new NavEntry()
             .setName(locale("nav.map.draft.milty"))
+            .setIconPath("global/ui/icons/milty-hex.png")
             .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {
                 return new MiltyDraftSettings().getUI();
             });
         draftFolder.addChild(miltyDraftEntry);
+
+        if (GameUI.isDev()) {
+            const miltyEqDraftEntry = new NavEntry()
+                .setName(locale("nav.map.draft.milty_eq"))
+                .setIconPath("global/ui/icons/milty-eq-hex.png")
+                .setPersistWidget(true)
+                .setWidgetFactory((navPanel, navEntry) => {
+                    return new MiltyEqDraftSettings().getUI();
+                });
+            draftFolder.addChild(miltyEqDraftEntry);
+        }
 
         const scptFolder = new NavFolder().setName(
             locale("nav.map.draft.scpt")
@@ -264,6 +279,7 @@ class GameUI {
 
         const bunkerDraft = new NavEntry()
             .setName(locale("nav.map.draft.bunker"))
+            .setIconPath("global/ui/icons/bunker-hex.png")
             .setWidgetFactory((navPanel, navEntry) => {
                 return new BunkerDraftSettings().getUI();
             });

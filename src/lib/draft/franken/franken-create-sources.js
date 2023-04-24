@@ -82,7 +82,10 @@ class FrankenCreateSources {
         for (let i = cardNsids.length - 1; i >= 0; i--) {
             const cardNsid = cardNsids[i];
             const isUndraftable = undraftableNsids.has(cardNsid);
-            const prune = nsidPruner(cardNsid) || exclude.has(cardNsid);
+            const prune =
+                cardNsid === "" ||
+                nsidPruner(cardNsid) ||
+                exclude.has(cardNsid);
             if (isUndraftable || prune) {
                 let cardObj;
                 if (deck.getStackSize() > 1) {

@@ -2,25 +2,25 @@ const assert = require("../../../../wrapper/assert-wrapper");
 const locale = require("../../../../lib/locale");
 const { ColorUtil } = require("../../../../lib/color/color-util");
 const {
+    MiltyEqSliceGenerator,
+} = require("../../../../lib/draft/milty-eq/milty-eq-slice-generator");
+const {
     MiltyFactionGenerator,
 } = require("../../../../lib/draft/milty/milty-faction-generator");
-const {
-    MiltySliceGenerator,
-} = require("../../../../lib/draft/milty/milty-slice-generator");
 const { WidgetFactory } = require("../../../../lib/ui/widget-factory");
 const CONFIG = require("../../../game-ui-config");
 const { Color, refPackageId, world } = require("../../../../wrapper/api");
 
-class MiltyDraftSettingsUI {
-    constructor(sliceGenerator, factionGenerator, callbacks) {
-        assert(sliceGenerator instanceof MiltySliceGenerator);
+class MiltyEqDraftSettingsUI {
+    constructor(miltyEqSliceGenerator, factionGenerator, callbacks) {
+        assert(miltyEqSliceGenerator instanceof MiltyEqSliceGenerator);
         assert(factionGenerator instanceof MiltyFactionGenerator);
         assert(typeof callbacks.onFinish === "function");
         assert(typeof callbacks.onCancel === "function");
 
         this._mainBox = WidgetFactory.layoutBox();
 
-        this._sliceGenerator = sliceGenerator;
+        this._miltyEqSliceGenerator = miltyEqSliceGenerator;
         this._factionGenerator = factionGenerator;
         this._callbacks = callbacks;
 
@@ -38,7 +38,7 @@ class MiltyDraftSettingsUI {
         assert(typeof persistentMemory.customInputString === "string");
         assert(Array.isArray(persistentMemory.factions));
 
-        assert(this._sliceGenerator);
+        assert(this._miltyEqSliceGenerator);
         assert(this._factionGenerator);
 
         const old = this._mainBox.getChild();
@@ -71,7 +71,7 @@ class MiltyDraftSettingsUI {
             .setText(locale("ui.draft.faction_input"));
         const onCustomButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.button.custom"));
+            .setText(locale("ui.button.pick"));
         onCustomButton.onClicked.add((button, player) => {
             this._callbacks.onCustom(player);
             persistentMemory.customInputString = customInput.getText();
@@ -89,29 +89,18 @@ class MiltyDraftSettingsUI {
             .addChild(customRight, 3);
         panel.addChild(customHBox);
 
-        const extraLegendariesAndWormholes = WidgetFactory.checkBox()
-            .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.draft.extra_legendaries_and_wormholes"))
-            .setIsChecked(true);
-        panel.addChild(extraLegendariesAndWormholes);
-        extraLegendariesAndWormholes.onCheckStateChanged.add(
-            (checkbox, player, isChecked) => {
-                this._sliceGenerator.setExtraLegendariesAndWormholes(isChecked);
-            }
-        );
-
         const sliceCountLabel = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.slice_count"));
         const sliceCountSlider = WidgetFactory.slider()
             .setFontSize(CONFIG.fontSize)
             .setTextBoxWidth(CONFIG.fontSize * 4)
-            .setMinValue(MiltySliceGenerator.minCount)
-            .setMaxValue(MiltySliceGenerator.maxCount)
+            .setMinValue(MiltyEqSliceGenerator.minCount)
+            .setMaxValue(MiltyEqSliceGenerator.maxCount)
             .setStepSize(1)
-            .setValue(this._sliceGenerator.getCount());
+            .setValue(this._miltyEqSliceGenerator.getSliceCount());
         sliceCountSlider.onValueChanged.add((slider, player, value) => {
-            this._sliceGenerator.setCount(value);
+            this._miltyEqSliceGenerator.setSliceCount(value);
         });
         const sliceCountPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -364,4 +353,4 @@ class MiltyDraftSettingsUI {
     }
 }
 
-module.exports = { MiltyDraftSettingsUI };
+module.exports = { MiltyEqDraftSettingsUI };

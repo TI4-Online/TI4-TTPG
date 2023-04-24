@@ -2,7 +2,7 @@ const assert = require("../../../wrapper/assert-wrapper");
 const _ = require("lodash");
 const { Broadcast } = require("../../broadcast");
 const { FactionAbilitySchema } = require("./franken.schema");
-const { FACTION_ABILITIES } = require("./franken.data");
+const { FACTION_ABILITIES, MERGE_ABILITIES } = require("./franken.data");
 const { FrankenCreateSources } = require("./franken-create-sources");
 const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
 const { FrankenUndraftable } = require("./franken-undraftable");
@@ -41,13 +41,19 @@ class Franken {
     }
 
     static injectFactionAbility(entry) {
-        const err = FactionAbilitySchema.validate(entry);
-        if (err) {
+        FactionAbilitySchema.validate(entry, (err) => {
             throw new Error(
                 `Franken.injectFactionAbility error ${JSON.stringify(err)}`
             );
-        }
+        });
         FACTION_ABILITIES.push(entry);
+
+        if (entry.mergeAbility) {
+            if (!MERGE_ABILITIES[entry.mergeAbility]) {
+                MERGE_ABILITIES[entry.mergeAbility] = [];
+            }
+            MERGE_ABILITIES[entry.mergeAbility].push(entry.name);
+        }
     }
 
     // ------------------------------------------------------------------------
