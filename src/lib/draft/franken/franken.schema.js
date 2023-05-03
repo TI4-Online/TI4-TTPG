@@ -7,6 +7,7 @@ const FACTION_ABILITY_SCHEMA = {
         nsidName: { type: "string" }, // optional, if lowercase + _ is not enough to compute
         description: { type: "string" },
         source: { type: "string" },
+        mergeAbility: { type: "string" },
     },
     required: ["name", "description", "source"],
 };
