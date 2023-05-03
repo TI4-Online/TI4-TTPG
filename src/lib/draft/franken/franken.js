@@ -34,6 +34,7 @@ const {
 } = require("../../../wrapper/api");
 const { FrankenFinalize } = require("./franken-finalize");
 const { ObjectNamespace } = require("../../object-namespace");
+const { SetupHomeSystem } = require("../../../setup/faction/setup-home-system");
 
 class Franken {
     static isDraftInProgress() {
@@ -472,6 +473,7 @@ class Franken {
             new SetupStartingTech(playerDesk, faction).setup();
             new SetupStartingUnits(playerDesk, faction).setup();
             new SetupFactionTokens(playerDesk, faction).setup();
+            new SetupHomeSystem(playerDesk, faction)._setupPlanetCards();
         });
     }
 
