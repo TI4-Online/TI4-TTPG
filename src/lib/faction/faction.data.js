@@ -472,6 +472,7 @@ const FACTION_DATA = [
         techs: ["valefar_assimilator_x", "valefar_assimilator_y"],
         units: ["the_alastor", "mordred"],
         unpackExtra: [
+            { tokenNsid: "token.nekro:base/predict" },
             {
                 tokenNsid: "token.nekro:base/valefar_assimilator_x",
             },
