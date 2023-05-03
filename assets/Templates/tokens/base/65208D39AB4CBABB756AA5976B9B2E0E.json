@@ -1,35 +1,35 @@
 {
-	"Type": "Container",
-	"GUID": "A44BAA604E0ED034CD67FA9502214AA7",
-	"Name": "Crate A",
-	"Metadata": "bag:base/generic",
+	"Type": "Generic",
+	"GUID": "65208D39AB4CBABB756AA5976B9B2E0E",
+	"Name": "Nekro Predict Token",
+	"Metadata": "token.nekro:base/predict",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
 	"Density": 1,
-	"SurfaceType": "Plastic",
+	"SurfaceType": "Cardboard",
 	"Roughness": 1,
-	"Metallic": 1,
+	"Metallic": 0,
 	"PrimaryColor":
 	{
 		"R": 255,
-		"G": 61,
-		"B": 0
+		"G": 255,
+		"B": 255
 	},
 	"SecondaryColor":
 	{
-		"R": 180,
-		"G": 189,
-		"B": 206
+		"R": 0,
+		"G": 0,
+		"B": 0
 	},
-	"Flippable": false,
+	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "utility/crates/base.obj",
+			"Model": "tokens/round-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -38,9 +38,9 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
+				"X": 1.49606,
+				"Y": 1.49606,
+				"Z": 0.98425
 			},
 			"Rotation":
 			{
@@ -48,9 +48,9 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/utility/crate_c.png",
+			"Texture": "global/tokens/base/nekro_predict.jpg",
 			"NormalMap": "",
-			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap": "",
 			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
@@ -59,7 +59,7 @@
 			"SurfaceType": "Plastic"
 		},
 		{
-			"Model": "utility/crates/lid-closed.obj",
+			"Model": "tokens/round-msh.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -68,19 +68,19 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
+				"X": 1.49606,
+				"Y": 1.49606,
+				"Z": 0.98425
 			},
 			"Rotation":
 			{
-				"X": 0,
+				"X": 180,
 				"Y": 0,
-				"Z": 0
+				"Z": -180
 			},
-			"Texture": "global/utility/crate_c.png",
+			"Texture": "global/tokens/base/nekro_predict.jpg",
 			"NormalMap": "",
-			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap": "",
 			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
@@ -89,7 +89,30 @@
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "tokens/round-col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.49606,
+				"Y": 1.49606,
+				"Z": 0.98425
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":

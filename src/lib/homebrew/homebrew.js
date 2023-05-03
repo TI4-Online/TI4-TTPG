@@ -14,6 +14,7 @@ const { Technology } = require("../technology/technology");
 const { UnitAttrs } = require("../unit/unit-attrs");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { world } = require("../../wrapper/api");
+const { Broadcast } = require("../broadcast");
 
 class Homebrew {
     constructor() {}
@@ -34,6 +35,11 @@ class Homebrew {
         if (table.factionAbilities) {
             for (const ability of table.factionAbilities) {
                 Franken.injectFactionAbility(ability);
+            }
+        }
+        if (table.factionUndraftable) {
+            for (const undraftable of table.factionUndraftable) {
+                Franken.injectUndraftable(undraftable);
             }
         }
         if (table.factions) {
@@ -94,6 +100,15 @@ class Homebrew {
      */
     resetOnTableDecks() {
         console.log("Homebrew.resetOnTableDecks");
+
+        if (world.TI4.config.timestamp > 0) {
+            Broadcast.chatAll(
+                locale("ui.error.homebrew.resetAfterLoaded"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
         const setupTableDecks = new SetupTableDecks();
         setupTableDecks.clean();
         setupTableDecks.setup();
@@ -106,6 +121,15 @@ class Homebrew {
 
     resetStrategyCards() {
         console.log("Homebrew.resetStrategyCards");
+
+        if (world.TI4.config.timestamp > 0) {
+            Broadcast.chatAll(
+                locale("ui.error.homebrew.resetAfterLoaded"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
         const setupStrategyCards = new SetupStrategyCards();
         setupStrategyCards.clean();
         setupStrategyCards.setup();

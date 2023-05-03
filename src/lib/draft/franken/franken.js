@@ -1,8 +1,12 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const _ = require("lodash");
 const { Broadcast } = require("../../broadcast");
-const { FactionAbilitySchema } = require("./franken.schema");
-const { FACTION_ABILITIES, MERGE_ABILITIES } = require("./franken.data");
+const { FactionAbilitySchema, UndraftableSchema } = require("./franken.schema");
+const {
+    FACTION_ABILITIES,
+    MERGE_ABILITIES,
+    UNDRAFTABLE,
+} = require("./franken.data");
 const { FrankenCreateSources } = require("./franken-create-sources");
 const { FRANKEN_DRAFT_CONFIG } = require("./franken-draft-config");
 const { FrankenUndraftable } = require("./franken-undraftable");
@@ -29,8 +33,30 @@ const {
     world,
 } = require("../../../wrapper/api");
 const { FrankenFinalize } = require("./franken-finalize");
+const { ObjectNamespace } = require("../../object-namespace");
+const { SetupHomeSystem } = require("../../../setup/faction/setup-home-system");
 
 class Franken {
+    static isDraftInProgress() {
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "bag:base/generic") {
+                continue;
+            }
+            const name = obj.getName();
+            if (name !== "Undraftable") {
+                continue;
+            }
+            console.log("Franken.isDraftInProgress: true");
+            return true;
+        }
+
+        return false;
+    }
+
     static destroyLingeringDraftZones() {
         for (const zone of world.getAllZones()) {
             const savedData = zone.getSavedData() || "";
@@ -54,6 +80,20 @@ class Franken {
             }
             MERGE_ABILITIES[entry.mergeAbility].push(entry.name);
         }
+        if (entry.undraftable) {
+            for (const item of entry.undraftable) {
+                UNDRAFTABLE.push(item);
+            }
+        }
+    }
+
+    static injectUndraftable(entry) {
+        UndraftableSchema.validate(entry, (err) => {
+            throw new Error(
+                `Franken.injectFactionAbility error ${JSON.stringify(err)}`
+            );
+        });
+        UNDRAFTABLE.push(entry);
     }
 
     // ------------------------------------------------------------------------
@@ -63,6 +103,12 @@ class Franken {
         this._deleteOnCancel = [];
         this._draftZones = [];
         this._factionSheets = [];
+        this._sources = [];
+
+        // In the event of a script reload find existing items and re-create zones.
+        if (Franken.isDraftInProgress()) {
+            this.resumeDraft();
+        }
 
         // Draft settings UI updates "_value" field.
         for (const entry of Object.values(this._draftSettings)) {
@@ -103,7 +149,102 @@ class Franken {
         this._factionSheets = this._createFactionSheets();
         this._sources = this._createSources();
 
+        // If reloading scripts, recreate sources.
+        const keyToId = {};
+        for (const [key, obj] of Object.entries(this._sources)) {
+            const id = obj.getId();
+            keyToId[key] = id;
+        }
+        const json = JSON.stringify(keyToId);
+        this._undraftableContainer.setSavedData(json);
+
         return true;
+    }
+
+    // If a player rewinds time all scripts get reset.
+    resumeDraft() {
+        console.log("Franken.resumeDraft");
+
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.setReady(true);
+        }
+
+        // Draft zones.
+        this._draftZones = [];
+        for (const zone of world.getAllZones()) {
+            const savedData = zone.getSavedData() || "";
+            if (!savedData.startsWith("__Franken__")) {
+                continue;
+            }
+            const pos = zone.getPosition();
+            const desk = world.TI4.getClosestPlayerDesk(pos);
+            this._draftZones[desk.index] = zone;
+        }
+
+        // Faction sheets.
+        this._factionSheets = [];
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "sheet.faction:homebrew.franken/?") {
+                continue;
+            }
+            const pos = obj.getPosition();
+            const desk = world.TI4.getClosestPlayerDesk(pos);
+            this._factionSheets[desk.index] = obj;
+        }
+
+        // Find the undraftable container.
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "bag:base/generic") {
+                continue;
+            }
+            const name = obj.getName();
+            if (name !== "Undraftable") {
+                continue;
+            }
+            this._undraftableContainer = obj;
+            break;
+        }
+        assert(this._undraftableContainer);
+
+        // Sources (name to object id stored in undraftable container)
+        this._sources = [];
+        const json = this._undraftableContainer.getSavedData();
+        assert(json);
+        for (const [key, id] of Object.entries(JSON.parse(json))) {
+            const obj = world.getObjectById(id);
+            if (obj) {
+                this._sources[key] = obj;
+            }
+        }
+
+        // Draft bags.
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "bag:base/generic") {
+                continue;
+            }
+            const name = obj.getName();
+            if (!name.startsWith("Franken Components")) {
+                continue;
+            }
+            this._deleteOnCancel.push(obj);
+        }
+
+        // Delete on cancel.
+        for (const item of Object.values(this._sources)) {
+            this._deleteOnCancel.push(item);
+        }
     }
 
     createAndFillDraftBoxes() {
@@ -278,6 +419,7 @@ class Franken {
         FrankenFinalize.setTurnOrder();
 
         globalEvents.TI4.onFactionChanged.trigger();
+        world.TI4.Technology.invalidateCache();
 
         world.TI4.GameUI.goHome();
         return true;
@@ -332,6 +474,7 @@ class Franken {
             new SetupStartingTech(playerDesk, faction).setup();
             new SetupStartingUnits(playerDesk, faction).setup();
             new SetupFactionTokens(playerDesk, faction).setup();
+            new SetupHomeSystem(playerDesk, faction)._setupPlanetCards();
         });
     }
 
@@ -372,6 +515,8 @@ class Franken {
     }
 }
 
-Franken.destroyLingeringDraftZones();
+if (!Franken.isDraftInProgress()) {
+    Franken.destroyLingeringDraftZones();
+}
 
 module.exports = { Franken };

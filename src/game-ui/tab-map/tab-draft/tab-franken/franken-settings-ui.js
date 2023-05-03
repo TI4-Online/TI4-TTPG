@@ -15,6 +15,7 @@ const {
     TextJustification,
     VerticalBox,
 } = require("../../../../wrapper/api");
+const { Franken } = require("../../../../lib/draft/franken/franken");
 
 const SLIDER_FONT_SIZE = CONFIG.fontSize * 0.75;
 
@@ -73,7 +74,13 @@ class FrankenDraftSettingsUI {
         this._callbacks = callbacks;
 
         this._widget = new VerticalBox().setChildDistance(CONFIG.spacing);
-        this._createDraftSettingsUI();
+
+        const isDraftInProgress = Franken.isDraftInProgress();
+        if (isDraftInProgress) {
+            this._createDraftInProgressUI();
+        } else {
+            this._createDraftSettingsUI();
+        }
     }
 
     getWidget() {

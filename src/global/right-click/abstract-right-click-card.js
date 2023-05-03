@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Card, globalEvents, world } = require("../../wrapper/api");
 
-let _nextInstanceNumber = 1;
+const _idToCustomActionNames = {};
 
 /**
  * Manage adding/removing right click options for singleton cards.  Options get
@@ -14,15 +14,9 @@ class AbstractRightClickCard {
      * method subclasses can use to do any prior initialization.
      */
     constructor() {
-        // Assign a unique id to be able to test for handler presence.
-        const instanceNumber = _nextInstanceNumber;
-        _nextInstanceNumber += 1;
-        this._id = `__AbstractRightClickCard_${instanceNumber}__`;
-
         this._onCustomActionHandler = (card, player, actionName) => {
             this.onRightClick(card, player, actionName);
         };
-
         this.init();
         this._register(); // assumes ready to use!!
     }
@@ -99,8 +93,18 @@ class AbstractRightClickCard {
         for (const { actionName, tooltip } of actionNamesAndTooltips) {
             assert(typeof actionName === "string");
             assert(!tooltip || typeof tooltip === "string");
+            card.removeCustomAction(actionName);
             card.addCustomAction(actionName, tooltip);
         }
+
+        // Remember action names for removal if card becomes a deck.
+        const id = card.getId();
+        if (!_idToCustomActionNames[id]) {
+            _idToCustomActionNames[id] = [];
+        }
+        _idToCustomActionNames[id].push(
+            ...actionNamesAndTooltips.map((x) => x.actionName)
+        );
 
         // Watch out for accidental double add, always remove first.
         card.onCustomAction.remove(this._onCustomActionHandler);
@@ -125,17 +129,16 @@ class AbstractRightClickCard {
             return;
         }
 
-        const actionNamesAndTooltips =
-            this.getRightClickActionNamesAndTooltips(card);
-        assert(Array.isArray(actionNamesAndTooltips));
-        for (const { actionName } of actionNamesAndTooltips) {
+        // This might be a deck, do not re-ask for action names
+        // (because deck does not have a solitary NSID).  Use memory.
+        const id = card.getId();
+        const actionNames = _idToCustomActionNames[id] || [];
+        delete _idToCustomActionNames[id];
+        for (const actionName of actionNames) {
             assert(typeof actionName === "string");
             card.removeCustomAction(actionName);
         }
         card.onCustomAction.remove(this._onCustomActionHandler);
-
-        card._abstractRightClickCardIds =
-            card._abstractRightClickCardIds.filter((id) => id !== this._id);
     }
 }
 

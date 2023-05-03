@@ -137,6 +137,8 @@ class FrankenGenerateFaction {
                 const faction = getFaction(obj);
                 faction.startingTech = json.startingTech;
                 destroyObjs.push(obj);
+                // N'orr starting tech is empty but is a valid choice.
+                faction._hasStartingTech = true;
             }
 
             if (json && json.startingTechChoice) {
@@ -221,7 +223,8 @@ class FrankenGenerateFaction {
         }
         if (
             faction.raw.startingTech.length === 0 &&
-            !faction.raw.startingTechChoice
+            !faction.raw.startingTechChoice &&
+            !faction.raw._hasStartingTech
         ) {
             errors.push("missing starting tech");
         }
