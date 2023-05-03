@@ -2,7 +2,7 @@
 	"Type": "Container",
 	"GUID": "A44BAA604E0ED034CD67FA9502214AA7",
 	"Name": "Crate A",
-	"Metadata": "",
+	"Metadata": "bag:base/generic",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -51,8 +51,10 @@
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
@@ -79,8 +81,10 @@
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -93,5 +97,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }
