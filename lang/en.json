@@ -10,6 +10,7 @@
     "ui.error.numpad0_progress": "Press control + numpad-0 {remaining} more {#remaining|time|times} to access",
     "ui.error.numpad0_granted": "Numpad-0 access granted",
     "ui.error.must_be_host_to_use_seats": "Only the host can use the !seats command",
+    "ui.error.homebrew.resetAfterLoaded": "Homebrew attempted to modify game objects after game has started, cancelling modification. If this is loading a saved game with homebrew already added it should work properly, but if attempting a new game with it please load the homebrew BEFORE clicking the 'start game' setup button.",
 
     "ui.help.numpad": "Numpad keys:",
     "ui.help.numpad.1": "[1]: spawn tradegood",
