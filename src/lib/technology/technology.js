@@ -4,7 +4,6 @@ const { Broadcast } = require("../broadcast");
 const { ObjectNamespace } = require("../object-namespace");
 const { CardUtil } = require("../card/card-util");
 const { TechCardUtil } = require("../card/tech-card-util");
-const { Faction } = require("../faction/faction");
 const TECHNOLOGY_DATA = require("./technology.data");
 const { world } = require("../../wrapper/api");
 const { TechnologySchema } = require("./technology.schema");
@@ -91,6 +90,10 @@ const getTechnologies = (factionName) => {
 };
 
 class Technology {
+    static invalidateCache() {
+        invalidateCache();
+    }
+
     static injectTechnology(rawTechnology) {
         assert(rawTechnology);
         TechnologySchema.validate(rawTechnology, (err) => {

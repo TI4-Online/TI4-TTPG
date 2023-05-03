@@ -419,6 +419,7 @@ class Franken {
         FrankenFinalize.setTurnOrder();
 
         globalEvents.TI4.onFactionChanged.trigger();
+        world.TI4.Technology.invalidateCache();
 
         world.TI4.GameUI.goHome();
         return true;
