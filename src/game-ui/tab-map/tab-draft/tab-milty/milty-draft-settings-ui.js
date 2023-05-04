@@ -60,7 +60,7 @@ class MiltyDraftSettingsUI {
             .setText(persistentMemory.customInputString);
         const customInputBox = WidgetFactory.layoutBox()
             .setChild(customInput)
-            .setMinimumHeight(CONFIG.fontSize * 4.5);
+            .setOverrideHeight(CONFIG.fontSize * 4.5);
         const customLeft = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(customInputLabel)
