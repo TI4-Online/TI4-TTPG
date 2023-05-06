@@ -227,7 +227,7 @@ module.exports = [
             if (auxData.rollType !== "bombardment") {
                 return false;
             }
-            const planet = auxData.self.planet;
+            const planet = auxData.self.activePlanet;
             return planet && planet.traits.includes("cultural");
         },
         applyEach: (unitAttrs, auxData) => {
@@ -287,22 +287,25 @@ module.exports = [
         isCombat: true,
         localeName: "unit_modifier.name.disable",
         localeDescription: "unit_modifier.desc.disable",
-        owner: "opponent",
+        owner: "any",
         priority: "mutate",
         triggerNsid: "card.action:base/disable",
         filter: (auxData) => {
-            if (!auxData.self.has("pds")) {
-                return false;
-            }
             if (auxData.rollType === "bombardment") {
                 return true;
             }
-            if (auxData.rollType === "spaceCannon" && auxData.planet) {
+            if (auxData.rollType === "spaceCannon" && auxData.activePlanet) {
                 return true; // planet means space cannon defense
             }
         },
         applyAll: (unitAttrsSet, auxData) => {
-            const pdsAttrs = unitAttrsSet.get("pds");
+            // Who played the card?
+            const isSelf = CardUtil.hasCard(
+                auxData.playerSlot,
+                "card.action:base/disable"
+            );
+            const ad = isSelf ? auxData.opponent : auxData.self;
+            const pdsAttrs = ad.unitAttrsSet.get("pds");
             delete pdsAttrs.raw.planetaryShield;
             delete pdsAttrs.raw.spaceCannon;
         },
@@ -366,7 +369,7 @@ module.exports = [
         filter: (auxData) => {
             return (
                 auxData.rollType === "spaceCannon" &&
-                !auxData.planet &&
+                !auxData.activePlanet &&
                 (auxData.self.has("space_dock") ||
                     auxData.hasAdjacent("space_dock"))
             );
@@ -813,13 +816,11 @@ module.exports = [
         priority: "choose",
         triggerNsid: "card.technology.red:base/plasma_scoring",
         filter: (auxData) => {
-            console.log(`rollType=${auxData.rollType}`);
             if (auxData.rollType === "spaceCannon") {
                 return true;
             } else if (auxData.rollType === "bombardment") {
                 // If a first planet is specified, only apply to first.
                 const isFirst = auxData.isFirstBombardmentPlanet;
-                console.log(`isFirst=${isFirst}`);
                 return isFirst === undefined || isFirst;
             }
         },

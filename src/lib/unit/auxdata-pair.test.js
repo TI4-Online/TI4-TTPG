@@ -12,10 +12,15 @@ const { AuxDataBuilder } = require("./auxdata");
 const { Hex } = require("../hex");
 
 it("getPairSync", () => {
+    const desks = world.TI4.getAllPlayerDesks();
+
     world.__clear();
 
-    const selfPlayerSlot = 7;
-    const opponentPlayerSlot = 8;
+    const selfDesk = desks[1];
+    const opponentDesk = desks[2];
+
+    const selfPlayerSlot = selfDesk.playerSlot;
+    const opponentPlayerSlot = opponentDesk.playerSlot;
 
     // Place a few units and tokens.
     world.__addObject(
@@ -81,6 +86,7 @@ it("getPairSync", () => {
                 metadata: "card.action:base/disable",
             }),
             owningPlayerSlot: opponentPlayerSlot,
+            position: opponentDesk.center,
         })
     );
 

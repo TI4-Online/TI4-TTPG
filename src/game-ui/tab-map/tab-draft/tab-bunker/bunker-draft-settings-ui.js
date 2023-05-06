@@ -63,7 +63,7 @@ class BunkerDraftSettingsUI extends VerticalBox {
             .setMaxLength(1000);
         const customInputBox = new LayoutBox()
             .setChild(customInput)
-            .setMinimumHeight(CONFIG.fontSize * 3);
+            .setOverrideHeight(CONFIG.fontSize * 3);
         this.addChild(customInputBox);
 
         const sliceCountLabel = new Text()

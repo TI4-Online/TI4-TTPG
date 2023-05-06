@@ -15,6 +15,7 @@ const { UnitAttrs } = require("../unit/unit-attrs");
 const { UnitModifier } = require("../unit/unit-modifier");
 const { world } = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
+const { shuffleAllDecks } = require("../../global/shuffle-decks-on-load");
 
 class Homebrew {
     constructor() {}
@@ -117,6 +118,9 @@ class Homebrew {
             setupGenericTech.clean();
             setupGenericTech.setup();
         }
+
+        // Shuffle appropriate decks.
+        process.nextTick(shuffleAllDecks);
     }
 
     resetStrategyCards() {
