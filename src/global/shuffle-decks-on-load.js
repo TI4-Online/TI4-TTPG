@@ -42,3 +42,5 @@ function shuffleAllDecks() {
 if (!world.__isMock) {
     process.nextTick(shuffleAllDecks);
 }
+
+module.exports = { shuffleAllDecks };
