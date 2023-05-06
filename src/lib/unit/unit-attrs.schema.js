@@ -95,6 +95,15 @@ const UNIT_ATTRS_SCHEMA_JSON = {
                 hit: { type: "integer", maximum: 10 },
                 anyPlanet: { type: "boolean" },
                 requireGround: { type: "boolean", default: true },
+                extraHitsOn: {
+                    // for homebrew
+                    type: "object",
+                    properties: {
+                        count: { type: "integer" },
+                        value: { type: "integer", maximum: 10 },
+                    },
+                    required: ["count", "value"],
+                },
                 extraDice: { type: "integer" },
             },
             required: ["hit"],
