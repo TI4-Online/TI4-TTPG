@@ -7,6 +7,7 @@ const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
 const { RestrictObjects } = require("../../setup/spawn/restrict-objects");
 const { SetupGenericTech } = require("../../setup/setup-generic-tech");
 const { SetupStrategyCards } = require("../../setup/setup-strategy-cards");
+const { SetupSystemTiles } = require("../../setup/setup-system-tiles");
 const { SetupTableDecks } = require("../../setup/setup-table-decks");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
@@ -137,6 +138,22 @@ class Homebrew {
         const setupStrategyCards = new SetupStrategyCards();
         setupStrategyCards.clean();
         setupStrategyCards.setup();
+    }
+
+    resetSystemTilesBox() {
+        console.log("Homebrew.resetSystemTilesBox");
+
+        if (world.TI4.config.timestamp > 0) {
+            Broadcast.chatAll(
+                locale("ui.error.homebrew.resetAfterLoaded"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
+        const setupSystemTiles = new SetupSystemTiles();
+        setupSystemTiles.clean();
+        setupSystemTiles.setup();
     }
 }
 
