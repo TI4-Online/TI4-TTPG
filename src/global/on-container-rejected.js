@@ -8,6 +8,7 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const {
     Card,
     Container,
+    ObjectType,
     Player,
     globalEvents,
     world,
@@ -30,6 +31,10 @@ function rejectCard(rejectedObj) {
     const cards = CardUtil.separateDeck(rejectedObj);
     const bad = [];
     for (const card of cards) {
+        // Cards with active flip in progress.
+        if (card.getObjectType() === ObjectType.Penetrable) {
+            card.setObjectType(ObjectType.Regular);
+        }
         if (!DealDiscard.discard(card)) {
             console.log(
                 `onContainerRejected: unknown card ${ObjectNamespace.getNsid(
