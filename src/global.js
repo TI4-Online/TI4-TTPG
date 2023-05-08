@@ -137,6 +137,9 @@ const {
     AbstractPlanetAttachment,
 } = require("./objects/attachments/abstract-planet-attachment");
 const {
+    AbstractRightClickCard,
+} = require("./global/right-click/abstract-right-click-card");
+const {
     AbstractStrategyCard,
 } = require("./objects/strategy-cards/abstract-strategy-card");
 const { Adjacency } = require("./lib/system/adjacency");
@@ -173,6 +176,7 @@ const { UnitPlastic } = require("./lib/unit/unit-plastic");
 world.TI4 = {
     // Export some modules (to work around require cycles, or for homebrew use).
     AbstractPlanetAttachment,
+    AbstractRightClickCard,
     AbstractStrategyCard,
     Adjacency,
     Broadcast,
