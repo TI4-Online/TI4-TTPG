@@ -17,13 +17,12 @@ const { UnitModifier } = require("../unit/unit-modifier");
 const { world } = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
 const { shuffleAllDecks } = require("../../global/shuffle-decks-on-load");
+const {
+    SetupGenericPromissory,
+} = require("../../setup/setup-generic-promissory");
 
 class Homebrew {
     constructor() {}
-
-    validate(table) {
-        // TODO XXX faction home systems, tech, units
-    }
 
     inject(table) {
         if (table.localeStrings) {
@@ -92,6 +91,7 @@ class Homebrew {
                 Attachment.injectAttachment(attachment);
             }
         }
+        return this;
     }
 
     /**
@@ -122,6 +122,8 @@ class Homebrew {
 
         // Shuffle appropriate decks.
         process.nextTick(shuffleAllDecks);
+
+        return this;
     }
 
     resetStrategyCards() {
@@ -138,8 +140,11 @@ class Homebrew {
         const setupStrategyCards = new SetupStrategyCards();
         setupStrategyCards.clean();
         setupStrategyCards.setup();
+
+        return this;
     }
 
+    // XXX TODO FIX GARBOZIA?
     resetSystemTilesBox() {
         console.log("Homebrew.resetSystemTilesBox");
 
@@ -154,6 +159,26 @@ class Homebrew {
         const setupSystemTiles = new SetupSystemTiles();
         setupSystemTiles.clean();
         setupSystemTiles.setup();
+
+        return this;
+    }
+
+    resetGenericPromissoryNotes() {
+        console.log("Homebrew.resetGenericPromissoryNotes");
+
+        if (world.TI4.config.timestamp > 0) {
+            Broadcast.chatAll(
+                locale("ui.error.homebrew.resetAfterLoaded"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
+        const setupGenericPromissory = new SetupGenericPromissory();
+        setupGenericPromissory.clean();
+        setupGenericPromissory.setup();
+
+        return this;
     }
 }
 
