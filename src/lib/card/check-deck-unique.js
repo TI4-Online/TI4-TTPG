@@ -51,7 +51,9 @@ class CheckDeckUnique {
         const seen = new Set();
         const dups = new Set();
         const typeToCount = {};
-        for (const nsid of nsids) {
+        const nsidToFirstIndex = {};
+        const firstIndexList = [];
+        nsids.forEach((nsid, index) => {
             const parsed = ObjectNamespace.parseNsid(nsid);
             const deckType = parsed.type || "?"; // "card.promissory:..."
             typeToCount[deckType] = (typeToCount[deckType] || 0) + 1;
@@ -60,7 +62,12 @@ class CheckDeckUnique {
             } else {
                 seen.add(nsid);
             }
-        }
+            // Track the first appearance of each card.
+            if (nsidToFirstIndex[nsid] === undefined) {
+                nsidToFirstIndex[nsid] = index;
+            }
+            firstIndexList.push(nsidToFirstIndex[nsid]);
+        });
 
         // Expect no duplicates, exit gracefully.
         if (dups.size === 0) {
@@ -69,11 +76,12 @@ class CheckDeckUnique {
         }
 
         // Duplicates found.  Always log when this happens to measure scope.
-        const msg = `CheckDeckUnique.process: found ${
-            dups.size
-        } duplicates in deck of ${
-            seen.size
-        } unique nsids.  Card types: ${JSON.stringify(typeToCount)}`;
+        const msg = [
+            `CheckDeckUnique.process:`,
+            `found ${dups.size} duplicates in deck of ${seen.size} unique nsids.`,
+            `Card types: ${JSON.stringify(typeToCount)}`,
+            `First index list: ${firstIndexList.join(",")}`,
+        ].join("\n");
         world.TI4.errorReporting.error(msg);
 
         // Get individual cards.

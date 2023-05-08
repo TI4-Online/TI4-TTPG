@@ -5,7 +5,13 @@ const { ColorUtil } = require("../lib/color/color-util");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Spawn } = require("./spawn/spawn");
 const { TableLayout } = require("../table/table-layout");
-const { ObjectType, Rotator, Vector, world } = require("../wrapper/api");
+const {
+    Container,
+    ObjectType,
+    Rotator,
+    Vector,
+    world,
+} = require("../wrapper/api");
 
 const BAG = {
     nsid: "bag:base/generic",
@@ -75,6 +81,9 @@ class SetupSystemTiles extends AbstractSetup {
             }
             const parsed = ObjectNamespace.parseSystemTile(obj);
             const system = world.TI4.getSystemByTileNumber(parsed.tile);
+            if (!system) {
+                continue; // home system placeholder
+            }
             if (system && system.raw.home) {
                 continue;
             }
@@ -89,6 +98,26 @@ class SetupSystemTiles extends AbstractSetup {
                 obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             }
+        }
+
+        // Remove the box too.
+        const name = locale("bag.system_tiles");
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            if (!(obj instanceof Container)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid !== "bag:base/generic") {
+                continue;
+            }
+            if (obj.getName() !== name) {
+                continue;
+            }
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
         }
     }
 }
