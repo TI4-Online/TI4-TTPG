@@ -144,7 +144,6 @@ class Homebrew {
         return this;
     }
 
-    // XXX TODO FIX GARBOZIA?
     resetSystemTilesBox() {
         console.log("Homebrew.resetSystemTilesBox");
 
