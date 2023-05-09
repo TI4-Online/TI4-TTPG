@@ -166,6 +166,7 @@ const { ObjectNamespace } = require("./lib/object-namespace");
 const { PerfStats } = require("./lib/perf/perf-stats");
 const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
+const { Spawn } = require("./setup/spawn/spawn");
 const { System, Planet } = require("./lib/system/system");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
@@ -187,6 +188,7 @@ world.TI4 = {
     ObjectNamespace,
     RollGroup,
     SimpleDieBuilder,
+    Spawn,
     Technology,
     UnitAttrs,
     UnitPlastic,
