@@ -172,6 +172,7 @@ const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
+const { DealDiscard } = require("./lib/card/deal-discard");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -192,6 +193,7 @@ world.TI4 = {
     Technology,
     UnitAttrs,
     UnitPlastic,
+    DealDiscard,
 
     // More libraries for homebrew access
     assert,
