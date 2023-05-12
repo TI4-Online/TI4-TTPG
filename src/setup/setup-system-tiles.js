@@ -44,9 +44,6 @@ class SetupSystemTiles extends AbstractSetup {
                 return false;
             }
             const parsed = ObjectNamespace.parseNsid(nsid);
-            if (parsed.source.startsWith("homebrew")) {
-                return false;
-            }
             // Ignore home systems.
             const tile = Number.parseInt(parsed.name);
             const system = world.TI4.getSystemByTileNumber(tile);

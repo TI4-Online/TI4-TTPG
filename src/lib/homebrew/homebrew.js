@@ -173,9 +173,13 @@ class Homebrew {
             return;
         }
 
-        const setupGenericPromissory = new SetupGenericPromissory();
-        setupGenericPromissory.clean();
-        setupGenericPromissory.setup();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const setupGenericPromissory = new SetupGenericPromissory(
+                playerDesk
+            );
+            setupGenericPromissory.clean();
+            setupGenericPromissory.setup();
+        }
 
         return this;
     }
