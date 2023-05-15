@@ -17,17 +17,23 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
      */
     static createForKnownAttachmentToken(gameObject) {
         assert(gameObject instanceof GameObject);
-        const nsid = ObjectNamespace.getNsid(gameObject);
-        let attrs = Attachment.getByTokenNsidName(nsid);
 
-        if (!attrs) {
-            throw new Error(`KnownPlanetAttachment: no attrs for "${nsid}"`);
-        }
-        return new AbstractPlanetAttachment(
-            gameObject,
-            attrs.raw,
-            attrs.localeName
-        ).attachIfOnSystem();
+        // Make sure homebrew has a chance to load before seeking attachment data.
+        process.nextTick(() => {
+            const nsid = ObjectNamespace.getNsid(gameObject);
+            let attrs = Attachment.getByTokenNsidName(nsid);
+
+            if (!attrs) {
+                throw new Error(
+                    `KnownPlanetAttachment: no attrs for "${nsid}"`
+                );
+            }
+            return new AbstractPlanetAttachment(
+                gameObject,
+                attrs.raw,
+                attrs.localeName
+            ).attachIfOnSystem();
+        });
     }
 
     /**

@@ -90,4 +90,6 @@ class Mirage extends AbstractSystemAttachment {
     }
 }
 
-new Mirage(refObject);
+process.nextTick(() => {
+    new Mirage(refObject);
+});
