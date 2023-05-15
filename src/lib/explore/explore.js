@@ -328,7 +328,7 @@ class Explore {
 
         // Find token.
         let tokenObj = false;
-        if (!attachmentData.spawn) {
+        if (!attachmentData.raw.spawn) {
             for (const obj of world.getAllObjects()) {
                 if (!obj.getContainer()) {
                     continue; // only use tokens from the bag (do not move on-table tokens!)
@@ -362,9 +362,9 @@ class Explore {
         Explore.reserveTokenSpaceAndAnchorToken(tokenObj, pos, tokenRot);
 
         // Extra cards? (Mirage)
-        if (attachmentData.extraCardNsids) {
+        if (attachmentData.raw.extraCardNsids) {
             const cards = CardUtil.gatherCards((nsid) => {
-                return attachmentData.extraCardNsids.includes(nsid);
+                return attachmentData.raw.extraCardNsids.includes(nsid);
             });
             for (let i = 0; i < cards.length; i++) {
                 const card = cards[i];
