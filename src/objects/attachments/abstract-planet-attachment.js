@@ -10,6 +10,19 @@ const { GameObject, Vector } = require("../../wrapper/api");
  */
 class AbstractPlanetAttachment extends AbstractSystemAttachment {
     /**
+     *
+     * @param {GameObject} gameObject
+     */
+    static delayedCreateForKnownAttachmentToken(gameObject) {
+        assert(gameObject instanceof GameObject);
+        assert(typeof autoAttach === "boolean");
+
+        process.nextTick(() => {
+            AbstractPlanetAttachment.createForKnownAttachmentToken(gameObject);
+        });
+    }
+
+    /**
      * Set up a known attachment token (registered in attachment.data and via homebrew.injectAttachment).
      *
      * @param {GameObject} gameObject
@@ -18,22 +31,17 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
     static createForKnownAttachmentToken(gameObject) {
         assert(gameObject instanceof GameObject);
 
-        // Make sure homebrew has a chance to load before seeking attachment data.
-        process.nextTick(() => {
-            const nsid = ObjectNamespace.getNsid(gameObject);
-            let attrs = Attachment.getByTokenNsidName(nsid);
+        const nsid = ObjectNamespace.getNsid(gameObject);
+        let attrs = Attachment.getByTokenNsidName(nsid);
 
-            if (!attrs) {
-                throw new Error(
-                    `KnownPlanetAttachment: no attrs for "${nsid}"`
-                );
-            }
-            return new AbstractPlanetAttachment(
-                gameObject,
-                attrs.raw,
-                attrs.localeName
-            ).attachIfOnSystem();
-        });
+        if (!attrs) {
+            throw new Error(`KnownPlanetAttachment: no attrs for "${nsid}"`);
+        }
+        return new AbstractPlanetAttachment(
+            gameObject,
+            attrs.raw,
+            attrs.localeName
+        ).attachIfOnSystem();
     }
 
     /**
