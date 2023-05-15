@@ -15,8 +15,6 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
      */
     static delayedCreateForKnownAttachmentToken(gameObject) {
         assert(gameObject instanceof GameObject);
-        assert(typeof autoAttach === "boolean");
-
         process.nextTick(() => {
             AbstractPlanetAttachment.createForKnownAttachmentToken(gameObject);
         });
