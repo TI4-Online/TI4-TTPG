@@ -107,7 +107,12 @@ class AbstractSetup {
             const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
             if (deck) {
                 mergeDeck.setTags(["DELETED_ITEMS_IGNORE"]);
-                deck.addCards(mergeDeck);
+                const success = deck.addCards(mergeDeck);
+                if (!success) {
+                    console.log(
+                        "spawnDecksThenFilter: addCards failed, is a deck the wrong size?"
+                    );
+                }
             } else {
                 deck = mergeDeck;
             }

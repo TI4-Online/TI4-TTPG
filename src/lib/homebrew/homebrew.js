@@ -20,6 +20,9 @@ const { shuffleAllDecks } = require("../../global/shuffle-decks-on-load");
 const {
     SetupGenericPromissory,
 } = require("../../setup/setup-generic-promissory");
+const {
+    RightClickScore,
+} = require("../../global/right-click/right-click-score");
 
 class Homebrew {
     constructor() {}
@@ -54,6 +57,11 @@ class Homebrew {
                 table.nsidToTemplateId
             )) {
                 Spawn.injectNsidToTemplate(nsid, tempateId);
+            }
+        }
+        if (table.otherScorable) {
+            for (const nsid of table.otherScorable) {
+                RightClickScore.injectOtherScorableNSID(nsid);
             }
         }
         if (table.remove) {

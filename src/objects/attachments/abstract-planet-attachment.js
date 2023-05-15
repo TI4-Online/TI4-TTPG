@@ -10,6 +10,19 @@ const { GameObject, Vector } = require("../../wrapper/api");
  */
 class AbstractPlanetAttachment extends AbstractSystemAttachment {
     /**
+     *
+     * @param {GameObject} gameObject
+     */
+    static delayedCreateForKnownAttachmentToken(gameObject) {
+        assert(gameObject instanceof GameObject);
+        assert(typeof autoAttach === "boolean");
+
+        process.nextTick(() => {
+            AbstractPlanetAttachment.createForKnownAttachmentToken(gameObject);
+        });
+    }
+
+    /**
      * Set up a known attachment token (registered in attachment.data and via homebrew.injectAttachment).
      *
      * @param {GameObject} gameObject
@@ -17,6 +30,7 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
      */
     static createForKnownAttachmentToken(gameObject) {
         assert(gameObject instanceof GameObject);
+
         const nsid = ObjectNamespace.getNsid(gameObject);
         let attrs = Attachment.getByTokenNsidName(nsid);
 

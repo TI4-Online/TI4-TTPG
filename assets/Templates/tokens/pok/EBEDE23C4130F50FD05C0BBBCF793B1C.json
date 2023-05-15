@@ -51,25 +51,27 @@
 			"Texture": "locale/tokens/pok/mirage.jpg",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
 	"Collision": [
 		{
-			"Model": "tokens/round-col.obj",
+			"Model": "tokens/mirage.obj",
 			"Offset":
 			{
-				"X": -0.2,
-				"Y": 0.3,
+				"X": 0,
+				"Y": 0,
 				"Z": 0
 			},
 			"Scale":
 			{
-				"X": 1.5,
-				"Y": 1.5,
+				"X": 1,
+				"Y": 1,
 				"Z": 1
 			},
 			"Rotation":
@@ -88,5 +90,6 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"Tags": []
 }

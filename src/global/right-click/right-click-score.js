@@ -4,6 +4,7 @@ const { Broadcast } = require("../../lib/broadcast");
 const { Facing } = require("../../lib/facing");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
+const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 const { Spawn } = require("../../setup/spawn/spawn");
 const {
     Card,
@@ -13,7 +14,6 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Scoreboard } = require("../../lib/scoreboard/scoreboard");
 
 const SCORE_ACTION_NAME = "*" + locale("ui.menu.score");
 
@@ -308,3 +308,22 @@ for (const obj of world.getAllObjects()) {
         addRightClickOptions(obj);
     }
 }
+
+class RightClickScore {
+    static injectOtherScorableNSID(nsid) {
+        if (typeof nsid !== "string") {
+            throw new Error(
+                "RightClickScore.injectOtherScorableNSID: not a string"
+            );
+        }
+        const parsed = ObjectNamespace.parseNsid(nsid);
+        if (!parsed) {
+            throw new Error(
+                "RightClickScore.injectOtherScorableNSID: not an nsid"
+            );
+        }
+        OTHER_SCORABLE_NSIDS.add(nsid);
+    }
+}
+
+module.exports = { RightClickScore };

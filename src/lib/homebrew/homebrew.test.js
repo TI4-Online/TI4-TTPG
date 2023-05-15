@@ -44,3 +44,8 @@ it("inject", () => {
         technologies: [myTechnology1],
     });
 });
+
+it("other scorable", () => {
+    const otherScorable = ["type:source/name"];
+    world.TI4.homebrew.inject({ otherScorable });
+});
