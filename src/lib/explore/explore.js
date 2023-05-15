@@ -318,7 +318,7 @@ class Explore {
             return;
         }
 
-        const tokenNsid = attachmentData.raw.tokenNsid;
+        const tokenNsid = attachmentData.tokenNsid;
 
         // Flip if planet has a tech.
         const tokenRot = new Rotator(rot.pitch, rot.yaw, 0);
