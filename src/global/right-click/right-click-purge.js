@@ -89,6 +89,9 @@ function canBePurged(obj) {
     }
 
     const parsedCard = ObjectNamespace.parseCard(obj);
+    if (!parsedCard) {
+        return false;
+    }
     const deck = parsedCard.deck;
     const name = parsedCard.name;
 

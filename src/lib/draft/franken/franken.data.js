@@ -174,6 +174,8 @@ const FACTION_ABILITIES = [
     {
         name: "Imperia",
         description:
+            "When you win a combat, place 1 command token from your opponent's reinforcements on your command sheet if it does not already contain 1 of that player's tokens." +
+            "\n\n" +
             "While another player's command token is in your fleet pool, you can use the ability of that player's commander, if it's unlocked.",
         source: "Mahact Gene-Sorcerers",
     },
@@ -264,7 +266,9 @@ const FACTION_ABILITIES = [
     {
         name: "Riftmeld",
         description:
-            "When you research a unit upgrade technology, you may return 1 captured unit of that type to ignore all of that technology's prerequisites.",
+            "When you research a unit upgrade technology, you may return 1 captured unit of that type to ignore all of that technology's prerequisites." +
+            "\n\n" +
+            "Capture your opponent's non-structure units that are destroyed during combat. You cannot capture more than one unit of a type this way.",
         source: "Vuil'raith Cabal",
     },
     {
