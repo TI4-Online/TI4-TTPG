@@ -111,6 +111,9 @@ class MapTool {
         const nsidTypeAndNameToPos = {};
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
+            if (!system) {
+                continue;
+            }
             // Ignore home systems.
             if (system.home) {
                 continue;
