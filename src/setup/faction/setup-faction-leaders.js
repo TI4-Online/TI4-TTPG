@@ -97,6 +97,9 @@ class SetupFactionLeaders extends AbstractSetup {
         );
         this.faction.raw.units.forEach((name) => {
             const unitAttrs = UnitAttrs.getNsidNameUnitUpgrade(name);
+            if (!unitAttrs) {
+                throw new Error(`missing unit attrs for "name"`);
+            }
             if (unitAttrs.raw.unit === "mech") {
                 acceptNames.add(name);
             }
