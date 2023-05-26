@@ -6,7 +6,6 @@ const { CardUtil } = require("../card/card-util");
 const { DealDiscard } = require("../card/deal-discard");
 const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
-const { Plague } = require("../actions/plague");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const { WidgetFactory } = require("../ui/widget-factory");
@@ -146,23 +145,6 @@ class Explore {
                     );
                 },
             });
-        }
-
-        // If plague is face up on the table, offer to plague planets.
-        if (Plague.isPlagueActive()) {
-            if (system.planets.length > 0) {
-                for (const planet of system.planets) {
-                    let planetName = planet.getNameStr();
-                    namesAndActions.push({
-                        name: locale("ui.action.system.plague", {
-                            planetName,
-                        }),
-                        action: (player) => {
-                            Plague.plague(systemTileObj, planet, player);
-                        },
-                    });
-                }
-            }
         }
 
         return namesAndActions;
