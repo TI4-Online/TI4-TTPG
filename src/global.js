@@ -123,6 +123,7 @@ globalEvents.onPlayerJoined.add((player) => {
 // Some naughty scripts register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
+require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 //require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
 require("./global/seats-shuffle");

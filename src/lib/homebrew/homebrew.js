@@ -23,6 +23,9 @@ const {
 const {
     RightClickScore,
 } = require("../../global/right-click/right-click-score");
+const {
+    injectRightClickSystemAction,
+} = require("../../global/right-click/right-click-system");
 
 class Homebrew {
     constructor() {}
@@ -72,6 +75,11 @@ class Homebrew {
         if (table.replace) {
             for (const [removeNSID, useNSID] of Object.entries(table.replace)) {
                 ReplaceObjects.injectReplace(removeNSID, useNSID);
+            }
+        }
+        if (table.rightClickSystem) {
+            for (const generator of table.rightClickSystem) {
+                injectRightClickSystemAction(generator);
             }
         }
         if (table.systems) {
