@@ -258,6 +258,10 @@ class DealDiscard {
             return false;
         }
 
+        if (count === 0) {
+            return true;
+        }
+
         // Move the card elsewhere before dealing so future linecasts trying to
         // find the deck don't find it by accident.
         const faceDown = false; // false = card will be face up in hand

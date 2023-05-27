@@ -98,6 +98,10 @@ globalEvents.TI4 = {
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
     onTurnChanged: new TriggerableMulticastDelegate(onErr),
 
+    // Called when a player eliminated is toggled.
+    // <(playerSlot: Number, clickingPlayer: Player) => void>
+    onTurnEliminatedChanged: new TriggerableMulticastDelegate(onErr),
+
     // Called when setting turn order.
     // <(playerDeskOrder: Array.{PlayerDesk}, player: Player|undefined) => void>
     onTurnOrderChanged: new TriggerableMulticastDelegate(onErr),

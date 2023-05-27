@@ -56,6 +56,16 @@ class StatusPad {
         this.updateUi();
     }
 
+    getEliminated() {
+        return ObjectSavedData.get(this._obj, "isEliminated", false);
+    }
+
+    setEliminated(value) {
+        assert(typeof value === "boolean");
+        ObjectSavedData.set(this._obj, "isEliminated", value);
+        this.updateUi();
+    }
+
     _onClickedAway(player) {
         assert(player instanceof Player);
 
@@ -68,7 +78,9 @@ class StatusPad {
             ? "ui.message.player_away"
             : "ui.message.player_here";
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        const color = playerDesk ? playerDesk.color : player.getPlayerColor();
+        const color = playerDesk
+            ? playerDesk.chatColor
+            : player.getPlayerColor();
         const msg = locale(localeMsg, { playerName });
         Broadcast.broadcastAll(msg, color);
     }
@@ -85,7 +97,7 @@ class StatusPad {
             const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
             const color = playerDesk
-                ? playerDesk.color
+                ? playerDesk.chatColor
                 : player.getPlayerColor();
             const msg = locale("ui.message.player_pass", { playerName });
             Broadcast.broadcastAll(msg, color);
@@ -99,6 +111,36 @@ class StatusPad {
 
         // Tell any listeners.
         globalEvents.TI4.onTurnPassedChanged.trigger(playerSlot, player);
+    }
+
+    _onClickedEliminated(player) {
+        assert(player instanceof Player);
+
+        const newValue = !this.getEliminated();
+        this.setEliminated(newValue);
+
+        const playerSlot = this._obj.getOwningPlayerSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        playerDesk.setEliminated(newValue);
+
+        if (newValue) {
+            // Announce pass.
+            const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
+            const color = playerDesk
+                ? playerDesk.chatColor
+                : player.getPlayerColor();
+            const msg = locale("ui.message.player_eliminated", { playerName });
+            Broadcast.broadcastAll(msg, color);
+
+            // Since this was a player click, also end turn.
+            const currentDesk = world.TI4.turns.getCurrentTurn();
+            if (currentDesk === playerDesk) {
+                world.TI4.turns.endTurn(player);
+            }
+        }
+
+        // Tell any listeners.
+        globalEvents.TI4.onTurnEliminatedChanged.trigger(playerSlot, player);
     }
 
     /**
@@ -143,6 +185,16 @@ class StatusPad {
         const buttonPass = new Button()
             .setFontSize(fontSize)
             .setText(locale("ui.button.pass"));
+        const buttonElim = new Button()
+            .setFontSize(fontSize)
+            .setText(locale("ui.button.eliminated"));
+
+        const applyEnabled = () => {
+            const eliminated = this.getEliminated();
+            buttonAway.setEnabled(!eliminated);
+            buttonPass.setEnabled(!eliminated);
+        };
+        applyEnabled();
 
         buttonAway.onClicked.add((button, player) => {
             this._onClickedAway(player);
@@ -150,16 +202,21 @@ class StatusPad {
         buttonPass.onClicked.add((button, player) => {
             this._onClickedPass(player);
         });
+        buttonElim.onClicked.add((button, player) => {
+            this._onClickedEliminated(player);
+            applyEnabled();
+        });
 
         const awayPassButtons = new HorizontalBox()
             .setChildDistance(10)
             .addChild(buttonAway, 1)
-            .addChild(buttonPass, 1);
+            .addChild(buttonPass, 1)
+            .addChild(buttonElim, 1);
 
         const layoutBox = new LayoutBox()
             .setChild(awayPassButtons)
             .setMinimumHeight(150)
-            .setMinimumWidth(310)
+            .setMinimumWidth(450)
             .setPadding(10, 10, 10, 10);
 
         const ui = new UIElement();
@@ -173,6 +230,19 @@ class StatusPad {
     }
 
     updateUi() {
+        const elimated = this.getEliminated();
+        if (elimated) {
+            const awayImgPath = "global/ui/panel_eliminated.png";
+            for (const awayImage of this._awayImages) {
+                awayImage.setImage(awayImgPath, refPackageId);
+            }
+            const passImgPath = "global/ui/panel_eliminated.png";
+            for (const passImage of this._passImages) {
+                passImage.setImage(passImgPath, refPackageId);
+            }
+            return;
+        }
+
         const awayImgPath = this.getAway()
             ? "locale/ui/panel_away_on.png"
             : "locale/ui/panel_away_off.png";

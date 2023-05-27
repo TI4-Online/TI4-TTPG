@@ -385,6 +385,17 @@ class Agenda {
         this._deskIndexToVoteCount = {};
         this._deskIndexToPredictedOutcomeIndexToPredictionCount = {};
 
+        // Lock down eliminated players.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            if (playerDesk.eliminated) {
+                const index = playerDesk.index;
+                this._noWhensDeskIndexSet.add(index);
+                this._noAftersDeskIndexSet.add(index);
+                this._whensAftersLockedDeskSet.add(index);
+                this._voteLockedDeskIndexSet.add(index);
+            }
+        }
+
         this._postInvalidate();
         return this;
     }

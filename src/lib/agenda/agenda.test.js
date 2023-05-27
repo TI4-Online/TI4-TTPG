@@ -979,3 +979,27 @@ it("summarize votes", () => {
 
     world.__clear();
 });
+
+it("eliminated", () => {
+    // Need speaker token to get agenda turn order.
+    const desks = world.TI4.getAllPlayerDesks();
+    const speakerToken = new MockGameObject({
+        templateMetadata: "token:base/speaker",
+        position: desks[0].center,
+    });
+    world.__addObject(speakerToken);
+
+    const playerDesk = world.TI4.getAllPlayerDesks()[0];
+    playerDesk.setEliminated(true);
+
+    const agenda = new Agenda()
+        .init()
+        .start()
+        .resetOutcomeNames(OUTCOME_TYPE.FOR_AGAINST);
+
+    assert.equal(agenda.getNoWhens(0), true);
+    assert.equal(agenda.getNoWhens(1), false);
+
+    playerDesk.setEliminated(false);
+    world.__clear();
+});
