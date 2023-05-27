@@ -51,3 +51,12 @@ it("changeColor", () => {
     assert.equal(playerDesk1.colorName, colorName2);
     assert.equal(playerDesk2.colorName, colorName1); // swapped
 });
+
+it("setEliminated", () => {
+    const playerDesk = PlayerDesk.getAllPlayerDesks()[0];
+    assert.equal(playerDesk.eliminated, false);
+    playerDesk.setEliminated(true);
+    assert.equal(playerDesk.eliminated, true);
+    playerDesk.setEliminated(false);
+    assert.equal(playerDesk.eliminated, false);
+});

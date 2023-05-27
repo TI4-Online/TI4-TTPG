@@ -52,6 +52,11 @@ class DealActionCards {
             dealNCards += 1;
         }
 
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk && playerDesk.eliminated) {
+            dealNCards = 0;
+        }
+
         return dealNCards;
     }
 
@@ -138,6 +143,11 @@ class EndStatusPhase {
                     DealDiscard.discard(cyberneticEnhancements2);
                 }
             }
+        }
+
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk && playerDesk.eliminated) {
+            dealNTokens = 0;
         }
 
         return dealNTokens;

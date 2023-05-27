@@ -238,6 +238,9 @@ class AbstractStrategyCard {
         const playListener = (obj, player) => {
             if (obj === gameObject) {
                 for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                    if (playerDesk.eliminated) {
+                        continue;
+                    }
                     this._addUI(playerDesk);
                 }
             }

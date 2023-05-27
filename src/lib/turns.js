@@ -190,15 +190,7 @@ class Turns {
         }
 
         // Get passed players.  (Safter than getting active in case not using status pads)
-        const passedPlayerSlots = new Set();
-        for (const obj of this.getAllStatusPads()) {
-            if (!obj.__getPass()) {
-                continue; // active
-            }
-            const owningPlayerSlot = obj.getOwningPlayerSlot();
-            assert(owningPlayerSlot >= 0);
-            passedPlayerSlots.add(owningPlayerSlot);
-        }
+        const passedPlayerSlots = this.getPassedPlayerSlotSet();
 
         // Scan for next active, respecting order and snaking.
         // Set scan limit 2x size for snaking, harmless for normal.
@@ -311,15 +303,7 @@ class Turns {
         );
 
         // Get passed players.  (Safter than getting active in case not using status pads)
-        const passedPlayerSlots = new Set();
-        for (const obj of this.getAllStatusPads()) {
-            if (!obj.__getPass()) {
-                continue; // active
-            }
-            const owningPlayerSlot = obj.getOwningPlayerSlot();
-            assert(owningPlayerSlot >= 0);
-            passedPlayerSlots.add(owningPlayerSlot);
-        }
+        const passedPlayerSlots = this.getPassedPlayerSlotSet();
 
         // Stop if all players have passed (with respect to current turn order).
         let anyActive = false;
@@ -410,7 +394,17 @@ class Turns {
         if (!statusPad) {
             return false;
         }
-        return statusPad.__getPass();
+        if (statusPad.__getPass()) {
+            return true;
+        }
+
+        // Check if eliminated.
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        if (playerDesk.eliminated) {
+            return true;
+        }
+
+        return false;
     }
 
     setPassed(playerSlot, value) {
@@ -460,6 +454,14 @@ class Turns {
                 passedPlayerSlotSet.add(playerSlot);
             }
         }
+
+        // Consider elimated players as "passed".
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            if (playerDesk.eliminated) {
+                passedPlayerSlotSet.add(playerDesk.playerSlot);
+            }
+        }
+
         return passedPlayerSlotSet;
     }
 }

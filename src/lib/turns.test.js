@@ -348,3 +348,23 @@ it("isTurnOrderEmpty", () => {
 
     assert(empty);
 });
+
+it("eliminated is passed", () => {
+    const playerDesks = world.TI4.getAllPlayerDesks(); // need to use the real desks for elimination
+    const clickingPlayer = new MockPlayer();
+
+    playerDesks[1].setEliminated(true);
+    assert(playerDesks[1].eliminated);
+
+    const turns = new Turns();
+    const passedSet = turns.getPassedPlayerSlotSet();
+    assert(passedSet.has(playerDesks[1].playerSlot));
+
+    turns.setTurnOrder(playerDesks, clickingPlayer);
+    turns.setCurrentTurn(playerDesks[0], clickingPlayer);
+    assert.equal(turns.getCurrentTurn().index, 0);
+    turns.endTurn(clickingPlayer); // desk 1 eliminated
+    assert.equal(turns.getCurrentTurn().index, 2);
+
+    playerDesks[1].setEliminated(false);
+});

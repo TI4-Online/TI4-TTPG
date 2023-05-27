@@ -99,6 +99,7 @@
     "ui.message.player_pass": "{playerName} pass",
     "ui.message.player_here": "{playerName} here",
     "ui.message.player_away": "{playerName} AFK",
+    "ui.message.player_eliminated": "{playerName} ELIMINATED!",
     "ui.message.all_players_have_passed": "All players have passed",
 
     "ui.message.political_stability": "{playerName} used Political Stability to hold onto {strategyCard}",
@@ -135,6 +136,7 @@
 
     "ui.button.pass": "PASS",
     "ui.button.away": "AWAY",
+    "ui.button.eliminated": "ELIM",
     "ui.button.active": "Active",
     "ui.button.idle": "Idle",
     "ui.button.setup": "SETUP",
