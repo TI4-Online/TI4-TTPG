@@ -136,6 +136,19 @@ it("summarize", () => {
     tiles = [65];
     summary = System.summarize(tiles);
     assert.equal(summary, "2/1 L");
+
+    // Optimal.
+    tiles = [25];
+    summary = System.summarize(tiles, true);
+    assert.equal(summary, "2/1 (2/0) β");
+
+    tiles = [27];
+    summary = System.summarize(tiles, true);
+    assert.equal(summary, "4/2 (3.5/0.5) G");
+
+    tiles = [65];
+    summary = System.summarize(tiles, true);
+    assert.equal(summary, "2/1 (2/0) L");
 });
 
 it("inject", () => {

@@ -279,10 +279,12 @@ class System {
         return result;
     }
 
-    static summarize(tiles) {
+    static summarize(tiles, includeOptimal) {
         assert(Array.isArray(tiles));
         let res = 0;
+        let optRes = 0;
         let inf = 0;
+        let optInf = 0;
         let tech = [];
         let wormholes = [];
         let legendaries = [];
@@ -291,8 +293,18 @@ class System {
             const system = System.getByTileNumber(tile);
             assert(system);
             for (const planet of system.planets) {
-                res += planet.raw.resources;
-                inf += planet.raw.influence;
+                const r = planet.raw.resources;
+                const i = planet.raw.influence;
+                res += r;
+                inf += i;
+                if (r > i) {
+                    optRes += r;
+                } else if (r < i) {
+                    optInf += i;
+                } else {
+                    optRes += r / 2;
+                    optInf += i / 2;
+                }
                 if (planet.raw.tech) {
                     for (const planetTech of planet.raw.tech) {
                         tech.push(planetTech.substring(0, 1).toUpperCase());
@@ -320,6 +332,9 @@ class System {
             }
         }
         const result = [`${res}/${inf}`];
+        if (includeOptimal) {
+            result.push(`(${optRes}/${optInf})`);
+        }
         if (tech.length > 0) {
             result.push(tech.sort().join(""));
         }
