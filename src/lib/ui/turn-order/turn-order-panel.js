@@ -39,6 +39,7 @@ class TurnOrderPanel {
             globalEvents.TI4.onTurnOrderEmpty.add(delayedUpdate);
             globalEvents.TI4.onTurnChanged.add(delayedUpdate);
             globalEvents.TI4.onTurnPassedChanged.add(delayedUpdate);
+            globalEvents.TI4.onTurnEliminatedChanged.add(delayedUpdate);
             globalEvents.TI4.onPlayerColorChanged.add(delayedUpdate);
             globalEvents.TI4.onPlayerCountChanged.add(delayedUpdate);
             globalEvents.TI4.onPlayerJoinedDelayed.add(delayedUpdate); // do less work on immediate join

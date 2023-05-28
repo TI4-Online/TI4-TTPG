@@ -46,6 +46,11 @@ function _maybeInit() {
                 );
             }
             _nsidNameToUnitUpgrade[parsed.name] = unitUpgrade;
+        } else {
+            // No card (and faction didn't set up for Franken).  Assume localeName is good.
+            const parts = rawAttrs.localeName.split(".");
+            const nsidName = parts[parts.length - 1];
+            _nsidNameToUnitUpgrade[nsidName] = unitUpgrade;
         }
     }
 }
@@ -193,7 +198,9 @@ class UnitAttrs {
     static injectUnitAttrs(rawUnitAttrs) {
         assert(rawUnitAttrs);
         UnitAttrsSchema.validate(rawUnitAttrs, (err) => {
-            throw new Error('UnitAttrs.injectUnitAttrs "${err}"');
+            throw new Error(
+                `UnitAttrs.injectUnitAttrs "${JSON.stringify(err)}"`
+            );
         });
         UNIT_ATTRS.push(rawUnitAttrs);
         _triggerNsidToUnitUpgrade = undefined;

@@ -15,10 +15,22 @@ const {
 } = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
 
+const _injectedVoteCountModifiers = [];
+
 /**
  * Shared information about the current agenda.
  */
 class Agenda {
+    /**
+     * Homebrew vote count manipulation.
+     *
+     * @param {function} voteCountModifier - takes playerDesk as arg, return delta
+     */
+    static injectVoteCountModifier(voteCountModifier) {
+        assert(typeof voteCountModifier === "function");
+        _injectedVoteCountModifiers.push(voteCountModifier);
+    }
+
     static getDeskIndexToPerPlanetBonus() {
         const deskIndexToPerPlanetBonus = {};
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -152,6 +164,24 @@ class Agenda {
 
             deskIndexToAvailableVotes[deskIndex] = newValue;
         }
+
+        // Homebrew?
+        for (const voteCountModifier of _injectedVoteCountModifiers) {
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                let delta = 0;
+                // Prevent a buggy modifier from stopping the other items.
+                try {
+                    delta = voteCountModifier(playerDesk);
+                    assert(typeof delta === "number");
+                } catch (exception) {
+                    console.log(
+                        `Agenda.getDeskIndexToAvailableVotes error: ${exception.stack}`
+                    );
+                }
+                deskIndexToAvailableVotes[playerDesk.index] += delta;
+            }
+        }
+
         return deskIndexToAvailableVotes;
     }
 
@@ -354,6 +384,17 @@ class Agenda {
         this._deskIndexToOutcomeIndex = {};
         this._deskIndexToVoteCount = {};
         this._deskIndexToPredictedOutcomeIndexToPredictionCount = {};
+
+        // Lock down eliminated players.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            if (playerDesk.eliminated) {
+                const index = playerDesk.index;
+                this._noWhensDeskIndexSet.add(index);
+                this._noAftersDeskIndexSet.add(index);
+                this._whensAftersLockedDeskSet.add(index);
+                this._voteLockedDeskIndexSet.add(index);
+            }
+        }
 
         this._postInvalidate();
         return this;

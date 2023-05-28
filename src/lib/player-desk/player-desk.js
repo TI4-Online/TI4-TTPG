@@ -115,6 +115,7 @@ class PlayerDesk {
                 playerDesk._colorName = deskState[i].cn;
                 playerDesk._playerSlot = deskState[i].s;
                 playerDesk._ready = deskState[i].r;
+                playerDesk._eliminated = deskState[i].e;
 
                 // Apply color
                 PlayerDeskColor.change(playerDesk, playerDesk._colorName);
@@ -218,6 +219,7 @@ class PlayerDesk {
         this._showColors = false;
         this._factionSetupInProgress = false;
         this._ready = false;
+        this._eliminated = false;
 
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
@@ -233,6 +235,10 @@ class PlayerDesk {
     // Player primary color.
     get color() {
         return this._color;
+    }
+
+    get eliminated() {
+        return this._eliminated;
     }
 
     // Game object color.
@@ -669,7 +675,16 @@ class PlayerDesk {
     }
 
     setReady(value) {
+        assert(typeof value === "boolean");
         this._ready = value;
+        this.saveDesksState();
+        this.resetUI();
+    }
+
+    setEliminated(value) {
+        assert(typeof value === "boolean");
+        console.log(`setEliminated ${value}`);
+        this._eliminated = value;
         this.saveDesksState();
         this.resetUI();
     }
@@ -682,6 +697,7 @@ class PlayerDesk {
                 cn: _playerDesks[i].colorName,
                 s: _playerDesks[i]._playerSlot,
                 r: _playerDesks[i]._ready,
+                e: _playerDesks[i]._eliminated,
             });
         }
         GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, deskState);

@@ -118,6 +118,9 @@ class AdjacencyWormhole {
     _updateHexToWormholeSystems() {
         for (const systemObject of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(systemObject);
+            if (!system) {
+                continue;
+            }
             for (const wormhole of system.wormholes) {
                 this._addHexWormhole(systemObject, wormhole);
             }

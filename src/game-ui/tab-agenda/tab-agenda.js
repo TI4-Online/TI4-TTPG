@@ -239,6 +239,9 @@ class TabAgenda {
         // Otherwise need desk UI.
         this._deskUIs = [];
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            if (playerDesk.eliminated) {
+                continue;
+            }
             const outcomeNamesMutable = agenda.getOutcomeName(0) === "?";
             const deskUi = new AgendaUiDesk(
                 playerDesk,

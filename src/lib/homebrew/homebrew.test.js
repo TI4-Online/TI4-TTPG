@@ -1,6 +1,7 @@
 require("../../global"); // create world.TI4
 const assert = require("assert");
 const { world } = require("../../wrapper/api");
+const { Agenda } = require("../agenda/agenda");
 
 it("world wiring", () => {
     assert(world.TI4.homebrew);
@@ -48,4 +49,19 @@ it("inject", () => {
 it("other scorable", () => {
     const otherScorable = ["type:source/name"];
     world.TI4.homebrew.inject({ otherScorable });
+});
+
+it("vote count modifier", () => {
+    const voteCountModifiers = [
+        (playerDesk) => {
+            return playerDesk.index;
+        },
+    ];
+    world.TI4.homebrew.inject({ voteCountModifiers });
+
+    const deskIndexToVoteCount = Agenda.getDeskIndexToAvailableVotes();
+    for (let i = 0; i < world.TI4.config.playerCount; i++) {
+        const voteCount = deskIndexToVoteCount[i];
+        assert.equal(i, voteCount);
+    }
 });

@@ -20,7 +20,8 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
 
     if (!system) {
         const nsid = ObjectNamespace.getNsid(obj);
-        throw new Error(`onSystemActivated: unknown system "${nsid}"`);
+        console.log(`onSystemActivated: unknown system "${nsid}"`);
+        return;
     }
 
     const message = locale("ui.message.system_activated", {
@@ -55,9 +56,16 @@ const onCommandTokenReleased = (
 
     const pos = obj.getPosition();
     const systemTile = world.TI4.getSystemTileObjectByPosition(pos);
-    if (systemTile) {
-        globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
+    if (!systemTile) {
+        return;
     }
+    const system = world.TI4.getSystemBySystemTileObject(systemTile);
+    if (!system) {
+        const nsid = ObjectNamespace.getNsid(systemTile);
+        console.log(`onSystemActivated: unknown system "${nsid}"`);
+        return;
+    }
+    globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
 };
 
 // Add our listener to future objects.

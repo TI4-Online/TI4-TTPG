@@ -1,6 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
+const { Broadcast } = require("../../lib/broadcast");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { ControlToken } = require("../../lib/control-token/control-token");
 const { Explore } = require("../../lib/explore/explore");
@@ -17,21 +18,16 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
-const { Broadcast } = require("../../lib/broadcast");
 
 // Show right click options?  These are just the static choices, dynamic things
 // like distant suns exploration or the plague action card do not appear.
 const ADD_CUSTOM_ACTIONS = true;
 
-// TODO XXX
-//const _injectedActions = [];
+const _injectedGetNamesAndActions = [];
 
-function injectRightClickSystemAction(params) {
-    assert(typeof params.name === "string");
-    assert(typeof params.show === "function");
-    assert(typeof params.onClick === "function");
-
-    // XXX TODO
+function injectRightClickSystemAction(getNamesAndActions) {
+    assert(typeof getNamesAndActions === "function");
+    _injectedGetNamesAndActions.push(getNamesAndActions);
 }
 
 function getNamesAndActions(player, systemTileObj) {
@@ -91,6 +87,22 @@ function getNamesAndActions(player, systemTileObj) {
                 nameAndAction.action(player);
             },
         });
+    }
+
+    // Any custom actions?
+    for (const generator of _injectedGetNamesAndActions) {
+        let custom = undefined;
+        // Prevent a buggy generator from stopping the other items.
+        try {
+            custom = generator(systemTileObj);
+        } catch (exception) {
+            console.log(
+                `RightClickSystem.getNamesAndActions error: ${exception.stack}`
+            );
+        }
+        if (custom) {
+            namesAndActions.push(...custom);
+        }
     }
 
     // Inform players about setting to right click ground mode objects.

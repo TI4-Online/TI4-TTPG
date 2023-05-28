@@ -98,6 +98,10 @@ globalEvents.TI4 = {
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
     onTurnChanged: new TriggerableMulticastDelegate(onErr),
 
+    // Called when a player eliminated is toggled.
+    // <(playerSlot: Number, clickingPlayer: Player) => void>
+    onTurnEliminatedChanged: new TriggerableMulticastDelegate(onErr),
+
     // Called when setting turn order.
     // <(playerDeskOrder: Array.{PlayerDesk}, player: Player|undefined) => void>
     onTurnOrderChanged: new TriggerableMulticastDelegate(onErr),
@@ -123,6 +127,7 @@ globalEvents.onPlayerJoined.add((player) => {
 // Some naughty scripts register global event listeners.
 const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
+require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 //require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
 require("./global/seats-shuffle");

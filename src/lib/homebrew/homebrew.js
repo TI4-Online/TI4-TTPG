@@ -23,17 +23,18 @@ const {
 const {
     RightClickScore,
 } = require("../../global/right-click/right-click-score");
+const {
+    injectRightClickSystemAction,
+} = require("../../global/right-click/right-click-system");
+const { Agenda } = require("../agenda/agenda");
 
 class Homebrew {
     constructor() {}
 
     inject(table) {
-        if (table.localeStrings) {
-            // "faction.abbr.<x>", "faction.full.<x>"
-            for (const [key, value] of Object.entries(table.localeStrings)) {
-                assert(typeof key === "string");
-                assert(typeof value === "string");
-                locale.inject(key, value);
+        if (table.attachments) {
+            for (const attachment of table.attachments) {
+                Attachment.injectAttachment(attachment);
             }
         }
         if (table.factionAbilities) {
@@ -49,6 +50,14 @@ class Homebrew {
         if (table.factions) {
             for (const faction of table.factions) {
                 Faction.injectFaction(faction);
+            }
+        }
+        if (table.localeStrings) {
+            // "faction.abbr.<x>", "faction.full.<x>"
+            for (const [key, value] of Object.entries(table.localeStrings)) {
+                assert(typeof key === "string");
+                assert(typeof value === "string");
+                locale.inject(key, value);
             }
         }
         if (table.nsidToTemplateId) {
@@ -74,6 +83,11 @@ class Homebrew {
                 ReplaceObjects.injectReplace(removeNSID, useNSID);
             }
         }
+        if (table.rightClickSystem) {
+            for (const generator of table.rightClickSystem) {
+                injectRightClickSystemAction(generator);
+            }
+        }
         if (table.systems) {
             for (const system of table.systems) {
                 System.injectSystem(system);
@@ -94,9 +108,9 @@ class Homebrew {
                 UnitModifier.injectUnitModifier(unitModifier);
             }
         }
-        if (table.attachments) {
-            for (const attachment of table.attachments) {
-                Attachment.injectAttachment(attachment);
+        if (table.voteCountModifiers) {
+            for (const voteCountModifier of table.voteCountModifiers) {
+                Agenda.injectVoteCountModifier(voteCountModifier);
             }
         }
         return this;

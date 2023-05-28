@@ -7,7 +7,10 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { RollGroup } = require("../../lib/dice/roll-group");
 const { SimpleDieBuilder } = require("../../lib/dice/simple-die");
 const { UnitPlastic } = require("../unit/unit-plastic");
-const { Player, Vector, world } = require("../../wrapper/api");
+const {
+    injectRightClickSystemAction,
+} = require("../../global/right-click/right-click-system");
+const { GameObject, Player, Vector, world } = require("../../wrapper/api");
 
 const DELETE_DIE_AFTER_N_SECONDS = 10;
 
@@ -52,7 +55,7 @@ class Plague {
         const playerSlot = player.getSlot();
         const playerName = world.TI4.getNameByPlayerSlot(playerSlot);
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
-        const color = playerDesk.chatColor;
+        const color = playerDesk ? playerDesk.chatColor : Broadcast.ERROR;
 
         const planetName = planet.getNameStr();
         const msg = locale("plague.message", { planetName, infantryCount });
@@ -109,5 +112,33 @@ class Plague {
 
     constructor() {}
 }
+
+// Add Plague support, also as an example of "only sometimes" menu items.
+injectRightClickSystemAction((systemTileObj) => {
+    assert(systemTileObj instanceof GameObject);
+    const system = world.TI4.getSystemBySystemTileObject(systemTileObj);
+    if (!system) {
+        return; // unknown system
+    }
+    if (system.planets.length === 0) {
+        return; // must have a planet
+    }
+    if (!Plague.isPlagueActive()) {
+        return; // no plague card on table
+    }
+    const namesAndActions = [];
+    for (const planet of system.planets) {
+        let planetName = planet.getNameStr();
+        namesAndActions.push({
+            name: locale("ui.action.system.plague", {
+                planetName,
+            }),
+            action: (player) => {
+                Plague.plague(systemTileObj, planet, player);
+            },
+        });
+    }
+    return namesAndActions;
+});
 
 module.exports = { Plague };
