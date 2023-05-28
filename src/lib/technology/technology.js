@@ -104,6 +104,11 @@ class Technology {
             );
         });
         rawTechnology.name = locale(rawTechnology.localeName);
+        for (let i = TECHNOLOGY_DATA.length - 1; i >=0; i--) {
+            if (TECHNOLOGY_DATA[i].name === rawTechnology.name) {
+                TECHNOLOGY_DATA.splice(i, 1);
+            }
+        }
         TECHNOLOGY_DATA.push(rawTechnology);
         _injectedSources.add(rawTechnology.source);
         invalidateCache();
