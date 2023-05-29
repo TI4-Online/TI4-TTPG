@@ -171,7 +171,8 @@ class Agenda {
                 let delta = 0;
                 // Prevent a buggy modifier from stopping the other items.
                 try {
-                    delta = voteCountModifier(playerDesk, deskIndexToAvailableVotes[playerDesk.index]);
+                    let availableVotes = deskIndexToAvailableVotes[playerDesk.index];
+                    delta = voteCountModifier(playerDesk, availableVotes);
                     assert(typeof delta === "number");
                 } catch (exception) {
                     console.log(
