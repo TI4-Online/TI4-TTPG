@@ -29,7 +29,7 @@ class DealActionCards {
     constructor() {
         throw new Error("static only");
     }
-    
+
     /**
      * Homebrew status phase action card deal manipulation.
      *
@@ -37,7 +37,9 @@ class DealActionCards {
      */
     static injectStatusPhaseActionDealModifier(statusPhaseActionDealModifier) {
         assert(typeof statusPhaseActionDealModifier === "function");
-        _injectedStatusPhaseActionDealModifiers.push(statusPhaseActionDealModifier);
+        _injectedStatusPhaseActionDealModifiers.push(
+            statusPhaseActionDealModifier
+        );
     }
 
     /**
@@ -65,7 +67,7 @@ class DealActionCards {
         ) {
             dealNCards += 1;
         }
-        
+
         // Homebrew?
         for (const actionDealModifier of _injectedStatusPhaseActionDealModifiers) {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -126,7 +128,7 @@ class EndStatusPhase {
     constructor() {
         throw new Error("static only");
     }
-    
+
     /**
      * Homebrew status phase command token deal manipulation.
      *
@@ -134,7 +136,9 @@ class EndStatusPhase {
      */
     static injectStatusPhaseTokenDealModifier(statusPhaseTokenDealModifier) {
         assert(typeof statusPhaseTokenDealModifier === "function");
-        _injectedStatusPhaseTokenDealModifiers.push(statusPhaseTokenDealModifier);
+        _injectedStatusPhaseTokenDealModifiers.push(
+            statusPhaseTokenDealModifier
+        );
     }
 
     /**
@@ -185,7 +189,7 @@ class EndStatusPhase {
                 }
             }
         }
-        
+
         // Homebrew?
         for (const tokenDealModifier of _injectedStatusPhaseTokenDealModifiers) {
             for (const playerDesk of world.TI4.getAllPlayerDesks()) {
