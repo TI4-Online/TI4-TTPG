@@ -21,9 +21,23 @@ const { PlayerDesk } = require("../player-desk/player-desk");
 
 const ANIMATION_SPEED = 1;
 
+const _injectedStatusPhaseActionDealModifiers = [];
+
+const _injectedStatusPhaseTokenDealModifiers = [];
+
 class DealActionCards {
     constructor() {
         throw new Error("static only");
+    }
+    
+    /**
+     * Homebrew status phase action card deal manipulation.
+     *
+     * @param {function} statusPhaseActionDealModifier - takes playerDesk as arg, return delta
+     */
+    static injectStatusPhaseActionDealModifier(statusPhaseActionDealModifier) {
+        assert(typeof statusPhaseActionDealModifier === "function");
+        _injectedStatusPhaseActionDealModifiers.push(statusPhaseActionDealModifier);
     }
 
     /**
@@ -50,6 +64,23 @@ class DealActionCards {
             )
         ) {
             dealNCards += 1;
+        }
+        
+        // Homebrew?
+        for (const actionDealModifier of _injectedStatusPhaseActionDealModifiers) {
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                let delta = 0;
+                // Prevent a buggy modifier from stopping the other items.
+                try {
+                    delta = actionDealModifier(playerDesk);
+                    assert(typeof delta === "number");
+                } catch (exception) {
+                    console.log(
+                        `DealActionCards.getNumberActionCardsToDeal error: ${exception.stack}`
+                    );
+                }
+                dealNCards += delta;
+            }
         }
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
@@ -94,6 +125,16 @@ class DealActionCards {
 class EndStatusPhase {
     constructor() {
         throw new Error("static only");
+    }
+    
+    /**
+     * Homebrew status phase command token deal manipulation.
+     *
+     * @param {function} statusPhaseTokenDealModifier - takes playerDesk as arg, return delta
+     */
+    static injectStatusPhaseTokenDealModifier(statusPhaseTokenDealModifier) {
+        assert(typeof statusPhaseTokenDealModifier === "function");
+        _injectedStatusPhaseTokenDealModifiers.push(statusPhaseTokenDealModifier);
     }
 
     /**
@@ -142,6 +183,23 @@ class EndStatusPhase {
                 if (cyberneticEnhancements2) {
                     DealDiscard.discard(cyberneticEnhancements2);
                 }
+            }
+        }
+        
+        // Homebrew?
+        for (const tokenDealModifier of _injectedStatusPhaseTokenDealModifiers) {
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                let delta = 0;
+                // Prevent a buggy modifier from stopping the other items.
+                try {
+                    delta = tokenDealModifier(playerDesk);
+                    assert(typeof delta === "number");
+                } catch (exception) {
+                    console.log(
+                        `EndStatusPhase.getNumberOfCommandTokensToDistribute error: ${exception.stack}`
+                    );
+                }
+                dealNTokens += delta;
             }
         }
 
