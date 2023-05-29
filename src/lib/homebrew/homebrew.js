@@ -27,6 +27,7 @@ const {
     injectRightClickSystemAction,
 } = require("../../global/right-click/right-click-system");
 const { Agenda } = require("../agenda/agenda");
+const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
 
 class Homebrew {
     constructor() {}
@@ -86,6 +87,16 @@ class Homebrew {
         if (table.rightClickSystem) {
             for (const generator of table.rightClickSystem) {
                 injectRightClickSystemAction(generator);
+            }
+        }
+        if (table.statusPhaseActionDealModifiers) {
+            for (const generator of table.statusPhaseActionDealModifiers) {
+                DealActionCards.injectStatusPhaseActionDealModifier(generator);
+            }
+        }
+        if (table.statusPhaseTokenDealModifiers) {
+            for (const generator of table.statusPhaseTokenDealModifiers) {
+                EndStatusPhase.injectStatusPhaseTokenDealModifier(generator);
             }
         }
         if (table.systems) {
