@@ -683,7 +683,6 @@ class PlayerDesk {
 
     setEliminated(value) {
         assert(typeof value === "boolean");
-        console.log(`setEliminated ${value}`);
         this._eliminated = value;
         this.saveDesksState();
         this.resetUI();
