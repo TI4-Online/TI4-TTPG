@@ -12,7 +12,6 @@ const _injectedWormholeAdjacencyModifiers = [];
  * Get adjacent-via-wormhole hexes.
  */
 class AdjacencyWormhole {
-    
     /**
      * Homebrew wormhole connection manipulation
      *
@@ -22,7 +21,7 @@ class AdjacencyWormhole {
         assert(typeof wormholeAdjacencyModifier === "function");
         _injectedWormholeAdjacencyModifiers.push(wormholeAdjacencyModifier);
     }
-    
+
     /*
      * Constructor
      *
@@ -50,8 +49,8 @@ class AdjacencyWormhole {
         if (faction) {
             for (const ability of faction.raw.abilities) {
                 if (ability === "quantum_entanglement") {
-                   this._connected.get("alpha").add("beta");
-                   this._connected.get("beta").add("alpha");
+                    this._connected.get("alpha").add("beta");
+                    this._connected.get("beta").add("alpha");
                 }
             }
         }
@@ -76,8 +75,10 @@ class AdjacencyWormhole {
     }
 
     _updateConnectedForCardNsid(nsid, obj) {
-        if (nsid === "card.agenda:base/wormhole_reconstruction" || 
-        nsid === "card.action:base/lost_star_chart") {
+        if (
+            nsid === "card.agenda:base/wormhole_reconstruction" ||
+            nsid === "card.action:base/lost_star_chart"
+        ) {
             this._connected.get("alpha").add("beta");
             this._connected.get("beta").add("alpha");
         }
@@ -91,9 +92,11 @@ class AdjacencyWormhole {
             if (!ActiveIdle.isActive(obj)) {
                 return; // not active
             }
-            this._connected.forEach((wormholeConnections, wormhole, _connected) => {
-                wormholeConnections.add("any")
-            });
+            this._connected.forEach(
+                (wormholeConnections, wormhole, _connected) => {
+                    wormholeConnections.add("any");
+                }
+            );
         }
     }
 
@@ -166,7 +169,7 @@ class AdjacencyWormhole {
         }
         wormholeSet.add(wormhole);
     }
-    
+
     // Homebrew
     _updateConnectedForInjections() {
         for (const wormholeAdjacencyModifier of _injectedWormholeAdjacencyModifiers) {
@@ -203,23 +206,31 @@ class AdjacencyWormhole {
         this._updateConnectedForInjections(); // homebrew
         const connectedWormholes = new Set();
         for (const wormhole of hexWormholes) {
-            this._connected.get(wormhole).forEach(wormholeConnection => connectedWormholes.add(wormholeConnection));
+            this._connected
+                .get(wormhole)
+                .forEach((wormholeConnection) =>
+                    connectedWormholes.add(wormholeConnection)
+                );
         }
 
         // Which other hexes has a connected wormhole?
         for (const [hex, wormholes] of Object.entries(this._hexToWormholes)) {
             if (connectedWormholes.has("any")) {
-                 adjacentHexSet.add(hex);
-                 continue;
+                adjacentHexSet.add(hex);
+                continue;
             }
             for (const connectedWormhole of connectedWormholes) {
                 if (wormholes.has(connectedWormhole)) {
                     adjacentHexSet.add(hex);
                     break;
                 }
-                if (connectedWormhole.startsWith("non-") 
-                    && (wormholes.size > 1
-                        || !connectedWormhole.endsWith(wormholes.values().next().value))) {
+                if (
+                    connectedWormhole.startsWith("non-") &&
+                    (wormholes.size > 1 ||
+                        !connectedWormhole.endsWith(
+                            wormholes.values().next().value
+                        ))
+                ) {
                     adjacentHexSet.add(hex);
                     break;
                 }

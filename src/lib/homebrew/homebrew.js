@@ -127,7 +127,9 @@ class Homebrew {
         }
         if (table.wormholeAdjacencyModifiers) {
             for (const wormholeAdjacencyModifier of table.wormholeAdjacencyModifiers) {
-                AdjacencyWormhole.injectWormholeAdjacencyModifier(wormholeAdjacencyModifier);
+                AdjacencyWormhole.injectWormholeAdjacencyModifier(
+                    wormholeAdjacencyModifier
+                );
             }
         }
         return this;
