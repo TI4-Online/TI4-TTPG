@@ -6,10 +6,23 @@ const { Hex } = require("../hex");
 const { ObjectNamespace } = require("../object-namespace");
 const { GameObject, world } = require("../../wrapper/api");
 
+const _injectedWormholeAdjacencyModifiers = [];
+
 /**
  * Get adjacent-via-wormhole hexes.
  */
 class AdjacencyWormhole {
+    
+    /**
+     * Homebrew wormhole connection manipulation
+     *
+     * @param {function} wormholeAdjacencyModifier - takes in wormhole connection map
+     */
+    static injectWormholeAdjacencyModifier(wormholeAdjacencyModifier) {
+        assert(typeof wormholeAdjacencyModifier === "function");
+        _injectedWormholeAdjacencyModifiers.push(wormholeAdjacencyModifier);
+    }
+    
     /*
      * Constructor
      *
@@ -23,12 +36,11 @@ class AdjacencyWormhole {
         this._hex = hex;
         this._playerSlot = playerSlot;
 
-        this._connected = {
-            alpha: new Set(["alpha"]),
-            beta: new Set(["beta"]),
-            delta: new Set(["delta"]),
-            gamma: new Set(["gamma"]),
-        };
+        this._connected = new Map();
+        this._connected.set("alpha", new Set(["alpha"]));
+        this._connected.set("beta", new Set(["beta"]));
+        this._connected.set("gamma", new Set(["gamma"]));
+        this._connected.set("delta", new Set(["delta"]));
 
         this._hexToWormholes = {};
     }
@@ -38,8 +50,8 @@ class AdjacencyWormhole {
         if (faction) {
             for (const ability of faction.raw.abilities) {
                 if (ability === "quantum_entanglement") {
-                    this._connected.alpha.add("beta");
-                    this._connected.beta.add("alpha");
+                   this._connected.get("alpha").add("beta");
+                   this._connected.get("beta").add("alpha");
                 }
             }
         }
@@ -64,14 +76,10 @@ class AdjacencyWormhole {
     }
 
     _updateConnectedForCardNsid(nsid, obj) {
-        if (nsid === "card.agenda:base/wormhole_reconstruction") {
-            this._connected.alpha.add("beta");
-            this._connected.beta.add("alpha");
-        }
-
-        if (nsid === "card.action:base/lost_star_chart") {
-            this._connected.alpha.add("beta");
-            this._connected.beta.add("alpha");
+        if (nsid === "card.agenda:base/wormhole_reconstruction" || 
+        nsid === "card.action:base/lost_star_chart") {
+            this._connected.get("alpha").add("beta");
+            this._connected.get("beta").add("alpha");
         }
 
         // Creuss agent, can be applied for any player.
@@ -83,35 +91,9 @@ class AdjacencyWormhole {
             if (!ActiveIdle.isActive(obj)) {
                 return; // not active
             }
-
-            // Double check the active system has a proper wormhold?
-            // Disable this for now, players may have a reason to do so
-            // (e.g. simulating a previous activation).
-            // const activeObj = world.TI4.getActiveSystemTileObject();
-            // if (!activeObj) {
-            //     return;
-            // }
-            // const system = world.TI4.getSystemBySystemTileObject(activeObj);
-            // let nonDelta = false;
-            // for (const wormhole of system.wormholes) {
-            //     if (wormhole !== "delta") {
-            //         nonDelta = true;
-            //         break;
-            //     }
-            // }
-            // if (!nonDelta) {
-            //     return;
-            // }
-
-            this._connected.alpha.add("beta");
-            this._connected.alpha.add("gamma");
-            this._connected.alpha.add("delta");
-            this._connected.beta.add("alpha");
-            this._connected.beta.add("gamma");
-            this._connected.beta.add("delta");
-            this._connected.gamma.add("alpha");
-            this._connected.gamma.add("beta");
-            this._connected.gamma.add("delta");
+            this._connected.forEach((wormholeConnections, wormhole, _connected) => {
+                wormholeConnections.add("any")
+            });
         }
     }
 
@@ -184,6 +166,19 @@ class AdjacencyWormhole {
         }
         wormholeSet.add(wormhole);
     }
+    
+    // Homebrew
+    _updateConnectedForInjections() {
+        for (const wormholeAdjacencyModifier of _injectedWormholeAdjacencyModifiers) {
+            try {
+                wormholeAdjacencyModifier(this._connected);
+            } catch (exception) {
+                console.log(
+                    `AdjacencyWormhole._updateConnectedForInjections error: ${exception.stack}`
+                );
+            }
+        }
+    }
 
     /**
      * Get adjacent.
@@ -205,17 +200,26 @@ class AdjacencyWormhole {
         // Apply connectivity, which wormholes connect?
         this._updateConnectedForFaction();
         this._updateConnectedForCards();
+        this._updateConnectedForInjections(); // homebrew
         const connectedWormholes = new Set();
         for (const wormhole of hexWormholes) {
-            for (const connected of this._connected[wormhole]) {
-                connectedWormholes.add(connected);
-            }
+            this._connected.get(wormhole).forEach(wormholeConnection => connectedWormholes.add(wormholeConnection));
         }
 
         // Which other hexes has a connected wormhole?
         for (const [hex, wormholes] of Object.entries(this._hexToWormholes)) {
+            if (connectedWormholes.has("any")) {
+                 adjacentHexSet.add(hex);
+                 continue;
+            }
             for (const connectedWormhole of connectedWormholes) {
                 if (wormholes.has(connectedWormhole)) {
+                    adjacentHexSet.add(hex);
+                    break;
+                }
+                if (connectedWormhole.startsWith("non-") 
+                    && (wormholes.size > 1
+                        || !connectedWormhole.endsWith(wormholes.values().next().value))) {
                     adjacentHexSet.add(hex);
                     break;
                 }

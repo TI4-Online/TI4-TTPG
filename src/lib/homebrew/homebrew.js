@@ -28,6 +28,7 @@ const {
 } = require("../../global/right-click/right-click-system");
 const { Agenda } = require("../agenda/agenda");
 const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
+const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
 
 class Homebrew {
     constructor() {}
@@ -122,6 +123,11 @@ class Homebrew {
         if (table.voteCountModifiers) {
             for (const voteCountModifier of table.voteCountModifiers) {
                 Agenda.injectVoteCountModifier(voteCountModifier);
+            }
+        }
+        if (table.wormholeAdjacencyModifiers) {
+            for (const wormholeAdjacencyModifier of table.wormholeAdjacencyModifiers) {
+                AdjacencyWormhole.injectWormholeAdjacencyModifier(wormholeAdjacencyModifier);
             }
         }
         return this;
