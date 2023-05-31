@@ -14,27 +14,23 @@ const {
 } = require("../../../wrapper/api");
 
 const TILE_W = 512;
-const FONT_SCALE = 0.06;
+const FONT_SCALE = 0.08;
 
 class UiSlice {
     /**
      * Constructor.
-     *
-     * @param {Array.{string}} shape - list of hexes with slice pointing north, home is <0,0,0> but not included in list
-     * @param {Array.{number}} slice - list of tiles in hex order
-     * @param {number} scale - optional scaling
      */
     constructor() {
-        this._color = [1, 1, 1, 1];
+        this._homeSystemcolor = [1, 1, 1, 1];
         this._label = "Slice";
         this._scale = 1;
         this._shape = undefined;
         this._slice = undefined;
     }
 
-    setColor(color) {
+    setHomeSystemColor(color) {
         assert(ColorUtil.isColor(color));
-        this._color = color;
+        this._homeSystemcolor = color;
         return this;
     }
 
@@ -69,6 +65,8 @@ class UiSlice {
         assert(Array.isArray(slice));
         for (const tile of slice) {
             assert(typeof tile === "number");
+            const system = world.TI4.getSystemByTileNumber(tile);
+            assert(system);
         }
 
         if (!this._shape) {
@@ -172,11 +170,11 @@ class UiSlice {
         let pos = size.positions[0];
         const image = new ImageWidget()
             .setImage("global/ui/tiles/blank.png", refPackageId)
-            .setTintColor(this._color);
+            .setTintColor(this._homeSystemcolor);
         canvas.addChild(
             image,
-            pos.x - size.halfW - 1,
-            pos.y - size.halfW - 1, // image is square
+            offset.x + pos.x - size.halfW - 1,
+            offset.y + pos.y - size.halfW - 1, // image is square
             size.tileW + 2,
             size.tileW + 2
         );
@@ -197,8 +195,8 @@ class UiSlice {
 
             canvas.addChild(
                 image,
-                pos.x - size.halfW - 1,
-                pos.y - size.halfW - 1, // image is square
+                offset.x + pos.x - size.halfW - 1,
+                offset.y + pos.y - size.halfW - 1, // image is square
                 size.tileW + 2,
                 size.tileW + 2
             );
@@ -208,8 +206,9 @@ class UiSlice {
         pos = size.positions[0];
         const includeOptimal = true;
         const summary = System.summarize(this._slice, includeOptimal);
-        const label = `${this._label}\n${summary}`;
+        const label = `${summary}\n${this._label}`;
         const text = new Text()
+            .setAutoWrap(true)
             .setBold(true)
             .setJustification(TextJustification.Center)
             .setFontSize(size.fontSize)
@@ -224,8 +223,8 @@ class UiSlice {
 
         canvas.addChild(
             textBox,
-            pos.x - size.halfW,
-            pos.y - size.halfH,
+            offset.x + pos.x - size.halfW,
+            offset.y + pos.y - size.halfH,
             size.tileW,
             size.tileH
         );
