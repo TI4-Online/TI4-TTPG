@@ -76,6 +76,10 @@ class StatsScreenUI {
             this.updateForPlayerCount();
             delayedUpdate();
         });
+        globalEvents.TI4.onPlayerColorChanged.add(() => {
+            this.updateForPlayerCount();
+            delayedUpdate();
+        });
 
         this.updateForPlayerCount();
         this.update();
