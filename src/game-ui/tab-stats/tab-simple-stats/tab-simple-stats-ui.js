@@ -165,6 +165,12 @@ class TabSimpleStatsUI {
             CONFIG.spacing
         );
 
+        this.resetUI();
+    }
+
+    resetUI() {
+        this._mainWidget.removeAllChildren();
+
         // Per-player stats in desk index order.
         this._playerStatsUIs = [];
 
