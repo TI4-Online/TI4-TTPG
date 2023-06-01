@@ -8,7 +8,7 @@ const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
 
-let _useGameData = false;
+let _useGameData = true;
 
 function onPlayerCountChanged(slider, player, value) {
     world.TI4.turns.invalidate();
@@ -118,7 +118,7 @@ class GameSetup {
             onUseBaseMagenChanged,
             onUseGameDataChanged,
             onSetupClicked,
-        }).create();
+        }).create(_useGameData);
     }
     getUI() {
         return this._ui;

@@ -1,6 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
-const { world } = require("../../../wrapper/api");
 const { TabSimpleStatsUI } = require("./tab-simple-stats-ui");
+const { globalEvents, world } = require("../../../wrapper/api");
 
 const FILL_TASKS = [
     require("../../../lib/game-data/updator-player-active"),
@@ -59,6 +59,13 @@ class TabSimpleStats {
                 this._tabSimpleStatsUI.update(data);
             }
         };
+        globalEvents.TI4.onPlayerColorChanged.add(() => {
+            if (this._tabSimpleStatsUI) {
+                const data = TabSimpleStats.getPlayerDataSync();
+                this._tabSimpleStatsUI.resetUI();
+                this._tabSimpleStatsUI.update(data);
+            }
+        });
     }
 
     getUI() {

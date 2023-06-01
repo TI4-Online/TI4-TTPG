@@ -37,7 +37,7 @@ class GameSetupUI {
         this._callbacks = callbacks;
     }
 
-    create() {
+    create(useGameDataDefaultValue) {
         const title = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize * 3)
             .setText(locale("ui.setup.title"))
@@ -97,7 +97,7 @@ class GameSetupUI {
         col1Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_game_data",
-                false,
+                useGameDataDefaultValue,
                 this._callbacks.onUseGameDataChanged
             )
         );
