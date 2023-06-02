@@ -44,9 +44,15 @@ class Adjacency {
         }
 
         for (const injectedAdjacencyModifier of _injectedAdjacencyModifiers) {
-            adjHexes = injectedAdjacencyModifier(hex);
-            for (const adjHex of adjHexes) {
-                result.add(adjHex);
+            try {
+                adjHexes = injectedAdjacencyModifier(hex);
+                for (const adjHex of adjHexes) {
+                    result.add(adjHex);
+                }
+            } catch (exception) {
+                console.log(
+                    `Adjacency.getAdjacent error: ${exception.stack}`
+                );
             }
         }
 
