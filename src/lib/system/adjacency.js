@@ -3,7 +3,19 @@ const { AdjacencyHyperlane } = require("./adjacency-hyperlane");
 const { AdjacencyNeighbor } = require("./adjacency-neighbor");
 const { AdjacencyWormhole } = require("./adjacency-wormhole");
 
+const _injectedAdjacencyModifiers = [];
+
 class Adjacency {
+    /**
+     * Homebrew adjacency manipulation
+     *
+     * @param {function} adjacencyModifier
+     */
+    static injectAdjacencyModifier(adjacencyModifier) {
+        assert(typeof adjacencyModifier === "function");
+        _injectedAdjacencyModifiers.push(adjacencyModifier);
+    }
+
     /**
      * Get adjacent.
      *
@@ -29,6 +41,13 @@ class Adjacency {
         adjHexes = new AdjacencyWormhole(hex, playerSlot).getAdjacent();
         for (const adjHex of adjHexes) {
             result.add(adjHex);
+        }
+
+        for (const injectedAdjacencyModifier of _injectedAdjacencyModifiers) {
+            adjHexes = injectedAdjacencyModifier(hex);
+            for (const adjHex of adjHexes) {
+                result.add(adjHex);
+            }
         }
 
         // Do not consider self adjacent.

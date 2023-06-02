@@ -1,8 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
-const { AdjacencyHyperlane } = require("../system/adjacency-hyperlane");
-const { AdjacencyNeighbor } = require("../system/adjacency-neighbor");
-const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
+const { Adjacency } = require("../system/adjacency");
 const { AuxData } = require("./auxdata");
 const { Broadcast } = require("../broadcast");
 const { Hex } = require("../hex");
@@ -148,24 +146,8 @@ class AuxDataPair {
      */
     computeAdjHexes() {
         if (this._hex && !this._planet) {
-            const adjNeighbor = new AdjacencyNeighbor(this._hex);
-            for (const adjHex of adjNeighbor.getAdjacent()) {
-                this._adjHexes.add(adjHex);
-            }
-
             const playerSlot = this._aux1.playerSlot; // aux1 perspective
-            const adjWormhole = new AdjacencyWormhole(this._hex, playerSlot);
-            for (const adjHex of adjWormhole.getAdjacent()) {
-                this._adjHexes.add(adjHex);
-            }
-
-            const adjHyperlane = new AdjacencyHyperlane(this._hex);
-            for (const adjHex of adjHyperlane.getAdjacent()) {
-                this._adjHexes.add(adjHex);
-            }
-
-            // This hex is not considered adjacent here, even if wormhole, etc.
-            this._adjHexes.delete(this._hex);
+            this._adjHexes = Adjacency.getAdjacent(this._hex, playerSlot);
         }
 
         // Remove any hexes that do not contain a system tile.

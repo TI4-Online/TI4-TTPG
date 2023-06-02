@@ -29,11 +29,17 @@ const {
 const { Agenda } = require("../agenda/agenda");
 const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
 const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
+const { Adjacency } = require("../system/adjacency");
 
 class Homebrew {
     constructor() {}
 
     inject(table) {
+        if (table.adjacencyModifiers) {
+            for (const adjacencyModifier of table.adjacencyModifiers) {
+                Adjacency.injectAdjacencyModifier(adjacencyModifier);
+            }
+        }
         if (table.attachments) {
             for (const attachment of table.attachments) {
                 Attachment.injectAttachment(attachment);
