@@ -178,6 +178,8 @@ const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 const { DealDiscard } = require("./lib/card/deal-discard");
+const { UnitModifier } = require("./lib/unit/unit-modifier");
+const { ActiveIdle } = require("./lib/unit/active-idle");
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -199,6 +201,8 @@ world.TI4 = {
     UnitAttrs,
     UnitPlastic,
     DealDiscard,
+    UnitModifier,
+    ActiveIdle,
 
     // More libraries for homebrew access
     assert,
