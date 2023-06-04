@@ -53,7 +53,10 @@ const getTechnologiesRawArray = (factionName) => {
         Object.values(b.requirements).forEach((count) => {
             requirementsB += count;
         });
-        return requirementsA > requirementsB || (requirementsA === requirementsB && a.name > b.name) ? 1 : -1;
+        return requirementsA > requirementsB ||
+            (requirementsA === requirementsB && a.name > b.name)
+            ? 1
+            : -1;
     });
 };
 
