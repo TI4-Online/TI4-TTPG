@@ -50,9 +50,7 @@ class Adjacency {
                     result.add(adjHex);
                 }
             } catch (exception) {
-                console.log(
-                    `Adjacency.getAdjacent error: ${exception.stack}`
-                );
+                console.log(`Adjacency.getAdjacent error: ${exception.stack}`);
             }
         }
 

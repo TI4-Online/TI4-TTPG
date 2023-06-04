@@ -70,19 +70,16 @@ class DealActionCards {
 
         // Homebrew?
         for (const actionDealModifier of _injectedStatusPhaseActionDealModifiers) {
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                let delta = 0;
-                // Prevent a buggy modifier from stopping the other items.
-                try {
-                    delta = actionDealModifier(playerDesk);
-                    assert(typeof delta === "number");
-                } catch (exception) {
-                    console.log(
-                        `DealActionCards.getNumberActionCardsToDeal error: ${exception.stack}`
-                    );
-                }
-                dealNCards += delta;
+            let delta = 0;
+            try {
+                delta = actionDealModifier(playerSlot);
+                assert(typeof delta === "number");
+            } catch (exception) {
+                console.log(
+                    `DealActionCards.getNumberActionCardsToDeal error: ${exception.stack}`
+                );
             }
+            dealNCards += delta;
         }
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
@@ -192,19 +189,16 @@ class EndStatusPhase {
 
         // Homebrew?
         for (const tokenDealModifier of _injectedStatusPhaseTokenDealModifiers) {
-            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-                let delta = 0;
-                // Prevent a buggy modifier from stopping the other items.
-                try {
-                    delta = tokenDealModifier(playerDesk);
-                    assert(typeof delta === "number");
-                } catch (exception) {
-                    console.log(
-                        `EndStatusPhase.getNumberOfCommandTokensToDistribute error: ${exception.stack}`
-                    );
-                }
-                dealNTokens += delta;
+            let delta = 0;
+            try {
+                delta = tokenDealModifier(playerSlot);
+                assert(typeof delta === "number");
+            } catch (exception) {
+                console.log(
+                    `EndStatusPhase.getNumberOfCommandTokensToDistribute error: ${exception.stack}`
+                );
             }
+            dealNTokens += delta;
         }
 
         const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
