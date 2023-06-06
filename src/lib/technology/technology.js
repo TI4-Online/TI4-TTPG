@@ -44,6 +44,19 @@ const getTechnologiesRawArray = (factionName) => {
             tech.faction === factionName ||
             (tech.factions && tech.factions.includes(factionName))
         ); // matching faction
+    }).sort(function (a, b) {
+        let requirementsA = 0;
+        Object.values(a.requirements).forEach((count) => {
+            requirementsA += count;
+        });
+        let requirementsB = 0;
+        Object.values(b.requirements).forEach((count) => {
+            requirementsB += count;
+        });
+        return requirementsA > requirementsB ||
+            (requirementsA === requirementsB && a.name > b.name)
+            ? 1
+            : -1;
     });
 };
 
