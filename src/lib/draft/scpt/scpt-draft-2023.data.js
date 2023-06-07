@@ -31,7 +31,18 @@ const SCPT_DRAFTS_2023 = [
     },
     {
         name: "Semi-finals",
-        enabled: false,
+        enabled: true,
+        slices: "75,59,48,66,39|47,69,79,19,30|64,50,29,42,72|25,37,46,41,71|49,34,26,67,27|45,24,28,38,40|35,78,76,43,65",
+        labels: [
+            "Hope's End Pursuits",
+            "Lickin' Good",
+            "We'll Always Have Atlas",
+            "Ba'kall Good Things",
+            "Encounter at Starpoint",
+            "Shades of Meh...ar Xull",
+            "The Most of Best Worlds",
+        ].join("|"),
+        // no clock for semis
     },
     {
         name: "Finals",

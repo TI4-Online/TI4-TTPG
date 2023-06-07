@@ -27,8 +27,8 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     }
 });
 
-// Script reload doesn't call onObjectCreated on existing objects, load manually.
-if (world.getExecutionReason() === "ScriptReload") {
+// Wait a frame to give homebrew a chance to inject new ones.
+process.nextTick(() => {
     for (const obj of world.getAllObjects()) {
         if (!(obj instanceof Card)) {
             continue;
@@ -38,4 +38,4 @@ if (world.getExecutionReason() === "ScriptReload") {
         }
         delayedAddToggleActiveButton(obj);
     }
-}
+});
