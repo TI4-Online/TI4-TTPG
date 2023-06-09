@@ -37,7 +37,7 @@ const SCPT_DRAFTS_2023 = [
             "Hope's End Pursuits",
             "Lickin' Good",
             "We'll Always Have Atlas",
-            "Ba'kall Good Things",
+            "Ba'kal Good Things",
             "Encounter at Starpoint",
             "Shades of Meh...ar Xull",
             "The Most of Best Worlds",
