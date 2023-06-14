@@ -385,8 +385,9 @@ class System {
         // Add this new system.
         const system = new System(rawSystem);
         if (_tileToSystem[system.tile]) {
-            throw new Error(
-                `System.injectSystem already have system "${system.tile}"`
+            Broadcast.chatAll(
+                `System.injectSystem overwriting system tile ${system.tile}`,
+                Broadcast.ERROR
             );
         }
         _tileToSystem[system.tile] = system;
