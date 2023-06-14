@@ -5,6 +5,7 @@ const { ObjectNamespace } = require("../object-namespace");
 const { SystemSchema } = require("./system.schema");
 const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
+const { Broadcast } = require("../broadcast");
 
 // Lookup tables.
 let _tileToSystem = false;
@@ -43,7 +44,9 @@ function _maybeInit() {
         _tileToSystem = {};
         for (const rawAttrs of SYSTEM_ATTRS) {
             const system = new System(rawAttrs);
-            assert(!_tileToSystem[system.tile]);
+            if (_tileToSystem[system.tile]) {
+                Broadcast.chatAll(`Overwriting system tile ${system.tile}`);
+            }
             _tileToSystem[system.tile] = system;
         }
     }
