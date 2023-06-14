@@ -133,7 +133,7 @@ class MapStringLoad {
         const zeroHexes = [];
         for (let i = 0; i < parsedMapString.length; i++) {
             const entry = parsedMapString[i];
-            if (entry.tile === 0) {
+            if (entry && entry.tile === 0) {
                 const hex = MapStringHex.idxToHexString(i);
                 zeroHexes.push(hex);
             }
@@ -144,6 +144,15 @@ class MapStringLoad {
             );
             return false; // abort if wrong number
         }
+
+        // Sort zero hexes to be in angle order, which might not match map string order.
+        zeroHexes.sort((a, b) => {
+            const aPos = Hex.toPosition(a);
+            const bPos = Hex.toPosition(b);
+            const aAngle = Math.atan2(aPos.y, aPos.x);
+            const bAngle = Math.atan2(bPos.y, bPos.x);
+            return aAngle - bAngle;
+        });
 
         // Get generic home system tiles.
         const playerSlotToGeneric = {};
@@ -171,19 +180,19 @@ class MapStringLoad {
         // Optimal placement is called "the assignment problem" and is tricky.
         // Make a simplifying assumption that tiles in clockwise order get the
         // player zone colors in clockwise order, choosing the best start.
-        const deskIndexToAngle = {};
+        const deskIndexToPos = {};
         const playerDeskArray = world.TI4.getAllPlayerDesks();
         playerDeskArray.forEach((playerDesk, index) => {
-            const pos = playerDesk.center;
-            const angle = Math.atan2(pos.y, pos.x);
-            deskIndexToAngle[index] = angle;
+            const pos = playerDesk.center.clone();
+            pos.z = 0;
+            deskIndexToPos[index] = pos;
         });
 
-        const hexIndexToAngle = {};
+        const hexIndexToPos = {};
         zeroHexes.forEach((hex, index) => {
-            const pos = Hex.toPosition(hex);
-            const angle = Math.atan2(pos.y, pos.x);
-            hexIndexToAngle[index] = angle;
+            const pos = Hex.toPosition(hex).clone();
+            pos.z = 0;
+            hexIndexToPos[index] = pos;
         });
 
         let best = false;
@@ -192,9 +201,9 @@ class MapStringLoad {
             let d = 0;
             for (let offset = 0; offset < playerCount; offset++) {
                 const index = (offset + candidate) % playerCount;
-                const deskAngle = deskIndexToAngle[offset];
-                const hexAngle = hexIndexToAngle[index];
-                d += Math.abs(deskAngle - hexAngle);
+                const deskPos = deskIndexToPos[offset];
+                const hexPos = hexIndexToPos[index];
+                d += deskPos.subtract(hexPos).magnitudeSquared();
             }
             if (d < bestD) {
                 best = candidate;
