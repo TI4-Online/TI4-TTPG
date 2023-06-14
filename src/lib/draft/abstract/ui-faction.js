@@ -8,6 +8,7 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
+const { AbstractUtil } = require("./abstract-util");
 
 const BOX_W = 200;
 const BOX_H = 100;
@@ -20,11 +21,7 @@ class UiFaction {
     }
 
     setFactionNsidName(factionNsidName) {
-        assert(typeof factionNsidName === "string");
-        const faction = world.TI4.getFactionByNsidName(factionNsidName);
-        if (!faction) {
-            throw new Error(`unknown faction "${factionNsidName}`);
-        }
+        AbstractUtil.assertIsFaction(factionNsidName);
         // Just keep the name, look it up again when needed (do not cache here).
         this._factionNsidName = factionNsidName;
         return this;

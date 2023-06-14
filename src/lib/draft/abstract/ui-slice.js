@@ -12,8 +12,9 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
+const { AbstractUtil } = require("./abstract-util");
 
-const TILE_W = 512;
+const TILE_W = 50;
 const FONT_SCALE = 0.08;
 
 class UiSlice {
@@ -53,29 +54,13 @@ class UiSlice {
      * @returns {UiSlice} self, for chaining
      */
     setShape(shape) {
-        assert(Array.isArray(shape));
-        for (const hex of shape) {
-            assert(Hex._hexFromString(hex)); // valid hex string?
-        }
+        AbstractUtil.assertIsShape(shape);
         this._shape = [...shape]; // shallow copy
         return this;
     }
 
     setSlice(slice) {
-        assert(Array.isArray(slice));
-        for (const tile of slice) {
-            assert(typeof tile === "number");
-            const system = world.TI4.getSystemByTileNumber(tile);
-            assert(system);
-        }
-
-        if (!this._shape) {
-            throw new Error("must call setShape first");
-        }
-        if (this._shape.length !== slice.length + 1) {
-            throw new Error("slice and shape length mismatch");
-        }
-
+        AbstractUtil.assertIsSlice(slice, this._shape);
         this._slice = [...slice]; // shallow copy
         return this;
     }
