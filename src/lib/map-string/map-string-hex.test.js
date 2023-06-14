@@ -86,6 +86,7 @@ it("idxToHex : test fourth ring", () => {
 
 it("hexStringToIdx", () => {
     assert.equal(hexStringToIdx("<0,0,0>"), 0);
+    assert.equal(hexStringToIdx("<1,0,-1>"), 1);
 });
 
 it("idxToHexString", () => {
