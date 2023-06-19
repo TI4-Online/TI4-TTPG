@@ -30,7 +30,7 @@ module.exports = (data) => {
 
     // Abort if sus.
     if (!mat1 || !mat2) {
-        return;
+        return 0;
     }
 
     const countInside = (mat, cards) => {

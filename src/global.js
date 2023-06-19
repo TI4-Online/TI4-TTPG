@@ -147,6 +147,7 @@ const {
 const {
     AbstractStrategyCard,
 } = require("./objects/strategy-cards/abstract-strategy-card");
+const { ActiveIdle } = require("./lib/unit/active-idle");
 const { Adjacency } = require("./lib/system/adjacency");
 const { Agenda } = require("./lib/agenda/agenda");
 const {
@@ -157,6 +158,7 @@ const { Borders } = require("./lib/borders/borders");
 const { Broadcast } = require("./lib/broadcast");
 const { CardUtil } = require("./lib/card/card-util");
 const { CommandToken } = require("./lib/command-token/command-token");
+const { DealDiscard } = require("./lib/card/deal-discard");
 const { ErrorReporting } = require("./global/error-reporting");
 const { Faction } = require("./lib/faction/faction");
 const { FogOfWar } = require("./lib/fog-of-war/fog-of-war");
@@ -169,6 +171,7 @@ const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { ObjectNamespace } = require("./lib/object-namespace");
 const { PerfStats } = require("./lib/perf/perf-stats");
+const { PlayerTimer } = require("./lib/player-timer/player-timer");
 const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
 const { Spawn } = require("./setup/spawn/spawn");
@@ -176,10 +179,10 @@ const { System, Planet } = require("./lib/system/system");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
-const { UnitPlastic } = require("./lib/unit/unit-plastic");
-const { DealDiscard } = require("./lib/card/deal-discard");
 const { UnitModifier } = require("./lib/unit/unit-modifier");
-const { ActiveIdle } = require("./lib/unit/active-idle");
+const { UnitPlastic } = require("./lib/unit/unit-plastic");
+
+let _timer = undefined;
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
@@ -218,6 +221,7 @@ world.TI4 = {
     hideCursor: new HideCursor(),
     homebrew: new Homebrew(),
     perfStats: new PerfStats(),
+    playerTimer: new PlayerTimer(),
     turns: new Turns(true),
 
     getActiveSystemTileObject: () => {
@@ -239,11 +243,9 @@ world.TI4 = {
     getAllUnitPlastics: () => {
         return UnitPlastic.getAll();
     },
-
     getClosestPlayerDesk: (pos) => {
         return PlayerDesk.getClosest(pos);
     },
-
     getFactionByNsidName: (nsidName) => {
         return Faction.getByNsidName(nsidName);
     },
@@ -275,6 +277,21 @@ world.TI4 = {
     },
     getSystemTileObjectByPosition: (pos) => {
         return System.getSystemTileObjectByPosition(pos);
+    },
+    getTimer: () => {
+        if (_timer && _timer.isValid()) {
+            return _timer;
+        }
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "tool:base/timer") {
+                _timer = obj;
+                return obj;
+            }
+        }
     },
 
     reset: () => {

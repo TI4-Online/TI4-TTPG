@@ -268,8 +268,9 @@
     "nav.map.borders": "Faction Borders",
     "nav.map.fog": "Fog of War",
     "nav.stats": "Stats",
-    "nav.stats.simple": "Simple Stats",
+    "nav.stats.player_timer": "Player Times",
     "nav.stats.secrets": "Secrets",
+    "nav.stats.simple": "Simple Stats",
     "nav.stats.whispers": "Whispers",
     "nav.streamer": "Streamer",
 
@@ -1038,6 +1039,11 @@
     "action.update": "Update",
 
     "desc.card.action.plague": "Place this card face-up anywhere on the table, then use the system tile menu to select plague",
+
+    "timer.error.game_not_started": "game not started",
+    "timer.error.faction_selection_in_progress": "faction selection in progress",
+    "timer.error.timer_paused": "timer paused",
+    "timer.error.no_active_turn": "no active turn",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
