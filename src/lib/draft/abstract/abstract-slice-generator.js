@@ -2,6 +2,39 @@ const assert = require("../../../wrapper/assert-wrapper");
 const { Hex } = require("../../hex");
 const { world } = require("../../../wrapper/api");
 const { Shuffle } = require("../../shuffle");
+const { AbstractUtil } = require("./abstract-util");
+
+const SLICE_SHAPES = {
+    bunker: [
+        "<0,1,-1>", // right
+        "<0,0,0>", // anchor
+        "<1,0,-1>", // front
+        "<1,1,-2>", // right-eq
+        "<0,2,-2>", // right-far
+    ],
+    bunker_right: [
+        "<0,2,-2>", // right-far
+        "<0,0,0>", // anchor
+        "<1,0,-1>", // front
+        "<1,1,-2>", // right-eq
+        "<0,1,-1>", // right
+    ],
+    milty: [
+        "<0,0,0>", // home system
+        "<1,-1,0>", // left
+        "<1,0,-1>", // front
+        "<0,1,-1>", // right
+        "<2,-1,-1>", // left-eq
+        "<2,0,-2>", // front-far
+    ],
+    milty_eq: [
+        "<0,0,0>", // home system
+        "<1,-1,0>", // left
+        "<1,0,-1>", // front
+        "<0,1,-1>", // right
+        "<2,0,-2>", // front-far
+    ],
+};
 
 class AbstractSliceGenerator {
     /**
@@ -56,17 +89,8 @@ class AbstractSliceGenerator {
     }
 
     static _hasAdjacentAnomalies(shape, slice) {
-        assert(Array.isArray(shape));
-        for (const hex of shape) {
-            assert(Hex._hexFromString(hex)); // valid hex string?
-        }
-        assert(Array.isArray(slice));
-        for (const tile of slice) {
-            assert(typeof tile === "number");
-            const system = world.TI4.getSystemByTileNumber(tile);
-            assert(system);
-        }
-        assert(shape.length === slice.length + 1); // first is home system
+        AbstractUtil.assertIsShape(shape);
+        AbstractUtil.assertIsSlice(slice, shape);
 
         const hexIsAnomalySet = new Set();
         for (let i = 0; i < slice.length; i++) {
@@ -193,4 +217,4 @@ class AbstractSliceGenerator {
     }
 }
 
-module.exports = { AbstractSliceGenerator };
+module.exports = { AbstractSliceGenerator, SLICE_SHAPES };

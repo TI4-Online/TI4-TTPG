@@ -1,4 +1,3 @@
-const { ObjectNamespace } = require("../object-namespace");
 const { world } = require("../../wrapper/api");
 
 module.exports = (data) => {
@@ -10,19 +9,7 @@ module.exports = (data) => {
         countDown: 0,
     };
 
-    const timerNsid = "tool:base/timer";
-    let timer = undefined;
-
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
-        const nsid = ObjectNamespace.getNsid(obj);
-        if (nsid === timerNsid) {
-            timer = obj;
-            break;
-        }
-    }
+    const timer = world.TI4.getTimer();
 
     // Abort if sus.
     if (!timer || !timer.__timer) {

@@ -1,7 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
 const CONFIG = require("../../../game-ui/game-ui-config");
-const { ColorUtil } = require("../../color/color-util");
 const { NavFolder } = require("./nav-folder");
 const { WidgetFactory } = require("../widget-factory");
 const { VerticalAlignment, Widget } = require("../../../wrapper/api");
@@ -43,7 +42,7 @@ class NavPanel {
             .setOverrideHeight(PATH_FONT_SIIZE * 3)
             .setChild(topPanel);
         const topBorder = WidgetFactory.border()
-            .setColor(ColorUtil.colorFromHex("#101010"))
+            .setColor(CONFIG.darkerColor)
             .setChild(topBox);
 
         this._mainWidget = WidgetFactory.verticalBox()

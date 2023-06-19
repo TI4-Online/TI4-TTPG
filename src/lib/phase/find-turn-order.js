@@ -78,6 +78,23 @@ class FindTurnOrder {
         );
     }
 
+    static numPickedStrategyCards() {
+        let count = 0;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside containers
+            }
+            if (!ObjectNamespace.isStrategyCard(obj)) {
+                continue; // not a strategy card.
+            }
+            if (!FindTurnOrder.isStrategyCardPicked(obj)) {
+                continue; // not picked, ignore it
+            }
+            count += 1;
+        }
+        return count;
+    }
+
     /**
      * Find initiave order based on strategy cards and Naalu zero token.
      *

@@ -13,6 +13,9 @@ const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
 const {
     MiltyDraftSettings,
 } = require("./tab-map/tab-draft/tab-milty/milty-draft-settings");
+const {
+    MiltyEqDraftSettings,
+} = require("./tab-map/tab-draft/tab-milty-eq/milty-eq-draft-settings");
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
@@ -28,11 +31,15 @@ const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
+const {
+    TabPlayerTimer,
+} = require("./tab-stats/tab-player-timer/tab-player-timer");
 const { TabSecrets } = require("./tab-stats/tab-secrets/tab-secrets");
 const {
     TabSimpleStats,
 } = require("./tab-stats/tab-simple-stats/tab-simple-stats");
 const { TabStatus } = require("./tab-status/tab-status");
+const { TabStreamer } = require("./tab-streamer/tab-streamer");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
@@ -46,10 +53,6 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
-const { TabStreamer } = require("./tab-streamer/tab-streamer");
-const {
-    MiltyEqDraftSettings,
-} = require("./tab-map/tab-draft/tab-milty-eq/milty-eq-draft-settings");
 
 let _gameUI;
 
@@ -418,6 +421,23 @@ class GameUI {
                 navEntry.__tabSecrets = undefined; // release for GC
             });
         statsFolder.addChild(tabSecretsEntry);
+
+        const tabPlayerTimerEntry = new NavEntry()
+            .setName(locale("nav.stats.player_timer"))
+            .setWidgetFactory((navPanel, navEntry) => {
+                const tabPlayerTimer = new TabPlayerTimer();
+                navEntry.__tabPlayerTimer = tabPlayerTimer; // store reference to release
+                return tabPlayerTimer.getUI();
+            })
+            .setPeriodicUpdateWidget((navEntry) => {
+                const tabPlayerTimer = navEntry.__tabPlayerTimer;
+                assert(tabPlayerTimer);
+                tabPlayerTimer.updateUI();
+            })
+            .setDestroyWidget((navEntry) => {
+                navEntry.__tabPlayerTimer = undefined; // release for GC
+            });
+        statsFolder.addChild(tabPlayerTimerEntry);
 
         return statsFolder;
     }

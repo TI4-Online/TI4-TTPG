@@ -1,41 +1,10 @@
 const { Hex } = require("../../hex");
 const MapStringHex = require("../../map-string/map-string-hex");
 const { UiSlice } = require("./ui-slice");
+const { SLICE_SHAPES } = require("./abstract-slice-generator");
 const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
 
 const ADD_HEX_LABELS = false;
-
-const SLICE_SHAPES = {
-    bunker: [
-        "<0,1,-1>", // right
-        "<0,0,0>", // anchor
-        "<1,0,-1>", // front
-        "<1,1,-2>", // right-eq
-        "<0,2,-2>", // right-far
-    ],
-    bunker_right: [
-        "<0,2,-2>", // right-far
-        "<0,0,0>", // anchor
-        "<1,0,-1>", // front
-        "<1,1,-2>", // right-eq
-        "<0,1,-1>", // right
-    ],
-    milty: [
-        "<0,0,0>", // home system
-        "<1,-1,0>", // left
-        "<1,0,-1>", // front
-        "<0,1,-1>", // right
-        "<2,-1,-1>", // left-eq
-        "<2,0,-2>", // front-far
-    ],
-    milty_eq: [
-        "<0,0,0>", // home system
-        "<1,-1,0>", // left
-        "<1,0,-1>", // front
-        "<0,1,-1>", // right
-        "<2,0,-2>", // front-far
-    ],
-};
 
 // Visualize hex strings at hex positions.
 if (ADD_HEX_LABELS) {
@@ -68,7 +37,7 @@ function miltySlice() {
 
     const ui = new UIElement();
     ui.position = [0, 0, 0.26];
-    ui.scale = 0.1;
+    ui.scale = 1;
     ui.widget = new Border().setChild(widget);
 
     refObject.addUI(ui);

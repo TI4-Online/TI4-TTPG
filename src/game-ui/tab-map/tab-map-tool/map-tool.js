@@ -70,6 +70,9 @@ class MapTool {
         const bag = MapTool.getMapTilesContainer();
         for (const obj of world.TI4.getAllSystemTileObjects()) {
             const system = world.TI4.getSystemBySystemTileObject(obj);
+            if (!system) {
+                continue;
+            }
             if (system.home) {
                 continue;
             }
