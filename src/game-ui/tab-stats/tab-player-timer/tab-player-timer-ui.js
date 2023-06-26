@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../../lib/locale");
 const {
     PlayerTimer,
     PHASE,
@@ -121,6 +122,10 @@ class TabPlayerTimerUI {
         const error = playerTimer.getError();
         if (error) {
             this._heading.setText(error);
+        } else if (playerTimer.getPhase() !== PHASE.ACTION) {
+            this._heading.setText(
+                locale("timer.error.waiting_for_action_phase")
+            );
         } else {
             this._heading.setText("Action Phase Time");
         }

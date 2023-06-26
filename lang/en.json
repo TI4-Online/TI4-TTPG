@@ -1042,6 +1042,8 @@
 
     "timer.error.game_not_started": "game not started",
     "timer.error.faction_selection_in_progress": "faction selection in progress",
+    "timer.error.waiting_for_round_one": "waiting for round one",
+    "timer.error.waiting_for_action_phase": "waiting for action phase",
     "timer.error.timer_paused": "timer paused",
     "timer.error.no_active_turn": "no active turn",
 

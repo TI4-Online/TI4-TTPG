@@ -223,6 +223,9 @@ class Timer {
                 newValue >= this._countdownFromSeconds
             ) {
                 this._countdownExpired();
+
+                // Start counting up.
+                this.startCountup(0);
             }
         }
 
