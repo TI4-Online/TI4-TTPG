@@ -4,7 +4,6 @@ const { FindTurnOrder } = require("../phase/find-turn-order");
 const gameDataRound = require("../game-data/updator-round");
 const { world } = require("../../wrapper/api");
 
-const SAVED_DATA_KEY = "playerTimer";
 const SAMPLE_EVERY_N_SECONDS = 1;
 
 const PHASE = {
@@ -32,6 +31,12 @@ class PlayerTimer {
         }
     }
 
+    static _getSavedDataKey(colorName, phaseName) {
+        assert(typeof colorName === "string");
+        assert(typeof phaseName === "string");
+        return `playerTimer.${colorName}.${phaseName}`;
+    }
+
     _load() {
         // Store data in the timer object instead of world to reserve world for
         // drawing lines, etc.
@@ -40,9 +45,19 @@ class PlayerTimer {
             console.log("PlayerTimer._load: no timer, aborting");
             return;
         }
-        const json = timer.getSavedData(SAVED_DATA_KEY);
-        if (json && json.length > 0) {
-            this._colorToPhaseToRoundToSeconds = JSON.parse(json) || {};
+
+        // Split across multiple keys because each value is limited to 1k.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const colorName = playerDesk.colorName;
+            for (const phaseName of Object.values(PHASE)) {
+                const key = PlayerTimer._getSavedDataKey(colorName, phaseName);
+                const json = timer.getSavedData(key);
+                if (json && json.length > 0) {
+                    this.getPlayerTimeSeconds(colorName, phaseName, 0);
+                    this._colorToPhaseToRoundToSeconds[colorName][phaseName] =
+                        JSON.parse(json);
+                }
+            }
         }
     }
 
@@ -52,8 +67,22 @@ class PlayerTimer {
             console.log("PlayerTimer._save: no timer, aborting");
             return;
         }
-        const json = JSON.stringify(this._colorToPhaseToRoundToSeconds);
-        timer.setSavedData(json, SAVED_DATA_KEY);
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const colorName = playerDesk.colorName;
+            for (const phaseName of Object.values(PHASE)) {
+                const key = PlayerTimer._getSavedDataKey(colorName, phaseName);
+                this.getPlayerTimeSeconds(colorName, phaseName, 0);
+                const json = JSON.stringify(
+                    this._colorToPhaseToRoundToSeconds[colorName][phaseName]
+                );
+
+                // Only update mutated entries.
+                const oldValue = timer.getSavedData(key);
+                if (json !== oldValue) {
+                    timer.setSavedData(json, key);
+                }
+            }
+        }
     }
 
     /**
@@ -68,6 +97,10 @@ class PlayerTimer {
 
     getError() {
         return this._errorMessage;
+    }
+
+    getPhase() {
+        return this._phaseName;
     }
 
     getPlayerTimeSeconds(colorName, phaseName, round) {
@@ -92,7 +125,7 @@ class PlayerTimer {
         let seconds = roundToSeconds[round];
         if (!seconds) {
             seconds = 0;
-            roundToSeconds = seconds;
+            roundToSeconds[round] = seconds;
         }
 
         return seconds;
@@ -109,6 +142,8 @@ class PlayerTimer {
             round
         );
         const newSeconds = oldSeconds + SAMPLE_EVERY_N_SECONDS;
+
+        this._phaseName = phaseName;
 
         // "get" created missing entries.
         this._colorToPhaseToRoundToSeconds[colorName][phaseName][round] =
@@ -136,6 +171,15 @@ class PlayerTimer {
             }
         }
 
+        // Require a round is active (objectives dealt).
+        const gameData = {};
+        gameDataRound(gameData);
+        const round = gameData.round;
+        if (round < 1) {
+            this._errorMessage = locale("timer.error.waiting_for_round_one");
+            return; // no active round
+        }
+
         // Require timer running.
         const timer = world.TI4.getTimer();
         if (timer && timer.__timer && timer.__timer.getDirection() === 0) {
@@ -151,9 +195,6 @@ class PlayerTimer {
         }
 
         const colorName = turn.colorName;
-        const gameData = {};
-        gameDataRound(gameData);
-        const round = gameData.round;
         let phaseName = undefined;
 
         const numPickedStrategyCards = FindTurnOrder.numPickedStrategyCards();

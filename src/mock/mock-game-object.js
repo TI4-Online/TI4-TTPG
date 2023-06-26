@@ -25,6 +25,7 @@ class GameObject {
         this._primaryColor = data && data.primaryColor;
         this._rotation = (data && data.rotation) || new Rotator(0, 0, 0);
         this._savedData = (data && data.savedData) || "";
+        this._savedDataKeyed = (data && data._savedDataKeyed) || {};
         this._size = (data && data.size) || new Vector(1, 1, 1);
         this._templateId = (data && data.templateId) || "";
         this._templateMetadata = (data && data.templateMetadata) || "";
@@ -109,8 +110,12 @@ class GameObject {
         return this._rotation;
     }
 
-    getSavedData() {
-        return this._savedData;
+    getSavedData(key) {
+        if (key !== undefined) {
+            return this._savedDataKeyed[key];
+        } else {
+            return this._savedData;
+        }
     }
 
     getSize() {
@@ -171,8 +176,12 @@ class GameObject {
         this._rotation = rotation;
     }
 
-    setSavedData(value) {
-        this._savedData = value;
+    setSavedData(value, key) {
+        if (key !== undefined) {
+            this._savedDataKeyed[key] = value;
+        } else {
+            this._savedData = value;
+        }
     }
 
     snapToGround() {}
