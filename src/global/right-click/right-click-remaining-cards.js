@@ -107,6 +107,12 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
     }
 });
 
+globalEvents.onObjectCreated.add((obj) => {
+    if (obj instanceof Card && isReportRemaining(obj)) {
+        addRightClickReportRemaining(obj);
+    }
+});
+
 for (const obj of world.getAllObjects()) {
     if (isReportRemaining(obj)) {
         addRightClickReportRemaining(obj);
