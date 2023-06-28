@@ -7,11 +7,16 @@ class AbstractPlaceHyperlanes {
     /**
      * Add hyperlanes and move any systems as necessary.
      *
-     * @param {string} mapString
+     * @param {string} systemsMapString
+     * @param {string} hyperlanesMapString
      * @returns {string} - mapString
      */
-    placeHyperlanes(mapString) {
-        throw new Error("subclass must override this");
+    placeHyperlanes(systemsMapString, hyperlanesMapString) {
+        // Subclass can override, by default shift to closest empty spots.
+        return AbstractPlaceHyperlanes._moveCollisions(
+            systemsMapString,
+            hyperlanesMapString
+        );
     }
 
     /**

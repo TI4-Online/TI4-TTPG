@@ -12,20 +12,48 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
+const { AbstractUtil } = require("./abstract-util");
 
 const TILE_W = 512;
 const FONT_SCALE = 0.08;
 
 class UiMap {
+    static deskIndexToColorTile(deskIndex) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        return -10 - deskIndex;
+    }
+
     constructor() {}
 
-    setHyperlanes(abstractPlaceHyperlanes) {}
+    /**
+     * Set the map string.  Zero is home system emphasis, system tile numbers
+     * can be positive for system tile images, or [-10 - deskIndex] to use the
+     * desk color (-10 = 0, -11 = 1, etc).
+     *
+     * @param {string} mapString
+     * @returns {UiMap} - self, for chaining
+     */
+    setMapString(mapString) {
+        // TODO XXX
+        return this;
+    }
 
-    setShape(shape) {}
+    setSpeaker(deskIndex) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        // TODO XXX
+        return this;
+    }
 
-    setSlice(deskIndex, slice) {}
-
-    setSpeaker(deskIndex) {}
+    /**
+     * Get the UI size, also fills in per-tile and label positions as a side effect.
+     *
+     * @returns {Object.{w:number,h:number,tileW:number,tileH:number,positions:Array.{x:number,y:number},labelPositions:Array.{x:number,y:number}}
+     */
+    getSize() {
+        if (!this._mapString) {
+            throw new Error("must call setMapString first");
+        }
+    }
 
     createWidget() {}
 
@@ -39,3 +67,5 @@ class UiMap {
         }
     }
 }
+
+module.exports = { UiMap };

@@ -18,19 +18,36 @@ class AbstractSliceLayout {
      */
     constructor() {
         this._shape = undefined;
+        this._deskIndexToOverrideShape = {};
         this._deskIndexToSlice = {};
         this._deskIndexToHexDirection = {}; // normally point to center, can override
+        this._deskIndexToAnchorHex = {}; // default to standard home system positions
     }
 
     /**
      * Set the slice shape.
      *
      * @param {Array.{string}} shape - list of hexes with slice pointing north, home is first entry then in slice order
-     * @returns {UiSlice} self, for chaining
+     * @returns {AbstractSliceLayout} self, for chaining
      */
     setShape(shape) {
         AbstractUtil.assertIsShape(shape);
         this._shape = [...shape]; // shallow copy
+        return this;
+    }
+
+    /**
+     * Optionally use a different shape for a specific seat.  This is for rare
+     * cases of non-symmetric layout such as the funky 7p setup.
+     *
+     * @param {number} deskIndex
+     * @param {Array.{string}} shape
+     * @returns {AbstractSliceLayout} self, for chaining
+     */
+    setOverrideShape(deskIndex, shape) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        AbstractUtil.assertIsShape(shape);
+        this._deskIndexToOverrideShape[deskIndex] = [...shape]; // shallow copy
         return this;
     }
 
@@ -45,6 +62,13 @@ class AbstractSliceLayout {
         AbstractUtil.assertIsDeskIndex(deskIndex);
         AbstractUtil.assertIsHex(hex);
         this._deskIndexToHexDirection[deskIndex] = hex;
+        return this;
+    }
+
+    setAnchorHex(deskIndex, hex) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        AbstractUtil.assertIsHex(hex);
+        this._deskIndexToAnchorHex[deskIndex] = hex;
         return this;
     }
 
@@ -65,8 +89,6 @@ class AbstractSliceLayout {
             this._defaultLayoutSlice(deskIndex, mapStringArray);
         }
 
-        AbstractSliceLayout._fillEmpties(mapStringArray);
-
         const mapString = MapStringParser.format(mapStringArray);
         return mapString;
     }
@@ -79,9 +101,12 @@ class AbstractSliceLayout {
 
         // Slice anchor position and slice "points to" direction.
         const playerDesk = world.TI4.getAllPlayerDesks()[deskIndex];
-        const anchorPos =
-            SetupGenericHomeSystems.getHomeSystemPosition(playerDesk);
-        const anchorHex = Hex.fromPosition(anchorPos);
+        let anchorHex = this._deskIndexToAnchorHex[deskIndex];
+        if (!anchorHex) {
+            const anchorPos =
+                SetupGenericHomeSystems.getHomeSystemPosition(playerDesk);
+            anchorHex = Hex.fromPosition(anchorPos);
+        }
         const anchorMapStringIndex = hexStringToIdx(anchorHex);
 
         assert(!mapStringArray[anchorMapStringIndex]);
@@ -90,9 +115,11 @@ class AbstractSliceLayout {
         const dirHex =
             this._deskIndexToHexDirection[playerDesk.index] || "<0,0,0>";
 
+        const shape = this._deskIndexToOverrideShape[deskIndex] || this._shape;
+
         for (let i = 0; i < slice.length; i++) {
             const tile = slice[i];
-            const shapeHex = this._shape[i + 1];
+            const shapeHex = shape[i + 1];
 
             const hex = AbstractSliceLayout._defaultLayoutTile(
                 anchorHex,
@@ -103,7 +130,11 @@ class AbstractSliceLayout {
             );
 
             const mapStringIndex = hexStringToIdx(hex);
-            assert(!mapStringArray[mapStringIndex]);
+            if (mapStringArray[mapStringIndex]) {
+                console.log(
+                    `AbstractSliceLayout._defaultLayoutSlice: collision at index ${mapStringIndex}`
+                );
+            }
             mapStringArray[mapStringIndex] = { tile }; // modify map string array in place
         }
     }
