@@ -204,6 +204,18 @@ class Spawn {
     }
 
     /**
+     * Is the given NSID known?
+     *
+     * @param {string} nsid
+     * @returns {boolean}
+     */
+    static canSpawn(nsid) {
+        assert(typeof nsid === "string");
+        const templateId = NSID_TO_TEMPLATE[nsid];
+        return templateId ? true : false;
+    }
+
+    /**
      * Spawn a known-nsid object and assign (locale aware) name.
      *
      * @param {string} nsid
