@@ -22,6 +22,7 @@ class AbstractSliceLayout {
         this._deskIndexToSlice = {};
         this._deskIndexToHexDirection = {}; // normally point to center, can override
         this._deskIndexToAnchorHex = {}; // default to standard home system positions
+        this._deskIndexToAnchorTile = {}; // default to zero
     }
 
     /**
@@ -58,6 +59,13 @@ class AbstractSliceLayout {
         return this;
     }
 
+    /**
+     * By default slices point toward "<0,0,0>"", this overrides.
+     *
+     * @param {number} deskIndex
+     * @param {string} hex
+     * @returns {AbstractSliceLayout} self, for chaining
+     */
     setHexDirection(deskIndex, hex) {
         AbstractUtil.assertIsDeskIndex(deskIndex);
         AbstractUtil.assertIsHex(hex);
@@ -65,10 +73,31 @@ class AbstractSliceLayout {
         return this;
     }
 
+    /**
+     * By default home systems follow standard layout.  This overrides.
+     *
+     * @param {number} deskIndex
+     * @param {string} hex
+     * @returns {AbstractSliceLayout} self, for chaining
+     */
     setAnchorHex(deskIndex, hex) {
         AbstractUtil.assertIsDeskIndex(deskIndex);
         AbstractUtil.assertIsHex(hex);
         this._deskIndexToAnchorHex[deskIndex] = hex;
+        return this;
+    }
+
+    /**
+     * By default home systems get "0" in the map string.  This overrides.
+     *
+     * @param {number} deskIndex
+     * @param {number} tile
+     * @returns {AbstractSliceLayout} self, for chaining
+     */
+    setAnchorTile(deskIndex, tile) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        assert(typeof tile === "number");
+        this._deskIndexToAnchorTile[deskIndex] = tile;
         return this;
     }
 
@@ -108,9 +137,10 @@ class AbstractSliceLayout {
             anchorHex = Hex.fromPosition(anchorPos);
         }
         const anchorMapStringIndex = hexStringToIdx(anchorHex);
+        const anchorTile = this._deskIndexToAnchorTile[deskIndex] || 0;
 
         assert(!mapStringArray[anchorMapStringIndex]);
-        mapStringArray[anchorMapStringIndex] = { tile: 0 };
+        mapStringArray[anchorMapStringIndex] = { tile: anchorTile };
 
         const dirHex =
             this._deskIndexToHexDirection[playerDesk.index] || "<0,0,0>";

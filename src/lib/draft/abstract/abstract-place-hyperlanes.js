@@ -1,6 +1,6 @@
-const assert = require("../../../wrapper/assert-wrapper");
 const MapStringParser = require("../../map-string/map-string-parser");
 const { idxToHexString } = require("../../map-string/map-string-hex");
+const { AbstractUtil } = require("./abstract-util");
 const { Hex } = require("../../hex");
 
 class AbstractPlaceHyperlanes {
@@ -28,8 +28,8 @@ class AbstractPlaceHyperlanes {
      * @returns {string} - mapString
      */
     static _moveCollisions(systemsMapString, hyperlanesMapString) {
-        assert(typeof systemsMapString === "string");
-        assert(typeof hyperlanesMapString === "string");
+        AbstractUtil.assertIsMapString(systemsMapString);
+        AbstractUtil.assertIsMapString(hyperlanesMapString);
 
         const mapStringArray = MapStringParser.parse(systemsMapString);
         const hyperlaneArray = MapStringParser.parse(hyperlanesMapString);

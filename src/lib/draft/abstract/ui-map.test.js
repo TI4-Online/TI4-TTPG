@@ -5,6 +5,22 @@ const { AbstractSliceLayout } = require("./abstract-slice-layout");
 const { Hyperlane } = require("../../map-string/hyperlane");
 const { SLICE_SHAPES } = require("./abstract-slice-generator");
 const { MockPlayer, world } = require("../../../wrapper/api");
+const { UiMap } = require("./ui-map");
+
+it("deskIndexToColorTile", () => {
+    for (const isHome of [false, true]) {
+        for (
+            let deskIndex = 0;
+            deskIndex < world.TI4.config.playerCount;
+            deskIndex++
+        ) {
+            const tile = UiMap.deskIndexToColorTile(deskIndex, isHome);
+            const reverse = UiMap.tileToDeskIndexAndIsHome(tile);
+            assert.equal(reverse.deskIndex, deskIndex);
+            assert.equal(reverse.isHome, isHome);
+        }
+    }
+});
 
 it("5p", () => {
     const player = new MockPlayer();

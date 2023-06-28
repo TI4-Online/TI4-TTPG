@@ -26,7 +26,9 @@ function miltySlice() {
         slice.push(i + 1);
     }
 
+    const scale = 6;
     const uiSlice = new UiSlice()
+        .setScale(scale)
         .setShape(shape) // array of hex strings
         .setSlice(slice); // systems in 1, 2, 3, ... order
 
@@ -37,7 +39,7 @@ function miltySlice() {
 
     const ui = new UIElement();
     ui.position = [0, 0, 0.26];
-    ui.scale = 1;
+    ui.scale = 1 / scale;
     ui.widget = new Border().setChild(widget);
 
     refObject.addUI(ui);

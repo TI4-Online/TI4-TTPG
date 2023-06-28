@@ -1,5 +1,6 @@
-const { world } = require("../../../wrapper/api");
+const MapStringParser = require("../../map-string/map-string-parser");
 const { Hex } = require("../../hex");
+const { world } = require("../../../wrapper/api");
 
 class AbstractUtil {
     static assertIsDeskIndex(deskIndex, returnWarningInsteadOfThrow = false) {
@@ -35,6 +36,24 @@ class AbstractUtil {
     static assertIsHex(hex, returnWarningInsteadOfThrow = false) {
         if (!Hex._hexFromString(hex)) {
             const err = `invalid hex "${hex}"`;
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+    }
+
+    static assertIsMapString(mapString, returnWarningInsteadOfThrow = false) {
+        if (typeof mapString !== "string") {
+            const err = `map string not a string`;
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+
+        if (!MapStringParser.validate(mapString)) {
+            const err = `invalid map string "${mapString}"`;
             if (returnWarningInsteadOfThrow) {
                 return err;
             }
@@ -93,9 +112,28 @@ class AbstractUtil {
                 }
                 throw new Error(err);
             }
+        }
+    }
+
+    static assertValidSystems(tileArray, returnWarningInsteadOfThrow = false) {
+        if (!Array.isArray(tileArray)) {
+            const err = "tile array must be an array";
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+        for (const tile of tileArray) {
+            if (typeof tile !== "number") {
+                const err = `slice entry "${tile}" must be a number`;
+                if (returnWarningInsteadOfThrow) {
+                    return err;
+                }
+                throw new Error(err);
+            }
             const system = world.TI4.getSystemByTileNumber(tile);
             if (!system) {
-                const err = `slice entry "${tile}" must be a known system tile`;
+                const err = `not a system tile: "${tile}"`;
                 if (returnWarningInsteadOfThrow) {
                     return err;
                 }
