@@ -288,7 +288,12 @@ class MiltyDraftSettingsUI {
 
             let row = itr / colLen;
             itr = itr + 1;
-            factionGridV.getChildAt(row).addChild(facBox);
+            const panel = factionGridV.getChildAt(row);
+            if (panel) {
+                // Saw a crash where factions overflowed, hard-coded count
+                // doesn't account for homebrew... for now truncate.
+                panel.addChild(facBox);
+            }
         });
 
         panel.addChild(factionGridV);
