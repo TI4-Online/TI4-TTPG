@@ -6,6 +6,9 @@ const {
 const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { AbstractSliceGenerator } = require("./abstract-slice-generator");
 
+/**
+ * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
+ */
 class AbstractSliceDraft {
     constructor() {
         this._factionGenerator = undefined;

@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const chalk = require("colorette");
 const spawn = require("cross-spawn");
-const minimatch = require("minimatch");
+const { minimatch } = require("minimatch");
 
 console.log(chalk.yellow("Good Morning, Captain"));
 

@@ -3,7 +3,7 @@
  */
 
 const assert = require("assert");
-const convexHull = require("monotone-chain-convex-hull");
+const convexHull = require("monotone-chain-convex-hull").default;
 const fs = require("fs-extra");
 const simplify = require("simplify-js");
 const { SoftwareRenderer } = require("./software-renderer");
