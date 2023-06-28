@@ -125,7 +125,7 @@ class Timer {
 
     startCountdown(seconds) {
         assert(typeof seconds === "number");
-        assert(seconds > 0);
+        assert(seconds >= 0);
 
         this._stopTimer();
 
@@ -277,6 +277,9 @@ class Timer {
         if (this._countdownFromSeconds > 0) {
             displayValue = this._countdownFromSeconds - this._value;
             displayValue = Math.abs(displayValue); // start counting up
+        }
+        if (displayValue < 0) {
+            displayValue = 0;
         }
 
         let hours = Math.floor(displayValue / 3600);
