@@ -155,7 +155,7 @@ function getWorldPosition(obj, pos) {
  */
 function getClosestPlanet(pos, systemObject, debug) {
     const system = getSystem(pos, systemObject);
-    if (system && system.system.planets.length > 0) {
+    if (system && system.system.planets && system.system.planets.length > 0) {
         const localPos = getLocalPosition(system.obj, pos);
         const planetPositions = getPlanetHelper(system.system);
         const planets = system.system.planets;

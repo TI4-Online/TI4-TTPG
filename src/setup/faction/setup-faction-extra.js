@@ -31,6 +31,12 @@ class SetupFactionExtra extends AbstractSetup {
         const above = pos.add([0, 0, 10]);
         extra.forEach((extra) => {
             if (extra.tokenNsid) {
+                if (!Spawn.canSpawn(extra.tokenNsid)) {
+                    console.log(
+                        `SetupFactionExtra.setup: unregistered token nsid "${extra.tokenNsid}"`
+                    );
+                    return;
+                }
                 const count = extra.tokenCount || 1;
                 for (let i = 0; i < count; i++) {
                     const pos = above;
@@ -41,6 +47,12 @@ class SetupFactionExtra extends AbstractSetup {
                     box.addObjects([token]);
                 }
             } else if (extra.cardNsid) {
+                if (!Spawn.canSpawn(extra.cardNsid)) {
+                    console.log(
+                        `SetupFactionExtra.setup: unregistered card nsid "${extra.cardNsid}"`
+                    );
+                    return;
+                }
                 const pos = this.playerDesk.localPositionToWorld(above);
                 const rot = new Rotator(0, 0, 180).compose(this.playerDesk.rot);
                 const playerSlot = this.playerDesk.playerSlot;
