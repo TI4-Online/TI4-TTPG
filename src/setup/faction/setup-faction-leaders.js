@@ -53,7 +53,12 @@ class SetupFactionLeaders extends AbstractSetup {
             const name = parsed.name.split(".")[0];
             if (!acceptNames.has(name)) {
                 // Unwanted card in the deck, or a typo?
-                console.log(`Unregistered "${nsid}"`);
+                console.log(
+                    `SetupFactionLeaders.setup: unregistered "${nsid}"`
+                );
+                console.log(
+                    `missing "${name}" from ${Array.from(acceptNames)}`
+                );
                 return false;
             }
             // If unit,
