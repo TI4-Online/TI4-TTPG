@@ -139,7 +139,9 @@ class Timer {
             String(this._countdownFromSeconds)
         );
 
-        this._startTimer();
+        if (seconds > 0) {
+            this._startTimer();
+        }
         this._update();
     }
 
