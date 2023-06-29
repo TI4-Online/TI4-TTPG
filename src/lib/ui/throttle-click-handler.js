@@ -1,5 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Button, ImageButton, Player } = require("../../wrapper/api");
+const {
+    Button,
+    ContentButton,
+    ImageButton,
+    Player,
+} = require("../../wrapper/api");
 const { Broadcast } = require("../broadcast");
 
 const THROTTLE_MSECS = 500;
@@ -18,7 +23,11 @@ class ThrottleClickHandler {
         assert(typeof clickHandler === "function");
         const playerSlotToLastClickMsecs = {};
         return (button, player) => {
-            assert(button instanceof Button || button instanceof ImageButton);
+            assert(
+                button instanceof Button ||
+                    button instanceof ImageButton ||
+                    button instanceof ContentButton
+            );
             assert(player instanceof Player);
 
             const playerSlot = player.getSlot();

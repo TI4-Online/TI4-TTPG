@@ -6,7 +6,6 @@ const {
     ImageWidget,
     refPackageId,
 } = require("../../wrapper/api");
-const { WidgetFactory } = require("../ui/widget-factory");
 
 const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
 
@@ -17,7 +16,7 @@ const TEXTURE_PATH_WITHOUT_SOURCE = "/locale/ui/agenda";
  * select a card in a cardsheet this could share images with the deck(s).
  */
 class AgendaCardWidget {
-    static setImagePath(widget, card) {
+    static __deprecated__setImagePath(widget, card) {
         assert(widget instanceof ImageWidget || widget instanceof ImageButton);
         assert(card instanceof Card);
 
@@ -44,16 +43,20 @@ class AgendaCardWidget {
 
     static getImageWidget(card) {
         assert(card instanceof Card);
-        const widget = WidgetFactory.imageWidget();
-        AgendaCardWidget.setImagePath(widget, card);
+        const widget = new ImageWidget()
+            .setImageSize(500, 750)
+            .setSourceCard(card);
         return widget;
     }
 
     static getImageButton(card) {
         assert(card instanceof Card);
-        const widget = WidgetFactory.imageButton();
-        AgendaCardWidget.setImagePath(widget, card);
-        return widget;
+        const widget = new ImageWidget()
+            .setImageSize(500, 750)
+            .setSourceCard(card);
+
+        // SetSourceCard only available for ImageWidget right now, make image into a button.
+        return new ContentButton().setChild(widget);
     }
 
     constructor(card) {

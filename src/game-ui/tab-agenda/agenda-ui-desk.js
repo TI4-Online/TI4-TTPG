@@ -9,7 +9,9 @@ const { Broadcast } = require("../../lib/broadcast");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
 const {
+    ContentButton,
     HorizontalAlignment,
+    ImageButton,
     Rotator,
     TextJustification,
     Vector,
@@ -170,7 +172,12 @@ class AgendaUiDesk {
         if (card) {
             const button = AgendaCardWidget.getImageButton(card);
             const width = 90 * CONFIG.scale; // 48 fits with two rows of buttons, have more now
-            button.setImageSize(width, (width * 750) / 500);
+
+            if (button instanceof ImageButton) {
+                button.setImageSize(width, (width * 750) / 500);
+            } else if (button instanceof ContentButton) {
+                button.getChild().setImageSize(width, (width * 750) / 500);
+            }
             box.setChild(button);
 
             button.onClicked.add(
@@ -204,8 +211,14 @@ class AgendaUiDesk {
         const scale = 3;
         const width = 330 * scale;
         const height = (width * 750) / 500;
-        const zoomedCard = AgendaCardWidget.getImageButton(this._agendaCard) // may be missing for homebrew!
-            .setImageSize(width, height);
+        const zoomedCard = AgendaCardWidget.getImageButton(this._agendaCard); // may be missing for homebrew!
+
+        if (zoomedCard instanceof ImageButton) {
+            zoomedCard.setImageSize(width, height);
+        } else if (zoomedCard instanceof ContentButton) {
+            zoomedCard.getChild().setImageSize(width, height);
+        }
+
         zoomedCard.onClicked.add(clickHandler);
 
         const ui = WidgetFactory.uiElement();
