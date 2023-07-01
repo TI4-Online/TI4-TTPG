@@ -17,6 +17,9 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
+const {
+    SetupGenericHomeSystems,
+} = require("../../../setup/setup-generic-home-systems");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
@@ -136,7 +139,7 @@ class UiMap {
         this._scale = 1;
 
         this._mapString = undefined;
-        this._deskIndexToLabel = {};
+        this._hexToLabel = {};
     }
 
     /**
@@ -162,7 +165,13 @@ class UiMap {
     setLabel(deskIndex, label) {
         AbstractUtil.assertIsDeskIndex(deskIndex);
         assert(!label || typeof label === "string");
-        this._deskIndexToLabel[deskIndex] = label;
+
+        const playerDesk = world.TI4.getAllPlayerDesks()[deskIndex];
+        assert(playerDesk);
+        const pos = SetupGenericHomeSystems.getHomeSystemPosition(playerDesk);
+        const hex = Hex.fromPosition(pos);
+
+        this._hexToLabel[hex] = label;
         return this;
     }
 
@@ -209,6 +218,7 @@ class UiMap {
             pos.x = Math.floor(pos.x * scale);
             pos.y = Math.floor(pos.y * scale);
             pos.tile = entry.tile;
+            pos.hex = hex;
             positions.push(pos);
             if (pos.x - halfW < bb.left) {
                 bb.left = pos.x - halfW;
@@ -309,19 +319,28 @@ class UiMap {
                     : refPackageId;
                 image.setImage(imgPath, packageId);
             }
+        }
 
-            // Label?
-            if (isHome) {
+        // Add labels in a second pass (after system tiles are down).
+        for (const pos of size.positions) {
+            const { deskIndex, isHome } = UiMap.tileToDeskIndexAndIsHome(
+                pos.tile
+            );
+
+            // If the tile number is the special one indicating a home system
+            // label with speaker order.
+            let label = this._hexToLabel[pos.hex];
+            if (!label && isHome) {
                 const playerCount = world.TI4.config.playerCount;
                 const order =
                     (deskIndex - this._speakerDeskIndex + playerCount) %
                     playerCount;
-                const orderLabel = ORDER_LABEL[order].toUpperCase();
-                const customLabel = this._deskIndexToLabel[deskIndex];
+                label = ORDER_LABEL[order].toUpperCase();
+            }
 
-                const label = customLabel
-                    ? `${orderLabel}\n${customLabel}`
-                    : orderLabel;
+            // If the tile is a home system anchor AND we have a custom label, use it.
+
+            if (label) {
                 const text = new Text()
                     .setAutoWrap(false) // DO NOT WRAP
                     .setBold(true)
@@ -329,6 +348,11 @@ class UiMap {
                     .setFontSize(size.fontSize)
                     .setTextColor([0, 0, 0, 1])
                     .setText(label);
+
+                // Custom labels use white.
+                if (this._hexToLabel[pos.hex]) {
+                    text.setTextColor([1, 1, 1, 1]);
+                }
 
                 const textBox = new LayoutBox()
                     .setOverrideWidth(size.tileW)
