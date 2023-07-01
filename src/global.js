@@ -130,6 +130,7 @@ require("./setup/setup-secret-holders");
 require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 //require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
+require("./global/check-card-holder-assignments");
 require("./global/seats-shuffle");
 
 if (!world.__isMock) {
