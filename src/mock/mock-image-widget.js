@@ -13,6 +13,9 @@ class ImageWidget extends Widget {
     setImageSize(w, h) {
         return this;
     }
+    setSourceCard(card) {
+        return this;
+    }
     setTintColor(value) {
         return this;
     }

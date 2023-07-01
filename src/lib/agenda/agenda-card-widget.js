@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../object-namespace");
 const {
     Card,
+    ContentButton,
     ImageButton,
     ImageWidget,
     refPackageId,
