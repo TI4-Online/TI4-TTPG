@@ -32,6 +32,24 @@ class AbstractUtil {
             throw new Error(err);
         }
     }
+    static assertIsFactionArray(
+        factionNsidNameArray,
+        returnWarningInsteadOfThrow = false
+    ) {
+        if (!Array.isArray(factionNsidNameArray)) {
+            const err = "not an array";
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+        for (const factionNsidName of factionNsidNameArray) {
+            const err = AbstractUtil.assertIsFaction(factionNsidName);
+            if (err) {
+                return err;
+            }
+        }
+    }
 
     static assertIsHex(hex, returnWarningInsteadOfThrow = false) {
         if (!Hex._hexFromString(hex)) {
@@ -40,6 +58,32 @@ class AbstractUtil {
                 return err;
             }
             throw new Error(err);
+        }
+    }
+
+    static assertIsHexToTile(hexToTile, returnWarningInsteadOfThrow = false) {
+        if (typeof hexToTile !== "object") {
+            const err = "not an object";
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+        for (const [hex, tile] of Object.entries(hexToTile)) {
+            const err = AbstractUtil.assertIsHex(
+                hex,
+                returnWarningInsteadOfThrow
+            );
+            if (err) {
+                return err;
+            }
+            if (typeof tile !== "number") {
+                const err = "not an object";
+                if (returnWarningInsteadOfThrow) {
+                    return err;
+                }
+                throw new Error(err);
+            }
         }
     }
 
@@ -111,6 +155,30 @@ class AbstractUtil {
                     return err;
                 }
                 throw new Error(err);
+            }
+        }
+    }
+
+    static assertIsSliceArray(
+        sliceArray,
+        shape,
+        returnWarningInsteadOfThrow = false
+    ) {
+        if (!Array.isArray(sliceArray)) {
+            const err = "not an array";
+            if (returnWarningInsteadOfThrow) {
+                return err;
+            }
+            throw new Error(err);
+        }
+        for (const slice of sliceArray) {
+            const err = AbstractUtil.assertIsSlice(
+                slice,
+                shape,
+                returnWarningInsteadOfThrow
+            );
+            if (err) {
+                return err;
             }
         }
     }

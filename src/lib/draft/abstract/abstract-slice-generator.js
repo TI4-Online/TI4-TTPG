@@ -46,6 +46,10 @@ const SLICE_SHAPES = {
 };
 
 class AbstractSliceGenerator {
+    constructor() {
+        this._count = this.getDefaultCount();
+    }
+
     /**
      * What is the minimum number to offer? (draft setup slider min)
      * Must be at least world.TI4.config.playerCount.
@@ -72,6 +76,18 @@ class AbstractSliceGenerator {
      */
     getDefaultCount() {
         return world.TI4.config.playerCount + 2;
+    }
+
+    getCount() {
+        return this._count;
+    }
+
+    setCount(value) {
+        assert(typeof value === "number");
+        assert(value >= this.getMinCount());
+        assert(value <= this.getMaxCount());
+        this._count = value;
+        return this;
     }
 
     /**

@@ -24,38 +24,20 @@ if (ADD_HEX_LABELS) {
 
 function demo() {
     const shape = SLICE_SHAPES.milty;
+    const sliceLayout = new AbstractSliceLayout().setShape(shape);
 
-    const abstractSliceLayout = new AbstractSliceLayout().setShape(shape);
-    for (
-        let deskIndex = 0;
-        deskIndex < world.TI4.config.playerCount;
-        deskIndex++
-    ) {
-        const home = UiMap.deskIndexToColorTile(deskIndex, true);
-        abstractSliceLayout.setAnchorTile(deskIndex, home);
-
-        const tile = UiMap.deskIndexToColorTile(deskIndex, false);
-        const slice = [tile, tile, tile, tile, tile];
-        abstractSliceLayout.setSlice(deskIndex, slice);
-    }
-    const slicesMapString = abstractSliceLayout.generateMapString();
-    const hyperlanesMapString = Hyperlane.getMapString(
-        world.TI4.config.playerCount
-    );
-    let mapString;
-    if (hyperlanesMapString) {
-        mapString = new AbstractPlaceHyperlanes().placeHyperlanes(
-            slicesMapString,
-            hyperlanesMapString
-        );
-    } else {
-        mapString = slicesMapString;
-    }
+    const params = {
+        shape,
+        sliceLayout,
+        includeHomeSystems: true,
+    };
+    const { mapString, deskIndexToLabel } = UiMap.geterateMapString(params);
 
     const scale = 6;
     const widget = new UiMap()
         .setScale(scale)
         .setSpeaker(2)
+        .setLabel(1, "my custom label very long")
         .setMapString(mapString)
         .createWidget();
 

@@ -23,6 +23,9 @@ class AbstractSliceLayout {
         this._deskIndexToHexDirection = {}; // normally point to center, can override
         this._deskIndexToAnchorHex = {}; // default to standard home system positions
         this._deskIndexToAnchorTile = {}; // default to zero
+        this._fixedSystemsHexToTile = {};
+
+        this._collisions = [];
     }
 
     /**
@@ -101,6 +104,21 @@ class AbstractSliceLayout {
         return this;
     }
 
+    /**
+     * Add fixed systems.
+     *
+     * @param {object.{hex:string,tile:number}} hexToTile
+     * @returns {AbstractSliceLayout} self, for chaining
+     */
+    addFixedSystems(hexToTile) {
+        AbstractUtil.assertIsHexToTile(hexToTile);
+        for (const [hex, tile] of Object.entries(hexToTile)) {
+            assert(!this._fixedSystemsHexToTile[hex]);
+            this._fixedSystemsHexToTile[hex] = tile;
+        }
+        return this;
+    }
+
     generateMapString() {
         return this._defaultLayoutAll();
     }
@@ -108,15 +126,27 @@ class AbstractSliceLayout {
     _defaultLayoutAll() {
         assert(this._shape);
 
+        // Make sure every desk has a slice.
         const playerCount = world.TI4.config.playerCount;
         for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
             assert(this._deskIndexToSlice[deskIndex]);
         }
 
         const mapStringArray = [];
+        this._collisions = [];
+
+        // Add fixed systems.  Cannot collide because hex are unique map keys.
+        for (const [hex, tile] of Object.entries(this._fixedSystemsHexToTile)) {
+            const index = hexStringToIdx(hex);
+            mapStringArray[index] = tile;
+        }
+
+        // Layout slices.
         for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
             this._defaultLayoutSlice(deskIndex, mapStringArray);
         }
+
+        // This is where collisions should be fixed (move to open spots?).
 
         const mapString = MapStringParser.format(mapStringArray);
         return mapString;
@@ -161,9 +191,17 @@ class AbstractSliceLayout {
 
             const mapStringIndex = hexStringToIdx(hex);
             if (mapStringArray[mapStringIndex]) {
-                console.log(
-                    `AbstractSliceLayout._defaultLayoutSlice: collision at index ${mapStringIndex}`
-                );
+                const err = `AbstractSliceLayout._defaultLayoutSlice: collision at index ${mapStringIndex}`;
+                console.log(err);
+
+                // Preserve the original, but keep a record of this dropped tile.
+                this._collisions.push({
+                    hex,
+                    mapStringIndex,
+                    tile,
+                    collisionWith: mapStringArray[mapStringIndex],
+                });
+                continue;
             }
             mapStringArray[mapStringIndex] = { tile }; // modify map string array in place
         }

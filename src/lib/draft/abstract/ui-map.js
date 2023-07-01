@@ -1,9 +1,14 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const MapStringHex = require("../../map-string/map-string-hex");
 const MapStringParser = require("../../map-string/map-string-parser");
+const { AbstractUtil } = require("./abstract-util");
+const { AbstractSliceLayout } = require("./abstract-slice-layout");
+const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { Hex } = require("../../hex");
+const { Hyperlane } = require("../../map-string/hyperlane");
 const {
     Canvas,
+    HorizontalAlignment,
     ImageWidget,
     LayoutBox,
     Text,
@@ -12,7 +17,6 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const { AbstractUtil } = require("./abstract-util");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
@@ -47,11 +51,92 @@ class UiMap {
         return { deskIndex, isHome };
     }
 
+    static geterateMapString(params) {
+        assert(typeof params === "object");
+
+        AbstractUtil.assertIsShape(params.shape);
+        assert(params.sliceLayout instanceof AbstractSliceLayout);
+
+        const sliceLayout = params.sliceLayout;
+        const placeHyperlanes =
+            params.placeHyperlanes || new AbstractPlaceHyperlanes();
+
+        const chooserToSlice = params.chooserToSlice || {};
+        const chooserToSeatIndex = params.chooserToSeatIndex || {};
+        const chooserToFaction = params.chooserToFaction || {};
+
+        // Seed generic slices.
+        for (
+            let deskIndex = 0;
+            deskIndex < world.TI4.config.playerCount;
+            deskIndex++
+        ) {
+            // Home system.
+            const home = UiMap.deskIndexToColorTile(deskIndex, true);
+            sliceLayout.setAnchorTile(deskIndex, home);
+
+            // Non-home slice systems.
+            const tile = UiMap.deskIndexToColorTile(deskIndex, false);
+            const slice = new Array(params.shape.length - 1).fill(tile);
+            sliceLayout.setSlice(deskIndex, slice);
+        }
+
+        // Overwrite known slices.
+        for (const [chooser, slice] of Object.entries(chooserToSlice)) {
+            const deskIndex = chooserToSeatIndex[chooser];
+            if (deskIndex !== undefined) {
+                sliceLayout.setSlice(deskIndex, slice);
+            }
+        }
+
+        // Overwrite known home systems.
+        if (params.includeHomeSystems) {
+            for (const [chooser, factionName] of Object.entries(
+                chooserToFaction
+            )) {
+                AbstractUtil.assertIsFaction(factionName);
+                const deskIndex = chooserToSeatIndex[chooser];
+                const faction = world.TI4.getFactionByNsidName(factionName);
+                const home = faction.home;
+                if (deskIndex !== undefined) {
+                    sliceLayout.setAnchorTile(deskIndex, home);
+                }
+            }
+        }
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const deskIndexToLabel = {};
+        for (const [chooser, seatIndex] of Object.entries(chooserToSeatIndex)) {
+            const chooserDesk = playerDesks[chooser];
+            assert(chooserDesk);
+            const chooserSlot = chooserDesk.playerSlot;
+            const chooserPlayer = world.getPlayerBySlot(chooserSlot);
+            if (chooserPlayer) {
+                const chooserName = chooserPlayer.getName();
+                deskIndexToLabel[seatIndex] = chooserName;
+            }
+        }
+
+        let mapString = sliceLayout.generateMapString();
+
+        const hyperlanesMapString = Hyperlane.getMapString(
+            world.TI4.config.playerCount
+        );
+        if (hyperlanesMapString) {
+            mapString = placeHyperlanes.placeHyperlanes(
+                mapString,
+                hyperlanesMapString
+            );
+        }
+
+        return { mapString, deskIndexToLabel };
+    }
+
     constructor() {
         this._scale = 1;
 
         this._mapString = undefined;
-        this._speakerDeskIndex = undefined;
+        this._deskIndexToLabel = {};
     }
 
     /**
@@ -74,9 +159,16 @@ class UiMap {
         return this;
     }
 
-    setSpeaker(deskIndex) {
+    setLabel(deskIndex, label) {
         AbstractUtil.assertIsDeskIndex(deskIndex);
-        this._speakerDeskIndex = deskIndex;
+        assert(!label || typeof label === "string");
+        this._deskIndexToLabel[deskIndex] = label;
+        return this;
+    }
+
+    setSpeaker(speakerDeskIndex) {
+        AbstractUtil.assertIsDeskIndex(speakerDeskIndex);
+        this._speakerDeskIndex = speakerDeskIndex;
         return this;
     }
 
@@ -173,9 +265,6 @@ class UiMap {
         if (!this._mapString) {
             throw new Error("must call setMapString first");
         }
-        if (!this._speakerDeskIndex) {
-            throw new Error("must call setSpeaker first");
-        }
 
         const size = this.getSize();
         const playerDeskArray = world.TI4.getAllPlayerDesks();
@@ -188,12 +277,13 @@ class UiMap {
 
             // Add anonymous image (set image later).
             const image = new ImageWidget();
+            const pad = Math.ceil(1 * this._scale);
             canvas.addChild(
                 image,
-                offset.x + pos.x - size.halfW + 2,
-                offset.y + pos.y - size.halfW + 2, // image is square
-                size.tileW - 4,
-                size.tileW - 4
+                offset.x + pos.x - size.halfW + pad,
+                offset.y + pos.y - size.halfW + pad, // image is square
+                size.tileW - pad * 2,
+                size.tileW - pad * 2
             );
 
             const { deskIndex, isHome } = UiMap.tileToDeskIndexAndIsHome(
@@ -222,16 +312,18 @@ class UiMap {
 
             // Label?
             if (isHome) {
+                const playerCount = world.TI4.config.playerCount;
                 const order =
-                    (deskIndex +
-                        world.TI4.config.playerCount -
-                        this._speakerDeskIndex) %
-                    world.TI4.config.playerCount;
-                const label =
-                    ORDER_LABEL[order].toUpperCase() || `ORDER ${order + 1}`;
+                    (deskIndex - this._speakerDeskIndex + playerCount) %
+                    playerCount;
+                const orderLabel = ORDER_LABEL[order].toUpperCase();
+                const customLabel = this._deskIndexToLabel[deskIndex];
 
+                const label = customLabel
+                    ? `${orderLabel}\n${customLabel}`
+                    : orderLabel;
                 const text = new Text()
-                    .setAutoWrap(true)
+                    .setAutoWrap(false) // DO NOT WRAP
                     .setBold(true)
                     .setJustification(TextJustification.Center)
                     .setFontSize(size.fontSize)
@@ -241,15 +333,17 @@ class UiMap {
                 const textBox = new LayoutBox()
                     .setOverrideWidth(size.tileW)
                     .setOverrideHeight(size.tileH)
+                    .setHorizontalAlignment(HorizontalAlignment.Center)
                     .setVerticalAlignment(VerticalAlignment.Center)
                     .setChild(text);
 
+                const extra = size.halfW;
                 canvas.addChild(
                     textBox,
-                    offset.x + pos.x - size.halfW,
-                    offset.y + pos.y - size.halfH,
-                    size.tileW,
-                    size.tileH
+                    offset.x + pos.x - size.halfW - extra,
+                    offset.y + pos.y - size.halfH - extra,
+                    size.tileW + extra * 2,
+                    size.tileH + extra * 2
                 );
             }
         }

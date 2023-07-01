@@ -5,6 +5,17 @@ const { world } = require("../../../wrapper/api");
 const { Shuffle } = require("../../shuffle");
 
 class AbstractFactionGenerator {
+    constructor() {
+        this._count = this.getDefaultCount();
+        this._seedWithOnTableCards = true;
+    }
+
+    setSeedWithOnTableCards(value) {
+        assert(typeof value === "boolean");
+        this._seedWithOnTableCards = value;
+        return this;
+    }
+
     /**
      * What is the minimum number to offer? (draft setup slider min)
      * Must be at least world.TI4.config.playerCount.
@@ -33,6 +44,18 @@ class AbstractFactionGenerator {
         return world.TI4.config.playerCount + 2;
     }
 
+    getCount() {
+        return this._count;
+    }
+
+    setCount(value) {
+        assert(typeof value === "number");
+        assert(value >= this.getMinCount());
+        assert(value <= this.getMaxCount());
+        this._count = value;
+        return this;
+    }
+
     /**
      * Generate the factions.  Use a sensible default, subclasses may override this.
      *
@@ -40,7 +63,10 @@ class AbstractFactionGenerator {
      * @returns {Array.{string}} - array of faction nsidNames (e.g. ["arborec", "sol"])
      */
     generateFactions(count) {
-        return AbstractFactionGenerator._standardGenerate(count, true);
+        return AbstractFactionGenerator._standardGenerate(
+            count,
+            this._seedWithOnTableCards
+        );
     }
 
     static _getOnTableFactionCards() {
