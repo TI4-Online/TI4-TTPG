@@ -43,6 +43,8 @@ function checkCardHolderAssignments() {
     }
 }
 
-setInterval(() => {
-    world.TI4.asyncTaskQueue.add(checkCardHolderAssignments);
-}, PERIODIC_CHECK_SECONDS * 1000);
+if (!world.__isMock) {
+    setInterval(() => {
+        world.TI4.asyncTaskQueue.add(checkCardHolderAssignments);
+    }, PERIODIC_CHECK_SECONDS * 1000);
+}
