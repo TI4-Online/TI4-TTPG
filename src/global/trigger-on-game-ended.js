@@ -19,7 +19,6 @@ globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     const pos = playerDesk.localPositionToWorld(new Vector(20, 0, 20));
     const rot = playerDesk.rot;
-    console.log(pos);
 
     const trophyNsid = "misc:base/trophy";
 
