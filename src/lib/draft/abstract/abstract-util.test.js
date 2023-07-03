@@ -27,6 +27,31 @@ it("assertIsFaction", () => {
     });
 });
 
+it("assertIsFactionArray", () => {
+    let factionNsidNameArray = ["arborec"];
+    const returnWarningInsteadOfThrow = false;
+    AbstractUtil.assertIsFactionArray(
+        factionNsidNameArray,
+        returnWarningInsteadOfThrow
+    );
+
+    factionNsidNameArray = "__does_not_exist__";
+    assert.throws(() => {
+        AbstractUtil.assertIsFactionArray(
+            factionNsidNameArray,
+            returnWarningInsteadOfThrow
+        );
+    });
+
+    factionNsidNameArray = ["__does_not_exist__"];
+    assert.throws(() => {
+        AbstractUtil.assertIsFactionArray(
+            factionNsidNameArray,
+            returnWarningInsteadOfThrow
+        );
+    });
+});
+
 it("assertIsHex", () => {
     let hex = "<0,0,0>";
     const returnWarningInsteadOfThrow = false;
@@ -35,6 +60,27 @@ it("assertIsHex", () => {
     hex = "__not_a_hex__";
     assert.throws(() => {
         AbstractUtil.assertIsHex(hex, returnWarningInsteadOfThrow);
+    });
+});
+
+it("assertIsHexToTile", () => {
+    let hexToTile = { "<0,0,0>": 18 };
+    const returnWarningInsteadOfThrow = false;
+    AbstractUtil.assertIsHexToTile(hexToTile, returnWarningInsteadOfThrow);
+
+    hexToTile = "__not_a_hex__";
+    assert.throws(() => {
+        AbstractUtil.assertIsHexToTile(hexToTile, returnWarningInsteadOfThrow);
+    });
+
+    hexToTile = { __not_a_hex__: 18 };
+    assert.throws(() => {
+        AbstractUtil.assertIsHexToTile(hexToTile, returnWarningInsteadOfThrow);
+    });
+
+    hexToTile = { "<0,0,0>": "__not_a_tile__" };
+    assert.throws(() => {
+        AbstractUtil.assertIsHexToTile(hexToTile, returnWarningInsteadOfThrow);
     });
 });
 
@@ -79,5 +125,34 @@ it("assertIsSlice", () => {
     slice = [1, 2, 3]; // too many tile numbers for shape (first is HS)
     assert.throws(() => {
         AbstractUtil.assertIsSlice(slice, shape, returnWarningInsteadOfThrow);
+    });
+});
+
+it("assertIsSliceArray", () => {
+    let sliceArray = [[1, 2]];
+    const shape = ["<0,0,0>", "<1,0,-1>", "<2,0,-2>"];
+    const returnWarningInsteadOfThrow = false;
+    AbstractUtil.assertIsSliceArray(
+        sliceArray,
+        shape,
+        returnWarningInsteadOfThrow
+    );
+
+    sliceArray = "__not_a_slice__";
+    assert.throws(() => {
+        AbstractUtil.assertIsSliceArray(
+            sliceArray,
+            shape,
+            returnWarningInsteadOfThrow
+        );
+    });
+
+    sliceArray = [[1, 2, 3]]; // too many tile numbers for shape (first is HS)
+    assert.throws(() => {
+        AbstractUtil.assertIsSliceArray(
+            sliceArray,
+            shape,
+            returnWarningInsteadOfThrow
+        );
     });
 });

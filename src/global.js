@@ -37,7 +37,7 @@ globalEvents.TI4 = {
     onFactionChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player drops a control token on the final scoreboard slot.
-    // <(player: Player|undefined) => void>
+    // <(winningPlayerSlot: number|undefined, player: Player|undefined) => void>
     onGameEnded: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player clicks the initial game "setup" button.
@@ -130,6 +130,7 @@ require("./setup/setup-secret-holders");
 require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 //require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
+require("./global/check-card-holder-assignments");
 require("./global/seats-shuffle");
 
 if (!world.__isMock) {
@@ -190,22 +191,23 @@ world.TI4 = {
     AbstractPlanetAttachment,
     AbstractRightClickCard,
     AbstractStrategyCard,
+    ActiveIdle,
     Adjacency,
     Broadcast,
     CardUtil,
     CommandToken,
+    DealDiscard,
     GameUI,
     Hex,
     ObjectNamespace,
+    PlayerDesk,
     RollGroup,
     SimpleDieBuilder,
     Spawn,
     Technology,
     UnitAttrs,
-    UnitPlastic,
-    DealDiscard,
     UnitModifier,
-    ActiveIdle,
+    UnitPlastic,
 
     // More libraries for homebrew access
     assert,

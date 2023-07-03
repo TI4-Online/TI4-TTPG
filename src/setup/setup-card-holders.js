@@ -28,10 +28,13 @@ class SetupCardHolders extends AbstractSetup {
         obj.setObjectType(ObjectType.Ground);
 
         // If player is in game, make this their primary card holder.
-        const player = world.getPlayerBySlot(playerSlot);
-        if (player) {
-            player.setHandHolder(obj);
-        }
+        const delayedSetHandHolder = () => {
+            const player = world.getPlayerBySlot(playerSlot);
+            if (player) {
+                player.setHandHolder(obj);
+            }
+        };
+        process.nextTick(delayedSetHandHolder);
     }
 
     clean() {
