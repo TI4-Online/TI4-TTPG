@@ -9,15 +9,39 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Scoreboard } = require("../lib/scoreboard/scoreboard");
-const { Player, globalEvents, world } = require("../wrapper/api");
+const { Spawn } = require("../setup/spawn/spawn");
+const { Player, Vector, globalEvents, world } = require("../wrapper/api");
 
 // Register a listener to report (as well as test) game end.
-globalEvents.TI4.onGameEnded.add((player) => {
+globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
     console.log("onGameEnd");
+
+    const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+    const pos = playerDesk.localPositionToWorld(new Vector(20, 0, 20));
+    const rot = playerDesk.rot;
+    console.log(pos);
+
+    const trophyNsid = "misc:base/trophy";
+
+    // Remove any existing trophies.
+    for (const obj of world.getAllObjects()) {
+        if (obj.getContainer()) {
+            continue;
+        }
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (nsid === trophyNsid) {
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
+        }
+    }
+
+    // Spawn the tropy!
+    const trophy = Spawn.spawn(trophyNsid, pos, rot);
+    trophy.snapToGround();
 });
 
-function checkControlToken(obj, player) {
-    assert(!player || player instanceof Player);
+function checkControlToken(obj, clickingPlayer) {
+    assert(!clickingPlayer || clickingPlayer instanceof Player);
     assert(ObjectNamespace.isControlToken(obj));
     const scoreboard = Scoreboard.getScoreboard();
     const points = Scoreboard.getScoreFromToken(scoreboard, obj);
@@ -26,7 +50,8 @@ function checkControlToken(obj, player) {
     assert(typeof target === "number");
     //console.log(`checkControlToken: ${points}`);
     if (points === target) {
-        globalEvents.TI4.onGameEnded.trigger(player);
+        const playerSlot = obj.getOwningPlayerSlot();
+        globalEvents.TI4.onGameEnded.trigger(playerSlot, clickingPlayer);
     }
 }
 

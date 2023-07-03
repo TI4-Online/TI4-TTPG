@@ -37,7 +37,7 @@ globalEvents.TI4 = {
     onFactionChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player drops a control token on the final scoreboard slot.
-    // <(player: Player|undefined) => void>
+    // <(winningPlayerSlot: number|undefined, player: Player|undefined) => void>
     onGameEnded: new TriggerableMulticastDelegate(onErr),
 
     // Called after a player clicks the initial game "setup" button.
