@@ -114,8 +114,8 @@ class UiSlice {
         }
 
         return {
-            w: bb.right - bb.left,
-            h: bb.bottom - bb.top,
+            w: Math.ceil(bb.right - bb.left + this._scale), // renders slightly wider than bb
+            h: Math.ceil(bb.bottom - bb.top),
             halfW,
             halfH,
             tileW: halfW * 2,
@@ -156,12 +156,13 @@ class UiSlice {
         const image = new ImageWidget()
             .setImage("global/ui/tiles/blank.png", refPackageId)
             .setTintColor(this._homeSystemcolor);
+        const d = 0;
         canvas.addChild(
             image,
-            offset.x + pos.x - size.halfW - 1,
-            offset.y + pos.y - size.halfW - 1, // image is square
-            size.tileW + 2,
-            size.tileW + 2
+            offset.x + pos.x - size.halfW - d,
+            offset.y + pos.y - size.halfW - d, // image is square
+            size.tileW + d * 2,
+            size.tileW + d * 2
         );
 
         // Draw systems.
@@ -203,15 +204,15 @@ class UiSlice {
         const textBox = new LayoutBox()
             .setOverrideWidth(size.tileW)
             .setOverrideHeight(size.tileH)
-            .setVerticalAlignment(VerticalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.TOP)
             .setChild(text);
 
         canvas.addChild(
             textBox,
             offset.x + pos.x - size.halfW,
-            offset.y + pos.y - size.halfH,
+            offset.y + pos.y - size.fontSize,
             size.tileW,
-            size.tileH
+            size.halfH
         );
     }
 }
