@@ -173,7 +173,11 @@ class AgendaUiDesk {
             const button = AgendaCardWidget.getImageButton(card);
             const width = Math.floor(90 * CONFIG.scale); // 48 fits with two rows of buttons, have more now
             const height = Math.floor((width * 750) / 500);
-            button.setImageSize(width, height);
+            if (button instanceof ImageButton) {
+                button.setImageSize(width, height);
+            } else if (button instanceof ContentButton) {
+                button.getChild().setImageSize(width, height);
+            }
             box.setChild(button);
 
             button.onClicked.add(

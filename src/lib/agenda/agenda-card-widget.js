@@ -1,12 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { ObjectNamespace } = require("../object-namespace");
-const {
-    Card,
-    ImageButton,
-    ImageWidget,
-    refPackageId,
-} = require("../../wrapper/api");
-const { Broadcast } = require("../broadcast");
+const { Card, ImageWidget } = require("../../wrapper/api");
+const { ContentButton } = require("@tabletop-playground/api");
 
 /**
  * ImageWidget showing an agenda card.
@@ -18,21 +12,21 @@ class AgendaCardWidget {
         assert(card instanceof Card);
         const widget = new ImageWidget()
             .setImageSize(500, 750)
-            .setImage("global/card/agenda.back.jpg", refPackageId);
-        //.setSourceCard(card);
-        Broadcast.chatAll(
-            "TEMPORARILY DISABLING AGENDA CARD DISPLAY WHILE INVESTIGATING AN ISSUE",
-            Broadcast.ERROR
-        );
+            .setSourceCard(card);
         return widget;
     }
 
     static getImageButton(card) {
         assert(card instanceof Card);
-        const widget = new ImageButton()
-            .setImageSize(500, 750)
-            .setImage("global/card/agenda.back.jpg", refPackageId);
-        //.setSourceCard(card);
+
+        // There's a bug with ImageButton and setSourceCard, but content button works.
+        const widget = new ContentButton().setChild(
+            AgendaCardWidget.getImageWidget(card)
+        );
+
+        //const widget = new ImageButton()
+        //    .setImageSize(500, 750)
+        //    .setSourceCard(card);
         return widget;
     }
 
