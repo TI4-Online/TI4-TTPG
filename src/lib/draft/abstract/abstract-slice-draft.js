@@ -125,31 +125,21 @@ class AbstractSliceDraft {
     }
 
     getSpeaker() {
-        if (!this._speaker) {
-            this._speaker = Shuffle.shuffle([...this.getTurnOrder()])[0];
-        }
         return this._speaker;
     }
 
-    /**
-     * In the draft, set the desk to be speaker.
-     * Defaults to random.
-     *
-     * @param {PlayerDesk} speaker
-     * @returns {AbstractSliceDraft} self, for chaining
-     */
     setSpeaker(speaker) {
         assert(speaker instanceof PlayerDesk);
         this._speaker = speaker;
         return this;
     }
 
+    randomizeSpeaker() {
+        const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
+        this._speaker = Shuffle.shuffle(playerDesksCopy)[0];
+    }
+
     getTurnOrder() {
-        if (!this._turnOrder) {
-            this._turnOrder = Shuffle.shuffle([
-                ...world.TI4.getAllPlayerDesks(),
-            ]);
-        }
         return this._turnOrder;
     }
 
@@ -158,6 +148,11 @@ class AbstractSliceDraft {
         for (const playerDesk of turnOrder) {
             assert(playerDesk instanceof PlayerDesk);
         }
+    }
+
+    randomizeTurnOrder() {
+        const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
+        this._turnOrder = Shuffle.shuffle(playerDesksCopy);
     }
 
     // --------------------------------
@@ -174,6 +169,13 @@ class AbstractSliceDraft {
 
         // Remember turn order to restore on cancel.
         this._origTurnOrder = world.TI4.turns.getTurnOrder();
+
+        if (!this._turnOrder) {
+            this.randomizeTurnOrder();
+        }
+        if (!this._speaker) {
+            this.randomizeSpeaker();
+        }
 
         // Apply turn order.
         world.TI4.turns.setTurnOrder(
