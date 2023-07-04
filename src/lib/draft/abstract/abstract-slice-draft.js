@@ -23,7 +23,7 @@ class AbstractSliceDraft {
         this._maxPlayerCount = 8;
         this._placeHyperlanes = new AbstractPlaceHyperlanes();
         this._sliceGenerator = undefined;
-        this._sliceLayout = new AbstractSliceLayout();
+        this._sliceLayout = undefined;
         this._speaker = undefined; // random unless overridden
         this._turnOrder = undefined; // random unless overridden
         this._turnOrderType = TURN_ORDER_TYPE.SNAKE;
@@ -31,11 +31,69 @@ class AbstractSliceDraft {
         this._customCheckBoxes = []; // {name, default, onCheckStateChanged}
         this._customSliders = []; // {name, min, max, default, onValueChanged}
 
-        // Draft-time memory.
+        // Draft-time memory.  Chooser is desk index.  Should be able to
+        // save/restore everything here to regerate a draft in progress.
+        this._slices = undefined;
+        this._factions = undefined;
+        this._fixedSystems = undefined;
         this._chooserToFaction = {};
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
         this._origTurnOrder = undefined;
+    }
+
+    clearChooserFaction(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToFaction[chooser];
+        return this;
+    }
+
+    getChooserFaction(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToFaction[chooser];
+    }
+
+    setChooserFaction(chooser, factionNsidName) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsFaction(factionNsidName);
+        this._chooserToFaction[chooser] = factionNsidName;
+        return this;
+    }
+
+    clearChooserSeatIndex(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToSeatIndex[chooser];
+        return this;
+    }
+
+    getChooserSeatIndex(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToSeatIndex[chooser];
+    }
+
+    setChooserSeatIndex(chooser, seatIndex) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsDeskIndex(seatIndex);
+        this._chooserToSeatIndex[chooser] = seatIndex;
+        return this;
+    }
+
+    clearChooserSlice(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToSlice[chooser];
+        return this;
+    }
+
+    getChooserSlice(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToSlice[chooser];
+    }
+
+    setChooserSlice(chooser, slice) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsSlice(slice, this._sliceGenerator.getSliceShape());
+        this._chooserToSlice[chooser] = slice;
+        return this;
     }
 
     addCustomCheckBox(params) {
