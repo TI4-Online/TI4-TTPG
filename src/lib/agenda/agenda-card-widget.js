@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Card, ImageWidget } = require("../../wrapper/api");
-const { ContentButton } = require("@tabletop-playground/api");
+const { Card, ContentButton, ImageWidget } = require("../../wrapper/api");
 
 /**
  * ImageWidget showing an agenda card.
