@@ -32,7 +32,7 @@ class NavFolder extends NavEntry {
 
         const icon = WidgetFactory.imageWidget()
             .setImageSize(ICON_WIDTH, ICON_HEIGHT)
-            .setImage(navEntry.getIconPath(), refPackageId);
+            .setImage(navEntry.getIconPath(), navEntry.getIconPackageId());
 
         const name = WidgetFactory.text()
             .setFontSize(NAV_ENTRY_FONTSIZE)
