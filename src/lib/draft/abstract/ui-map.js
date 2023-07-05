@@ -336,7 +336,7 @@ class UiMap {
             // If the tile number is the special one indicating a home system
             // label with speaker order.
             let label = this._hexToLabel[pos.hex];
-            if (!label && isHome) {
+            if (!label && isHome && this._speakerDeskIndex !== undefined) {
                 const playerCount = world.TI4.config.playerCount;
                 const order =
                     (deskIndex - this._speakerDeskIndex + playerCount) %

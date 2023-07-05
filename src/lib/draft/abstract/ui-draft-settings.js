@@ -1,13 +1,17 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
+const { UiMap } = require("./ui-map");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     CheckBox,
     EditText,
+    HorizontalAlignment,
     HorizontalBox,
+    LayoutBox,
     Slider,
     Text,
+    VerticalAlignment,
     VerticalBox,
     refPackageId,
     world,
@@ -63,12 +67,24 @@ class UiDraftSettings {
         });
         panel.addChild(useFactionsOnTable);
 
-        const map = new Border().setColor([1, 1, 1, 1]);
+        const useHomeSystems = false;
+        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
+            this._sliceDraft,
+            useHomeSystems
+        );
+        const map = new UiMap()
+            .setMapString(mapString)
+            .setScale(1.5)
+            .createWidget();
+        const mapBox = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setChild(map);
 
         return new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(panel, 1)
-            .addChild(map, 1);
+            .addChild(panel, 2)
+            .addChild(mapBox, 1);
     }
 
     static _createCheckbox(params) {
