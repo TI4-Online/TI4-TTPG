@@ -12,10 +12,11 @@ const { Scoreboard } = require("../lib/scoreboard/scoreboard");
 const { Spawn } = require("../setup/spawn/spawn");
 const { Player, Vector, globalEvents, world } = require("../wrapper/api");
 
-// Register a listener to report (as well as test) game end.
-globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
-    console.log("onGameEnd");
+const _playerSlotToScore = {};
+const SPAWN_TROPHY = false;
+let _spawnedTrophy = false;
 
+function spawnTrophy(playerSlot) {
     const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
     const pos = playerDesk.localPositionToWorld(new Vector(20, 0, 20));
     const rot = playerDesk.rot;
@@ -37,6 +38,16 @@ globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
     // Spawn the tropy!
     const trophy = Spawn.spawn(trophyNsid, pos, rot);
     trophy.snapToGround();
+}
+
+// Register a listener to report (as well as test) game end.
+globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
+    console.log("onGameEnd");
+
+    if (SPAWN_TROPHY && !_spawnedTrophy) {
+        _spawnedTrophy = true;
+        spawnTrophy(playerSlot);
+    }
 });
 
 function checkControlToken(obj, clickingPlayer) {
@@ -45,11 +56,15 @@ function checkControlToken(obj, clickingPlayer) {
     const scoreboard = Scoreboard.getScoreboard();
     const points = Scoreboard.getScoreFromToken(scoreboard, obj);
     const target = world.TI4.config.gamePoints;
+    const playerSlot = obj.getOwningPlayerSlot();
     assert(typeof points === "number");
     assert(typeof target === "number");
+    if (_playerSlotToScore[playerSlot] === points) {
+        return; // already processed this point value
+    }
+    _playerSlotToScore[playerSlot] = points;
     //console.log(`checkControlToken: ${points}`);
     if (points === target) {
-        const playerSlot = obj.getOwningPlayerSlot();
         globalEvents.TI4.onGameEnded.trigger(playerSlot, clickingPlayer);
     }
 }
