@@ -3,6 +3,7 @@ const MapStringHex = require("../../map-string/map-string-hex");
 const { UiSlice } = require("./ui-slice");
 const { SLICE_SHAPES } = require("./abstract-slice-generator");
 const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
+const { UiDraftChoice } = require("./ui-draft-choice");
 
 const ADD_HEX_LABELS = false;
 
@@ -21,26 +22,32 @@ if (ADD_HEX_LABELS) {
 
 function miltySlice() {
     const shape = SLICE_SHAPES.milty;
-    const slice = [];
-    for (let i = 0; i < shape.length - 1; i++) {
-        slice.push(i + 1);
-    }
+    const slice = [
+        // use systems that create a long summary string for sizing
+        19, // yellow skip
+        21, // blue skip
+        22, // green skip
+        65, // legendary
+        25, // wormhole
+    ];
 
-    const scale = 6;
+    const scale = 10;
     const uiSlice = new UiSlice()
+        .setLabel("Demo Slice")
         .setScale(scale)
         .setShape(shape) // array of hex strings
-        .setSlice(slice); // systems in 1, 2, 3, ... order
+        .setSlice(slice); // systems in shape order (excluding home)
 
     const size = uiSlice.getSize();
     console.log(JSON.stringify(size));
 
-    const widget = uiSlice.createWidget();
+    //const widget = new Border().setChild(uiSlice.createWidget());
+    const widget = new UiDraftChoice(uiSlice).setScale(scale).createWidget();
 
     const ui = new UIElement();
     ui.position = [0, 0, 0.26];
     ui.scale = 1 / scale;
-    ui.widget = new Border().setChild(widget);
+    ui.widget = widget;
 
     refObject.addUI(ui);
 }

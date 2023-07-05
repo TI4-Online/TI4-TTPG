@@ -20,6 +20,7 @@ const {
 const {
     SetupGenericHomeSystems,
 } = require("../../../setup/setup-generic-home-systems");
+const { AbstractSliceDraft } = require("./abstract-slice-draft");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
@@ -54,19 +55,18 @@ class UiMap {
         return { deskIndex, isHome };
     }
 
-    static geterateMapString(params) {
-        assert(typeof params === "object");
+    static generateMapString(sliceDraft, includeHomeSystems) {
+        assert(sliceDraft instanceof AbstractSliceDraft);
+        assert(typeof includeHomeSystems === "boolean");
 
-        AbstractUtil.assertIsShape(params.shape);
-        assert(params.sliceLayout instanceof AbstractSliceLayout);
-
-        const sliceLayout = params.sliceLayout;
-        const placeHyperlanes =
-            params.placeHyperlanes || new AbstractPlaceHyperlanes();
-
-        const chooserToSlice = params.chooserToSlice || {};
-        const chooserToSeatIndex = params.chooserToSeatIndex || {};
-        const chooserToFaction = params.chooserToFaction || {};
+        const playerCount = world.TI4.config.playerCount;
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const shape = sliceDraft.getSliceGenerator()?.getSliceShape();
+        AbstractUtil.assertIsShape(shape);
+        const sliceLayout = sliceDraft.getSliceLayout();
+        assert(sliceLayout);
+        const placeHyperlanes = sliceDraft.getPlaceHyperlanes();
+        assert(placeHyperlanes);
 
         // Seed generic slices.
         for (
@@ -80,44 +80,50 @@ class UiMap {
 
             // Non-home slice systems.
             const tile = UiMap.deskIndexToColorTile(deskIndex, false);
-            const slice = new Array(params.shape.length - 1).fill(tile);
+            const slice = new Array(shape.length - 1).fill(tile);
             sliceLayout.setSlice(deskIndex, slice);
         }
 
         // Overwrite known slices.
-        for (const [chooser, slice] of Object.entries(chooserToSlice)) {
-            const deskIndex = chooserToSeatIndex[chooser];
-            if (deskIndex !== undefined) {
-                sliceLayout.setSlice(deskIndex, slice);
+        for (let chooser = 0; chooser < playerCount; chooser++) {
+            const slice = sliceDraft.getChooserSlice(chooser);
+            const deskIndex = sliceDraft.getChooserSeatIndex(chooser);
+            if (slice === undefined || deskIndex === undefined) {
+                continue;
             }
+            sliceLayout.setSlice(deskIndex, slice);
         }
 
         // Overwrite known home systems.
-        if (params.includeHomeSystems) {
-            for (const [chooser, factionName] of Object.entries(
-                chooserToFaction
-            )) {
-                AbstractUtil.assertIsFaction(factionName);
-                const deskIndex = chooserToSeatIndex[chooser];
+        if (includeHomeSystems) {
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                const factionName = sliceDraft.getChooserFaction(chooser);
+                const deskIndex = sliceDraft.getChooserSeatIndex(chooser);
+                if (factionName === undefined || deskIndex === undefined) {
+                    continue;
+                }
                 const faction = world.TI4.getFactionByNsidName(factionName);
                 const home = faction.home;
-                if (deskIndex !== undefined) {
-                    sliceLayout.setAnchorTile(deskIndex, home);
-                }
+                sliceLayout.setAnchorTile(deskIndex, home);
             }
         }
 
-        const playerDesks = world.TI4.getAllPlayerDesks();
+        // Overwrite labels.
         const deskIndexToLabel = {};
-        for (const [chooser, seatIndex] of Object.entries(chooserToSeatIndex)) {
+        for (let chooser = 0; chooser < playerCount; chooser++) {
+            const deskIndex = sliceDraft.getChooserSeatIndex(chooser);
+            if (deskIndex === undefined) {
+                continue;
+            }
             const chooserDesk = playerDesks[chooser];
             assert(chooserDesk);
             const chooserSlot = chooserDesk.playerSlot;
             const chooserPlayer = world.getPlayerBySlot(chooserSlot);
-            if (chooserPlayer) {
-                const chooserName = chooserPlayer.getName();
-                deskIndexToLabel[seatIndex] = chooserName;
+            if (!chooserPlayer) {
+                continue;
             }
+            const chooserName = chooserPlayer.getName();
+            deskIndexToLabel[seatIndex] = chooserName;
         }
 
         let mapString = sliceLayout.generateMapString();

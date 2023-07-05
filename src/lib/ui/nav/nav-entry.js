@@ -1,5 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
-const { Widget } = require("../../../wrapper/api");
+const { Widget, refPackageId } = require("../../../wrapper/api");
 const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 
 const DEFAULT_ENTRY_ICON_PATH = "global/ui/icons/document.png";
@@ -14,6 +14,7 @@ class NavEntry {
         this._name = undefined;
         this._description = undefined;
         this._iconPath = DEFAULT_ENTRY_ICON_PATH;
+        this._iconPackageId = refPackageId;
         this._widgetFactory = undefined;
         this._periodicUpdateWidget = undefined;
         this._destroyWidget = undefined;
@@ -47,6 +48,10 @@ class NavEntry {
 
     getIconPath() {
         return this._iconPath;
+    }
+
+    getIconPackageId() {
+        return this._iconPackageId;
     }
 
     getWidgetFactory() {
@@ -123,9 +128,10 @@ class NavEntry {
         return this;
     }
 
-    setIconPath(path) {
+    setIconPath(path, packageId = refPackageId) {
         assert(typeof path === "string");
         this._iconPath = path;
+        this._iconPackageId = packageId;
         return this;
     }
 

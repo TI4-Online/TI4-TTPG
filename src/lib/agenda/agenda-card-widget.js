@@ -1,6 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { ObjectNamespace } = require("../object-namespace");
-const { Card, ImageButton, ImageWidget } = require("../../wrapper/api");
+const { Card, ContentButton, ImageWidget } = require("../../wrapper/api");
 
 /**
  * ImageWidget showing an agenda card.
@@ -18,9 +17,15 @@ class AgendaCardWidget {
 
     static getImageButton(card) {
         assert(card instanceof Card);
-        const widget = new ImageButton()
-            .setImageSize(500, 750)
-            .setSourceCard(card);
+
+        // There's a bug with ImageButton and setSourceCard, but content button works.
+        const widget = new ContentButton().setChild(
+            AgendaCardWidget.getImageWidget(card)
+        );
+
+        //const widget = new ImageButton()
+        //    .setImageSize(500, 750)
+        //    .setSourceCard(card);
         return widget;
     }
 

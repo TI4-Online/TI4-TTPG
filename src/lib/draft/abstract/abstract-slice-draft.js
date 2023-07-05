@@ -20,18 +20,106 @@ class AbstractSliceDraft {
         // Use sensible defaults, caller can override.
         this._factionGenerator = new AbstractFactionGenerator();
         this._fixedSystemsGenerator = undefined;
+        this._maxPlayerCount = 8;
         this._placeHyperlanes = new AbstractPlaceHyperlanes();
         this._sliceGenerator = undefined;
-        this._sliceLayout = new AbstractSliceLayout();
-        this._speaker = Shuffle.shuffle([...world.TI4.getAllPlayerDesks()])[0];
-        this._turnOrder = Shuffle.shuffle([...world.TI4.getAllPlayerDesks()]);
+        this._sliceLayout = undefined;
+        this._speaker = undefined; // random unless overridden
+        this._turnOrder = undefined; // random unless overridden
         this._turnOrderType = TURN_ORDER_TYPE.SNAKE;
 
-        // Draft-time memory.
+        this._customCheckBoxes = []; // {name, default, onCheckStateChanged}
+        this._customSliders = []; // {name, min, max, default, onValueChanged}
+
+        // Draft-time memory.  Chooser is desk index.  Should be able to
+        // save/restore everything here to regerate a draft in progress.
+        this._slices = undefined;
+        this._factions = undefined;
+        this._fixedSystems = undefined;
         this._chooserToFaction = {};
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
-        this._origTurnOrder = world.TI4.turns.getTurnOrder();
+        this._origTurnOrder = undefined;
+    }
+
+    clearChooserFaction(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToFaction[chooser];
+        return this;
+    }
+
+    getChooserFaction(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToFaction[chooser];
+    }
+
+    setChooserFaction(chooser, factionNsidName) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsFaction(factionNsidName);
+        this._chooserToFaction[chooser] = factionNsidName;
+        return this;
+    }
+
+    clearChooserSeatIndex(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToSeatIndex[chooser];
+        return this;
+    }
+
+    getChooserSeatIndex(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToSeatIndex[chooser];
+    }
+
+    setChooserSeatIndex(chooser, seatIndex) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsDeskIndex(seatIndex);
+        this._chooserToSeatIndex[chooser] = seatIndex;
+        return this;
+    }
+
+    clearChooserSlice(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        delete this._chooserToSlice[chooser];
+        return this;
+    }
+
+    getChooserSlice(chooser) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        return this._chooserToSlice[chooser];
+    }
+
+    setChooserSlice(chooser, slice) {
+        AbstractUtil.assertIsDeskIndex(chooser);
+        AbstractUtil.assertIsSlice(slice, this._sliceGenerator.getSliceShape());
+        this._chooserToSlice[chooser] = slice;
+        return this;
+    }
+
+    addCustomCheckBox(params) {
+        assert(typeof params.name === "string");
+        assert(typeof params.default === "boolean");
+        assert(typeof params.onCheckStateChanged === "function");
+        this._customCheckBoxes.push(params);
+        return this;
+    }
+
+    addCustomSlider(params) {
+        assert(typeof params.name === "string");
+        assert(typeof params.min === "number");
+        assert(typeof params.max === "number");
+        assert(typeof params.default === "number");
+        assert(typeof params.onValueChanged === "function");
+        this._customSliders.push(params);
+        return this;
+    }
+
+    getCustomCheckBoxes() {
+        return this._customCheckBoxes;
+    }
+
+    getCustomSlices() {
+        return this._customSliders;
     }
 
     getFactionGenerator() {
@@ -51,6 +139,16 @@ class AbstractSliceDraft {
     setFixedSystemsGenerator(fixedSystemsGenerator) {
         assert(fixedSystemsGenerator instanceof AbstractFixedSystemsGenerator);
         this._fixedSystemsGenerator = fixedSystemsGenerator;
+        return this;
+    }
+
+    getMaxPlayerCount() {
+        return this._maxPlayerCount;
+    }
+
+    setMaxPlayerCount(value) {
+        assert(typeof value === "number");
+        this._maxPlayerCount = value;
         return this;
     }
 
@@ -88,17 +186,15 @@ class AbstractSliceDraft {
         return this._speaker;
     }
 
-    /**
-     * In the draft, set the desk to be speaker.
-     * Defaults to random.
-     *
-     * @param {PlayerDesk} speaker
-     * @returns {AbstractSliceDraft} self, for chaining
-     */
     setSpeaker(speaker) {
         assert(speaker instanceof PlayerDesk);
         this._speaker = speaker;
         return this;
+    }
+
+    randomizeSpeaker() {
+        const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
+        this._speaker = Shuffle.shuffle(playerDesksCopy)[0];
     }
 
     getTurnOrder() {
@@ -110,6 +206,11 @@ class AbstractSliceDraft {
         for (const playerDesk of turnOrder) {
             assert(playerDesk instanceof PlayerDesk);
         }
+    }
+
+    randomizeTurnOrder() {
+        const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
+        this._turnOrder = Shuffle.shuffle(playerDesksCopy);
     }
 
     // --------------------------------
@@ -126,6 +227,13 @@ class AbstractSliceDraft {
 
         // Remember turn order to restore on cancel.
         this._origTurnOrder = world.TI4.turns.getTurnOrder();
+
+        if (!this._turnOrder) {
+            this.randomizeTurnOrder();
+        }
+        if (!this._speaker) {
+            this.randomizeSpeaker();
+        }
 
         // Apply turn order.
         world.TI4.turns.setTurnOrder(
@@ -161,11 +269,14 @@ class AbstractSliceDraft {
     cancel(player) {
         assert(player instanceof Player);
 
-        world.TI4.turns.setTurnOrder(
-            this._origTurnOrder,
-            player,
-            TURN_ORDER_TYPE.FORWARD
-        );
+        if (this._origTurnOrder) {
+            world.TI4.turns.setTurnOrder(
+                this._origTurnOrder,
+                player,
+                TURN_ORDER_TYPE.FORWARD
+            );
+            this._origTurnOrder = undefined;
+        }
 
         // Dismiss UI.
         // XXX TODO

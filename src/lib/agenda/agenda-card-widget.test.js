@@ -1,3 +1,4 @@
+require("../../global");
 const assert = require("assert");
 const { AgendaCardWidget } = require("./agenda-card-widget");
 const {
