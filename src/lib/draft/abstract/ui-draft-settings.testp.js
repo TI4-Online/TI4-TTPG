@@ -32,6 +32,20 @@ function demo() {
         .setSliceLayout(sliceLayout)
         .setFactionGenerator(factionGenerator);
 
+    sliceDraft.addCustomSlider({
+        name: "My Slider",
+        min: 0,
+        max: 10,
+        default: 5,
+        onValueChanged: () => {},
+    });
+
+    sliceDraft.addCustomCheckBox({
+        name: "My CheckBox",
+        default: true,
+        onCheckStateChanged: () => {},
+    });
+
     const widget = new UiDraftSettings(sliceDraft).getWidget();
     const panel = new HorizontalBox().setChildDistance(CONFIG.spacing);
     panel.addChild(widget, 4);

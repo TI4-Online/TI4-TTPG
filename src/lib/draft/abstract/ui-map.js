@@ -302,10 +302,14 @@ class UiMap {
                 size.tileW - pad * 2
             );
 
+            // Tile is either a valid system or encoded for desk/home.
+            const system = world.TI4.getSystemByTileNumber(pos.tile);
             const { deskIndex, isHome } = UiMap.tileToDeskIndexAndIsHome(
                 pos.tile
             );
+
             if (pos.tile >= 100000) {
+                // Generic per-desk tile and/or home system.
                 const color = playerDeskArray[deskIndex].widgetColor.clone();
                 if (isHome) {
                     const darken = 0.5;
@@ -316,9 +320,26 @@ class UiMap {
                 image
                     .setImage("global/ui/tiles/blank.png", refPackageId)
                     .setTintColor(color);
-            } else {
-                const system = world.TI4.getSystemByTileNumber(pos.tile);
-                assert(system);
+            } else if (system && system.hyperlane) {
+                // Hyperlane.  Cannot rotate so use simple gray.
+                const c = 0.2;
+                const color = [c, c, c, 1];
+                image
+                    .setImage("global/ui/tiles/blank.png", refPackageId)
+                    .setTintColor(color);
+                const text = new Text()
+                    .setFontSize(20 * this._scale)
+                    .setBold(true)
+                    .setJustification(TextJustification.Center)
+                    .setText("*");
+                canvas.addChild(
+                    text,
+                    offset.x + pos.x - size.halfW,
+                    offset.y + pos.y - text.getFontSize() * 0.8,
+                    size.tileW,
+                    text.getFontSize() * 2
+                );
+            } else if (system) {
                 const imgPath = system.raw.img;
                 const packageId = system.raw.packageId
                     ? system.raw.packageId

@@ -31,6 +31,8 @@ class AbstractSliceDraft {
         this._customCheckBoxes = []; // {name, default, onCheckStateChanged}
         this._customSliders = []; // {name, min, max, default, onValueChanged}
 
+        this._customInput = undefined; // player specified slices, factions, labels, etc
+
         // Draft-time memory.  Chooser is desk index.  Should be able to
         // save/restore everything here to regerate a draft in progress.
         this._slices = undefined;
@@ -104,6 +106,10 @@ class AbstractSliceDraft {
         return this;
     }
 
+    getCustomCheckBoxes() {
+        return this._customCheckBoxes;
+    }
+
     addCustomSlider(params) {
         assert(typeof params.name === "string");
         assert(typeof params.min === "number");
@@ -114,12 +120,22 @@ class AbstractSliceDraft {
         return this;
     }
 
-    getCustomCheckBoxes() {
-        return this._customCheckBoxes;
+    getCustomSliders() {
+        return this._customSliders;
     }
 
     getCustomSlices() {
         return this._customSliders;
+    }
+
+    getCustomInput() {
+        return this._customInput;
+    }
+
+    setCustomInput(customInput) {
+        assert(typeof customInput === "string");
+        this._customInput = customInput;
+        return this;
     }
 
     getFactionGenerator() {
