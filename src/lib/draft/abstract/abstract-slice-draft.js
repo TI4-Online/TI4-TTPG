@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../locale");
 const { AbstractFactionGenerator } = require("./abstract-faction-generator");
 const {
     AbstractFixedSystemsGenerator,
@@ -8,9 +9,10 @@ const { AbstractSliceGenerator } = require("./abstract-slice-generator");
 const { PlayerDesk } = require("../../player-desk/player-desk");
 const { Shuffle } = require("../../shuffle");
 const { TURN_ORDER_TYPE } = require("../../turns");
-const { Player, world } = require("../../../wrapper/api");
 const { AbstractUtil } = require("./abstract-util");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
+const { Player, world } = require("../../../wrapper/api");
+const { Broadcast } = require("../../broadcast");
 
 /**
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
@@ -35,13 +37,130 @@ class AbstractSliceDraft {
 
         // Draft-time memory.  Chooser is desk index.  Should be able to
         // save/restore everything here to regerate a draft in progress.
-        this._slices = undefined;
+        this._slices = undefined; // each slice may have a "_label" key
         this._factions = undefined;
         this._fixedSystems = undefined;
+
         this._chooserToFaction = {};
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
         this._origTurnOrder = undefined;
+    }
+
+    _attemptToggle(clickingPlayer, chooserToX, x, categoryName, selectionName) {
+        assert(clickingPlayer instanceof Player);
+        assert(chooserToX instanceof Object);
+        assert(x !== undefined);
+        assert(typeof categoryName === "string");
+        assert(typeof selectionName === "string");
+
+        const playerSlot = clickingPlayer.getSlot();
+        const playerName = clickingPlayer.getName(); // use steam name, not current color
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const chooser = playerDesk?.index;
+        const oldChoice = chooserToX[chooser];
+
+        // Must be seated.
+        if (!playerDesk) {
+            const msg = locale("ui.draft.not_seated");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // If this is their current selection, toggle it off.
+        if (oldChoice === x) {
+            const msg = locale("ui.draft.deselected", {
+                playerName,
+                categoryName,
+                selectionName,
+            });
+            Broadcast.chatAll(msg, playerDesk.chatColor);
+            delete chooserToX[chooser];
+            return true; // toggle off
+        }
+
+        // If this player has a different selection do not swap (must clear first).
+        if (oldChoice) {
+            const msg = locale("ui.draft.already_have", {
+                playerName,
+                categoryName,
+                selectionName,
+            });
+            Broadcast.chatAll(msg, playerDesk.chatColor);
+            return false;
+        }
+
+        // If another player has this item selected reject claiming it.
+        for (const chosen of Object.values(chooserToX)) {
+            if (chosen === factionNsidName) {
+                const msg = locale("ui.draft.already_claimed", {
+                    playerName,
+                    categoryName,
+                    selectionName,
+                });
+                Broadcast.chatAll(msg, playerDesk.chatColor);
+                return false;
+            }
+        }
+
+        const msg = locale("ui.draft.selected", {
+            playerName,
+            categoryName,
+            selectionName,
+        });
+        Broadcast.chatAll(msg, playerDesk.chatColor);
+        chooserToX[chooser] = x;
+        return true; // toggle on
+    }
+
+    attemptToggleFaction(clickingPlayer, factionNsidName) {
+        assert(clickingPlayer instanceof Player);
+        AbstractUtil.assertIsFaction(factionNsidName);
+
+        const faction = world.TI4.getFactionByNsidName(factionNsidName);
+        const categoryName = locale("ui.draft.category.faction");
+        const selectionName = faction.nameAbbr;
+
+        return this._attemptToggle(
+            clickingPlayer,
+            this._chooserToFaction,
+            factionNsidName,
+            categoryName,
+            selectionName
+        );
+    }
+
+    attemptToggleSeatIndex(clickingPlayer, seatIndex) {
+        assert(clickingPlayer instanceof Player);
+        AbstractUtil.assertIsDeskIndex(seatIndex);
+
+        const seatDesk = world.TI4.getAllPlayerDesks()[seatIndex];
+        const categoryName = locale("ui.draft.category.seat");
+        const selectionName = seatDesk.colorName;
+
+        return this._attemptToggle(
+            clickingPlayer,
+            this._chooserToSeatIndex,
+            seatIndex,
+            categoryName,
+            selectionName
+        );
+    }
+
+    attemptToggleSlice(clickingPlayer, slice) {
+        assert(clickingPlayer instanceof Player);
+        AbstractUtil.assertIsSlice(slice, this._sliceGenerator.getSliceShape());
+
+        const categoryName = locale("ui.draft.category.slice");
+        const selectionName = slice._label || `[${slice.join(" ")}]`;
+
+        return this._attemptToggle(
+            clickingPlayer,
+            this._chooserToSlice,
+            slice,
+            categoryName,
+            selectionName
+        );
     }
 
     clearChooserFaction(chooser) {
@@ -121,10 +240,6 @@ class AbstractSliceDraft {
     }
 
     getCustomSliders() {
-        return this._customSliders;
-    }
-
-    getCustomSlices() {
         return this._customSliders;
     }
 
@@ -231,8 +346,25 @@ class AbstractSliceDraft {
 
     // --------------------------------
 
+    getSlices() {
+        assert(this._slices); // must call start to create
+        return this._slices;
+    }
+
+    getFactionNsidNames() {
+        assert(this._factions); // must call start to create
+        return this._factions;
+    }
+
+    getFixedSystems() {
+        assert(this._fixedSystems); // must call start to create
+        return this._fixedSystems;
+    }
+
+    // --------------------------------
+
     start(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
 
         // Must provide a slice generator.
         assert(this._sliceGenerator);
@@ -260,26 +392,28 @@ class AbstractSliceDraft {
 
         // Create slices.
         const sliceCount = this._sliceGenerator.getCount();
-        const slices = this._sliceGenerator.generateSlices(sliceCount);
+        this._slices = this._sliceGenerator.generateSlices(sliceCount);
         const shape = this._sliceGenerator.getSliceShape();
         AbstractUtil.assertIsShape(shape);
-        AbstractUtil.assertIsSliceArray(slices, shape);
+        AbstractUtil.assertIsSliceArray(this._slices, shape);
 
         // Choose factions.
         const factionCount = this._factionGenerator.getCount();
-        const factionNsidNames =
-            this._factionGenerator.generateFactions(factionCount);
-        AbstractUtil.assertIsFactionArray(factionNsidNames);
+        this._factions = this._factionGenerator.generateFactions(factionCount);
+        AbstractUtil.assertIsFactionArray(this._factions);
 
         // Create fixed systems.
-        let fixedSystems = {};
+        this._fixedSystems = {};
         if (this._fixedSystemsGenerator) {
-            fixedSystems = this._fixedSystemsGenerator.generateFixedSystems();
-            AbstractUtil.assertIsHexToTile(fixedSystems);
+            this._fixedSystems =
+                this._fixedSystemsGenerator.generateFixedSystems();
         }
+        AbstractUtil.assertIsHexToTile(this._fixedSystems);
 
         // Create UI.
         // XXX TODO
+
+        return this;
     }
 
     cancel(player) {
@@ -296,6 +430,8 @@ class AbstractSliceDraft {
 
         // Dismiss UI.
         // XXX TODO
+
+        return this;
     }
 
     finish(player) {
@@ -304,6 +440,8 @@ class AbstractSliceDraft {
         AbstractSliceDraft._setTurnOrderFromSpeaker(this._speaker, player);
 
         // TODO
+
+        return this;
     }
 
     // --------------------------------

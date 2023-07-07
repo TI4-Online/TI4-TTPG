@@ -7,6 +7,8 @@ const {
     world,
 } = require("../../../wrapper/api");
 
+const NO_OWNER_BORDER_COLOR = [0, 0, 0, 1];
+
 class UiDraftChoice {
     constructor(uiWrapped) {
         assert(typeof uiWrapped === "object");
@@ -38,6 +40,16 @@ class UiDraftChoice {
     setOwningPlayerSlot(playerSlot) {
         assert(typeof playerSlot === "number");
         this._owningPlayerSlot = playerSlot;
+        if (this._border) {
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                this._owningPlayerSlot
+            );
+            const color = playerDesk
+                ? playerDesk.widgetColor
+                : NO_OWNER_BORDER_COLOR;
+            this._border.setColor(color);
+        }
+
         return this;
     }
 
@@ -70,6 +82,45 @@ class UiDraftChoice {
     createWidget() {
         const size = this.getSize();
 
+        if (size) {
+            const { frame, padding } = this.getSize();
+            assert(typeof frame === "number");
+            assert(typeof padding === "number");
+
+            const innerBox = this._uiWrapped.createWidget();
+            const paddedBox = new LayoutBox()
+                .setPadding(padding, padding, padding, padding)
+                .setChild(innerBox);
+
+            const contentButton = new ContentButton().setChild(paddedBox);
+
+            const frameBox = new LayoutBox()
+                .setPadding(frame, frame, frame, frame)
+                .setChild(contentButton);
+
+            this._border = new Border()
+                .setColor(NO_OWNER_BORDER_COLOR)
+                .setChild(frameBox);
+
+            contentButton.onClicked.add((button, player) => {
+                const playerSlot = player.getSlot();
+                const playerDesk =
+                    world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+                if (this._allowToggle(this, playerSlot)) {
+                    if (this._owningPlayerSlot === playerSlot) {
+                        this._owningPlayerSlot = -1;
+                        this._border.setColor(noOwnerBorderColor);
+                    } else {
+                        assert(playerDesk);
+                        this._owningPlayerSlot = playerSlot;
+                        this._border.setColor(playerDesk.widgetColor);
+                    }
+                }
+            });
+
+            return this._border;
+        }
+
         const canvas = new Canvas(size.w, size.h);
 
         const layoutBox = new LayoutBox()
@@ -77,7 +128,15 @@ class UiDraftChoice {
             .setOverrideHeight(size.h)
             .setChild(canvas);
 
-        this.drawToCanvas(canvas);
+        canvas.addChild(
+            new Border().setColor([1, 0, 0, 1]),
+            0,
+            0,
+            size.w,
+            size.h
+        );
+
+        //this.drawToCanvas(canvas);
 
         return layoutBox;
     }
@@ -93,6 +152,14 @@ class UiDraftChoice {
         assert(typeof w === "number");
         assert(typeof h === "number");
 
+        console.log(
+            JSON.stringify({
+                offset,
+                w,
+                h,
+            })
+        );
+
         // Content button needs a new canvas.  This creates a canvas in an
         // appropriately sized layout box.
         const innerBox = this._uiWrapped.createWidget();
@@ -107,19 +174,18 @@ class UiDraftChoice {
             .setPadding(frame, frame, frame, frame)
             .setChild(contentButton);
 
-        const noOwnerBorderColor = [0, 0, 0, 1];
-        const border = new Border()
-            .setColor(noOwnerBorderColor)
+        this._border = new Border()
+            .setColor(NO_OWNER_BORDER_COLOR)
             .setChild(frameBox);
-        if (this._owningPlayerSlot) {
+        if (this._owningPlayerSlot >= 0) {
             const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
                 this._owningPlayerSlot
             );
             assert(playerDesk);
-            border.setColor(playerDesk.widgetColor);
+            this._border.setColor(playerDesk.widgetColor);
         }
 
-        canvas.addChild(border, offset.x, offset.y, w, h);
+        canvas.addChild(this._border, offset.x, offset.y, w, h);
 
         contentButton.onClicked.add((button, player) => {
             const playerSlot = player.getSlot();
@@ -127,11 +193,11 @@ class UiDraftChoice {
             if (this._allowToggle(this, playerSlot)) {
                 if (this._owningPlayerSlot === playerSlot) {
                     this._owningPlayerSlot = -1;
-                    border.setColor(noOwnerBorderColor);
+                    this._border.setColor(noOwnerBorderColor);
                 } else {
                     assert(playerDesk);
                     this._owningPlayerSlot = playerSlot;
-                    border.setColor(playerDesk.widgetColor);
+                    this._border.setColor(playerDesk.widgetColor);
                 }
             }
         });
