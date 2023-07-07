@@ -56,6 +56,11 @@ function demo() {
         .setLabel(1, "my custom label very long")
         .setMapString(mapString);
 
+    for (const [deskIndexStr, label] of Object.entries(deskIndexToLabel)) {
+        const deskIndex = Number.parseInt(deskIndexStr);
+        uiMap.setLabel(deskIndex, label);
+    }
+
     const widget = uiMap.createWidget();
 
     const ui = new UIElement();

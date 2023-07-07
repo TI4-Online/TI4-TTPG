@@ -115,15 +115,26 @@ class UiMap {
             if (deskIndex === undefined) {
                 continue;
             }
+            const labelParts = [];
+
+            // Add player name.
             const chooserDesk = playerDesks[chooser];
             assert(chooserDesk);
             const chooserSlot = chooserDesk.playerSlot;
             const chooserPlayer = world.getPlayerBySlot(chooserSlot);
-            if (!chooserPlayer) {
-                continue;
+            if (chooserPlayer) {
+                labelParts.push(hooserPlayer.getName());
+            } else {
+                labelParts.push(`"${chooserDesk.colorName}"`);
             }
-            const chooserName = chooserPlayer.getName();
-            deskIndexToLabel[seatIndex] = chooserName;
+
+            // Add faction name (if known).
+            const factionName = sliceDraft.getChooserFaction(chooser);
+            if (factionName) {
+                const faction = world.TI4.getFactionByNsidName(factionName);
+                labelParts.push(faction.nameAbbr.toUpperCase());
+            }
+            deskIndexToLabel[deskIndex] = labelParts.join("\n");
         }
 
         let mapString = sliceLayout.generateMapString();
@@ -376,9 +387,15 @@ class UiMap {
                     .setTextColor([0, 0, 0, 1])
                     .setText(label);
 
-                // Custom labels use white.
+                let textWidget = text;
+
+                // Custom labels use white and have a translucent background.
                 if (this._hexToLabel[pos.hex]) {
                     text.setTextColor([1, 1, 1, 1]);
+
+                    textWidget = new Border()
+                        .setChild(text)
+                        .setColor([0, 0, 0, 0.75]);
                 }
 
                 const textBox = new LayoutBox()
@@ -386,7 +403,7 @@ class UiMap {
                     .setOverrideHeight(size.tileH)
                     .setHorizontalAlignment(HorizontalAlignment.Center)
                     .setVerticalAlignment(VerticalAlignment.Center)
-                    .setChild(text);
+                    .setChild(textWidget);
 
                 const extra = size.halfW;
                 canvas.addChild(
