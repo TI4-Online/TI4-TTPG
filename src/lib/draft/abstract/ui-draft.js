@@ -4,10 +4,9 @@ const { AbstractUtil } = require("./abstract-util");
 const { UiDraftChoice } = require("./ui-draft-choice");
 const { UiSlice } = require("./ui-slice");
 const {
-    HorizontalAlignment,
     HorizontalBox,
     LayoutBox,
-    VerticalAlignment,
+    Text,
     VerticalBox,
     world,
 } = require("../../../wrapper/api");
@@ -15,7 +14,7 @@ const { ColorUtil } = require("../../color/color-util");
 
 const SPACING = 4;
 
-const ROWS_SLICES = 2;
+const ROWS_SLICES = 3;
 
 const COLORS = [
     "#00FF00", // green
@@ -60,9 +59,9 @@ class UiDraft {
         const shape = this._sliceDraft.getSliceGenerator().getSliceShape();
         AbstractUtil.assertIsSliceArray(slices, shape);
 
+        // Create overall layout and individual rows.
         const overallPanel = new VerticalBox().setChildDistance(this._spacing);
         layoutBox.setChild(overallPanel);
-
         const numCols = Math.ceil(slices.length / ROWS_SLICES);
         const numRows = Math.ceil(slices.length / numCols);
         const rowPanels = [];
@@ -73,6 +72,7 @@ class UiDraft {
             rowPanels.push(rowPanel);
             overallPanel.addChild(rowPanel);
         }
+
         for (let index = 0; index < slices.length; index++) {
             const slice = slices[index];
             const color = ColorUtil.colorFromHex(COLORS[index]);

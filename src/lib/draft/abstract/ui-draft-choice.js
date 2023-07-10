@@ -109,7 +109,7 @@ class UiDraftChoice {
                 if (this._allowToggle(this, playerSlot)) {
                     if (this._owningPlayerSlot === playerSlot) {
                         this._owningPlayerSlot = -1;
-                        this._border.setColor(noOwnerBorderColor);
+                        this._border.setColor(NO_OWNER_BORDER_COLOR);
                     } else {
                         assert(playerDesk);
                         this._owningPlayerSlot = playerSlot;
@@ -121,7 +121,7 @@ class UiDraftChoice {
             return this._border;
         }
 
-        const canvas = new Canvas(size.w, size.h);
+        const canvas = new Canvas();
 
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)
@@ -193,7 +193,7 @@ class UiDraftChoice {
             if (this._allowToggle(this, playerSlot)) {
                 if (this._owningPlayerSlot === playerSlot) {
                     this._owningPlayerSlot = -1;
-                    this._border.setColor(noOwnerBorderColor);
+                    this._border.setColor(NO_OWNER_BORDER_COLOR);
                 } else {
                     assert(playerDesk);
                     this._owningPlayerSlot = playerSlot;

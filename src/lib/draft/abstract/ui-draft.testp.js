@@ -5,7 +5,7 @@ const {
 } = require("./abstract-slice-generator");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
 const { UiDraft } = require("./ui-draft");
-const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
+const { Border, UIElement, refObject } = require("../../../wrapper/api");
 
 class DummySliceGeneator extends AbstractSliceGenerator {
     getSliceShape() {
@@ -32,7 +32,7 @@ function demo() {
         .setSliceLayout(sliceLayout)
         .start(clickingPlayer);
 
-    const scale = 6;
+    const scale = 10; // 6 is enough, 10 is better
     const uiDraft = new UiDraft(sliceDraft).setScale(scale);
 
     const widget = uiDraft.createWidget();

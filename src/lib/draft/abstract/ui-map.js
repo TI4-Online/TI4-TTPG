@@ -2,11 +2,10 @@ const assert = require("../../../wrapper/assert-wrapper");
 const MapStringHex = require("../../map-string/map-string-hex");
 const MapStringParser = require("../../map-string/map-string-parser");
 const { AbstractUtil } = require("./abstract-util");
-const { AbstractSliceLayout } = require("./abstract-slice-layout");
-const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { Hex } = require("../../hex");
 const { Hyperlane } = require("../../map-string/hyperlane");
 const {
+    Border,
     Canvas,
     HorizontalAlignment,
     ImageWidget,
@@ -123,7 +122,7 @@ class UiMap {
             const chooserSlot = chooserDesk.playerSlot;
             const chooserPlayer = world.getPlayerBySlot(chooserSlot);
             if (chooserPlayer) {
-                labelParts.push(hooserPlayer.getName());
+                labelParts.push(chooserPlayer.getName());
             } else {
                 labelParts.push(`"${chooserDesk.colorName}"`);
             }
@@ -272,7 +271,7 @@ class UiMap {
     createWidget() {
         const size = this.getSize();
 
-        const canvas = new Canvas(size.w, size.h);
+        const canvas = new Canvas();
 
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)

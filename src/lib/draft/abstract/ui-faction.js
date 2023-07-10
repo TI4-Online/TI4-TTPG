@@ -49,7 +49,7 @@ class UiFaction {
     createWidget() {
         const size = this.getSize();
 
-        const canvas = new Canvas(size.w, size.h);
+        const canvas = new Canvas();
 
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)
