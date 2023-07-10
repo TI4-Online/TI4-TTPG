@@ -191,7 +191,14 @@ class UiMap {
         return this;
     }
 
-    setSpeaker(speakerDeskIndex) {
+    setMultipleLabels(deskIndexToLabel) {
+        for (const [deskIndex, label] of Object.entries(deskIndexToLabel)) {
+            this.setLabel(deskIndex, label);
+        }
+        return this;
+    }
+
+    setSpeakerIndex(speakerDeskIndex) {
         AbstractUtil.assertIsDeskIndex(speakerDeskIndex);
         this._speakerDeskIndex = speakerDeskIndex;
         return this;

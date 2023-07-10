@@ -6,11 +6,11 @@ const { UiSlice } = require("./ui-slice");
 const {
     HorizontalBox,
     LayoutBox,
-    Text,
     VerticalBox,
     world,
 } = require("../../../wrapper/api");
 const { ColorUtil } = require("../../color/color-util");
+const { UiMap } = require("./ui-map");
 
 const SPACING = 4;
 
@@ -47,9 +47,13 @@ class UiDraft {
         const sliceBox = new LayoutBox();
         this._addSlices(sliceBox);
 
+        const mapBox = new LayoutBox();
+        this._addMap(mapBox);
+
         return new HorizontalBox()
             .setChildDistance(this._spacing)
-            .addChild(sliceBox);
+            .addChild(sliceBox)
+            .addChild(mapBox);
     }
 
     _addSlices(layoutBox) {
@@ -98,12 +102,25 @@ class UiDraft {
                 });
             const widget = uiChoice.createWidget();
             rowPanel.addChild(widget);
-            rowPanel.addChild(new Text().setText(index));
         }
     }
 
     _addMap(layoutBox) {
         assert(layoutBox instanceof LayoutBox);
+
+        const includeHomeSystems = true;
+        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
+            this._sliceDraft,
+            includeHomeSystems
+        );
+
+        const uiMap = new UiMap()
+            .setScale(this._scale)
+            .setSpeakerIndex(this._sliceDraft.getSpeakerIndex())
+            .setMapString(mapString)
+            .setMultipleLabels(deskIndexToLabel);
+        const widget = uiMap.createWidget();
+        layoutBox.setChild(widget);
     }
 
     _addSeats(layoutBox) {

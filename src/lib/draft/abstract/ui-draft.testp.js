@@ -30,6 +30,7 @@ function demo() {
     const sliceDraft = new AbstractSliceDraft()
         .setSliceGenerator(new DummySliceGeneator())
         .setSliceLayout(sliceLayout)
+        .randomizeSpeakerIndex()
         .start(clickingPlayer);
 
     const scale = 10; // 6 is enough, 10 is better

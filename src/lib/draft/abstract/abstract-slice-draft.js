@@ -26,7 +26,7 @@ class AbstractSliceDraft {
         this._placeHyperlanes = new AbstractPlaceHyperlanes();
         this._sliceGenerator = undefined;
         this._sliceLayout = undefined;
-        this._speaker = undefined; // random unless overridden
+        this._speakerIndex = undefined; // random unless overridden
         this._turnOrder = undefined; // random unless overridden
         this._turnOrderType = TURN_ORDER_TYPE.SNAKE;
 
@@ -92,7 +92,7 @@ class AbstractSliceDraft {
 
         // If another player has this item selected reject claiming it.
         for (const chosen of Object.values(chooserToX)) {
-            if (chosen === factionNsidName) {
+            if (chosen === x) {
                 const msg = locale("ui.draft.already_claimed", {
                     playerName,
                     categoryName,
@@ -313,19 +313,21 @@ class AbstractSliceDraft {
         return this;
     }
 
-    getSpeaker() {
-        return this._speaker;
+    getSpeakerIndex() {
+        return this._speakerIndex;
     }
 
-    setSpeaker(speaker) {
+    setSpeakerIndex(speaker) {
         assert(speaker instanceof PlayerDesk);
-        this._speaker = speaker;
+        this._speakerIndex = speaker;
         return this;
     }
 
-    randomizeSpeaker() {
-        const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
-        this._speaker = Shuffle.shuffle(playerDesksCopy)[0];
+    randomizeSpeakerIndex() {
+        this._speakerIndex = Math.floor(
+            Math.random() * world.TI4.config.playerCount
+        );
+        return this;
     }
 
     getTurnOrder() {
@@ -337,11 +339,13 @@ class AbstractSliceDraft {
         for (const playerDesk of turnOrder) {
             assert(playerDesk instanceof PlayerDesk);
         }
+        return this;
     }
 
     randomizeTurnOrder() {
         const playerDesksCopy = [...world.TI4.getAllPlayerDesks()];
         this._turnOrder = Shuffle.shuffle(playerDesksCopy);
+        return this;
     }
 
     // --------------------------------
@@ -379,8 +383,8 @@ class AbstractSliceDraft {
         if (!this._turnOrder) {
             this.randomizeTurnOrder();
         }
-        if (!this._speaker) {
-            this.randomizeSpeaker();
+        if (!this._speakerIndex) {
+            this.randomizeSpeakerIndex();
         }
 
         // Apply turn order.
@@ -437,7 +441,7 @@ class AbstractSliceDraft {
     finish(player) {
         assert(player instanceof Player);
 
-        AbstractSliceDraft._setTurnOrderFromSpeaker(this._speaker, player);
+        AbstractSliceDraft._setTurnOrderFromSpeaker(this._speakerIndex, player);
 
         // TODO
 
@@ -446,21 +450,12 @@ class AbstractSliceDraft {
 
     // --------------------------------
 
-    static _setTurnOrderFromSpeaker(speaker, player) {
-        assert(speaker instanceof PlayerDesk);
+    static _setTurnOrderFromSpeaker(speakerIndex, player) {
+        AbstractUtil.assertIsDeskIndex(speakerIndex);
         assert(player instanceof Player);
 
         // Set turn order according to draft speaker position.
         const playerDesks = world.TI4.getAllPlayerDesks();
-
-        let speakerIndex = -1;
-        for (const playerDesk of playerDesks) {
-            if (playerDesk === speaker) {
-                speakerIndex = playerDesk.index;
-                break;
-            }
-        }
-        assert(speakerIndex >= 0);
 
         const turnOrder = [];
         for (let offset = 0; offset < playerDesks.length; offset++) {

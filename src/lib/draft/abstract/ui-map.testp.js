@@ -52,7 +52,7 @@ function demo() {
     const scale = 6;
     const uiMap = new UiMap()
         .setScale(scale)
-        .setSpeaker(2)
+        .setSpeakerIndex(2)
         .setLabel(1, "my custom label very long")
         .setMapString(mapString);
 
