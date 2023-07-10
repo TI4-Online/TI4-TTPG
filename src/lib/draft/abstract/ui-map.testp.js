@@ -6,8 +6,6 @@ const {
 } = require("./abstract-slice-generator");
 const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
-const { Hyperlane } = require("../../map-string/hyperlane");
-const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { UiMap } = require("./ui-map");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 

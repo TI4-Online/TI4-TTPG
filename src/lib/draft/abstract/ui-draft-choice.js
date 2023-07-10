@@ -107,6 +107,7 @@ class UiDraftChoice {
                 const playerDesk =
                     world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
                 if (this._allowToggle(this, playerSlot)) {
+                    console.log(`UiDraftChoice: toggling`);
                     if (this._owningPlayerSlot === playerSlot) {
                         this._owningPlayerSlot = -1;
                         this._border.setColor(NO_OWNER_BORDER_COLOR);

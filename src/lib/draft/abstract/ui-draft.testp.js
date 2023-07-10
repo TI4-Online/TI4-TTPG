@@ -33,7 +33,7 @@ function demo() {
         .randomizeSpeakerIndex()
         .start(clickingPlayer);
 
-    const scale = 10; // 6 is enough, 10 is better
+    const scale = 8; // 6 is enough, 10 is better
     const uiDraft = new UiDraft(sliceDraft).setScale(scale);
 
     const widget = uiDraft.createWidget();

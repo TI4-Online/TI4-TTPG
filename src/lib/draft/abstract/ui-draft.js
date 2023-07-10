@@ -93,12 +93,13 @@ class UiDraft {
             const uiChoice = new UiDraftChoice(uiSlice)
                 .setScale(this._scale)
                 .setAllowToggle((uiChoice, playerSlot) => {
-                    const player = world.getPlayerBySlot();
+                    const player = world.getPlayerBySlot(playerSlot);
                     const success = this._sliceDraft.attemptToggleSlice(
                         player,
                         slice
                     );
                     console.log(`UiDraft toggle slice success=${success}`);
+                    return success;
                 });
             const widget = uiChoice.createWidget();
             rowPanel.addChild(widget);
