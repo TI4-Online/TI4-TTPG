@@ -13,7 +13,7 @@ class UiDraftChoice {
     constructor(uiWrapped) {
         assert(typeof uiWrapped === "object");
         assert(typeof uiWrapped.getSize === "function");
-        assert(typeof uiWrapped.drawToCanvas === "function");
+        assert(typeof uiWrapped.createWidget === "function");
         this._uiWrapped = uiWrapped;
 
         this._allowToggle = (uiDraftChoice, playerSlot) => {

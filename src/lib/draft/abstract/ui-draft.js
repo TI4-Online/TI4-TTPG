@@ -1,20 +1,27 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { AbstractUtil } = require("./abstract-util");
+const { ColorUtil } = require("../../color/color-util");
 const { UiDraftChoice } = require("./ui-draft-choice");
+const { UiFaction } = require("./ui-faction");
+const { UiMap, ORDER_LABEL } = require("./ui-map");
+const { UiSeat } = require("./ui-seat");
 const { UiSlice } = require("./ui-slice");
 const {
+    Border,
     HorizontalBox,
     LayoutBox,
+    Panel,
+    VerticalAlignment,
     VerticalBox,
     world,
 } = require("../../../wrapper/api");
-const { ColorUtil } = require("../../color/color-util");
-const { UiMap } = require("./ui-map");
 
 const SPACING = 4;
 
-const ROWS_SLICES = 3;
+const ROWS_SLICES = 2;
+const ROWS_FACTIONS = 6;
+const ROWS_SEATS = 6;
 
 const COLORS = [
     "#00FF00", // green
@@ -44,46 +51,40 @@ class UiDraft {
     }
 
     createWidget() {
-        const sliceBox = new LayoutBox();
-        this._addSlices(sliceBox);
+        const panel = new HorizontalBox().setChildDistance(this._spacing);
 
-        const mapBox = new LayoutBox();
-        this._addMap(mapBox);
+        this._addSlices(panel);
+        panel.addChild(new Border().setColor([0, 0, 0, 1]));
 
-        return new HorizontalBox()
-            .setChildDistance(this._spacing)
-            .addChild(sliceBox)
-            .addChild(mapBox);
+        this._addFactions(panel);
+        panel.addChild(new Border().setColor([0, 0, 0, 1]));
+
+        this._addMap(panel);
+        panel.addChild(new Border().setColor([0, 0, 0, 1]));
+
+        this._addSeats(panel);
+
+        return panel;
     }
 
-    _addSlices(layoutBox) {
-        assert(layoutBox instanceof LayoutBox);
+    _addSlices(panel) {
+        assert(panel instanceof Panel);
 
         const slices = this._sliceDraft.getSlices();
         const shape = this._sliceDraft.getSliceGenerator().getSliceShape();
         AbstractUtil.assertIsSliceArray(slices, shape);
 
-        // Create overall layout and individual rows.
-        const overallPanel = new VerticalBox().setChildDistance(this._spacing);
-        layoutBox.setChild(overallPanel);
-        const numCols = Math.ceil(slices.length / ROWS_SLICES);
-        const numRows = Math.ceil(slices.length / numCols);
-        const rowPanels = [];
-        for (let i = 0; i < numRows; i++) {
-            const rowPanel = new HorizontalBox().setChildDistance(
-                this._spacing
-            );
-            rowPanels.push(rowPanel);
-            overallPanel.addChild(rowPanel);
-        }
+        let column = new VerticalBox();
 
         for (let index = 0; index < slices.length; index++) {
+            if (index % ROWS_SLICES === 0) {
+                column = new VerticalBox().setChildDistance(this._spacing);
+                panel.addChild(column);
+            }
+
             const slice = slices[index];
             const color = ColorUtil.colorFromHex(COLORS[index]);
             const label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[index]}`;
-            const row = Math.floor(index / numCols);
-            console.log(`xxx slice [${slice.join(", ")}] ${label} row ${row}`);
-            const rowPanel = rowPanels[row];
             const uiSlice = new UiSlice()
                 .setScale(this._scale)
                 .setShape(shape)
@@ -102,34 +103,104 @@ class UiDraft {
                     return success;
                 });
             const widget = uiChoice.createWidget();
-            rowPanel.addChild(widget);
+            column.addChild(widget);
         }
     }
 
-    _addMap(layoutBox) {
-        assert(layoutBox instanceof LayoutBox);
+    _addMap(panel) {
+        assert(panel instanceof Panel);
 
-        const includeHomeSystems = true;
-        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
-            this._sliceDraft,
-            includeHomeSystems
-        );
+        const layoutBox = new LayoutBox();
+        panel.addChild(layoutBox);
 
-        const uiMap = new UiMap()
-            .setScale(this._scale)
-            .setSpeakerIndex(this._sliceDraft.getSpeakerIndex())
-            .setMapString(mapString)
-            .setMultipleLabels(deskIndexToLabel);
-        const widget = uiMap.createWidget();
-        layoutBox.setChild(widget);
+        const resetMapWidget = () => {
+            const includeHomeSystems = true;
+            const { mapString, deskIndexToLabel } = UiMap.generateMapString(
+                this._sliceDraft,
+                includeHomeSystems
+            );
+
+            const uiMap = new UiMap()
+                .setScale(this._scale)
+                .setSpeakerIndex(this._sliceDraft.getSpeakerIndex())
+                .setMapString(mapString)
+                .setMultipleLabels(deskIndexToLabel);
+            const widget = uiMap.createWidget();
+            layoutBox.setChild(widget);
+        };
+
+        resetMapWidget();
+        this._sliceDraft.onChooserToggled.add(resetMapWidget);
     }
 
-    _addSeats(layoutBox) {
-        assert(layoutBox instanceof LayoutBox);
+    _addFactions(panel) {
+        assert(panel instanceof Panel);
+
+        const factionNsidNames = this._sliceDraft.getFactionNsidNames();
+        let column;
+
+        for (let index = 0; index < factionNsidNames.length; index++) {
+            if (index % ROWS_FACTIONS === 0) {
+                column = new VerticalBox().setChildDistance(this._spacing);
+                panel.addChild(column);
+            }
+
+            const factionNsidName = factionNsidNames[index];
+            const uiFaction = new UiFaction()
+                .setScale(this._scale)
+                .setFactionNsidName(factionNsidName);
+            const uiChoice = new UiDraftChoice(uiFaction)
+                .setScale(this._scale)
+                .setAllowToggle((uiChoice, playerSlot) => {
+                    const player = world.getPlayerBySlot(playerSlot);
+                    const success = this._sliceDraft.attemptToggleFaction(
+                        player,
+                        factionNsidName
+                    );
+                    console.log(`UiDraft toggle faction success=${success}`);
+                    return success;
+                });
+            const widget = uiChoice.createWidget();
+            column.addChild(widget);
+        }
     }
 
-    _addFactions(layoutBox) {
-        assert(layoutBox instanceof LayoutBox);
+    _addSeats(panel) {
+        assert(panel instanceof Panel);
+
+        const playerCount = world.TI4.config.playerCount;
+        let column;
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const speakerIndex = this._sliceDraft.getSpeakerIndex();
+        for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
+            if (deskIndex % ROWS_SEATS === 0) {
+                column = new VerticalBox().setChildDistance(this._spacing);
+                panel.addChild(column);
+            }
+
+            const playerDesk = playerDesks[deskIndex];
+            const order =
+                (deskIndex - speakerIndex + playerCount) % playerCount;
+            const label = ORDER_LABEL[order];
+            const uiSeat = new UiSeat()
+                .setScale(this._scale)
+                .setLabel(label)
+                .setColor(playerDesk.widgetColor);
+            const uiChoice = new UiDraftChoice(uiSeat)
+                .setScale(this._scale)
+                .setAllowToggle((uiChoice, playerSlot) => {
+                    const player = world.getPlayerBySlot(playerSlot);
+                    const success = this._sliceDraft.attemptToggleSeatIndex(
+                        player,
+                        deskIndex
+                    );
+                    console.log(`UiDraft toggle seat index success=${success}`);
+                    return success;
+                });
+            const widget = uiChoice.createWidget();
+            column.addChild(widget);
+        }
     }
 }
 

@@ -13,12 +13,15 @@ const { AbstractUtil } = require("./abstract-util");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
 const { Player, world } = require("../../../wrapper/api");
 const { Broadcast } = require("../../broadcast");
+const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 
 /**
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
  */
 class AbstractSliceDraft {
     constructor() {
+        this._onChooserToggled = new TriggerableMulticastDelegate();
+
         // Use sensible defaults, caller can override.
         this._factionGenerator = new AbstractFactionGenerator();
         this._fixedSystemsGenerator = undefined;
@@ -45,6 +48,10 @@ class AbstractSliceDraft {
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
         this._origTurnOrder = undefined;
+    }
+
+    get onChooserToggled() {
+        return this._onChooserToggled;
     }
 
     _attemptToggle(clickingPlayer, chooserToX, x, categoryName, selectionName) {
@@ -76,6 +83,7 @@ class AbstractSliceDraft {
             });
             Broadcast.chatAll(msg, playerDesk.chatColor);
             delete chooserToX[chooser];
+            this._onChooserToggled.trigger();
             return true; // toggle off
         }
 
@@ -110,6 +118,7 @@ class AbstractSliceDraft {
         });
         Broadcast.chatAll(msg, playerDesk.chatColor);
         chooserToX[chooser] = x;
+        this._onChooserToggled.trigger();
         return true; // toggle on
     }
 

@@ -10,9 +10,9 @@ const {
 } = require("../../../wrapper/api");
 const { AbstractUtil } = require("./abstract-util");
 
-const BOX_W = 200;
-const BOX_H = 100;
-const FONT_SCALE = 0.2;
+const BOX_W = 100;
+const BOX_H = 40;
+const FONT_SIZE = 8;
 
 class UiFaction {
     constructor() {
@@ -42,7 +42,7 @@ class UiFaction {
         return {
             w: Math.ceil(BOX_W * this._scale),
             h: Math.ceil(BOX_H * this._scale),
-            fontSize: Math.ceil(BOX_H * FONT_SCALE * this._scale),
+            fontSize: Math.ceil(FONT_SIZE * this._scale),
         };
     }
 
@@ -76,16 +76,16 @@ class UiFaction {
         const imgPath = faction.icon;
         const packageId = faction.packageId ? faction.packageId : refPackageId;
         const icon = new ImageWidget().setImage(imgPath, packageId);
-        const iconSize = Math.floor(size.h - size.fontSize * 1.8);
+        const iconSize = Math.floor(size.h * 0.4);
 
         let left = offset.x + (size.w - iconSize) / 2;
-        let top = offset.y;
+        let top = offset.y + size.h * 0.02;
         canvas.addChild(icon, left, top, iconSize, iconSize);
 
         const label = new Text()
             .setFontSize(size.fontSize)
             .setJustification(TextJustification.Center)
-            .setText(faction.nameAbbr);
+            .setText(faction.nameAbbr.toUpperCase());
 
         left = offset.x + 0;
         top = top + iconSize;

@@ -192,7 +192,8 @@ class UiMap {
     }
 
     setMultipleLabels(deskIndexToLabel) {
-        for (const [deskIndex, label] of Object.entries(deskIndexToLabel)) {
+        for (const [deskIndexStr, label] of Object.entries(deskIndexToLabel)) {
+            const deskIndex = Number.parseInt(deskIndexStr);
             this.setLabel(deskIndex, label);
         }
         return this;
@@ -424,4 +425,4 @@ class UiMap {
     }
 }
 
-module.exports = { UiMap };
+module.exports = { UiMap, ORDER_LABEL };
