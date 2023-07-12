@@ -9,7 +9,7 @@ const {
 
 const BOX_W = 100;
 const BOX_H = 40;
-const FONT_SIZE = 10;
+const FONT_SIZE = 14;
 
 class UiSeat {
     constructor() {

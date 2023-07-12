@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const locale = require("../../locale");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { AbstractUtil } = require("./abstract-util");
 const { ColorUtil } = require("../../color/color-util");
@@ -9,15 +10,16 @@ const { UiSeat } = require("./ui-seat");
 const { UiSlice } = require("./ui-slice");
 const {
     Border,
+    Button,
     HorizontalBox,
     LayoutBox,
     Panel,
-    VerticalAlignment,
     VerticalBox,
     world,
 } = require("../../../wrapper/api");
 
 const SPACING = 4;
+const FONT_SIZE = 10;
 
 const ROWS_SLICES = 2;
 const ROWS_FACTIONS = 6;
@@ -51,6 +53,7 @@ class UiDraft {
     }
 
     createWidget() {
+        // Draft selections in a row.
         const panel = new HorizontalBox().setChildDistance(this._spacing);
 
         this._addSlices(panel);
@@ -64,7 +67,35 @@ class UiDraft {
 
         this._addSeats(panel);
 
-        return panel;
+        // Finish button below.
+        const finish = new Button()
+            .setFontSize(this._scale * FONT_SIZE)
+            .setText(locale("ui.draft.finish_draft"));
+
+        finish.setEnabled(false);
+        this._sliceDraft.onChooserToggled.add(() => {
+            finish.setEnabled(false);
+            const playerCount = world.TI4.config.playerCount;
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                if (this._sliceDraft.getChooserSlice(chooser) === undefined) {
+                    return;
+                }
+                if (this._sliceDraft.getChooserFaction(chooser) === undefined) {
+                    return;
+                }
+                if (
+                    this._sliceDraft.getChooserSeatIndex(chooser) === undefined
+                ) {
+                    return;
+                }
+                finish.setEnabled(true);
+            }
+        });
+
+        return new VerticalBox()
+            .setChildDistance(this._spacing)
+            .addChild(panel)
+            .addChild(finish);
     }
 
     _addSlices(panel) {
@@ -114,10 +145,10 @@ class UiDraft {
         panel.addChild(layoutBox);
 
         const resetMapWidget = () => {
-            const includeHomeSystems = true;
+            const options = { includeHomeSystems: true };
             const { mapString, deskIndexToLabel } = UiMap.generateMapString(
                 this._sliceDraft,
-                includeHomeSystems
+                options
             );
 
             const uiMap = new UiMap()

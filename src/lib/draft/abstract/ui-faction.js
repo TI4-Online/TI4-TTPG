@@ -76,7 +76,7 @@ class UiFaction {
         const imgPath = faction.icon;
         const packageId = faction.packageId ? faction.packageId : refPackageId;
         const icon = new ImageWidget().setImage(imgPath, packageId);
-        const iconSize = Math.floor(size.h * 0.4);
+        const iconSize = Math.floor(size.h * 0.6);
 
         let left = offset.x + (size.w - iconSize) / 2;
         let top = offset.y + size.h * 0.02;

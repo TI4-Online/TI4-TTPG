@@ -23,6 +23,7 @@ const { AbstractSliceDraft } = require("./abstract-slice-draft");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
+const MAX_LABEL_LENGTH = 8;
 
 const ORDER_LABEL = [
     "Speaker",
@@ -54,9 +55,9 @@ class UiMap {
         return { deskIndex, isHome };
     }
 
-    static generateMapString(sliceDraft, includeHomeSystems) {
+    static generateMapString(sliceDraft, options) {
         assert(sliceDraft instanceof AbstractSliceDraft);
-        assert(typeof includeHomeSystems === "boolean");
+        assert(typeof options === "object");
 
         const playerCount = world.TI4.config.playerCount;
         const playerDesks = world.TI4.getAllPlayerDesks();
@@ -68,11 +69,7 @@ class UiMap {
         assert(placeHyperlanes);
 
         // Seed generic slices.
-        for (
-            let deskIndex = 0;
-            deskIndex < world.TI4.config.playerCount;
-            deskIndex++
-        ) {
+        for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
             // Home system.
             const home = UiMap.deskIndexToColorTile(deskIndex, true);
             sliceLayout.setAnchorTile(deskIndex, home);
@@ -93,8 +90,8 @@ class UiMap {
             sliceLayout.setSlice(deskIndex, slice);
         }
 
-        // Overwrite known home systems.
-        if (includeHomeSystems) {
+        // Overwrite known home systems?
+        if (options.includeHomeSystems) {
             for (let chooser = 0; chooser < playerCount; chooser++) {
                 const factionName = sliceDraft.getChooserFaction(chooser);
                 const deskIndex = sliceDraft.getChooserSeatIndex(chooser);
@@ -107,6 +104,12 @@ class UiMap {
             }
         }
 
+        if (options.zeroHomeSystems) {
+            for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
+                sliceLayout.setAnchorTile(deskIndex, 0);
+            }
+        }
+
         // Overwrite labels.
         const deskIndexToLabel = {};
         for (let chooser = 0; chooser < playerCount; chooser++) {
@@ -114,7 +117,7 @@ class UiMap {
             if (deskIndex === undefined) {
                 continue;
             }
-            const labelParts = [];
+            let labelParts = [];
 
             // Add player name.
             const chooserDesk = playerDesks[chooser];
@@ -133,6 +136,15 @@ class UiMap {
                 const faction = world.TI4.getFactionByNsidName(factionName);
                 labelParts.push(faction.nameAbbr.toUpperCase());
             }
+
+            // Truncate long labels.
+            labelParts = labelParts.map((label) => {
+                if (label.length > MAX_LABEL_LENGTH) {
+                    label = label.substring(0, MAX_LABEL_LENGTH);
+                }
+                return label;
+            });
+
             deskIndexToLabel[deskIndex] = labelParts.join("\n");
         }
 
@@ -382,8 +394,6 @@ class UiMap {
                     playerCount;
                 label = ORDER_LABEL[order].toUpperCase();
             }
-
-            // If the tile is a home system anchor AND we have a custom label, use it.
 
             if (label) {
                 const text = new Text()

@@ -41,10 +41,10 @@ function demo() {
         .setChooserSeatIndex(1, 5)
         .setChooserSlice(1, [21, 22, 23, 24, 25]);
 
-    const includeHomeSystems = true;
+    const options = { includeHomeSystems: true };
     const { mapString, deskIndexToLabel } = UiMap.generateMapString(
         sliceDraft,
-        includeHomeSystems
+        options
     );
 
     const scale = 6;
