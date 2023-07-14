@@ -401,7 +401,9 @@ class AbstractSliceDraft {
 
     start(player) {
         assert(!player || player instanceof Player);
-        console.log("AbstractSliceDraft.start");
+        if (!world.__isMock) {
+            console.log("AbstractSliceDraft.start");
+        }
 
         // Must provide a slice generator.
         assert(this._sliceGenerator);
@@ -460,7 +462,9 @@ class AbstractSliceDraft {
 
     cancel(player) {
         assert(player instanceof Player);
-        console.log("AbstractSliceDraft.cancel");
+        if (!world.__isMock) {
+            console.log("AbstractSliceDraft.cancel");
+        }
 
         if (this._origTurnOrder) {
             world.TI4.turns.setTurnOrder(
@@ -483,7 +487,9 @@ class AbstractSliceDraft {
 
     finish(player) {
         assert(player instanceof Player);
-        console.log("AbstractSliceDraft.finish");
+        if (!world.__isMock) {
+            console.log("AbstractSliceDraft.finish");
+        }
 
         AbstractSliceDraft._setTurnOrderFromSpeaker(this._speakerIndex, player);
 
