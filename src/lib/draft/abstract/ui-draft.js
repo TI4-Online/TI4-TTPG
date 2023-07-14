@@ -22,8 +22,8 @@ const SPACING = 4;
 const FONT_SIZE = 10;
 
 const ROWS_SLICES = 2;
-const ROWS_FACTIONS = 6;
-const ROWS_SEATS = 6;
+const ROWS_FACTIONS = 8;
+const ROWS_SEATS = 8;
 
 const COLORS = [
     "#00FF00", // green
@@ -57,23 +57,22 @@ class UiDraft {
         const panel = new HorizontalBox().setChildDistance(this._spacing);
 
         this._addSlices(panel);
-        panel.addChild(new Border().setColor([0, 0, 0, 1]));
+        this._addSpacer(panel);
 
         this._addFactions(panel);
-        panel.addChild(new Border().setColor([0, 0, 0, 1]));
-
-        this._addMap(panel);
-        panel.addChild(new Border().setColor([0, 0, 0, 1]));
+        this._addSpacer(panel);
 
         this._addSeats(panel);
+        this._addSpacer(panel);
+
+        this._addMap(panel);
 
         // Finish button below.
         const finish = new Button()
             .setFontSize(this._scale * FONT_SIZE)
             .setText(locale("ui.draft.finish_draft"));
 
-        finish.setEnabled(false);
-        this._sliceDraft.onChooserToggled.add(() => {
+        const updateFinishEnabled = () => {
             finish.setEnabled(false);
             const playerCount = world.TI4.config.playerCount;
             for (let chooser = 0; chooser < playerCount; chooser++) {
@@ -90,12 +89,27 @@ class UiDraft {
                 }
                 finish.setEnabled(true);
             }
-        });
+        };
+
+        updateFinishEnabled();
+        this._sliceDraft.onChooserToggled.add(updateFinishEnabled);
 
         return new VerticalBox()
             .setChildDistance(this._spacing)
             .addChild(panel)
             .addChild(finish);
+    }
+
+    _addSpacer(panel) {
+        assert(panel instanceof Panel);
+
+        const border = new Border().setColor([0, 0, 0, 1]);
+
+        const box = new LayoutBox()
+            //.setPadding(this._spacing, this._spacing, 0, 0)
+            .setChild(border);
+
+        panel.addChild(box);
     }
 
     _addSlices(panel) {
@@ -133,6 +147,18 @@ class UiDraft {
                     console.log(`UiDraft toggle slice success=${success}`);
                     return success;
                 });
+
+            // Set owner if already selected (time rewind, script reload).
+            const playerCount = world.TI4.config.playerCount;
+            const sliceStr = slice.join(",");
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                const chooserSlice = this._sliceDraft.getChooserSlice(chooser);
+                const chooserStr = chooserSlice ? chooserSlice.join(",") : "";
+                if (chooserStr === sliceStr) {
+                    uiChoice.setOwningDeskIndex(chooser);
+                }
+            }
+
             const widget = uiChoice.createWidget();
             column.addChild(widget);
         }
@@ -191,6 +217,17 @@ class UiDraft {
                     console.log(`UiDraft toggle faction success=${success}`);
                     return success;
                 });
+
+            // Set owner if already selected (time rewind, script reload).
+            const playerCount = world.TI4.config.playerCount;
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                const chooserFaction =
+                    this._sliceDraft.getChooserFaction(chooser);
+                if (chooserFaction === factionNsidName) {
+                    uiChoice.setOwningDeskIndex(chooser);
+                }
+            }
+
             const widget = uiChoice.createWidget();
             column.addChild(widget);
         }
@@ -229,6 +266,16 @@ class UiDraft {
                     console.log(`UiDraft toggle seat index success=${success}`);
                     return success;
                 });
+
+            // Set owner if already selected (time rewind, script reload).
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                const chooserSeat =
+                    this._sliceDraft.getChooserSeatIndex(chooser);
+                if (chooserSeat === deskIndex) {
+                    uiChoice.setOwningDeskIndex(chooser);
+                }
+            }
+
             const widget = uiChoice.createWidget();
             column.addChild(widget);
         }

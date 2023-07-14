@@ -8,7 +8,7 @@ const {
 } = require("../../../wrapper/api");
 
 const BOX_W = 100;
-const BOX_H = 40;
+const BOX_H = 30;
 const FONT_SIZE = 14;
 
 class UiSeat {

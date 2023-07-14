@@ -1,4 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { AbstractUtil } = require("./abstract-util");
 const {
     Border,
     Canvas,
@@ -37,6 +38,15 @@ class UiDraftChoice {
         return this;
     }
 
+    setOwningDeskIndex(deskIndex) {
+        AbstractUtil.assertIsDeskIndex(deskIndex);
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const playerDesk = playerDesks[deskIndex];
+        assert(playerDesk);
+        this.setOwningPlayerSlot(playerDesk.playerSlot);
+        return this;
+    }
+
     setOwningPlayerSlot(playerSlot) {
         assert(typeof playerSlot === "number");
         this._owningPlayerSlot = playerSlot;
@@ -49,7 +59,6 @@ class UiDraftChoice {
                 : NO_OWNER_BORDER_COLOR;
             this._border.setColor(color);
         }
-
         return this;
     }
 
@@ -101,6 +110,14 @@ class UiDraftChoice {
             this._border = new Border()
                 .setColor(NO_OWNER_BORDER_COLOR)
                 .setChild(frameBox);
+
+            // Use owner color if set.
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(
+                this._owningPlayerSlot
+            );
+            if (playerDesk) {
+                this._border.setColor(playerDesk.widgetColor);
+            }
 
             contentButton.onClicked.add((button, player) => {
                 const playerSlot = player.getSlot();

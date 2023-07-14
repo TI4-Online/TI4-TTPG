@@ -17,8 +17,8 @@ const {
     world,
 } = require("../../../wrapper/api");
 
-const TILE_W = 50;
-const FONT_SCALE = 0.11;
+const TILE_W = 60;
+const FONT_SCALE = 0.1;
 
 class UiSlice {
     /**
@@ -123,7 +123,7 @@ class UiSlice {
             halfH,
             tileW: halfW * 2,
             tileH: halfH * 2,
-            fontSize: Math.ceil(halfW * 2 * FONT_SCALE),
+            fontSize: Math.floor(halfW * 2 * FONT_SCALE),
             positions,
         };
     }

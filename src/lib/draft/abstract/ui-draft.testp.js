@@ -5,7 +5,7 @@ const {
 } = require("./abstract-slice-generator");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
 const { UiDraft } = require("./ui-draft");
-const { Border, UIElement, refObject } = require("../../../wrapper/api");
+const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
 
 class DummySliceGeneator extends AbstractSliceGenerator {
     getSliceShape() {
@@ -32,6 +32,19 @@ function demo() {
         .setSliceLayout(sliceLayout)
         .randomizeSpeakerIndex()
         .start(clickingPlayer);
+
+    // Make some selections (before creating UI).
+    const playerCount = world.TI4.config.playerCount;
+    const slices = sliceDraft.getSlices();
+    const factions = sliceDraft.getFactionNsidNames();
+    for (let chooser = 0; chooser < playerCount; chooser++) {
+        const slice = slices[chooser];
+        const faction = factions[chooser];
+        const seatIndex = chooser;
+        sliceDraft.setChooserSlice(chooser, slice);
+        sliceDraft.setChooserFaction(chooser, faction);
+        sliceDraft.setChooserSeatIndex(chooser, seatIndex);
+    }
 
     const scale = 8; // 6 is enough, 10 is better
     const uiDraft = new UiDraft(sliceDraft).setScale(scale);

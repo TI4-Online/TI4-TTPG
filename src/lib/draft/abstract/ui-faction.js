@@ -1,17 +1,20 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { AbstractUtil } = require("./abstract-util");
 const {
     Canvas,
     LayoutBox,
+    HorizontalAlignment,
+    HorizontalBox,
     ImageWidget,
     Text,
     TextJustification,
+    VerticalAlignment,
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const { AbstractUtil } = require("./abstract-util");
 
 const BOX_W = 100;
-const BOX_H = 40;
+const BOX_H = 30;
 const FONT_SIZE = 8;
 
 class UiFaction {
@@ -76,20 +79,32 @@ class UiFaction {
         const imgPath = faction.icon;
         const packageId = faction.packageId ? faction.packageId : refPackageId;
         const icon = new ImageWidget().setImage(imgPath, packageId);
-        const iconSize = Math.floor(size.h * 0.6);
 
-        let left = offset.x + (size.w - iconSize) / 2;
-        let top = offset.y + size.h * 0.02;
-        canvas.addChild(icon, left, top, iconSize, iconSize);
+        const margin = Math.floor(size.h * 0.1);
+        const iconSize = size.h - margin * 2;
+        icon.setImageSize(iconSize, iconSize);
+
+        const factionName = faction.nameAbbr.toUpperCase().replace(" - ", "\n");
 
         const label = new Text()
             .setFontSize(size.fontSize)
-            .setJustification(TextJustification.Center)
-            .setText(faction.nameAbbr.toUpperCase());
+            .setText(factionName)
+            .setJustification(TextJustification.Center);
+        const labelBox = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(label);
 
-        left = offset.x + 0;
-        top = top + iconSize;
-        canvas.addChild(label, left, top, size.w, size.h);
+        const content = new HorizontalBox()
+            .setChildDistance(margin)
+            .addChild(icon)
+            .addChild(labelBox);
+
+        const contentBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(content);
+
+        canvas.addChild(contentBox, 0, 0, size.w, size.h);
     }
 }
 
