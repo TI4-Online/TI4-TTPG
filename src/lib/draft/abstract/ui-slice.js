@@ -1,21 +1,24 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { AbstractUtil } = require("./abstract-util");
 const { ColorUtil } = require("../../color/color-util");
 const { Hex } = require("../../hex");
 const { System } = require("../../system/system");
 const {
+    Border,
     Canvas,
+    HorizontalAlignment,
     ImageWidget,
     LayoutBox,
     Text,
     TextJustification,
     VerticalAlignment,
+    VerticalBox,
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const { AbstractUtil } = require("./abstract-util");
 
-const TILE_W = 50;
-const FONT_SCALE = 0.08;
+const TILE_W = 60;
+const FONT_SCALE = 0.1;
 
 class UiSlice {
     /**
@@ -120,7 +123,7 @@ class UiSlice {
             halfH,
             tileW: halfW * 2,
             tileH: halfH * 2,
-            fontSize: Math.ceil(halfW * 2 * FONT_SCALE),
+            fontSize: Math.floor(halfW * 2 * FONT_SCALE),
             positions,
         };
     }
@@ -128,7 +131,7 @@ class UiSlice {
     createWidget() {
         const size = this.getSize();
 
-        const canvas = new Canvas(size.w, size.h);
+        const canvas = new Canvas();
 
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)
@@ -190,29 +193,46 @@ class UiSlice {
 
         // Draw label.
         pos = size.positions[0];
+        const labelPanel = new VerticalBox();
         const includeOptimal = true;
         const summary = System.summarize(this._slice, includeOptimal);
-        const label = `${summary}\n${this._label}`;
-        const text = new Text()
-            .setAutoWrap(true)
-            .setBold(true)
-            .setJustification(TextJustification.Center)
-            .setFontSize(size.fontSize)
-            .setTextColor([0, 0, 0, 1])
-            .setText(label);
-
+        const summaryParts = summary.split(" ");
+        const lines = [
+            summaryParts.shift(),
+            summaryParts.shift(),
+            summaryParts.length > 0 ? summaryParts.join(" ") : "-",
+            this._label,
+        ];
+        for (const line of lines) {
+            const text = new Text()
+                .setAutoWrap(false)
+                .setBold(true)
+                .setJustification(TextJustification.Center)
+                .setFontSize(size.fontSize)
+                .setTextColor([0, 0, 0, 1])
+                .setText(line);
+            const textBorder = new Border()
+                .setColor(this._homeSystemcolor)
+                .setChild(text);
+            const textBox = new LayoutBox()
+                .setHorizontalAlignment(HorizontalAlignment.Center)
+                .setChild(textBorder);
+            labelPanel.addChild(textBox);
+        }
         const textBox = new LayoutBox()
             .setOverrideWidth(size.tileW)
             .setOverrideHeight(size.tileH)
-            .setVerticalAlignment(VerticalAlignment.TOP)
-            .setChild(text);
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(labelPanel);
 
+        const extra = size.tileW;
         canvas.addChild(
             textBox,
-            offset.x + pos.x - size.halfW,
-            offset.y + pos.y - size.fontSize,
-            size.tileW,
-            size.halfH
+            offset.x + pos.x - size.halfW - extra,
+            offset.y + pos.y - size.halfH,
+            size.tileW + extra * 2,
+            size.tileH
         );
     }
 }

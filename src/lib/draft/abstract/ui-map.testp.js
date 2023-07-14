@@ -6,8 +6,6 @@ const {
 } = require("./abstract-slice-generator");
 const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
 const { AbstractSliceLayout } = require("./abstract-slice-layout");
-const { Hyperlane } = require("../../map-string/hyperlane");
-const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { UiMap } = require("./ui-map");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 
@@ -43,18 +41,23 @@ function demo() {
         .setChooserSeatIndex(1, 5)
         .setChooserSlice(1, [21, 22, 23, 24, 25]);
 
-    const includeHomeSystems = true;
+    const options = { includeHomeSystems: true };
     const { mapString, deskIndexToLabel } = UiMap.generateMapString(
         sliceDraft,
-        includeHomeSystems
+        options
     );
 
     const scale = 6;
     const uiMap = new UiMap()
         .setScale(scale)
-        .setSpeaker(2)
+        .setSpeakerIndex(2)
         .setLabel(1, "my custom label very long")
         .setMapString(mapString);
+
+    for (const [deskIndexStr, label] of Object.entries(deskIndexToLabel)) {
+        const deskIndex = Number.parseInt(deskIndexStr);
+        uiMap.setLabel(deskIndex, label);
+    }
 
     const widget = uiMap.createWidget();
 

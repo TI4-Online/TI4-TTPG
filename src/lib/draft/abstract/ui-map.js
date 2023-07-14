@@ -2,11 +2,13 @@ const assert = require("../../../wrapper/assert-wrapper");
 const MapStringHex = require("../../map-string/map-string-hex");
 const MapStringParser = require("../../map-string/map-string-parser");
 const { AbstractUtil } = require("./abstract-util");
-const { AbstractSliceLayout } = require("./abstract-slice-layout");
-const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { Hex } = require("../../hex");
 const { Hyperlane } = require("../../map-string/hyperlane");
 const {
+    SetupGenericHomeSystems,
+} = require("../../../setup/setup-generic-home-systems");
+const {
+    Border,
     Canvas,
     HorizontalAlignment,
     ImageWidget,
@@ -17,13 +19,10 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const {
-    SetupGenericHomeSystems,
-} = require("../../../setup/setup-generic-home-systems");
-const { AbstractSliceDraft } = require("./abstract-slice-draft");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
+const MAX_LABEL_LENGTH = 8;
 
 const ORDER_LABEL = [
     "Speaker",
@@ -55,9 +54,9 @@ class UiMap {
         return { deskIndex, isHome };
     }
 
-    static generateMapString(sliceDraft, includeHomeSystems) {
-        assert(sliceDraft instanceof AbstractSliceDraft);
-        assert(typeof includeHomeSystems === "boolean");
+    static generateMapString(sliceDraft, options) {
+        assert(sliceDraft);
+        assert(typeof options === "object");
 
         const playerCount = world.TI4.config.playerCount;
         const playerDesks = world.TI4.getAllPlayerDesks();
@@ -69,11 +68,7 @@ class UiMap {
         assert(placeHyperlanes);
 
         // Seed generic slices.
-        for (
-            let deskIndex = 0;
-            deskIndex < world.TI4.config.playerCount;
-            deskIndex++
-        ) {
+        for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
             // Home system.
             const home = UiMap.deskIndexToColorTile(deskIndex, true);
             sliceLayout.setAnchorTile(deskIndex, home);
@@ -94,8 +89,8 @@ class UiMap {
             sliceLayout.setSlice(deskIndex, slice);
         }
 
-        // Overwrite known home systems.
-        if (includeHomeSystems) {
+        // Overwrite known home systems?
+        if (options.includeHomeSystems) {
             for (let chooser = 0; chooser < playerCount; chooser++) {
                 const factionName = sliceDraft.getChooserFaction(chooser);
                 const deskIndex = sliceDraft.getChooserSeatIndex(chooser);
@@ -108,6 +103,12 @@ class UiMap {
             }
         }
 
+        if (options.zeroHomeSystems) {
+            for (let deskIndex = 0; deskIndex < playerCount; deskIndex++) {
+                sliceLayout.setAnchorTile(deskIndex, 0);
+            }
+        }
+
         // Overwrite labels.
         const deskIndexToLabel = {};
         for (let chooser = 0; chooser < playerCount; chooser++) {
@@ -115,15 +116,35 @@ class UiMap {
             if (deskIndex === undefined) {
                 continue;
             }
+            let labelParts = [];
+
+            // Add player name.
             const chooserDesk = playerDesks[chooser];
             assert(chooserDesk);
             const chooserSlot = chooserDesk.playerSlot;
             const chooserPlayer = world.getPlayerBySlot(chooserSlot);
-            if (!chooserPlayer) {
-                continue;
+            if (chooserPlayer) {
+                labelParts.push(chooserPlayer.getName());
+            } else {
+                labelParts.push(`"${chooserDesk.colorName}"`);
             }
-            const chooserName = chooserPlayer.getName();
-            deskIndexToLabel[seatIndex] = chooserName;
+
+            // Add faction name (if known).
+            const factionName = sliceDraft.getChooserFaction(chooser);
+            if (factionName) {
+                const faction = world.TI4.getFactionByNsidName(factionName);
+                labelParts.push(faction.nameAbbr.toUpperCase());
+            }
+
+            // Truncate long labels.
+            labelParts = labelParts.map((label) => {
+                if (label.length > MAX_LABEL_LENGTH) {
+                    label = label.substring(0, MAX_LABEL_LENGTH);
+                }
+                return label;
+            });
+
+            deskIndexToLabel[deskIndex] = labelParts.join("\n");
         }
 
         let mapString = sliceLayout.generateMapString();
@@ -137,6 +158,14 @@ class UiMap {
                 hyperlanesMapString
             );
         }
+
+        // Add mecatol.
+        const mapStringEntries = MapStringParser.parse(mapString);
+        const first = mapStringEntries[0];
+        if (first && first.tile < 0) {
+            first.tile = 18;
+        }
+        mapString = MapStringParser.format(mapStringEntries);
 
         return { mapString, deskIndexToLabel };
     }
@@ -181,7 +210,15 @@ class UiMap {
         return this;
     }
 
-    setSpeaker(speakerDeskIndex) {
+    setMultipleLabels(deskIndexToLabel) {
+        for (const [deskIndexStr, label] of Object.entries(deskIndexToLabel)) {
+            const deskIndex = Number.parseInt(deskIndexStr);
+            this.setLabel(deskIndex, label);
+        }
+        return this;
+    }
+
+    setSpeakerIndex(speakerDeskIndex) {
         AbstractUtil.assertIsDeskIndex(speakerDeskIndex);
         this._speakerDeskIndex = speakerDeskIndex;
         return this;
@@ -261,7 +298,7 @@ class UiMap {
     createWidget() {
         const size = this.getSize();
 
-        const canvas = new Canvas(size.w, size.h);
+        const canvas = new Canvas();
 
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)
@@ -302,10 +339,14 @@ class UiMap {
                 size.tileW - pad * 2
             );
 
+            // Tile is either a valid system or encoded for desk/home.
+            const system = world.TI4.getSystemByTileNumber(pos.tile);
             const { deskIndex, isHome } = UiMap.tileToDeskIndexAndIsHome(
                 pos.tile
             );
+
             if (pos.tile >= 100000) {
+                // Generic per-desk tile and/or home system.
                 const color = playerDeskArray[deskIndex].widgetColor.clone();
                 if (isHome) {
                     const darken = 0.5;
@@ -316,9 +357,26 @@ class UiMap {
                 image
                     .setImage("global/ui/tiles/blank.png", refPackageId)
                     .setTintColor(color);
-            } else {
-                const system = world.TI4.getSystemByTileNumber(pos.tile);
-                assert(system);
+            } else if (system && system.hyperlane) {
+                // Hyperlane.  Cannot rotate so use simple gray.
+                const c = 0.2;
+                const color = [c, c, c, 1];
+                image
+                    .setImage("global/ui/tiles/blank.png", refPackageId)
+                    .setTintColor(color);
+                const text = new Text()
+                    .setFontSize(20 * this._scale)
+                    .setBold(true)
+                    .setJustification(TextJustification.Center)
+                    .setText("*");
+                canvas.addChild(
+                    text,
+                    offset.x + pos.x - size.halfW,
+                    offset.y + pos.y - text.getFontSize() * 0.8,
+                    size.tileW,
+                    text.getFontSize() * 2
+                );
+            } else if (system) {
                 const imgPath = system.raw.img;
                 const packageId = system.raw.packageId
                     ? system.raw.packageId
@@ -336,15 +394,13 @@ class UiMap {
             // If the tile number is the special one indicating a home system
             // label with speaker order.
             let label = this._hexToLabel[pos.hex];
-            if (!label && isHome) {
+            if (!label && isHome && this._speakerDeskIndex !== undefined) {
                 const playerCount = world.TI4.config.playerCount;
                 const order =
                     (deskIndex - this._speakerDeskIndex + playerCount) %
                     playerCount;
                 label = ORDER_LABEL[order].toUpperCase();
             }
-
-            // If the tile is a home system anchor AND we have a custom label, use it.
 
             if (label) {
                 const text = new Text()
@@ -355,9 +411,15 @@ class UiMap {
                     .setTextColor([0, 0, 0, 1])
                     .setText(label);
 
-                // Custom labels use white.
+                let textWidget = text;
+
+                // Custom labels use white and have a translucent background.
                 if (this._hexToLabel[pos.hex]) {
                     text.setTextColor([1, 1, 1, 1]);
+
+                    textWidget = new Border()
+                        .setChild(text)
+                        .setColor([0, 0, 0, 0.75]);
                 }
 
                 const textBox = new LayoutBox()
@@ -365,7 +427,7 @@ class UiMap {
                     .setOverrideHeight(size.tileH)
                     .setHorizontalAlignment(HorizontalAlignment.Center)
                     .setVerticalAlignment(VerticalAlignment.Center)
-                    .setChild(text);
+                    .setChild(textWidget);
 
                 const extra = size.halfW;
                 canvas.addChild(
@@ -380,4 +442,4 @@ class UiMap {
     }
 }
 
-module.exports = { UiMap };
+module.exports = { UiMap, ORDER_LABEL };

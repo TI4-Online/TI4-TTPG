@@ -1,76 +1,23 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
+const { UiMap } = require("./ui-map");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const {
+    Border,
     CheckBox,
-    EditText,
+    HorizontalAlignment,
     HorizontalBox,
+    LayoutBox,
     Slider,
     Text,
+    TextBox,
+    VerticalAlignment,
     VerticalBox,
-    refPackageId,
     world,
 } = require("../../../wrapper/api");
 
 class UiDraftSettings {
-    constructor(sliceDraft) {
-        assert(sliceDraft instanceof AbstractSliceDraft);
-        this._sliceDraft = sliceDraft;
-    }
-
-    getWidget() {
-        // Max player count?
-        const playerCount = world.TI4.config.playerCount;
-        const maxPlayerCount = this._sliceDraft.getMaxPlayerCount();
-        if (playerCount > maxPlayerCount) {
-            const msg = locale("ui.draft.too_many_players", { playerCount });
-            return new Text()
-                .setAutoWrap(true)
-                .setFontSize(CONFIG.fontSize)
-                .setText(msg);
-        }
-
-        const panel = new VerticalBox().setChildDistance(CONFIG.spacing);
-
-        // Slice count.
-        const sliceGenerator = this._sliceDraft.getSliceGenerator();
-        const sliceCount = UiDraftSettings._createSlider({
-            name: locale("ui.draft.slice_count"),
-            min: sliceGenerator.getMinCount(),
-            max: sliceGenerator.getMaxCount(),
-            default: sliceGenerator.getDefaultCount(),
-            onValueChanged: () => {},
-        });
-        panel.addChild(sliceCount);
-
-        // Faction count.
-        const factionGenerator = this._sliceDraft.getFactionGenerator();
-        const factionCount = UiDraftSettings._createSlider({
-            name: locale("ui.draft.faction_count"),
-            min: factionGenerator.getMinCount(),
-            max: factionGenerator.getMaxCount(),
-            default: factionGenerator.getDefaultCount(),
-            onValueChanged: () => {},
-        });
-        panel.addChild(factionCount);
-
-        // Use faction cards on table?
-        const useFactionsOnTable = UiDraftSettings._createCheckbox({
-            name: locale("ui.draft.factions_from_cards_short"),
-            default: false,
-            onCheckStateChanged: () => {},
-        });
-        panel.addChild(useFactionsOnTable);
-
-        const map = new Border().setColor([1, 1, 1, 1]);
-
-        return new HorizontalBox()
-            .setChildDistance(CONFIG.spacing)
-            .addChild(panel, 1)
-            .addChild(map, 1);
-    }
-
     static _createCheckbox(params) {
         assert(typeof params.name === "string");
         assert(typeof params.default === "boolean");
@@ -102,6 +49,7 @@ class UiDraftSettings {
             .setTextBoxWidth(CONFIG.fontSize * 4)
             .setMinValue(params.min)
             .setMaxValue(params.max)
+            .setStepSize(params.stepSize || 1)
             .setValue(params.default);
         slider.onValueChanged.add(params.onValueChanged);
         const panel = new HorizontalBox()
@@ -109,6 +57,151 @@ class UiDraftSettings {
             .addChild(label, 1)
             .addChild(slider, 1);
         return panel;
+    }
+
+    constructor(sliceDraft) {
+        assert(sliceDraft instanceof AbstractSliceDraft);
+        this._sliceDraft = sliceDraft;
+    }
+
+    getWidget() {
+        // Max player count?
+        const playerCount = world.TI4.config.playerCount;
+        const maxPlayerCount = this._sliceDraft.getMaxPlayerCount();
+        if (playerCount > maxPlayerCount) {
+            return this._getTooManyPlayersWidget();
+        }
+
+        // Place sliders/checkboxes and map in same row.
+        const slidersAndCheckboxes = new VerticalBox().setChildDistance(
+            CONFIG.spacing
+        );
+        this._addSliders(slidersAndCheckboxes);
+        this._addCheckboxes(slidersAndCheckboxes);
+
+        const spacer = new Border().setColor(CONFIG.spacerColor);
+
+        const mapPanel = new VerticalBox().setChildDistance(CONFIG.spacing);
+        this._addMap(mapPanel);
+
+        const topRow = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(slidersAndCheckboxes, 2)
+            .addChild(spacer)
+            .addChild(mapPanel, 1);
+
+        const panel = new VerticalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(topRow);
+
+        this._addCustomConfig(panel);
+
+        this._addStartButton(panel);
+
+        return panel;
+    }
+
+    _getTooManyPlayersWidget() {
+        const msg = locale("ui.draft.too_many_players", { playerCount });
+        return new Text()
+            .setAutoWrap(true)
+            .setFontSize(CONFIG.fontSize)
+            .setText(msg);
+    }
+
+    _addSliders(panel) {
+        // Slice count.
+        const sliceGenerator = this._sliceDraft.getSliceGenerator();
+        const sliceCount = UiDraftSettings._createSlider({
+            name: locale("ui.draft.slice_count"),
+            min: sliceGenerator.getMinCount(),
+            max: sliceGenerator.getMaxCount(),
+            default: sliceGenerator.getDefaultCount(),
+            onValueChanged: () => {},
+        });
+        panel.addChild(sliceCount);
+
+        // Faction count.
+        const factionGenerator = this._sliceDraft.getFactionGenerator();
+        const factionCount = UiDraftSettings._createSlider({
+            name: locale("ui.draft.faction_count"),
+            min: factionGenerator.getMinCount(),
+            max: factionGenerator.getMaxCount(),
+            default: factionGenerator.getDefaultCount(),
+            onValueChanged: () => {},
+        });
+        panel.addChild(factionCount);
+
+        // Add custom sliders AFTER default ones.
+        for (const params of this._sliceDraft.getCustomSliders()) {
+            const slider = UiDraftSettings._createSlider(params);
+            panel.addChild(slider);
+        }
+    }
+
+    _addCheckboxes(panel) {
+        // Add custom checkboxes BEFORE default ones.
+        for (const params of this._sliceDraft.getCustomCheckBoxes()) {
+            const checkBox = UiDraftSettings._createCheckbox(params);
+            panel.addChild(checkBox);
+        }
+
+        // Use faction cards on table?
+        const useFactionsOnTable = UiDraftSettings._createCheckbox({
+            name: locale("ui.draft.factions_from_cards_short"),
+            default: false,
+            onCheckStateChanged: () => {},
+        });
+        panel.addChild(useFactionsOnTable);
+    }
+
+    _addCustomConfig(panel) {
+        const customConfigLabel = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.custom_input"));
+        panel.addChild(customConfigLabel);
+
+        const customConfigText = new TextBox()
+            .setFontSize(CONFIG.fontSize)
+            .setMaxLength(1023);
+        panel.addChild(customConfigText);
+        customConfigText.onTextCommitted.add(
+            (textBox, player, text, usingEnter) => {
+                this._sliceDraft.setCustomInput(text);
+            }
+        );
+    }
+
+    _addStartButton(panel) {
+        // Force start button to bottom.
+        panel.addChild(new LayoutBox(), 1);
+
+        const startButton = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.draft.start_draft").toUpperCase());
+        panel.addChild(startButton);
+        startButton.onClicked.add((button, player) => {
+            this._sliceDraft.start(player);
+        });
+    }
+
+    _addMap(panel) {
+        const useHomeSystems = false;
+        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
+            this._sliceDraft,
+            useHomeSystems
+        );
+        const map = new UiMap()
+            .setMapString(mapString)
+            .setScale(1.5)
+            .createWidget();
+
+        const mapBox = new LayoutBox()
+            .setHorizontalAlignment(HorizontalAlignment.Center)
+            .setVerticalAlignment(VerticalAlignment.Top)
+            .setChild(map);
+
+        panel.addChild(mapBox);
     }
 }
 

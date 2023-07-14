@@ -45,7 +45,7 @@ const PLAYER_DESK_COLORS = [
     {
         colorName: "orange",
         hexColor: "#FF8C00", //"#FF932B",
-        plasticHexColor: "#FF8C00", //"#FF7603",
+        plasticHexColor: "#FF7029", //"#FF7603",
         chatHexColor: "#FF8C00",
         widgetHexColor: "#FC6A03",
         defaultPlayerSlot: 6,

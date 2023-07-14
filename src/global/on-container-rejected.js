@@ -22,6 +22,7 @@ const DESTROY_SET = new Set([
     "token:base/tradegood_commodity_1",
     "token:base/tradegood_commodity_3",
     "token:pok/frontier",
+    "misc:base/trophy", // this has no home, destroy on graveyard
 ]);
 
 function rejectCard(rejectedObj) {
