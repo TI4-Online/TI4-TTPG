@@ -3,11 +3,13 @@ const locale = require("../../locale");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { AbstractUtil } = require("./abstract-util");
 const { ColorUtil } = require("../../color/color-util");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 const { UiDraftChoice } = require("./ui-draft-choice");
 const { UiFaction } = require("./ui-faction");
 const { UiMap, ORDER_LABEL } = require("./ui-map");
 const { UiSeat } = require("./ui-seat");
 const { UiSlice } = require("./ui-slice");
+const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     Border,
     Button,
@@ -70,25 +72,15 @@ class UiDraft {
         // Finish button below.
         const finish = new Button()
             .setFontSize(this._scale * FONT_SIZE)
-            .setText(locale("ui.draft.finish_draft"));
+            .setText(locale("ui.draft.finish_draft").toUpperCase());
+        finish.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._sliceDraft.finish(player);
+            })
+        );
 
         const updateFinishEnabled = () => {
-            finish.setEnabled(false);
-            const playerCount = world.TI4.config.playerCount;
-            for (let chooser = 0; chooser < playerCount; chooser++) {
-                if (this._sliceDraft.getChooserSlice(chooser) === undefined) {
-                    return;
-                }
-                if (this._sliceDraft.getChooserFaction(chooser) === undefined) {
-                    return;
-                }
-                if (
-                    this._sliceDraft.getChooserSeatIndex(chooser) === undefined
-                ) {
-                    return;
-                }
-                finish.setEnabled(true);
-            }
+            finish.setEnabled(this._sliceDraft.isReadyToFinish());
         };
 
         updateFinishEnabled();
@@ -103,10 +95,10 @@ class UiDraft {
     _addSpacer(panel) {
         assert(panel instanceof Panel);
 
-        const border = new Border().setColor([0, 0, 0, 1]);
+        const border = new Border().setColor(CONFIG.spacerColor);
 
         const box = new LayoutBox()
-            //.setPadding(this._spacing, this._spacing, 0, 0)
+            .setOverrideWidth(this._spacing)
             .setChild(border);
 
         panel.addChild(box);

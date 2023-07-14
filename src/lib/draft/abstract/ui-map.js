@@ -5,6 +5,9 @@ const { AbstractUtil } = require("./abstract-util");
 const { Hex } = require("../../hex");
 const { Hyperlane } = require("../../map-string/hyperlane");
 const {
+    SetupGenericHomeSystems,
+} = require("../../../setup/setup-generic-home-systems");
+const {
     Border,
     Canvas,
     HorizontalAlignment,
@@ -16,10 +19,6 @@ const {
     refPackageId,
     world,
 } = require("../../../wrapper/api");
-const {
-    SetupGenericHomeSystems,
-} = require("../../../setup/setup-generic-home-systems");
-const { AbstractSliceDraft } = require("./abstract-slice-draft");
 
 const TILE_W = 50;
 const FONT_SCALE = 0.14;
@@ -56,7 +55,7 @@ class UiMap {
     }
 
     static generateMapString(sliceDraft, options) {
-        assert(sliceDraft instanceof AbstractSliceDraft);
+        assert(sliceDraft);
         assert(typeof options === "object");
 
         const playerCount = world.TI4.config.playerCount;
@@ -159,6 +158,14 @@ class UiMap {
                 hyperlanesMapString
             );
         }
+
+        // Add mecatol.
+        const mapStringEntries = MapStringParser.parse(mapString);
+        const first = mapStringEntries[0];
+        if (first && first.tile < 0) {
+            first.tile = 18;
+        }
+        mapString = MapStringParser.format(mapStringEntries);
 
         return { mapString, deskIndexToLabel };
     }

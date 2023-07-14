@@ -245,7 +245,7 @@ class MiltyDraft {
                 new Rotator(0, 0, 180).compose(playerDesk.rot)
             );
         } else {
-            `MiltyDraft._applyPlayerChoices: NO FACTION REFERENCE`;
+            console.log(`MiltyDraft._applyPlayerChoices: NO FACTION REFERENCE`);
         }
 
         playerDesk.setReady(false);

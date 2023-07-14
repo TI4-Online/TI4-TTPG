@@ -1,6 +1,7 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const { ColorUtil } = require("../../color/color-util");
 const {
+    HorizontalAlignment,
     LayoutBox,
     Text,
     TextJustification,
@@ -52,7 +53,7 @@ class UiSeat {
     createWidget() {
         const size = this.getSize();
 
-        const text = new Text()
+        const content = new Text()
             .setFontSize(size.fontSize)
             .setJustification(TextJustification.Center)
             .setTextColor(this._color)
@@ -61,8 +62,9 @@ class UiSeat {
         const layoutBox = new LayoutBox()
             .setOverrideWidth(size.w)
             .setOverrideHeight(size.h)
+            .setHorizontalAlignment(HorizontalAlignment.Center)
             .setVerticalAlignment(VerticalAlignment.Center)
-            .setChild(text);
+            .setChild(content);
 
         return layoutBox;
     }

@@ -1,19 +1,25 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
+const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 const { AbstractFactionGenerator } = require("./abstract-faction-generator");
 const {
     AbstractFixedSystemsGenerator,
 } = require("./abstract-fixed-systems-generator");
 const { AbstractPlaceHyperlanes } = require("./abstract-place-hyperlanes");
 const { AbstractSliceGenerator } = require("./abstract-slice-generator");
-const { PlayerDesk } = require("../../player-desk/player-desk");
-const { Shuffle } = require("../../shuffle");
+const { AbstractSliceLayout } = require("./abstract-slice-layout");
 const { TURN_ORDER_TYPE } = require("../../turns");
 const { AbstractUtil } = require("./abstract-util");
-const { AbstractSliceLayout } = require("./abstract-slice-layout");
-const { Player, world } = require("../../../wrapper/api");
 const { Broadcast } = require("../../broadcast");
-const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
+const { FactionToken } = require("../../faction/faction-token");
+const { MapStringLoad } = require("../../map-string/map-string-load");
+const { PlayerDesk } = require("../../player-desk/player-desk");
+const { Shuffle } = require("../../shuffle");
+const { UiMap } = require("./ui-map");
+const { Player, Rotator, world } = require("../../../wrapper/api");
+const { ObjectNamespace } = require("../../object-namespace");
+
+const SPEAKER_TOKEN_POS = { x: 48, y: 0, z: 5 };
 
 /**
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
@@ -40,7 +46,8 @@ class AbstractSliceDraft {
 
         // Draft-time memory.  Chooser is desk index.  Should be able to
         // save/restore everything here to regerate a draft in progress.
-        this._slices = undefined; // each slice may have a "_label" key
+        this._sliceShape = undefined;
+        this._slices = undefined;
         this._factions = undefined;
         this._fixedSystems = undefined;
 
@@ -359,6 +366,22 @@ class AbstractSliceDraft {
 
     // --------------------------------
 
+    isReadyToFinish() {
+        const playerCount = world.TI4.config.playerCount;
+        for (let chooser = 0; chooser < playerCount; chooser++) {
+            if (this.getChooserSlice(chooser) === undefined) {
+                return false;
+            }
+            if (this.getChooserFaction(chooser) === undefined) {
+                return false;
+            }
+            if (this.getChooserSeatIndex(chooser) === undefined) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     getSlices() {
         assert(this._slices); // must call start to create
         return this._slices;
@@ -378,6 +401,7 @@ class AbstractSliceDraft {
 
     start(player) {
         assert(!player || player instanceof Player);
+        console.log("AbstractSliceDraft.start");
 
         // Must provide a slice generator.
         assert(this._sliceGenerator);
@@ -405,10 +429,10 @@ class AbstractSliceDraft {
 
         // Create slices.
         const sliceCount = this._sliceGenerator.getCount();
+        this._sliceShape = this._sliceGenerator.getSliceShape();
         this._slices = this._sliceGenerator.generateSlices(sliceCount);
-        const shape = this._sliceGenerator.getSliceShape();
-        AbstractUtil.assertIsShape(shape);
-        AbstractUtil.assertIsSliceArray(this._slices, shape);
+        AbstractUtil.assertIsShape(this._sliceShape);
+        AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
 
         // Choose factions.
         const factionCount = this._factionGenerator.getCount();
@@ -426,11 +450,17 @@ class AbstractSliceDraft {
         // Create UI.
         // XXX TODO
 
+        // Disable desk UI (except for take seat).
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.setReady(true);
+        }
+
         return this;
     }
 
     cancel(player) {
         assert(player instanceof Player);
+        console.log("AbstractSliceDraft.cancel");
 
         if (this._origTurnOrder) {
             world.TI4.turns.setTurnOrder(
@@ -444,15 +474,23 @@ class AbstractSliceDraft {
         // Dismiss UI.
         // XXX TODO
 
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.setReady(false);
+        }
+
         return this;
     }
 
     finish(player) {
         assert(player instanceof Player);
+        console.log("AbstractSliceDraft.finish");
 
         AbstractSliceDraft._setTurnOrderFromSpeaker(this._speakerIndex, player);
 
-        // TODO
+        this._setupMap();
+        this._moveSpeakerToken();
+        this._dealFactionCards();
+        this._movePlayersToSeats();
 
         return this;
     }
@@ -477,6 +515,105 @@ class AbstractSliceDraft {
             player,
             TURN_ORDER_TYPE.FORWARD
         );
+    }
+
+    _moveSpeakerToken() {
+        const speakerDeskIndex = this.getSpeakerIndex();
+        AbstractUtil.assertIsDeskIndex(speakerDeskIndex);
+
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        const speakerDesk = playerDesks[speakerDeskIndex];
+        assert(speakerDesk);
+
+        const speakerTokenNsid = "token:base/speaker";
+        let speakerToken = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === speakerTokenNsid) {
+                speakerToken = obj;
+                break;
+            }
+        }
+        if (speakerDesk && speakerToken) {
+            const pos = speakerDesk.localPositionToWorld(SPEAKER_TOKEN_POS);
+            const rot = speakerDesk.rot;
+            speakerToken.setPosition(pos);
+            speakerToken.setRotation(rot);
+        }
+    }
+
+    _setupMap() {
+        const { mapString } = UiMap.generateMapString(this, {
+            zeroHomeSystems: true,
+        });
+        console.log(`AbstractSliceDraft._setupMap: ${mapString}`);
+        MapStringLoad.moveGenericHomeSystemTiles(mapString);
+        MapStringLoad.load(mapString);
+    }
+
+    _dealFactionCards() {
+        const playerCount = world.TI4.config.playerCount;
+        const playerDesks = world.TI4.getAllPlayerDesks();
+        for (let chooser = 0; chooser < playerCount; chooser++) {
+            const deskIndex = this.getChooserSeatIndex(chooser);
+            const factionNsidName = this.getChooserFaction(chooser);
+            AbstractUtil.assertIsDeskIndex(deskIndex);
+            AbstractUtil.assertIsFaction(factionNsidName);
+            const playerDesk = playerDesks[deskIndex];
+            assert(playerDesk);
+
+            const factionReference =
+                FactionToken.findOrSpawnFactionReference(factionNsidName);
+            if (factionReference) {
+                factionReference.setPosition(playerDesk.center.add([0, 0, 10]));
+                factionReference.setRotation(
+                    new Rotator(0, 0, 180).compose(playerDesk.rot)
+                );
+            } else {
+                console.log(
+                    `AbstractSliceDraft._dealFactionCards: NO FACTION REFERENCE`
+                );
+            }
+
+            playerDesk.setReady(false);
+        }
+    }
+
+    _movePlayersToSeats() {
+        // Remember players' original locations.
+        const chooserToPlayer = {};
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const player = world.getPlayerBySlot(playerDesk.playerSlot);
+            if (player) {
+                chooserToPlayer[playerDesk.index] = player;
+            }
+        }
+
+        // Move all players to non-seat slots.
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            playerDesk.unseatPlayer();
+        }
+
+        // Wait a frame to make sure player is fully removed from slot.
+        const delayedFinishMove = () => {
+            const playerCount = world.TI4.config.playerCount;
+            const playerDesks = world.TI4.getAllPlayerDesks();
+            for (let chooser = 0; chooser < playerCount; chooser++) {
+                const deskIndex = this.getChooserSeatIndex(chooser);
+                AbstractUtil.assertIsDeskIndex(deskIndex);
+                const dstPlayerDesk = playerDesks[deskIndex];
+                assert(dstPlayerDesk);
+                const player = chooserToPlayer[chooser];
+                if (!player) {
+                    continue;
+                }
+                dstPlayerDesk.seatPlayer(player);
+            }
+        };
+        process.nextTick(delayedFinishMove);
     }
 }
 
