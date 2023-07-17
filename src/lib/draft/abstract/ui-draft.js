@@ -121,7 +121,7 @@ class UiDraft {
 
             const slice = slices[index];
             const color = ColorUtil.colorFromHex(COLORS[index]);
-            const label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[index]}`;
+            const label = this._sliceDraft.getLabel(index);
             const uiSlice = new UiSlice()
                 .setScale(this._scale)
                 .setShape(shape)

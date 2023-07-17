@@ -1,10 +1,59 @@
 const assert = require("../../../wrapper/assert-wrapper");
+const { AbstractUtil } = require("./abstract-util");
 const { CardUtil } = require("../../card/card-util");
 const { ObjectNamespace } = require("../../object-namespace");
 const { world } = require("../../../wrapper/api");
 const { Shuffle } = require("../../shuffle");
+const { FactionAliases } = require("../../faction/faction-aliases");
 
 class AbstractFactionGenerator {
+    static parseCustomFactions(custom, errors) {
+        assert(typeof custom === "string");
+        assert(Array.isArray(errors));
+
+        const descriminator = "factions=";
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim().toLowerCase();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim();
+            });
+
+        // Tolerate some faction aliases.
+        items = items.map((item) => {
+            const nsidName = FactionAliases.getNsid(item);
+            return nsidName || item;
+        });
+
+        // Validate.
+        const returnWarningInsteadOfThrow = true;
+        items = items.filter((item) => {
+            const err = AbstractUtil.assertIsFaction(
+                item,
+                returnWarningInsteadOfThrow
+            );
+            if (err) {
+                errors.push(err);
+                return false;
+            }
+            return true;
+        });
+
+        return items;
+    }
+
     constructor() {
         this._count = this.getDefaultCount();
         this._seedWithOnTableCards = true;

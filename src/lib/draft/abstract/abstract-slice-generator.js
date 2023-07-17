@@ -46,6 +46,100 @@ const SLICE_SHAPES = {
 };
 
 class AbstractSliceGenerator {
+    static parseCustomSlices(custom, shape, errors) {
+        assert(typeof custom === "string");
+        assert(Array.isArray(errors));
+
+        const descriminator = "slices=";
+
+        // Slices can appear at the beginning without a descriminator.
+        custom = custom.trim();
+        if (Number.parseInt(custom[0])) {
+            custom = descriminator + custom;
+        }
+
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim().toLowerCase();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim().split(",");
+            });
+
+        // Validate (and convert slice tiles to numbers).
+        const returnWarningInsteadOfThrow = true;
+        items = items.filter((item) => {
+            assert(Array.isArray(item));
+            for (let i = 0; i < item.length; i++) {
+                const tileStr = item[i];
+                const tile = Number.parseInt(tileStr);
+                if (Number.isNaN(tile)) {
+                    errors.push(`Slice entry "${tileStr}" is not a number`);
+                    return false;
+                }
+                item[i] = tile;
+            }
+
+            const err = AbstractUtil.assertIsSlice(
+                item,
+                shape,
+                returnWarningInsteadOfThrow
+            );
+            if (err) {
+                errors.push(err);
+                return false;
+            }
+            return true;
+        });
+
+        return items;
+    }
+
+    static parseCustomLabels(custom, sliceCount, errors) {
+        assert(typeof custom === "string");
+        assert(typeof sliceCount === "number");
+        assert(Array.isArray(errors));
+
+        const descriminator = "labels=";
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim();
+            });
+
+        // Validate.
+        if (items.length !== sliceCount) {
+            const err = `label count (${items.length}) does not match slice count (${sliceCount})`;
+            errors.push(err);
+        }
+
+        return items;
+    }
+
     constructor() {
         this._count = this.getDefaultCount();
     }

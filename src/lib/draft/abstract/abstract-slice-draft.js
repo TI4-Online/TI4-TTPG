@@ -42,12 +42,13 @@ class AbstractSliceDraft {
         this._customCheckBoxes = []; // {name, default, onCheckStateChanged}
         this._customSliders = []; // {name, min, max, default, onValueChanged}
 
-        this._customInput = undefined; // player specified slices, factions, labels, etc
+        this._customInput = ""; // player specified slices, factions, labels, etc
 
         // Draft-time memory.  Chooser is desk index.  Should be able to
         // save/restore everything here to regerate a draft in progress.
         this._sliceShape = undefined;
         this._slices = undefined;
+        this._labels = undefined;
         this._factions = undefined;
         this._fixedSystems = undefined;
 
@@ -289,6 +290,17 @@ class AbstractSliceDraft {
         return this;
     }
 
+    getLabel(sliceIndex) {
+        let label;
+        if (this._labels) {
+            label = this._labels[sliceIndex];
+        }
+        if (!label) {
+            label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[sliceIndex]}`;
+        }
+        return label;
+    }
+
     getMaxPlayerCount() {
         return this._maxPlayerCount;
     }
@@ -407,6 +419,8 @@ class AbstractSliceDraft {
 
         // Must provide a slice generator.
         assert(this._sliceGenerator);
+        this._sliceShape = this._sliceGenerator.getSliceShape();
+        AbstractUtil.assertIsShape(this._sliceShape);
 
         this._chooserToFaction = {};
         this._chooserToSeatIndex = {};
@@ -429,16 +443,37 @@ class AbstractSliceDraft {
             this._turnOrderType
         );
 
-        // Create slices.
-        const sliceCount = this._sliceGenerator.getCount();
-        this._sliceShape = this._sliceGenerator.getSliceShape();
-        this._slices = this._sliceGenerator.generateSlices(sliceCount);
-        AbstractUtil.assertIsShape(this._sliceShape);
+        const errors = [];
+
+        // Parse/create slices.
+        this._slices = AbstractSliceGenerator.parseCustomSlices(
+            this._customInput,
+            this._sliceShape,
+            errors
+        );
+        const sliceCount = this._slices
+            ? this._slices.length
+            : this._sliceGenerator.getCount();
+        this._labels = AbstractSliceGenerator.parseCustomLabels(
+            this._customInput,
+            sliceCount,
+            errors
+        );
+        if (!this._slices) {
+            this._slices = this._sliceGenerator.generateSlices(sliceCount);
+        }
         AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
 
         // Choose factions.
-        const factionCount = this._factionGenerator.getCount();
-        this._factions = this._factionGenerator.generateFactions(factionCount);
+        this._factions = AbstractFactionGenerator.parseCustomFactions(
+            this._customInput,
+            errors
+        );
+        if (!this._factions) {
+            const factionCount = this._factionGenerator.getCount();
+            this._factions =
+                this._factionGenerator.generateFactions(factionCount);
+        }
         AbstractUtil.assertIsFactionArray(this._factions);
 
         // Create fixed systems.

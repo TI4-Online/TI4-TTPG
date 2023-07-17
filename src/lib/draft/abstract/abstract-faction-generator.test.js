@@ -78,3 +78,38 @@ it("mix on table", () => {
 
     assert.deepEqual(firstThree, ["jolnar", "mentak", "naalu"]);
 });
+
+it("parseCustomFactions", () => {
+    // All valid.
+    let custom = "foo&factions=arborec|ul";
+    let errors = [];
+    let factionNsidNames = AbstractFactionGenerator.parseCustomFactions(
+        custom,
+        errors
+    );
+    assert.deepEqual(errors, []);
+    assert.deepEqual(factionNsidNames, ["arborec", "ul"]);
+
+    // "titans" alias.
+    custom = "foo&factions=arborec|titans";
+    errors = [];
+    factionNsidNames = AbstractFactionGenerator.parseCustomFactions(
+        custom,
+        errors
+    );
+    assert.deepEqual(errors, []);
+    assert.deepEqual(factionNsidNames, ["arborec", "ul"]);
+
+    // bogus name.
+    custom = "foo&factions=arborec|titans|not_a_faction_1|not_a_faction_2";
+    errors = [];
+    factionNsidNames = AbstractFactionGenerator.parseCustomFactions(
+        custom,
+        errors
+    );
+    assert.deepEqual(errors, [
+        'unknown faction "not_a_faction_1"',
+        'unknown faction "not_a_faction_2"',
+    ]);
+    assert.deepEqual(factionNsidNames, ["arborec", "ul"]);
+});
