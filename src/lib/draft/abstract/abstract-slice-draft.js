@@ -405,7 +405,6 @@ class AbstractSliceDraft {
     }
 
     getFixedSystems() {
-        assert(this._fixedSystems); // must call start to create
         return this._fixedSystems;
     }
 
@@ -477,12 +476,30 @@ class AbstractSliceDraft {
         AbstractUtil.assertIsFactionArray(this._factions);
 
         // Create fixed systems.
-        this._fixedSystems = {};
+        this._fixedSystems = [];
         if (this._fixedSystemsGenerator) {
+            const fixedHexes = this._fixedSystemsGenerator.getFixedHexes();
+            const fixedCount = fixedHexes.length;
             this._fixedSystems =
-                this._fixedSystemsGenerator.generateFixedSystems();
+                AbstractFixedSystemsGenerator.parseCustomFixedSystems(
+                    this._customInput,
+                    fixedCount,
+                    errors
+                );
+            if (!this._fixedSystems) {
+                this._fixedSystems =
+                    this._fixedSystemsGenerator.generateFixedSystems();
+            }
         }
-        AbstractUtil.assertIsHexToTile(this._fixedSystems);
+        AbstractUtil.assertValidSystems(this._fixedSystems);
+
+        // Make sure no errors before proceeding.
+        if (errors.length > 0) {
+            let msg = errors.join(", ");
+            msg = locale("ui.draft.start_error", { msg });
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return this;
+        }
 
         // Create UI.
         // XXX TODO

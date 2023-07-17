@@ -148,6 +148,35 @@ class UiMap {
         }
 
         let mapString = sliceLayout.generateMapString();
+        const mapStringEntries = MapStringParser.parse(mapString);
+
+        // Add mecatol to map string entries.
+        const first = mapStringEntries[0];
+        if (first && first.tile < 0) {
+            first.tile = 18;
+        }
+
+        // Add fixed systems to map string entries.
+        const fixedSystemsGenerator = sliceDraft.getFixedSystemsGenerator();
+        if (fixedSystemsGenerator) {
+            const fixedSystems = sliceDraft.getFixedSystems();
+            const fixedHexes = fixedSystemsGenerator.getFixedHexes();
+            AbstractUtil.assertValidSystems(fixedSystems);
+            assert(fixedSystems.length === fixedHexes.length);
+            for (let index = 0; index < fixedHexes.length; index++) {
+                const hex = fixedHexes[index];
+                const tile = fixedSystems[index];
+                const mapStringIndex = MapStringHex.hexStringToIdx(hex);
+                assert(typeof mapStringIndex === "number");
+                assert(
+                    !mapStringEntries[mapStringIndex] ||
+                        mapStringEntries[mapStringIndex].tile === -1
+                );
+                mapStringEntries[mapStringIndex] = { tile };
+            }
+        }
+
+        mapString = MapStringParser.format(mapStringEntries);
 
         const hyperlanesMapString = Hyperlane.getMapString(
             world.TI4.config.playerCount
@@ -158,14 +187,6 @@ class UiMap {
                 hyperlanesMapString
             );
         }
-
-        // Add mecatol.
-        const mapStringEntries = MapStringParser.parse(mapString);
-        const first = mapStringEntries[0];
-        if (first && first.tile < 0) {
-            first.tile = 18;
-        }
-        mapString = MapStringParser.format(mapStringEntries);
 
         return { mapString, deskIndexToLabel };
     }

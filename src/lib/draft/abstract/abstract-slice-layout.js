@@ -166,20 +166,16 @@ class AbstractSliceLayout {
                 SetupGenericHomeSystems.getHomeSystemPosition(playerDesk);
             anchorHex = Hex.fromPosition(anchorPos);
         }
-        const anchorMapStringIndex = hexStringToIdx(anchorHex);
-        const anchorTile = this._deskIndexToAnchorTile[deskIndex] || 0;
-
-        assert(!mapStringArray[anchorMapStringIndex]);
-        mapStringArray[anchorMapStringIndex] = { tile: anchorTile };
 
         const dirHex =
             this._deskIndexToHexDirection[playerDesk.index] || "<0,0,0>";
 
         const shape = this._deskIndexToOverrideShape[deskIndex] || this._shape;
+        const homeSystemTile = this._deskIndexToAnchorTile[deskIndex] || 0;
 
-        for (let i = 0; i < slice.length; i++) {
-            const tile = slice[i];
-            const shapeHex = shape[i + 1];
+        for (let i = 0; i < shape.length; i++) {
+            const tile = i > 0 ? slice[i - 1] : homeSystemTile;
+            const shapeHex = shape[i];
 
             const hex = AbstractSliceLayout._defaultLayoutTile(
                 anchorHex,
@@ -191,7 +187,7 @@ class AbstractSliceLayout {
 
             const mapStringIndex = hexStringToIdx(hex);
             if (mapStringArray[mapStringIndex]) {
-                const err = `AbstractSliceLayout._defaultLayoutSlice: collision at index ${mapStringIndex}`;
+                const err = `AbstractSliceLayout._defaultLayoutSlice: collision at index ${mapStringIndex} (${tile} vs ${mapStringArray[mapStringIndex].tile})`;
                 console.log(err);
 
                 // Preserve the original, but keep a record of this dropped tile.
