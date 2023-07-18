@@ -148,6 +148,12 @@ class AbstractSliceDraft {
         Broadcast.chatAll(msg, playerDesk.chatColor);
         chooserToX[chooser] = x;
         this._onChooserToggled.trigger();
+
+        // Advance turn.
+        if (world.TI4.turns.isActivePlayer(clickingPlayer)) {
+            world.TI4.turns.endTurn(clickingPlayer);
+        }
+
         return true; // toggle on
     }
 

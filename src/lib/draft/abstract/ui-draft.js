@@ -15,7 +15,10 @@ const {
     HorizontalBox,
     LayoutBox,
     Panel,
+    Text,
+    TextJustification,
     VerticalBox,
+    globalEvents,
     world,
 } = require("../../../wrapper/api");
 
@@ -68,6 +71,25 @@ class UiDraft {
 
         this._addMap(panel);
 
+        // Active turn indicator.
+        const turn = new Text()
+            .setFontSize(this._scale * FONT_SIZE)
+            .setJustification(TextJustification.Center);
+        const updateTurn = () => {
+            const playerDesk = world.TI4.turns.getCurrentTurn();
+            const playerSlot = playerDesk.playerSlot;
+            const player = world.getPlayerBySlot(playerSlot);
+            const playerName = player
+                ? player.getName()
+                : `"${playerDesk.colorName}"`;
+            const msg = locale("ui.agenda.clippy.waiting_for_player_name", {
+                playerName,
+            });
+            turn.setText(msg);
+        };
+        updateTurn();
+        globalEvents.TI4.onTurnChanged.add(updateTurn);
+
         // Finish button below.
         const finish = new Button()
             .setFontSize(this._scale * FONT_SIZE)
@@ -88,6 +110,7 @@ class UiDraft {
         const overall = new VerticalBox()
             .setChildDistance(this._spacing)
             .addChild(panel)
+            .addChild(turn)
             .addChild(finish);
 
         const overallBox = new LayoutBox()
