@@ -1,10 +1,12 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 const { UiMap } = require("./ui-map");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     Border,
+    Button,
     CheckBox,
     HorizontalAlignment,
     HorizontalBox,
@@ -12,6 +14,7 @@ const {
     Slider,
     Text,
     TextBox,
+    TextJustification,
     VerticalAlignment,
     VerticalBox,
     world,
@@ -98,10 +101,51 @@ class UiDraftSettings {
 
         this._addStartButton(panel);
 
+        // Alt UI for draft in progress.
+
+        const swapBox = new LayoutBox();
+
+        const setAppropriateWidget = () => {
+            if (this._sliceDraft.isDraftInProgress()) {
+                swapBox.setChild(this._getDraftInProgressWidget());
+            } else {
+                swapBox.setChild(panel);
+            }
+        };
+        setAppropriateWidget();
+        this._sliceDraft.onDraftStateChanged.add(setAppropriateWidget);
+
+        return swapBox;
+    }
+
+    _getDraftInProgressWidget() {
+        const label = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
+            .setText(locale("ui.draft.in_progress"));
+
+        const labelBox = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(label);
+
+        const cancel = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.button.cancel"));
+        cancel.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._sliceDraft.cancel(player);
+            })
+        );
+
+        const panel = new VerticalBox()
+            .addChild(labelBox, 1)
+            .addChild(cancel, 0);
+
         return panel;
     }
 
     _getTooManyPlayersWidget() {
+        const playerCount = world.TI4.config.playerCount;
         const msg = locale("ui.draft.too_many_players", { playerCount });
         return new Text()
             .setAutoWrap(true)
@@ -186,10 +230,10 @@ class UiDraftSettings {
     }
 
     _addMap(panel) {
-        const useHomeSystems = false;
-        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
+        const options = { includeHomeSystems: false };
+        const { mapString } = UiMap.generateMapString(
             this._sliceDraft,
-            useHomeSystems
+            options
         );
         const map = new UiMap()
             .setMapString(mapString)

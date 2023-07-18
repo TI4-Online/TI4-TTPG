@@ -6,6 +6,7 @@ const {
 } = require("./abstract-slice-generator");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { MockPlayer, world } = require("../../../wrapper/api");
+const { AbstractSliceLayout } = require("./abstract-slice-layout");
 
 class MySliceGenerator extends AbstractSliceGenerator {
     getSliceShape() {
@@ -27,9 +28,9 @@ it("start", () => {
     const player = new MockPlayer();
     const sliceGenerator = new MySliceGenerator();
 
-    const sliceDraft = new AbstractSliceDraft().setSliceGenerator(
-        sliceGenerator
-    );
+    const sliceDraft = new AbstractSliceDraft()
+        .setSliceGenerator(sliceGenerator)
+        .setSliceLayout(new AbstractSliceLayout().setShape(SLICE_SHAPES.milty));
     sliceDraft.start(player);
     sliceDraft.cancel(player);
 });

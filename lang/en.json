@@ -384,9 +384,10 @@
     "ui.draft.already_claimed": "{playerName} cannot choose already-claimed {categoryName} “{selectionName}”",
     "ui.draft.already_have": "{playerName} already has a {categoryName}",
     "ui.draft.selected": "{playerName} selected {categoryName} “{selectionName}”",
-    "ui.draft.in_progress": "Draft in progress, see player areas",
+    "ui.draft.in_progress": "Draft in progress, see draft area",
     "ui.draft.start_draft": "Start draft",
     "ui.draft.finish_draft": "Finish draft",
+    "ui.draft.start_error": "Unable to start draft: {msg}",
 
     "ui.agenda.vote_count": "{voteCount} {#voteCount|vote|votes}",
     "ui.agenda.clippy.yes": "Yes",

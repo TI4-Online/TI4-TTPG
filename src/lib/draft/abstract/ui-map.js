@@ -159,13 +159,15 @@ class UiMap {
         // Add fixed systems to map string entries.
         const fixedSystemsGenerator = sliceDraft.getFixedSystemsGenerator();
         if (fixedSystemsGenerator) {
-            const fixedSystems = sliceDraft.getFixedSystems();
             const fixedHexes = fixedSystemsGenerator.getFixedHexes();
-            AbstractUtil.assertValidSystems(fixedSystems);
-            assert(fixedSystems.length === fixedHexes.length);
+            const fixedSystems = sliceDraft.getFixedSystems();
+            if (fixedSystems) {
+                AbstractUtil.assertValidSystems(fixedSystems);
+                assert(fixedSystems.length === fixedHexes.length);
+            }
             for (let index = 0; index < fixedHexes.length; index++) {
                 const hex = fixedHexes[index];
-                const tile = fixedSystems[index];
+                const tile = fixedSystems[index] || -1;
                 const mapStringIndex = MapStringHex.hexStringToIdx(hex);
                 assert(typeof mapStringIndex === "number");
                 assert(

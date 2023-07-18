@@ -13,13 +13,21 @@ const { AbstractUtil } = require("./abstract-util");
 const { Broadcast } = require("../../broadcast");
 const { FactionToken } = require("../../faction/faction-token");
 const { MapStringLoad } = require("../../map-string/map-string-load");
+const { ObjectNamespace } = require("../../object-namespace");
 const { PlayerDesk } = require("../../player-desk/player-desk");
 const { Shuffle } = require("../../shuffle");
 const { UiMap } = require("./ui-map");
-const { Player, Rotator, world } = require("../../../wrapper/api");
-const { ObjectNamespace } = require("../../object-namespace");
+const { UiDraft } = require("./ui-draft");
+const {
+    Player,
+    Rotator,
+    UIElement,
+    Vector,
+    world,
+} = require("../../../wrapper/api");
 
 const SPEAKER_TOKEN_POS = { x: 48, y: 0, z: 5 };
+const UI_DRAFT_SCALE = 8; // want at least 6 for high quality zoom
 
 /**
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
@@ -27,6 +35,9 @@ const SPEAKER_TOKEN_POS = { x: 48, y: 0, z: 5 };
 class AbstractSliceDraft {
     constructor() {
         this._onChooserToggled = new TriggerableMulticastDelegate();
+        this._onDraftStateChanged = new TriggerableMulticastDelegate();
+
+        this._isDraftInProgress = false;
 
         // Use sensible defaults, caller can override.
         this._factionGenerator = new AbstractFactionGenerator();
@@ -56,10 +67,20 @@ class AbstractSliceDraft {
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
         this._origTurnOrder = undefined;
+
+        this._activeDraftUiElement = undefined;
     }
 
     get onChooserToggled() {
         return this._onChooserToggled;
+    }
+
+    get onDraftStateChanged() {
+        return this._onDraftStateChanged;
+    }
+
+    isDraftInProgress() {
+        return this._isDraftInProgress;
     }
 
     _attemptToggle(clickingPlayer, chooserToX, x, categoryName, selectionName) {
@@ -405,6 +426,7 @@ class AbstractSliceDraft {
     }
 
     getFixedSystems() {
+        // Allow read before start
         return this._fixedSystems;
     }
 
@@ -498,16 +520,36 @@ class AbstractSliceDraft {
             let msg = errors.join(", ");
             msg = locale("ui.draft.start_error", { msg });
             Broadcast.chatAll(msg, Broadcast.ERROR);
+            this.cancel(player);
             return this;
         }
-
-        // Create UI.
-        // XXX TODO
 
         // Disable desk UI (except for take seat).
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerDesk.setReady(true);
         }
+
+        this._isDraftInProgress = true;
+        this._onDraftStateChanged.trigger();
+
+        // Create UI.
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
+        }
+        const widget = new UiDraft(this)
+            .setScale(UI_DRAFT_SCALE)
+            .createWidget();
+        this._activeDraftUiElement = new UIElement();
+        this._activeDraftUiElement.position = new Vector(
+            0,
+            0,
+            world.getTableHeight() + 3
+        );
+        this._activeDraftUiElement.scale = 1 / UI_DRAFT_SCALE;
+        this._activeDraftUiElement.widget = widget;
+
+        world.addUI(this._activeDraftUiElement);
 
         return this;
     }
@@ -516,6 +558,11 @@ class AbstractSliceDraft {
         assert(player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.cancel");
+        }
+
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
         }
 
         if (this._origTurnOrder) {
@@ -527,13 +574,12 @@ class AbstractSliceDraft {
             this._origTurnOrder = undefined;
         }
 
-        // Dismiss UI.
-        // XXX TODO
-
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerDesk.setReady(false);
         }
 
+        this._isDraftInProgress = false;
+        this._onDraftStateChanged.trigger();
         return this;
     }
 
@@ -543,6 +589,11 @@ class AbstractSliceDraft {
             console.log("AbstractSliceDraft.finish");
         }
 
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
+        }
+
         AbstractSliceDraft._setTurnOrderFromSpeaker(this._speakerIndex, player);
 
         this._setupMap();
@@ -550,6 +601,8 @@ class AbstractSliceDraft {
         this._dealFactionCards();
         this._movePlayersToSeats();
 
+        this._isDraftInProgress = false;
+        this._onDraftStateChanged.trigger();
         return this;
     }
 

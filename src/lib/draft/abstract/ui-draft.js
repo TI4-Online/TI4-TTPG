@@ -1,6 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
-const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { AbstractUtil } = require("./abstract-util");
 const { ColorUtil } = require("../../color/color-util");
 const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
@@ -40,7 +39,7 @@ const COLORS = [
 
 class UiDraft {
     constructor(sliceDraft) {
-        assert(sliceDraft instanceof AbstractSliceDraft);
+        assert(sliceDraft);
         this._sliceDraft = sliceDraft;
 
         this._scale = 1;
@@ -86,10 +85,20 @@ class UiDraft {
         updateFinishEnabled();
         this._sliceDraft.onChooserToggled.add(updateFinishEnabled);
 
-        return new VerticalBox()
+        const overall = new VerticalBox()
             .setChildDistance(this._spacing)
             .addChild(panel)
             .addChild(finish);
+
+        const overallBox = new LayoutBox()
+            .setPadding(
+                this._spacing,
+                this._spacing,
+                this._spacing,
+                this._spacing
+            )
+            .setChild(overall);
+        return new Border().setChild(overallBox);
     }
 
     _addSpacer(panel) {
