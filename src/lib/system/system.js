@@ -3,7 +3,13 @@ const locale = require("../locale");
 const { Facing } = require("../facing");
 const { ObjectNamespace } = require("../object-namespace");
 const { SystemSchema } = require("./system.schema");
-const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
+const {
+    Card,
+    GameObject,
+    globalEvents,
+    refPackageId,
+    world,
+} = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 const { Broadcast } = require("../broadcast");
 
@@ -523,6 +529,14 @@ class System {
 
     get tileNsid() {
         return `tile.system:${this.raw.source}/${this.tile}`;
+    }
+
+    get img() {
+        return this._attrs.img;
+    }
+
+    get packageId() {
+        return this._attrs.packageId ? this._attrs.packageId : refPackageId;
     }
 
     getSummaryStr() {
