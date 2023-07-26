@@ -35,7 +35,7 @@ const SLICE_SHAPES = {
         "<2,0,-2>", // front-far
     ],
 
-    milty_7p_seat3: [
+    milty_7p_seatIndex3: [
         "<0,0,0>", // home system
         "<1,-1,0>", // left
         "<2,0,-2>", // front (pushed forward)

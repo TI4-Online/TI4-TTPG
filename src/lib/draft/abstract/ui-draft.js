@@ -25,19 +25,19 @@ const {
 const SPACING = 4;
 const FONT_SIZE = 10;
 
-const ROWS_SLICES = 2;
+const ROWS_SLICES = 3;
 const ROWS_FACTIONS = 8;
 const ROWS_SEATS = 8;
 
 const COLORS = [
-    "#00FF00", // green
-    "#FF1010", // red
+    "#F0F0F0", // white
+    "#00CFFF", // blue
+    "#572780", // purple
     "#D7B700", // yellow
+    "#FF1010", // red
+    "#00FF00", // green
     "#F46FCD", // pink
     "#FC6A03", // orange
-    "#572780", // purble
-    "#00CFFF", // plue
-    "#F0F0F0", // white
 ];
 
 class UiDraft {

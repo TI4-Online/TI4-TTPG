@@ -61,7 +61,7 @@ class UiDraftSettings {
             .setChildDistance(CONFIG.spacing)
             .addChild(slidersAndCheckboxes, 2)
             .addChild(spacer)
-            .addChild(mapPanel, 1);
+            .addChild(mapPanel, 1.12); // 8p map needs an extra ring
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
@@ -72,13 +72,12 @@ class UiDraftSettings {
         this._addStartButton(panel);
 
         // Alt UI for draft in progress.
-
         const swapBox = new LayoutBox();
-
         const setAppropriateWidget = () => {
             if (this._sliceDraft.isDraftInProgress()) {
                 swapBox.setChild(this._getDraftInProgressWidget());
             } else {
+                swapBox.setChild();
                 swapBox.setChild(panel);
             }
         };
@@ -167,23 +166,31 @@ class UiDraftSettings {
             onCheckStateChanged: () => {},
         });
         panel.addChild(useFactionsOnTable);
+
+        // Place planet cards and frontier tokens?
+        // TODO XXX
     }
 
     _addCustomConfig(panel) {
         const customConfigLabel = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.custom_input"));
-        panel.addChild(customConfigLabel);
 
         const customConfigText = new TextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1023);
-        panel.addChild(customConfigText);
         customConfigText.onTextCommitted.add(
             (textBox, player, text, usingEnter) => {
                 this._sliceDraft.setCustomInput(text);
             }
         );
+
+        const row = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(customConfigLabel)
+            .addChild(customConfigText);
+
+        panel.addChild(row);
     }
 
     _addStartButton(panel) {

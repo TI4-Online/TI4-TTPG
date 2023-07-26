@@ -400,10 +400,8 @@ class UiMap {
                     text.getFontSize() * 2
                 );
             } else if (system) {
-                const imgPath = system.raw.img;
-                const packageId = system.raw.packageId
-                    ? system.raw.packageId
-                    : refPackageId;
+                const imgPath = system.img;
+                const packageId = system.packageId;
                 image.setImage(imgPath, packageId);
             }
         }

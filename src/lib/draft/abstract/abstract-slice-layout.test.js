@@ -188,7 +188,7 @@ it("7p", () => {
         abstractSliceLayout.setSlice(deskIndex, slice);
     }
 
-    abstractSliceLayout.setOverrideShape(3, SLICE_SHAPES.milty_7p_seat3);
+    abstractSliceLayout.setOverrideShape(3, SLICE_SHAPES.milty_7p_seatIndex3);
 
     // Use the rulebook funky shape
     const HEX = {

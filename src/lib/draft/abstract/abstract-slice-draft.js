@@ -609,6 +609,10 @@ class AbstractSliceDraft {
 
         this._isDraftInProgress = false;
         this._onDraftStateChanged.trigger();
+
+        // Return to home on main UI.
+        world.TI4.GameUI.goHome();
+
         return this;
     }
 
