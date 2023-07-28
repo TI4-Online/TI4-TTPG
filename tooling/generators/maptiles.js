@@ -314,6 +314,7 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
                     : `global/tiles/reverse_${type}_x.png`,
                 IsTransparent: false,
                 CastShadow: true,
+                IsTwoSided: false,
                 UseOverrides: details.reverseUseOverrides ? true : false,
                 Roughness: 1,
                 Metallic: 0,
@@ -358,6 +359,8 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
             Y: 0,
             Z: 1.0,
         },
+        GroundAccessibility: "ZoomAndContext",
+        Tags: [],
     };
 };
 
