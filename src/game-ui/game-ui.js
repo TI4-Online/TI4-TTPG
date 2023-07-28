@@ -53,6 +53,7 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
+const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
 
 let _gameUI;
 
@@ -237,6 +238,8 @@ class GameUI {
                 return new MiltyDraftSettings().getUI();
             });
         draftFolder.addChild(miltyDraftEntry);
+        const miltyDraftEntry2 = MiltySliceDraft.createDraftNavEntry();
+        draftFolder.addChild(miltyDraftEntry2);
 
         const miltyEqDraftEntry = new NavEntry()
             .setName(locale("nav.map.draft.milty_eq"))

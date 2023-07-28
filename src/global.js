@@ -176,7 +176,7 @@ const { PlayerTimer } = require("./lib/player-timer/player-timer");
 const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
 const { Spawn } = require("./setup/spawn/spawn");
-const { System, Planet } = require("./lib/system/system");
+const { System, Planet, SYSTEM_TIER } = require("./lib/system/system");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
@@ -187,6 +187,8 @@ let _timer = undefined;
 
 // Register some functions in world to reduce require dependencies.
 world.TI4 = {
+    SYSTEM_TIER,
+
     // Export some modules (to work around require cycles, or for homebrew use).
     AbstractPlanetAttachment,
     AbstractRightClickCard,

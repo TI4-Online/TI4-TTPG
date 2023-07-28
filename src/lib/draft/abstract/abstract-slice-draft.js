@@ -33,6 +33,27 @@ const UI_DRAFT_SCALE = 8; // want at least 6 for high quality zoom
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
  */
 class AbstractSliceDraft {
+    static _reportHomebrewSystemTilesInSlices(slices, shape) {
+        AbstractUtil.assertIsSliceArray(slices, shape);
+        // Report any homebrew.
+        for (const slice of slices) {
+            for (const tile of slice) {
+                const system = world.TI4.getSystemByTileNumber(tile);
+                const src = system.raw.source;
+                if (
+                    src &&
+                    (src === "base" ||
+                        src === "pok" ||
+                        src.startsWith("codex."))
+                ) {
+                    continue;
+                }
+                const msg = `Homebrew system: ${tile}: ${system.getSummaryStr()}`;
+                Broadcast.chatAll(msg);
+            }
+        }
+    }
+
     constructor() {
         this._onChooserToggled = new TriggerableMulticastDelegate();
         this._onDraftStateChanged = new TriggerableMulticastDelegate();
@@ -490,6 +511,10 @@ class AbstractSliceDraft {
             this._slices = this._sliceGenerator.generateSlices(sliceCount);
         }
         AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
+        AbstractSliceDraft._reportHomebrewSystemTilesInSlices(
+            this._slices,
+            this._sliceShape
+        );
 
         // Choose factions.
         this._factions = AbstractFactionGenerator.parseCustomFactions(

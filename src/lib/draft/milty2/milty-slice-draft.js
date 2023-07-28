@@ -1,18 +1,14 @@
-const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
 const {
     AbstractFactionGenerator,
 } = require("../abstract/abstract-faction-generator");
 const { AbstractSliceDraft } = require("../abstract/abstract-slice-draft");
-const {
-    SLICE_SHAPES,
-    AbstractSliceGenerator,
-} = require("../abstract/abstract-slice-generator");
+const { SLICE_SHAPES } = require("../abstract/abstract-slice-generator");
 const { AbstractSliceLayout } = require("../abstract/abstract-slice-layout");
 const { UiDraftSettings } = require("../abstract/ui-draft-settings");
-const { miltyslices } = require("./milty-draft-dot-com");
 const { world } = require("../../../wrapper/api");
 const { NavEntry } = require("../../ui/nav/nav-entry");
+const { MiltySliceGenerator } = require("./milty-slice-generator");
 
 /**
  * Milty Draft based on the "abstract slice draft" framework.
@@ -41,38 +37,6 @@ class MiltySliceLayout extends AbstractSliceLayout {
  */
 class MiltyFactionGenerator extends AbstractFactionGenerator {}
 
-class MiltySliceGenerator extends AbstractSliceGenerator {
-    constructor() {
-        super();
-        this._useExtraWormholesAndLegendaries = true;
-    }
-
-    getUseExtraWormholesAndLegendaries() {
-        return this._useExtraWormholesAndLegendaries;
-    }
-
-    setUseExtraWormholesAndLegendaries(value) {
-        assert(typeof value === "boolean");
-        this._useExtraWormholesAndLegendaries = value;
-        return this;
-    }
-
-    getSliceShape() {
-        return SLICE_SHAPES.milty;
-    }
-
-    generateSlices(sliceCount) {
-        while (sliceCount > 0) {
-            const numSlices = this.getCount();
-            const extralegwh = this.getUseExtraWormholesAndLegendaries();
-            const slices = miltyslices(numSlices, extralegwh);
-            if (slices) {
-                return slices;
-            }
-        }
-    }
-}
-
 class MiltySliceDraft extends AbstractSliceDraft {
     static createDraftSettingsWidget() {
         const sliceDraft = new MiltySliceDraft();
@@ -81,7 +45,7 @@ class MiltySliceDraft extends AbstractSliceDraft {
 
     static createDraftNavEntry() {
         return new NavEntry()
-            .setName(locale("nav.map.draft.milty"))
+            .setName(locale("nav.map.draft.milty") + " (EXP!)")
             .setIconPath("global/ui/icons/milty-hex.png")
             .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {

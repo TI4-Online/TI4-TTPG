@@ -1150,7 +1150,7 @@ module.exports = [
 
     // Planets without a system.
     {
-        tile: -1,
+        tile: -9,
         source: "codex.vigil",
         planets: [
             {

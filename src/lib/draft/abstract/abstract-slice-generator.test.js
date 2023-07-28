@@ -17,8 +17,8 @@ it("_hasAdjacentAnomalies", () => {
     const slice1 = [1, 2, 3, 4, 5];
     const slice2 = [41, 42, 1, 2, 3];
 
-    assert(!AbstractSliceGenerator._hasAdjacentAnomalies(miltyShape, slice1));
-    assert(AbstractSliceGenerator._hasAdjacentAnomalies(miltyShape, slice2));
+    assert(!AbstractSliceGenerator._hasAdjacentAnomalies(slice1, miltyShape));
+    assert(AbstractSliceGenerator._hasAdjacentAnomalies(slice2, miltyShape));
 });
 
 it("_separateAnomalies", () => {
@@ -33,11 +33,11 @@ it("_separateAnomalies", () => {
     const slice = [41, 42, 1, 2, 3];
 
     const newSlice = AbstractSliceGenerator._separateAnomalies(
-        miltyShape,
-        slice
+        slice,
+        miltyShape
     );
 
-    assert(!AbstractSliceGenerator._hasAdjacentAnomalies(miltyShape, newSlice));
+    assert(!AbstractSliceGenerator._hasAdjacentAnomalies(newSlice, miltyShape));
 });
 
 it("permutator", () => {

@@ -187,8 +187,8 @@ class UiDraftSettings {
 
         const row = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(customConfigLabel)
-            .addChild(customConfigText);
+            .addChild(customConfigLabel, 0)
+            .addChild(customConfigText, 1);
 
         panel.addChild(row);
     }

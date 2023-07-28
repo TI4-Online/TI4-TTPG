@@ -207,9 +207,9 @@ class AbstractSliceGenerator {
         throw new Error("subclass must override this");
     }
 
-    static _hasAdjacentAnomalies(shape, slice) {
-        AbstractUtil.assertIsShape(shape);
+    static _hasAdjacentAnomalies(slice, shape) {
         AbstractUtil.assertIsSlice(slice, shape);
+        AbstractUtil.assertIsShape(shape);
 
         const hexIsAnomalySet = new Set();
         for (let i = 0; i < slice.length; i++) {
@@ -232,25 +232,16 @@ class AbstractSliceGenerator {
         }
     }
 
-    static _separateAnomalies(shape, slice) {
-        assert(Array.isArray(shape));
-        for (const hex of shape) {
-            assert(Hex._hexFromString(hex)); // valid hex string?
-        }
-        assert(Array.isArray(slice));
-        for (const tile of slice) {
-            assert(typeof tile === "number");
-            const system = world.TI4.getSystemByTileNumber(tile);
-            assert(system);
-        }
-        assert(shape.length === slice.length + 1); // first is home system
+    static _separateAnomalies(slice, shape) {
+        AbstractUtil.assertIsShape(shape);
+        AbstractUtil.assertIsSlice(slice, shape);
 
         slice = [...slice]; // work with a copy
 
         // First, shuffle a few times and see if we get a good setup.
         // Give up after a reasonable number of tries.
         for (let i = 0; i < 20; i++) {
-            if (!AbstractSliceGenerator._hasAdjacentAnomalies(shape, slice)) {
+            if (!AbstractSliceGenerator._hasAdjacentAnomalies(slice, shape)) {
                 return slice;
             }
             Shuffle.shuffle(slice);
@@ -260,8 +251,8 @@ class AbstractSliceGenerator {
         // (This always fixes the same way, hence a few random stabs before this.)
         const inspector = (candidate) => {
             return !AbstractSliceGenerator._hasAdjacentAnomalies(
-                shape,
-                candidate
+                candidate,
+                shape
             );
         };
         const goodSlice = AbstractSliceGenerator._permutator(slice, inspector);
