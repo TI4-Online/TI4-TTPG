@@ -44,9 +44,11 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
                         shape
                     );
                 });
-                console.log(
-                    `MiltySliceGenerator.generateSlices loops: ${loops}`
-                );
+                if (!world.__isMock) {
+                    console.log(
+                        `MiltySliceGenerator.generateSlices loops: ${loops}`
+                    );
+                }
                 return slices;
             }
         }
