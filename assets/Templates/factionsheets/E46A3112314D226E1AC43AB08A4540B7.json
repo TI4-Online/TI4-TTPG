@@ -29,6 +29,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
@@ -148,6 +149,7 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "Zoom",
 	"Tags": [],
 	"FrontTexture": "",
 	"BackTexture": "locale/factionsheets/template.jpg",

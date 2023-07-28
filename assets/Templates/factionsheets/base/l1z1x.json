@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/base/l1z1x.back.jpg",
 	"BackTexture": "locale/factionsheets/base/l1z1x.face.jpg",
 	"HiddenTexture": "",

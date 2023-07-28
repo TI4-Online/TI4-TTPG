@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/base/naalu.back.jpg",
 	"BackTexture": "locale/factionsheets/base/naalu.face.jpg",
 	"HiddenTexture": "",

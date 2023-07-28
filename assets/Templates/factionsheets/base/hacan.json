@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/base/hacan.back.jpg",
 	"BackTexture": "locale/factionsheets/base/hacan.face.jpg",
 	"HiddenTexture": "",
