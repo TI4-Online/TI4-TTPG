@@ -210,41 +210,6 @@ const TILES = {
             },
         },
     },
-    discordant_stars: {
-        homeworld: {
-            3201: { guid: "F1E6206B09454402B9A5E52B1934BAD6" },
-            3202: { guid: "71C6CF8E8326420B9B72B5BD0329A173" },
-            3203: { guid: "21373514204A409F8A834E1FDCC19A3C" },
-            3204: { guid: "9AFB10D005A240F7B09FE5D30CA9FBA0" },
-            3205: { guid: "47C8E5F3D2A0498E9DBC3FC7EF80E824" },
-            3206: { guid: "9F83BC9B59F1461B96F525398E21C400" },
-            3207: { guid: "615DC76F745F4D668B502F5DDB91D27D" },
-            3208: { guid: "152C3545E9F246048D0215F7CBA63D6D" },
-            3209: { guid: "8371CA8B6CFE426D89E58B6A96B48098" },
-            3210: { guid: "B50C67991C214A08B5CDAB1E3C121044" },
-            3211: { guid: "330FC1258CCF4E51A7D641FC4218049F" },
-            3212: { guid: "2EC81B92A6974C8FA215E62235671284" },
-            3213: { guid: "1CDA602307374660B9D29ABE74274553" },
-            3214: { guid: "3B006A999C5D4340B8346BFB841BADA3" },
-            3215: { guid: "0D10F9991C184DBA89140C252A343BD3" },
-            3216: { guid: "072DCEE6DDAB44E3BA26706A31EE0E45" },
-            3217: { guid: "C4C4D351119540A7AEC663965FE2837B" },
-            3218: { guid: "B1BB3A41C2B845A5BE4CE5DE2F0E7F7D" },
-            3219: { guid: "FFA2046A9E2C4400935E2C3404D2B68C" },
-            3220: { guid: "FB1B4ACEA6C840DDBB341E553419F7C7" },
-            3221: { guid: "7BB5522CA5F64BFAB43A08CD06949AA3" },
-            3222: { guid: "03E16DFF2D1D40B1BBB054F55BB8064F" },
-            3223: { guid: "F61083209FB643A395790E821767AE4D" },
-            3224: { guid: "819715212DA746268C281C3B2259FCBE" },
-        },
-        special: {
-            3225: {
-                guid: "CFB133FD79F5450AAEED1281FCB25D26",
-                obverseTexture: `locale/tiles/discordant_stars/special/tile_3225_o.jpg`,
-                reverseTexture: `locale/tiles/discordant_stars/special/tile_3225_r.jpg`,
-            },
-        },
-    },
 };
 
 const modSet =
@@ -349,6 +314,7 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
                     : `global/tiles/reverse_${type}_x.png`,
                 IsTransparent: false,
                 CastShadow: true,
+                IsTwoSided: false,
                 UseOverrides: details.reverseUseOverrides ? true : false,
                 Roughness: 1,
                 Metallic: 0,
@@ -393,6 +359,8 @@ const generateTile = (guid, mod, mapId, type = "regular", details = {}) => {
             Y: 0,
             Z: 1.0,
         },
+        GroundAccessibility: "ZoomAndContext",
+        Tags: [],
     };
 };
 

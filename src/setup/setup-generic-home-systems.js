@@ -34,25 +34,26 @@ const HOME_SYSTEM_POSITIONS = {
     4: [HEX.SE, HEX.SW, HEX.NW, HEX.NE],
     5: [HEX.SE, HEX.SW, HEX.NW, HEX.N, HEX.NE],
     6: [HEX.SE, HEX.S, HEX.SW, HEX.NW, HEX.N, HEX.NE],
-    // 7: [ // this is the rulebook funky shape
-    //     HEX.SE,
-    //     { onMap: "<-4,0,4>", offMap: "<-6,0,6>" }, // red
-    //     { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-    //     { onMap: "<2,-4,2>", offMap: "<4,-5,1>" }, // pink
-    //     { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" }, // yellow
-    //     { onMap: "<4,0,-4>", offMap: "<6,0,-6>" }, // blue
-    //     HEX.NE,
-    // ],
     7: [
-        // home systems in corners (better milty draft behavior, still needs intervention)
-        { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
-        { onMap: "<-4,0,4>", offMap: "<-6,0,6>" },
+        // this is the rulebook funky shape
+        HEX.SE,
+        { onMap: "<-4,0,4>", offMap: "<-6,0,6>" }, // red
         { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
-        { onMap: "<2,-4,2>", offMap: "<2,-6,4>" },
-        { onMap: "<4,-3,-1>", offMap: "<4,-5,1>" },
-        { onMap: "<1,3,-4>", offMap: "<3,3,-6>" },
-        { onMap: "<-2,4,-2>", offMap: "<2,4,-6>" },
+        { onMap: "<2,-4,2>", offMap: "<4,-5,1>" }, // pink
+        { onMap: "<4,-3,-1>", offMap: "<6,-3,-3>" }, // yellow
+        { onMap: "<4,0,-4>", offMap: "<6,0,-6>" }, // blue
+        HEX.NE,
     ],
+    // 7: [
+    //     // home systems in corners (better milty draft behavior, still needs intervention)
+    //     { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
+    //     { onMap: "<-4,0,4>", offMap: "<-6,0,6>" },
+    //     { onMap: "<-1,-3,4>", offMap: "<-3,-3,6>" },
+    //     { onMap: "<2,-4,2>", offMap: "<2,-6,4>" },
+    //     { onMap: "<4,-3,-1>", offMap: "<4,-5,1>" },
+    //     { onMap: "<1,3,-4>", offMap: "<3,3,-6>" },
+    //     { onMap: "<-2,4,-2>", offMap: "<2,4,-6>" },
+    // ],
     8: [
         { onMap: "<-4,3,1>", offMap: "<-6,3,3>" },
         { onMap: "<-4,0,4>", offMap: "<-6,0,6>" }, // yellow

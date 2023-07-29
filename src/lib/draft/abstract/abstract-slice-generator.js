@@ -35,7 +35,7 @@ const SLICE_SHAPES = {
         "<2,0,-2>", // front-far
     ],
 
-    milty_7p_seat3: [
+    milty_7p_seatIndex3: [
         "<0,0,0>", // home system
         "<1,-1,0>", // left
         "<2,0,-2>", // front (pushed forward)
@@ -46,6 +46,100 @@ const SLICE_SHAPES = {
 };
 
 class AbstractSliceGenerator {
+    static parseCustomSlices(custom, shape, errors) {
+        assert(typeof custom === "string");
+        assert(Array.isArray(errors));
+
+        const descriminator = "slices=";
+
+        // Slices can appear at the beginning without a descriminator.
+        custom = custom.trim();
+        if (Number.parseInt(custom[0])) {
+            custom = descriminator + custom;
+        }
+
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim().toLowerCase();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim().split(",");
+            });
+
+        // Validate (and convert slice tiles to numbers).
+        const returnWarningInsteadOfThrow = true;
+        items = items.filter((item) => {
+            assert(Array.isArray(item));
+            for (let i = 0; i < item.length; i++) {
+                const tileStr = item[i];
+                const tile = Number.parseInt(tileStr);
+                if (Number.isNaN(tile)) {
+                    errors.push(`Slice entry "${tileStr}" is not a number`);
+                    return false;
+                }
+                item[i] = tile;
+            }
+
+            const err = AbstractUtil.assertIsSlice(
+                item,
+                shape,
+                returnWarningInsteadOfThrow
+            );
+            if (err) {
+                errors.push(err);
+                return false;
+            }
+            return true;
+        });
+
+        return items;
+    }
+
+    static parseCustomLabels(custom, sliceCount, errors) {
+        assert(typeof custom === "string");
+        assert(typeof sliceCount === "number");
+        assert(Array.isArray(errors));
+
+        const descriminator = "labels=";
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim();
+            });
+
+        // Validate.
+        if (items.length !== sliceCount) {
+            const err = `label count (${items.length}) does not match slice count (${sliceCount})`;
+            errors.push(err);
+        }
+
+        return items;
+    }
+
     constructor() {
         this._count = this.getDefaultCount();
     }
@@ -113,9 +207,9 @@ class AbstractSliceGenerator {
         throw new Error("subclass must override this");
     }
 
-    static _hasAdjacentAnomalies(shape, slice) {
-        AbstractUtil.assertIsShape(shape);
+    static _hasAdjacentAnomalies(slice, shape) {
         AbstractUtil.assertIsSlice(slice, shape);
+        AbstractUtil.assertIsShape(shape);
 
         const hexIsAnomalySet = new Set();
         for (let i = 0; i < slice.length; i++) {
@@ -138,25 +232,16 @@ class AbstractSliceGenerator {
         }
     }
 
-    static _separateAnomalies(shape, slice) {
-        assert(Array.isArray(shape));
-        for (const hex of shape) {
-            assert(Hex._hexFromString(hex)); // valid hex string?
-        }
-        assert(Array.isArray(slice));
-        for (const tile of slice) {
-            assert(typeof tile === "number");
-            const system = world.TI4.getSystemByTileNumber(tile);
-            assert(system);
-        }
-        assert(shape.length === slice.length + 1); // first is home system
+    static _separateAnomalies(slice, shape) {
+        AbstractUtil.assertIsShape(shape);
+        AbstractUtil.assertIsSlice(slice, shape);
 
         slice = [...slice]; // work with a copy
 
         // First, shuffle a few times and see if we get a good setup.
         // Give up after a reasonable number of tries.
         for (let i = 0; i < 20; i++) {
-            if (!AbstractSliceGenerator._hasAdjacentAnomalies(shape, slice)) {
+            if (!AbstractSliceGenerator._hasAdjacentAnomalies(slice, shape)) {
                 return slice;
             }
             Shuffle.shuffle(slice);
@@ -166,8 +251,8 @@ class AbstractSliceGenerator {
         // (This always fixes the same way, hence a few random stabs before this.)
         const inspector = (candidate) => {
             return !AbstractSliceGenerator._hasAdjacentAnomalies(
-                shape,
-                candidate
+                candidate,
+                shape
             );
         };
         const goodSlice = AbstractSliceGenerator._permutator(slice, inspector);

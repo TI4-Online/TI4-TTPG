@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/pok/empyrean.back.jpg",
 	"BackTexture": "locale/factionsheets/pok/empyrean.face.jpg",
 	"HiddenTexture": "",

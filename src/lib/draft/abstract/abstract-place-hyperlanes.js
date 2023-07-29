@@ -72,10 +72,17 @@ class AbstractPlaceHyperlanes {
                 for (const openIndex of open) {
                     const openHex = idxToHexString(openIndex);
                     const openPos = Hex.toPosition(openHex);
-                    const distance = movePos
-                        .subtract(openPos)
-                        .magnitudeSquared();
-                    if (!bestDistance || distance < bestDistance) {
+                    let distance = movePos.subtract(openPos).magnitudeSquared();
+
+                    // Prefer closer to center.
+                    distance += openIndex / 100;
+
+                    let useThis = bestDistance ? false : true;
+                    if (distance < bestDistance) {
+                        useThis = true;
+                    }
+
+                    if (useThis) {
                         bestMoveIndex = moveIndex;
                         bestOpenIndex = openIndex;
                         bestDistance = distance;

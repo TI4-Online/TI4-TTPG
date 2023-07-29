@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
-const { Broadcast } = require("../../lib/broadcast");
 const { CommandToken } = require("../../lib/command-token/command-token");
 const { ControlToken } = require("../../lib/control-token/control-token");
 const { Explore } = require("../../lib/explore/explore");
@@ -104,20 +103,6 @@ function getNamesAndActions(player, systemTileObj) {
             namesAndActions.push(...custom);
         }
     }
-
-    // Inform players about setting to right click ground mode objects.
-    namesAndActions.push({
-        name: locale("ui.action.system.enable_right_click"),
-        action: (player) => {
-            Broadcast.broadcastOne(
-                player,
-                locale("ui.message.system_enable_right_click"),
-                [1, 1, 0, 1]
-            );
-        },
-        fontSizeScale: 0.5,
-        popupOnly: true,
-    });
 
     return namesAndActions;
 }

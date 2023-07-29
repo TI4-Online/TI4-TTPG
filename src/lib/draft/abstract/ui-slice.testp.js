@@ -2,7 +2,7 @@ const { Hex } = require("../../hex");
 const MapStringHex = require("../../map-string/map-string-hex");
 const { UiSlice } = require("./ui-slice");
 const { SLICE_SHAPES } = require("./abstract-slice-generator");
-const { Border, UIElement, refObject, world } = require("../../../wrapper/api");
+const { UIElement, refObject, world } = require("../../../wrapper/api");
 const { UiDraftChoice } = require("./ui-draft-choice");
 
 const ADD_HEX_LABELS = false;
@@ -31,6 +31,13 @@ function miltySlice() {
         25, // wormhole
     ];
 
+    // Discordant Stars
+    // slice[0] = 4239;
+    // slice[1] = 4240;
+    // slice[2] = 4241;
+    // slice[3] = 4242;
+    // slice[4] = 4243;
+
     const scale = 10;
     const uiSlice = new UiSlice()
         .setLabel("Demo Slice")
@@ -52,4 +59,6 @@ function miltySlice() {
     refObject.addUI(ui);
 }
 
-miltySlice();
+process.nextTick(() => {
+    miltySlice();
+});

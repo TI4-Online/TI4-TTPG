@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/base/creuss.back.jpg",
 	"BackTexture": "locale/factionsheets/base/creuss.face.jpg",
 	"HiddenTexture": "",

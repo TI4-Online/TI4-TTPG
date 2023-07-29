@@ -73,6 +73,7 @@
 			"ExtraMap": "global/tiles/reverse_homeworld_x.png",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
@@ -116,5 +117,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 1
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": []
 }

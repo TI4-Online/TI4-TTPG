@@ -34,6 +34,7 @@
 		"Z": 0
 	},
 	"Tags": [],
+       "GroundAccessibility": "Zoom",
 	"FrontTexture": "locale/factionsheets/pok/argent.back.jpg",
 	"BackTexture": "locale/factionsheets/pok/argent.face.jpg",
 	"HiddenTexture": "",

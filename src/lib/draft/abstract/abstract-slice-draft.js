@@ -13,20 +13,52 @@ const { AbstractUtil } = require("./abstract-util");
 const { Broadcast } = require("../../broadcast");
 const { FactionToken } = require("../../faction/faction-token");
 const { MapStringLoad } = require("../../map-string/map-string-load");
+const { ObjectNamespace } = require("../../object-namespace");
 const { PlayerDesk } = require("../../player-desk/player-desk");
 const { Shuffle } = require("../../shuffle");
 const { UiMap } = require("./ui-map");
-const { Player, Rotator, world } = require("../../../wrapper/api");
-const { ObjectNamespace } = require("../../object-namespace");
+const { UiDraft } = require("./ui-draft");
+const {
+    Player,
+    Rotator,
+    UIElement,
+    Vector,
+    world,
+} = require("../../../wrapper/api");
 
 const SPEAKER_TOKEN_POS = { x: 48, y: 0, z: 5 };
+const UI_DRAFT_SCALE = 8; // want at least 6 for high quality zoom
 
 /**
  * Overall draft controller.  Draws draft UI, manages draft, executes draft result.
  */
 class AbstractSliceDraft {
+    static _reportHomebrewSystemTilesInSlices(slices, shape) {
+        AbstractUtil.assertIsSliceArray(slices, shape);
+        // Report any homebrew.
+        for (const slice of slices) {
+            for (const tile of slice) {
+                const system = world.TI4.getSystemByTileNumber(tile);
+                const src = system.raw.source;
+                if (
+                    src &&
+                    (src === "base" ||
+                        src === "pok" ||
+                        src.startsWith("codex."))
+                ) {
+                    continue;
+                }
+                const msg = `Homebrew system: ${tile}: ${system.getSummaryStr()}`;
+                Broadcast.chatAll(msg);
+            }
+        }
+    }
+
     constructor() {
         this._onChooserToggled = new TriggerableMulticastDelegate();
+        this._onDraftStateChanged = new TriggerableMulticastDelegate();
+
+        this._isDraftInProgress = false;
 
         // Use sensible defaults, caller can override.
         this._factionGenerator = new AbstractFactionGenerator();
@@ -42,12 +74,13 @@ class AbstractSliceDraft {
         this._customCheckBoxes = []; // {name, default, onCheckStateChanged}
         this._customSliders = []; // {name, min, max, default, onValueChanged}
 
-        this._customInput = undefined; // player specified slices, factions, labels, etc
+        this._customInput = ""; // player specified slices, factions, labels, etc
 
         // Draft-time memory.  Chooser is desk index.  Should be able to
         // save/restore everything here to regerate a draft in progress.
         this._sliceShape = undefined;
         this._slices = undefined;
+        this._labels = undefined;
         this._factions = undefined;
         this._fixedSystems = undefined;
 
@@ -55,10 +88,20 @@ class AbstractSliceDraft {
         this._chooserToSeatIndex = {};
         this._chooserToSlice = {};
         this._origTurnOrder = undefined;
+
+        this._activeDraftUiElement = undefined;
     }
 
     get onChooserToggled() {
         return this._onChooserToggled;
+    }
+
+    get onDraftStateChanged() {
+        return this._onDraftStateChanged;
+    }
+
+    isDraftInProgress() {
+        return this._isDraftInProgress;
     }
 
     _attemptToggle(clickingPlayer, chooserToX, x, categoryName, selectionName) {
@@ -126,6 +169,12 @@ class AbstractSliceDraft {
         Broadcast.chatAll(msg, playerDesk.chatColor);
         chooserToX[chooser] = x;
         this._onChooserToggled.trigger();
+
+        // Advance turn.
+        if (world.TI4.turns.isActivePlayer(clickingPlayer)) {
+            world.TI4.turns.endTurn(clickingPlayer);
+        }
+
         return true; // toggle on
     }
 
@@ -289,6 +338,17 @@ class AbstractSliceDraft {
         return this;
     }
 
+    getLabel(sliceIndex) {
+        let label;
+        if (this._labels) {
+            label = this._labels[sliceIndex];
+        }
+        if (!label) {
+            label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[sliceIndex]}`;
+        }
+        return label;
+    }
+
     getMaxPlayerCount() {
         return this._maxPlayerCount;
     }
@@ -393,7 +453,7 @@ class AbstractSliceDraft {
     }
 
     getFixedSystems() {
-        assert(this._fixedSystems); // must call start to create
+        // Allow read before start
         return this._fixedSystems;
     }
 
@@ -407,6 +467,8 @@ class AbstractSliceDraft {
 
         // Must provide a slice generator.
         assert(this._sliceGenerator);
+        this._sliceShape = this._sliceGenerator.getSliceShape();
+        AbstractUtil.assertIsShape(this._sliceShape);
 
         this._chooserToFaction = {};
         this._chooserToSeatIndex = {};
@@ -429,33 +491,96 @@ class AbstractSliceDraft {
             this._turnOrderType
         );
 
-        // Create slices.
-        const sliceCount = this._sliceGenerator.getCount();
-        this._sliceShape = this._sliceGenerator.getSliceShape();
-        this._slices = this._sliceGenerator.generateSlices(sliceCount);
-        AbstractUtil.assertIsShape(this._sliceShape);
+        const errors = [];
+
+        // Parse/create slices.
+        this._slices = AbstractSliceGenerator.parseCustomSlices(
+            this._customInput,
+            this._sliceShape,
+            errors
+        );
+        const sliceCount = this._slices
+            ? this._slices.length
+            : this._sliceGenerator.getCount();
+        this._labels = AbstractSliceGenerator.parseCustomLabels(
+            this._customInput,
+            sliceCount,
+            errors
+        );
+        if (!this._slices) {
+            this._slices = this._sliceGenerator.generateSlices(sliceCount);
+        }
         AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
+        AbstractSliceDraft._reportHomebrewSystemTilesInSlices(
+            this._slices,
+            this._sliceShape
+        );
 
         // Choose factions.
-        const factionCount = this._factionGenerator.getCount();
-        this._factions = this._factionGenerator.generateFactions(factionCount);
+        this._factions = AbstractFactionGenerator.parseCustomFactions(
+            this._customInput,
+            errors
+        );
+        if (!this._factions) {
+            const factionCount = this._factionGenerator.getCount();
+            this._factions =
+                this._factionGenerator.generateFactions(factionCount);
+        }
         AbstractUtil.assertIsFactionArray(this._factions);
 
         // Create fixed systems.
-        this._fixedSystems = {};
+        this._fixedSystems = [];
         if (this._fixedSystemsGenerator) {
+            const fixedHexes = this._fixedSystemsGenerator.getFixedHexes();
+            const fixedCount = fixedHexes.length;
             this._fixedSystems =
-                this._fixedSystemsGenerator.generateFixedSystems();
+                AbstractFixedSystemsGenerator.parseCustomFixedSystems(
+                    this._customInput,
+                    fixedCount,
+                    errors
+                );
+            if (!this._fixedSystems) {
+                this._fixedSystems =
+                    this._fixedSystemsGenerator.generateFixedSystems();
+            }
         }
-        AbstractUtil.assertIsHexToTile(this._fixedSystems);
+        AbstractUtil.assertValidSystems(this._fixedSystems);
 
-        // Create UI.
-        // XXX TODO
+        // Make sure no errors before proceeding.
+        if (errors.length > 0) {
+            let msg = errors.join(", ");
+            msg = locale("ui.draft.start_error", { msg });
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            this.cancel(player);
+            return this;
+        }
 
         // Disable desk UI (except for take seat).
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerDesk.setReady(true);
         }
+
+        this._isDraftInProgress = true;
+        this._onDraftStateChanged.trigger();
+
+        // Create UI.
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
+        }
+        const widget = new UiDraft(this)
+            .setScale(UI_DRAFT_SCALE)
+            .createWidget();
+        this._activeDraftUiElement = new UIElement();
+        this._activeDraftUiElement.position = new Vector(
+            0,
+            0,
+            world.getTableHeight() + 3
+        );
+        this._activeDraftUiElement.scale = 1 / UI_DRAFT_SCALE;
+        this._activeDraftUiElement.widget = widget;
+
+        world.addUI(this._activeDraftUiElement);
 
         return this;
     }
@@ -464,6 +589,11 @@ class AbstractSliceDraft {
         assert(player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.cancel");
+        }
+
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
         }
 
         if (this._origTurnOrder) {
@@ -475,13 +605,12 @@ class AbstractSliceDraft {
             this._origTurnOrder = undefined;
         }
 
-        // Dismiss UI.
-        // XXX TODO
-
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             playerDesk.setReady(false);
         }
 
+        this._isDraftInProgress = false;
+        this._onDraftStateChanged.trigger();
         return this;
     }
 
@@ -491,12 +620,23 @@ class AbstractSliceDraft {
             console.log("AbstractSliceDraft.finish");
         }
 
+        if (this._activeDraftUiElement) {
+            world.removeUIElement(this._activeDraftUiElement);
+            this._activeDraftUiElement = undefined;
+        }
+
         AbstractSliceDraft._setTurnOrderFromSpeaker(this._speakerIndex, player);
 
         this._setupMap();
         this._moveSpeakerToken();
         this._dealFactionCards();
         this._movePlayersToSeats();
+
+        this._isDraftInProgress = false;
+        this._onDraftStateChanged.trigger();
+
+        // Return to home on main UI.
+        world.TI4.GameUI.goHome();
 
         return this;
     }

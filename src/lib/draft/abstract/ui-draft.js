@@ -1,6 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
-const { AbstractSliceDraft } = require("./abstract-slice-draft");
 const { AbstractUtil } = require("./abstract-util");
 const { ColorUtil } = require("../../color/color-util");
 const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
@@ -16,31 +15,35 @@ const {
     HorizontalBox,
     LayoutBox,
     Panel,
+    Text,
+    TextJustification,
     VerticalBox,
+    globalEvents,
     world,
 } = require("../../../wrapper/api");
 
 const SPACING = 4;
 const FONT_SIZE = 10;
 
-const ROWS_SLICES = 2;
+const ROWS_SLICES = 3;
 const ROWS_FACTIONS = 8;
 const ROWS_SEATS = 8;
 
 const COLORS = [
-    "#00FF00", // green
-    "#FF1010", // red
+    "#F0F0F0", // white
+    "#00CFFF", // blue
+    "#572780", // purple
     "#D7B700", // yellow
+    "#FF1010", // red
+    "#00FF00", // green
     "#F46FCD", // pink
     "#FC6A03", // orange
-    "#572780", // purble
-    "#00CFFF", // plue
-    "#F0F0F0", // white
+    "#6E260E", // brown
 ];
 
 class UiDraft {
     constructor(sliceDraft) {
-        assert(sliceDraft instanceof AbstractSliceDraft);
+        assert(sliceDraft);
         this._sliceDraft = sliceDraft;
 
         this._scale = 1;
@@ -69,6 +72,25 @@ class UiDraft {
 
         this._addMap(panel);
 
+        // Active turn indicator.
+        const turn = new Text()
+            .setFontSize(this._scale * FONT_SIZE)
+            .setJustification(TextJustification.Center);
+        const updateTurn = () => {
+            const playerDesk = world.TI4.turns.getCurrentTurn();
+            const playerSlot = playerDesk.playerSlot;
+            const player = world.getPlayerBySlot(playerSlot);
+            const playerName = player
+                ? player.getName()
+                : `"${playerDesk.colorName}"`;
+            const msg = locale("ui.agenda.clippy.waiting_for_player_name", {
+                playerName,
+            });
+            turn.setText(msg);
+        };
+        updateTurn();
+        globalEvents.TI4.onTurnChanged.add(updateTurn);
+
         // Finish button below.
         const finish = new Button()
             .setFontSize(this._scale * FONT_SIZE)
@@ -86,10 +108,21 @@ class UiDraft {
         updateFinishEnabled();
         this._sliceDraft.onChooserToggled.add(updateFinishEnabled);
 
-        return new VerticalBox()
+        const overall = new VerticalBox()
             .setChildDistance(this._spacing)
             .addChild(panel)
+            .addChild(turn)
             .addChild(finish);
+
+        const overallBox = new LayoutBox()
+            .setPadding(
+                this._spacing,
+                this._spacing,
+                this._spacing,
+                this._spacing
+            )
+            .setChild(overall);
+        return new Border().setChild(overallBox);
     }
 
     _addSpacer(panel) {
@@ -120,8 +153,8 @@ class UiDraft {
             }
 
             const slice = slices[index];
-            const color = ColorUtil.colorFromHex(COLORS[index]);
-            const label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[index]}`;
+            const color = ColorUtil.colorFromHex(COLORS[index % COLORS.length]);
+            const label = this._sliceDraft.getLabel(index);
             const uiSlice = new UiSlice()
                 .setScale(this._scale)
                 .setShape(shape)

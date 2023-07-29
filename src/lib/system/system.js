@@ -3,9 +3,28 @@ const locale = require("../locale");
 const { Facing } = require("../facing");
 const { ObjectNamespace } = require("../object-namespace");
 const { SystemSchema } = require("./system.schema");
-const { Card, GameObject, globalEvents, world } = require("../../wrapper/api");
+const {
+    Card,
+    GameObject,
+    globalEvents,
+    refPackageId,
+    world,
+} = require("../../wrapper/api");
 const SYSTEM_ATTRS = require("./system.data");
 const { Broadcast } = require("../broadcast");
+
+const SYSTEM_TIER = {
+    LOW: "low",
+    MED: "med",
+    HIGH: "high",
+
+    MECATOL: "mecatol",
+    HOME: "home",
+    RED: "red",
+    HYPERLANE: "hyperlane",
+    OFF_MAP: "offMap",
+    OTHER: "other",
+};
 
 // Lookup tables.
 let _tileToSystem = false;
@@ -196,6 +215,41 @@ class System {
     static getAllSystems() {
         _maybeInit();
         return Object.values(_tileToSystem);
+    }
+
+    /**
+     * Get system tile numbers ranked by tier (for drafting).
+     * Excludes home systems, hyperlanes, etc not suitable for use.
+     *
+     * @returns {Object}
+     */
+    static getAllTileNumbersTiered() {
+        const seen = new Set();
+        const low = [];
+        const med = [];
+        const high = [];
+        const red = [];
+        for (const system of world.TI4.getAllSystems()) {
+            if (seen.has(system.tile)) {
+                console.log(
+                    `System.getAllTileNumbersTiered: duplicated tile ${system.tile}`
+                );
+                continue;
+            }
+            seen.add(system.tile);
+
+            const tier = system.calculateTier();
+            if (tier === SYSTEM_TIER.LOW) {
+                low.push(system.tile);
+            } else if (tier === SYSTEM_TIER.MED) {
+                med.push(system.tile);
+            } else if (tier === SYSTEM_TIER.HIGH) {
+                high.push(system.tile);
+            } else if (tier === SYSTEM_TIER.RED) {
+                red.push(system.tile);
+            }
+        }
+        return { low, med, high, red };
     }
 
     /**
@@ -525,6 +579,14 @@ class System {
         return `tile.system:${this.raw.source}/${this.tile}`;
     }
 
+    get img() {
+        return this._attrs.img;
+    }
+
+    get packageId() {
+        return this._attrs.packageId ? this._attrs.packageId : refPackageId;
+    }
+
     getSummaryStr() {
         const summary = [];
         summary.push(
@@ -543,6 +605,83 @@ class System {
         );
         return summary.join(", ");
     }
+
+    /**
+     * Compute system tier (low, med, or high) using "DangerousGoods" method:
+     *
+     * - MED is systems with 2 or more planets and no tech skips.
+     *
+     * - HIGH are the systems with 2 or more planets with tech skips and
+     * the legendaries, and Atlas / Lodor.
+     *
+     * - LOW is the single planet systems + Quann.
+     */
+    calculateTier() {
+        // Handle some special cases before looking at blue systems.
+        if (this.tile === 18) {
+            return SYSTEM_TIER.MECATOL;
+        } else if (this.tile === 81) {
+            return SYSTEM_TIER.OTHER; // muaat hero supernova tile
+        } else if (this.home) {
+            return SYSTEM_TIER.HOME;
+        } else if (this.red) {
+            return SYSTEM_TIER.RED;
+        } else if (this.hyperlane) {
+            return SYSTEM_TIER.HYPERLANE;
+        } else if (this.tile <= 0) {
+            return SYSTEM_TIER.OTHER;
+        } else if (this.raw.offMap) {
+            return SYSTEM_TIER.OFF_MAP;
+        }
+
+        const planetCount = this.planets.length;
+        const techCount = this.planets.filter(
+            (planet) => planet.firstTech
+        ).length;
+        const hasLegendary =
+            this.planets.filter((planet) => planet.raw.legendary).length > 0;
+
+        // Special case move Atlas/Lodor to med.
+        if (this.tile === 26 || this.tile === 64) {
+            return SYSTEM_TIER.HIGH;
+        }
+
+        if ((planetCount >= 2 && techCount >= 1) || hasLegendary) {
+            return SYSTEM_TIER.HIGH;
+        }
+
+        if (planetCount >= 2 && techCount === 0) {
+            return SYSTEM_TIER.MED;
+        }
+
+        if (planetCount === 1) {
+            return SYSTEM_TIER.LOW;
+        }
+
+        throw new Error(`system ${this.tile}: ${this.getSummaryStr()}`);
+    }
+
+    calculateOptimal() {
+        let res = 0;
+        let inf = 0;
+        let optRes = 0;
+        let optInf = 0;
+        for (const planet of this.planets) {
+            const r = planet.raw.resources;
+            const i = planet.raw.influence;
+            res += r;
+            inf += i;
+            if (r > i) {
+                optRes += r;
+            } else if (r < i) {
+                optInf += i;
+            } else {
+                optRes += r / 2;
+                optInf += i / 2;
+            }
+        }
+        return { res, inf, optRes, optInf };
+    }
 }
 
-module.exports = { System, Planet };
+module.exports = { System, Planet, SYSTEM_TIER };

@@ -51,13 +51,16 @@
 			"Texture": "locale/utility/leadersheet_c.png",
 			"NormalMap": "",
 			"ExtraMap": "locale/utility/leadersheet_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [
 		{
@@ -65,32 +68,40 @@
 			"Y": -0.1,
 			"Z": 0.0472441,
 			"Range": 2.15748,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": -2.25,
 			"Y": -0.1,
 			"Z": 0.0472441,
 			"Range": 2.15748,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 2.25,
 			"Y": -0.1,
 			"Z": 0.0472441,
 			"Range": 2.15748,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		},
 		{
 			"X": 6.75,
 			"Y": -0.1,
 			"Z": 0.0472441,
 			"Range": 2.15748,
-			"SnapRotation": true,
-			"RotationOffset": 0
+			"SnapRotation": 2,
+			"RotationOffset": 0,
+			"Shape": 0,
+			"FlipValidity": 0
 		}
 	],
 	"ZoomViewDirection":
@@ -98,5 +109,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 1
-	}
+	},
+	"GroundAccessibility": "Zoom",
+	"Tags": []
 }

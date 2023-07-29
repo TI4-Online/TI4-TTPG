@@ -20,6 +20,16 @@ class DummySliceGeneator extends AbstractSliceGenerator {
     getSliceShape() {
         return SLICE_SHAPES.milty;
     }
+    generateSlices() {
+        return [
+            [21, 22, 23, 24, 25],
+            [31, 22, 23, 24, 25],
+            [41, 22, 23, 24, 25],
+            [51, 22, 23, 24, 25],
+            [61, 22, 23, 24, 25],
+            [71, 22, 23, 24, 25],
+        ];
+    }
 }
 
 function demo() {

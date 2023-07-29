@@ -6,87 +6,6 @@ const { world } = require("../../../wrapper/api");
 // From MiltyDraft.com
 // @author BradleySigma
 
-const resu = {
-    19: 0,
-    20: 1,
-    21: 0.5,
-    22: 0.5,
-    23: 1,
-    24: 0,
-    25: 2,
-    26: 3,
-    27: 3.5,
-    28: 2,
-    29: 0,
-    30: 3,
-    31: 3,
-    32: 0.5,
-    33: 2,
-    34: 0.5,
-    35: 3,
-    36: 2,
-    37: 0,
-    38: 5,
-    59: 0,
-    60: 2,
-    61: 2,
-    62: 3,
-    63: 0,
-    64: 3,
-    65: 2,
-    66: 3,
-    67: 2,
-    68: 3,
-    69: 0,
-    70: 2,
-    71: 3.5,
-    72: 3,
-    73: 0,
-    74: 2,
-    75: 3,
-    76: 0.5,
-};
-const infu = {
-    19: 2,
-    20: 1,
-    21: 0.5,
-    22: 0.5,
-    23: 1,
-    24: 3,
-    25: 0,
-    26: 0,
-    27: 0.5,
-    28: 3,
-    29: 5,
-    30: 2,
-    31: 0,
-    32: 2.5,
-    33: 2,
-    34: 3.5,
-    35: 3,
-    36: 2,
-    37: 6,
-    38: 0,
-    59: 3,
-    60: 0,
-    61: 0,
-    62: 0,
-    63: 2,
-    64: 0,
-    65: 0,
-    66: 0,
-    67: 0,
-    68: 0,
-    69: 6,
-    70: 2,
-    71: 0.5,
-    72: 1,
-    73: 3,
-    74: 2,
-    75: 2,
-    76: 3.5,
-};
-
 function miltyslices(
     numslice,
     extralegwh = true,
@@ -113,14 +32,32 @@ function miltyslices(
         slices = [];
 
         const avail = {
-            high: [28, 29, 30, 32, 33, 35, 36, 38, 69, 70, 71, 75],
-            meds: [26, 27, 31, 34, 37, 64, 65, 66, 72, 73, 74, 76],
-            lows: [19, 20, 21, 22, 23, 24, 25, 59, 60, 61, 62, 63],
-            reds: [
-                39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 67, 68, 77, 78,
-                79, 80,
-            ],
+            high: [], // 28, 29, 30, 32, 33, 35, 36, 38, 69, 70, 71, 75
+            meds: [], // 26, 27, 31, 34, 37, 64, 65, 66, 72, 73, 74, 76
+            lows: [], // 19, 20, 21, 22, 23, 24, 25, 59, 60, 61, 62, 63
+            reds: [], // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 67, 68, 77, 78, 79, 80
         };
+
+        const SYSTEM_TIER = world.TI4.System.SYSTEM_TIER;
+        const resu = {};
+        const infu = {};
+        for (const system of world.TI4.getAllSystems()) {
+            const tier = system.calculateTier();
+            if (tier === SYSTEM_TIER.LOW) {
+                avail.lows.push(system.tile);
+            } else if (tier === SYSTEM_TIER.MED) {
+                avail.meds.push(system.tile);
+            } else if (tier === SYSTEM_TIER.HIGH) {
+                avail.high.push(system.tile);
+            } else if (tier === SYSTEM_TIER.RED) {
+                avail.reds.push(system.tile);
+            }
+
+            const opt = system.calculateOptimal();
+            resu[system.tile] = opt.optRes;
+            infu[system.tile] = opt.optInf;
+        }
+
         let high = [];
         let meds = [];
         let lows = [];

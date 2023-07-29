@@ -1,10 +1,13 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../locale");
+const TriggerableMulticastDelegate = require("../../triggerable-multicast-delegate");
 const { AbstractSliceDraft } = require("./abstract-slice-draft");
+const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 const { UiMap } = require("./ui-map");
 const CONFIG = require("../../../game-ui/game-ui-config");
 const {
     Border,
+    Button,
     CheckBox,
     HorizontalAlignment,
     HorizontalBox,
@@ -12,56 +15,26 @@ const {
     Slider,
     Text,
     TextBox,
+    TextJustification,
     VerticalAlignment,
     VerticalBox,
     world,
 } = require("../../../wrapper/api");
 
 class UiDraftSettings {
-    static _createCheckbox(params) {
-        assert(typeof params.name === "string");
-        assert(typeof params.default === "boolean");
-        assert(typeof params.onCheckStateChanged === "function");
-
-        const checkBox = new CheckBox()
-            .setFontSize(CONFIG.fontSize)
-            .setText(params.name)
-            .setIsChecked(params.default);
-        checkBox.onCheckStateChanged.add(params.onCheckStateChanged);
-        return checkBox;
-    }
-
-    static _createSlider(params) {
-        assert(typeof params.name === "string");
-        assert(typeof params.min === "number");
-        assert(typeof params.max === "number");
-        assert(typeof params.default === "number");
-        assert(typeof params.onValueChanged === "function");
-
-        assert(params.min <= params.max);
-        assert(params.min <= params.default && params.default <= params.max);
-
-        const label = new Text()
-            .setFontSize(CONFIG.fontSize)
-            .setText(params.name);
-        const slider = new Slider()
-            .setFontSize(CONFIG.fontSize)
-            .setTextBoxWidth(CONFIG.fontSize * 4)
-            .setMinValue(params.min)
-            .setMaxValue(params.max)
-            .setStepSize(params.stepSize || 1)
-            .setValue(params.default);
-        slider.onValueChanged.add(params.onValueChanged);
-        const panel = new HorizontalBox()
-            .setChildDistance(CONFIG.spacing)
-            .addChild(label, 1)
-            .addChild(slider, 1);
-        return panel;
-    }
-
     constructor(sliceDraft) {
         assert(sliceDraft instanceof AbstractSliceDraft);
+
         this._sliceDraft = sliceDraft;
+
+        this._onDraftSettingsChanged = new TriggerableMulticastDelegate();
+        this._triggerOnDraftSettingsChanged = () => {
+            this._onDraftSettingsChanged.trigger();
+        };
+    }
+
+    get onDraftSettingsChanged() {
+        return this._onDraftSettingsChanged;
     }
 
     getWidget() {
@@ -88,7 +61,7 @@ class UiDraftSettings {
             .setChildDistance(CONFIG.spacing)
             .addChild(slidersAndCheckboxes, 2)
             .addChild(spacer)
-            .addChild(mapPanel, 1);
+            .addChild(mapPanel, 1.12); // 8p map needs an extra ring
 
         const panel = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
@@ -98,10 +71,50 @@ class UiDraftSettings {
 
         this._addStartButton(panel);
 
+        // Alt UI for draft in progress.
+        const swapBox = new LayoutBox();
+        const setAppropriateWidget = () => {
+            if (this._sliceDraft.isDraftInProgress()) {
+                swapBox.setChild(this._getDraftInProgressWidget());
+            } else {
+                swapBox.setChild();
+                swapBox.setChild(panel);
+            }
+        };
+        setAppropriateWidget();
+        this._sliceDraft.onDraftStateChanged.add(setAppropriateWidget);
+
+        return swapBox;
+    }
+
+    _getDraftInProgressWidget() {
+        const label = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
+            .setText(locale("ui.draft.in_progress"));
+
+        const labelBox = new LayoutBox()
+            .setVerticalAlignment(VerticalAlignment.Center)
+            .setChild(label);
+
+        const cancel = new Button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("ui.button.cancel"));
+        cancel.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                this._sliceDraft.cancel(player);
+            })
+        );
+
+        const panel = new VerticalBox()
+            .addChild(labelBox, 1)
+            .addChild(cancel, 0);
+
         return panel;
     }
 
     _getTooManyPlayersWidget() {
+        const playerCount = world.TI4.config.playerCount;
         const msg = locale("ui.draft.too_many_players", { playerCount });
         return new Text()
             .setAutoWrap(true)
@@ -112,29 +125,33 @@ class UiDraftSettings {
     _addSliders(panel) {
         // Slice count.
         const sliceGenerator = this._sliceDraft.getSliceGenerator();
-        const sliceCount = UiDraftSettings._createSlider({
+        const sliceCount = this._createSlider({
             name: locale("ui.draft.slice_count"),
             min: sliceGenerator.getMinCount(),
             max: sliceGenerator.getMaxCount(),
             default: sliceGenerator.getDefaultCount(),
-            onValueChanged: () => {},
+            onValueChanged: (slider, player, value) => {
+                this._sliceDraft.getSliceGenerator().setCount(value);
+            },
         });
         panel.addChild(sliceCount);
 
         // Faction count.
         const factionGenerator = this._sliceDraft.getFactionGenerator();
-        const factionCount = UiDraftSettings._createSlider({
+        const factionCount = this._createSlider({
             name: locale("ui.draft.faction_count"),
             min: factionGenerator.getMinCount(),
             max: factionGenerator.getMaxCount(),
             default: factionGenerator.getDefaultCount(),
-            onValueChanged: () => {},
+            onValueChanged: (slider, player, value) => {
+                this._sliceDraft.getFactionGenerator().setCount(value);
+            },
         });
         panel.addChild(factionCount);
 
         // Add custom sliders AFTER default ones.
         for (const params of this._sliceDraft.getCustomSliders()) {
-            const slider = UiDraftSettings._createSlider(params);
+            const slider = this._createSlider(params);
             panel.addChild(slider);
         }
     }
@@ -142,34 +159,46 @@ class UiDraftSettings {
     _addCheckboxes(panel) {
         // Add custom checkboxes BEFORE default ones.
         for (const params of this._sliceDraft.getCustomCheckBoxes()) {
-            const checkBox = UiDraftSettings._createCheckbox(params);
+            const checkBox = this._createCheckbox(params);
             panel.addChild(checkBox);
         }
 
         // Use faction cards on table?
-        const useFactionsOnTable = UiDraftSettings._createCheckbox({
+        const useFactionsOnTable = this._createCheckbox({
             name: locale("ui.draft.factions_from_cards_short"),
             default: false,
-            onCheckStateChanged: () => {},
+            onCheckStateChanged: (checkbox, player, isChecked) => {
+                this._sliceDraft
+                    .getFactionGenerator()
+                    .setSeedWithOnTableCards(true);
+            },
         });
         panel.addChild(useFactionsOnTable);
+
+        // Place planet cards and frontier tokens?
+        // TODO XXX
     }
 
     _addCustomConfig(panel) {
         const customConfigLabel = new Text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.custom_input"));
-        panel.addChild(customConfigLabel);
 
         const customConfigText = new TextBox()
             .setFontSize(CONFIG.fontSize)
             .setMaxLength(1023);
-        panel.addChild(customConfigText);
         customConfigText.onTextCommitted.add(
             (textBox, player, text, usingEnter) => {
                 this._sliceDraft.setCustomInput(text);
             }
         );
+
+        const row = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(customConfigLabel, 0)
+            .addChild(customConfigText, 1);
+
+        panel.addChild(row);
     }
 
     _addStartButton(panel) {
@@ -186,22 +215,70 @@ class UiDraftSettings {
     }
 
     _addMap(panel) {
-        const useHomeSystems = false;
-        const { mapString, deskIndexToLabel } = UiMap.generateMapString(
-            this._sliceDraft,
-            useHomeSystems
-        );
-        const map = new UiMap()
-            .setMapString(mapString)
-            .setScale(1.5)
-            .createWidget();
-
         const mapBox = new LayoutBox()
             .setHorizontalAlignment(HorizontalAlignment.Center)
-            .setVerticalAlignment(VerticalAlignment.Top)
-            .setChild(map);
-
+            .setVerticalAlignment(VerticalAlignment.Top);
         panel.addChild(mapBox);
+
+        const resetMap = () => {
+            console.log("UiDraftSettings resetMap");
+            const options = { includeHomeSystems: false };
+            const { mapString } = UiMap.generateMapString(
+                this._sliceDraft,
+                options
+            );
+            const map = new UiMap()
+                .setMapString(mapString)
+                .setScale(1.5)
+                .createWidget();
+            mapBox.setChild(map);
+        };
+
+        resetMap();
+        this._onDraftSettingsChanged.add(resetMap);
+    }
+
+    _createCheckbox(params) {
+        assert(typeof params.name === "string");
+        assert(typeof params.default === "boolean");
+        assert(typeof params.onCheckStateChanged === "function");
+
+        const checkBox = new CheckBox()
+            .setFontSize(CONFIG.fontSize)
+            .setText(params.name)
+            .setIsChecked(params.default);
+        checkBox.onCheckStateChanged.add(params.onCheckStateChanged);
+        checkBox.onCheckStateChanged.add(this._triggerOnDraftSettingsChanged);
+        return checkBox;
+    }
+
+    _createSlider(params) {
+        assert(typeof params.name === "string");
+        assert(typeof params.min === "number");
+        assert(typeof params.max === "number");
+        assert(typeof params.default === "number");
+        assert(typeof params.onValueChanged === "function");
+
+        assert(params.min <= params.max);
+        assert(params.min <= params.default && params.default <= params.max);
+
+        const label = new Text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(params.name);
+        const slider = new Slider()
+            .setFontSize(CONFIG.fontSize)
+            .setTextBoxWidth(CONFIG.fontSize * 4)
+            .setMinValue(params.min)
+            .setMaxValue(params.max)
+            .setStepSize(params.stepSize || 1)
+            .setValue(params.default);
+        slider.onValueChanged.add(params.onValueChanged);
+        slider.onValueChanged.add(this._triggerOnDraftSettingsChanged);
+        const panel = new HorizontalBox()
+            .setChildDistance(CONFIG.spacing)
+            .addChild(label, 1)
+            .addChild(slider, 1);
+        return panel;
     }
 }
 

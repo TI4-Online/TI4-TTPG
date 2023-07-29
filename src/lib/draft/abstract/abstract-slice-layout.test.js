@@ -188,7 +188,7 @@ it("7p", () => {
         abstractSliceLayout.setSlice(deskIndex, slice);
     }
 
-    abstractSliceLayout.setOverrideShape(3, SLICE_SHAPES.milty_7p_seat3);
+    abstractSliceLayout.setOverrideShape(3, SLICE_SHAPES.milty_7p_seatIndex3);
 
     // Use the rulebook funky shape
     const HEX = {
@@ -228,5 +228,21 @@ it("7p", () => {
     assert.equal(
         mapString,
         "{-1} 85B3 26 20 84B3 90B0 23 25 25 26 26 20 20 21 22 22 23 23 24 25 88B3 26 0 26 20 0 20 86B3 21 21 22 22 23 83B2 24 24 24 0 25 -1 -1 -1 -1 -1 -1 -1 -1 -1 21 0 21 22 0 -1 -1 0 23 -1 0 24 25"
+    );
+});
+
+it("bunker", () => {
+    const deskIndex = 0; // white, points northwest
+    const abstractSliceLayout = new AbstractSliceLayout()
+        .setShape(SLICE_SHAPES.bunker)
+        .setSlice(deskIndex, [21, 22, 23, 24]);
+
+    const mapStringArray = [];
+    abstractSliceLayout._defaultLayoutSlice(deskIndex, mapStringArray);
+    const mapString = MapStringParser.format(mapStringArray);
+
+    assert.equal(
+        mapString,
+        "{-1} -1 -1 -1 -1 -1 -1 -1 -1 -1 23 22 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 24 0 21"
     );
 });
