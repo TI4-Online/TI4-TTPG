@@ -130,7 +130,9 @@ class UiDraftSettings {
             min: sliceGenerator.getMinCount(),
             max: sliceGenerator.getMaxCount(),
             default: sliceGenerator.getDefaultCount(),
-            onValueChanged: () => {},
+            onValueChanged: (slider, player, value) => {
+                this._sliceDraft.getSliceGenerator().setCount(value);
+            },
         });
         panel.addChild(sliceCount);
 
@@ -141,7 +143,9 @@ class UiDraftSettings {
             min: factionGenerator.getMinCount(),
             max: factionGenerator.getMaxCount(),
             default: factionGenerator.getDefaultCount(),
-            onValueChanged: () => {},
+            onValueChanged: (slider, player, value) => {
+                this._sliceDraft.getFactionGenerator().setCount(value);
+            },
         });
         panel.addChild(factionCount);
 
@@ -163,7 +167,11 @@ class UiDraftSettings {
         const useFactionsOnTable = this._createCheckbox({
             name: locale("ui.draft.factions_from_cards_short"),
             default: false,
-            onCheckStateChanged: () => {},
+            onCheckStateChanged: (checkbox, player, isChecked) => {
+                this._sliceDraft
+                    .getFactionGenerator()
+                    .setSeedWithOnTableCards(true);
+            },
         });
         panel.addChild(useFactionsOnTable);
 

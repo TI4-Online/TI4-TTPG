@@ -38,6 +38,7 @@ const COLORS = [
     "#00FF00", // green
     "#F46FCD", // pink
     "#FC6A03", // orange
+    "#6E260E", // brown
 ];
 
 class UiDraft {
@@ -152,7 +153,7 @@ class UiDraft {
             }
 
             const slice = slices[index];
-            const color = ColorUtil.colorFromHex(COLORS[index]);
+            const color = ColorUtil.colorFromHex(COLORS[index % COLORS.length]);
             const label = this._sliceDraft.getLabel(index);
             const uiSlice = new UiSlice()
                 .setScale(this._scale)

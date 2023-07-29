@@ -36,21 +36,38 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
                 count,
                 extralegwh
             );
-            if (slices) {
-                const shape = this.getSliceShape();
-                slices = slices.map((slice) => {
-                    return AbstractSliceGenerator._separateAnomalies(
-                        slice,
-                        shape
-                    );
-                });
-                if (!world.__isMock) {
-                    console.log(
-                        `MiltySliceGenerator.generateSlices loops: ${loops}`
-                    );
-                }
-                return slices;
+            if (!slices) {
+                continue; // attempt failed
             }
+
+            // Watch for null in the result.
+            let good = true;
+            for (const slice of slices) {
+                if (slice.length !== 5) {
+                    good = false;
+                    break;
+                }
+                for (const tile of slice) {
+                    if (typeof tile !== "number") {
+                        good = false;
+                        break;
+                    }
+                }
+            }
+            if (!good) {
+                continue;
+            }
+
+            const shape = this.getSliceShape();
+            slices = slices.map((slice) => {
+                return AbstractSliceGenerator._separateAnomalies(slice, shape);
+            });
+            if (!world.__isMock) {
+                console.log(
+                    `MiltySliceGenerator.generateSlices loops: ${loops}`
+                );
+            }
+            return slices;
         }
     }
 
@@ -77,30 +94,19 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
 
         const slices = [];
 
+        const tiered = world.TI4.System.getAllTileNumbersTiered();
         const avail = {
-            high: [], // 28, 29, 30, 32, 33, 35, 36, 38, 69, 70, 71, 75
-            meds: [], // 26, 27, 31, 34, 37, 64, 65, 66, 72, 73, 74, 76
-            lows: [], // 19, 20, 21, 22, 23, 24, 25, 59, 60, 61, 62, 63
-            reds: [], // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 67, 68, 77, 78, 79, 80
+            high: tiered.high, // 28, 29, 30, 32, 33, 35, 36, 38, 69, 70, 71, 75
+            meds: tiered.med, // 26, 27, 31, 34, 37, 64, 65, 66, 72, 73, 74, 76
+            lows: tiered.low, // 19, 20, 21, 22, 23, 24, 25, 59, 60, 61, 62, 63
+            reds: tiered.red, // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 67, 68, 77, 78, 79, 80
         };
 
         // Scan the system table instead of hard coding systems.
         // This lets homebrew fold into the mix.
-        const SYSTEM_TIER = world.TI4.SYSTEM_TIER;
         const resu = {};
         const infu = {};
         for (const system of world.TI4.getAllSystems()) {
-            const tier = system.calculateTier();
-            if (tier === SYSTEM_TIER.LOW) {
-                avail.lows.push(system.tile);
-            } else if (tier === SYSTEM_TIER.MED) {
-                avail.meds.push(system.tile);
-            } else if (tier === SYSTEM_TIER.HIGH) {
-                avail.high.push(system.tile);
-            } else if (tier === SYSTEM_TIER.RED) {
-                avail.reds.push(system.tile);
-            }
-
             const opt = system.calculateOptimal();
             resu[system.tile] = opt.optRes;
             infu[system.tile] = opt.optInf;
@@ -116,7 +122,9 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
             () => {
                 if (!meds.includes(26)) {
                     meds.push(26);
+                    avail.high = avail.high.filter((x) => x != 26);
                     avail.meds = avail.meds.filter((x) => x != 26);
+                    avail.lows = avail.lows.filter((x) => x != 26);
                 }
             },
             () => {
@@ -141,11 +149,13 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
             fix();
         }
 
-        // Get to minbeda.
+        // Get to minbeta.
         fixes = Shuffle.shuffle([
             () => {
                 if (!lows.includes(25)) {
                     lows.push(25);
+                    avail.high = avail.high.filter((x) => x != 25);
+                    avail.meds = avail.meds.filter((x) => x != 25);
                     avail.lows = avail.lows.filter((x) => x != 25);
                 }
             },
@@ -158,7 +168,9 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
             () => {
                 if (!meds.includes(64)) {
                     meds.push(64);
+                    avail.high = avail.high.filter((x) => x != 64);
                     avail.meds = avail.meds.filter((x) => x != 64);
+                    avail.lows = avail.lows.filter((x) => x != 64);
                 }
             },
         ]);
@@ -176,13 +188,17 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
             () => {
                 if (!meds.includes(65)) {
                     meds.push(65);
+                    avail.high = avail.high.filter((x) => x != 65);
                     avail.meds = avail.meds.filter((x) => x != 65);
+                    avail.lows = avail.lows.filter((x) => x != 65);
                 }
             },
             () => {
                 if (!meds.includes(66)) {
                     meds.push(66);
+                    avail.high = avail.high.filter((x) => x != 66);
                     avail.meds = avail.meds.filter((x) => x != 66);
+                    avail.lows = avail.lows.filter((x) => x != 66);
                 }
             },
         ]);

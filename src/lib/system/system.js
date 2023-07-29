@@ -218,6 +218,41 @@ class System {
     }
 
     /**
+     * Get system tile numbers ranked by tier (for drafting).
+     * Excludes home systems, hyperlanes, etc not suitable for use.
+     *
+     * @returns {Object}
+     */
+    static getAllTileNumbersTiered() {
+        const seen = new Set();
+        const low = [];
+        const med = [];
+        const high = [];
+        const red = [];
+        for (const system of world.TI4.getAllSystems()) {
+            if (seen.has(system.tile)) {
+                console.log(
+                    `System.getAllTileNumbersTiered: duplicated tile ${system.tile}`
+                );
+                continue;
+            }
+            seen.add(system.tile);
+
+            const tier = system.calculateTier();
+            if (tier === SYSTEM_TIER.LOW) {
+                low.push(system.tile);
+            } else if (tier === SYSTEM_TIER.MED) {
+                med.push(system.tile);
+            } else if (tier === SYSTEM_TIER.HIGH) {
+                high.push(system.tile);
+            } else if (tier === SYSTEM_TIER.RED) {
+                red.push(system.tile);
+            }
+        }
+        return { low, med, high, red };
+    }
+
+    /**
      * Retrieve the system object.  Do not use the contructor directly,
      * because attachements, etc, modify the shared instance.
      *

@@ -206,6 +206,7 @@ world.TI4 = {
     RollGroup,
     SimpleDieBuilder,
     Spawn,
+    System,
     Technology,
     UnitAttrs,
     UnitModifier,
