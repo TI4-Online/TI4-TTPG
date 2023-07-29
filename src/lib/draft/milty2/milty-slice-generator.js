@@ -27,6 +27,26 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
     }
 
     generateSlices(sliceCount) {
+        const isGoodResult = (slices) => {
+            if (!slices) {
+                return false;
+            }
+
+            // Watch for null in the result.
+            for (const slice of slices) {
+                if (slice.length !== 5) {
+                    return false;
+                }
+                for (const tile of slice) {
+                    if (typeof tile !== "number") {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        };
+
         let loops = 0;
         while (loops < 1000000) {
             loops += 1;
@@ -36,32 +56,15 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
                 count,
                 extralegwh
             );
-            if (!slices) {
+            if (!isGoodResult(slices)) {
                 continue; // attempt failed
-            }
-
-            // Watch for null in the result.
-            let good = true;
-            for (const slice of slices) {
-                if (slice.length !== 5) {
-                    good = false;
-                    break;
-                }
-                for (const tile of slice) {
-                    if (typeof tile !== "number") {
-                        good = false;
-                        break;
-                    }
-                }
-            }
-            if (!good) {
-                continue;
             }
 
             const shape = this.getSliceShape();
             slices = slices.map((slice) => {
                 return AbstractSliceGenerator._separateAnomalies(slice, shape);
             });
+
             if (!world.__isMock) {
                 console.log(
                     `MiltySliceGenerator.generateSlices loops: ${loops}`
@@ -69,6 +72,9 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
             }
             return slices;
         }
+        throw new Error(
+            "MiltySliceGenerator.generateSlices failed after many retries"
+        );
     }
 
     // From MiltyDraft.com
