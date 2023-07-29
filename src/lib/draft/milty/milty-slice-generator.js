@@ -38,7 +38,7 @@ function miltyslices(
             reds: [], // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 67, 68, 77, 78, 79, 80
         };
 
-        const SYSTEM_TIER = world.TI4.System.SYSTEM_TIER;
+        const SYSTEM_TIER = world.TI4.SYSTEM_TIER;
         const resu = {};
         const infu = {};
         for (const system of world.TI4.getAllSystems()) {
@@ -268,7 +268,9 @@ function miltyslices(
             slices.push(s);
         }
         if (good) {
-            console.log(`loops: ${loops}`);
+            if (!world.__isMock) {
+                console.log(`loops: ${loops}`);
+            }
             return slices;
         }
     }
@@ -405,7 +407,11 @@ class MiltySliceGenerator {
             );
             // It fails sometimes, yuck.
             if (!isGood(result)) {
-                console.log("MiltySliceGenerator.generate: err, trying again");
+                if (!world.__isMock) {
+                    console.log(
+                        "MiltySliceGenerator.generate: err, trying again"
+                    );
+                }
                 result = false;
             }
         }
