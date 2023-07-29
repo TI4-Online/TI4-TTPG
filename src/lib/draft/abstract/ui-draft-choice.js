@@ -21,7 +21,7 @@ class UiDraftChoice {
             return true;
         };
         this._owningPlayerSlot = -1;
-        this._frameSize = 2;
+        this._frameSize = 4;
         this._paddingSize = 2;
         this._scale = 1;
     }

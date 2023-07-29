@@ -3,14 +3,12 @@ const assert = require("assert");
 const lodash = require("lodash");
 const { MiltySliceGenerator } = require("./milty-slice-generator");
 
-// long-running test, disabled
-// TODO XXX: break down into smaller tests
-// it("generate", () => {
-//     const sliceGenerator = new MiltySliceGenerator();
-//     const slices = sliceGenerator.generate();
-//     assert(sliceGenerator.getCount() > 0);
-//     assert.equal(slices.length, sliceGenerator.getCount());
-// });
+it("generate", () => {
+    const sliceGenerator = new MiltySliceGenerator();
+    const slices = sliceGenerator.generate();
+    assert(sliceGenerator.getCount() > 0);
+    assert.equal(slices.length, sliceGenerator.getCount());
+});
 
 it("fix adj anomalies", () => {
     // 0 anomalies
