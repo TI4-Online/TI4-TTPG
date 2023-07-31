@@ -23,6 +23,8 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
     /**
      * Set up a known attachment token (registered in attachment.data and via homebrew.injectAttachment).
      *
+     * USE THE DELAYED VERSION (particularly for homebrew) to make sure injection is done.
+     *
      * @param {GameObject} gameObject
      * @returns {AbstractPlanetAttachment}
      */
