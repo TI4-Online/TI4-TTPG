@@ -587,6 +587,15 @@ class System {
         return this._attrs.packageId ? this._attrs.packageId : refPackageId;
     }
 
+    get legendary() {
+        for (const planet of this.planets) {
+            if (planet.raw.legendary) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     getSummaryStr() {
         const summary = [];
         summary.push(

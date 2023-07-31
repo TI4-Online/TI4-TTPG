@@ -321,3 +321,11 @@ it("calculateOptimal", () => {
         assert.equal(opt.optInf, infu[tile]);
     }
 });
+
+it("legendary", () => {
+    let system = System.getByTileNumber(1);
+    assert(!system.legendary);
+
+    system = System.getByTileNumber(65);
+    assert(system.legendary);
+});
