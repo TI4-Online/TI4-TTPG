@@ -1,5 +1,10 @@
+const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../locale");
+const { AsyncTaskQueue } = require("../async-task-queue/async-task-queue");
+const { Broadcast } = require("../broadcast");
 const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
+const { globalEvents, world } = require("../../wrapper/api");
 
 const { SetupCardHolders } = require("../../setup/setup-card-holders");
 const {
@@ -43,10 +48,6 @@ const {
 const {
     SetupStartingUnits,
 } = require("../../setup/faction/setup-starting-units");
-
-const { globalEvents, world } = require("../../wrapper/api");
-const assert = require("../../wrapper/assert-wrapper");
-const { AsyncTaskQueue } = require("../async-task-queue/async-task-queue");
 
 const DISCARD_FACTION_TOKENS = true;
 const ASYNC_DELAY_MSECS = 30;
@@ -235,6 +236,12 @@ class PlayerDeskSetup {
             const nsidName = parsed.name.split(".")[0];
             const faction = world.TI4.getFactionByNsidName(nsidName);
             if (!faction) {
+                // This can happen if homebrew faction tokens get spawned in
+                // without loading the proper faction injection script.
+                const msg = locale("ui.error.mystery_faction_token", {
+                    tokenName: nsidName,
+                });
+                Broadcast.chatAll(msg, Broadcast.ERROR);
                 throw new Error(
                     `unknown faction "${nsidName}" from nsid "${nsid}"`
                 );
