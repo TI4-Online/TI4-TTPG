@@ -59,6 +59,7 @@ function addImageCardFace(card, packageId, image, tintColor, index) {
     );
     ui.rotation = new Rotator(180, 180, 0);
     ui.scale = 0.3;
+    ui.useTransparency = true;
     ui.widget = WidgetFactory.imageWidget()
         .setImage(image, packageId)
         .setImageSize(50, 50)
@@ -89,6 +90,7 @@ function addImageCardBack(card, packageId, image, tintColor, index) {
     );
     ui.rotation = new Rotator(0, 0, 0);
     ui.scale = 0.3;
+    ui.useTransparency = true;
     ui.widget = WidgetFactory.imageWidget()
         .setImage(image, packageId)
         .setImageSize(50, 50)
