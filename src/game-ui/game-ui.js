@@ -11,9 +11,6 @@ const {
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
 const {
-    MiltyDraftSettings,
-} = require("./tab-map/tab-draft/tab-milty/milty-draft-settings");
-const {
     MiltyEqDraftSettings,
 } = require("./tab-map/tab-draft/tab-milty-eq/milty-eq-draft-settings");
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
@@ -230,16 +227,8 @@ class GameUI {
     _createDraftFolder() {
         const draftFolder = new NavFolder().setName(locale("nav.map.draft"));
 
-        const miltyDraftEntry = new NavEntry()
-            .setName(locale("nav.map.draft.milty"))
-            .setIconPath("global/ui/icons/milty-hex.png")
-            .setPersistWidget(true)
-            .setWidgetFactory((navPanel, navEntry) => {
-                return new MiltyDraftSettings().getUI();
-            });
+        const miltyDraftEntry = MiltySliceDraft.createDraftNavEntry();
         draftFolder.addChild(miltyDraftEntry);
-        const miltyDraftEntry2 = MiltySliceDraft.createDraftNavEntry();
-        draftFolder.addChild(miltyDraftEntry2);
 
         const miltyEqDraftEntry = new NavEntry()
             .setName(locale("nav.map.draft.milty_eq"))

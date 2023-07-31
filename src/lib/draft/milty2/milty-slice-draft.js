@@ -45,7 +45,7 @@ class MiltySliceDraft extends AbstractSliceDraft {
 
     static createDraftNavEntry() {
         return new NavEntry()
-            .setName(locale("nav.map.draft.milty") + " (EXP!)")
+            .setName(locale("nav.map.draft.milty"))
             .setIconPath("global/ui/icons/milty-hex.png")
             .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {
