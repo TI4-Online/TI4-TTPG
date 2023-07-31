@@ -586,7 +586,7 @@ class AbstractSliceDraft {
     }
 
     cancel(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.cancel");
         }
@@ -615,7 +615,7 @@ class AbstractSliceDraft {
     }
 
     finish(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.finish");
         }
@@ -645,7 +645,7 @@ class AbstractSliceDraft {
 
     static _setTurnOrderFromSpeaker(speakerIndex, player) {
         AbstractUtil.assertIsDeskIndex(speakerIndex);
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
 
         // Set turn order according to draft speaker position.
         const playerDesks = world.TI4.getAllPlayerDesks();
