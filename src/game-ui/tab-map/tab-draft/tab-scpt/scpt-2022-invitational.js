@@ -1,12 +1,13 @@
-const { world } = require("../../../../wrapper/api");
-const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
-const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
+const { Broadcast } = require("../../../../lib/broadcast");
 const { SCPT2022InvitationalUI } = require("./scpt-2022-invitational-ui");
 const { TURN_ORDER_TYPE } = require("../../../../lib/turns");
 const {
-    MiltyFactionGenerator,
-} = require("../../../../lib/draft/milty/milty-faction-generator");
-const { Broadcast } = require("../../../../lib/broadcast");
+    AbstractFactionGenerator,
+} = require("../../../../lib/draft/abstract/abstract-faction-generator");
+const {
+    MiltySliceDraft,
+} = require("../../../../lib/draft/milty2/milty-slice-draft");
+const { globalEvents, world } = require("../../../../wrapper/api");
 
 class SCPT2022Invitational {
     constructor() {
@@ -37,53 +38,69 @@ class SCPT2022Invitational {
     }
 
     _start(scptDraftData) {
-        console.log(`SCPTDraft._start: ${scptDraftData.name}`);
-        if (this._miltyDraft) {
-            console.log("SCPTDraft._start: in progress, aborting");
-            return;
-        }
-        this._miltyDraft = new MiltyDraft();
-
-        // Slices.
-        const slices = scptDraftData.slices.split("|").map((sliceStr) => {
-            return MiltyUtil.parseSliceString(sliceStr);
-        });
-        const labels = scptDraftData.labels.split("|");
-        for (let i = 0; i < slices.length; i++) {
-            const slice = slices[i];
-            const label = labels[i];
-            console.log(`${i}: ${slice} "${label}"`);
-            this._miltyDraft.addSlice(slice, false, label);
-        }
-
-        // Seats.
-        const playerCount = world.TI4.config.playerCount;
-        const speakerIndex = Math.floor(Math.random() * playerCount);
-        this._miltyDraft.setSpeakerIndex(speakerIndex);
+        console.log(`SCPT2022Invitational._start: ${scptDraftData.name}`);
 
         // Factions.
+        const factionCards = AbstractFactionGenerator._getOnTableFactionCards();
         const factionNsidNames =
-            MiltyFactionGenerator.getOnTableFactionCardNsidNames();
-        factionNsidNames.forEach((name) => {
-            this._miltyDraft.addFaction(name);
-        });
+            AbstractFactionGenerator._getOnTableFactionCardNsidNames();
         if (factionNsidNames.length < world.TI4.config.playerCount) {
-            Broadcast.broadcastAll("Not enough face-up factions!");
-            this._miltyDraft = undefined;
+            Broadcast.broadcastAll(
+                "Not enough face-up factions!",
+                Broadcast.ERROR
+            );
+            return false;
+        }
+
+        // Discard faction cards.
+        const container = undefined;
+        const player = undefined;
+        globalEvents.TI4.onContainerRejected.trigger(
+            container,
+            factionCards,
+            player
+        );
+
+        // Assemble custom input.
+        const customInput = [
+            `slices=${scptDraftData.slices}`,
+            `labels=${scptDraftData.labels}`,
+            `factions=${factionNsidNames.join("|")}`,
+        ].join("&");
+        console.log(
+            `SCPT2022Invitational._start: draft config "${customInput}"`
+        );
+
+        if (this._miltySliceDraft) {
+            console.log("SCPT2022Invitational._start: in progress, aborting");
             return;
         }
 
-        this._randomizeTurnOrder(TURN_ORDER_TYPE.SNAKE);
-        this._miltyDraft.createPlayerUIs();
+        this._miltySliceDraft = new MiltySliceDraft()
+            .setCustomInput(customInput)
+            .start(player);
+
+        this._miltySliceDraft.onDraftStateChanged.add(() => {
+            if (
+                this._miltySliceDraft &&
+                !this._miltySliceDraft.isDraftInProgress()
+            ) {
+                console.log(
+                    "SCPT2022Invitational._start: draft cancelled, clearing state"
+                );
+                this._miltySliceDraft = undefined;
+            }
+        });
+
+        return true;
     }
 
     _cancel() {
-        console.log("SCPTDraft._cancel");
-        if (!this._miltyDraft) {
-            return;
+        console.log("SCPT2022Invitational._cancel");
+        if (this._miltySliceDraft) {
+            this._miltySliceDraft.cancel();
+            this._miltySliceDraft = undefined;
         }
-        this._miltyDraft.cancel();
-        this._miltyDraft = false;
     }
 }
 
