@@ -28,6 +28,7 @@ const LOG_SPAWN_COLLISIONS = false;
 const OVERRIDE_GROUP_NSIDS = ["card.technology"];
 
 let _typeSet = false;
+let _registeredTemplateIds = undefined;
 
 /**
  * Spawn game objects from the hard-coded template json files.
@@ -303,18 +304,48 @@ class Spawn {
     static injectNsidToTemplate(nsid, templateId) {
         assert(typeof nsid === "string");
         assert(typeof templateId === "string");
+        assert(nsid.length > 0);
+        assert(templateId.length > 0);
         const parsed = ObjectNamespace.parseNsid(nsid);
         if (!parsed) {
             throw new Error(`inject: "${nsid}" is not a valid NSID`);
         }
 
+        // Is this nsid already registered?
         const old = NSID_TO_TEMPLATE[nsid];
         if (old && templateId !== old) {
             console.log(
                 `Spawn.injectNsidToTemplate WARNING: nsid "${nsid}" already registered with different template (replacing)`
             );
         }
+
+        // Is this template id already registered for different nsid?
+        if (!_registeredTemplateIds) {
+            _registeredTemplateIds = new Set();
+            for (const registeredTemplateId of Object.values(
+                NSID_TO_TEMPLATE
+            )) {
+                _registeredTemplateIds.add(registeredTemplateId);
+            }
+        }
+        if (_registeredTemplateIds.has(templateId)) {
+            const peers = [];
+            for (const [otherNsid, otherTemplateId] of Object.entries(
+                NSID_TO_TEMPLATE
+            )) {
+                if (templateId === otherTemplateId) {
+                    peers.push(otherNsid);
+                }
+            }
+            console.log(
+                `Spawn.injectNsidToTemplate WARNING: template "${templateId}" already registered: [${peers.join(
+                    ", "
+                )}]`
+            );
+        }
+
         NSID_TO_TEMPLATE[nsid] = templateId;
+        _registeredTemplateIds.add(templateId);
     }
 }
 
