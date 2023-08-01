@@ -542,7 +542,8 @@ class AbstractSliceDraft {
             if (!this._fixedSystems) {
                 this._fixedSystems =
                     this._fixedSystemsGenerator.generateFixedSystems(
-                        fixedCount
+                        fixedCount,
+                        this._slices
                     );
             }
         }

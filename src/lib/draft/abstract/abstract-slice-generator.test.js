@@ -294,21 +294,21 @@ it("_fillSlicesWithRequiredTiles", () => {
     );
 
     assert.deepEqual(tieredSlices, [
-        ["resolved", "resolved", "resolved", "resolved", "resolved"],
         ["resolved", "red", "resolved", "resolved", "resolved"],
-        ["resolved", "red", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "med", "resolved"],
+        ["resolved", "red", "resolved", "med", "resolved"],
         ["resolved", "red", "resolved", "resolved", "high"],
-        ["resolved", "red", "resolved", "med", "high"],
-        ["resolved", "red", "resolved", "med", "high"],
+        ["resolved", "red", "resolved", "resolved", "high"],
+        ["resolved", "red", "resolved", "resolved", "high"],
     ]);
     assert.deepEqual(chosenTiles, { high: [], low: [31], med: [], red: [] });
     assert.deepEqual(slices, [
-        [47, 41, 37, 24, 13],
-        [46, 36, 23, 12],
-        [45, 35, 22, 11],
-        [44, 34, 21],
-        [43, 33],
-        [42, 32],
+        [13, 21, 32, 42],
+        [12, 37, 47, 41],
+        [11, 36, 46],
+        [24, 35, 45],
+        [23, 34, 44],
+        [22, 33, 43],
     ]);
 });
 
@@ -349,4 +349,9 @@ it("_fillSlicesWithRemainingTiles", () => {
     assert.equal(remainingTiles.red.length, 1);
     assert.equal(slices.length, tieredSlices.length);
     assert.equal(slices[0].length, tieredSlices[0].length);
+    assert.equal(slices[1].length, tieredSlices[1].length);
+    assert.equal(slices[2].length, tieredSlices[2].length);
+    assert.equal(slices[3].length, tieredSlices[3].length);
+    assert.equal(slices[4].length, tieredSlices[4].length);
+    assert.equal(slices[5].length, tieredSlices[5].length);
 });

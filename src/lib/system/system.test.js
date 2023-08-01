@@ -118,6 +118,22 @@ it("red/blue", () => {
     assert(!system.blue);
 });
 
+it("summarizeRaw", () => {
+    let tiles, raw;
+
+    tiles = [25, 26, 27]; // quann, lodor, new albion
+    raw = System.summarizeRaw(tiles);
+    assert.deepEqual(raw, {
+        inf: 4,
+        legendaries: [],
+        optInf: 0.5,
+        optRes: 8.5,
+        res: 9,
+        tech: ["G"],
+        wormholes: ["β", "α"],
+    });
+});
+
 it("summarize", () => {
     let tiles, summary;
 
