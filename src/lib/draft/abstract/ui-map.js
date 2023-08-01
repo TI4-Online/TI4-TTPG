@@ -167,7 +167,7 @@ class UiMap {
             }
             for (let index = 0; index < fixedHexes.length; index++) {
                 const hex = fixedHexes[index];
-                const tile = fixedSystems[index] || -1;
+                const tile = fixedSystems ? fixedSystems[index] : -2;
                 const mapStringIndex = MapStringHex.hexStringToIdx(hex);
                 assert(typeof mapStringIndex === "number");
                 assert(

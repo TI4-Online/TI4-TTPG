@@ -19,6 +19,12 @@ const SLICE_SHAPES = {
         "<1,1,-2>", // right-eq
         "<0,1,-1>", // right
     ],
+    bunker_eq_fixed: [
+        "<2,0,-2>", // front-far
+    ],
+    bunker_eq_fixed_7p_seatIndex3: [
+        "<3,-1,-2>", // front-far (pushed forward)
+    ],
 
     milty: [
         "<0,0,0>", // home system
@@ -49,13 +55,10 @@ const SLICE_SHAPES = {
         "<1,-1,0>", // left
         "<2,0,-2>", // front (pushed forward)
         "<1,0,-1>", // right (pushed forward)
-        "<2,-1,-1>", // left-eq
+        "<3,-1,-2>", // front-far (pushed forward)
     ],
     milty_eq_fixed: [
-        "<2,0,-2>", // front-far
-    ],
-    milty_eq_fixed_7p_seatIndex3: [
-        "<3,-1,-2>", // front-far (pushed forward)
+        "<2,-1,-1>", // left-eq
     ],
 };
 
@@ -508,6 +511,8 @@ class AbstractSliceGenerator {
 
         return chosenTiles;
     }
+
+    static _downgradeBlueIfGoodRed(tierArray, redTiles) {}
 }
 
 module.exports = { AbstractSliceGenerator, SLICE_SHAPES };

@@ -541,7 +541,9 @@ class AbstractSliceDraft {
                 );
             if (!this._fixedSystems) {
                 this._fixedSystems =
-                    this._fixedSystemsGenerator.generateFixedSystems();
+                    this._fixedSystemsGenerator.generateFixedSystems(
+                        fixedCount
+                    );
             }
         }
         AbstractUtil.assertValidSystems(this._fixedSystems);

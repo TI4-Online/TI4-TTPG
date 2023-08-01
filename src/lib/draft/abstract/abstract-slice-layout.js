@@ -180,9 +180,7 @@ class AbstractSliceLayout {
             const hex = AbstractSliceLayout._defaultLayoutTile(
                 anchorHex,
                 dirHex,
-                shapeHex,
-                tile,
-                mapStringArray
+                shapeHex
             );
 
             const mapStringIndex = hexStringToIdx(hex);
@@ -203,11 +201,10 @@ class AbstractSliceLayout {
         }
     }
 
-    static _defaultLayoutTile(anchorHex, dirHex, shapeHex, tile) {
+    static _defaultLayoutTile(anchorHex, dirHex, shapeHex) {
         AbstractUtil.assertIsHex(anchorHex);
         AbstractUtil.assertIsHex(dirHex);
         AbstractUtil.assertIsHex(shapeHex);
-        assert(typeof tile === "number");
 
         const anchorPos = Hex.toPosition(anchorHex);
         const dirPos = Hex.toPosition(dirHex);
