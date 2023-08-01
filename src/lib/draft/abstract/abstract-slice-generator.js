@@ -4,6 +4,13 @@ const { world } = require("../../../wrapper/api");
 const { Shuffle } = require("../../shuffle");
 const { AbstractUtil } = require("./abstract-util");
 
+//const { HIGH, MED, LOW, RED } = world.TI4.SYSTEM_TIER;
+const HIGH = "high";
+const MED = "med";
+const LOW = "low";
+const RED = "red";
+const RESOLVED = "resolved";
+
 const SLICE_SHAPES = {
     bunker: [
         "<0,1,-1>", // right
@@ -344,14 +351,13 @@ class AbstractSliceGenerator {
     }
 
     /**
-     * Get an array of matching tiles, also shifting to the left in original.
-     * (Shift so later adjustments can pop from the end with less chance of removing these.)
+     * Get an array of matching tiles.
      *
      * @param {*} tieredTiles
      * @param {function} filter
      * @returns {Array.{number}}
      */
-    static _getMatchingTilesAndShiftToFront(tieredTiles, filter) {
+    static _getMatchingTiles(tieredTiles, filter) {
         const matchingTiles = [];
         const runForTier = (tileArray) => {
             for (let i = 0; i < tileArray.length; i++) {
@@ -361,8 +367,6 @@ class AbstractSliceGenerator {
                     throw new Error(`no system for tile ${tile}`);
                 }
                 if (filter(system)) {
-                    tileArray.splice(i, 1); // remove from tieredTiles
-                    tileArray.unshift(tile); // resturn to tieredTiles at front of list
                     matchingTiles.push(tile);
                 }
             }
@@ -375,7 +379,7 @@ class AbstractSliceGenerator {
     }
 
     static _getAllWormholeTiles(tieredTiles) {
-        return AbstractSliceGenerator._getMatchingTilesAndShiftToFront(
+        return AbstractSliceGenerator._getMatchingTiles(
             tieredTiles,
             (system) => {
                 return system.wormholes.length > 0;
@@ -384,7 +388,7 @@ class AbstractSliceGenerator {
     }
 
     static _getAllLegendaryTiles(tieredTiles) {
-        return AbstractSliceGenerator._getMatchingTilesAndShiftToFront(
+        return AbstractSliceGenerator._getMatchingTiles(
             tieredTiles,
             (system) => {
                 return system.legendary;
@@ -393,8 +397,7 @@ class AbstractSliceGenerator {
     }
 
     /**
-     * Move the tile from remaining to chosen, pushing to the front of the list
-     * then move the extra item from the end of chosen to remaining.
+     * Move the tile from remaining to chosen.
      *
      * @param {number} tile
      * @param {*} chosenTiles
@@ -406,7 +409,6 @@ class AbstractSliceGenerator {
             if (srcIdx >= 0) {
                 srcArray.splice(srcIdx, 1); // remove from src
                 dstArray.unshift(tile); // add to front of dst
-                srcArray.push(dstArray.pop()); // move excess from src to dst
             }
         };
         runForTier(tile, chosenTiles.high, remainingTiles.high);
@@ -417,16 +419,8 @@ class AbstractSliceGenerator {
 
     static _getRandomTieredSystemsWithLegendaryWormholePromotion(options) {
         assert(typeof options === "object");
-        assert(typeof options.high === "number");
-        assert(typeof options.med === "number");
-        assert(typeof options.low === "number");
-        assert(typeof options.red === "number");
-        assert(
-            !options.minWormholes || typeof options.minWormholes === "number"
-        );
-        assert(
-            !options.minLegendary || typeof options.minLegendary === "number"
-        );
+        assert(typeof options.minWormholes === "number");
+        assert(typeof options.minLegendary === "number");
 
         const remainingTiles = world.TI4.System.getAllTileNumbersTiered();
         assert(Array.isArray(remainingTiles.high));
@@ -439,61 +433,38 @@ class AbstractSliceGenerator {
         remainingTiles.low = Shuffle.shuffle(remainingTiles.low);
         remainingTiles.red = Shuffle.shuffle(remainingTiles.red);
 
-        // Verify supply meets request.
-        if (remainingTiles.high.length < options.high) {
-            throw new Error("too few high");
-        } else if (remainingTiles.med.length < options.high) {
-            throw new Error("too few med");
-        } else if (remainingTiles.low.length < options.high) {
-            throw new Error("too few low");
-        } else if (remainingTiles.red.length < options.high) {
-            throw new Error("too few red");
-        }
-
         // Get the initial set, before promoting anything.
         const chosenTiles = {
-            high: remainingTiles.high.splice(0, options.high),
-            med: remainingTiles.med.splice(0, options.med),
-            low: remainingTiles.low.splice(0, options.low),
-            red: remainingTiles.red.splice(0, options.red),
+            high: [],
+            med: [],
+            low: [],
+            red: [],
         };
 
-        // Promote wormholes?
-        if (options.minWormholes) {
-            const chosenWormholeTiles =
-                AbstractSliceGenerator._getAllWormholeTiles(chosenTiles);
-            const remainingWormholeTiles =
-                AbstractSliceGenerator._getAllWormholeTiles(remainingTiles);
-            while (
-                chosenWormholeTiles.length < options.minWormholes &&
-                remainingWormholeTiles.length > 0
-            ) {
-                const tile = remainingWormholeTiles.pop();
-                AbstractSliceGenerator._promote(
-                    tile,
-                    chosenTiles,
-                    remainingTiles
-                );
-            }
+        // Promote wormholes
+        const chosenWormholeTiles =
+            AbstractSliceGenerator._getAllWormholeTiles(chosenTiles);
+        const remainingWormholeTiles =
+            AbstractSliceGenerator._getAllWormholeTiles(remainingTiles);
+        while (
+            chosenWormholeTiles.length < options.minWormholes &&
+            remainingWormholeTiles.length > 0
+        ) {
+            const tile = remainingWormholeTiles.pop();
+            AbstractSliceGenerator._promote(tile, chosenTiles, remainingTiles);
         }
 
-        // Promote legendaries?
-        if (options.minLegendary) {
-            const chosenLegendaryTiles =
-                AbstractSliceGenerator._getAllLegendaryTiles(chosenTiles);
-            const remainingLegendaryTiles =
-                AbstractSliceGenerator._getAllLegendaryTiles(remainingTiles);
-            while (
-                chosenLegendaryTiles.length < options.minLegendary &&
-                remainingLegendaryTiles.length > 0
-            ) {
-                const tile = remainingLegendaryTiles.pop();
-                AbstractSliceGenerator._promote(
-                    tile,
-                    chosenTiles,
-                    remainingTiles
-                );
-            }
+        // Promote legendaries
+        const chosenLegendaryTiles =
+            AbstractSliceGenerator._getAllLegendaryTiles(chosenTiles);
+        const remainingLegendaryTiles =
+            AbstractSliceGenerator._getAllLegendaryTiles(remainingTiles);
+        while (
+            chosenLegendaryTiles.length < options.minLegendary &&
+            remainingLegendaryTiles.length > 0
+        ) {
+            const tile = remainingLegendaryTiles.pop();
+            AbstractSliceGenerator._promote(tile, chosenTiles, remainingTiles);
         }
 
         // Shuffle everything!
@@ -506,13 +477,187 @@ class AbstractSliceGenerator {
         remainingTiles.low = Shuffle.shuffle(remainingTiles.low);
         remainingTiles.red = Shuffle.shuffle(remainingTiles.red);
 
-        // Add remaining to result.
-        chosenTiles.remainingTiles = remainingTiles;
-
-        return chosenTiles;
+        return { chosenTiles, remainingTiles };
     }
 
-    static _downgradeBlueIfGoodRed(tierArray, redTiles) {}
+    /**
+     * Spread the required tiles (wormholes and legendaries) across slices.
+     *
+     * The "tieredSlices" have HIGH/MED/LOW/RED values.
+     *
+     * @param {Array.{Array.{string}}} tieredSlices
+     * @param {Object} chosenTiles
+     * @param {Array.{Array.{number}}} slices
+     */
+    static _fillSlicesWithRequiredTiles(tieredSlices, chosenTiles, slices) {
+        assert(Array.isArray(tieredSlices));
+        assert(Array.isArray(chosenTiles.high));
+        assert(Array.isArray(chosenTiles.med));
+        assert(Array.isArray(chosenTiles.low));
+        assert(Array.isArray(chosenTiles.red));
+        assert(Array.isArray(slices));
+
+        // Add empty lists for slices.
+        while (slices.length < tieredSlices.length) {
+            slices.push([]);
+        }
+
+        // Spread already chosen tiles around.
+        const sliceLength = tieredSlices[0].length;
+        for (let tileIndex = 0; tileIndex < sliceLength; tileIndex++) {
+            for (
+                let sliceIndex = 0;
+                sliceIndex < tieredSlices.length;
+                sliceIndex++
+            ) {
+                const tieredSlice = tieredSlices[sliceIndex];
+                const tier = tieredSlice[tileIndex];
+                assert(tier);
+
+                let takeFrom = chosenTiles[tier]; // Do not consider other tiers!
+                const tile = takeFrom.length > 0 ? takeFrom.pop() : undefined;
+
+                // Chosen tiles can run out.
+                if (tile !== undefined) {
+                    slices[sliceIndex].push(tile);
+                    tieredSlice[tileIndex] = RESOLVED;
+                }
+            }
+        }
+    }
+
+    /**
+     * Add remaining tiles, attempt to balance slices.
+     *
+     * The "tieredSlices" have HIGH/MED/LOW/RED values.
+     *
+     * @param {Array.{Array.{string}}} tieredSlices
+     * @param {Object} chosenTiles
+     * @param {Array.{Array.{number}}} slices
+     */
+    static _fillSlicesWithRemainingTiles(tieredSlices, remainingTiles, slices) {
+        assert(Array.isArray(tieredSlices));
+        assert(Array.isArray(remainingTiles.high));
+        assert(Array.isArray(remainingTiles.med));
+        assert(Array.isArray(remainingTiles.low));
+        assert(Array.isArray(remainingTiles.red));
+        assert(Array.isArray(slices));
+
+        // Slices probably exist here, but just in case add empty lists for slices.
+        while (slices.length < tieredSlices.length) {
+            slices.push([]);
+        }
+
+        // Fill red tiles randomly, do not account for res/inf (otherwise would
+        // pull in those systems more frequencly than others).
+        const sliceLength = tieredSlices[0].length;
+        for (let tileIndex = 0; tileIndex < sliceLength; tileIndex++) {
+            for (
+                let sliceIndex = 0;
+                sliceIndex < tieredSlices.length;
+                sliceIndex++
+            ) {
+                const tieredSlice = tieredSlices[sliceIndex];
+                const tier = tieredSlice[tileIndex];
+                if (tier !== RED) {
+                    continue;
+                }
+                let takeFrom = remainingTiles.red;
+                if (takeFrom.length === 0) {
+                    if (remainingTiles.low.length > 0) {
+                        takeFrom = remainingTiles.low;
+                    } else if (remainingTiles.med.length > 0) {
+                        takeFrom = remainingTiles.med;
+                    } else if (remainingTiles.high.length > 0) {
+                        takeFrom = remainingTiles.high;
+                    } else if (remainingTiles.red.length > 0) {
+                        takeFrom = remainingTiles.red;
+                    } else {
+                        throw new Error("no tiles remain???");
+                    }
+                }
+                const tile = takeFrom.pop();
+                const slice = slices[sliceIndex];
+                assert(slice);
+                slice.push(tile);
+                tieredSlice[tileIndex] = RESOLVED;
+            }
+        }
+
+        // Fill rest with remaining tiles.
+        // Use weighted selection to try to balance things.
+        for (let tileIndex = 0; tileIndex < sliceLength; tileIndex++) {
+            for (
+                let sliceIndex = 0;
+                sliceIndex < tieredSlices.length;
+                sliceIndex++
+            ) {
+                const tieredSlice = tieredSlices[sliceIndex];
+                const tier = tieredSlice[tileIndex];
+                if (tier === RESOLVED) {
+                    continue;
+                }
+
+                // We need to fill the slice.  If no tiles remain in the desired
+                // tier, select a different one with availability.
+                let takeFrom = remainingTiles[tier];
+                if (!takeFrom) {
+                    throw new Error(
+                        `no takeFrom for "${tier}" (tile index ${tileIndex})`
+                    );
+                }
+                if (takeFrom.length === 0) {
+                    if (remainingTiles.low.length > 0) {
+                        takeFrom = remainingTiles.low;
+                    } else if (remainingTiles.med.length > 0) {
+                        takeFrom = remainingTiles.med;
+                    } else if (remainingTiles.high.length > 0) {
+                        takeFrom = remainingTiles.high;
+                    } else if (remainingTiles.red.length > 0) {
+                        takeFrom = remainingTiles.red;
+                    } else {
+                        throw new Error("no tiles remain???");
+                    }
+                }
+
+                const slice = slices[sliceIndex];
+                assert(slice);
+                const {
+                    res,
+                    optRes,
+                    inf,
+                    optInf,
+                    tech,
+                    wormholes,
+                    legendaries,
+                } = world.TI4.System.summarizeRaw(slice);
+                const hasWormhole = wormholes.length > 0;
+                const lasLegendary = legendaries.length > 0;
+                const hasTech = tech.length > 0;
+
+                const choices = [];
+                for (
+                    let takeFromIndex = 0;
+                    takeFromIndex < takeFrom.length;
+                    takeFromIndex++
+                ) {
+                    const tile = takeFrom[takeFromIndex];
+                    assert(tile);
+                    const system = world.TI4.getSystemByTileNumber(tile);
+                    assert(system);
+
+                    choices.push({ weight: 1, value: { tile, takeFromIndex } });
+                }
+
+                // Move the chosen tile to the slice.
+                const { tile, takeFromIndex } =
+                    AbstractSliceGenerator._weightedChoice(choices);
+                takeFrom.splice(takeFromIndex, 1);
+                slice.push(tile);
+                tieredSlice[tileIndex] = RESOLVED;
+            }
+        }
+    }
 }
 
 module.exports = { AbstractSliceGenerator, SLICE_SHAPES };

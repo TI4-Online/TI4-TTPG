@@ -6,6 +6,8 @@ const {
 } = require("./abstract-slice-generator");
 const { world } = require("../../../wrapper/api");
 
+const { HIGH, MED, LOW, RED } = world.TI4.SYSTEM_TIER;
+
 it("_hasAdjacentAnomalies", () => {
     const miltyShape = [
         "<0,0,0>", // home system
@@ -152,7 +154,7 @@ it("parseCustomLabels", () => {
     assert.deepEqual(labels, ["one"]);
 });
 
-it("_getMatchingTilesAndShiftToFront", () => {
+it("_getMatchingTiles", () => {
     const tiered = {
         high: [1, 2, 3, 4],
         med: [5, 6, 7, 8],
@@ -162,17 +164,8 @@ it("_getMatchingTilesAndShiftToFront", () => {
     const filter = (system) => {
         return system.tile % 2 === 1; // odd tile numbers
     };
-    const matching = AbstractSliceGenerator._getMatchingTilesAndShiftToFront(
-        tiered,
-        filter
-    );
+    const matching = AbstractSliceGenerator._getMatchingTiles(tiered, filter);
     assert.deepEqual(matching, [1, 3, 5, 7, 9, 11, 13, 15]);
-    assert.deepEqual(tiered, {
-        high: [3, 1, 2, 4],
-        med: [7, 5, 6, 8],
-        low: [11, 9, 10, 12],
-        red: [15, 13, 14, 16],
-    });
 });
 
 it("_getAllWormholeTiles", () => {
@@ -184,12 +177,6 @@ it("_getAllWormholeTiles", () => {
     };
     const matching = AbstractSliceGenerator._getAllWormholeTiles(tiered);
     assert.deepEqual(matching, [25, 26]);
-    assert.deepEqual(tiered, {
-        high: [26, 25, 1, 2, 3, 4],
-        med: [],
-        low: [],
-        red: [],
-    });
 });
 
 it("_getAllLegendaryTiles", () => {
@@ -201,12 +188,6 @@ it("_getAllLegendaryTiles", () => {
     };
     const matching = AbstractSliceGenerator._getAllLegendaryTiles(tiered);
     assert.deepEqual(matching, [65, 66]);
-    assert.deepEqual(tiered, {
-        high: [66, 65, 1, 2, 3, 4],
-        med: [],
-        low: [],
-        red: [],
-    });
 });
 
 it("_promote", () => {
@@ -245,62 +226,127 @@ it("_promote", () => {
     AbstractSliceGenerator._promote(25, chosenTiles, remainingTiles);
     AbstractSliceGenerator._promote(29, chosenTiles, remainingTiles);
     assert.deepEqual(chosenTiles, {
-        high: [21, 1, 2],
-        med: [25, 4, 5],
-        low: [29, 7, 8],
+        high: [21, 1, 2, 3],
+        med: [25, 4, 5, 6],
+        low: [29, 7, 8, 9],
         red: [10, 11, 12],
     });
     assert.deepEqual(remainingTiles, {
-        high: [22, 23, 3],
-        med: [24, 26, 6],
-        low: [27, 28, 9],
+        high: [22, 23],
+        med: [24, 26],
+        low: [27, 28],
         red: [30, 31, 32],
     });
 });
 
 it("_getRandomTieredSystemsWithLegendaryWormholePromotion", () => {
     const options = {
-        high: 3,
-        med: 4,
-        low: 5,
-        red: 6,
         minWormholes: 5,
         minLegendary: 2,
     };
-    const tiered =
+    const { chosenTiles } =
         AbstractSliceGenerator._getRandomTieredSystemsWithLegendaryWormholePromotion(
             options
         );
 
-    const allTiles = [];
-    allTiles.push(...tiered.high);
-    allTiles.push(...tiered.med);
-    allTiles.push(...tiered.low);
-    allTiles.push(...tiered.red);
-
-    // Make sure numbers match.
-    assert.equal(tiered.high.length, options.high);
-    assert.equal(tiered.med.length, options.med);
-    assert.equal(tiered.low.length, options.low);
-    assert.equal(tiered.red.length, options.red);
+    const allChosenTiles = [];
+    allChosenTiles.push(...chosenTiles.high);
+    allChosenTiles.push(...chosenTiles.med);
+    allChosenTiles.push(...chosenTiles.low);
+    allChosenTiles.push(...chosenTiles.red);
 
     // Wormholes?
-    const wormholes = allTiles.filter((tile) => {
+    const wormholes = allChosenTiles.filter((tile) => {
         const system = world.TI4.getSystemByTileNumber(tile);
         return system.wormholes.length > 0;
     });
     assert(wormholes.length >= options.minWormholes);
 
     // Legendaries?
-    const legendaries = allTiles.filter((tile) => {
+    const legendaries = allChosenTiles.filter((tile) => {
         const system = world.TI4.getSystemByTileNumber(tile);
         return system.legendary;
     });
     assert(legendaries.length >= options.minLegendary);
+});
 
-    // It also gave us unused tiles in case we need options.
-    assert(tiered.remainingTiles.high.length > 0);
-    assert(tiered.remainingTiles.med.length > 0);
-    assert(tiered.remainingTiles.low.length > 0);
-    assert(tiered.remainingTiles.red.length > 0);
+it("_fillSlicesWithRequiredTiles", () => {
+    const tieredSlices = [
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+    ];
+    const chosenTiles = {
+        high: [11, 12, 13],
+        med: [21, 22, 23, 24],
+        low: [31, 32, 33, 34, 35, 36, 37],
+        red: [41, 42, 43, 44, 45, 46, 47],
+    };
+    const slices = [];
+
+    AbstractSliceGenerator._fillSlicesWithRequiredTiles(
+        tieredSlices,
+        chosenTiles,
+        slices
+    );
+
+    assert.deepEqual(tieredSlices, [
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "red", "resolved", "resolved", "resolved"],
+        ["resolved", "red", "resolved", "resolved", "resolved"],
+        ["resolved", "red", "resolved", "resolved", "high"],
+        ["resolved", "red", "resolved", "med", "high"],
+        ["resolved", "red", "resolved", "med", "high"],
+    ]);
+    assert.deepEqual(chosenTiles, { high: [], low: [31], med: [], red: [] });
+    assert.deepEqual(slices, [
+        [47, 41, 37, 24, 13],
+        [46, 36, 23, 12],
+        [45, 35, 22, 11],
+        [44, 34, 21],
+        [43, 33],
+        [42, 32],
+    ]);
+});
+
+it("_fillSlicesWithRemainingTiles", () => {
+    const tieredSlices = [
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+        [RED, RED, LOW, MED, HIGH],
+    ];
+    const remainingTiles = {
+        high: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], // 10
+        med: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30], // 10
+        low: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40], // 10
+        red: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53], // 13
+    };
+    const slices = [];
+
+    AbstractSliceGenerator._fillSlicesWithRemainingTiles(
+        tieredSlices,
+        remainingTiles,
+        slices
+    );
+
+    assert.deepEqual(tieredSlices, [
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+        ["resolved", "resolved", "resolved", "resolved", "resolved"],
+    ]);
+    assert.equal(remainingTiles.high.length, 4);
+    assert.equal(remainingTiles.med.length, 4);
+    assert.equal(remainingTiles.low.length, 4);
+    assert.equal(remainingTiles.red.length, 1);
+    assert.equal(slices.length, tieredSlices.length);
+    assert.equal(slices[0].length, tieredSlices[0].length);
 });
