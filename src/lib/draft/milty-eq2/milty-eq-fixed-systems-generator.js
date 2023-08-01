@@ -41,9 +41,22 @@ class MiltyEqFixedSystemsGenerator extends AbstractFixedSystemsGenerator {
                 offMap
             );
             const anchorHex = Hex.fromPosition(pos);
+            let dirHex = "<0,0,0>";
+            let shapeHex = SLICE_SHAPES.milty_eq_fixed[0];
 
-            const shapeHex = SLICE_SHAPES.milty_eq_fixed[0];
-            const dirHex = "<0,0,0>";
+            const playerCount = world.TI4.config.playerCount;
+            if (playerCount === 7 && playerDesk.index === 5) {
+                shapeHex = "<3,-1,-2>";
+            }
+            if (playerCount === 8 && playerDesk.index === 3) {
+                dirHex = "<1,0,-1>";
+                shapeHex = "<2,0,-2>";
+            }
+            if (playerCount === 8 && playerDesk.index === 7) {
+                dirHex = "<-1,0,1>";
+                shapeHex = "<2,0,-2>";
+            }
+
             const fixedHex = AbstractSliceLayout._defaultLayoutTile(
                 anchorHex,
                 dirHex,
