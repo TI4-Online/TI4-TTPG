@@ -13,7 +13,7 @@ const RESOLVED = "resolved";
 
 const SLICE_SHAPES = {
     bunker: [
-        "<0,1,-1>", // right
+        "<0,1,-1>", // right of anchor (home)
         "<0,0,0>", // anchor
         "<1,0,-1>", // front
         "<1,1,-2>", // right-eq
@@ -28,9 +28,6 @@ const SLICE_SHAPES = {
     ],
     bunker_fixed: [
         "<2,0,-2>", // front-far
-    ],
-    bunker_fixed_7p_seatIndex3: [
-        "<3,-1,-2>", // front-far (pushed forward)
     ],
 
     milty: [
