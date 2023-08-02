@@ -44,17 +44,16 @@ class BunkerFixedSystemsGenerator extends AbstractFixedSystemsGenerator {
             let dirHex = "<0,0,0>";
             let shapeHex = SLICE_SHAPES.bunker_fixed[0];
 
+            const f = AbstractSliceLayout._helpMeFindShapeHex;
+            //f(anchorHex, dirHex, "<1,-1,0>");
+
             const playerCount = world.TI4.config.playerCount;
-            if (playerCount === 7 && playerDesk.index === 5) {
-                shapeHex = "<3,-1,-2>";
-            }
-            if (playerCount === 8 && playerDesk.index === 3) {
-                dirHex = "<1,0,-1>";
-                shapeHex = "<2,0,-2>";
-            }
-            if (playerCount === 8 && playerDesk.index === 7) {
-                dirHex = "<-1,0,1>";
-                shapeHex = "<2,0,-2>";
+            if (playerCount === 7) {
+                if (playerDesk.index === 3) {
+                    shapeHex = "<3,-1,-2>";
+                } else if (playerDesk.index === 5) {
+                    //
+                }
             }
 
             const fixedHex = AbstractSliceLayout._defaultLayoutTile(
