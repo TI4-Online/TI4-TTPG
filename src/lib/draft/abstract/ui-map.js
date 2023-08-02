@@ -386,7 +386,7 @@ class UiMap {
                     .setFontSize(20 * this._scale)
                     .setBold(true)
                     .setJustification(TextJustification.Center)
-                    .setText(fixedIndex);
+                    .setText(fixedIndex + 1); // make 1 based
                 canvas.addChild(
                     text,
                     offset.x + pos.x - size.halfW,

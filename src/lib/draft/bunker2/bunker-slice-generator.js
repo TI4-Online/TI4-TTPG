@@ -2,6 +2,7 @@ const {
     AbstractSliceGenerator,
     SLICE_SHAPES,
 } = require("../abstract/abstract-slice-generator");
+const { Shuffle } = require("../../shuffle");
 const { world } = require("../../../wrapper/api");
 
 //const { HIGH, MED, LOW, RED } = world.TI4.SYSTEM_TIER;
@@ -38,11 +39,13 @@ class BunkerSliceGenerator extends AbstractSliceGenerator {
         return SLICE_SHAPES.bunker;
     }
 
-    generateSlices(sliceCount) {
+    generateSlices() {
+        const sliceCount = this.getCount();
         const tieredSlices = [];
         for (let i = 0; i < sliceCount; i++) {
-            const tierValues =
+            let tierValues =
                 AbstractSliceGenerator._weightedChoice(SLICE_CHOICES); // makes a copy
+            tierValues = Shuffle.shuffle(tierValues);
             tieredSlices.push(tierValues);
         }
 

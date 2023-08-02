@@ -147,12 +147,11 @@ class AbstractFactionGenerator {
     /**
      * Generate the factions.  Use a sensible default, subclasses may override this.
      *
-     * @param {number} count
      * @returns {Array.{string}} - array of faction nsidNames (e.g. ["arborec", "sol"])
      */
-    generateFactions(count) {
+    generateFactions() {
         return AbstractFactionGenerator._standardGenerate(
-            count,
+            this.getCount(),
             this._seedWithOnTableCards
         );
     }

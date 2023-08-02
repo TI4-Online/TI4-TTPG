@@ -45,16 +45,31 @@ class MiltyEqFixedSystemsGenerator extends AbstractFixedSystemsGenerator {
             let shapeHex = SLICE_SHAPES.milty_eq_fixed[0];
 
             const playerCount = world.TI4.config.playerCount;
-            if (playerCount === 7 && playerDesk.index === 5) {
-                shapeHex = "<3,-1,-2>";
-            }
-            if (playerCount === 8 && playerDesk.index === 3) {
-                dirHex = "<1,0,-1>";
-                shapeHex = "<2,0,-2>";
-            }
-            if (playerCount === 8 && playerDesk.index === 7) {
-                dirHex = "<-1,0,1>";
-                shapeHex = "<2,0,-2>";
+
+            if (playerCount === 3) {
+                shapeHex = "<3,-2,-1>";
+            } else if (playerCount === 4) {
+                if (playerDesk.index === 0) {
+                    shapeHex = "<3,-2,-1>";
+                } else if (playerDesk.index === 2) {
+                    shapeHex = "<3,-2,-1>";
+                }
+            } else if (playerCount === 5) {
+                if (playerDesk.index === 0) {
+                    shapeHex = "<3,-2,-1>";
+                }
+            } else if (playerCount === 7) {
+                if (playerDesk.index === 5) {
+                    shapeHex = "<3,-1,-2>";
+                }
+            } else if (playerCount === 8) {
+                if (playerDesk.index === 3) {
+                    dirHex = "<1,0,-1>";
+                    shapeHex = "<2,0,-2>";
+                } else if (playerDesk.index === 7) {
+                    dirHex = "<-1,0,1>";
+                    shapeHex = "<2,0,-2>";
+                }
             }
 
             const fixedHex = AbstractSliceLayout._defaultLayoutTile(

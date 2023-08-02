@@ -508,7 +508,7 @@ class AbstractSliceDraft {
             errors
         );
         if (!this._slices) {
-            this._slices = this._sliceGenerator.generateSlices(sliceCount);
+            this._slices = this._sliceGenerator.generateSlices();
         }
         AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
         AbstractSliceDraft._reportHomebrewSystemTilesInSlices(

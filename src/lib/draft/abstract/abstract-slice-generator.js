@@ -11,6 +11,8 @@ const LOW = "low";
 const RED = "red";
 const RESOLVED = "resolved";
 
+const DEBUG_SLICE_SCORING = false;
+
 const SLICE_SHAPES = {
     bunker: [
         "<0,1,-1>", // right of anchor (home)
@@ -221,10 +223,9 @@ class AbstractSliceGenerator {
     /**
      * Generate slices, arrays of system tile numbers.
      *
-     * @param {number} sliceCount
      * @returns {Array.{Array.{number}}}
      */
-    generateSlices(sliceCount) {
+    generateSlices() {
         throw new Error("subclass must override this");
     }
 
@@ -750,8 +751,10 @@ class AbstractSliceGenerator {
         const slice = [...sliceSoFar];
         slice.push(withNewTile);
 
-        const { res, optRes, inf, optInf, tech, wormholes, legendaries } =
+        const { optInf, optRes, wormholes, legendaries } =
             world.TI4.System.summarizeRaw(slice);
+        const avgOptInf = optInf / slice.length;
+        const avgOptRes = optRes / slice.length;
 
         // Avoid multi-wormhole systems.
         if (wormholes.length > 1) {
@@ -763,7 +766,55 @@ class AbstractSliceGenerator {
             return 0.001;
         }
 
-        return 1;
+        // Milty draft requires:
+        // - mininf = 4.0,
+        // - minres = 2.5,
+        // - mintot = 9.0,
+        // - maxtot = 13.0
+        const minAvgOptInf = 4 / 5;
+        const minAvgOptRes = 2.5 / 5;
+        const minAvgTot = 9 / 5;
+        const maxAvgTot = 13 / 5;
+        const targetOptInf = 1.354; // 4/(4+2.5)*11/5
+        const targetOptRes = 0.846; // 2.5/(4+2.5)*11/5
+
+        const weightMinInf = Math.min(1, avgOptInf / minAvgOptInf);
+        const weightMinRes = Math.min(1, avgOptRes / minAvgOptRes);
+        const weightMinTot = Math.min(1, (avgOptInf + avgOptRes) / minAvgTot);
+
+        const weightMaxTot = avgOptInf + avgOptRes > maxAvgTot ? 0.001 : 1;
+
+        const weightTargetInf = 1 / (Math.abs(avgOptInf - targetOptInf) + 1);
+        const weightTargetRes = 1 / (Math.abs(avgOptRes - targetOptRes) + 1);
+
+        const score =
+            100 *
+            weightMinInf *
+            weightMinRes *
+            weightMinTot *
+            weightMaxTot *
+            weightTargetInf *
+            weightTargetRes;
+
+        if (DEBUG_SLICE_SCORING) {
+            console.log(
+                JSON.stringify({
+                    avgOptInf,
+                    avgOptRes,
+
+                    weightMinInf,
+                    weightMinRes,
+                    weightMinTot,
+
+                    weightTargetInf,
+                    weightTargetRes,
+
+                    score,
+                })
+            );
+        }
+
+        return score;
     }
 }
 

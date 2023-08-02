@@ -47,6 +47,14 @@ class MiltySliceDraft extends AbstractSliceDraft {
                 );
             },
         });
+
+        this.addCustomCheckBox({
+            name: "Targeted slice generation",
+            default: miltySliceGenerator.getUseTargetedSliceGenerator(),
+            onCheckStateChanged: (checkbox, player, isChecked) => {
+                miltySliceGenerator.setUseTargetedSliceGenerator(isChecked);
+            },
+        });
     }
 }
 

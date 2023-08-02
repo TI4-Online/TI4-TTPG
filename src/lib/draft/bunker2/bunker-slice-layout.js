@@ -8,7 +8,52 @@ class BunkerSliceLayout extends AbstractSliceLayout {
 
         this.setShape(SLICE_SHAPES.bunker);
 
-        if (world.TI4.config.playerCount === 7) {
+        if (world.TI4.config.playerCount === 3) {
+            this.setOverrideShape(0, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<2,3,-5>", // shifted around hyperlane
+            ]);
+            this.setOverrideShape(1, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<2,3,-5>", // shifted around hyperlane
+            ]);
+            this.setOverrideShape(2, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<2,3,-5>", // shifted around hyperlane
+            ]);
+        } else if (world.TI4.config.playerCount === 4) {
+            this.setOverrideShape(1, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<1,3,-4>", // shifted around hyperlane
+            ]);
+            this.setOverrideShape(3, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<1,3,-4>", // shifted around hyperlane
+            ]);
+        } else if (world.TI4.config.playerCount === 5) {
+            this.setOverrideShape(1, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,2,-3>", // shifted around hyperlane
+                "<1,3,-4>", // shifted around hyperlane
+            ]);
+        } else if (world.TI4.config.playerCount === 7) {
             this.setOverrideShape(1, [
                 "<0,1,-1>", // right of anchor (home)
                 "<0,0,0>", // anchor
