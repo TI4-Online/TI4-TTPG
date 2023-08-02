@@ -92,7 +92,6 @@ class MiltyEqFixedSystemsGenerator extends AbstractFixedSystemsGenerator {
                 AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
             minLegendary: 0,
         };
-        console.log(JSON.stringify(options));
         const { chosenTiles, remainingTiles } =
             AbstractSliceGenerator._getRandomTieredSystemsWithLegendaryWormholePromotion(
                 options
