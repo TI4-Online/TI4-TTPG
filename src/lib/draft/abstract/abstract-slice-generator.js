@@ -26,10 +26,10 @@ const SLICE_SHAPES = {
         "<1,1,-2>", // right-eq
         "<0,1,-1>", // right
     ],
-    bunker_eq_fixed: [
+    bunker_fixed: [
         "<2,0,-2>", // front-far
     ],
-    bunker_eq_fixed_7p_seatIndex3: [
+    bunker_fixed_7p_seatIndex3: [
         "<3,-1,-2>", // front-far (pushed forward)
     ],
 

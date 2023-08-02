@@ -5,25 +5,25 @@ const {
 const { AbstractSliceDraft } = require("../abstract/abstract-slice-draft");
 const { NavEntry } = require("../../ui/nav/nav-entry");
 const { UiDraftSettings } = require("../abstract/ui-draft-settings");
-const { MiltyEqSliceGenerator } = require("./milty-eq-slice-generator");
-const { MiltyEqSliceLayout } = require("./milty-eq-slice-layout");
+const { BunkerSliceLayout } = require("./bunker-slice-layout");
+const { BunkerSliceGenerator } = require("./bunker-slice-generator");
 const {
-    MiltyEqFixedSystemsGenerator,
-} = require("./milty-eq-fixed-systems-generator");
+    BunkerFixedSystemsGenerator,
+} = require("./bunker-fixed-systems-generator");
 
-class MiltyEqSliceDraft extends AbstractSliceDraft {
+class BunkerSliceDraft extends AbstractSliceDraft {
     static createDraftSettingsWidget() {
-        const sliceDraft = new MiltyEqSliceDraft();
+        const sliceDraft = new BunkerSliceDraft();
         return new UiDraftSettings(sliceDraft).getWidget();
     }
 
     static createDraftNavEntry() {
         return new NavEntry()
-            .setName(locale("nav.map.draft.milty_eq"))
-            .setIconPath("global/ui/icons/milty-eq-hex.png")
+            .setName(locale("nav.map.draft.bunker"))
+            .setIconPath("global/ui/icons/bunker-hex.png")
             .setPersistWidget(true)
             .setWidgetFactory((navPanel, navEntry) => {
-                return MiltyEqSliceDraft.createDraftSettingsWidget();
+                return BunkerSliceDraft.createDraftSettingsWidget();
             });
     }
 
@@ -31,9 +31,9 @@ class MiltyEqSliceDraft extends AbstractSliceDraft {
         super();
 
         const factionGenerator = new AbstractFactionGenerator(); // no special needs
-        const sliceLayout = new MiltyEqSliceLayout();
-        const sliceGenerator = new MiltyEqSliceGenerator();
-        const fixedSystemsGenerator = new MiltyEqFixedSystemsGenerator();
+        const sliceLayout = new BunkerSliceLayout();
+        const sliceGenerator = new BunkerSliceGenerator();
+        const fixedSystemsGenerator = new BunkerFixedSystemsGenerator();
 
         this.setFactionGenerator(factionGenerator)
             .setSliceGenerator(sliceGenerator)
@@ -42,4 +42,4 @@ class MiltyEqSliceDraft extends AbstractSliceDraft {
     }
 }
 
-module.exports = { MiltyEqSliceDraft };
+module.exports = { BunkerSliceDraft };
