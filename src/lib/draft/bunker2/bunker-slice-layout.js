@@ -39,8 +39,40 @@ class BunkerSliceLayout extends AbstractSliceLayout {
                 "<-1,3,-2>", // shifted around hyperlane
             ]);
         } else if (world.TI4.config.playerCount === 8) {
-            //this.setOverrideShape(3, SLICE_SHAPES.milty_eq_7p_seatIndex3);
-            //this.setOverrideShape(7, SLICE_SHAPES.milty_eq_7p_seatIndex3);
+            this.setOverrideShape(0, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>", // front
+                "<1,1,-2>", // right-eq
+                "<-1,2,-1>",
+            ]);
+
+            this.setHexDirection(3, "<-2,0,2>");
+            this.setOverrideShape(3, [
+                "<1,0,-1>",
+                "<0,0,0>", // anchor
+                "<1,-1,0>",
+                "<2,0,-2>",
+                "<1,1,-2>",
+            ]);
+
+            this.setHexDirection(4, "<1,0,-1>");
+            this.setOverrideShape(4, [
+                "<0,1,-1>", // right of anchor (home)
+                "<0,0,0>", // anchor
+                "<1,0,-1>",
+                "<1,1,-2>",
+                "<-1,2,-1>",
+            ]);
+
+            this.setHexDirection(7, "<2,0,-2>");
+            this.setOverrideShape(7, [
+                "<1,0,-1>",
+                "<0,0,0>", // anchor
+                "<1,-1,0>",
+                "<2,0,-2>",
+                "<1,1,-2>",
+            ]);
         }
     }
 }
