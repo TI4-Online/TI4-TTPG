@@ -175,8 +175,12 @@ it("_getAllWormholeTiles", () => {
         low: [],
         red: [],
     };
-    const matching = AbstractSliceGenerator._getAllWormholeTiles(tiered);
-    assert.deepEqual(matching, [25, 26]);
+
+    let matching = AbstractSliceGenerator._getAllWormholeTiles(tiered, "alpha");
+    assert.deepEqual(matching, [26]);
+
+    matching = AbstractSliceGenerator._getAllWormholeTiles(tiered, "beta");
+    assert.deepEqual(matching, [25]);
 });
 
 it("_getAllLegendaryTiles", () => {
@@ -241,7 +245,8 @@ it("_promote", () => {
 
 it("_getRandomTieredSystemsWithLegendaryWormholePromotion", () => {
     const options = {
-        minWormholes: 5,
+        minAlphaWormholes: 3,
+        minBetaWormholes: 3,
         minLegendary: 2,
     };
     const { chosenTiles } =
@@ -255,12 +260,19 @@ it("_getRandomTieredSystemsWithLegendaryWormholePromotion", () => {
     allChosenTiles.push(...chosenTiles.low);
     allChosenTiles.push(...chosenTiles.red);
 
-    // Wormholes?
-    const wormholes = allChosenTiles.filter((tile) => {
+    // Alpha wormholes?
+    const alphaWormholes = allChosenTiles.filter((tile) => {
         const system = world.TI4.getSystemByTileNumber(tile);
-        return system.wormholes.length > 0;
+        return system.wormholes.includes("alpha");
     });
-    assert(wormholes.length >= options.minWormholes);
+    assert(alphaWormholes.length >= options.minAlphaWormholes);
+
+    // Beta wormholes?
+    const betaWormholes = allChosenTiles.filter((tile) => {
+        const system = world.TI4.getSystemByTileNumber(tile);
+        return system.wormholes.includes("beta");
+    });
+    assert(betaWormholes.length >= options.minBetaWormholes);
 
     // Legendaries?
     const legendaries = allChosenTiles.filter((tile) => {
@@ -354,4 +366,25 @@ it("_fillSlicesWithRemainingTiles", () => {
     assert.equal(slices[3].length, tieredSlices[3].length);
     assert.equal(slices[4].length, tieredSlices[4].length);
     assert.equal(slices[5].length, tieredSlices[5].length);
+});
+
+it("_calculateSliceScore", () => {
+    let sliceSoFar = [
+        25, // wormhole
+        65, // legendary
+    ];
+    let withNewTile = 26; // wormhole
+
+    let score = AbstractSliceGenerator._calculateSliceScore(
+        sliceSoFar,
+        withNewTile
+    );
+    assert.equal(score, 0.001);
+
+    withNewTile = 66; // legendary
+    score = AbstractSliceGenerator._calculateSliceScore(
+        sliceSoFar,
+        withNewTile
+    );
+    assert.equal(score, 0.001);
 });

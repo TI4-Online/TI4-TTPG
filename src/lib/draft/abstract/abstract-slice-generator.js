@@ -379,11 +379,12 @@ class AbstractSliceGenerator {
         return matchingTiles;
     }
 
-    static _getAllWormholeTiles(tieredTiles) {
+    static _getAllWormholeTiles(tieredTiles, wormholeType) {
+        assert(typeof wormholeType === "string");
         return AbstractSliceGenerator._getMatchingTiles(
             tieredTiles,
             (system) => {
-                return system.wormholes.length > 0;
+                return system.wormholes.includes(wormholeType);
             }
         );
     }
@@ -420,7 +421,8 @@ class AbstractSliceGenerator {
 
     static _getRandomTieredSystemsWithLegendaryWormholePromotion(options) {
         assert(typeof options === "object");
-        assert(typeof options.minWormholes === "number");
+        assert(typeof options.minAlphaWormholes === "number");
+        assert(typeof options.minBetaWormholes === "number");
         assert(typeof options.minLegendary === "number");
 
         const remainingTiles = world.TI4.System.getAllTileNumbersTiered();
@@ -442,19 +444,47 @@ class AbstractSliceGenerator {
             red: [],
         };
 
-        // Promote wormholes
-        let chosenWormholeCount =
-            AbstractSliceGenerator._getAllWormholeTiles(chosenTiles).length;
-        let remainingWormholeTiles =
-            AbstractSliceGenerator._getAllWormholeTiles(remainingTiles);
-        remainingWormholeTiles = Shuffle.shuffle(remainingWormholeTiles);
+        // Promote alpha wormholes.
+        let chosenAlphaWormholeCount =
+            AbstractSliceGenerator._getAllWormholeTiles(
+                chosenTiles,
+                "alpha"
+            ).length;
+        let remainingAlphaWormholeTiles =
+            AbstractSliceGenerator._getAllWormholeTiles(
+                remainingTiles,
+                "alpha"
+            );
+        remainingAlphaWormholeTiles = Shuffle.shuffle(
+            remainingAlphaWormholeTiles
+        );
         while (
-            chosenWormholeCount < options.minWormholes &&
-            remainingWormholeTiles.length > 0
+            chosenAlphaWormholeCount < options.minAlphaWormholes &&
+            remainingAlphaWormholeTiles.length > 0
         ) {
-            const tile = remainingWormholeTiles.pop();
+            const tile = remainingAlphaWormholeTiles.pop();
             AbstractSliceGenerator._promote(tile, chosenTiles, remainingTiles);
-            chosenWormholeCount += 1;
+            chosenAlphaWormholeCount += 1;
+        }
+
+        // Promote beta wormholes.
+        let chosenBetaWormholeCount =
+            AbstractSliceGenerator._getAllWormholeTiles(
+                chosenTiles,
+                "beta"
+            ).length;
+        let remainingBetaWormholeTiles =
+            AbstractSliceGenerator._getAllWormholeTiles(remainingTiles, "beta");
+        remainingBetaWormholeTiles = Shuffle.shuffle(
+            remainingBetaWormholeTiles
+        );
+        while (
+            chosenBetaWormholeCount < options.minBetaWormholes &&
+            remainingBetaWormholeTiles.length > 0
+        ) {
+            const tile = remainingBetaWormholeTiles.pop();
+            AbstractSliceGenerator._promote(tile, chosenTiles, remainingTiles);
+            chosenBetaWormholeCount += 1;
         }
 
         // Promote legendaries
@@ -722,9 +752,16 @@ class AbstractSliceGenerator {
 
         const { res, optRes, inf, optInf, tech, wormholes, legendaries } =
             world.TI4.System.summarizeRaw(slice);
-        const hasWormhole = wormholes.length > 0;
-        const lasLegendary = legendaries.length > 0;
-        const hasTech = tech.length > 0;
+
+        // Avoid multi-wormhole systems.
+        if (wormholes.length > 1) {
+            return 0.001;
+        }
+
+        // Avoid multi-legendary systems.
+        if (legendaries.length > 1) {
+            return 0.001;
+        }
 
         return 1;
     }

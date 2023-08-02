@@ -48,7 +48,9 @@ class MiltyEqSliceGenerator extends AbstractSliceGenerator {
 
         // How many of each tier?
         const options = {
-            minWormholes:
+            minAlphaWormholes:
+                AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
+            minBetaWormholes:
                 AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
             minLegendary: AbstractSliceGenerator._weightedChoice(
                 MIN_LEGENDARY_CHOICES

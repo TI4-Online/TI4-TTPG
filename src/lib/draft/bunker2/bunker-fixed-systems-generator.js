@@ -87,12 +87,24 @@ class BunkerFixedSystemsGenerator extends AbstractFixedSystemsGenerator {
             tieredSlices.push([tier]);
         }
 
+        // Split wormholes evenly.
+        const minWormholes =
+            AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES);
+        let minAlphaWormholes = 0;
+        let minBetaWormholes = 0;
+        if (Math.random() < 0.5) {
+            minAlphaWormholes = Math.ceil(minWormholes / 2);
+            minBetaWormholes = Math.floor(minWormholes / 2);
+        } else {
+            minAlphaWormholes = Math.floor(minWormholes / 2);
+            minBetaWormholes = Math.ceil(minWormholes / 2);
+        }
+
         const options = {
-            minWormholes:
-                AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
+            minAlphaWormholes,
+            minBetaWormholes,
             minLegendary: 0,
         };
-        console.log(JSON.stringify(options));
         const { chosenTiles, remainingTiles } =
             AbstractSliceGenerator._getRandomTieredSystemsWithLegendaryWormholePromotion(
                 options
