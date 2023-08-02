@@ -682,18 +682,6 @@ class AbstractSliceGenerator {
 
                 const slice = slices[sliceIndex];
                 assert(slice);
-                const {
-                    res,
-                    optRes,
-                    inf,
-                    optInf,
-                    tech,
-                    wormholes,
-                    legendaries,
-                } = world.TI4.System.summarizeRaw(slice);
-                const hasWormhole = wormholes.length > 0;
-                const lasLegendary = legendaries.length > 0;
-                const hasTech = tech.length > 0;
 
                 const choices = [];
                 for (
@@ -706,9 +694,12 @@ class AbstractSliceGenerator {
                     const system = world.TI4.getSystemByTileNumber(tile);
                     assert(system);
 
-                    // TODO calculate weight for balance.
+                    const weight = AbstractSliceGenerator._calculateSliceScore(
+                        slice,
+                        tile
+                    );
 
-                    choices.push({ weight: 1, value: { tile, takeFromIndex } });
+                    choices.push({ weight, value: { tile, takeFromIndex } });
                 }
 
                 // Move the chosen tile to the slice.
@@ -719,6 +710,23 @@ class AbstractSliceGenerator {
                 tieredSlice[tileIndex] = RESOLVED;
             }
         }
+    }
+
+    static _calculateSliceScore(sliceSoFar, withNewTile) {
+        assert(Array.isArray(sliceSoFar));
+        assert(typeof withNewTile === "number");
+
+        // Consider a slice with the new tile added.
+        const slice = [...sliceSoFar];
+        slice.push(withNewTile);
+
+        const { res, optRes, inf, optInf, tech, wormholes, legendaries } =
+            world.TI4.System.summarizeRaw(slice);
+        const hasWormhole = wormholes.length > 0;
+        const lasLegendary = legendaries.length > 0;
+        const hasTech = tech.length > 0;
+
+        return 1;
     }
 }
 
