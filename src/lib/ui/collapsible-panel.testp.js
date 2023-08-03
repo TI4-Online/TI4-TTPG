@@ -5,7 +5,7 @@ const child = new Text().setText("lorem\ntest\ntest");
 const scale = 2;
 const collapsiblePanel = new CollapsiblePanel()
     .setChild(child)
-    .setClosable(true)
+    .setClosable(false)
     .setColor([1, 0, 0, 1])
     .setTitle("foo")
     .setScale(scale);

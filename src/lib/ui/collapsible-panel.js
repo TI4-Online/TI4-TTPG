@@ -150,7 +150,8 @@ class CollapsiblePanel {
 
         const padded = new LayoutBox()
             .setPadding(spacing, spacing, spacing, spacing)
-            .setChild(panel);
+            .setChild(panel)
+            .setMinimumWidth(500);
 
         return new Border().setColor(this._color).setChild(padded);
     }

@@ -18,6 +18,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
 
 // If a new strategy card is played while a player still has one open,
 // position the new UI behind the other(s).
@@ -354,9 +355,6 @@ class AbstractStrategyCard {
         const verticalBox =
             WidgetFactory.verticalBox().setChildDistance(SPACING);
 
-        // Create widget header.
-        this._createHeader(verticalBox, playerDesk);
-
         // Create widget body.
         const bodyWidgets = this._bodyWidgetFactory(
             playerDesk,
@@ -376,11 +374,19 @@ class AbstractStrategyCard {
             this._createAutomoatorButtons(verticalBox, playerDesk);
         }
 
-        // Wrap in a padded frame.
-        let widget = WidgetFactory.layoutBox()
-            .setPadding(5, 5, 0, 5)
-            .setChild(verticalBox);
-        widget = WidgetFactory.border().setColor(this._color).setChild(widget);
+        // Build a collapsible widget.
+        const title = AbstractStrategyCard.getStrategyCardName(
+            this._gameObject
+        );
+        const collapsiblePanel = new CollapsiblePanel()
+            .setColor(this._color)
+            .setChild(verticalBox)
+            .setClosable(true)
+            .setScale(SCALE)
+            .setTitle(title);
+        collapsiblePanel.onClosed.add((player) => {
+            this._removeUI(playerDesk);
+        });
 
         // Add UI.
         const ui = WidgetFactory.uiElement();
@@ -392,7 +398,7 @@ class AbstractStrategyCard {
         });
         ui.rotation = playerDesk.localRotationToWorld(new Rotator(35, 0, 0));
         ui.scale = 1 / SCALE;
-        ui.widget = widget;
+        ui.widget = collapsiblePanel.createWidget();
 
         // TTPG/Unreal has a cap on single-instance objects, world UI is one bucket.
         // Spread out strategy card UI to per-player objects.
@@ -430,16 +436,28 @@ class AbstractStrategyCard {
         }
     }
 
+    _getTitle() {
+        const parsed = ObjectNamespace.parseStrategyCard(this._gameObject);
+        const nsidName = parsed.card;
+        const localeName = `strategy_card.${nsidName}.text`;
+        let title = locale(localeName);
+        if (title === localeName) {
+            // Strategy card name not registered?
+        }
+        return (title = title.toUpperCase());
+    }
+
     _createHeader(verticalBox, playerDesk) {
         assert(verticalBox instanceof VerticalBox);
         assert(playerDesk);
 
-        const parsed = ObjectNamespace.parseStrategyCard(this._gameObject);
-        const nsidName = parsed.card;
+        const strategyCardName = AbstractStrategyCard.getStrategyCardName(
+            this._gameObject
+        );
         const headerText = WidgetFactory.text()
             .setFont("handel-gothic-regular.ttf", refPackageId)
             .setFontSize(FONT_SIZE_TITLE)
-            .setText(locale(`strategy_card.${nsidName}.text`).toUpperCase());
+            .setText(strategyCardName.toUpperCase());
 
         const onCloseClicked = (clickedButton, player) => {
             this._removeUI(playerDesk);
