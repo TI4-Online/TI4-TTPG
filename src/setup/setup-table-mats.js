@@ -10,12 +10,14 @@ const MATS = [
         anchor: TableLayout.anchor.score,
         pos: { x: 25, y: 0 },
         yaw: -90,
+        nonInteractive: true,
     },
     {
         nsid: "mat:base/objectives_1",
         anchor: TableLayout.anchor.score,
         pos: { x: 10, y: 0 },
         yaw: -90,
+        nonInteractive: true,
     },
     {
         nsid: "token:base/scoreboard",
@@ -28,6 +30,7 @@ const MATS = [
         anchor: TableLayout.anchor.score,
         pos: { x: -10, y: 0 },
         yaw: -90,
+        nonInteractive: true,
     },
 
     {
@@ -35,12 +38,14 @@ const MATS = [
         anchor: TableLayout.anchor.score,
         pos: { x: -30, y: 14 }, // 16.9 width
         yaw: -90,
+        nonInteractive: true,
     },
     {
         nsid: "mat:pok/exploration",
         anchor: TableLayout.anchor.score,
         pos: { x: -29, y: -10 }, // 26 width
         yaw: -90,
+        nonInteractive: true,
     },
 
     //{
@@ -58,6 +63,7 @@ const MATS = [
         anchor: TableLayout.anchor.strategy,
         pos: { x: 0, y: 0 },
         yaw: -90,
+        nonInteractive: true,
     },
 ];
 
@@ -78,7 +84,15 @@ class SetupTableMats extends AbstractSetup {
             pos.z = world.getTableHeight() + 3;
 
             const obj = Spawn.spawn(nsid, pos, rot);
+            obj.snapToGround();
             obj.setObjectType(ObjectType.Ground);
+
+            if (matData.nonInteractive) {
+                console.log(
+                    `SetupTableMats: making "${matData.nsid}" non interactive`
+                );
+                obj.setObjectType(ObjectType.NonInteractive);
+            }
         });
     }
 
