@@ -134,6 +134,7 @@ class AgendaUiDesk {
             .setChild(panel)
             .setClosable(false)
             .setColor(CONFIG.backgroundColor)
+            .setPlayerDeskIndex(this._playerDesk.index)
             .setScale(CONFIG.scale)
             .setTitle(locale("ui.phase.agenda.label"))
             .createWidget();

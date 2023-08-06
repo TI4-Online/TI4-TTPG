@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { Broadcast } = require("../../lib/broadcast");
+const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
 const { ColorUtil } = require("../../lib/color/color-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
@@ -18,17 +19,16 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
-const { CollapsiblePanel } = require("../../lib/ui/collapsible-panel");
-
-// If a new strategy card is played while a player still has one open,
-// position the new UI behind the other(s).
-const _playerSlotToActiveAbstractStrategyCards = {};
 
 const SCALE = 2;
 const FONT_SIZE_PLAY_BUTTON = 9 * SCALE;
 const FONT_SIZE_TITLE = 14 * SCALE;
 const FONT_SIZE_BODY = 10 * SCALE;
 const SPACING = 2 * SCALE;
+
+// If a card is played again and the previous UI is still showing,
+// do not show it again.
+const _playerSlotToActiveAbstractStrategyCards = {};
 
 /**
  * Manage strategy card UI.
@@ -231,8 +231,7 @@ class AbstractStrategyCard {
             return this._defaultBodyWidgetFactory(playerDesk, strategyCardObj);
         };
         this._automatorButtons = undefined;
-        this._playerSlotToUi = {};
-        this._playerSlotToPlayed = {};
+        this._playerSlotToCollapsiblePanel = {};
 
         // Clicking the play button shows UI.  Do not link directly to the
         // button, instead listen for the event.
@@ -296,46 +295,8 @@ class AbstractStrategyCard {
         return this;
     }
 
-    /**
-     * Strategy card popups stack behind current ones.
-     * As popups get closed, shift other popups forward.
-     * Otherwise using the number of active UIs can lead to collision.
-     *
-     * @param {PlayerDesk} playerDesk
-     */
-    _moveUIs(playerDesk) {
-        assert(playerDesk);
-
-        const playerSlot = playerDesk.playerSlot;
-
-        // Active are in add-order.
-        const active = _playerSlotToActiveAbstractStrategyCards[playerSlot];
-        if (!active || active.length === 0) {
-            return;
-        }
-
-        let nextOffset = 0;
-        const deltaOffset = 0.2;
-        for (const abstractStrategyCard of active) {
-            const ui = abstractStrategyCard._playerSlotToUi[playerSlot];
-            if (!ui) {
-                continue; // "can't happen"
-            }
-            ui.position = playerDesk.localPositionToWorld({
-                x: 10 + nextOffset,
-                y: 0,
-                z: 5,
-            });
-            ui.rotation = playerDesk.localRotationToWorld(
-                new Rotator(35, 0, 0)
-            );
-            playerDesk.updateUI(ui, true);
-            nextOffset += deltaOffset;
-        }
-    }
-
     _addUI(playerDesk) {
-        assert(playerDesk);
+        assert(playerDesk instanceof world.TI4.PlayerDesk);
 
         // Track per-desk active strategy cards.
         const playerSlot = playerDesk.playerSlot;
@@ -345,6 +306,7 @@ class AbstractStrategyCard {
             _playerSlotToActiveAbstractStrategyCards[playerSlot] = active;
         }
         if (active.includes(this)) {
+            // Already active.
             console.log(
                 `AbstractStrategyCard._addUI: already visible for ${playerDesk.colorName}, skipping`
             );
@@ -382,6 +344,7 @@ class AbstractStrategyCard {
             .setColor(this._color)
             .setChild(verticalBox)
             .setClosable(true)
+            .setPlayerDeskIndex(playerDesk.index)
             .setScale(SCALE)
             .setTitle(title);
         collapsiblePanel.onClosed.add((player) => {
@@ -389,50 +352,31 @@ class AbstractStrategyCard {
         });
 
         // Add UI.
-        const ui = WidgetFactory.uiElement();
-        ui.anchorY = 1;
-        ui.position = playerDesk.localPositionToWorld({
-            x: 10 + active.length * 2,
-            y: 0,
-            z: 5,
+        collapsiblePanel.createAndAddUi(playerDesk);
+
+        // Make sure to remove from global when closed!
+        collapsiblePanel.onClosed.add((player) => {
+            const playerSlot = playerDesk.playerSlot;
+            const active = _playerSlotToActiveAbstractStrategyCards[playerSlot];
+            const index = active ? active.indexOf(this) : -1;
+            if (index >= 0) {
+                active.splice(index, 1);
+            }
         });
-        ui.rotation = playerDesk.localRotationToWorld(new Rotator(35, 0, 0));
-        ui.scale = 1 / SCALE;
-        ui.widget = collapsiblePanel.createWidget();
 
-        // TTPG/Unreal has a cap on single-instance objects, world UI is one bucket.
-        // Spread out strategy card UI to per-player objects.
-        playerDesk.addUI(ui);
-
-        assert(!this._playerSlotToUi[playerSlot]);
-        this._playerSlotToUi[playerSlot] = ui;
-
-        this._moveUIs(playerDesk);
+        assert(!this._playerSlotToCollapsiblePanel[playerSlot]);
+        this._playerSlotToCollapsiblePanel[playerSlot] = collapsiblePanel;
     }
 
     _removeUI(playerDesk) {
-        assert(playerDesk);
-
-        // Track per-desk active strategy cards.
+        assert(playerDesk instanceof world.TI4.PlayerDesk);
         const playerSlot = playerDesk.playerSlot;
-        const active = _playerSlotToActiveAbstractStrategyCards[playerSlot];
-        const index = active ? active.indexOf(this) : -1;
-        if (index >= 0) {
-            active.splice(index, 1);
-        }
 
         // Remove UI.
-        const ui = this._playerSlotToUi[playerSlot];
-        this._playerSlotToUi[playerSlot] = undefined;
-        if (ui) {
-            playerDesk.removeUIElement(ui);
-            WidgetFactory.release(ui);
-        } else {
-            // Searching for why "close" isn't working for some players sometime.
-            Broadcast.chatAll(
-                "AbstractStrategyCard: removeUI already removed?",
-                Broadcast.ERROR
-            );
+        const collapsiblePanel = this._playerSlotToCollapsiblePanel[playerSlot];
+        this._playerSlotToCollapsiblePanel[playerSlot] = undefined;
+        if (collapsiblePanel) {
+            collapsiblePanel.close();
         }
     }
 
@@ -445,33 +389,6 @@ class AbstractStrategyCard {
             // Strategy card name not registered?
         }
         return (title = title.toUpperCase());
-    }
-
-    _createHeader(verticalBox, playerDesk) {
-        assert(verticalBox instanceof VerticalBox);
-        assert(playerDesk);
-
-        const strategyCardName = AbstractStrategyCard.getStrategyCardName(
-            this._gameObject
-        );
-        const headerText = WidgetFactory.text()
-            .setFont("handel-gothic-regular.ttf", refPackageId)
-            .setFontSize(FONT_SIZE_TITLE)
-            .setText(strategyCardName.toUpperCase());
-
-        const onCloseClicked = (clickedButton, player) => {
-            this._removeUI(playerDesk);
-        };
-        const closeButton = WidgetFactory.button()
-            .setFontSize(FONT_SIZE_TITLE * 0.75)
-            .setText("X");
-        closeButton.onClicked.add(ThrottleClickHandler.wrap(onCloseClicked));
-
-        const header = WidgetFactory.horizontalBox()
-            .addChild(headerText, 1)
-            .addChild(closeButton, 0);
-
-        verticalBox.addChild(header);
     }
 
     _createFooter(verticalBox, playerDesk) {
