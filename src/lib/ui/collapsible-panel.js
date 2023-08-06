@@ -3,9 +3,12 @@ const TriggerableMulticastDelegate = require("../triggerable-multicast-delegate"
 const { ThrottleClickHandler } = require("./throttle-click-handler");
 const {
     Border,
+    HorizontalAlignment,
     HorizontalBox,
     ImageButton,
     LayoutBox,
+    PlayerPermission,
+    ScreenUIElement,
     Text,
     UIElement,
     VerticalAlignment,
@@ -21,6 +24,7 @@ const UNSCALED_SPACING = 2;
 const IMG_CLOSE = "global/ui/icons/close.png";
 const IMG_COLLAPSE = "global/ui/icons/collapse.png";
 const IMG_EXPAND = "global/ui/icons/expand.png";
+const IMG_SCREEN_SPACE = "global/ui/icons/hex.png";
 
 /**
  * Wrap a Widget inside a panel with a "collapse/expand" toggle.
@@ -37,10 +41,20 @@ class CollapsiblePanel {
         this._scale = 1;
 
         this._onClosed = new TriggerableMulticastDelegate();
+        this._onToggled = new TriggerableMulticastDelegate();
+        this._onScreenSpaceToggled = new TriggerableMulticastDelegate();
     }
 
     get onClosed() {
         return this._onClosed;
+    }
+
+    get onToggled() {
+        return this._onToggled;
+    }
+
+    get onScreenSpaceToggled() {
+        return this._onScreenSpaceToggled;
     }
 
     setChild(child) {
@@ -61,6 +75,12 @@ class CollapsiblePanel {
         return this;
     }
 
+    /**
+     * Recommend 2 for screen space.
+     *
+     * @param {number} scale
+     * @returns {CollapsiblePanel} self, for chaining.
+     */
     setScale(scale) {
         assert(typeof scale === "number");
         assert(scale > 0);
@@ -99,6 +119,24 @@ class CollapsiblePanel {
             .setVerticalAlignment(VerticalAlignment.Center)
             .setChild(titleText);
 
+        const screenSpaceButton = new ImageButton()
+            .setImage(IMG_SCREEN_SPACE, refPackageId)
+            .setImageSize(imgSize, imgSize);
+        screenSpaceButton.onClicked.add(
+            ThrottleClickHandler.wrap((button, player) => {
+                const playerName = world.TI4.getNameByPlayerSlot(
+                    player.getSlot()
+                );
+                console.log(
+                    `CollapsiblePanel "${this._title}" screen space toggled by "${playerName}"`
+                );
+                this._onScreenSpaceToggled.trigger(player);
+            })
+        );
+
+        // NOT READY FOR THIS YET!
+        screenSpaceButton.setVisible(false);
+
         const collapseButton = new ImageButton()
             .setImage(IMG_COLLAPSE, refPackageId)
             .setImageSize(imgSize, imgSize);
@@ -117,6 +155,7 @@ class CollapsiblePanel {
                     newValue ? IMG_COLLAPSE : IMG_EXPAND,
                     refPackageId
                 );
+                this._onToggled.trigger(player);
             })
         );
 
@@ -139,6 +178,7 @@ class CollapsiblePanel {
         const headerPanel = new HorizontalBox()
             .setChildDistance(spacing)
             .addChild(titleBox, 1)
+            .addChild(screenSpaceButton)
             .addChild(collapseButton)
             .addChild(closeButton);
 
@@ -151,7 +191,7 @@ class CollapsiblePanel {
         const padded = new LayoutBox()
             .setPadding(spacing, spacing, spacing, spacing)
             .setChild(panel)
-            .setMinimumWidth(300);
+            .setMinimumWidth(150 * this._scale);
 
         return new Border().setColor(this._color).setChild(padded);
     }
@@ -173,17 +213,70 @@ class CollapsiblePanel {
 
         const widget = this.createWidget();
 
-        const ui = new UIElement();
-        ui.anchorY = 1;
-        ui.position = playerDesk.localPositionToWorld(localPos);
-        ui.rotation = playerDesk.localRotationToWorld(localRot);
-        ui.scale = 1 / this._scale;
-        ui.widget = widget;
+        const worldPos = playerDesk.localPositionToWorld(localPos);
+        const worldRot = playerDesk.localRotationToWorld(localRot);
 
-        playerDesk.addUI(ui);
+        this._uiElement = new UIElement();
+        this._uiElement.anchorY = 1;
+        this._uiElement.position = worldPos;
+        this._uiElement.rotation = worldRot;
+        this._uiElement.scale = 1 / this._scale;
+        this._uiElement.widget = widget;
+
+        playerDesk.addUI(this._uiElement);
 
         this.onClosed.add((player) => {
-            playerDesk.removeUIElement(ui);
+            if (this._uiElement) {
+                playerDesk.removeUIElement(this._uiElement);
+                this._uiElement = undefined;
+            }
+        });
+
+        // Ability to move to screen space!
+        this.onScreenSpaceToggled.add((player) => {
+            if (this._uiElement) {
+                // Remove from world.
+                playerDesk.removeUIElement(this._uiElement);
+                this._uiElement = undefined;
+
+                // Need size widget.  Make a full screen box and center.
+                const box = new LayoutBox()
+                    .setHorizontalAlignment(HorizontalAlignment.Center)
+                    .setVerticalAlignment(VerticalAlignment.Center)
+                    .setChild(widget);
+
+                // Add to screen.
+                this._screenUiElement = new ScreenUIElement();
+                this._screenUiElement.anchorX = 0.5;
+                this._screenUiElement.anchorY = 0.5;
+                this._screenUiElement.positionX = 0.5;
+                this._screenUiElement.positionY = 0.5;
+                this._screenUiElement.relativePositionX = true;
+                this._screenUiElement.relativePositionY = true;
+                this._screenUiElement.width = 1;
+                this._screenUiElement.height = 1;
+                this._screenUiElement.relativeWidth = true;
+                this._screenUiElement.relativeHeight = true;
+                this._screenUiElement.widget = box;
+                this._screenUiElement.players =
+                    new PlayerPermission().setPlayerSlots([
+                        playerDesk.playerSlot,
+                    ]);
+                world.addScreenUI(this._screenUiElement);
+            } else {
+                // Remove from screen.
+                world.removeScreenUIElement(this._screenUiElement);
+                this._screenUiElement = undefined;
+
+                // Add to world.
+                this._uiElement = new UIElement();
+                this._uiElement.anchorY = 1;
+                this._uiElement.position = worldPos;
+                this._uiElement.rotation = worldRot;
+                this._uiElement.scale = 1 / this._scale;
+                this._uiElement.widget = widget;
+                playerDesk.addUI(this._uiElement);
+            }
         });
 
         return this;

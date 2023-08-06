@@ -1,8 +1,10 @@
 const { CollapsiblePanel } = require("./collapsible-panel");
 const { Text, Rotator, Vector, world } = require("../../wrapper/api");
 
-const child = new Text().setText("lorem\ntest\ntest");
 const scale = 2;
+
+const child = new Text().setText("lorem\ntest\ntest").setFontSize(10 * scale);
+
 const collapsiblePanel = new CollapsiblePanel()
     .setChild(child)
     .setClosable(false)
