@@ -14,7 +14,12 @@ class AbstractPlanetAttachment extends AbstractSystemAttachment {
      * @param {GameObject} gameObject
      */
     static delayedCreateForKnownAttachmentToken(gameObject) {
-        assert(gameObject instanceof GameObject);
+        if (!gameObject) {
+            throw new Error("null gameObject");
+        }
+        if (!(gameObject instanceof GameObject)) {
+            throw new Error("gameObject is not a GameObject");
+        }
         process.nextTick(() => {
             AbstractPlanetAttachment.createForKnownAttachmentToken(gameObject);
         });
