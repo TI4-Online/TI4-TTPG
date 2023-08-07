@@ -29,10 +29,10 @@ const UNSCALED_SPACING = 2;
 const IMG_CLOSE = "global/ui/icons/close.png";
 const IMG_COLLAPSE = "global/ui/icons/collapse.png";
 const IMG_EXPAND = "global/ui/icons/expand.png";
-const IMG_SCREEN_SPACE = "global/ui/icons/hex.png";
+const IMG_SCREEN_SPACE = "global/ui/icons/fullscreen.png";
 
 const LOCAL_POS = new Vector(10, 0, 5);
-const LOCAL_POS_DELTA = new Vector(-2, 0, 0); // if stacking multiple
+const LOCAL_POS_DELTA = new Vector(2, 0, 0); // if stacking multiple, new windows go BEHIND existing
 const LOCAL_ROT = new Rotator(35, 0, 0);
 
 const _deskIndexToCollapsiblePanels = {};
@@ -115,7 +115,9 @@ class CollapsiblePanel {
     // --------------------------------
 
     close(player) {
-        console.log(`CollapsiblePanel.close "${this._title}"`);
+        if (!world.__isMock) {
+            console.log(`CollapsiblePanel.close "${this._title}"`);
+        }
 
         // If added by createAndAddUI this will remove the UI.
         this._onClosed.trigger(player);
@@ -130,7 +132,7 @@ class CollapsiblePanel {
         this._child.setVisible(true);
 
         const fontSize = Math.floor(UNSCALED_FONT_SIZE * this._scale);
-        const imgSize = Math.floor(UNSCALED_FONT_SIZE * this._scale);
+        const imgSize = Math.floor(UNSCALED_FONT_SIZE * this._scale * 1.2);
         const spacing = Math.floor(UNSCALED_SPACING * this._scale);
 
         // Place whole thing in an outer frame.  This lets us change the
@@ -439,4 +441,4 @@ class CollapsiblePanel {
     }
 }
 
-module.exports = { CollapsiblePanel };
+module.exports = { CollapsiblePanel, LOCAL_POS, LOCAL_ROT };
