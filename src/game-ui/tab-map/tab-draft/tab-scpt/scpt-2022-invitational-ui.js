@@ -82,8 +82,10 @@ class SCPT2022InvitationalUI extends VerticalBox {
             this.addChild(button);
             button.onClicked.add(
                 ThrottleClickHandler.wrap((button, player) => {
-                    this._onClickHandlers.start(draft);
-                    this._createDraftInProgressUI();
+                    const success = this._onClickHandlers.start(draft);
+                    if (success) {
+                        this._createDraftInProgressUI();
+                    }
                 })
             );
         }

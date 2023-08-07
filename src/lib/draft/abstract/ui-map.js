@@ -167,13 +167,18 @@ class UiMap {
             }
             for (let index = 0; index < fixedHexes.length; index++) {
                 const hex = fixedHexes[index];
-                const tile = fixedSystems[index] || -1;
+                const tile = fixedSystems ? fixedSystems[index] : -10 - index;
                 const mapStringIndex = MapStringHex.hexStringToIdx(hex);
                 assert(typeof mapStringIndex === "number");
-                assert(
-                    !mapStringEntries[mapStringIndex] ||
-                        mapStringEntries[mapStringIndex].tile === -1
-                );
+                if (
+                    mapStringEntries[mapStringIndex] &&
+                    mapStringEntries[mapStringIndex].tile !== -1
+                ) {
+                    // something already in this spot!
+                    throw new Error(
+                        `UiMap.generateMapString: "${hex}" already occupied`
+                    );
+                }
                 mapStringEntries[mapStringIndex] = { tile };
             }
         }
@@ -347,7 +352,8 @@ class UiMap {
 
         // Positions include "color tile" encoded tile number.
         for (const pos of size.positions) {
-            if (pos.tile < 0) {
+            // Skip home system and standard empty encodings.
+            if (pos.tile === 0 || pos.tile === -1) {
                 continue;
             }
 
@@ -368,7 +374,27 @@ class UiMap {
                 pos.tile
             );
 
-            if (pos.tile >= 100000) {
+            if (pos.tile <= -10) {
+                // Fixed system but no assigned tile.
+                const fixedIndex = Math.abs(pos.tile + 10);
+                const c = 0.2;
+                const color = [c, c, c, 1];
+                image
+                    .setImage("global/ui/tiles/blank.png", refPackageId)
+                    .setTintColor(color);
+                const text = new Text()
+                    .setFontSize(20 * this._scale)
+                    .setBold(true)
+                    .setJustification(TextJustification.Center)
+                    .setText(fixedIndex + 1); // make 1 based
+                canvas.addChild(
+                    text,
+                    offset.x + pos.x - size.halfW,
+                    offset.y + pos.y - text.getFontSize() * 0.8,
+                    size.tileW,
+                    text.getFontSize() * 2
+                );
+            } else if (pos.tile >= 100000) {
                 // Generic per-desk tile and/or home system.
                 const color = playerDeskArray[deskIndex].widgetColor.clone();
                 if (isHome) {

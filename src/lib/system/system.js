@@ -336,7 +336,7 @@ class System {
         return result;
     }
 
-    static summarize(tiles, includeOptimal) {
+    static summarizeRaw(tiles) {
         assert(Array.isArray(tiles));
         let res = 0;
         let optRes = 0;
@@ -388,6 +388,24 @@ class System {
                 }
             }
         }
+
+        return {
+            res,
+            optRes,
+            inf,
+            optInf,
+            tech,
+            wormholes,
+            legendaries,
+        };
+    }
+
+    static summarize(tiles, includeOptimal) {
+        assert(Array.isArray(tiles));
+
+        const { res, optRes, inf, optInf, tech, wormholes, legendaries } =
+            System.summarizeRaw(tiles);
+
         const result = [`${res}/${inf}`];
         if (includeOptimal) {
             result.push(`(${optRes}/${optInf})`);
@@ -585,6 +603,15 @@ class System {
 
     get packageId() {
         return this._attrs.packageId ? this._attrs.packageId : refPackageId;
+    }
+
+    get legendary() {
+        for (const planet of this.planets) {
+            if (planet.raw.legendary) {
+                return true;
+            }
+        }
+        return false;
     }
 
     getSummaryStr() {

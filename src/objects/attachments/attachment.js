@@ -60,6 +60,10 @@ class Attachment {
         ATTACHMENTS.push(attachmentAttrs);
         _cardNsidNameToAttachment = undefined;
         _tokenNsidNameToAttachment = undefined;
+
+        console.log(
+            `Attachment.injectAttachment: added "${attachmentAttrs.tokenNsid}"`
+        );
     }
 
     constructor(attachmentAttrs) {

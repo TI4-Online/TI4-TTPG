@@ -508,7 +508,7 @@ class AbstractSliceDraft {
             errors
         );
         if (!this._slices) {
-            this._slices = this._sliceGenerator.generateSlices(sliceCount);
+            this._slices = this._sliceGenerator.generateSlices();
         }
         AbstractUtil.assertIsSliceArray(this._slices, this._sliceShape);
         AbstractSliceDraft._reportHomebrewSystemTilesInSlices(
@@ -541,7 +541,10 @@ class AbstractSliceDraft {
                 );
             if (!this._fixedSystems) {
                 this._fixedSystems =
-                    this._fixedSystemsGenerator.generateFixedSystems();
+                    this._fixedSystemsGenerator.generateFixedSystems(
+                        fixedCount,
+                        this._slices
+                    );
             }
         }
         AbstractUtil.assertValidSystems(this._fixedSystems);
@@ -586,7 +589,7 @@ class AbstractSliceDraft {
     }
 
     cancel(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.cancel");
         }
@@ -615,7 +618,7 @@ class AbstractSliceDraft {
     }
 
     finish(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
         if (!world.__isMock) {
             console.log("AbstractSliceDraft.finish");
         }
@@ -645,7 +648,7 @@ class AbstractSliceDraft {
 
     static _setTurnOrderFromSpeaker(speakerIndex, player) {
         AbstractUtil.assertIsDeskIndex(speakerIndex);
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
 
         // Set turn order according to draft speaker position.
         const playerDesks = world.TI4.getAllPlayerDesks();

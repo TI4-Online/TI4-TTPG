@@ -180,9 +180,7 @@ class AbstractSliceLayout {
             const hex = AbstractSliceLayout._defaultLayoutTile(
                 anchorHex,
                 dirHex,
-                shapeHex,
-                tile,
-                mapStringArray
+                shapeHex
             );
 
             const mapStringIndex = hexStringToIdx(hex);
@@ -203,11 +201,10 @@ class AbstractSliceLayout {
         }
     }
 
-    static _defaultLayoutTile(anchorHex, dirHex, shapeHex, tile) {
+    static _defaultLayoutTile(anchorHex, dirHex, shapeHex) {
         AbstractUtil.assertIsHex(anchorHex);
         AbstractUtil.assertIsHex(dirHex);
         AbstractUtil.assertIsHex(shapeHex);
-        assert(typeof tile === "number");
 
         const anchorPos = Hex.toPosition(anchorHex);
         const dirPos = Hex.toPosition(dirHex);
@@ -228,6 +225,39 @@ class AbstractSliceLayout {
         const pos = new Vector(anchorPos.x + dx, anchorPos.y + dy, anchorPos.z);
         const hex = Hex.fromPosition(pos);
         return hex;
+    }
+
+    /**
+     * Sometimes layout get tricky (e.g. 7 and 8 player hyperlane).  This
+     * method lets layout writers point where the tile *should* go.
+     *
+     * THIS IS MEANT FOR DEV TIME, TO GET THE "CHEAP" SHAPEHEX VALUE!
+     *
+     * @param {string} anchorHex
+     * @param {string} dirHex
+     * @param {string} targetHex
+     */
+    static _helpMeFindShapeHex(anchorHex, dirHex, targetHex) {
+        AbstractUtil.assertIsHex(anchorHex);
+        AbstractUtil.assertIsHex(dirHex);
+        AbstractUtil.assertIsHex(targetHex);
+
+        // Brute force.
+        for (let i = -10; i < 10; i++) {
+            for (let j = -10; j < 10; j++) {
+                const k = -(i + j);
+                const shapeHex = `<${i},${j},${k}>`;
+                const layoutHex = AbstractSliceLayout._defaultLayoutTile(
+                    anchorHex,
+                    dirHex,
+                    shapeHex
+                );
+                if (layoutHex === targetHex) {
+                    throw new Error(`_helpMeFindShapeHex: ${shapeHex}`);
+                }
+            }
+        }
+        throw new Error("_helpMeFindShapeHex: not found");
     }
 }
 

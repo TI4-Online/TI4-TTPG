@@ -3,19 +3,10 @@ const locale = require("../lib/locale");
 const { AutoRoller } = require("../objects/roller/auto-roller");
 const { AutoRollerArena } = require("../objects/roller/auto-roller-arena");
 const {
-    BunkerDraftSettings,
-} = require("./tab-map/tab-draft/tab-bunker/bunker-draft-settings");
-const {
     FrankenDraftSettings,
 } = require("./tab-map/tab-draft/tab-franken/franken-settings");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
-const {
-    MiltyDraftSettings,
-} = require("./tab-map/tab-draft/tab-milty/milty-draft-settings");
-const {
-    MiltyEqDraftSettings,
-} = require("./tab-map/tab-draft/tab-milty-eq/milty-eq-draft-settings");
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
@@ -54,6 +45,10 @@ const {
     world,
 } = require("../wrapper/api");
 const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
+const {
+    MiltyEqSliceDraft,
+} = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
+const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
 
 let _gameUI;
 
@@ -230,25 +225,14 @@ class GameUI {
     _createDraftFolder() {
         const draftFolder = new NavFolder().setName(locale("nav.map.draft"));
 
-        const miltyDraftEntry = new NavEntry()
-            .setName(locale("nav.map.draft.milty"))
-            .setIconPath("global/ui/icons/milty-hex.png")
-            .setPersistWidget(true)
-            .setWidgetFactory((navPanel, navEntry) => {
-                return new MiltyDraftSettings().getUI();
-            });
+        const miltyDraftEntry = MiltySliceDraft.createDraftNavEntry();
         draftFolder.addChild(miltyDraftEntry);
-        const miltyDraftEntry2 = MiltySliceDraft.createDraftNavEntry();
-        draftFolder.addChild(miltyDraftEntry2);
 
-        const miltyEqDraftEntry = new NavEntry()
-            .setName(locale("nav.map.draft.milty_eq"))
-            .setIconPath("global/ui/icons/milty-eq-hex.png")
-            .setPersistWidget(true)
-            .setWidgetFactory((navPanel, navEntry) => {
-                return new MiltyEqDraftSettings().getUI();
-            });
+        const miltyEqDraftEntry = MiltyEqSliceDraft.createDraftNavEntry();
         draftFolder.addChild(miltyEqDraftEntry);
+
+        const bunkerDraftEntry = BunkerSliceDraft.createDraftNavEntry();
+        draftFolder.addChild(bunkerDraftEntry);
 
         const scptFolder = new NavFolder().setName(
             locale("nav.map.draft.scpt")
@@ -280,14 +264,6 @@ class GameUI {
                 return new TabBagDraft().getUI();
             });
         draftFolder.addChild(bagDraft);
-
-        const bunkerDraft = new NavEntry()
-            .setName(locale("nav.map.draft.bunker"))
-            .setIconPath("global/ui/icons/bunker-hex.png")
-            .setWidgetFactory((navPanel, navEntry) => {
-                return new BunkerDraftSettings().getUI();
-            });
-        draftFolder.addChild(bunkerDraft);
 
         const franken = new NavEntry()
             .setName(locale("nav.map.draft.franken"))

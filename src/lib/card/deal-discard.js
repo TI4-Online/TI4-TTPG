@@ -531,6 +531,11 @@ class DealDiscard {
             // Move to deck position.  We know deck data and parent exist.
             // Careful if discarding to main deck vs discard pile.
             const parent = DealDiscard._getParent(deckData);
+            if (!parent) {
+                throw new Error(
+                    `DealDiscard.discard: missing deck mat "${deckData.parentNsid}"`
+                );
+            }
             const snapPoints = parent.getAllSnapPoints();
             let index = deckData.discardSnapPointIndex;
             let roll = 180;

@@ -48,7 +48,7 @@ class AbstractFixedSystemsGenerator {
         throw new Error("subclass must override this");
     }
 
-    generateFixedSystems() {
+    generateFixedSystems(fixedCount) {
         throw new Error("subclass must override this");
     }
 }

@@ -1,11 +1,6 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const { Broadcast } = require("../../../../lib/broadcast");
 const { Gather } = require("../../../../setup/spawn/gather");
-const { MiltyDraft } = require("../../../../lib/draft/milty/milty-draft");
-const {
-    MiltyFactionGenerator,
-} = require("../../../../lib/draft/milty/milty-faction-generator");
-const { MiltyUtil } = require("../../../../lib/draft/milty/milty-util");
 const { ObjectNamespace } = require("../../../../lib/object-namespace");
 const { SCPT2023UI } = require("./scpt-2023-ui");
 const { TableLayout } = require("../../../../table/table-layout");
@@ -18,13 +13,19 @@ const {
     globalEvents,
     world,
 } = require("../../../../wrapper/api");
+const {
+    AbstractFactionGenerator,
+} = require("../../../../lib/draft/abstract/abstract-faction-generator");
+const {
+    MiltySliceDraft,
+} = require("../../../../lib/draft/milty2/milty-slice-draft");
 
 const SECRET_FACTION_RADIUS = 7;
 const LINE_TAG = "__SCPT2023";
 
 class SCPT2023 {
     constructor() {
-        this._miltyDraft = false;
+        this._miltySliceDraft = undefined;
 
         const onClickHandlers = {
             start: (scptDraftData) => {
@@ -56,8 +57,9 @@ class SCPT2023 {
         console.log(`SCPT2023._start: ${scptDraftData.name}`);
 
         // Make sure the correct number of factions exist.
+        const factionCards = AbstractFactionGenerator._getOnTableFactionCards();
         const factionNsidNames =
-            MiltyFactionGenerator.getOnTableFactionCardNsidNames();
+            AbstractFactionGenerator._getOnTableFactionCardNsidNames();
         const numFactions = factionNsidNames.length;
         if (numFactions !== 7) {
             Broadcast.chatAll(
@@ -66,54 +68,43 @@ class SCPT2023 {
             return;
         }
 
-        if (this._miltyDraft) {
-            console.log("SCPT2023._start: in progress, aborting");
-            return;
-        }
-        this._miltyDraft = new MiltyDraft();
-
-        // Slices.
-        const slices = scptDraftData.slices.split("|").map((sliceStr) => {
-            return MiltyUtil.parseSliceString(sliceStr);
-        });
-        const labels = scptDraftData.labels.split("|");
-        for (let i = 0; i < slices.length; i++) {
-            const slice = slices[i];
-            const label = labels[i];
-            console.log(`${i}: ${slice} "${label}"`);
-            this._miltyDraft.addSlice(slice, false, label);
-        }
-
-        // Seats.
-        const playerCount = world.TI4.config.playerCount;
-        const speakerIndex = Math.floor(Math.random() * playerCount);
-        this._miltyDraft.setSpeakerIndex(speakerIndex);
-
-        // Factions.
-        factionNsidNames.forEach((name) => {
-            this._miltyDraft.addFaction(name);
-        });
-        if (factionNsidNames.length < world.TI4.config.playerCount) {
-            Broadcast.broadcastAll("Not enough face-up factions!");
-            this._miltyDraft = undefined;
-            return;
-        }
-
         // Discard faction cards.
-        const cards = MiltyFactionGenerator.getOnTableFactionCards();
         const container = undefined;
         const player = undefined;
-        globalEvents.TI4.onContainerRejected.trigger(container, cards, player);
-
-        const playerDesks = world.TI4.getAllPlayerDesks();
-        world.TI4.turns.randomizeTurnOrder(
-            playerDesks,
-            player,
-            TURN_ORDER_TYPE.SNAKE
+        globalEvents.TI4.onContainerRejected.trigger(
+            container,
+            factionCards,
+            player
         );
 
         this._eraseFactionPoolLines();
-        this._miltyDraft.createPlayerUIs();
+
+        // Assemble custom input.
+        const customInput = [
+            `slices=${scptDraftData.slices}`,
+            `labels=${scptDraftData.labels}`,
+            `factions=${factionNsidNames.join("|")}`,
+        ].join("&");
+        console.log(`SCPT2023._start: draft config "${customInput}"`);
+
+        if (this._miltySliceDraft) {
+            console.log("SCPT2023._start: in progress, aborting");
+            return;
+        }
+
+        this._miltySliceDraft = new MiltySliceDraft()
+            .setCustomInput(customInput)
+            .start(player);
+
+        this._miltySliceDraft.onDraftStateChanged.add(() => {
+            if (
+                this._miltySliceDraft &&
+                !this._miltySliceDraft.isDraftInProgress()
+            ) {
+                console.log("SCPT2023._start: draft cancelled, clearing state");
+                this._miltySliceDraft = undefined;
+            }
+        });
     }
 
     _cancel() {
@@ -121,11 +112,10 @@ class SCPT2023 {
 
         this._eraseFactionPoolLines();
 
-        if (!this._miltyDraft) {
-            return;
+        if (this._miltySliceDraft) {
+            this._miltySliceDraft.cancel();
+            this._miltySliceDraft = undefined;
         }
-        this._miltyDraft.cancel();
-        this._miltyDraft = false;
     }
 
     _removeTwoKeleres() {
@@ -281,7 +271,7 @@ class SCPT2023 {
 
         const errors = [];
 
-        const cards = MiltyFactionGenerator.getOnTableFactionCards();
+        const cards = AbstractFactionGenerator._getOnTableFactionCards();
         for (const card of cards) {
             const p = card.getPosition();
             p.z = 0;

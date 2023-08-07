@@ -6,10 +6,31 @@ const {
 const { Shuffle } = require("../../shuffle");
 const { world } = require("../../../wrapper/api");
 
+//const { HIGH, MED, LOW, RED } = world.TI4.SYSTEM_TIER;
+const HIGH = "high";
+const MED = "med";
+const LOW = "low";
+const RED = "red";
+
+const SLICE_CHOICES = [
+    { weight: 1, value: [RED, RED, HIGH, MED, LOW] }, // only one choice
+];
+
+const MIN_WORMHOLE_CHOICES = [
+    { weight: 1, value: 2 },
+    { weight: 1, value: 3 },
+];
+
+const MIN_LEGENDARY_CHOICES = [
+    { weight: 1, value: 1 },
+    { weight: 1, value: 2 },
+];
+
 class MiltySliceGenerator extends AbstractSliceGenerator {
     constructor() {
         super();
         this._useExtraWormholesAndLegendaries = true;
+        this._useTargetedSliceGenerator = true;
     }
 
     getUseExtraWormholesAndLegendaries() {
@@ -22,11 +43,84 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
         return this;
     }
 
+    getUseTargetedSliceGenerator() {
+        return this._useTargetedSliceGenerator;
+    }
+
+    setUseTargetedSliceGenerator(value) {
+        assert(typeof value === "boolean");
+        this._useTargetedSliceGenerator = value;
+        return this;
+    }
+
     getSliceShape() {
         return SLICE_SHAPES.milty;
     }
 
-    generateSlices(sliceCount) {
+    generateSlices() {
+        if (this._useTargetedSliceGenerator) {
+            return this._targetedSliceGenerate();
+        } else {
+            return this._miltyDraftDotComGenerate();
+        }
+    }
+
+    _targetedSliceGenerate() {
+        const sliceCount = this.getCount();
+        const tieredSlices = [];
+        for (let i = 0; i < sliceCount; i++) {
+            let tierValues =
+                AbstractSliceGenerator._weightedChoice(SLICE_CHOICES); // makes a copy
+            tierValues = Shuffle.shuffle(tierValues);
+            tieredSlices.push(tierValues);
+        }
+
+        // How many of each tier?
+        const options = {
+            minAlphaWormholes:
+                AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
+            minBetaWormholes:
+                AbstractSliceGenerator._weightedChoice(MIN_WORMHOLE_CHOICES),
+            minLegendary: AbstractSliceGenerator._weightedChoice(
+                MIN_LEGENDARY_CHOICES
+            ),
+        };
+        const { chosenTiles, remainingTiles } =
+            AbstractSliceGenerator._getRandomTieredSystemsWithLegendaryWormholePromotion(
+                options
+            );
+
+        const slices = [];
+        AbstractSliceGenerator._fillSlicesWithRequiredTiles(
+            tieredSlices,
+            chosenTiles,
+            slices
+        );
+
+        AbstractSliceGenerator._fillSlicesWithRemainingTiles(
+            tieredSlices,
+            remainingTiles,
+            slices
+        );
+
+        for (let sliceIndex = 0; sliceIndex < slices.length; sliceIndex++) {
+            let slice = slices[sliceIndex];
+            const shape = this.getSliceShape();
+            slice = AbstractSliceGenerator._separateAnomalies(slice, shape);
+            slices[sliceIndex] = slice;
+        }
+
+        if (!world.__isMock) {
+            console.log(
+                `MiltySliceGenerator.generateSlices: ${JSON.stringify(slices)}`
+            );
+        }
+
+        return slices;
+    }
+
+    _miltyDraftDotComGenerate() {
+        const sliceCount = this.getCount();
         const isGoodResult = (slices) => {
             if (!slices) {
                 return false;
@@ -50,10 +144,9 @@ class MiltySliceGenerator extends AbstractSliceGenerator {
         let loops = 0;
         while (loops < 1000000) {
             loops += 1;
-            const count = this.getCount();
             const extralegwh = this._useExtraWormholesAndLegendaries;
             let slices = MiltySliceGenerator._attemptToGenerateSlices(
-                count,
+                sliceCount,
                 extralegwh
             );
             if (!isGoodResult(slices)) {

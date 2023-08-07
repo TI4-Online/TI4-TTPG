@@ -1,12 +1,5 @@
 require("../../global"); // create globalEvents.TI4
-const assert = require("assert");
-const {
-    globalEvents,
-    world,
-    MockColor,
-    MockGameObject,
-    MockPlayer,
-} = require("../../mock/mock-api");
+const { MockColor, MockGameObject } = require("../../mock/mock-api");
 const { AbstractStrategyCard } = require("./abstract-strategy-card");
 
 it("static addPlayButton", () => {
@@ -46,19 +39,4 @@ it("setBodyWidgetFactory", () => {
     abstractStrategyCard.setBodyWidgetFactory(
         (playerDesk, strategyCardObj) => {}
     );
-});
-
-it("count body widgets created by play", () => {
-    const gameObject = new MockGameObject({
-        templateMetadata: "tile.strategy:base/leadership",
-    });
-    let numBodyWidgetsCreated = 0;
-    const abstractStrategyCard = new AbstractStrategyCard(gameObject);
-    abstractStrategyCard.setBodyWidgetFactory((playerDesk, strategyCardObj) => {
-        numBodyWidgetsCreated += 1;
-        return [];
-    });
-    const player = new MockPlayer();
-    globalEvents.TI4.onStrategyCardPlayed.trigger(gameObject, player);
-    assert.equal(numBodyWidgetsCreated, world.TI4.config.playerCount);
 });

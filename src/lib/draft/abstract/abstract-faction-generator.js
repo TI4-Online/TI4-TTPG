@@ -7,6 +7,45 @@ const { Shuffle } = require("../../shuffle");
 const { FactionAliases } = require("../../faction/faction-aliases");
 
 class AbstractFactionGenerator {
+    static _getOnTableFactionCards() {
+        const result = [];
+
+        const checkDiscardPile = true;
+        const allowFaceDown = false;
+        for (const obj of world.getAllObjects()) {
+            if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
+                continue;
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (
+                !nsid.startsWith("card.faction_token") &&
+                !nsid.startsWith("card.faction_reference")
+            ) {
+                continue;
+            }
+            result.push(obj);
+        }
+        return result;
+    }
+
+    static _getOnTableFactionCardNsidNames() {
+        const result = [];
+
+        const cards = AbstractFactionGenerator._getOnTableFactionCards();
+        for (const obj of cards) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            if (!parsed) {
+                continue;
+            }
+            const nsidName = parsed.name.split(".")[0];
+            result.push(nsidName);
+        }
+
+        // Return unique results.
+        return result.filter((v, i, a) => a.indexOf(v) === i);
+    }
+
     static parseCustomFactions(custom, errors) {
         assert(typeof custom === "string");
         assert(Array.isArray(errors));
@@ -34,7 +73,7 @@ class AbstractFactionGenerator {
         // Tolerate some faction aliases.
         items = items.map((item) => {
             const nsidName = FactionAliases.getNsid(item);
-            return nsidName || item;
+            return nsidName ? nsidName : item;
         });
 
         // Validate.
@@ -108,53 +147,13 @@ class AbstractFactionGenerator {
     /**
      * Generate the factions.  Use a sensible default, subclasses may override this.
      *
-     * @param {number} count
      * @returns {Array.{string}} - array of faction nsidNames (e.g. ["arborec", "sol"])
      */
-    generateFactions(count) {
+    generateFactions() {
         return AbstractFactionGenerator._standardGenerate(
-            count,
+            this.getCount(),
             this._seedWithOnTableCards
         );
-    }
-
-    static _getOnTableFactionCards() {
-        const result = [];
-
-        const checkDiscardPile = true;
-        const allowFaceDown = false;
-        for (const obj of world.getAllObjects()) {
-            if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
-                continue;
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (
-                !nsid.startsWith("card.faction_token") &&
-                !nsid.startsWith("card.faction_reference")
-            ) {
-                continue;
-            }
-            result.push(obj);
-        }
-        return result;
-    }
-
-    static _getOnTableFactionCardNsidNames() {
-        const result = [];
-
-        const cards = AbstractFactionGenerator._getOnTableFactionCards();
-        for (const obj of cards) {
-            const nsid = ObjectNamespace.getNsid(obj);
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            if (!parsed) {
-                continue;
-            }
-            const nsidName = parsed.name.split(".")[0];
-            result.push(nsidName);
-        }
-
-        // Return unique results.
-        return result.filter((v, i, a) => a.indexOf(v) === i);
     }
 
     /**

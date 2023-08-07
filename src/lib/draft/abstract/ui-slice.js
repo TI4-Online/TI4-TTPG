@@ -199,7 +199,7 @@ class UiSlice {
             summaryParts.shift(),
             summaryParts.shift(),
             summaryParts.length > 0 ? summaryParts.join(" ") : "-",
-            this._label,
+            " " + this._label.trim() + " ",
         ];
         for (const line of lines) {
             const text = new Text()
