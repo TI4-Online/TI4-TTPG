@@ -136,10 +136,12 @@ class AbstractFactionGenerator {
         return this._count;
     }
 
-    setCount(value) {
+    setCount(value, enforceBounds = true) {
         assert(typeof value === "number");
-        assert(value >= this.getMinCount());
-        assert(value <= this.getMaxCount());
+        if (enforceBounds) {
+            assert(value >= this.getMinCount());
+            assert(value <= this.getMaxCount());
+        }
         this._count = value;
         return this;
     }

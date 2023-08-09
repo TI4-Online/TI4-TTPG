@@ -1,7 +1,6 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const lodash = require("lodash");
 const { FactionToken } = require("../../faction/faction-token");
-const { MiltyFactionGenerator } = require("../milty/milty-faction-generator");
 const { Shuffle } = require("../../shuffle");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const {
@@ -11,6 +10,9 @@ const {
     globalEvents,
     world,
 } = require("../../../wrapper/api");
+const {
+    AbstractFactionGenerator,
+} = require("../abstract/abstract-faction-generator");
 
 const RANKED_SYSTEMS = {
     high: [28, 29, 30, 32, 33, 35, 36, 38, 69, 70, 71, 75],
@@ -37,16 +39,16 @@ class BagDraft {
     static draftFactions(count, useFactionsOnTable) {
         assert(typeof count === "number");
         assert(typeof useFactionsOnTable === "boolean");
-        let factions = new MiltyFactionGenerator()
+        let factionNsidNames = new AbstractFactionGenerator()
             .setCount(
                 count,
-                true // override value bounds checking
+                false // override value bounds checking
             )
-            .setFactionsFromCards(useFactionsOnTable)
-            .generate();
-        factions = Shuffle.shuffle(factions);
-        assert(factions.length === count);
-        return factions;
+            .setSeedWithOnTableCards(useFactionsOnTable)
+            .generateFactions();
+        factionNsidNames = Shuffle.shuffle([...factionNsidNames]);
+        assert(factionNsidNames.length === count);
+        return factionNsidNames;
     }
 
     static getDefaultConfig() {
@@ -274,7 +276,7 @@ class BagDraft {
             `BagDraft: chosenSystems |high|=${chosenSystems.high.length} |med|=${chosenSystems.med.length} |low|=${chosenSystems.low.length} |red|=${chosenSystems.red.length}`
         );
 
-        const factions = BagDraft.draftFactions(
+        const factionNsidNames = BagDraft.draftFactions(
             this._bags.length * this._config.faction._value,
             this._config.useFactionsOnTable
         );
@@ -312,11 +314,10 @@ class BagDraft {
 
         for (const bag of this._bags) {
             for (let i = 0; i < this._config.faction._value; i++) {
-                const faction = factions.pop();
-                assert(faction);
-                let factionReference = FactionToken.findOrSpawnFactionReference(
-                    faction.nsidName
-                );
+                const factionNsidName = factionNsidNames.pop();
+                assert(factionNsidName);
+                let factionReference =
+                    FactionToken.findOrSpawnFactionReference(factionNsidName);
                 assert(factionReference);
 
                 // Add a copy to the draft bag, return the original.
