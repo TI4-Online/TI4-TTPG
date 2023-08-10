@@ -17,7 +17,8 @@ function onPlayerCountChanged(slider, player, value) {
 
 function onGamePointsChanged(slider, player, value) {
     world.TI4.config.setGamePoints(value);
-    new ApplyScoreboard().apply(value);
+    ApplyScoreboard.resetPositionAndOrientation(value);
+    ApplyScoreboard.resetScorableUI(value);
 }
 
 function onUsePokChanged(checkBox, player, isChecked) {
