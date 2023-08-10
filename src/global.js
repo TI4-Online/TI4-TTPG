@@ -312,8 +312,8 @@ require("./global/card-descriptions");
 require("./global/chat-commands");
 require("./global/desk-turn-order");
 require("./global/export-game");
+require("./global/fix-table-colors");
 require("./global/gamedata-key");
-//require("./global/highlight-active-turn"); // desk-turn-order does this now
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
