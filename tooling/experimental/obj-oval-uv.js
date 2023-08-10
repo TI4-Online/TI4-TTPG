@@ -20,12 +20,14 @@ const argv = yargs
         describe: "oval width (Y in TTPG space)",
         type: "number",
         demand: true,
+        default: 156,
     })
     .option("h", {
         alias: "height",
         describe: "oval height (X in TTPG space)",
         type: "number",
         demand: true,
+        default: 111,
     })
     .option("d", {
         alias: "depth",
@@ -62,8 +64,8 @@ class ObjOvalUV {
         const points = [];
         for (let i = 0; i < n; i++) {
             const phi = (Math.PI * 2 * i) / n;
-            const x = Math.sin(phi) * halfWidth;
-            const y = Math.cos(phi) * halfHeight;
+            const x = Math.cos(phi) * halfWidth;
+            const y = Math.sin(phi) * halfHeight;
             points.push({
                 x: Math.round(x * 1000) / 1000,
                 y: Math.round(y * 1000) / 1000,
@@ -208,11 +210,11 @@ class ObjOvalUV {
         // Ovals (top IMMEDIATELY followed by bottom - needed for sides)
         obj.push("\n# top oval");
         for (const p of points) {
-            obj.push(`v ${p.x} 0 ${p.y}`);
+            obj.push(`v ${p.y} 0 ${p.x}`); // TTPG system
         }
         obj.push("\n# bottom oval");
         for (const p of points) {
-            obj.push(`v ${p.x} ${-this._params.depth} ${p.y}`);
+            obj.push(`v ${p.y} ${-this._params.depth} ${p.x}`);
         }
 
         // UVs.
