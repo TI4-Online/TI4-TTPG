@@ -29,7 +29,8 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
 
 // Wait a frame to give homebrew a chance to inject new ones.
 process.nextTick(() => {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers!
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Card)) {
             continue;
         }

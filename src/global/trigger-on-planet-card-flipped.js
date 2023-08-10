@@ -39,7 +39,8 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Card)) {
             continue;
         }

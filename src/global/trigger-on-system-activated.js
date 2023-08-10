@@ -77,7 +77,8 @@ globalEvents.onObjectCreated.add((obj) => {
 
 // Script reload doesn't onObjectCreated existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers!
+    for (const obj of world.getAllObjects(skipContained)) {
         if (ObjectNamespace.isCommandToken(obj)) {
             obj.onReleased.add(onCommandTokenReleased);
         }
