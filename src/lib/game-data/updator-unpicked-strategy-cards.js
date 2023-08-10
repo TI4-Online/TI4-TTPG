@@ -9,11 +9,9 @@ module.exports = (data) => {
     // Get unpicked cards and strategy card mat.
     let strategyCardMat = undefined;
     const unpicked = [];
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore inside containers
-        }
 
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "mat:base/strategy_card") {
             strategyCardMat = obj;

@@ -9,10 +9,9 @@ module.exports = (data) => {
     data.speaker = "";
 
     let speakerToken = undefined;
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "token:base/speaker") {
             speakerToken = obj;

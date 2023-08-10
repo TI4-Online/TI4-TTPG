@@ -28,11 +28,8 @@ module.exports = (data) => {
         }
     };
 
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
-
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Card)) {
             continue;
         }

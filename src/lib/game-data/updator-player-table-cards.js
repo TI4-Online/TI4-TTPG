@@ -13,9 +13,10 @@ module.exports = (data) => {
         playerData.tableCards = [];
     });
 
+    const skipContained = true;
     const checkDiscardPile = true;
     const allowFaceDown = true;
-    for (const obj of world.getAllObjects()) {
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!CardUtil.isLooseCard(obj, checkDiscardPile, allowFaceDown)) {
             continue;
         }

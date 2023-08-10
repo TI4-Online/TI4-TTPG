@@ -11,10 +11,8 @@ module.exports = (data) => {
 
     let custodians = undefined;
     const controlTokens = [];
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "token:base/custodians") {
             custodians = obj;

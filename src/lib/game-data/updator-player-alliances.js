@@ -9,12 +9,10 @@ module.exports = (data) => {
         playerData.alliances = [];
     });
 
+    const skipContained = true;
     const checkIsDiscardPile = false;
     const allowFaceDown = false;
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
             continue;
         }

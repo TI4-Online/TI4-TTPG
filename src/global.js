@@ -287,10 +287,8 @@ world.TI4 = {
         if (_timer && _timer.isValid()) {
             return _timer;
         }
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "tool:base/timer") {
                 _timer = obj;

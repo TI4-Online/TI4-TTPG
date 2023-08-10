@@ -12,12 +12,11 @@ module.exports = (data) => {
     });
 
     const tokensAndValues = [];
+
+    const skipContained = true;
     let strategyCardMat = undefined;
     let artuno = undefined;
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "token:base/tradegood_commodity_1") {
             tokensAndValues.push({ token: obj, value: 1 });

@@ -14,10 +14,8 @@ module.exports = (data) => {
     });
 
     const techCards = [];
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (!nsid.startsWith("card.technology")) {
             continue;

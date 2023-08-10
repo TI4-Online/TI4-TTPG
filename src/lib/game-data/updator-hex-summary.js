@@ -438,11 +438,8 @@ module.exports = (data) => {
     }
 
     // Gather objects.
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
-
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const pos = obj.getPosition();
         const hex = Hex.fromPosition(pos);
         const hexItems = hexToHexItems[hex];
