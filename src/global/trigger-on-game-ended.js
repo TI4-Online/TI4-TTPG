@@ -30,10 +30,8 @@ function spawnTrophy(playerSlot) {
     const trophyNsid = "misc:base/trophy";
 
     // Remove any existing trophies.
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === trophyNsid) {
             obj.setTags(["DELETED_ITEMS_IGNORE"]);

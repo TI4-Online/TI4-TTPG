@@ -135,7 +135,8 @@ class UnitAttrs {
 
         _maybeInit();
         const unitUpgrades = [];
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             const unitUpgrade = _triggerNsidToUnitUpgrade[nsid];
             if (!unitUpgrade) {

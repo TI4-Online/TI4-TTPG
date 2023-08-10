@@ -60,10 +60,8 @@ class UnitPlastic {
      */
     static getAll() {
         const result = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // inside a container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (obj.isHeld()) {
                 continue; // player holding plastic, ignore
             }

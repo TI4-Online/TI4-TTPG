@@ -141,7 +141,8 @@ class UnitModifier {
         _maybeInit();
 
         const unlockedCommanders = [];
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj)) {
                 continue;
             }
@@ -154,7 +155,7 @@ class UnitModifier {
         }
 
         const unitModifiers = [];
-        for (const obj of world.getAllObjects()) {
+        for (const obj of world.getAllObjects(skipContained)) {
             const objNsid = ObjectNamespace.getNsid(obj);
 
             const unitModifier = _triggerNsidToUnitModifier[objNsid];

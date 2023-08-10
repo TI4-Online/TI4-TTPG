@@ -83,7 +83,8 @@ module.exports = [
             const opptSlot = auxData.opponent.playerSlot;
             let selfSheet = false;
             const opponentCommandTokens = [];
-            for (const obj of world.getAllObjects()) {
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 const owner = obj.getOwningPlayerSlot();
                 if (nsid === "sheet:base/command" && owner === selfSlot) {
@@ -254,10 +255,8 @@ module.exports = [
             }
             // Only applies to Mecatol Rex WHEN THE PLAYER CONTROLS IT!
             // Look for the attachment token on the system.
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid !== "token.keleres:codex.vigil/custodia_vigilia") {
                     continue;
@@ -509,7 +508,8 @@ module.exports = [
             if (!auxData.has("mech")) {
                 return false; // no mech
             }
-            for (const obj of world.getAllObjects()) {
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (!nsid.startsWith("card.exploration")) {
                     continue;
@@ -647,7 +647,8 @@ module.exports = [
             if (!auxData.has("mech")) {
                 return false; // no mech
             }
-            for (const obj of world.getAllObjects()) {
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid.startsWith("token.nekro:base/valefar_assimilator")) {
                     const tokenPos = obj.getPosition();
@@ -1287,7 +1288,8 @@ module.exports = [
             };
             const cavalry2nsid =
                 "card.technology.unit_upgrade.nomad:pok/memoria_2";
-            for (const obj of world.getAllObjects()) {
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid === cavalry2nsid && obj.isFaceUp && obj.isFaceUp()) {
                     rawCavalryAttrs.antiFighterBarrage.hit = 5;
