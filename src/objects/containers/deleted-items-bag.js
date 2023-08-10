@@ -27,10 +27,8 @@ function delayedProcessCard(destroyedNsids, cardJson) {
     // Scan for all nsids in the deck.
     const destroyedNsidSet = new Set(destroyedNsids);
 
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Card)) {
             continue;
         }

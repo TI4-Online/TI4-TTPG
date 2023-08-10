@@ -222,10 +222,8 @@ class AutoRollerArena {
         console.log("AutoRollerArena.destroyArenaPlatform");
 
         const platformNsid = "tool:base/arena_platform";
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== platformNsid) {
                 continue;

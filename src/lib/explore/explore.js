@@ -253,10 +253,8 @@ class Explore {
         const systemPos = systemTileObj.getPosition();
         const systemHex = Hex.fromPosition(systemPos);
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid != "token:pok/frontier") {
                 continue;
@@ -311,7 +309,8 @@ class Explore {
         // Find token.
         let tokenObj = false;
         if (!attachmentData.raw.spawn) {
-            for (const obj of world.getAllObjects()) {
+            const skipContained = false; // look inside containers!
+            for (const obj of world.getAllObjects(skipContained)) {
                 if (!obj.getContainer()) {
                     continue; // only use tokens from the bag (do not move on-table tokens!)
                 }

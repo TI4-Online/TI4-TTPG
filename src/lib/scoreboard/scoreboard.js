@@ -17,10 +17,8 @@ let _scoreboardObj = false;
 class Scoreboard {
     static getScoreboard() {
         if (!_scoreboardObj || !_scoreboardObj.isValid()) {
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid !== "token:base/scoreboard") {
                     continue;
@@ -131,10 +129,8 @@ class Scoreboard {
         };
 
         const playerSlotToTokens = {};
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isControlToken(obj)) {
                 continue;
             }

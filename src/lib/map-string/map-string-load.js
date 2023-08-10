@@ -47,7 +47,8 @@ class MapStringLoad {
 
         // Find existing tiles (may be inside containers).
         const tileToSystemObj = {};
-        for (const obj of world.getAllObjects()) {
+        const skipContained = false; // look inside containers!
+        for (const obj of world.getAllObjects(skipContained)) {
             if (ObjectNamespace.isSystemTile(obj)) {
                 const tile = ObjectNamespace.parseSystemTile(obj).tile;
                 tileToSystemObj[tile] = obj;
@@ -156,10 +157,8 @@ class MapStringLoad {
 
         // Get generic home system tiles.
         const playerSlotToGeneric = {};
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== "tile.system:base/0") {
                 continue;

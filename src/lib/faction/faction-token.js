@@ -18,7 +18,8 @@ class FactionToken {
         let best = undefined;
         let bestDSq = Number.MAX_VALUE;
         const center = playerDesk.center;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const checkDiscard = false;
             const allowFaceDown = true;
             if (!CardUtil.isLooseCard(obj, checkDiscard, allowFaceDown)) {

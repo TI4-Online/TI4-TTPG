@@ -213,7 +213,8 @@ class EndStatusPhase {
      * Repairs all ships.
      */
     static repairShips() {
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (ObjectNamespace.isUnit(obj)) {
                 const objRotation = obj.getRotation();
                 const repairedRotation = new Rotator(
@@ -243,10 +244,8 @@ class EndStatusPhase {
         }
 
         const playerSlotToCommandTokens = {};
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isCommandToken(obj)) {
                 continue;
             }
@@ -403,10 +402,8 @@ class EndStatusPhase {
      * Returns all strategy cards to their proper position and rotation.
      */
     static returnStrategyCards() {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isStrategyCard(obj)) {
                 continue;
             }
@@ -439,10 +436,8 @@ class EndStatusPhase {
             systemHexes.add(hex);
         }
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Card)) {
                 continue;
             }

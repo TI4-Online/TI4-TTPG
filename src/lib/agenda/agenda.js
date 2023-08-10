@@ -42,10 +42,8 @@ class Agenda {
 
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -81,7 +79,8 @@ class Agenda {
             "card.agenda:base.only/representative_government",
         ]);
         const checkIsDiscardPile = true;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (!nsidSet.has(nsid)) {
                 continue;
@@ -118,10 +117,8 @@ class Agenda {
         const gromOmegaDeskIndexSet = new Set();
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -133,10 +130,7 @@ class Agenda {
             }
         }
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -197,7 +191,8 @@ class Agenda {
 
         const checkIsDiscardPile = false;
         const allowFaceDown = true;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue; // not a loose card
             }

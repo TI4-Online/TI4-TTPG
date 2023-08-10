@@ -54,10 +54,8 @@ function _maybeInit() {
         // out for extra faction sheets on the table!
         // In a franken game, this would build the faction from franken tokens.
         const slotToSheet = {};
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // inside a container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isFactionSheet(obj)) {
                 continue; // not a faction sheet
             }

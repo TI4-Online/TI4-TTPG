@@ -62,7 +62,8 @@ class AdjacencyWormhole {
             "card.action:base/lost_star_chart",
             "card.leader.agent.creuss:pok/emissary_taivra",
         ]);
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (!nsidSet.has(nsid)) {
                 continue;
@@ -113,10 +114,8 @@ class AdjacencyWormhole {
     }
 
     _updateHexToWormholeTokens() {
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "token.exploration:pok/ion_storm") {
                 const wormhole = Facing.isFaceUp(obj) ? "alpha" : "beta";
@@ -142,10 +141,8 @@ class AdjacencyWormhole {
         if (flagshipPlayerSlot < 0) {
             return;
         }
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== "unit:base/flagship") {
                 continue; // not a flagship

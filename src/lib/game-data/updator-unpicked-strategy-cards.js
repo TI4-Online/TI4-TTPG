@@ -46,10 +46,7 @@ module.exports = (data) => {
         "token:base/tradegood_commodity_1": 1,
         "token:base/tradegood_commodity_3": 3,
     };
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore inside containers
-        }
+    for (const obj of world.getAllObjects(skipContained)) {
         if (obj.isHeld()) {
             continue; // currently held by a player's pointer
         }

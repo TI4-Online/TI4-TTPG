@@ -112,10 +112,8 @@ class DealDiscard {
         if (obj && obj.isValid()) {
             return obj;
         }
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== deckData.parentNsid) {
                 continue;
