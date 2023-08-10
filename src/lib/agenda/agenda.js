@@ -975,53 +975,6 @@ class Agenda {
             globalEvents.TI4.onAgendaPlayerStateChanged.trigger();
         });
     }
-
-    // This does not work reliably.
-    _onPlanetCardFlipped(card, isFaceUp) {
-        assert(card instanceof Card);
-        assert(typeof isFaceUp === "boolean");
-
-        if (!this.isActive() || this.getStateMachine().name !== "VOTE") {
-            return;
-        }
-
-        const pos = card.getPosition();
-        const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-        const deskIndex = closestDesk.index;
-
-        const planet = world.TI4.getPlanetByCard(card);
-        assert(planet);
-        let influence = planet.raw.influence;
-
-        // If xxcha hero add resources to influence value.
-        const playerSlot = closestDesk.playerSlot;
-        const gromOmegaNsid =
-            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
-        if (CardUtil.hasCard(playerSlot, gromOmegaNsid, false)) {
-            influence += planet.raw.resources;
-        }
-
-        // Apply bonus votes.
-        const deskIndexToPerPlanetBonus = Agenda.getDeskIndexToPerPlanetBonus();
-        const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
-        influence += bonus;
-        const deltaValue = influence * (isFaceUp ? -1 : 1);
-
-        console.log(
-            `Agenda._onPlanetCardFlipped: ${deltaValue} for ${closestDesk.colorName}`
-        );
-
-        let votes = this.getVoteCount(deskIndex);
-        votes = Math.max(0, votes + deltaValue);
-
-        if (this.getVoteLocked(deskIndex)) {
-            console.log("Agenda._onPlanetCardFlipped: vote locked");
-            return;
-        }
-
-        const clickingPlayer = undefined;
-        this.setVoteCount(deskIndex, votes, clickingPlayer);
-    }
 }
 
 module.exports = { Agenda };
