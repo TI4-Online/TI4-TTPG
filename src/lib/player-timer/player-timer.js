@@ -18,11 +18,12 @@ class PlayerTimer {
         this._errorMessage = undefined;
 
         const delayedInit = () => {
-            this._load();
-            setInterval(() => {
-                this._doSample();
-                this._save();
-            }, SAMPLE_EVERY_N_SECONDS * 1000);
+            if (this._load()) {
+                setInterval(() => {
+                    this._doSample();
+                    this._save();
+                }, SAMPLE_EVERY_N_SECONDS * 1000);
+            }
         };
 
         if (!world.__isMock) {
@@ -43,7 +44,7 @@ class PlayerTimer {
         const timer = world.TI4.getTimer();
         if (!timer) {
             console.log("PlayerTimer._load: no timer, aborting");
-            return;
+            return false;
         }
 
         // Split across multiple keys because each value is limited to 1k.
@@ -59,6 +60,8 @@ class PlayerTimer {
                 }
             }
         }
+
+        return true;
     }
 
     _save() {
