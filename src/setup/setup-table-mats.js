@@ -36,21 +36,21 @@ const MATS = [
     {
         nsid: "mat:base/decks",
         anchor: TableLayout.anchor.score,
-        pos: { x: -30, y: 14 }, // 16.9 width
+        pos: { x: -30, y: 8 }, // 16.9 width
         yaw: -90,
         nonInteractive: true,
     },
     {
         nsid: "mat:pok/exploration",
         anchor: TableLayout.anchor.score,
-        pos: { x: -28.9, y: -10 }, // 26 width
+        pos: { x: -28.9, y: -16 }, // 26 width
         yaw: -90,
         nonInteractive: true,
     },
     {
         nsid: "mat:base/faction_card",
         anchor: TableLayout.anchor.score,
-        pos: { x: -28, y: 30 },
+        pos: { x: -28, y: 24 },
         yaw: 0,
     },
 

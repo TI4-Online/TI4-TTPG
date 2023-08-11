@@ -16,7 +16,7 @@ const BOXES = [
         nsid: "bag:base/generic",
         localeName: "bag.purge",
         anchor: TableLayout.anchor.score,
-        pos: { x: -50, y: -4.5, z: 3 },
+        crateIndex: 1,
         yaw: 0,
         scale: { x: 0.8, y: 0.8, z: 0.5 },
     },
@@ -24,7 +24,7 @@ const BOXES = [
         nsid: "bag:base/deleted_items",
         localeName: "bag.deleted_items",
         anchor: TableLayout.anchor.score,
-        pos: { x: -50, y: -13.5, z: 3 },
+        crateIndex: 0,
         yaw: 0,
         scale: { x: 0.8, y: 0.8, z: 0.5 },
     },
@@ -33,13 +33,15 @@ const BOXES = [
 class SetupTableBoxes extends AbstractSetup {
     setup() {
         for (const boxData of BOXES) {
-            let pos = new Vector(boxData.pos.x, boxData.pos.y, 0);
+            let pos = AbstractSetup.getCrateAreaLocalPosition(
+                boxData.crateIndex
+            );
             let rot = new Rotator(0, boxData.yaw, 0);
             if (boxData.anchor) {
                 pos = TableLayout.anchorPositionToWorld(boxData.anchor, pos);
                 rot = TableLayout.anchorRotationToWorld(boxData.anchor, rot);
             }
-            pos.z = world.getTableHeight() + boxData.pos.z;
+            pos.z = world.getTableHeight() + 3;
 
             const container = Spawn.spawn(boxData.nsid, pos, rot);
             assert(container instanceof Container);

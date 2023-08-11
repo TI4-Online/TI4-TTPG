@@ -16,15 +16,11 @@ const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
 const { SetupTableTokens } = require("./setup/setup-table-tokens");
 const { SetupTimer } = require("./setup/setup-timer");
-const { TableLayout } = require("./table/table-layout");
 const { refObject, world } = require("./wrapper/api");
 
 const ACTION = {
     CLEAN: "*CLEAN",
     SETUP: "*SETUP",
-    OCTO_TABLE: "*OCTO TABLE",
-    SIX_SKINNY: "*6P SKINNY",
-    EIGHT_HUGE: "*8P HUGE",
 };
 
 function clean(preserveTable) {
@@ -34,11 +30,7 @@ function clean(preserveTable) {
         }
     }
 
-    const tableValue = TableLayout.GET_TABLE();
     GlobalSavedData.clear();
-    if (preserveTable) {
-        TableLayout.SET_TABLE(tableValue);
-    }
 
     // Hex keeps some in-memory state.  Reset it.
     Hex.setLargerScale(Hex.getLargerScale());
@@ -96,18 +88,5 @@ refObject.onCustomAction.add((obj, player, actionName) => {
             process.nextTick(setupNext);
         };
         process.nextTick(setupNext);
-    }
-
-    if (actionName === ACTION.OCTO_TABLE) {
-        clean();
-        TableLayout.SET_TABLE("layout-v5-oct");
-    }
-    if (actionName === ACTION.SIX_SKINNY) {
-        clean();
-        TableLayout.SET_TABLE("6p-skinny");
-    }
-    if (actionName === ACTION.EIGHT_HUGE) {
-        clean();
-        TableLayout.SET_TABLE("8p-huge");
     }
 });

@@ -9,7 +9,7 @@ const QUICK_ROLLER = {
     spawns: [
         {
             anchor: TableLayout.anchor.strategy,
-            pos: { x: -10, y: -35, z: 3 },
+            pos: { x: 6, y: -25, z: 3 },
             yaw: 0,
         },
     ],

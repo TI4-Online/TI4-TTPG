@@ -156,7 +156,7 @@ class GameSetupUI {
 
         fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
 
-        if (TableLayout.GET_TABLE() !== "6p-skinny") {
+        if (TableLayout.getTableType() !== "6p-skinny") {
             const wrongTableWarning = this._createText(
                 locale("ui.setup.suggest_6p_skinny")
             );

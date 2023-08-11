@@ -2,7 +2,7 @@ const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
-const { Card, world } = require("../wrapper/api");
+const { Card, Vector, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
@@ -10,6 +10,17 @@ const { Card, world } = require("../wrapper/api");
  * Subclasses must implement "setup" and "clean".
  */
 class AbstractSetup {
+    static getCrateAreaLocalPosition(index) {
+        assert(typeof index === "number");
+
+        const NUM_CRATES = 5;
+        const distanceBetweenCrates = 9.2; // 11.5 * crate scale
+        const totalWidth = (NUM_CRATES - 1) * distanceBetweenCrates;
+        const x0 = -totalWidth / 2;
+        const localPos = new Vector(50, x0 + index * distanceBetweenCrates, 0);
+        return localPos;
+    }
+
     /**
      * Constructor.
      *

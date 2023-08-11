@@ -1,3 +1,4 @@
+const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AbstractSetup } = require("./abstract-setup");
 const { ColorUtil } = require("../lib/color/color-util");
@@ -16,7 +17,7 @@ const EXPLORATION_TOKENS = {
         { nsidPrefix: "token.exploration" },
     ],
     anchor: TableLayout.anchor.score,
-    pos: { x: -50, y: 4.5, z: 3 },
+    crateIndex: 2,
     yaw: 0,
 };
 
@@ -27,7 +28,7 @@ const GENERIC_TOKENS = [
         bagType: 1, // infinite
         bagScale: { x: 0.8, y: 0.8, z: 0.8 },
         anchor: TableLayout.anchor.score,
-        pos: { x: -59, y: 0, z: 3 },
+        crateIndex: 4,
         yaw: 0,
     },
     {
@@ -35,7 +36,7 @@ const GENERIC_TOKENS = [
         bagNsid: false,
         bagType: false,
         anchor: TableLayout.anchor.score,
-        pos: { x: -25, y: -30, z: 3 },
+        pos: { x: -45, y: -15, z: 3 },
         yaw: 0,
     },
     {
@@ -43,7 +44,7 @@ const GENERIC_TOKENS = [
         bagNsid: false,
         bagType: false,
         anchor: TableLayout.anchor.score,
-        pos: { x: -31, y: -30, z: 3 },
+        pos: { x: -45, y: 15, z: 3 },
         yaw: 0,
     },
 
@@ -103,10 +104,8 @@ class SetupTableTokens extends AbstractSetup {
     }
 
     _setupExplorationTokens() {
-        let pos = new Vector(
-            EXPLORATION_TOKENS.pos.x,
-            EXPLORATION_TOKENS.pos.y,
-            EXPLORATION_TOKENS.pos.z
+        let pos = AbstractSetup.getCrateAreaLocalPosition(
+            EXPLORATION_TOKENS.crateIndex
         );
         let rot = new Rotator(0, EXPLORATION_TOKENS.yaw, 0);
 
@@ -120,7 +119,7 @@ class SetupTableTokens extends AbstractSetup {
                 rot
             );
         }
-        pos.z = world.getTableHeight() + EXPLORATION_TOKENS.pos.z;
+        pos.z = world.getTableHeight() + 3;
 
         const bag = Spawn.spawn(EXPLORATION_TOKENS.bagNsid, pos, rot);
         bag.setName(locale("bag.exploration_tokens"));
@@ -163,14 +162,21 @@ class SetupTableTokens extends AbstractSetup {
     }
 
     _setupGenericToken(tokenData) {
-        let pos = new Vector(tokenData.pos.x, tokenData.pos.y, tokenData.pos.z);
+        let pos;
+        if (tokenData.pos) {
+            pos = new Vector(tokenData.pos.x, tokenData.pos.y, tokenData.pos.z);
+        } else {
+            assert(tokenData.crateIndex !== undefined);
+            pos = AbstractSetup.getCrateAreaLocalPosition(tokenData.crateIndex);
+        }
+
         let rot = new Rotator(0, tokenData.yaw, 0);
 
         if (tokenData.anchor) {
             pos = TableLayout.anchorPositionToWorld(tokenData.anchor, pos);
             rot = TableLayout.anchorRotationToWorld(tokenData.anchor, rot);
         }
-        pos.z = world.getTableHeight() + tokenData.pos.z;
+        pos.z = world.getTableHeight() + 3;
 
         let bag;
         if (tokenData.bagNsid) {

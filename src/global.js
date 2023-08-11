@@ -173,6 +173,7 @@ const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
 const { Spawn } = require("./setup/spawn/spawn");
 const { System, Planet, SYSTEM_TIER } = require("./lib/system/system");
+const { TableLayout } = require("./table/table-layout");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
@@ -203,6 +204,7 @@ world.TI4 = {
     SimpleDieBuilder,
     Spawn,
     System,
+    TableLayout,
     Technology,
     UnitAttrs,
     UnitModifier,
