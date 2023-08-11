@@ -96,6 +96,7 @@ class PlayerDesk {
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
         const tableDesks = TableLayout.desks();
+        assert(tableDesks.length > 0);
         for (let i = tableDesks.length - 1; i >= 0; i--) {
             const attrs = tableDesks[i];
             if (!attrs.playerCounts.includes(playerCount)) {
@@ -103,6 +104,7 @@ class PlayerDesk {
             }
             _playerDesks.push(new PlayerDesk(attrs, _playerDesks.length));
         }
+        assert(_playerDesks.length === playerCount);
 
         // Apply any saved desk state.
         const deskState = GlobalSavedData.get(

@@ -5,6 +5,10 @@ let _layout; // fill with the table javascript
 
 class TableLayout {
     static getTableType() {
+        if (world.__isMock) {
+            return "8p-2x-common-ext"; // use an 8p table, some tests use high player counts
+        }
+
         let results = [];
         for (const table of world.getAllTables()) {
             const metadata = table.getTemplateMetadata();
@@ -40,8 +44,12 @@ class TableLayout {
         }
 
         _layout = require(`./${path}`);
+
+        assert(_layout);
+        assert(TableLayout.desks().length > 0);
     }
 
+    // NOT a get method!
     static desks() {
         return _layout.desks;
     }
