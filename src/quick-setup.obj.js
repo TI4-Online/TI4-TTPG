@@ -32,13 +32,9 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
 });
 
 function drawDeskLines() {
-    for (const line of world.getDrawingLines()) {
-        world.removeDrawingLineObject(line);
-    }
-    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-        PlayerDeskLines.clearPlayerDeskLine(playerDesk);
-        PlayerDeskLines.addPlayerDeskLine(playerDesk);
-    }
+    console.log("QuickSetupObj: draw desk lines");
+    PlayerDeskLines.clearAllPlayerDeskLines();
+    PlayerDeskLines.addAllPlayerDeskLines();
 }
 drawDeskLines();
 
