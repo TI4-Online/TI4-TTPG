@@ -1,7 +1,7 @@
 {
 	"Type": "Table",
 	"GUID": "BDC4B63C8B4FD0EACD2F61BA08540B45",
-	"Name": "6-player (skinny) ROT",
+	"Name": "6-player (skinny)",
 	"Metadata": "table:base/6p_skinny",
 	"CollisionType": "Static",
 	"Friction": 0.7,
@@ -226,7 +226,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -180
+				"Z": 180
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
