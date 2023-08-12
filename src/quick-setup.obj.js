@@ -4,6 +4,7 @@
 
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Hex } = require("./lib/hex");
+const { PlayerDeskLines } = require("./lib/player-desk/player-desk-lines");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
@@ -16,14 +17,32 @@ const { SetupTableGraveyards } = require("./setup/setup-table-graveyards");
 const { SetupTableMats } = require("./setup/setup-table-mats");
 const { SetupTableTokens } = require("./setup/setup-table-tokens");
 const { SetupTimer } = require("./setup/setup-timer");
-const { refObject, world } = require("./wrapper/api");
+const { globalEvents, refObject, world } = require("./wrapper/api");
 
 const ACTION = {
     CLEAN: "*CLEAN",
     SETUP: "*SETUP",
 };
 
-function clean(preserveTable) {
+globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
+    console.log(`QuickSetupObj.button ${index}`);
+    if (index === 10) {
+        world.resetScripting();
+    }
+});
+
+function drawDeskLines() {
+    for (const line of world.getDrawingLines()) {
+        world.removeDrawingLineObject(line);
+    }
+    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+        PlayerDeskLines.clearPlayerDeskLine(playerDesk);
+        PlayerDeskLines.addPlayerDeskLine(playerDesk);
+    }
+}
+drawDeskLines();
+
+function clean() {
     for (const obj of world.getAllObjects()) {
         if (obj !== refObject) {
             obj.destroy();
