@@ -26,7 +26,8 @@ const SUPPLY_BOX_SETS = [
     },
 ];
 
-if (TableLayout.getTableType() === "6p-skinny") {
+const skinny = ["6p-skinny", "8p-skinny"];
+if (skinny.includes(TableLayout.getTableType())) {
     SUPPLY_BOX_SETS[0].d = 65 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
     SUPPLY_BOX_SETS[0].yaw0 = 90;
     SUPPLY_BOX_SETS[0].dyaw = 180;

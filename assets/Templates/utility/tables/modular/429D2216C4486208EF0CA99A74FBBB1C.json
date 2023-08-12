@@ -34,7 +34,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 18.39
+				"Z": 18.38
 			},
 			"Scale":
 			{
@@ -64,7 +64,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 18.39
+				"Z": 18.37
 			},
 			"Scale":
 			{
@@ -136,7 +136,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 9.00004
+				"Z": 9.00007
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -166,7 +166,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -9.00004
+				"Z": -9.00007
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -302,7 +302,7 @@
 			"Model": "utility/table_modular/desk_36n.obj",
 			"Offset":
 			{
-				"X": -46,
+				"X": -48,
 				"Y": 84,
 				"Z": 0
 			},

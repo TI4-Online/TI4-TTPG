@@ -10,5 +10,6 @@
     "mat:base/planets": "6D9817BADF431DC8154E6FBF6A409018",
     "mat:base/strategy_card": "4C0919205F49EA482B06719B3330CF77",
     "mat:base/build_area": "A075B7E18947A1C91CBFFE8B1681B36C",
-    "mat:base/faction_card": "03BD443C9840293395984EACDC341EFD"
+    "mat:base/faction_card": "03BD443C9840293395984EACDC341EFD",
+    "mat:base/custodians": "04AE6DF4814D5224180F9BBAA5DE2F5B"
 }

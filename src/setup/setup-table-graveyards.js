@@ -12,7 +12,8 @@ const GRAVEYARDS = {
     nsid: "bag:base/garbage",
 };
 
-if (TableLayout.getTableType() === "6p-skinny") {
+const skinny = ["6p-skinny", "8p-skinny"];
+if (skinny.includes(TableLayout.getTableType())) {
     GRAVEYARDS.d = 65;
     GRAVEYARDS.yaw0 = 30;
     GRAVEYARDS.dYaw = 60;
