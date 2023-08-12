@@ -7,6 +7,7 @@ const PLAYER_DESK_BORDER = [
     new Vector(38.05, 32.9, 0),
     new Vector(-27.9, 54.22, 0),
 ];
+const THICKNESS = 1;
 
 const LINE_TAG = "__player_desk_border__";
 
@@ -22,7 +23,7 @@ class PlayerDeskLines {
         );
         line.rounded = false;
         line.tag = LINE_TAG;
-        line.thickness = 1;
+        line.thickness = THICKNESS;
 
         return line;
     }
