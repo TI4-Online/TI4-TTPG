@@ -23,20 +23,15 @@ const ACTION = {
     CLEAN: "*CLEAN",
     SETUP: "*SETUP",
 };
-
-globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
-    console.log(`QuickSetupObj.button ${index}`);
-    if (index === 10) {
-        world.resetScripting();
-    }
-});
+for (const action of Object.values(ACTION)) {
+    refObject.addCustomAction(action);
+}
 
 function drawDeskLines() {
     console.log("QuickSetupObj: draw desk lines");
     PlayerDeskLines.clearAllPlayerDeskLines();
-    PlayerDeskLines.addAllPlayerDeskLines();
+    //PlayerDeskLines.addAllPlayerDeskLines();
 }
-drawDeskLines();
 
 function clean() {
     for (const obj of world.getAllObjects()) {
@@ -51,8 +46,44 @@ function clean() {
     Hex.setLargerScale(Hex.getLargerScale());
 }
 
-for (const action of Object.values(ACTION)) {
-    refObject.addCustomAction(action);
+function setup() {
+    const setups = [];
+
+    // Duck-typed "setup"  for player desks.  Use the same setup as
+    // changing player count does.
+    for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+        setups.push({
+            setup: () => {
+                new PlayerDeskSetup(playerDesk).setupGeneric();
+            },
+        });
+    }
+    // Need mats before things that spawn on top of them.
+    setups.push(new SetupTableMats());
+
+    // Now the rest.
+    setups.push(new SetupSecretHolders());
+    setups.push(new SetupStrategyCards());
+    setups.push(new SetupSupplyBoxesTable());
+    setups.push(new SetupSystemTiles());
+    setups.push(new SetupTableBoxes());
+    setups.push(new SetupTableDecks());
+    setups.push(new SetupTableGraveyards());
+    setups.push(new SetupTableTokens());
+    setups.push(new SetupQuickRollers());
+    setups.push(new SetupTimer());
+
+    const setupNext = () => {
+        const setup = setups.shift();
+        if (!setup) {
+            console.log(`World #objects = ${world.getAllObjects().length}`);
+            world.resetScripting();
+            return;
+        }
+        setup.setup();
+        process.nextTick(setupNext);
+    };
+    process.nextTick(setupNext);
 }
 
 refObject.onCustomAction.add((obj, player, actionName) => {
@@ -64,44 +95,21 @@ refObject.onCustomAction.add((obj, player, actionName) => {
     }
 
     if (actionName === ACTION.SETUP) {
-        clean(true);
-
-        const setups = [];
-
-        // Duck-typed "setup"  for player desks.  Use the same setup as
-        // changing player count does.
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            setups.push({
-                setup: () => {
-                    new PlayerDeskSetup(playerDesk).setupGeneric();
-                },
-            });
-        }
-        // Need mats before things that spawn on top of them.
-        setups.push(new SetupTableMats());
-
-        // Now the rest.
-        setups.push(new SetupSecretHolders());
-        setups.push(new SetupStrategyCards());
-        setups.push(new SetupSupplyBoxesTable());
-        setups.push(new SetupSystemTiles());
-        setups.push(new SetupTableBoxes());
-        setups.push(new SetupTableDecks());
-        setups.push(new SetupTableGraveyards());
-        setups.push(new SetupTableTokens());
-        setups.push(new SetupQuickRollers());
-        setups.push(new SetupTimer());
-
-        const setupNext = () => {
-            const setup = setups.shift();
-            if (!setup) {
-                console.log(`World #objects = ${world.getAllObjects().length}`);
-                world.resetScripting();
-                return;
-            }
-            setup.setup();
-            process.nextTick(setupNext);
-        };
-        process.nextTick(setupNext);
+        clean();
+        setup();
     }
 });
+
+globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
+    console.log(`QuickSetupObj.button ${index}`);
+    if (index === 10) {
+        world.resetScripting();
+    }
+    if (index === 8) {
+        world.TI4.config.setPlayerCount(8);
+        clean();
+        setup();
+    }
+});
+
+drawDeskLines();
