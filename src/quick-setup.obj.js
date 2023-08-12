@@ -106,7 +106,6 @@ globalEvents.onScriptButtonPressed.add((player, index, ctrl, alt) => {
         world.resetScripting();
     }
     if (index === 8) {
-        world.TI4.config.setPlayerCount(8);
         clean();
         setup();
     }

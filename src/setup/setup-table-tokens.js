@@ -61,6 +61,24 @@ class SetupTableTokens extends AbstractSetup {
         GENERIC_TOKENS.forEach((tokenData) => {
             this._setupGenericToken(tokenData);
         });
+
+        // Move custodians token to mat (if present).
+        let custodiansToken = undefined;
+        let custodiansMat = undefined;
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "token:base/custodians") {
+                custodiansToken = obj;
+            } else if (nsid === "mat:base/custodians") {
+                custodiansMat = obj;
+            }
+        }
+        if (custodiansToken && custodiansMat) {
+            const pos = custodiansMat.getPosition().add([0, 0, 3]);
+            custodiansToken.setPosition(pos);
+            custodiansToken.snapToGround();
+        }
     }
 
     clean() {
@@ -155,7 +173,6 @@ class SetupTableTokens extends AbstractSetup {
             }
             for (let i = 0; i < count; i++) {
                 const token = Spawn.spawn(nsid, above, rot);
-                token.setSnappingAllowed(false);
                 bag.addObjects([token]);
             }
         });
@@ -198,7 +215,6 @@ class SetupTableTokens extends AbstractSetup {
 
         const tokenPos = bag ? pos.add([0, 0, 10]) : pos;
         const token = Spawn.spawn(tokenData.tokenNsid, tokenPos, rot);
-        token.setSnappingAllowed(false);
         if (bag) {
             bag.addObjects([token]);
         }
