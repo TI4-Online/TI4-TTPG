@@ -67,7 +67,7 @@ class PlayerTimer {
     _save() {
         const timer = world.TI4.getTimer();
         if (!timer) {
-            console.log("PlayerTimer._save: no timer, aborting");
+            //console.log("PlayerTimer._save: no timer, aborting");
             return;
         }
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
