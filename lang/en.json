@@ -1052,5 +1052,7 @@
     "timer.error.timer_paused": "timer paused",
     "timer.error.no_active_turn": "no active turn",
 
+    "mat.title.predictions": "Predictions",
+
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
