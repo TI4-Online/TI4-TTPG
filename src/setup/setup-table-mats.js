@@ -16,7 +16,7 @@ const MATS = [
         nsid: "mat:base/agenda_predictions",
         anchor: TableLayout.anchor.score,
         pos: { x: 36, y: 0 },
-        yaw: -90,
+        yaw: 0,
         nonInteractive: true,
     },
     {
