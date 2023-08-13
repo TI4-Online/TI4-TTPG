@@ -6,7 +6,7 @@ let _layout; // fill with the table javascript
 class TableLayout {
     static getTableType() {
         if (world.__isMock) {
-            return "8p-2x-common-ext"; // use an 8p table, some tests use high player counts
+            return "8p-skinny"; // use an 8p table, some tests use high player counts
         }
 
         let results = [];
@@ -16,8 +16,8 @@ class TableLayout {
                 results.push("6p-skinny");
             } else if (metadata === "table:base/8p_skinny") {
                 results.push("8p-skinny");
-            } else if (metadata === "table:base/8p_round") {
-                results.push("8p-2x-common-ext");
+            } else if (metadata === "table:base/8p_full") {
+                results.push("8p-full");
             } else if (metadata === "table:base/8p_huge") {
                 results.push("8p-huge");
             }

@@ -13,6 +13,13 @@ const MATS = [
         nonInteractive: true,
     },
     {
+        nsid: "mat:base/agenda_predictions",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 36, y: 0 },
+        yaw: -90,
+        nonInteractive: true,
+    },
+    {
         nsid: "mat:base/custodians",
         anchor: TableLayout.anchor.score,
         pos: { x: 25, y: 27 },

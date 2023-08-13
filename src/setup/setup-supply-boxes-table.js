@@ -36,6 +36,11 @@ if (skinny.includes(TableLayout.getTableType())) {
     SUPPLY_BOX_SETS[1].yaw0 = 90;
     SUPPLY_BOX_SETS[1].dyaw = 180;
     SUPPLY_BOX_SETS[1].count = 2;
+    if (TableLayout.getTableType() === "8p-skinny") {
+        for (const supplyBoxSet of SUPPLY_BOX_SETS) {
+            supplyBoxSet.d += 6;
+        }
+    }
 } else if (TableLayout.getTableType() === "8p-huge") {
     SUPPLY_BOX_SETS[0].d = 160 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
     SUPPLY_BOX_SETS[0].yaw0 = 0;
