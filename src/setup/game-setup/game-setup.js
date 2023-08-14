@@ -11,6 +11,15 @@ const { globalEvents, world } = require("../../wrapper/api");
 let _useGameData = true;
 
 function onPlayerCountChanged(slider, player, value) {
+    if (value === world.TI4.config.playerCount) {
+        return;
+    }
+
+    // Watch out for a player count change race.
+    // Lock out the controls until done.
+    // PlayerDesk onPlayerCountChanged will re-enable.
+    GameSetupUI.disablePlayerCountSlider();
+
     world.TI4.turns.invalidate();
     world.TI4.config.setPlayerCount(value, player);
 }
