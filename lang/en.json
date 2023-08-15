@@ -439,6 +439,8 @@
     "ui.agenda.label.votes": "Votes",
     "ui.agenda.label.predictions": "Riders",
 
+    "ui.agenda.error.wrong_state_for_outcome_type": "Cannot set agenda outcome type right now",
+
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",
     "faction.abbr.creuss": "Creuss",

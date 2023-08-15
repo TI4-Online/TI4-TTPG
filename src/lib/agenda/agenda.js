@@ -439,6 +439,49 @@ class Agenda {
     }
 
     /**
+     * Expose a simpler way to set the outcome type, a shortcut from the agenda
+     * mat.  Do necessary sanity checking.
+     *
+     * @param {string} outcomeType
+     * @returns {boolean}
+     */
+    externalSetOutcomeType(outcomeType) {
+        assert(typeof outcomeType === "string");
+        assert(AgendaOutcome.isOutcomeType(outcomeType));
+
+        // Is game started?
+        if (world.TI4.config.timestamp <= 0) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // Is agenda active?
+        if (!this._agendaStateMachine) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // In an allowed state?
+        if (
+            this._agendaStateMachine.name !== "WAITING_FOR_START" &&
+            this._agendaStateMachine.name !== "OUTCOME_TYPE"
+        ) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // At this point safe to proceed.
+        if (this._agendaStateMachine.name === "WAITING_FOR_START") {
+            this.start();
+        }
+        this.resetOutcomeNames(outcomeType);
+        return true;
+    }
+
+    /**
      * Edit an outcome name.
      *
      * @param {number} outcomeIndex

@@ -126,19 +126,19 @@ class AgendaLawsMat {
         const options = [
             {
                 label: locale("ui.agenda.outcome_type.for_against"),
-                outcomeNames: OUTCOME_TYPE.FOR_AGAINST,
+                outcomeType: OUTCOME_TYPE.FOR_AGAINST,
             },
             {
                 label: locale("ui.agenda.outcome_type.player"),
-                outcomeNames: OUTCOME_TYPE.PLAYER,
+                outcomeType: OUTCOME_TYPE.PLAYER,
             },
             {
                 label: locale("ui.agenda.outcome_type.strategy_card"),
-                outcomeNames: OUTCOME_TYPE.STRATEGY_CARD,
+                outcomeType: OUTCOME_TYPE.STRATEGY_CARD,
             },
             {
                 label: locale("ui.agenda.outcome_type.other"),
-                outcomeNames: OUTCOME_TYPE.OTHER,
+                outcomeType: OUTCOME_TYPE.OTHER,
             },
         ];
 
@@ -148,20 +148,7 @@ class AgendaLawsMat {
 
         for (const option of options) {
             popupPanel.addAction(option.label, () => {
-                if (world.TI4.config.timestamp <= 0) {
-                    console.log(
-                        "AgendaLawsMat._addShortCutPopup: game not started, ignoring click"
-                    );
-                    return; // game not started
-                }
-                if (!world.TI4.agenda.isActive()) {
-                    console.log(
-                        "AgendaLawsMat._addShortCutPopup: agenda not active, ignoring click"
-                    );
-                    return; // agenda not active
-                }
-                world.TI4.agenda.start();
-                world.TI4.agenda.resetOutcomeNames(option.outcomeNames);
+                world.TI4.agenda.externalSetOutcomeType(option.outcomeType);
             });
         }
 
