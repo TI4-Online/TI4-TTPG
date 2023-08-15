@@ -4,7 +4,7 @@
 
 const { GlobalSavedData } = require("./lib/saved-data/global-saved-data");
 const { Hex } = require("./lib/hex");
-const { PlayerDeskLines } = require("./lib/player-desk/player-desk-lines");
+const { PlayerDeskLines } = require("./lib/display/player-desk-lines");
 const { PlayerDeskSetup } = require("./lib/player-desk/player-desk-setup");
 const { SetupQuickRollers } = require("./setup/setup-quick-rollers");
 const { SetupSecretHolders } = require("./setup/setup-secret-holders");
@@ -28,7 +28,7 @@ for (const action of Object.values(ACTION)) {
 }
 
 function drawDeskLines() {
-    console.log("QuickSetupObj: draw desk lines");
+    console.log("QuickSetupObj: clear desk lines");
     PlayerDeskLines.clearAllPlayerDeskLines();
     //PlayerDeskLines.addAllPlayerDeskLines();
 }

@@ -9,10 +9,39 @@ const PLAYER_DESK_BORDER = [
 ];
 const THICKNESS = 1;
 
-const LINE_TAG = "__player_desk_border__";
+const LINE_TAG = "__player_desk_line__";
 
 class PlayerDeskLines {
-    static getWorldSpaceDrawingLine(playerDesk) {
+    /**
+     * Do any player desk lines exist?
+     *
+     * @returns {boolean}
+     */
+    static isEnabled() {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const obj = playerDesk.getFrozenDummyObject();
+            for (const line of obj.getDrawingLines()) {
+                if (line.tag === LINE_TAG) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static addAllPlayerDeskLines() {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            PlayerDeskLines._addPlayerDeskLine(playerDesk);
+        }
+    }
+
+    static clearAllPlayerDeskLines() {
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            PlayerDeskLines._clearPlayerDeskLine(playerDesk);
+        }
+    }
+
+    static _createWorldSpaceDrawingLine(playerDesk) {
         assert(playerDesk instanceof world.TI4.PlayerDesk);
 
         const line = new DrawingLine();
@@ -28,16 +57,16 @@ class PlayerDeskLines {
         return line;
     }
 
-    static addPlayerDeskLine(playerDesk) {
+    static _addPlayerDeskLine(playerDesk) {
         assert(playerDesk instanceof world.TI4.PlayerDesk);
 
         const obj = playerDesk.getFrozenDummyObject();
-        const line = PlayerDeskLines.getWorldSpaceDrawingLine(playerDesk);
+        const line = PlayerDeskLines._createWorldSpaceDrawingLine(playerDesk);
         line.points = line.points.map((p) => obj.worldPositionToLocal(p));
         obj.addDrawingLine(line);
     }
 
-    static clearPlayerDeskLine(playerDesk) {
+    static _clearPlayerDeskLine(playerDesk) {
         assert(playerDesk instanceof world.TI4.PlayerDesk);
 
         const obj = playerDesk.getFrozenDummyObject();
@@ -45,18 +74,6 @@ class PlayerDeskLines {
             if (line.tag === LINE_TAG) {
                 obj.removeDrawingLineObject(line);
             }
-        }
-    }
-
-    static addAllPlayerDeskLines() {
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            PlayerDeskLines.addPlayerDeskLine(playerDesk);
-        }
-    }
-
-    static clearAllPlayerDeskLines() {
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            PlayerDeskLines.clearPlayerDeskLine(playerDesk);
         }
     }
 }
