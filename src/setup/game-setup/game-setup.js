@@ -10,6 +10,8 @@ const { globalEvents, world } = require("../../wrapper/api");
 
 let _useGameData = true;
 
+let _pendingPlayerCountChange = undefined;
+
 function onPlayerCountChanged(slider, player, value) {
     if (value === world.TI4.config.playerCount) {
         return;
@@ -20,8 +22,19 @@ function onPlayerCountChanged(slider, player, value) {
     // PlayerDesk onPlayerCountChanged will re-enable.
     GameSetupUI.disablePlayerCountSlider();
 
-    world.TI4.turns.invalidate();
-    world.TI4.config.setPlayerCount(value, player);
+    // If one still sneaks in, cancel pending.
+    if (_pendingPlayerCountChange) {
+        clearTimeout(_pendingPlayerCountChange);
+        _pendingPlayerCountChange = undefined;
+    }
+
+    // Wait a moment before commiting (so a later one can cancel).
+    const delayed = () => {
+        _pendingPlayerCountChange = undefined;
+        world.TI4.turns.invalidate();
+        world.TI4.config.setPlayerCount(value, player);
+    };
+    _pendingPlayerCountChange = setTimeout(delayed, 1000);
 }
 
 function onGamePointsChanged(slider, player, value) {
