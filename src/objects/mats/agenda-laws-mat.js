@@ -1,14 +1,18 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
+const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
 const {
     GameObject,
+    Rotator,
     Vector,
     ZonePermission,
     globalEvents,
     refObject,
     world,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
+const { PopupPanel } = require("../../lib/ui/popup-panel");
 
 const ZONE = {
     X: 5,
@@ -39,6 +43,8 @@ class AgendaLawsMat {
         });
 
         this._createZone();
+
+        this._addShortcutPopup();
     }
 
     _destroyZone() {
@@ -114,6 +120,52 @@ class AgendaLawsMat {
             console.log(`AgendaLawsMat.onAgendaChanged <none>`);
             globalEvents.TI4.onAgendaChanged.trigger(undefined);
         }
+    }
+
+    _addShortcutPopup() {
+        const options = [
+            {
+                label: locale("ui.agenda.outcome_type.for_against"),
+                outcomeNames: OUTCOME_TYPE.FOR_AGAINST,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.player"),
+                outcomeNames: OUTCOME_TYPE.PLAYER,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.strategy_card"),
+                outcomeNames: OUTCOME_TYPE.STRATEGY_CARD,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.other"),
+                outcomeNames: OUTCOME_TYPE.OTHER,
+            },
+        ];
+
+        const localPos = new Vector(11.3, -0.4, 0.14); // model is rotated (should really fix that)
+        const localRot = new Rotator(0, 90, 0);
+        const popupPanel = new PopupPanel(this._obj, localPos, localRot);
+
+        for (const option of options) {
+            popupPanel.addAction(option.label, () => {
+                if (world.TI4.config.timestamp <= 0) {
+                    console.log(
+                        "AgendaLawsMat._addShortCutPopup: game not started, ignoring click"
+                    );
+                    return; // game not started
+                }
+                if (!world.TI4.agenda.isActive()) {
+                    console.log(
+                        "AgendaLawsMat._addShortCutPopup: agenda not active, ignoring click"
+                    );
+                    return; // agenda not active
+                }
+                world.TI4.agenda.start();
+                world.TI4.agenda.resetOutcomeNames(option.outcomeNames);
+            });
+        }
+
+        popupPanel.attachPopupButton();
     }
 }
 
