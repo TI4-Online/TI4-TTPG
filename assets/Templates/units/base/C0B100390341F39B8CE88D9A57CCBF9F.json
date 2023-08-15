@@ -34,13 +34,13 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 0
+				"Z": 0.3
 			},
 			"Scale":
 			{
-				"X": 0.0795646,
-				"Y": 0.0795646,
-				"Z": 0.0795646
+				"X": 0.8,
+				"Y": 0.8,
+				"Z": 0.8
 			},
 			"Rotation":
 			{
@@ -57,9 +57,62 @@
 			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/flatsquare.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -0.2
+			},
+			"Scale":
+			{
+				"X": 3,
+				"Y": 3,
+				"Z": 3
+			},
+			"Rotation":
+			{
+				"X": -180,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/units/sustained-wrench.png",
+			"NormalMap": "",
+			"ExtraMap": "",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "units/base/carrier_low_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0.3
+			},
+			"Scale":
+			{
+				"X": 0.8,
+				"Y": 0.8,
+				"Z": 0.8
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],

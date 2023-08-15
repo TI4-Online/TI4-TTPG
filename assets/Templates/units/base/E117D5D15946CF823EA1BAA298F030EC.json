@@ -34,13 +34,13 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 0
+				"Z": 0.3
 			},
 			"Scale":
 			{
-				"X": 0.0772879,
-				"Y": 0.0772879,
-				"Z": 0.0772879
+				"X": 0.8,
+				"Y": 0.8,
+				"Z": 0.8
 			},
 			"Rotation":
 			{
@@ -59,7 +59,30 @@
 			"SurfaceType": "Plastic"
 		}
 	],
-	"Collision": [],
+	"Collision": [
+		{
+			"Model": "units/base/spacedock_low_col.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0.3
+			},
+			"Scale":
+			{
+				"X": 0.8,
+				"Y": 0.8,
+				"Z": 0.8
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
 	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
