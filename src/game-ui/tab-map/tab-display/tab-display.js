@@ -2,7 +2,7 @@ const { TabDisplayUI } = require("./tab-display-ui");
 const { world } = require("../../../wrapper/api");
 const {
     SystemTileBrightness,
-} = require("../../../lib/ui/system-tile-brightness");
+} = require("../../../lib/display/system-tile-brightness");
 
 class TabDisplay {
     constructor() {

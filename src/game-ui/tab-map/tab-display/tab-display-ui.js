@@ -3,7 +3,7 @@ const locale = require("../../../lib/locale");
 const CONFIG = require("../../game-ui-config");
 const {
     SystemTileBrightness,
-} = require("../../../lib/ui/system-tile-brightness");
+} = require("../../../lib/display/system-tile-brightness");
 const { WidgetFactory } = require("../../../lib/ui/widget-factory");
 const {
     ThrottleClickHandler,
