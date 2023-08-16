@@ -3,6 +3,7 @@ const { ObjectNamespace } = require("../lib/object-namespace");
 const { ReplaceObjects } = require("./spawn/replace-objects");
 const { Spawn } = require("./spawn/spawn");
 const { Card, Vector, world } = require("../wrapper/api");
+const { SpawnDeck } = require("./spawn/spawn-deck");
 
 /**
  * Base class with some shared helper methods.
@@ -85,81 +86,7 @@ class AbstractSetup {
      * @param {function} filterNsid
      */
     spawnDecksThenFilter(pos, rot, nsidPrefix, filterNsid) {
-        assert(typeof pos.x === "number"); // "instanceof Vector" broken
-        assert(typeof rot.yaw === "number"); // "instanceof Rotator" broken
-        assert(typeof nsidPrefix === "string");
-        assert(typeof filterNsid === "function");
-
-        // Find existing deck to join.  Dropping a new deck on top only
-        // creates a stack of two decks; TTPG does not auto-join.
-        const start = pos.add([0, 0, 20]);
-        const end = pos.subtract([0, 0, 20]);
-        const traceHit = world.lineTrace(start, end).find((traceHit) => {
-            if (!(traceHit.object instanceof Card)) {
-                return false; // only looking for decks
-            }
-            // ObjectNamespace.getNsid intentionally returns nothing for decks
-            // because there are many nsids inside.  Look at first of those.
-            const nsid = ObjectNamespace.getDeckNsids(traceHit.object)[0];
-            return nsid.startsWith(nsidPrefix);
-        });
-        const existingDeck = traceHit && traceHit.object;
-
-        const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
-            // Get the DECK nsids, will need to merge into one deck.
-            const parsedNsid = ObjectNamespace.parseNsid(nsid);
-            return parsedNsid.type.startsWith(nsidPrefix);
-        });
-        mergeDeckNsids.sort();
-
-        // Spawn the decks, combine into one.
-        let deck = false;
-        mergeDeckNsids.forEach((mergeDeckNsid) => {
-            const mergeDeck = Spawn.spawn(mergeDeckNsid, pos, rot);
-            if (deck) {
-                mergeDeck.setTags(["DELETED_ITEMS_IGNORE"]);
-                const success = deck.addCards(mergeDeck);
-                if (!success) {
-                    console.log(
-                        "spawnDecksThenFilter: addCards failed, is a deck the wrong size?"
-                    );
-                }
-            } else {
-                deck = mergeDeck;
-            }
-        });
-
-        // Remove any filter-rejected cards.
-        // Cards in a deck are not objects, pull them out.
-        const cardNsids = ObjectNamespace.getDeckNsids(deck);
-        for (let i = cardNsids.length - 1; i >= 0; i--) {
-            const cardNsid = cardNsids[i];
-            if (!filterNsid(cardNsid)) {
-                let cardObj;
-                if (deck.getStackSize() > 1) {
-                    //console.log(`${nsid}: ${i}/${obj.getStackSize()}`);
-                    cardObj = deck.takeCards(1, true, i);
-                } else {
-                    cardObj = deck; // cannot take final card
-                }
-                assert(cardObj instanceof Card);
-                cardObj.setTags(["DELETED_ITEMS_IGNORE"]);
-                cardObj.destroy();
-            }
-        }
-
-        // Apply replacement rules ("x.omega") AFTER game is set up.
-        if (world.TI4.config.timestamp > 0) {
-            ReplaceObjects.removeReplacedObjects([deck]);
-        }
-
-        // Add to existing generic tech deck.
-        if (existingDeck) {
-            existingDeck.addCards(deck);
-            deck = existingDeck;
-        }
-
-        return deck;
+        return SpawnDeck.spawnDeck(nsidPrefix, pos, rot, filterNsid);
     }
 
     /**
