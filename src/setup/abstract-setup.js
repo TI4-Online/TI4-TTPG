@@ -1,9 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
-const { ReplaceObjects } = require("./spawn/replace-objects");
-const { Spawn } = require("./spawn/spawn");
-const { Card, Vector, world } = require("../wrapper/api");
-const { SpawnDeck } = require("./spawn/spawn-deck");
+const { Vector, world } = require("../wrapper/api");
 
 /**
  * Base class with some shared helper methods.
@@ -72,21 +69,6 @@ class AbstractSetup {
         }
         const typeParts = parsed.type.split(".");
         return typeParts[returnTypePartIndex];
-    }
-
-    /**
-     * Spawn a single deck combining all decks matching the nsidPrefix.
-     * The apply the filter to restrict to only the desired cards.
-     * Applies replacement rules (omega) automatically, and joins with
-     * any existing deck already at the destination.
-     *
-     * @param {Vector} pos - world space
-     * @param {Rotator} rot - world space
-     * @param {string} nsidPrefix
-     * @param {function} filterNsid
-     */
-    spawnDecksThenFilter(pos, rot, nsidPrefix, filterNsid) {
-        return SpawnDeck.spawnDeck(nsidPrefix, pos, rot, filterNsid);
     }
 
     /**

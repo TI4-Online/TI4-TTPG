@@ -3,6 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 const { world } = require("../../wrapper/api");
 
 class SetupFactionAlliance extends AbstractSetup {
@@ -21,7 +22,7 @@ class SetupFactionAlliance extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.alliance";
-        let card = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        let card = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.alliance:pok/faction"
             const parsed = ObjectNamespace.parseNsid(nsid);
             const name = parsed.name.split(".")[0];

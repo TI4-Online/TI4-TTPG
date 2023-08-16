@@ -5,6 +5,7 @@ const { CloneReplace } = require("../../lib/card/clone-replace");
 const { TechCardUtil } = require("../../lib/card/tech-card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { Card, world } = require("../../wrapper/api");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 
 class SetupStartingTech extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -18,16 +19,11 @@ class SetupStartingTech extends AbstractSetup {
             const rot = this.playerDesk.rot;
 
             const nsidPrefix = "card.starting_technology";
-            let card = this.spawnDecksThenFilter(
-                pos,
-                rot,
-                nsidPrefix,
-                (nsid) => {
-                    // "card.starting_technology.source/name"
-                    const parsed = ObjectNamespace.parseNsid(nsid);
-                    return parsed.name === this._faction.raw.startingTechChoice;
-                }
-            );
+            let card = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
+                // "card.starting_technology.source/name"
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                return parsed.name === this._faction.raw.startingTechChoice;
+            });
 
             // See the comment in CloneReplace for why.
             card = CloneReplace.cloneReplace(card);

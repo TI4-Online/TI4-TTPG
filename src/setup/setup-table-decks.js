@@ -1,6 +1,7 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const { SpawnDeck } = require("./spawn/spawn-deck");
 const { TableLayout } = require("../table/table-layout");
 const { Card, Rotator, Vector, world } = require("../wrapper/api");
 
@@ -185,10 +186,10 @@ class SetupTableDecks extends AbstractSetup {
         }
 
         // Spawn the decks, combine into one.
-        const deck = this.spawnDecksThenFilter(
+        let deck = SpawnDeck.spawnDeck(
+            deckData.nsidPrefix,
             pos,
             rot,
-            deckData.nsidPrefix,
             (nsid) => {
                 if (nsid.startsWith("card.planet")) {
                     // Ignore home system cards.

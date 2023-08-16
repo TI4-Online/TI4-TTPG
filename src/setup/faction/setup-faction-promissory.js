@@ -3,6 +3,7 @@ const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
 const { world } = require("../../wrapper/api");
 
@@ -25,7 +26,7 @@ class SetupFactionPromissory extends AbstractSetup {
         );
 
         const nsidPrefix = "card.promissory";
-        let deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        let deck = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.promissory.jolnar" (careful about "card.promissory.blue").
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             if (factionName !== this._faction.raw.faction) {
