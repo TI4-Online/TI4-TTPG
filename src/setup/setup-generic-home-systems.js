@@ -149,7 +149,6 @@ class SetupGenericHomeSystems extends AbstractSetup {
         // The skinny table has fewer choices.
         const fewerChoices = ["6p-skinny", "8p-skinny"];
         if (offMap && fewerChoices.includes(TableLayout.getTableType())) {
-            console.log("skinny off map override");
             const std = SetupGenericHomeSystems.getHomeSystemPosition(
                 playerDesk,
                 false

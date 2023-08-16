@@ -60,8 +60,11 @@ class SetupFactionSheet extends AbstractSetup {
                 return; // faction sheet on top, stop
             }
 
+            console.log(
+                "SetupFactionSheet: fixing layering with leader/command sheets"
+            );
             sheet.setObjectType(ObjectType.Regular);
-            sheet.setPostion(pos);
+            sheet.setPosition(pos);
             sheet.snapToGround();
             sheet.setObjectType(ObjectType.Ground);
 

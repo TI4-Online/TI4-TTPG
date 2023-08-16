@@ -108,9 +108,6 @@ class SetupTableMats extends AbstractSetup {
             obj.setObjectType(ObjectType.Ground);
 
             if (matData.nonInteractive) {
-                console.log(
-                    `SetupTableMats: making "${matData.nsid}" non interactive`
-                );
                 obj.setObjectType(ObjectType.NonInteractive);
             }
         });
