@@ -81,7 +81,8 @@ class PerfStats {
         mean = mean.toFixed(1);
         scrubbed = scrubbed.toFixed(1);
         stdDev = stdDev.toFixed(2);
-        return `frame msecs: median=${median} mean=${mean} scrubbed=${scrubbed} stdDev=${stdDev}`;
+        const fps = (1000 / median).toFixed(1);
+        return `frame msecs: median=${median} mean=${mean} scrubbed=${scrubbed} stdDev=${stdDev} [${fps}]`;
     }
 }
 
