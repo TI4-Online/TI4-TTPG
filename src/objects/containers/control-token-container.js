@@ -50,6 +50,9 @@ class ControlTokenContainer {
 
         // On construction give caller a moment to finish setup.
         process.nextTick(() => {
+            if (!this._container.isValid()) {
+                return;
+            }
             this.refill();
         });
 
