@@ -145,6 +145,11 @@ class SetupHomeSystem extends AbstractSetup {
             const parsed = ObjectNamespace.parseNsid(nsid);
             return planetNsidNames.has(parsed.name);
         });
+        if (!deck) {
+            throw new Error(
+                `missing [${Array.from(planetNsidNames).join(", ")}]`
+            );
+        }
 
         deck = CloneReplace.cloneReplace(deck);
 
