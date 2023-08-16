@@ -173,6 +173,11 @@ class ObjectNamespace {
         return result;
     }
 
+    static isLeaderSheet(obj) {
+        const nsid = ObjectNamespace.getNsid(obj);
+        return nsid === "sheet:pok/leader";
+    }
+
     static isStrategyCard(obj) {
         const nsid = ObjectNamespace.getNsid(obj);
         return nsid.startsWith("tile.strategy");

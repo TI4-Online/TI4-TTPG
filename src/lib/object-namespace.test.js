@@ -129,6 +129,15 @@ it("faction sheet", () => {
     assert.equal(result.faction, "arborec");
 });
 
+it("leader sheet", () => {
+    const id = "sheet:pok/leader";
+    const obj = new MockGameObject({ templateMetadata: id });
+    const not = new MockGameObject({ templateMetadata: "not:not/not" });
+
+    assert(ObjectNamespace.isLeaderSheet(obj));
+    assert(!ObjectNamespace.isLeaderSheet(not));
+});
+
 it("strategy card", () => {
     const id = "tile.strategy:base/leadership.omega";
     const obj = new MockGameObject({ templateMetadata: id });
