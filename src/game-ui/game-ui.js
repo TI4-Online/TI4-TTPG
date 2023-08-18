@@ -49,6 +49,7 @@ const {
     MiltyEqSliceDraft,
 } = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
 const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
+const { WekkerSliceDraft } = require("../lib/draft/wekker/wekker-slice-draft");
 
 let _gameUI;
 
@@ -233,6 +234,9 @@ class GameUI {
 
         const bunkerDraftEntry = BunkerSliceDraft.createDraftNavEntry();
         draftFolder.addChild(bunkerDraftEntry);
+
+        const wekkerDraftEntry = WekkerSliceDraft.createDraftNavEntry();
+        draftFolder.addChild(wekkerDraftEntry);
 
         const scptFolder = new NavFolder().setName(
             locale("nav.map.draft.scpt")
