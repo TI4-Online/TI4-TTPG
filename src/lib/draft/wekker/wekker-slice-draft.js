@@ -54,6 +54,8 @@ class WekkerSliceDraft extends AbstractSliceDraft {
     constructor() {
         super();
 
+        this.setMaxPlayerCount(6);
+
         const factionGenerator = new AbstractFactionGenerator(); // no special needs
         const sliceLayout = new WekkerSliceLayout();
         const sliceGenerator = new WekkerSliceGenerator();
