@@ -6,6 +6,7 @@ class PerfStats {
     constructor(historySize = 60) {
         assert(typeof historySize === "number" && historySize > 0);
 
+        this._historySize = historySize;
         this._tick = 0;
         this._tickDurationMsecsHistory = Array(historySize).map(() => 0);
         this._reportHandle = undefined;
@@ -21,6 +22,10 @@ class PerfStats {
         const idx = this._tick % this._tickDurationMsecsHistory.length;
         const msecs = prevTickDurationSecs * 1000;
         this._tickDurationMsecsHistory[idx] = msecs;
+    }
+
+    getHistorySize() {
+        return this._historySize;
     }
 
     isReporting() {
@@ -60,11 +65,14 @@ class PerfStats {
         const sorted = [...array].sort((a, b) => b - a);
         const median = sorted[Math.floor(sorted.length / 2)];
 
-        // Mean of values within stdDev
+        // Mean of values within 3x stdDev
+        const tolerance = stdDev * 3;
         let scrubbed = sorted.filter(
-            (x) => x > mean - stdDev && x < mean + stdDev
+            (x) => x > mean - tolerance && x < mean + tolerance
         );
         scrubbed = scrubbed.reduce((a, b) => a + b, 0) / scrubbed.length;
+
+        const fps = 1000 / scrubbed; // scrubbed
 
         // Round to 3 decimal places for cleaner log / json.
         return {
@@ -72,16 +80,17 @@ class PerfStats {
             mean: Math.floor(mean * 1000) / 1000,
             scrubbed: Math.floor(scrubbed * 1000) / 1000,
             stdDev: Math.floor(stdDev * 1000) / 1000,
+            fps: Math.floor(fps * 1000) / 1000,
         };
     }
 
     summarizeStr() {
-        let { median, mean, scrubbed, stdDev } = this.summarize();
+        let { median, mean, scrubbed, stdDev, fps } = this.summarize();
         median = median.toFixed(1);
         mean = mean.toFixed(1);
         scrubbed = scrubbed.toFixed(1);
         stdDev = stdDev.toFixed(2);
-        const fps = (1000 / median).toFixed(1);
+        fps = fps.toFixed(1);
         return `frame msecs: median=${median} mean=${mean} scrubbed=${scrubbed} stdDev=${stdDev} [${fps}]`;
     }
 }
