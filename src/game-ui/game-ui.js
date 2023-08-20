@@ -2,11 +2,16 @@ const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AutoRoller } = require("../objects/roller/auto-roller");
 const { AutoRollerArena } = require("../objects/roller/auto-roller-arena");
+const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
 const {
     FrankenDraftSettings,
 } = require("./tab-map/tab-draft/tab-franken/franken-settings");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
+const {
+    MiltyEqSliceDraft,
+} = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
+const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
@@ -34,6 +39,7 @@ const { TabStreamer } = require("./tab-streamer/tab-streamer");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
+const { WekkerSliceDraft } = require("../lib/draft/wekker/wekker-slice-draft");
 const { WidgetFactory } = require("../lib/ui/widget-factory");
 const CONFIG = require("./game-ui-config");
 const {
@@ -44,12 +50,6 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
-const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
-const {
-    MiltyEqSliceDraft,
-} = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
-const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
-const { WekkerSliceDraft } = require("../lib/draft/wekker/wekker-slice-draft");
 
 let _gameUI;
 
