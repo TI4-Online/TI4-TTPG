@@ -55,8 +55,8 @@ class TabHelpUI {
 
         panel.addChild(
             WidgetFactory.text()
-                .setFontSize(HELP_FONTSIZE)
-                .setText(locale("ui.help.alt_zoom_ground"))
+                .setFontSize(HELP_FONTSIZE * 0.9)
+                .setText(locale("ui.help.camera_inertia"))
                 .setAutoWrap(true)
         );
 

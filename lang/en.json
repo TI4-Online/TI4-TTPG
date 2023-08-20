@@ -34,7 +34,7 @@
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
-    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced 'Ground Object Interaction'",
+    "ui.help.camera_inertia": "Camera smoothing: escape > settings > game > show advanced > camera acceleration (set low)",
 
     "ui.help.whisper": "Whisper: \"/w {part of name}\"",
 
@@ -250,6 +250,7 @@
 
     "nav.root": "Root",
     "nav.up": "..back",
+    "nav.display": "Display",
     "nav.help": "Help",
     "nav.strategy_phase": "1. Strategy Phase",
     "nav.action_phase": "2. Action Phase",
