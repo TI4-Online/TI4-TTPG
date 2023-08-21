@@ -306,7 +306,7 @@ world.TI4 = {
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
 require("./global/chat-commands");
-require("./global/desk-turn-order");
+//require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
 require("./global/fix-table-colors");
 require("./global/gamedata-key");
