@@ -20,6 +20,10 @@ class SystemTileBrightness {
             if (!ObjectNamespace.isSystemTile(obj)) {
                 continue;
             }
+            const parsed = ObjectNamespace.parseSystemTile(obj);
+            if (!parsed || parsed.tile <= 0) {
+                continue;
+            }
             const color = obj.getSecondaryColor();
             _brightness = color.r;
             break;

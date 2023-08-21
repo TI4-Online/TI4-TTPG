@@ -401,6 +401,10 @@ class Borders {
         this.clearLines();
     }
 
+    getEnabled() {
+        return this._enabled;
+    }
+
     setEnabled(value) {
         assert(typeof value === "boolean");
         this._enabled = value;

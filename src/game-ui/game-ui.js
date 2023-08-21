@@ -23,7 +23,6 @@ const {
 const { SCPT2023 } = require("./tab-map/tab-draft/tab-scpt/scpt-2023");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
-const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
@@ -45,11 +44,13 @@ const CONFIG = require("./game-ui-config");
 const {
     Card,
     Rotator,
+    Text,
     Vector,
     globalEvents,
     refPackageId,
     world,
 } = require("../wrapper/api");
+const { TabDisplay } = require("./tab-display/tab-display");
 
 let _gameUI;
 
@@ -306,7 +307,9 @@ class GameUI {
             .setName(locale("nav.map.borders"))
             .setIconPath("global/ui/icons/settings_application.png")
             .setWidgetFactory((navPanel, navEntry) => {
-                return new TabDisplay().getUI();
+                return new Text()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText("moved to Root > Display");
             });
         mapFolder.addChild(factionBordersEntry);
 
@@ -495,6 +498,14 @@ class GameUI {
                 navPanel.setCurrentNavEntry(agendaPhaseEntry);
             }
         });
+
+        const displayEntry = new NavEntry()
+            .setName(locale("nav.display"))
+            .setIconPath("global/ui/icons/settings_application.png")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new TabDisplay().getWidget();
+            });
+        rootFolder.addChild(displayEntry);
 
         const statsFolder = this._createStatsFolder();
         rootFolder.addChild(statsFolder);
