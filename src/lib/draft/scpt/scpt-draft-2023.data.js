@@ -46,7 +46,17 @@ const SCPT_DRAFTS_2023 = [
     },
     {
         name: "Finals",
-        enabled: false,
+        enabled: true,
+        slices: "77,22,59,67,65|46,25,29,31,45|78,64,74,37,41|61,40,70,68,36|73,39,24,80,71|42,26,72,35,47|49,79,28,62,76",
+        labels: [
+            "Slice 1",
+            "Slice 2",
+            "Slice 3",
+            "Slice 4",
+            "Slice 5",
+            "Slice 6",
+            "Slice 7",
+        ].join("|"),
     },
 ];
 
