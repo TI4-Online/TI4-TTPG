@@ -84,11 +84,13 @@ class TabDisplayUI {
         assert(typeof params.min === "number");
         assert(typeof params.max === "number");
         assert(!params.stepSize || typeof params.stepSize === "number");
-        assert(typeof params.default === "number");
+        assert(typeof params.getDefault === "function");
         assert(typeof params.onValueChanged === "function");
 
         assert(params.min <= params.max);
-        assert(params.min <= params.default && params.default <= params.max);
+
+        const value = params.getDefault();
+        assert(params.min <= value && value <= params.max);
 
         const label = new Text()
             .setFontSize(CONFIG.fontSize)
@@ -99,7 +101,7 @@ class TabDisplayUI {
             .setMinValue(params.min)
             .setMaxValue(params.max)
             .setStepSize(params.stepSize ? params.stepSize : 1)
-            .setValue(params.default);
+            .setValue(value);
         slider.onValueChanged.add(params.onValueChanged);
         const panel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -110,13 +112,13 @@ class TabDisplayUI {
 
     _createCheckbox(params) {
         assert(typeof params.label === "string");
-        assert(typeof params.default === "boolean");
+        assert(typeof params.getDefault === "function");
         assert(typeof params.onCheckStateChanged === "function");
 
         const checkBox = new CheckBox()
             .setFontSize(CONFIG.fontSize)
             .setText(params.label)
-            .setIsChecked(params.default);
+            .setIsChecked(params.getDefault());
         checkBox.onCheckStateChanged.add(params.onCheckStateChanged);
         return checkBox;
     }

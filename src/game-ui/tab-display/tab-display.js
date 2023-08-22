@@ -30,7 +30,9 @@ class TabDisplay {
             entries: [
                 {
                     label: locale("display.faction_borders.enable_borders"),
-                    default: world.TI4.borders.getEnabled(),
+                    getDefault: () => {
+                        return world.TI4.borders.getEnabled();
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         console.log(
                             `TabDisplay toggle borders (global) ${isChecked}`
@@ -40,7 +42,9 @@ class TabDisplay {
                 },
                 {
                     label: locale("display.faction_borders.team_borders"),
-                    default: world.TI4.borders.getTeams(),
+                    getDefault: () => {
+                        return world.TI4.borders.getTeams();
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         console.log(`TabDisplay team borders ${isChecked}`);
                         world.TI4.borders.setTeams(isChecked);
@@ -70,7 +74,9 @@ class TabDisplay {
             entries: [
                 {
                     label: locale("display.tile_brighness.brightness"),
-                    default: Math.round(SystemTileBrightness.get() * 100),
+                    getDefault: () => {
+                        return Math.round(SystemTileBrightness.get() * 100);
+                    },
                     min: 50,
                     max: 100,
                     onValueChanged: (slider, player, value) => {
@@ -95,7 +101,9 @@ class TabDisplay {
             entries: [
                 {
                     label: locale("display.desk_borders.enable_borders"),
-                    default: PlayerDeskLines.isEnabled(),
+                    getDefault: () => {
+                        return PlayerDeskLines.isEnabled();
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         if (isChecked) {
                             PlayerDeskLines.addAllPlayerDeskLines();
@@ -115,7 +123,9 @@ class TabDisplay {
             entries: [
                 {
                     label: locale("display.map_rings.enable_rings"),
-                    default: MapRingLines.isEnabled(),
+                    getDefault: () => {
+                        return MapRingLines.isEnabled();
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         if (isChecked) {
                             MapRingLines.addMapRingLines();
@@ -129,15 +139,16 @@ class TabDisplay {
     }
 
     _sectionTableColor() {
-        const primary = TableColor.getPrimary();
-        const secondary = TableColor.getSecondary();
         return {
             label: locale("display.table_color.label"),
             description: locale("display.table_color.description"),
             entries: [
                 {
                     label: locale("display.table_color.table"),
-                    default: Math.round(primary.r * 100),
+                    getDefault: () => {
+                        const primary = TableColor.getPrimary();
+                        return Math.round(primary.r * 100);
+                    },
                     min: 0,
                     max: 50,
                     onValueChanged: (slider, player, value) => {
@@ -149,7 +160,10 @@ class TabDisplay {
                 },
                 {
                     label: locale("display.table_color.desks"),
-                    default: Math.round(secondary.r * 100),
+                    getDefault: () => {
+                        const secondary = TableColor.getSecondary();
+                        return Math.round(secondary.r * 100);
+                    },
                     min: 0,
                     max: 50,
                     onValueChanged: (slider, player, value) => {
@@ -175,6 +189,8 @@ class TabDisplay {
         let isCountdown = world.TI4.config.timer > 0;
         let timeLimitValue = Math.max(world.TI4.config.timer, 0);
 
+        console.log(JSON.stringify({ isEnabled, isCountdown, timeLimitValue }));
+
         const updateTimerConfig = () => {
             let value = -1;
             if (isEnabled) {
@@ -194,7 +210,9 @@ class TabDisplay {
             entries: [
                 {
                     label: locale("display.turn_timer.enable_timer"),
-                    default: isEnabled,
+                    getDefault: () => {
+                        return world.TI4.config.timer >= 0;
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         isEnabled = isChecked;
                         updateTimerConfig();
@@ -202,7 +220,9 @@ class TabDisplay {
                 },
                 {
                     label: locale("display.turn_timer.countdown"),
-                    default: isCountdown,
+                    getDefault: () => {
+                        return world.TI4.config.timer > 0;
+                    },
                     onCheckStateChanged: (checkBox, player, isChecked) => {
                         isCountdown = isChecked;
                         updateTimerConfig();
@@ -210,7 +230,9 @@ class TabDisplay {
                 },
                 {
                     label: locale("display.turn_timer.time_limit"),
-                    default: timeLimitValue,
+                    getDefault: () => {
+                        return Math.max(world.TI4.config.timer, 0) / 60;
+                    },
                     min: 0,
                     max: 10,
                     stepSize: 0.5,
