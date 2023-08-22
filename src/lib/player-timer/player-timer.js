@@ -106,6 +106,10 @@ class PlayerTimer {
         return this._phaseName;
     }
 
+    getRound() {
+        return this._round;
+    }
+
     getPlayerTimeSeconds(colorName, phaseName, round) {
         assert(typeof colorName === "string");
         assert(typeof phaseName === "string");
@@ -147,6 +151,7 @@ class PlayerTimer {
         const newSeconds = oldSeconds + SAMPLE_EVERY_N_SECONDS;
 
         this._phaseName = phaseName;
+        this._round = round;
 
         // "get" created missing entries.
         this._colorToPhaseToRoundToSeconds[colorName][phaseName][round] =
