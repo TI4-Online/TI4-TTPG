@@ -212,7 +212,7 @@ class TurnEntryFancy extends Canvas {
         this._score.setText(config.score.toString());
 
         // Color.
-        const v = 0.02;
+        const v = 0.03;
         const plrColor = playerDesk.widgetColor;
         const altColor = new Color(v, v, v);
 
