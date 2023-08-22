@@ -18,17 +18,9 @@ const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
  *
  * recommended key-binding clear: ground, z (camera), m (measure), c (hide hand)
  *
- * slider, slider: Table color (primary, secondary).
- *
- * slider: System tile brightness.
- *
- * checkbox: Faction borders.
  *
  * checkbox: Turn timer.
  *
- * checkbox: player desk lines.
- *
- * checkbox: map rings.
  */
 
 class TabDisplayUI {
@@ -59,6 +51,13 @@ class TabDisplayUI {
                         widget = this._createCheckbox(entry);
                     } else if (entry.onClicked) {
                         widget = this._createButton(entry);
+                        if (entry.reset) {
+                            widget.onClicked.add(
+                                ThrottleClickHandler.wrap((button, player) => {
+                                    tabbedPanel.resetContent();
+                                })
+                            );
+                        }
                     } else {
                         throw new Error(
                             "TabDisplayUI.createWidget: unknown section type"

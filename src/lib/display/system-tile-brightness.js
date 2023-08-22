@@ -62,6 +62,10 @@ class SystemTileBrightness {
         ColorUtil.validate(tint);
         systemTileObj.setSecondaryColor(tint);
     }
+
+    static resetToDefaults() {
+        SystemTileBrightness.set(DEFAULT_BRIGHTNESS);
+    }
 }
 
 // Load the current value.

@@ -58,16 +58,16 @@ class TabbedPanel {
 
         const left = new VerticalBox().setChildDistance(CONFIG.spacing);
         const spacer = new Border().setColor(CONFIG.spacerColor);
-        const right = new LayoutBox();
+        this._content = new LayoutBox();
 
         const sortedLabels = Object.keys(this._labelToGetWidget).sort();
-        const leftButtons = [];
+        this._leftButtons = [];
         for (const label of sortedLabels) {
             const button = new Button()
                 .setFontSize(CONFIG.fontSize)
                 .setText(label);
             left.addChild(button);
-            leftButtons.push(button);
+            this._leftButtons.push(button);
 
             button.onClicked.add(
                 ThrottleClickHandler.wrap((clickedButton, player) => {
@@ -77,9 +77,10 @@ class TabbedPanel {
                     const widget = getWidget();
                     assert(widget instanceof Widget);
 
-                    right.setChild(widget);
+                    this._selectedLabel = label;
+                    this._content.setChild(widget);
 
-                    for (const leftButton of leftButtons) {
+                    for (const leftButton of this._leftButtons) {
                         leftButton.setEnabled(leftButton !== button);
                     }
                 })
@@ -90,7 +91,23 @@ class TabbedPanel {
             .setChildDistance(CONFIG.spacing)
             .addChild(left, 1)
             .addChild(spacer)
-            .addChild(right, 2); // game ui is 4:1 nav:turns
+            .addChild(this._content, 2); // game ui is 4:1 nav:turns
+    }
+
+    selectNone() {
+        for (const leftButton of this._leftButtons) {
+            leftButton.setEnabled(true);
+        }
+        this._content.setChild();
+    }
+
+    resetContent() {
+        const label = this._selectedLabel;
+        const getWidget = this._labelToGetWidget[label];
+        assert(getWidget);
+        const widget = getWidget();
+        assert(widget instanceof Widget);
+        this._content.setChild(widget);
     }
 }
 
