@@ -1,4 +1,5 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { TabbedPanel } = require("../../lib/ui/tabbed-panel");
 const {
@@ -29,7 +30,12 @@ class TabDisplayUI {
     createWidget(sections) {
         assert(Array.isArray(sections));
 
-        const tabbedPanel = new TabbedPanel();
+        const tabbedPanel = new TabbedPanel().setGetInitialWidget(() => {
+            return new Text()
+                .setFontSize(CONFIG.fontSize)
+                .setAutoWrap(true)
+                .setText(locale("display.description"));
+        });
 
         for (const section of sections) {
             assert(typeof section.label === "string");

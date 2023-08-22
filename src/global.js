@@ -90,6 +90,14 @@ globalEvents.TI4 = {
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(onErr),
 
+    // Called when player-timer adds a sample (~1/sec)
+    // <(timerValue) => void>
+    onTimerConfigChanged: new TriggerableMulticastDelegate(onErr),
+
+    // Called when player-timer adds a sample (~1/sec)
+    // <(colorName, phaseName, round, timeSeconds) => void>
+    onTimerUpdate: new TriggerableMulticastDelegate(onErr),
+
     // Called when turn changes.
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
     onTurnChanged: new TriggerableMulticastDelegate(onErr),

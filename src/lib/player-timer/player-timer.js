@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { FindTurnOrder } = require("../phase/find-turn-order");
 const gameDataRound = require("../game-data/updator-round");
-const { world } = require("../../wrapper/api");
+const { globalEvents, world } = require("../../wrapper/api");
 
 const SAMPLE_EVERY_N_SECONDS = 1;
 
@@ -156,6 +156,14 @@ class PlayerTimer {
         // "get" created missing entries.
         this._colorToPhaseToRoundToSeconds[colorName][phaseName][round] =
             newSeconds;
+
+        // Tell any listeners.
+        globalEvents.TI4.onTimerUpdate.trigger(
+            colorName,
+            phaseName,
+            round,
+            newSeconds
+        );
     }
 
     _doSample() {

@@ -17,7 +17,8 @@ class TabDisplay {
             this._sectionTileBrightness(),
             this._sectionDeskBorders(),
             this._sectionMapRings(),
-            this._setcionTableColor(),
+            this._sectionTableColor(),
+            this._sectionTurnTimer(),
         ];
         return new TabDisplayUI().createWidget(sections);
     }
@@ -127,7 +128,7 @@ class TabDisplay {
         };
     }
 
-    _setcionTableColor() {
+    _sectionTableColor() {
         const primary = TableColor.getPrimary();
         const secondary = TableColor.getSecondary();
         return {
@@ -164,6 +165,59 @@ class TabDisplay {
                         TableColor.resetToDefaults();
                     },
                     reset: true,
+                },
+            ],
+        };
+    }
+
+    _sectionTurnTimer() {
+        let isEnabled = world.TI4.config.timer >= 0;
+        let isCountdown = world.TI4.config.timer > 0;
+        let timeLimitValue = Math.max(world.TI4.config.timer, 0);
+
+        const updateTimerConfig = () => {
+            let value = -1;
+            if (isEnabled) {
+                if (isCountdown) {
+                    value = timeLimitValue;
+                } else {
+                    value = 0; // count up
+                }
+            }
+            console.log(`TabDisplay update timer ${value}`);
+            world.TI4.config.setTimer(value);
+        };
+
+        return {
+            label: locale("display.turn_timer.label"),
+            description: locale("display.turn_timer.description"),
+            entries: [
+                {
+                    label: locale("display.turn_timer.enable_timer"),
+                    default: isEnabled,
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        isEnabled = isChecked;
+                        updateTimerConfig();
+                    },
+                },
+                {
+                    label: locale("display.turn_timer.countdown"),
+                    default: isCountdown,
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        isCountdown = isChecked;
+                        updateTimerConfig();
+                    },
+                },
+                {
+                    label: locale("display.turn_timer.time_limit"),
+                    default: timeLimitValue,
+                    min: 0,
+                    max: 10,
+                    stepSize: 0.5,
+                    onValueChanged: (slider, player, value) => {
+                        timeLimitValue = Math.round(value * 60);
+                        updateTimerConfig();
+                    },
                 },
             ],
         };

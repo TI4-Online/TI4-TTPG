@@ -21,6 +21,7 @@ class TabbedPanel {
         this._scale = 1;
         this._labelToGetWidget = [];
         this._createWidgetCalled = false;
+        this._getInitialWidget = undefined;
     }
 
     setScale(scale) {
@@ -34,6 +35,12 @@ class TabbedPanel {
             }
             tabButton.setFontSize(this._fontSize);
         }
+        return this;
+    }
+
+    setGetInitialWidget(getWidget) {
+        assert(typeof getWidget === "function");
+        this._getInitialWidget = getWidget;
         return this;
     }
 
@@ -59,6 +66,10 @@ class TabbedPanel {
         const left = new VerticalBox().setChildDistance(CONFIG.spacing);
         const spacer = new Border().setColor(CONFIG.spacerColor);
         this._content = new LayoutBox();
+
+        if (this._getInitialWidget) {
+            this._content.setChild(this._getInitialWidget());
+        }
 
         const sortedLabels = Object.keys(this._labelToGetWidget).sort();
         this._leftButtons = [];
@@ -98,7 +109,11 @@ class TabbedPanel {
         for (const leftButton of this._leftButtons) {
             leftButton.setEnabled(true);
         }
-        this._content.setChild();
+        if (this._getInitialWidget) {
+            this._content.setChild(this._getInitialWidget());
+        } else {
+            this._content.setChild();
+        }
     }
 
     resetContent() {

@@ -301,6 +301,7 @@
     "ui.tab.strategic_action": "Strategic",
     "ui.tab.component_action": "Component",
 
+    "display.description": "Select a category at left.",
     "display.reset_to_defaults": "Reset to defaults",
     "display.faction_borders.label": "Faction borders",
     "display.faction_borders.description": "Draw player-colored lines around controlled planets and systems.",
@@ -320,6 +321,11 @@
     "display.table_color.description": "Tint table and player desk areas.",
     "display.table_color.table": "Main table",
     "display.table_color.desks": "Player desks",
+    "display.turn_timer.label": "Turn timer",
+    "display.turn_timer.description": "Action phase turn timer, optionally count down from a fixed value.",
+    "display.turn_timer.enable_timer": "Enable turn timer",
+    "display.turn_timer.countdown": "Countdown",
+    "display.turn_timer.time_limit": "From (minutes)",
 
     "rollType.spaceCannon": "Space Cannon",
     "rollType.antiFighterBarrage": "Anti-fighter Barrage",
