@@ -179,17 +179,9 @@ class AutoGravRiftRoller {
         Broadcast.broadcastAll(msg, color);
     }
 
-    static addLines(die, unit, startTimeoutOnGrabbed) {
-        const gameObject = unit.gameObject;
-
-        const removeLines = () => {
-            while (gameObject.getDrawingLines().length > 0) {
-                gameObject.removeDrawingLine(0);
-            }
-        };
-        removeLines();
-
+    static createDrawingLineRings(gameObject, color, thickness) {
         const extent = gameObject.getExtent();
+        extent.z = Math.max(extent.z, 1);
         const points = [];
         const normals = [];
         const num = 32;
@@ -207,32 +199,52 @@ class AutoGravRiftRoller {
         points.push(points[0].clone());
         normals.push(normals[0].clone());
 
+        // Pointing outward.
+        const outwardLine = new DrawingLine();
+        outwardLine.color = color;
+        outwardLine.points = points;
+        outwardLine.normals = normals;
+        outwardLine.rounded = false;
+        outwardLine.thickness = thickness;
+
+        // Pointing inward.
+        const flipped = normals.map((normal) => {
+            return normal.negate();
+        });
+        const inwardLine = new DrawingLine();
+        inwardLine.color = color;
+        inwardLine.points = points;
+        inwardLine.normals = flipped;
+        inwardLine.rounded = false;
+        inwardLine.thickness = thickness;
+
+        return { outwardLine, inwardLine };
+    }
+
+    static addLines(die, unit, startTimeoutOnGrabbed) {
+        const gameObject = unit.gameObject;
+
+        const removeLines = () => {
+            while (gameObject.getDrawingLines().length > 0) {
+                gameObject.removeDrawingLine(0);
+            }
+        };
+        removeLines();
+
         const surviveColor = new Color(0, 0, 255); // use blue instead of green for colorblind
         const destroyColor = new Color(255 / 255, 105 / 255, 30 / 255);
 
         const color = die.isHit() ? surviveColor : destroyColor;
         const thickness = die.isHit() ? 0.3 : 0.6;
 
-        // Pointing outward.
-        let drawingLine = new DrawingLine();
-        drawingLine.color = color;
-        drawingLine.points = points;
-        drawingLine.normals = normals;
-        drawingLine.rounded = false;
-        drawingLine.thickness = thickness;
-        gameObject.addDrawingLine(drawingLine);
-
-        // Pointing inward.
-        const flipped = normals.map((normal) => {
-            return normal.negate();
-        });
-        drawingLine = new DrawingLine();
-        drawingLine.color = color;
-        drawingLine.points = points;
-        drawingLine.normals = flipped;
-        drawingLine.rounded = false;
-        drawingLine.thickness = thickness;
-        gameObject.addDrawingLine(drawingLine);
+        const { outwardLine, inwardLine } =
+            AutoGravRiftRoller.createDrawingLineRings(
+                gameObject,
+                color,
+                thickness
+            );
+        gameObject.addDrawingLine(outwardLine);
+        gameObject.addDrawingLine(inwardLine);
 
         // Remove after a moment.
         let delay = DELETE_LABEL_AFTER_N_MSECS;

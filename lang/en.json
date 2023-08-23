@@ -63,7 +63,7 @@
 
     "ui.message.helio_command_array": "{playerName} using Helio Command Array to remove each of their command tokens from the game board.",
     "ui.message.helio_command_array_has_no_owner": "No faction has Jace X. 4th Air Legion as a hero, cannot perform Helio Command Array.",
-    "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens.",
+    "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens, can explore tiles {tiles}.",
     "ui.message.multiverse_shift_has_no_owner": "No faction has Conservator Procyon as a her, cannot Multiverse Shift.",
     "ui.message.dimensional_anchor": "{playerName} using Dimensional Anchor to capture ships.",
     "ui.message.dimensional_anchor_has_no_owner": "No faction has It Feeds on Carrion as a hero, cannot perform Dimensional Anchor.",
