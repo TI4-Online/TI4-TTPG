@@ -7,11 +7,14 @@ const { world } = require("../wrapper/api");
  */
 for (const table of world.getAllTables()) {
     if (table.getTemplateMetadata().startsWith("table:base/")) {
+        const primary = table.getPrimaryColor();
+        const secondary = table.getSecondaryColor();
+        if (primary.r < 0.99 || secondary.r > 0.01) {
+            continue; // colors already set
+        }
+
         // CURRENT:
         table.setPrimaryColor(ColorUtil.colorFromHex("#494949"));
         table.setSecondaryColor(ColorUtil.colorFromHex("#383838"));
-
-        //table.setPrimaryColor(ColorUtil.colorFromHex("#383838"));
-        //table.setSecondaryColor(ColorUtil.colorFromHex("#282828"));
     }
 }
