@@ -5,7 +5,6 @@
  * Rewrite UVs to correspond to the merged image.
  */
 
-const assert = require("assert");
 const fs = require("fs-extra");
 const path = require("path");
 const sharp = require("sharp");
