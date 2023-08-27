@@ -1,7 +1,7 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { AbstractSetup } = require("../../setup/abstract-setup");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const { SpawnDeck } = require("../../setup/spawn/spawn-deck");
 const { Rotator, Vector, world } = require("../../wrapper/api");
 
 /**
@@ -18,7 +18,8 @@ class FactionToken {
         let best = undefined;
         let bestDSq = Number.MAX_VALUE;
         const center = playerDesk.center;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const checkDiscard = false;
             const allowFaceDown = true;
             if (!CardUtil.isLooseCard(obj, checkDiscard, allowFaceDown)) {
@@ -77,12 +78,7 @@ class FactionToken {
         const pos = new Vector(0, 0, world.getTableHeight() + 10);
         const rot = new Rotator(0, 0, 0);
         const nsidPrefix = "card.faction_reference";
-        card = new AbstractSetup(undefined, undefined).spawnDecksThenFilter(
-            pos,
-            rot,
-            nsidPrefix,
-            filterNsid
-        );
+        card = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, filterNsid);
         assert(card);
         return card;
     }

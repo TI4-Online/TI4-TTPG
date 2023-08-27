@@ -5,6 +5,7 @@ const { CloneReplace } = require("../../lib/card/clone-replace");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { Spawn } = require("../spawn/spawn");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 const { ObjectType, Rotator, world } = require("../../wrapper/api");
 
 class SetupHomeSystem extends AbstractSetup {
@@ -139,15 +140,16 @@ class SetupHomeSystem extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         // Spawn the decks, combine into one.
-        let deck = this.spawnDecksThenFilter(
-            pos,
-            rot,
-            "card.planet",
-            (nsid) => {
-                const parsed = ObjectNamespace.parseNsid(nsid);
-                return planetNsidNames.has(parsed.name);
-            }
-        );
+        const nsidPrefix = "card.planet";
+        let deck = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            return planetNsidNames.has(parsed.name);
+        });
+        if (!deck) {
+            throw new Error(
+                `missing [${Array.from(planetNsidNames).join(", ")}]`
+            );
+        }
 
         deck = CloneReplace.cloneReplace(deck);
 

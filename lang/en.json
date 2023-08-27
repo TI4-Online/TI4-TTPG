@@ -34,7 +34,7 @@
     "ui.help.ttpg.alt": "[alt]: zoom object",
     "ui.help.ttpg.alt_shift": "[alt-shift]: zoom object back",
 
-    "ui.help.alt_zoom_ground": "Alt-zoom faction sheets, etc: settings > game > advanced 'Ground Object Interaction'",
+    "ui.help.camera_inertia": "Camera smoothing: escape > settings > game > show advanced > camera acceleration (set low)",
 
     "ui.help.whisper": "Whisper: \"/w {part of name}\"",
 
@@ -63,7 +63,7 @@
 
     "ui.message.helio_command_array": "{playerName} using Helio Command Array to remove each of their command tokens from the game board.",
     "ui.message.helio_command_array_has_no_owner": "No faction has Jace X. 4th Air Legion as a hero, cannot perform Helio Command Array.",
-    "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens.",
+    "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens, can explore tiles {tiles}.",
     "ui.message.multiverse_shift_has_no_owner": "No faction has Conservator Procyon as a her, cannot Multiverse Shift.",
     "ui.message.dimensional_anchor": "{playerName} using Dimensional Anchor to capture ships.",
     "ui.message.dimensional_anchor_has_no_owner": "No faction has It Feeds on Carrion as a hero, cannot perform Dimensional Anchor.",
@@ -250,6 +250,7 @@
 
     "nav.root": "Root",
     "nav.up": "..back",
+    "nav.display": "Display",
     "nav.help": "Help",
     "nav.strategy_phase": "1. Strategy Phase",
     "nav.action_phase": "2. Action Phase",
@@ -260,12 +261,13 @@
     "nav.map.maptool": "Map Tool",
     "nav.map.premade": "Premade",
     "nav.map.draft": "Draft",
+    "nav.map.draft.bag": "Bag Draft",
     "nav.map.draft.bunker": "Bunker Draft",
     "nav.map.draft.franken": "Franken Draft",
     "nav.map.draft.milty": "Milty Draft",
     "nav.map.draft.milty_eq": "Milty-EQ Draft",
     "nav.map.draft.scpt": "SCPT",
-    "nav.map.draft.bag": "Bag Draft",
+    "nav.map.draft.wekker": "Wekker Draft",
     "nav.map.borders": "Faction Borders",
     "nav.map.fog": "Fog of War",
     "nav.stats": "Stats",
@@ -288,9 +290,6 @@
     "ui.tab.map.draft.bag_draft": "Bag",
     "ui.tab.map.display": "Display",
     "ui.tab.map.display.system_brightness": "System brightness:",
-    "ui.tab.map.display.enable_borders": "Enable borders",
-    "ui.tab.map.display.team_borders": "Team borders",
-    "ui.tab.map.display.toggle_per_player_borders": "Toggle border visibility (per player)",
     "ui.tab.map.fog": "Fog",
     "ui.tab.map.fog.enable": "Enable fog",
     "ui.tab.map.fog.description": "Updated when changing turns, players see only systems where they have units or control planets, as well as adjacent systems.\n\nActivating a system temporarily reveals that system (but not adjacent) to the activating player.",
@@ -301,6 +300,32 @@
     "ui.tab.tactical_action": "Tactical",
     "ui.tab.strategic_action": "Strategic",
     "ui.tab.component_action": "Component",
+
+    "display.description": "Select a category at left.",
+    "display.reset_to_defaults": "Reset to defaults",
+    "display.faction_borders.label": "Faction borders",
+    "display.faction_borders.description": "Draw player-colored lines around controlled planets and systems.",
+    "display.faction_borders.enable_borders": "Enable borders",
+    "display.faction_borders.team_borders": "Team borders",
+    "display.faction_borders.per_player": "Toggle border visibility (per player)",
+    "display.tile_brighness.label": "Tile brightness",
+    "display.tile_brighness.description": "Adjust system tile brightness.",
+    "display.tile_brighness.brightness": "Brightness",
+    "display.desk_borders.label": "Desk borders",
+    "display.desk_borders.description": "Draw player-colored lines around desks.",
+    "display.desk_borders.enable_borders": "Enable borders",
+    "display.map_rings.label": "Map rings",
+    "display.map_rings.description": "Draw hexes for each map ring.",
+    "display.map_rings.enable_rings": "Enable map rings",
+    "display.table_color.label": "Table color",
+    "display.table_color.description": "Tint table and player desk areas.",
+    "display.table_color.table": "Main table",
+    "display.table_color.desks": "Player desks",
+    "display.turn_timer.label": "Turn timer",
+    "display.turn_timer.description": "Action phase turn timer, optionally count down from a fixed value.",
+    "display.turn_timer.enable_timer": "Enable turn timer",
+    "display.turn_timer.countdown": "Countdown",
+    "display.turn_timer.time_limit": "From (minutes)",
 
     "rollType.spaceCannon": "Space Cannon",
     "rollType.antiFighterBarrage": "Anti-fighter Barrage",
@@ -438,6 +463,8 @@
     "ui.agenda.label.outcomes": "Outcome",
     "ui.agenda.label.votes": "Votes",
     "ui.agenda.label.predictions": "Riders",
+
+    "ui.agenda.error.wrong_state_for_outcome_type": "Cannot set agenda outcome type right now",
 
     "faction.abbr.arborec": "Arborec",
     "faction.abbr.argent": "Argent",
@@ -1051,6 +1078,8 @@
     "timer.error.waiting_for_action_phase": "waiting for action phase",
     "timer.error.timer_paused": "timer paused",
     "timer.error.no_active_turn": "no active turn",
+
+    "mat.title.predictions": "Predictions",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

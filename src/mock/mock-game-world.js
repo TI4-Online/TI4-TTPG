@@ -103,6 +103,10 @@ class GameWorld {
         return this._allObjects;
     }
 
+    getAllTables() {
+        return [];
+    }
+
     getAllPlayers() {
         return this._allPlayers;
     }

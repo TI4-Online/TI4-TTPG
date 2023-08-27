@@ -358,10 +358,8 @@ class Turns {
 
     getStatusPad(playerSlot) {
         assert(typeof playerSlot === "number");
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== "pad:base/status") {
                 continue;
@@ -375,10 +373,8 @@ class Turns {
 
     getAllStatusPads() {
         const result = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== "pad:base/status") {
                 continue;

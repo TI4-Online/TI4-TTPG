@@ -18,6 +18,7 @@ const DEFAULT = {
     franken: false,
     reportErrors: true,
     timestamp: 0,
+    timer: -1,
 };
 
 /**
@@ -78,6 +79,9 @@ class GameSetupConfig {
     }
     get timestamp() {
         return this._getState("timestamp", DEFAULT.timestamp);
+    }
+    get timer() {
+        return this._getState("timer", DEFAULT.timer);
     }
 
     setPlayerCount(value, player) {
@@ -148,6 +152,21 @@ class GameSetupConfig {
         assert(typeof value === "number");
         this._state.timestamp = value;
         GlobalSavedData.set(KEY, this._state);
+    }
+
+    /**
+     * Timer encoding:
+     * -1: off
+     * 0: count up
+     * positive #: count down from #
+     *
+     * @param {number} value
+     */
+    setTimer(value) {
+        assert(typeof value === "number");
+        this._state.timer = value;
+        GlobalSavedData.set(KEY, this._state);
+        globalEvents.TI4.onTimerConfigChanged.trigger(value);
     }
 }
 

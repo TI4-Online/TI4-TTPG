@@ -28,13 +28,15 @@ class PopupPanel {
      *
      * @param {GameObject} gameObject
      * @param {Vector} localPos
+     * @param {Rotator | undefined} localRot
      */
-    constructor(gameObject, localPos) {
+    constructor(gameObject, localPos, localRot) {
         assert(gameObject instanceof GameObject);
         assert(typeof localPos.x === "number");
 
         this._obj = gameObject;
         this._localPos = localPos;
+        this._localRot = localRot ? localRot : new Rotator(0, 0, 0);
         this._ui = undefined;
 
         this._matchPlayerYaw = false;
@@ -78,11 +80,13 @@ class PopupPanel {
         const ui = WidgetFactory.uiElement();
         ui.widget = this.createPopupButton();
         ui.position = this._localPos;
+        ui.rotation = this._localRot;
         ui.scale = 0.23 * scale;
         ui.width = 64;
         ui.height = 64;
         ui.useWidgetSize = false;
         this._obj.addUI(ui);
+
         return this;
     }
 
@@ -134,7 +138,7 @@ class PopupPanel {
     }
 
     _show(player) {
-        assert(player instanceof Player);
+        assert(!player || player instanceof Player);
 
         if (this._isShowing) {
             this._hide();
@@ -186,8 +190,8 @@ class PopupPanel {
                 .localPositionToWorld(this._localPos)
                 .add([0, 0, POPUP_HEIGHT])
         );
-        this._ui.rotation = new Rotator(0, 0, 0);
-        if (this._matchPlayerYaw) {
+        this._ui.rotation = this._localRot;
+        if (this._matchPlayerYaw && player) {
             const localRot = this._obj.worldRotationToLocal(
                 player.getRotation()
             );

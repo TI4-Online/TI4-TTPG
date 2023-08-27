@@ -1,8 +1,9 @@
 const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
-const { ObjectNamespace } = require("../lib/object-namespace");
 const { CloneReplace } = require("../lib/card/clone-replace");
+const { ObjectNamespace } = require("../lib/object-namespace");
+const { SpawnDeck } = require("./spawn/spawn-deck");
 
 const PROMISSORY_DECK_LOCAL_OFFSET = { x: 11, y: -10, z: 0 };
 
@@ -19,7 +20,7 @@ class SetupGenericPromissory extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.promissory";
-        let deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        let deck = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.promissory.blue" (careful about "card.promissory.jolnar").
             const colorName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
             return colorName === this.playerDesk.colorName;

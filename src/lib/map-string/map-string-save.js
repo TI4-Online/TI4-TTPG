@@ -13,10 +13,8 @@ class MapStringSave {
         // Take note of rotation and side for hyperlanes.
         // world.TI4.getAllSystemTileObjects() does not find generic HS tiles.
         const mapTiles = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isSystemTile(obj)) {
                 continue;
             }

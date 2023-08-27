@@ -9,12 +9,10 @@ module.exports = (data) => {
         playerData.leaders = {};
     });
 
+    const skipContained = true;
     const checkIsDiscardPile = false;
     const allowFaceDown = true;
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
             continue;
         }

@@ -2,7 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { FindTurnOrder } = require("../phase/find-turn-order");
 const gameDataRound = require("../game-data/updator-round");
-const { world } = require("../../wrapper/api");
+const { globalEvents, world } = require("../../wrapper/api");
 
 const SAMPLE_EVERY_N_SECONDS = 1;
 
@@ -18,11 +18,12 @@ class PlayerTimer {
         this._errorMessage = undefined;
 
         const delayedInit = () => {
-            this._load();
-            setInterval(() => {
-                this._doSample();
-                this._save();
-            }, SAMPLE_EVERY_N_SECONDS * 1000);
+            if (this._load()) {
+                setInterval(() => {
+                    this._doSample();
+                    this._save();
+                }, SAMPLE_EVERY_N_SECONDS * 1000);
+            }
         };
 
         if (!world.__isMock) {
@@ -43,7 +44,7 @@ class PlayerTimer {
         const timer = world.TI4.getTimer();
         if (!timer) {
             console.log("PlayerTimer._load: no timer, aborting");
-            return;
+            return false;
         }
 
         // Split across multiple keys because each value is limited to 1k.
@@ -59,12 +60,14 @@ class PlayerTimer {
                 }
             }
         }
+
+        return true;
     }
 
     _save() {
         const timer = world.TI4.getTimer();
         if (!timer) {
-            console.log("PlayerTimer._save: no timer, aborting");
+            //console.log("PlayerTimer._save: no timer, aborting");
             return;
         }
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
@@ -101,6 +104,10 @@ class PlayerTimer {
 
     getPhase() {
         return this._phaseName;
+    }
+
+    getRound() {
+        return this._round;
     }
 
     getPlayerTimeSeconds(colorName, phaseName, round) {
@@ -144,10 +151,19 @@ class PlayerTimer {
         const newSeconds = oldSeconds + SAMPLE_EVERY_N_SECONDS;
 
         this._phaseName = phaseName;
+        this._round = round;
 
         // "get" created missing entries.
         this._colorToPhaseToRoundToSeconds[colorName][phaseName][round] =
             newSeconds;
+
+        // Tell any listeners.
+        globalEvents.TI4.onTimerUpdate.trigger(
+            colorName,
+            phaseName,
+            round,
+            newSeconds
+        );
     }
 
     _doSample() {

@@ -63,13 +63,24 @@ module.exports = {
     deskLayout: {
         anchor: {
             gameUI: {
-                pos: { x: 0, y: 147, z: 0 },
-                yaw: 0,
+                // "rotated down" style:
+                //pos: { x: 0, y: 147, z: 0 },
+                //yaw: 0,
+                pos: { x: 0, y: 150, z: 0 },
+                yaw: 90, // rotate facing table center
                 width: 1000,
                 height: 520,
             },
-            score: { pos: { x: 10, y: -147, z: 0 }, yaw: 0 },
-            strategy: { pos: { x: 44, y: 147, z: 0 }, yaw: 0 },
+            //score: { pos: { x: 10, y: -147, z: 0 }, yaw: 0 },
+            score: {
+                pos: { x: 0, y: -136, z: 0 },
+                yaw: -90, //
+            },
+            //strategy: { pos: { x: 44, y: 147, z: 0 }, yaw: 0 },
+            strategy: {
+                pos: { x: 0, y: 107, z: 0 },
+                yaw: 90, // facing table center
+            },
         },
     },
 };

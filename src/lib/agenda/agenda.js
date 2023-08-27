@@ -42,10 +42,8 @@ class Agenda {
 
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -81,7 +79,8 @@ class Agenda {
             "card.agenda:base.only/representative_government",
         ]);
         const checkIsDiscardPile = true;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (!nsidSet.has(nsid)) {
                 continue;
@@ -118,10 +117,8 @@ class Agenda {
         const gromOmegaDeskIndexSet = new Set();
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -133,10 +130,7 @@ class Agenda {
             }
         }
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }
@@ -197,7 +191,8 @@ class Agenda {
 
         const checkIsDiscardPile = false;
         const allowFaceDown = true;
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue; // not a loose card
             }
@@ -441,6 +436,49 @@ class Agenda {
 
         this._postInvalidate();
         return this;
+    }
+
+    /**
+     * Expose a simpler way to set the outcome type, a shortcut from the agenda
+     * mat.  Do necessary sanity checking.
+     *
+     * @param {string} outcomeType
+     * @returns {boolean}
+     */
+    externalSetOutcomeType(outcomeType) {
+        assert(typeof outcomeType === "string");
+        assert(AgendaOutcome.isOutcomeType(outcomeType));
+
+        // Is game started?
+        if (world.TI4.config.timestamp <= 0) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // Is agenda active?
+        if (!this._agendaStateMachine) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // In an allowed state?
+        if (
+            this._agendaStateMachine.name !== "WAITING_FOR_START" &&
+            this._agendaStateMachine.name !== "OUTCOME_TYPE"
+        ) {
+            const msg = locale("ui.agenda.error.wrong_state_for_outcome_type");
+            Broadcast.chatAll(msg, Broadcast.ERROR);
+            return false;
+        }
+
+        // At this point safe to proceed.
+        if (this._agendaStateMachine.name === "WAITING_FOR_START") {
+            this.start();
+        }
+        this.resetOutcomeNames(outcomeType);
+        return true;
     }
 
     /**
@@ -974,53 +1012,6 @@ class Agenda {
             this._invalidatePending = false;
             globalEvents.TI4.onAgendaPlayerStateChanged.trigger();
         });
-    }
-
-    // This does not work reliably.
-    _onPlanetCardFlipped(card, isFaceUp) {
-        assert(card instanceof Card);
-        assert(typeof isFaceUp === "boolean");
-
-        if (!this.isActive() || this.getStateMachine().name !== "VOTE") {
-            return;
-        }
-
-        const pos = card.getPosition();
-        const closestDesk = world.TI4.getClosestPlayerDesk(pos);
-        const deskIndex = closestDesk.index;
-
-        const planet = world.TI4.getPlanetByCard(card);
-        assert(planet);
-        let influence = planet.raw.influence;
-
-        // If xxcha hero add resources to influence value.
-        const playerSlot = closestDesk.playerSlot;
-        const gromOmegaNsid =
-            "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega";
-        if (CardUtil.hasCard(playerSlot, gromOmegaNsid, false)) {
-            influence += planet.raw.resources;
-        }
-
-        // Apply bonus votes.
-        const deskIndexToPerPlanetBonus = Agenda.getDeskIndexToPerPlanetBonus();
-        const bonus = deskIndexToPerPlanetBonus[deskIndex] || 0;
-        influence += bonus;
-        const deltaValue = influence * (isFaceUp ? -1 : 1);
-
-        console.log(
-            `Agenda._onPlanetCardFlipped: ${deltaValue} for ${closestDesk.colorName}`
-        );
-
-        let votes = this.getVoteCount(deskIndex);
-        votes = Math.max(0, votes + deltaValue);
-
-        if (this.getVoteLocked(deskIndex)) {
-            console.log("Agenda._onPlanetCardFlipped: vote locked");
-            return;
-        }
-
-        const clickingPlayer = undefined;
-        this.setVoteCount(deskIndex, votes, clickingPlayer);
     }
 }
 

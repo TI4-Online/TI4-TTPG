@@ -62,13 +62,13 @@ module.exports = {
     deskLayout: {
         anchor: {
             gameUI: {
-                pos: { x: 29, y: 300, z: 0 },
-                yaw: 0,
+                pos: { x: 0, y: 300, z: 0 },
+                yaw: 90,
                 width: 1000,
                 height: 520,
             },
-            score: { pos: { x: -33, y: 300, z: 0 }, yaw: 0 },
-            strategy: { pos: { x: 77, y: 300, z: 0 }, yaw: 0 },
+            score: { pos: { x: -102, y: 300, z: 0 }, yaw: 90 },
+            strategy: { pos: { x: 90, y: 300, z: 0 }, yaw: 90 },
         },
     },
     supportsLargeHexes: true,

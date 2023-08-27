@@ -255,7 +255,7 @@ class ConvexCollider {
             softwareRenderer.applyOptions(options);
         }
 
-        const scale = softwareRenderer.getScaleForSize(15);
+        const scale = softwareRenderer.getScaleForSize(31);
         vertices = softwareRenderer
             .scale(scale)
             .draw()
@@ -264,7 +264,7 @@ class ConvexCollider {
         let hull = ConvexCollider.getConvexHullPolygon(vertices);
         console.log(`|hull|=${hull.length}`);
 
-        hull = ConvexCollider.simplifyPolygon(hull, 0.1);
+        hull = ConvexCollider.simplifyPolygon(hull, 0.2);
         console.log(`|simplified|=${hull.length}`);
 
         lines = ConvexCollider.hullVolume(hull, bb.min.z, bb.max.z);

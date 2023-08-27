@@ -191,8 +191,8 @@ class AuxDataPair {
             // This also applies to the Naaz-Rokha flagship in the system with mechs.
             const includeFlagshipAndFighters =
                 this._aux1.rollType === "groundCombat" &&
-                (this._aux1.faction.raw.units.includes("matriarch") ||
-                    this._aux1.faction.raw.units.includes("visz_el_vir"));
+                (this._aux1.faction?.raw.units.includes("matriarch") ||
+                    this._aux1.faction?.raw.units.includes("visz_el_vir"));
 
             this._hexPlastic = this._hexPlastic.filter((plastic) => {
                 // Matriarch factions pass along fighters and flagships.

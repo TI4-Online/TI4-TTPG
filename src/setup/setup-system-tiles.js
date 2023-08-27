@@ -16,7 +16,7 @@ const {
 const BAG = {
     nsid: "bag:base/generic",
     anchor: TableLayout.anchor.score,
-    pos: { x: -50, y: 13.5, z: 3 },
+    crateIndex: 3,
     yaw: 0,
     scale: { x: 0.8, y: 0.8, z: 0.5 },
     colorHex: "#0033AA",
@@ -28,7 +28,7 @@ class SetupSystemTiles extends AbstractSetup {
     }
 
     setup() {
-        let pos = new Vector(BAG.pos.x, BAG.pos.y, BAG.pos.z);
+        let pos = AbstractSetup.getCrateAreaLocalPosition(BAG.crateIndex);
         let rot = new Rotator(0, BAG.yaw, 0);
         pos = TableLayout.anchorPositionToWorld(BAG.anchor, pos);
         rot = TableLayout.anchorRotationToWorld(BAG.anchor, rot);

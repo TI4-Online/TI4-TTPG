@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 const { UnitAttrs } = require("../../lib/unit/unit-attrs");
 const { Card, Vector, world } = require("../../wrapper/api");
 
@@ -42,7 +43,8 @@ class SetupFactionLeaders extends AbstractSetup {
 
         const acceptNames = this._getLeaderNsidNames();
         const nsidPrefix = "card.leader";
-        const deck = this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+
+        const deck = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.leader.agent.x"
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
             if (factionName !== this._faction.raw.faction) {

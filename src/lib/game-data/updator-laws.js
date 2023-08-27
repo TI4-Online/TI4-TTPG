@@ -10,13 +10,11 @@ module.exports = (data) => {
 
     const activeAgendaCard =
         world.TI4.agenda.isActive() && world.TI4.agenda.getAgendaCard();
+
+    const skipContained = true;
     const checkDiscardPile = true;
     const allowFaceDown = false;
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
-
+    for (const obj of world.getAllObjects(skipContained)) {
         // Find control tokens.
         if (ObjectNamespace.isControlToken(obj)) {
             controlTokens.push(obj);

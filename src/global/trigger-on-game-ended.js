@@ -10,7 +10,13 @@ const assert = require("../wrapper/assert-wrapper");
 const { ObjectNamespace } = require("../lib/object-namespace");
 const { Scoreboard } = require("../lib/scoreboard/scoreboard");
 const { Spawn } = require("../setup/spawn/spawn");
-const { Player, Vector, globalEvents, world } = require("../wrapper/api");
+const {
+    GameObject,
+    Player,
+    Vector,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
 
 const _playerSlotToScore = {};
 const SPAWN_TROPHY = false;
@@ -24,10 +30,8 @@ function spawnTrophy(playerSlot) {
     const trophyNsid = "misc:base/trophy";
 
     // Remove any existing trophies.
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === trophyNsid) {
             obj.setTags(["DELETED_ITEMS_IGNORE"]);
@@ -51,8 +55,9 @@ globalEvents.TI4.onGameEnded.add((playerSlot, clickingPlayer) => {
 });
 
 function checkControlToken(obj, clickingPlayer) {
-    assert(!clickingPlayer || clickingPlayer instanceof Player);
     assert(ObjectNamespace.isControlToken(obj));
+    assert(!clickingPlayer || clickingPlayer instanceof Player);
+
     const scoreboard = Scoreboard.getScoreboard();
     const points = Scoreboard.getScoreFromToken(scoreboard, obj);
     const target = world.TI4.config.gamePoints;
@@ -69,9 +74,33 @@ function checkControlToken(obj, clickingPlayer) {
     }
 }
 
-const onControlTokenMovementStopped = (obj) => {
-    checkControlToken(obj);
-};
+/**
+ * Add onMovementStopped handler that suppresses the event when not moved much.
+ * (Physics can call it constantly).
+ *
+ * @param {GameObject} obj
+ */
+function addSuppressedOnControlTokenMovementStopped(obj) {
+    assert(obj instanceof GameObject);
+    assert(ObjectNamespace.isControlToken(obj));
+
+    // Wrap this state / history with the handler.
+    let lastPosition = obj.getPosition();
+
+    obj.onMovementStopped.add(() => {
+        if (!obj.isValid()) {
+            return; // deleted
+        }
+        const newPosition = obj.getPosition();
+        const dSq = lastPosition.subtract(newPosition).magnitudeSquared();
+        if (dSq < 0.5) {
+            return; // did not move enough to keep working
+        }
+
+        // Okay actually moved, check score.
+        checkControlToken(obj);
+    });
+}
 
 // Called when a player drops a command token.
 const onControlTokenReleased = (
@@ -88,16 +117,17 @@ const onControlTokenReleased = (
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isControlToken(obj)) {
         obj.onReleased.add(onControlTokenReleased);
-        obj.onMovementStopped.add(onControlTokenMovementStopped);
+        addSuppressedOnControlTokenMovementStopped(obj);
     }
 });
 
 // Script reload doesn't onObjectCreated existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         if (ObjectNamespace.isControlToken(obj)) {
             obj.onReleased.add(onControlTokenReleased);
-            obj.onMovementStopped.add(onControlTokenMovementStopped);
+            addSuppressedOnControlTokenMovementStopped(obj);
         }
     }
 }

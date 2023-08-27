@@ -26,7 +26,8 @@ const SUPPLY_BOX_SETS = [
     },
 ];
 
-if (TableLayout.GET_TABLE() === "6p-skinny") {
+const skinny = ["6p-skinny", "8p-skinny"];
+if (skinny.includes(TableLayout.getTableType())) {
     SUPPLY_BOX_SETS[0].d = 65 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
     SUPPLY_BOX_SETS[0].yaw0 = 90;
     SUPPLY_BOX_SETS[0].dyaw = 180;
@@ -35,7 +36,12 @@ if (TableLayout.GET_TABLE() === "6p-skinny") {
     SUPPLY_BOX_SETS[1].yaw0 = 90;
     SUPPLY_BOX_SETS[1].dyaw = 180;
     SUPPLY_BOX_SETS[1].count = 2;
-} else if (TableLayout.GET_TABLE() === "8p-huge") {
+    if (TableLayout.getTableType() === "8p-skinny") {
+        for (const supplyBoxSet of SUPPLY_BOX_SETS) {
+            supplyBoxSet.d += 6;
+        }
+    }
+} else if (TableLayout.getTableType() === "8p-huge") {
     SUPPLY_BOX_SETS[0].d = 160 + DISTANCE_BETWEEN_SUPPLY_BOXES * 2;
     SUPPLY_BOX_SETS[0].yaw0 = 0;
     SUPPLY_BOX_SETS[0].dyaw = 45;

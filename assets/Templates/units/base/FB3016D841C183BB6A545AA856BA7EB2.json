@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "units/base/fighter.obj",
+			"Model": "units/base/fighter-shared.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/units/base/fighter.png",
+			"Texture": "global/units/units-shared.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"ExtraMap2": "",
@@ -60,6 +60,7 @@
 		}
 	],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -68,5 +69,6 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "Nothing",
 	"Tags": []
 }

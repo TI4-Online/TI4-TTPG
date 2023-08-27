@@ -1,5 +1,6 @@
 {
     "mat:base/agenda": "F8A2192DB744FC09A2E7BEB72BD72294",
+    "mat:base/agenda_predictions": "2C60A9CD4644D7600A16D48E9CC0E2FB",
     "mat:base/decks": "65BEEB440F4811EF98ACB2A0FFA28DD1",
     "mat:base/laws": "AE4D927E6142DCD10AD066B6FB7E0834",
     "mat:base/objectives_1": "2BA4D3F5A14C5BF1E1A6BA88C2797184",
@@ -9,5 +10,7 @@
     "mat:base/tech": "3B66B5D3A841038121C42EBFBEDF7C64",
     "mat:base/planets": "6D9817BADF431DC8154E6FBF6A409018",
     "mat:base/strategy_card": "4C0919205F49EA482B06719B3330CF77",
-    "mat:base/build_area": "A075B7E18947A1C91CBFFE8B1681B36C"
+    "mat:base/build_area": "A075B7E18947A1C91CBFFE8B1681B36C",
+    "mat:base/faction_card": "03BD443C9840293395984EACDC341EFD",
+    "mat:base/custodians": "04AE6DF4814D5224180F9BBAA5DE2F5B"
 }

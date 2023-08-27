@@ -108,10 +108,8 @@ class CheckDeckUnique {
         // Add to deleted items container.  Do this manually because it will
         // discard them when finding copies.
         let deletedItems = undefined;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Container)) {
                 continue;
             }

@@ -2,7 +2,7 @@
 	"Type": "Table",
 	"GUID": "A5FEC1A7204C24BCD204B8876548340A",
 	"Name": "8-player (Double Common Extended) ROT",
-	"Metadata": "",
+	"Metadata": "table:base/8p_full",
 	"CollisionType": "Static",
 	"Friction": 0.7,
 	"Restitution": 0.3,
@@ -12,19 +12,19 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 255,
-		"G": 255,
-		"B": 255
+		"R": 73,
+		"G": 73,
+		"B": 73
 	},
 	"SecondaryColor":
 	{
-		"R": 0,
-		"G": 0,
-		"B": 0
+		"R": 56,
+		"G": 56,
+		"B": 56
 	},
 	"Flippable": false,
 	"AutoStraighten": false,
-	"ShouldSnap": true,
+	"ShouldSnap": false,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
@@ -50,25 +50,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-primary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 73,
-				"G": 73,
-				"B": 73
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -93,25 +80,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-primary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 73,
-				"G": 73,
-				"B": 73
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -136,25 +110,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -179,25 +140,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -222,25 +170,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -265,25 +200,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -308,25 +230,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -351,25 +260,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -394,25 +290,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
 		{
@@ -437,25 +320,12 @@
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
-			"ExtraMap": "",
-			"EmissiveMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": false,
-			"Roughness": 1,
-			"Metallic": 0,
-			"PrimaryColor":
-			{
-				"R": 56,
-				"G": 56,
-				"B": 56
-			},
-			"SecondaryColor":
-			{
-				"R": 0,
-				"G": 0,
-				"B": 0
-			},
+			"IsTwoSided": false,
+			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
@@ -505,6 +375,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -513,5 +384,6 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "Nothing",
 	"Tags": []
 }

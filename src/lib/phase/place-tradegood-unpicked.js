@@ -17,10 +17,8 @@ class PlaceTradegoodUnpicked {
 
     static getUnpickedStrategyCards() {
         const unpickedStrategyCards = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside containers
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isStrategyCard(obj)) {
                 continue; // not a strategy card.
             }

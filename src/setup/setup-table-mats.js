@@ -13,6 +13,20 @@ const MATS = [
         nonInteractive: true,
     },
     {
+        nsid: "mat:base/agenda_predictions",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 36, y: 0 },
+        yaw: 0,
+        nonInteractive: true,
+    },
+    {
+        nsid: "mat:base/custodians",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 25, y: 27 },
+        yaw: 0,
+        nonInteractive: true,
+    },
+    {
         nsid: "mat:base/objectives_1",
         anchor: TableLayout.anchor.score,
         pos: { x: 10, y: 0 },
@@ -36,16 +50,22 @@ const MATS = [
     {
         nsid: "mat:base/decks",
         anchor: TableLayout.anchor.score,
-        pos: { x: -30, y: 14 }, // 16.9 width
+        pos: { x: -30, y: 8 }, // 16.9 width
         yaw: -90,
         nonInteractive: true,
     },
     {
         nsid: "mat:pok/exploration",
         anchor: TableLayout.anchor.score,
-        pos: { x: -29, y: -10 }, // 26 width
+        pos: { x: -28.9, y: -16 }, // 26 width
         yaw: -90,
         nonInteractive: true,
+    },
+    {
+        nsid: "mat:base/faction_card",
+        anchor: TableLayout.anchor.score,
+        pos: { x: -28, y: 24 },
+        yaw: 0,
     },
 
     //{
@@ -88,9 +108,6 @@ class SetupTableMats extends AbstractSetup {
             obj.setObjectType(ObjectType.Ground);
 
             if (matData.nonInteractive) {
-                console.log(
-                    `SetupTableMats: making "${matData.nsid}" non interactive`
-                );
                 obj.setObjectType(ObjectType.NonInteractive);
             }
         });

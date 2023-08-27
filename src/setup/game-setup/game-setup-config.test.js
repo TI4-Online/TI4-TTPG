@@ -1,6 +1,7 @@
 require("../../global"); // register world.TI4
 const assert = require("assert");
 const { GameSetupConfig } = require("./game-setup-config");
+const { globalEvents } = require("../../wrapper/api");
 
 it("playerCount", () => {
     const config = new GameSetupConfig();
@@ -69,4 +70,18 @@ it("timestamp", () => {
     assert.equal(config.timestamp, 0);
     config.setTimestamp(120);
     assert.equal(config.timestamp, 120);
+});
+
+it("timer", () => {
+    let lastEventValue = undefined;
+    globalEvents.TI4.onTimerConfigChanged.add((timerValue) => {
+        lastEventValue = timerValue;
+    });
+
+    const config = new GameSetupConfig();
+    assert.equal(config.timer, -1);
+    assert.equal(lastEventValue, undefined);
+    config.setTimer(7);
+    assert.equal(config.timer, 7);
+    assert.equal(lastEventValue, 7);
 });

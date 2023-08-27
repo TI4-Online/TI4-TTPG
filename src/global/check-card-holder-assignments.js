@@ -12,11 +12,9 @@ const { CardHolder, world } = require("../wrapper/api");
 const PERIODIC_CHECK_SECONDS = 10;
 
 function checkCardHolderAssignments() {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof CardHolder)) {
-            continue;
-        }
-        if (obj.getContainer()) {
             continue;
         }
         const nsid = ObjectNamespace.getNsid(obj);

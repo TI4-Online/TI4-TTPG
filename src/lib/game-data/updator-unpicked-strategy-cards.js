@@ -9,11 +9,9 @@ module.exports = (data) => {
     // Get unpicked cards and strategy card mat.
     let strategyCardMat = undefined;
     const unpicked = [];
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore inside containers
-        }
 
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "mat:base/strategy_card") {
             strategyCardMat = obj;
@@ -48,10 +46,7 @@ module.exports = (data) => {
         "token:base/tradegood_commodity_1": 1,
         "token:base/tradegood_commodity_3": 3,
     };
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore inside containers
-        }
+    for (const obj of world.getAllObjects(skipContained)) {
         if (obj.isHeld()) {
             continue; // currently held by a player's pointer
         }

@@ -1,14 +1,18 @@
 const assert = require("../../wrapper/assert-wrapper");
+const locale = require("../../lib/locale");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const { ObjectSavedData } = require("../../lib/saved-data/object-saved-data");
+const { OUTCOME_TYPE } = require("../../lib/agenda/agenda-outcome");
 const {
     GameObject,
+    Rotator,
     Vector,
     ZonePermission,
     globalEvents,
     refObject,
     world,
 } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
+const { PopupPanel } = require("../../lib/ui/popup-panel");
 
 const ZONE = {
     X: 5,
@@ -39,6 +43,8 @@ class AgendaLawsMat {
         });
 
         this._createZone();
+
+        this._addShortcutPopup();
     }
 
     _destroyZone() {
@@ -114,6 +120,39 @@ class AgendaLawsMat {
             console.log(`AgendaLawsMat.onAgendaChanged <none>`);
             globalEvents.TI4.onAgendaChanged.trigger(undefined);
         }
+    }
+
+    _addShortcutPopup() {
+        const options = [
+            {
+                label: locale("ui.agenda.outcome_type.for_against"),
+                outcomeType: OUTCOME_TYPE.FOR_AGAINST,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.player"),
+                outcomeType: OUTCOME_TYPE.PLAYER,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.strategy_card"),
+                outcomeType: OUTCOME_TYPE.STRATEGY_CARD,
+            },
+            {
+                label: locale("ui.agenda.outcome_type.other"),
+                outcomeType: OUTCOME_TYPE.OTHER,
+            },
+        ];
+
+        const localPos = new Vector(11.3, -0.4, 0.14); // model is rotated (should really fix that)
+        const localRot = new Rotator(0, 90, 0);
+        const popupPanel = new PopupPanel(this._obj, localPos, localRot);
+
+        for (const option of options) {
+            popupPanel.addAction(option.label, () => {
+                world.TI4.agenda.externalSetOutcomeType(option.outcomeType);
+            });
+        }
+
+        popupPanel.attachPopupButton();
     }
 }
 

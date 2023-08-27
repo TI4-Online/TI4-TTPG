@@ -21,10 +21,8 @@ class AgendaTurnOrder {
         }
 
         const speakerTokenNsid = "token:base/speaker";
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === speakerTokenNsid) {
                 _speakerTokenObj = obj;
@@ -83,7 +81,8 @@ class AgendaTurnOrder {
         let dir = 1;
 
         // Look for the card that reverses direction.
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj)) {
                 continue;
             }

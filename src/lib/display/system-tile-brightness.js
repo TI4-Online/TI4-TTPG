@@ -1,12 +1,33 @@
 const assert = require("../../wrapper/assert-wrapper");
+const { ColorUtil } = require("../color/color-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { globalEvents, world } = require("../../wrapper/api");
-const { ColorUtil } = require("../color/color-util");
 
-let _brightness = 1.0;
+const DEFAULT_BRIGHTNESS = 1.0;
+let _brightness = undefined;
 
 class SystemTileBrightness {
     static get() {
+        if (_brightness !== undefined) {
+            return _brightness;
+        }
+        _brightness = DEFAULT_BRIGHTNESS;
+
+        // Do not use the world.TI4 system tile scanner, this can
+        // be called before that is set up.
+        const scanContained = true;
+        for (const obj of world.getAllObjects(scanContained)) {
+            if (!ObjectNamespace.isSystemTile(obj)) {
+                continue;
+            }
+            const parsed = ObjectNamespace.parseSystemTile(obj);
+            if (!parsed || parsed.tile <= 0) {
+                continue;
+            }
+            const color = obj.getSecondaryColor();
+            _brightness = color.r;
+            break;
+        }
         return _brightness;
     }
 
@@ -41,7 +62,14 @@ class SystemTileBrightness {
         ColorUtil.validate(tint);
         systemTileObj.setSecondaryColor(tint);
     }
+
+    static resetToDefaults() {
+        SystemTileBrightness.set(DEFAULT_BRIGHTNESS);
+    }
 }
+
+// Load the current value.
+SystemTileBrightness.get();
 
 globalEvents.onObjectCreated.add((obj) => {
     SystemTileBrightness.maybeApply(obj);

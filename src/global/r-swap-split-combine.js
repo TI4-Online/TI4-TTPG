@@ -108,10 +108,8 @@ function getUnitBag(nsid, playerSlot) {
     assert(nsid.startsWith("unit"));
     const wantNsid = "bag." + nsid;
 
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore inside container
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Container)) {
             continue; // ignore non-container
         }
@@ -357,7 +355,8 @@ globalEvents.onObjectCreated.add((obj) => {
 
 // Script reload doesn't onObjectCreated existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         if (METADATA_TO_INFO[obj.getTemplateMetadata()]) {
             obj.onPrimaryAction.add(onR);
         }

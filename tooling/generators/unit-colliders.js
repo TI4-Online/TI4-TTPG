@@ -3,17 +3,20 @@ const { ConvexCollider } = require("../experimental/convex-collider");
 
 const UNIT_DIR = path.join(__dirname, "/../../assets/Models/units");
 const UNITS = [
-    { path: "base/carrier.obj" },
-    { path: "base/cruiser.obj" },
-    { path: "base/destroyer.obj" },
-    { path: "base/dreadnought.obj" },
-    { path: "base/fighter.obj" },
-    { path: "base/flagship.obj" },
-    { path: "base/infantry.obj", options: { maxZ: 0 } },
-    { path: "base/pds.obj", options: { maxZ: 0 } },
-    { path: "base/spacedock.obj" },
-    { path: "base/warsun.obj" },
-    { path: "pok/mech.obj", options: { maxZ: 0 } },
+    //{ path: "base/carrier.obj" },
+    { path: "base/carrier_low.obj" },
+    //{ path: "base/cruiser.obj" },
+    //{ path: "base/destroyer.obj" },
+    //{ path: "base/dreadnought.obj" },
+    //{ path: "base/fighter.obj" },
+    //{ path: "base/flagship.obj" },
+    { path: "base/flagship_low.obj" },
+    //{ path: "base/infantry.obj", options: { maxZ: 0 } },
+    //{ path: "base/pds.obj", options: { maxZ: 0 } },
+    //{ path: "base/spacedock.obj" },
+    { path: "base/spacedock_low.obj" },
+    //{ path: "base/warsun.obj" },
+    //{ path: "pok/mech.obj", options: { maxZ: 0 } },
 ];
 
 for (const unit of UNITS) {

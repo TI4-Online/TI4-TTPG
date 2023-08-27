@@ -51,37 +51,10 @@
 			"Texture": "global/utility/holotank_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/holotank_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
-			"UseOverrides": true,
-			"SurfaceType": "Plastic"
-		},
-		{
-			"Model": "utility/holotank_tube.obj",
-			"Offset":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Scale":
-			{
-				"X": 1,
-				"Y": 1,
-				"Z": 1
-			},
-			"Rotation":
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Texture": "global/utility/tanktube_c.png",
-			"NormalMap": "",
-			"ExtraMap": "global/utility/tanktube_x.png",
-			"IsTransparent": true,
-			"Alpha": 1,
-			"CastShadow": false,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
@@ -108,8 +81,10 @@
 			"Texture": "global/units/base/warsun.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -138,6 +113,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -145,5 +121,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
 }

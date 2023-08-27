@@ -2,11 +2,16 @@ const assert = require("../wrapper/assert-wrapper");
 const locale = require("../lib/locale");
 const { AutoRoller } = require("../objects/roller/auto-roller");
 const { AutoRollerArena } = require("../objects/roller/auto-roller-arena");
+const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
 const {
     FrankenDraftSettings,
 } = require("./tab-map/tab-draft/tab-franken/franken-settings");
 const { GameSetup } = require("../setup/game-setup/game-setup");
 const { MapTool } = require("./tab-map/tab-map-tool/map-tool");
+const {
+    MiltyEqSliceDraft,
+} = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
+const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
 const { NavEntry } = require("../lib/ui/nav/nav-entry");
 const { NavPanel } = require("../lib/ui/nav/nav-panel");
 const { NavFolder } = require("../lib/ui/nav/nav-folder");
@@ -18,7 +23,6 @@ const {
 const { SCPT2023 } = require("./tab-map/tab-draft/tab-scpt/scpt-2023");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
-const { TabDisplay } = require("./tab-map/tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
@@ -34,21 +38,19 @@ const { TabStreamer } = require("./tab-streamer/tab-streamer");
 const { TabStrategy } = require("./tab-strategy/tab-strategy");
 const { TabWhispers } = require("./tab-stats/tab-whispers/tab-whispers");
 const { TurnOrderPanel } = require("../lib/ui/turn-order/turn-order-panel");
+const { WekkerSliceDraft } = require("../lib/draft/wekker/wekker-slice-draft");
 const { WidgetFactory } = require("../lib/ui/widget-factory");
 const CONFIG = require("./game-ui-config");
 const {
     Card,
     Rotator,
+    Text,
     Vector,
     globalEvents,
     refPackageId,
     world,
 } = require("../wrapper/api");
-const { MiltySliceDraft } = require("../lib/draft/milty2/milty-slice-draft");
-const {
-    MiltyEqSliceDraft,
-} = require("../lib/draft/milty-eq2/milty-eq-slice-draft");
-const { BunkerSliceDraft } = require("../lib/draft/bunker2/bunker-slice-draft");
+const { TabDisplay } = require("./tab-display/tab-display");
 
 let _gameUI;
 
@@ -234,6 +236,9 @@ class GameUI {
         const bunkerDraftEntry = BunkerSliceDraft.createDraftNavEntry();
         draftFolder.addChild(bunkerDraftEntry);
 
+        const wekkerDraftEntry = WekkerSliceDraft.createDraftNavEntry();
+        draftFolder.addChild(wekkerDraftEntry);
+
         const scptFolder = new NavFolder().setName(
             locale("nav.map.draft.scpt")
         );
@@ -302,7 +307,9 @@ class GameUI {
             .setName(locale("nav.map.borders"))
             .setIconPath("global/ui/icons/settings_application.png")
             .setWidgetFactory((navPanel, navEntry) => {
-                return new TabDisplay().getUI();
+                return new Text()
+                    .setFontSize(CONFIG.fontSize)
+                    .setText("moved to Root > Display");
             });
         mapFolder.addChild(factionBordersEntry);
 
@@ -491,6 +498,14 @@ class GameUI {
                 navPanel.setCurrentNavEntry(agendaPhaseEntry);
             }
         });
+
+        const displayEntry = new NavEntry()
+            .setName(locale("nav.display"))
+            .setIconPath("global/ui/icons/settings_application.png")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new TabDisplay().getWidget();
+            });
+        rootFolder.addChild(displayEntry);
 
         const statsFolder = this._createStatsFolder();
         rootFolder.addChild(statsFolder);

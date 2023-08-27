@@ -25,7 +25,7 @@
 	"Flippable": true,
 	"AutoStraighten": false,
 	"ShouldSnap": false,
-	"ScriptName": "objects/scoreboard.js",
+	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
 		{
@@ -51,13 +51,16 @@
 			"Texture": "global/tokens/base/scoreboard.jpg",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
 	],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -65,5 +68,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
 }

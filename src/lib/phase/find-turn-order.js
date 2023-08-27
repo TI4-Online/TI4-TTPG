@@ -28,10 +28,8 @@ class FindTurnOrder {
     static getStrategyCardMat() {
         if (!_strategyCardMat || !_strategyCardMat.isValid()) {
             _strategyCardMat = false;
-            for (const obj of world.getAllObjects()) {
-                if (obj.getContainer()) {
-                    continue;
-                }
+            const skipContained = true;
+            for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
                 if (nsid === "mat:base/strategy_card") {
                     _strategyCardMat = obj;
@@ -80,10 +78,8 @@ class FindTurnOrder {
 
     static numPickedStrategyCards() {
         let count = 0;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside containers
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isStrategyCard(obj)) {
                 continue; // not a strategy card.
             }
@@ -103,11 +99,8 @@ class FindTurnOrder {
     static order() {
         // Find initiative objects.
         const initiativeObjects = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside containers
-            }
-
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             // Check for Naalu zero token.
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === ZERO_TOKEN_NSID) {

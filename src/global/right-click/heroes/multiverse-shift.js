@@ -1,14 +1,13 @@
 const assert = require("../../../wrapper/assert-wrapper");
 const locale = require("../../../lib/locale");
+const { AbstractRightClickCard } = require("../abstract-right-click-card");
 const { Broadcast } = require("../../../lib/broadcast");
 const { Hex } = require("../../../lib/hex");
 const { ObjectNamespace } = require("../../../lib/object-namespace");
 const { UnitPlastic } = require("../../../lib/unit/unit-plastic");
-const { SystemHighlight } = require("../../highlight-on-system-activated");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { UnitAttrsSet } = require("../../../lib/unit/unit-attrs-set");
 const { Card, world, Rotator } = require("../../../wrapper/api");
-const { AbstractRightClickCard } = require("../abstract-right-click-card");
 
 const CARD_NAME = "conservator_procyon";
 const PURGE_CONTAINER_NAME = "bag.purge";
@@ -26,7 +25,7 @@ function multiverseShift(card) {
         const faction = world.TI4.getFactionByPlayerSlot(desk.playerSlot);
         if (faction && faction.raw.leaders.heroes.includes(CARD_NAME)) {
             cardOwnerSlot = desk.playerSlot;
-            ownerColor = desk.plasticColor;
+            ownerColor = desk.widgetColor;
             break;
         }
     }
@@ -37,11 +36,6 @@ function multiverseShift(card) {
         );
         return;
     }
-
-    const playerName = world.TI4.getNameByPlayerSlot(cardOwnerSlot);
-    Broadcast.broadcastAll(
-        locale("ui.message.multiverse_shift", { playerName })
-    );
 
     // determine which hexes already have frontier tokens in them
     const frontierTokenHexes = new Set();
@@ -61,7 +55,11 @@ function multiverseShift(card) {
     }
 
     // add frontier tokens to all empty systems that don't already have one
+    const exploreSystemTiles = [];
     for (const obj of world.TI4.getAllSystemTileObjects()) {
+        if (obj.getContainer()) {
+            continue;
+        }
         const system = world.TI4.getSystemBySystemTileObject(obj);
         if (system.planets.length > 0 || system.hyperlane) {
             continue;
@@ -93,15 +91,29 @@ function multiverseShift(card) {
         });
 
         if (ownersShipsInHex.length > 0) {
-            // card owner has ships here, highlight the system to make it easier to find and explore
-            const systemHighlight = new SystemHighlight(obj, ownerColor, true);
+            exploreSystemTiles.push(system.tile);
 
-            // remove the highlighting once the token is destroyed from the explore
-            frontierTokenObj.onDestroyed.add(() => {
-                systemHighlight.detachUI();
+            const pos = frontierTokenObj.getPosition().add([0, 0, 1]);
+            const color = ownerColor;
+            const playSound = false;
+            const ping = () => {
+                world.showPing(pos, color, playSound);
+            };
+            ping();
+
+            // Repeat until explored.
+            const pingHandle = setInterval(ping, 2500);
+            frontierTokenObj.onDestroyed.add((obj) => {
+                clearInterval(pingHandle);
             });
         }
     }
+
+    const playerName = world.TI4.getNameByPlayerSlot(cardOwnerSlot);
+    const tiles = exploreSystemTiles.join(", ");
+    Broadcast.broadcastAll(
+        locale("ui.message.multiverse_shift", { playerName, tiles })
+    );
 
     // purge the card
     let purgeContainer = null;

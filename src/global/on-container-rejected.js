@@ -116,10 +116,8 @@ function rejectToMatchingBag(rejectedObj) {
     }
     const bagNsid = `bag.${parsed.type}:${parsed.source}/${parsed.name}`;
     const bagOwner = rejectedObj.getOwningPlayerSlot();
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue; // ignore candidates inside containers
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Container)) {
             continue; // only consider containers
         }

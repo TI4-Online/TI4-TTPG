@@ -109,10 +109,8 @@ class Borders {
             }
         }
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isControlToken(obj)) {
                 continue;
             }
@@ -401,6 +399,10 @@ class Borders {
 
         // Need to re-enable.
         this.clearLines();
+    }
+
+    getEnabled() {
+        return this._enabled;
     }
 
     setEnabled(value) {

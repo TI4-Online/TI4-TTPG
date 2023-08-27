@@ -1,7 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const { ColorUtil } = require("../../lib/color/color-util");
-const { DelayedSliderHandler } = require("../../lib/ui/delayed-slider-handler");
 const { Hex } = require("../../lib/hex");
 const { PlayerDeskColor } = require("../../lib/player-desk/player-desk-color");
 const { TableLayout } = require("../../table/table-layout");
@@ -67,11 +66,6 @@ class GameSetupUI {
             world.TI4.config.playerCount,
             this._callbacks.onPlayerCountChanged
         );
-        if (_playerCountSlider._onFreed) {
-            _playerCountSlider._onFreed.add(() => {
-                _playerCountSlider = undefined;
-            });
-        }
 
         col1Panel.addChild(_playerCountSlider);
         col1Panel.addChild(
@@ -156,7 +150,7 @@ class GameSetupUI {
 
         fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
 
-        if (TableLayout.GET_TABLE() !== "6p-skinny") {
+        if (TableLayout.getTableType() !== "6p-skinny") {
             const wrongTableWarning = this._createText(
                 locale("ui.setup.suggest_6p_skinny")
             );
@@ -178,11 +172,6 @@ class GameSetupUI {
             "ui.setup.do_setup",
             this._callbacks.onSetupClicked
         );
-        if (_setupButton._onFreed) {
-            _setupButton._onFreed.add(() => {
-                _setupButton = undefined;
-            });
-        }
         fullPanel.addChild(_setupButton);
 
         return fullPanel;
@@ -246,7 +235,6 @@ class GameSetupUI {
             .setStepSize(1)
             .setValue(value);
 
-        onValueChanged = DelayedSliderHandler.wrap(onValueChanged);
         slider.onValueChanged.add(onValueChanged);
         return WidgetFactory.horizontalBox()
             .addChild(label, 5)

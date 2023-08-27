@@ -113,6 +113,7 @@ class SetupUnits extends AbstractSetup {
 
         const bag = Spawn.spawn(bagNsid, pos, rot);
         bag.clear(); // paranoia
+        bag.snapToGround();
         bag.setObjectType(ObjectType.Ground);
         bag.setOwningPlayerSlot(playerSlot);
         bag.setPrimaryColor(color); // setting owning slot applies default, set again paranoia

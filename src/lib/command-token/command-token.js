@@ -42,11 +42,8 @@ class CommandToken {
 
         const playerSlotToSheetAndTokens = {};
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
-
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const isSheet = ObjectNamespace.isCommandSheet(obj);
             const isToken = ObjectNamespace.isCommandToken(obj);
             if (!isSheet && !isToken) {
@@ -131,7 +128,8 @@ class CommandToken {
     }
 
     static debugHighlightTokens() {
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isCommandToken(obj)) {
                 continue;
             }
@@ -155,7 +153,7 @@ class CommandToken {
             }
         }
 
-        for (const obj of world.getAllObjects()) {
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isCommandToken(obj)) {
                 continue;
             }
@@ -182,10 +180,8 @@ class CommandToken {
 
     static getPlayerSlotToCommandTokenBag() {
         const playerSlotToCommandTokenBag = {};
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Container)) {
                 continue;
             }

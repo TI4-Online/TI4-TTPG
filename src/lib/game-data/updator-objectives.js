@@ -25,11 +25,8 @@ module.exports = (data) => {
     const objectiveCards = [];
     let agendaMat = undefined;
 
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
-
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         // Watch out for objects currently being moved.
         if (obj.isHeld()) {
             continue;

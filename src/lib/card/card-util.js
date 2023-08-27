@@ -75,7 +75,8 @@ class CardUtil {
     static hasCard(playerSlot, cardNsid, returnCardObj) {
         assert(typeof playerSlot === "number");
         assert(typeof cardNsid === "string");
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== cardNsid) {
                 continue;
@@ -106,10 +107,8 @@ class CardUtil {
         assert(typeof filterNsid === "function");
 
         const result = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // only scan on-table objects
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Card)) {
                 continue;
             }
@@ -199,10 +198,8 @@ class CardUtil {
     static getCardHolder(playerSlot) {
         assert(typeof playerSlot === "number");
 
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof CardHolder)) {
                 continue;
             }

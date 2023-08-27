@@ -59,7 +59,6 @@ function addImageCardFace(card, packageId, image, tintColor, index) {
     );
     ui.rotation = new Rotator(180, 180, 0);
     ui.scale = 0.3;
-    ui.useTransparency = true;
     ui.widget = WidgetFactory.imageWidget()
         .setImage(image, packageId)
         .setImageSize(50, 50)
@@ -90,7 +89,6 @@ function addImageCardBack(card, packageId, image, tintColor, index) {
     );
     ui.rotation = new Rotator(0, 0, 0);
     ui.scale = 0.3;
-    ui.useTransparency = true;
     ui.widget = WidgetFactory.imageWidget()
         .setImage(image, packageId)
         .setImageSize(50, 50)
@@ -171,7 +169,8 @@ globalEvents.TI4.onSystemChanged.add((systemTileObj) => {
 
     // Find cards.
     const cards = [];
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (cardNsids.has(nsid)) {
             cards.push(obj);
@@ -201,7 +200,8 @@ globalEvents.TI4.onSingletonCardMadeDeck.add((card) => {
 
 // Script reload doesn't call onObjectCreated on existing objects, load manually.
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid.startsWith("card.planet")) {
             addAttachmentsUI(obj);

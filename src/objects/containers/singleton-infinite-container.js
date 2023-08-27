@@ -12,6 +12,8 @@ const {
     refContainer,
 } = require("../../wrapper/api");
 
+const VERBOSE = false;
+
 class SingletonInfiniteContainer {
     constructor(gameObject) {
         assert(gameObject);
@@ -55,6 +57,9 @@ class SingletonInfiniteContainer {
 
         // On construction give caller a moment to finish setup.
         process.nextTick(() => {
+            if (!this._container.isValid()) {
+                return;
+            }
             this.refill();
         });
     }
@@ -70,9 +75,11 @@ class SingletonInfiniteContainer {
         for (const obj of insertedObjects) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== this._contentNsid) {
-                console.log(
-                    `SingletonInfiniteContainer.rejectMismatched: rejecting "${nsid}"`
-                );
+                if (VERBOSE) {
+                    console.log(
+                        `SingletonInfiniteContainer.rejectMismatched: rejecting "${nsid}"`
+                    );
+                }
                 rejectedObjs.push(obj);
             }
         }
@@ -102,9 +109,11 @@ class SingletonInfiniteContainer {
 
         // Remove extra.
         matchingObjs.forEach((obj) => {
-            console.log(
-                `SingletonInfiniteContainer.removeExtras: removing extra "${this._contentNsid}"`
-            );
+            if (VERBOSE) {
+                console.log(
+                    `SingletonInfiniteContainer.removeExtras: removing extra "${this._contentNsid}"`
+                );
+            }
             this._container.remove(obj);
         });
     }
@@ -125,9 +134,11 @@ class SingletonInfiniteContainer {
             return;
         }
 
-        console.log(
-            `SingletonInfiniteContainer.refill: adding "${this._contentNsid}"`
-        );
+        if (VERBOSE) {
+            console.log(
+                `SingletonInfiniteContainer.refill: adding "${this._contentNsid}"`
+            );
+        }
 
         const pos = this._container.getPosition().add([0, 0, 10]);
         const rot = this._container.getRotation();

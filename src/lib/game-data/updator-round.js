@@ -12,10 +12,8 @@ module.exports = (data) => {
     const objs1 = [];
     const objs2 = [];
 
-    for (const obj of world.getAllObjects()) {
-        if (obj.getContainer()) {
-            continue;
-        }
+    const skipContained = true;
+    for (const obj of world.getAllObjects(skipContained)) {
         const nsid = ObjectNamespace.getNsid(obj);
         if (nsid === "mat:base/objectives_1") {
             mat1 = obj;

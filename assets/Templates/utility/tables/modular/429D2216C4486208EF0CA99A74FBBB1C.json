@@ -1,0 +1,389 @@
+{
+	"Type": "Table",
+	"GUID": "429D2216C4486208EF0CA99A74FBBB1C",
+	"Name": "8-player (skinny)",
+	"Metadata": "table:base/8p_skinny",
+	"CollisionType": "Static",
+	"Friction": 0.7,
+	"Restitution": 0.3,
+	"Density": 1,
+	"SurfaceType": "Cloth",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 73,
+		"G": 73,
+		"B": 73
+	},
+	"SecondaryColor":
+	{
+		"R": 56,
+		"G": 56,
+		"B": 56
+	},
+	"Flippable": false,
+	"AutoStraighten": false,
+	"ShouldSnap": false,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [
+		{
+			"Model": "utility/flatcube.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 18.38
+			},
+			"Scale":
+			{
+				"X": 162,
+				"Y": 550,
+				"Z": 16
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-primary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/flatcube.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 18.37
+			},
+			"Scale":
+			{
+				"X": 220,
+				"Y": 300,
+				"Z": 16
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-primary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": 48,
+				"Y": -84,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 27
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": 30,
+				"Y": -29,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 9.00007
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": 30,
+				"Y": 29,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -9.00007
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": 48,
+				"Y": 84,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -27
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": -48,
+				"Y": -84,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 153
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": -30,
+				"Y": -29,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 171
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": -30,
+				"Y": 29,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -171
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		},
+		{
+			"Model": "utility/table_modular/desk_36n.obj",
+			"Offset":
+			{
+				"X": -48,
+				"Y": 84,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1,
+				"Y": 1,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -153
+			},
+			"Texture": "global/table/white-1262.jpg",
+			"NormalMap": "",
+			"ExtraMap": "global/tint-secondary.png",
+			"ExtraMap2": "",
+			"IsTransparent": false,
+			"CastShadow": true,
+			"IsTwoSided": false,
+			"UseOverrides": true,
+			"SurfaceType": "Plastic"
+		}
+	],
+	"Collision": [
+		{
+			"Model": "utility/table_modular/collider_main.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Scale":
+			{
+				"X": 1.4,
+				"Y": 0.85,
+				"Z": 1
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": -90
+			},
+			"Type": "Convex"
+		},
+		{
+			"Model": "utility/flatcube.obj",
+			"Offset":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 10
+			},
+			"Scale":
+			{
+				"X": 162,
+				"Y": 550,
+				"Z": 100
+			},
+			"Rotation":
+			{
+				"X": 0,
+				"Y": 0,
+				"Z": 0
+			},
+			"Type": "Convex"
+		}
+	],
+	"Lights": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
+}

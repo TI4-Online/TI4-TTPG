@@ -320,10 +320,8 @@ class System {
      */
     static getAllSystemTileObjects() {
         const result = [];
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside container
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!ObjectNamespace.isSystemTile(obj)) {
                 continue;
             }

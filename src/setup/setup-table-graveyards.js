@@ -12,12 +12,16 @@ const GRAVEYARDS = {
     nsid: "bag:base/garbage",
 };
 
-if (TableLayout.GET_TABLE() === "6p-skinny") {
+const skinny = ["6p-skinny", "8p-skinny"];
+if (skinny.includes(TableLayout.getTableType())) {
     GRAVEYARDS.d = 65;
     GRAVEYARDS.yaw0 = 30;
     GRAVEYARDS.dYaw = 60;
     GRAVEYARDS.count = 6;
-} else if (TableLayout.GET_TABLE() === "8p-huge") {
+    if (TableLayout.getTableType() === "8p-skinny") {
+        GRAVEYARDS.d += 6;
+    }
+} else if (TableLayout.getTableType() === "8p-huge") {
     GRAVEYARDS.d = 160;
     GRAVEYARDS.yaw0 = 0;
     GRAVEYARDS.dYaw = 45;
@@ -29,7 +33,14 @@ const EXTRA_GRAVEYARDS = [
     {
         nsid: "bag:base/garbage",
         anchor: TableLayout.anchor.strategy,
-        pos: { x: -10, y: 35, z: 3 },
+        pos: { x: 6, y: 25, z: 3 },
+        yaw: 0,
+    },
+    // near the agena area
+    {
+        nsid: "bag:base/garbage",
+        anchor: TableLayout.anchor.score,
+        pos: { x: 36, y: 42, z: 3 },
         yaw: 0,
     },
 ];

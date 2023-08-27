@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { AbstractSetup } = require("../abstract-setup");
 const { CardUtil } = require("../../lib/card/card-util");
 const { ObjectNamespace } = require("../../lib/object-namespace");
+const { SpawnDeck } = require("../spawn/spawn-deck");
 const { world } = require("../../wrapper/api");
 
 const { TECH_DECK_LOCAL_OFFSET } = require("../setup-generic-tech");
@@ -29,7 +30,7 @@ class SetupFactionTech extends AbstractSetup {
         }
 
         const nsidPrefix = "card.technology";
-        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.technology.red", "card.technology.red.muaat"
             const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 3);
             if (factionName !== matchFactionName) {

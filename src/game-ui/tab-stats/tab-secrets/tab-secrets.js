@@ -9,10 +9,8 @@ class TabSecrets {
     static getAllSecretNames() {
         const result = new Set();
         const nsidType = "card.objective.secret";
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Card)) {
                 continue;
             }
@@ -40,10 +38,8 @@ class TabSecrets {
     static getScoredSecretNames() {
         const result = new Set();
         const nsidType = "card.objective.secret";
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!(obj instanceof Card)) {
                 continue;
             }

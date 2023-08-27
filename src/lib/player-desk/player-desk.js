@@ -16,6 +16,7 @@ const {
 const {
     CardHolder,
     Color,
+    ObjectType,
     Player,
     Rotator,
     Vector,
@@ -95,6 +96,7 @@ class PlayerDesk {
         _playerDesks = [];
         // Walk backwards so "south-east" is index 0 then clockwise.
         const tableDesks = TableLayout.desks();
+        assert(tableDesks.length > 0);
         for (let i = tableDesks.length - 1; i >= 0; i--) {
             const attrs = tableDesks[i];
             if (!attrs.playerCounts.includes(playerCount)) {
@@ -102,6 +104,7 @@ class PlayerDesk {
             }
             _playerDesks.push(new PlayerDesk(attrs, _playerDesks.length));
         }
+        assert(_playerDesks.length === playerCount);
 
         // Apply any saved desk state.
         const deskState = GlobalSavedData.get(
@@ -302,14 +305,14 @@ class PlayerDesk {
             const obj = world.createObjectFromTemplate(templateId, pos);
             obj.setRotation(rot, 0);
             obj.setSavedData(savedData);
-            obj.freeze();
+            obj.setObjectType(ObjectType.NonInteractive);
             this._frozenDummyObject = obj;
         }
 
         // Reset position (paranoia).
         this._frozenDummyObject.setPosition(pos);
         this._frozenDummyObject.setRotation(rot);
-        this._frozenDummyObject.freeze();
+        this._frozenDummyObject.setObjectType(ObjectType.NonInteractive);
 
         return this._frozenDummyObject;
     }
@@ -819,6 +822,17 @@ globalEvents.TI4.onPlayerCountAboutToChange.add((newPlayerCount, player) => {
             new PlayerDeskSetup(playerDesk).cleanGeneric();
         }
     }
+
+    // Remove any per-desk drawing objects.
+    if (_playerDesks) {
+        for (const playerDesk of _playerDesks) {
+            assert(playerDesk instanceof PlayerDesk);
+            const dummy = playerDesk.getFrozenDummyObject();
+            dummy.setTags(["DELETED_ITEMS_IGNORE"]);
+            dummy.destroy();
+        }
+    }
+
     _playerDesks = false;
 });
 

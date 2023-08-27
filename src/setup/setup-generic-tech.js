@@ -2,6 +2,7 @@ const assert = require("../wrapper/assert-wrapper");
 const { AbstractSetup } = require("./abstract-setup");
 const { CardUtil } = require("../lib/card/card-util");
 const { Vector, world } = require("../wrapper/api");
+const { SpawnDeck } = require("./spawn/spawn-deck");
 
 const TECH_DECK_LOCAL_OFFSET = { x: 2, y: 8 };
 
@@ -18,7 +19,7 @@ class SetupGenericTech extends AbstractSetup {
         const rot = this.playerDesk.rot;
 
         const nsidPrefix = "card.technology";
-        this.spawnDecksThenFilter(pos, rot, nsidPrefix, (nsid) => {
+        SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
             // "card.technology.red", "card.technology.red.muaat"
             // Accept any that don't have a third component.
             return !this.parseNsidGetTypePart(nsid, nsidPrefix, 3);

@@ -29,7 +29,7 @@
 	"Blueprint": "",
 	"Models": [
 		{
-			"Model": "units/base/dreadnought.obj",
+			"Model": "units/base/dreadnought-shared.obj",
 			"Offset":
 			{
 				"X": 0,
@@ -48,7 +48,7 @@
 				"Y": 0,
 				"Z": 0
 			},
-			"Texture": "global/units/base/dreadnought.png",
+			"Texture": "global/units/units-shared.png",
 			"NormalMap": "",
 			"ExtraMap": "",
 			"ExtraMap2": "",
@@ -74,7 +74,7 @@
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
@@ -127,6 +127,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -135,5 +136,6 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "Nothing",
 	"Tags": []
 }

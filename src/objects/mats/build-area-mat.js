@@ -468,7 +468,8 @@ class BuildAreaMat {
         const checkIsDiscardPile = false;
         const allowFaceDown = false;
         const myDesk = world.TI4.getClosestPlayerDesk(this._obj.getPosition());
-        for (const obj of world.getAllObjects()) {
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             if (!CardUtil.isLooseCard(obj, checkIsDiscardPile, allowFaceDown)) {
                 continue;
             }

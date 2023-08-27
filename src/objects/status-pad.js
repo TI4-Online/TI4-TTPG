@@ -144,7 +144,7 @@ class StatusPad {
     }
 
     /**
-     * Create forward-facing UI, the semi-transparent afk/passed indicators.
+     * Create forward-facing UI, the afk/passed indicators.
      *
      * @returns {UIElement}
      */
@@ -165,7 +165,6 @@ class StatusPad {
         ui.anchorY = 0;
         ui.position = new Vector(0, 0, 1.2);
         ui.rotation = new Rotator(15, 0, 0);
-        ui.useTransparency = true;
         ui.scale = 0.2;
         ui.widget = panel;
 

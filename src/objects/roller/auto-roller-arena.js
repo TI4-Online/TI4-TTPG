@@ -201,31 +201,18 @@ class AutoRollerArena {
         const rot = TableLayout.anchorRotationToWorld(anchor, LOCAL_ROT);
         const obj = Spawn.spawn(platformNsid, pos, rot);
         obj.setTags(["DELETED_ITEMS_IGNORE"]);
-        obj.freeze();
+        obj.setObjectType(ObjectType.NonInteractive);
 
         // What happens if there are objects in the space?
         // Looks like they just lift on top without any physics excitment.
-
-        // Do not let anyone unlock or move it!
-        obj.onTick.add(() => {
-            const objectType = obj.getObjectType();
-            if (objectType != ObjectType.Ground) {
-                console.log("AutoRollerArenda: re-freezing platform");
-                obj.setPosition(pos);
-                obj.setRotation(rot);
-                obj.freeze();
-            }
-        });
     }
 
     static destroyArenaPlatform() {
         console.log("AutoRollerArena.destroyArenaPlatform");
 
         const platformNsid = "tool:base/arena_platform";
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid !== platformNsid) {
                 continue;

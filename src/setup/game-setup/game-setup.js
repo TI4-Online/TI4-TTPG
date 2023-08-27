@@ -10,14 +10,37 @@ const { globalEvents, world } = require("../../wrapper/api");
 
 let _useGameData = true;
 
+let _pendingPlayerCountChange = undefined;
+
 function onPlayerCountChanged(slider, player, value) {
-    world.TI4.turns.invalidate();
-    world.TI4.config.setPlayerCount(value, player);
+    if (value === world.TI4.config.playerCount) {
+        return;
+    }
+
+    // Watch out for a player count change race.
+    // Lock out the controls until done.
+    // PlayerDesk onPlayerCountChanged will re-enable.
+    GameSetupUI.disablePlayerCountSlider();
+
+    // If one still sneaks in, cancel pending.
+    if (_pendingPlayerCountChange) {
+        clearTimeout(_pendingPlayerCountChange);
+        _pendingPlayerCountChange = undefined;
+    }
+
+    // Wait a moment before commiting (so a later one can cancel).
+    const delayed = () => {
+        _pendingPlayerCountChange = undefined;
+        world.TI4.turns.invalidate();
+        world.TI4.config.setPlayerCount(value, player);
+    };
+    _pendingPlayerCountChange = setTimeout(delayed, 1000);
 }
 
 function onGamePointsChanged(slider, player, value) {
     world.TI4.config.setGamePoints(value);
-    new ApplyScoreboard().apply(value);
+    ApplyScoreboard.resetPositionAndOrientation(value);
+    ApplyScoreboard.resetScorableUI(value);
 }
 
 function onUsePokChanged(checkBox, player, isChecked) {

@@ -242,6 +242,18 @@ class FrankenDraftSettingsUI {
 
         this._widget.addChild(new LayoutBox(), 1); // spacer
         this._widget.addChild(onCancelButton);
+
+        // REQUIRE:
+        // 1. "fill draft boxes" before "gain undraftables".
+        // 2. "gain undraftables" before "finish draft".
+        gainUndraftablesButton.setEnabled(false);
+        startDraftButton.onClicked.add((button, player) => {
+            gainUndraftablesButton.setEnabled(true);
+        });
+        finishDraftButton.setEnabled(false);
+        gainUndraftablesButton.onClicked.add((button, player) => {
+            finishDraftButton.setEnabled(true);
+        });
     }
 }
 

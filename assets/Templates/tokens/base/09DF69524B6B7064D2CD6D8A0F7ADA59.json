@@ -24,7 +24,7 @@
 	},
 	"Flippable": true,
 	"AutoStraighten": false,
-	"ShouldSnap": false,
+	"ShouldSnap": true,
 	"ScriptName": "",
 	"Blueprint": "",
 	"Models": [
@@ -51,8 +51,10 @@
 			"Texture": "global/tokens/base/custodian_o.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
@@ -93,8 +95,10 @@
 			"Texture": "locale/tokens/base/custodian_r.png",
 			"NormalMap": "",
 			"ExtraMap": "",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
@@ -137,6 +141,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -144,5 +149,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
 }

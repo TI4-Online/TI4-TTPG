@@ -44,10 +44,6 @@ globalEvents.TI4 = {
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(onErr),
 
-    // Called when a player flips a planet card.
-    // <(card: Card, isFaceUp: boolean) => void>
-    onPlanetCardFlipped: new TriggerableMulticastDelegate(onErr),
-
     // Called after a player color changes (setup not finished).
     // <(playerColor: Color, deskIndex: number) => void>
     onPlayerColorChanged: new TriggerableMulticastDelegate(onErr),
@@ -93,6 +89,14 @@ globalEvents.TI4 = {
     // Called when a Strategy Card is Played
     // <(strategyCard: GameObject, player: Player) => void>
     onStrategyCardPlayed: new TriggerableMulticastDelegate(onErr),
+
+    // Called when player-timer adds a sample (~1/sec)
+    // <(timerValue) => void>
+    onTimerConfigChanged: new TriggerableMulticastDelegate(onErr),
+
+    // Called when player-timer adds a sample (~1/sec)
+    // <(colorName, phaseName, round, timeSeconds) => void>
+    onTimerUpdate: new TriggerableMulticastDelegate(onErr),
 
     // Called when turn changes.
     // <(current: PlayerDesk, previous: PlayerDesk|undefined, player: Player|undefined) => void>
@@ -177,6 +181,7 @@ const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
 const { Spawn } = require("./setup/spawn/spawn");
 const { System, Planet, SYSTEM_TIER } = require("./lib/system/system");
+const { TableLayout } = require("./table/table-layout");
 const { Technology } = require("./lib/technology/technology");
 const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
@@ -207,6 +212,7 @@ world.TI4 = {
     SimpleDieBuilder,
     Spawn,
     System,
+    TableLayout,
     Technology,
     UnitAttrs,
     UnitModifier,
@@ -287,10 +293,8 @@ world.TI4 = {
         if (_timer && _timer.isValid()) {
             return _timer;
         }
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid === "tool:base/timer") {
                 _timer = obj;
@@ -310,10 +314,10 @@ world.TI4 = {
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
 require("./global/chat-commands");
-require("./global/desk-turn-order");
+//require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
+require("./global/fix-table-colors");
 require("./global/gamedata-key");
-//require("./global/highlight-active-turn"); // desk-turn-order does this now
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
 require("./global/on-container-rejected");
@@ -345,7 +349,6 @@ require("./global/screen-ui/turn-order");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
 require("./global/trigger-on-game-ended");
-require("./global/trigger-on-planet-card-flipped");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 require("./global/whisper-message");

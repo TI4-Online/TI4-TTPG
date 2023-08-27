@@ -53,7 +53,8 @@ globalEvents.onObjectCreated.add((obj) => {
 });
 
 if (world.getExecutionReason() === "ScriptReload") {
-    for (const obj of world.getAllObjects()) {
+    const skipContained = false; // look inside containers
+    for (const obj of world.getAllObjects(skipContained)) {
         if (!(obj instanceof Card)) {
             continue;
         }

@@ -114,8 +114,8 @@ class UiDraftSettings {
     }
 
     _getTooManyPlayersWidget() {
-        const playerCount = world.TI4.config.playerCount;
-        const msg = locale("ui.draft.too_many_players", { playerCount });
+        const maxPlayerCount = this._sliceDraft.getMaxPlayerCount();
+        const msg = locale("ui.draft.too_many_players", { maxPlayerCount });
         return new Text()
             .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)

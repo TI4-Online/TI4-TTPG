@@ -38,10 +38,8 @@ class Neighbors {
         // Tech makes Mecatol Rex a "control" point for neighbor testing.
         let iihqModernization = undefined;
         let mecatolRex = undefined;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue;
-            }
+        const skipContained = true;
+        for (const obj of world.getAllObjects(skipContained)) {
             const nsid = ObjectNamespace.getNsid(obj);
             if (
                 nsid ===
