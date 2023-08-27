@@ -102,9 +102,10 @@ module.exports = [
                 const sheetPos = selfSheet.worldPositionToLocal(worldPos);
                 // 15 is somewhat generous but nowhere near map area.
                 if (sheetPos.magnitudeSquared() < 225) {
-                    return true;
+                    return false;
                 }
             }
+            return true;
         },
         applyAll: (unitAttrsSet, auxData) => {
             const flagshipAttrs = unitAttrsSet.get("flagship");
