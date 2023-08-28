@@ -124,7 +124,10 @@ class PlayerDeskUI {
 
         // Button to toggle color selection.
         this._changeColorButton.setEnabled(!config.isReady);
-        this._changeColorButton.setTintColor(this._playerDesk.widgetColor);
+        this._changeColorButton.setTintColor(
+            this._playerDesk.overridePlasticColor ||
+                this._playerDesk.widgetColor
+        );
 
         if (config.canFaction) {
             if (config.hasFaction) {
@@ -174,7 +177,6 @@ class PlayerDeskUI {
     _createChangeColorButton(onClicked) {
         assert(typeof onClicked === "function");
 
-        // Create a swatch with not-setup peer colors.
         const labelText = locale("ui.desk.change_color");
         const text = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
@@ -182,14 +184,21 @@ class PlayerDeskUI {
             .setText(labelText);
 
         const colorChoices = WidgetFactory.horizontalBox();
+        let verticalBox = undefined;
         for (const colorOption of this._colorOptions) {
             const colorName = colorOption.colorName;
             assert(colorName);
+            const overridePlasticColorHex = colorOption.overridePlasticColorHex;
+            if (!overridePlasticColorHex) {
+                verticalBox = WidgetFactory.verticalBox();
+                colorChoices.addChild(verticalBox);
+            }
+
             const colorAttrs = PlayerDeskColor.getColorAttrs(colorName);
             const widgetColor = ColorUtil.colorFromHex(
-                colorAttrs.widgetHexColor
-                    ? colorAttrs.widgetHexColor
-                    : colorAttrs.plasticHexColor
+                overridePlasticColorHex
+                    ? overridePlasticColorHex
+                    : colorAttrs.widgetHexColor
             );
             const imageButton = this._createColorSquareButton(
                 widgetColor,
@@ -197,7 +206,7 @@ class PlayerDeskUI {
                     onClicked(colorOption, player);
                 }
             );
-            colorChoices.addChild(imageButton);
+            verticalBox.addChild(imageButton);
         }
         return WidgetFactory.verticalBox()
             .addChild(text)

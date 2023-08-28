@@ -119,9 +119,14 @@ class PlayerDesk {
                 playerDesk._playerSlot = deskState[i].s;
                 playerDesk._ready = deskState[i].r;
                 playerDesk._eliminated = deskState[i].e;
+                playerDesk._overridePlasticColorHex = deskState[i].o;
 
                 // Apply color
-                PlayerDeskColor.change(playerDesk, playerDesk._colorName);
+                PlayerDeskColor.change(
+                    playerDesk,
+                    playerDesk._colorName,
+                    playerDesk._overridePlasticColorHex
+                );
             }
         }
 
@@ -227,6 +232,9 @@ class PlayerDesk {
         // Game object for anchoring UI.
         this._frozenDummyObject = undefined;
 
+        this._overridePlasticColorHex = undefined;
+        this._overridePlasticColor = undefined;
+
         // Base attrs might be just color name.  ALWAYS look up color values.
         PlayerDeskColor.change(this, attrs.colorName);
     }
@@ -246,7 +254,10 @@ class PlayerDesk {
 
     // Game object color.
     get plasticColor() {
-        return this._plasticColor;
+        return this._overridePlasticColor || this._plasticColor;
+    }
+    get overridePlasticColor() {
+        return this._overridePlasticColor;
     }
 
     // Chat text color.
@@ -418,9 +429,9 @@ class PlayerDesk {
                 this.resetUI();
             },
             onChangeColor: (colorOption, player) => {
-                const { colorName } = colorOption;
+                const { colorName, overridePlasticColorHex } = colorOption;
                 assert(colorName);
-                if (!this.changeColor(colorName)) {
+                if (!this.changeColor(colorName, overridePlasticColorHex)) {
                     player.showMessage(locale("ui.desk.color_in_use"));
                 }
                 this._showColors = false;
@@ -553,11 +564,23 @@ class PlayerDesk {
      * @returns {Array.{colorName:string,color:Color,plasticColor:Color}}
      */
     getColorOptions() {
-        return PLAYER_DESK_COLORS.map((attrs) => {
-            return {
+        const colorOptions = [];
+        for (const attrs of PLAYER_DESK_COLORS) {
+            // Default color.
+            colorOptions.push({
                 colorName: attrs.colorName,
-            };
-        });
+            });
+            // Any variants.
+            if (attrs.variants) {
+                for (const variant of attrs.variants) {
+                    colorOptions.push({
+                        colorName: attrs.colorName,
+                        overridePlasticColorHex: variant,
+                    });
+                }
+            }
+        }
+        return colorOptions;
     }
 
     /**
@@ -567,9 +590,14 @@ class PlayerDesk {
      * clean up any per-color components and restore in the new color after.
      *
      * @param {string} colorName - for promissory notes ("Ceasefile (Blue)")
+     * @param {string} overridePlasticColorHex - instead of the default for colorName
      */
-    changeColor(colorName) {
+    changeColor(colorName, overridePlasticColorHex) {
         assert(typeof colorName === "string");
+        assert(
+            !overridePlasticColorHex ||
+                typeof overridePlasticColorHex === "string"
+        );
 
         const colorAttrs = PlayerDeskColor.getColorAttrs(colorName);
         assert(colorAttrs);
@@ -597,10 +625,12 @@ class PlayerDesk {
         assert(legalColorName);
 
         const srcColorName = this.colorName;
+        const srcOverridePlasticColorHex = this._overridePlasticColorHex;
         const srcPlayerSlot = this.playerSlot;
         const srcSetup = this.isDeskSetup();
         const srcFaction = world.TI4.getFactionByPlayerSlot(srcPlayerSlot);
         const dstColorName = colorName;
+        const dstOverridePlasticColorHex = overridePlasticColorHex;
         let dstPlayerSlot = -1;
         let dstSetup = false;
         let dstFaction = false;
@@ -639,9 +669,13 @@ class PlayerDesk {
         }
 
         // At this point all src/dst values are known.
-        PlayerDeskColor.change(this, dstColorName);
+        PlayerDeskColor.change(this, dstColorName, dstOverridePlasticColorHex);
         if (swapWith) {
-            PlayerDeskColor.change(swapWith, srcColorName);
+            PlayerDeskColor.change(
+                swapWith,
+                srcColorName,
+                srcOverridePlasticColorHex
+            );
         }
 
         // Recreate initial setup/faction state.
@@ -700,6 +734,7 @@ class PlayerDesk {
                 s: _playerDesks[i]._playerSlot,
                 r: _playerDesks[i]._ready,
                 e: _playerDesks[i]._eliminated,
+                o: _playerDesks[i]._overridePlasticColorHex,
             });
         }
         GlobalSavedData.set(GLOBAL_SAVED_DATA_KEY.DESK_STATE, deskState);

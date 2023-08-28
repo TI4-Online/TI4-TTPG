@@ -2,7 +2,7 @@ require("../../global"); // create globalEvents.TI4
 const assert = require("assert");
 const { ColorUtil } = require("../color/color-util");
 const { PlayerDesk } = require("./player-desk");
-const { Color, MockPlayer, world } = require("../../wrapper/api");
+const { MockPlayer, world } = require("../../wrapper/api");
 
 it("static getPlayerDesks", () => {
     const player = new MockPlayer();
@@ -45,11 +45,16 @@ it("changeColor", () => {
     const playerDesk2 = PlayerDesk.getAllPlayerDesks()[1];
     const colorName1 = playerDesk1.colorName;
     const colorName2 = playerDesk2.colorName;
-    const colorTint = new Color(1, 1, 1, 1);
-    const plasticColorTint = new Color(1, 1, 1, 1);
-    playerDesk1.changeColor(colorName2, colorTint, plasticColorTint);
+    playerDesk1.changeColor(colorName2);
     assert.equal(playerDesk1.colorName, colorName2);
     assert.equal(playerDesk2.colorName, colorName1); // swapped
+    let plasticColorHex = ColorUtil.colorToHex(playerDesk1.plasticColor);
+    assert.equal(plasticColorHex, "#07b2ff");
+
+    const overridePlasticColorHex = "#123456";
+    playerDesk1.changeColor(colorName2, overridePlasticColorHex);
+    plasticColorHex = ColorUtil.colorToHex(playerDesk1.plasticColor);
+    assert.equal(plasticColorHex, overridePlasticColorHex);
 });
 
 it("setEliminated", () => {

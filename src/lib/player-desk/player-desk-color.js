@@ -73,6 +73,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FFFFFF",
         widgetHexColor: "#F0F0F0",
         defaultPlayerSlot: 18,
+        variants: ["#606060"],
     },
 ];
 
@@ -93,9 +94,13 @@ class PlayerDeskColor {
         PlayerDeskColor.change(playerDesk, playerDesk._colorName);
     }
 
-    static change(playerDesk, newColorName) {
+    static change(playerDesk, newColorName, overridePlasticColorHex) {
         assert(playerDesk);
         assert(typeof newColorName === "string");
+        assert(
+            !overridePlasticColorHex ||
+                typeof overridePlasticColorHex === "string"
+        );
 
         // if (!world.__isMock) {
         //     console.log(
@@ -121,6 +126,11 @@ class PlayerDeskColor {
                 ? colorAttrs.widgetHexColor
                 : colorAttrs.plasticHexColor
         );
+
+        playerDesk._overridePlasticColorHex = overridePlasticColorHex;
+        playerDesk._overridePlasticColor = overridePlasticColorHex
+            ? ColorUtil.colorFromHex(overridePlasticColorHex)
+            : undefined;
 
         // Apply to the player slot too.
         world.setSlotColor(playerDesk.playerSlot, playerDesk._color);
