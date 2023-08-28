@@ -7,6 +7,7 @@ const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
+const { TableColor } = require("../../lib/display/table-color");
 
 let _useGameData = true;
 
@@ -125,6 +126,18 @@ function onSetupClicked(button, player) {
     }
 }
 
+function onDarkTableChanged(checkbox, player, isChecked) {
+    if (isChecked) {
+        TableColor.resetToDark();
+    } else {
+        TableColor.resetToDefaults();
+    }
+}
+
+function onConfigHomebrew(button, player) {
+    // XXX
+}
+
 class GameSetup {
     constructor() {
         assert(world.TI4.config.timestamp <= 0);
@@ -132,6 +145,7 @@ class GameSetup {
             onPlayerCountChanged,
             onGamePointsChanged,
             onReportErrorsChanged,
+            onDarkTableChanged,
             onUseLargerHexes,
             onUsePokChanged,
             onUseCodex1Changed,
@@ -140,6 +154,7 @@ class GameSetup {
             onUseCodex4Changed,
             onUseBaseMagenChanged,
             onUseGameDataChanged,
+            onConfigHomebrew,
             onSetupClicked,
         }).create(_useGameData);
     }

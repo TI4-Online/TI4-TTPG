@@ -13,6 +13,7 @@ const {
     refPackageId,
     world,
 } = require("../../wrapper/api");
+const { TableColor } = require("../../lib/display/table-color");
 
 let _playerCountSlider = undefined;
 let _setupButton = undefined;
@@ -77,6 +78,13 @@ class GameSetupUI {
                 this._callbacks.onGamePointsChanged
             )
         );
+        col1Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.dark_table",
+                TableColor.isDark(),
+                this._callbacks.onDarkTableChanged
+            )
+        );
 
         if (TableLayout.supportsLargeHexes) {
             col1Panel.addChild(
@@ -102,6 +110,15 @@ class GameSetupUI {
                 this._callbacks.onReportErrorsChanged
             )
         );
+
+        /*
+        col1Panel.addChild(
+            this._createButton(
+                "ui.setup.config_homebrew",
+                this._callbacks.onConfigHomebrew
+            )
+        );
+*/
 
         col2Panel.addChild(
             this._createCheckbox(
