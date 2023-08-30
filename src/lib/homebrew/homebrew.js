@@ -266,7 +266,12 @@ class Homebrew {
                     playerDesk
                 );
                 setupGenericPromissory.clean();
+
+                // Gross hack.  Replace rules only apply AFTER game start.
+                // Pretend like it has.
+                world.TI4.config.setTimestamp(1);
                 setupGenericPromissory.setup();
+                world.TI4.config.setTimestamp(0);
             }
         };
 

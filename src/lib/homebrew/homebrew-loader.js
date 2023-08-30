@@ -250,13 +250,13 @@ class HomebrewLoader {
             console.log(
                 `HomebrewLoader.register: "${entry.name}/${option.id}"`
             );
-        }
 
-        // If this homebrew is already active (e.g. load saved game) inject now.
-        const gameInProgress = world.TI4.config.timestamp > 0;
-        const homebrewActive = this._active.has(entry.id);
-        if (gameInProgress && homebrewActive) {
-            this._runHomebrewScript(entry);
+            // If this homebrew is already active (e.g. load saved game) inject now.
+            const gameInProgress = world.TI4.config.timestamp > 0;
+            const homebrewActive = this._active.has(option.id);
+            if (gameInProgress && homebrewActive) {
+                this._runHomebrewScript(option);
+            }
         }
     }
 
