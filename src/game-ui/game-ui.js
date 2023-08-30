@@ -23,6 +23,7 @@ const {
 const { SCPT2023 } = require("./tab-map/tab-draft/tab-scpt/scpt-2023");
 const { TabAgenda } = require("./tab-agenda/tab-agenda");
 const { TabBagDraft } = require("./tab-map/tab-draft/tab-bag/tab-bag");
+const { TabDisplay } = require("./tab-display/tab-display");
 const { TabFogOfWar } = require("./tab-map/tab-fog/tab-fog");
 const { TabHelpUI } = require("./tab-help/tab-help-ui");
 const { TableLayout } = require("../table/table-layout");
@@ -43,6 +44,7 @@ const { WidgetFactory } = require("../lib/ui/widget-factory");
 const CONFIG = require("./game-ui-config");
 const {
     Card,
+    LayoutBox,
     Rotator,
     Text,
     Vector,
@@ -50,7 +52,6 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
-const { TabDisplay } = require("./tab-display/tab-display");
 
 let _gameUI;
 
@@ -116,6 +117,11 @@ class GameUI {
         this._uiElement.widget = frame;
 
         world.addUI(this._uiElement);
+
+        globalEvents.TI4.onGameSetupPending.add(() => {
+            // Remove UI while setup is happening.
+            this._layout.setChild(new LayoutBox());
+        });
 
         globalEvents.TI4.onGameSetup.add(() => {
             this.fill();

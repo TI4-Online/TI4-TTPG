@@ -30,9 +30,16 @@ const { Agenda } = require("../agenda/agenda");
 const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
 const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
 const { Adjacency } = require("../system/adjacency");
+const { HomebrewLoader } = require("./homebrew-loader");
 
 class Homebrew {
-    constructor() {}
+    constructor() {
+        this._pending = new Set();
+    }
+
+    register(entry) {
+        HomebrewLoader.getInstance().register(entry);
+    }
 
     inject(table) {
         if (table.adjacencyModifiers) {
@@ -158,17 +165,27 @@ class Homebrew {
             return;
         }
 
-        const setupTableDecks = new SetupTableDecks();
-        setupTableDecks.clean();
-        setupTableDecks.setup();
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const setupGenericTech = new SetupGenericTech(playerDesk);
-            setupGenericTech.clean();
-            setupGenericTech.setup();
-        }
+        const key = "resetOnTableDecks";
+        const delayed = () => {
+            this._pending.delete(key);
 
-        // Shuffle appropriate decks.
-        process.nextTick(shuffleAllDecks);
+            const setupTableDecks = new SetupTableDecks();
+            setupTableDecks.clean();
+            setupTableDecks.setup();
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const setupGenericTech = new SetupGenericTech(playerDesk);
+                setupGenericTech.clean();
+                setupGenericTech.setup();
+            }
+
+            // Shuffle appropriate decks.
+            process.nextTick(shuffleAllDecks);
+        };
+
+        if (!this._pending.has(key)) {
+            this._pending.add(key);
+            process.nextTick(delayed);
+        }
 
         return this;
     }
@@ -184,9 +201,19 @@ class Homebrew {
             return;
         }
 
-        const setupStrategyCards = new SetupStrategyCards();
-        setupStrategyCards.clean();
-        setupStrategyCards.setup();
+        const key = "resetStrategyCards";
+        const delayed = () => {
+            this._pending.delete(key);
+
+            const setupStrategyCards = new SetupStrategyCards();
+            setupStrategyCards.clean();
+            setupStrategyCards.setup();
+        };
+
+        if (!this._pending.has(key)) {
+            this._pending.add(key);
+            process.nextTick(delayed);
+        }
 
         return this;
     }
@@ -202,9 +229,19 @@ class Homebrew {
             return;
         }
 
-        const setupSystemTiles = new SetupSystemTiles();
-        setupSystemTiles.clean();
-        setupSystemTiles.setup();
+        const key = "resetSystemTilesBox";
+        const delayed = () => {
+            this._pending.delete(key);
+
+            const setupSystemTiles = new SetupSystemTiles();
+            setupSystemTiles.clean();
+            setupSystemTiles.setup();
+        };
+
+        if (!this._pending.has(key)) {
+            this._pending.add(key);
+            process.nextTick(delayed);
+        }
 
         return this;
     }
@@ -220,12 +257,27 @@ class Homebrew {
             return;
         }
 
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const setupGenericPromissory = new SetupGenericPromissory(
-                playerDesk
-            );
-            setupGenericPromissory.clean();
-            setupGenericPromissory.setup();
+        const key = "resetGenericPromissoryNotes";
+        const delayed = () => {
+            this._pending.delete(key);
+
+            for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+                const setupGenericPromissory = new SetupGenericPromissory(
+                    playerDesk
+                );
+                setupGenericPromissory.clean();
+
+                // Gross hack.  Replace rules only apply AFTER game start.
+                // Pretend like it has.
+                world.TI4.config.setTimestamp(1);
+                setupGenericPromissory.setup();
+                world.TI4.config.setTimestamp(0);
+            }
+        };
+
+        if (!this._pending.has(key)) {
+            this._pending.add(key);
+            process.nextTick(delayed);
         }
 
         return this;

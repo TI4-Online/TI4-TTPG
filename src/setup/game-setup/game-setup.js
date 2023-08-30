@@ -7,6 +7,8 @@ const { ReplaceObjects } = require("../spawn/replace-objects");
 const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
+const { TableColor } = require("../../lib/display/table-color");
+const { HomebrewLoader } = require("../../lib/homebrew/homebrew-loader");
 
 let _useGameData = true;
 
@@ -102,26 +104,52 @@ function onUseLargerHexes(checkBox, player, isChecked) {
 }
 
 function onSetupClicked(button, player) {
-    // Record setup timestamp for gamedata.
-    const timestamp = Date.now() / 1000;
-    world.TI4.config.setTimestamp(timestamp);
+    console.log("GameSetup: onGameSetupPending");
+    globalEvents.TI4.onGameSetupPending.trigger(this._state, player);
 
-    let removedCount = 0;
+    const finishSetup = () => {
+        // Record setup timestamp for gamedata.
+        const timestamp = Date.now() / 1000;
+        world.TI4.config.setTimestamp(timestamp);
 
-    // Apply other restrictions.  Do first in case replacements also apply.
-    removedCount += RestrictObjects.removeRestrictObjects();
+        let removedCount = 0;
 
-    // Apply omega.  This one verifies replacement exists.
-    removedCount += ReplaceObjects.removeReplacedObjects();
+        // Apply other restrictions.  Do first in case replacements also apply.
+        removedCount += RestrictObjects.removeRestrictObjects();
 
-    console.log(`GameSetup: removed ${removedCount} objects`);
+        // Apply omega.  This one verifies replacement exists.
+        removedCount += ReplaceObjects.removeReplacedObjects();
 
-    // Tell world setup happened.
-    globalEvents.TI4.onGameSetup.trigger(this._state, player);
+        console.log(`GameSetup: removed ${removedCount} objects`);
 
-    // Kick off game data.
-    if (_useGameData) {
-        world.TI4.gameData.enable();
+        // Tell world setup happened.
+        console.log("GameSetup: onGameSetup");
+        globalEvents.TI4.onGameSetup.trigger(this._state, player);
+
+        // Kick off game data.
+        if (_useGameData) {
+            world.TI4.gameData.enable();
+        }
+    };
+    process.nextTick(finishSetup);
+}
+
+function onDarkTableChanged(checkbox, player, isChecked) {
+    if (isChecked) {
+        TableColor.resetToDark();
+    } else {
+        TableColor.resetToDefaults();
+    }
+}
+
+function onConfigHomebrew(button, player) {
+    const success = HomebrewLoader.getInstance().reset();
+
+    if (success) {
+        // Give reset a chance to run the homebrew/registry.js script.
+        process.nextTick(() => {
+            HomebrewLoader.getInstance().createAndAddUI();
+        });
     }
 }
 
@@ -132,6 +160,7 @@ class GameSetup {
             onPlayerCountChanged,
             onGamePointsChanged,
             onReportErrorsChanged,
+            onDarkTableChanged,
             onUseLargerHexes,
             onUsePokChanged,
             onUseCodex1Changed,
@@ -140,6 +169,7 @@ class GameSetup {
             onUseCodex4Changed,
             onUseBaseMagenChanged,
             onUseGameDataChanged,
+            onConfigHomebrew,
             onSetupClicked,
         }).create(_useGameData);
     }

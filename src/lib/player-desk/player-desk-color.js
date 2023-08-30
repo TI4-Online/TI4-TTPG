@@ -17,6 +17,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#00FF00",
         widgetHexColor: "#00FF00",
         defaultPlayerSlot: 1,
+        variants: [
+            "#10de10",
+            "#19bd19",
+            "#1d991d",
+            "#1e781e",
+            "#1c571c",
+            "#143614",
+        ],
     },
     {
         colorName: "red",
@@ -25,6 +33,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FF2020",
         widgetHexColor: "#FF1010",
         defaultPlayerSlot: 16,
+        variants: [
+            "#de1010",
+            "#bd1919",
+            "#991d1d",
+            "#781e1e",
+            "#571c1c",
+            "#361414",
+        ],
     },
     {
         colorName: "yellow",
@@ -33,6 +49,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FFFF00",
         widgetHexColor: "#D7B700",
         defaultPlayerSlot: 9,
+        variants: [
+            "#dede10",
+            "#bdbd19",
+            "#99991d",
+            "#78781e",
+            "#57571c",
+            "#363614",
+        ],
     },
     {
         colorName: "pink",
@@ -41,6 +65,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FC46AA",
         widgetHexColor: "#F46FCD",
         defaultPlayerSlot: 5,
+        variants: [
+            "#de1099",
+            "#781757",
+            "#991d70",
+            "#781e5a",
+            "#571c43",
+            "#36142a",
+        ],
     },
     {
         colorName: "orange",
@@ -49,6 +81,15 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FF8C00",
         widgetHexColor: "#FC6A03",
         defaultPlayerSlot: 6,
+        variants: [
+            "#ff8000",
+            "#de5f10",
+            "#bd5719",
+            "#994d1d",
+            "#78401e",
+            "#57321c",
+            "#362114",
+        ],
     },
     {
         colorName: "purple", // TTS 7400B7
@@ -57,6 +98,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#AF69EF", //"#D7A1F9", //"#BB86FC",
         widgetHexColor: "#572780",
         defaultPlayerSlot: 4,
+        variants: [
+            "#5410de",
+            "#4f19bd",
+            "#461d99",
+            "#3c1e78",
+            "#2f1c57",
+            "#1f1436",
+        ],
     },
     {
         colorName: "blue", // TTS 07B2FF v
@@ -65,6 +114,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#00CFFF",
         widgetHexColor: "#00CFFF",
         defaultPlayerSlot: 15,
+        variants: [
+            "#1077de",
+            "#196bbd",
+            "#1d5b99",
+            "#1e4b78",
+            "#1c3957",
+            "#142536",
+        ],
     },
     {
         colorName: "white",
@@ -73,6 +130,14 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FFFFFF",
         widgetHexColor: "#F0F0F0",
         defaultPlayerSlot: 18,
+        variants: [
+            "#dedede",
+            "#bfbfbf",
+            "#9e9e9e",
+            "#808080",
+            "#5e5e5e",
+            "#404040",
+        ],
     },
 ];
 
@@ -93,9 +158,13 @@ class PlayerDeskColor {
         PlayerDeskColor.change(playerDesk, playerDesk._colorName);
     }
 
-    static change(playerDesk, newColorName) {
+    static change(playerDesk, newColorName, overridePlasticColorHex) {
         assert(playerDesk);
         assert(typeof newColorName === "string");
+        assert(
+            !overridePlasticColorHex ||
+                typeof overridePlasticColorHex === "string"
+        );
 
         // if (!world.__isMock) {
         //     console.log(
@@ -121,6 +190,11 @@ class PlayerDeskColor {
                 ? colorAttrs.widgetHexColor
                 : colorAttrs.plasticHexColor
         );
+
+        playerDesk._overridePlasticColorHex = overridePlasticColorHex;
+        playerDesk._overridePlasticColor = overridePlasticColorHex
+            ? ColorUtil.colorFromHex(overridePlasticColorHex)
+            : undefined;
 
         // Apply to the player slot too.
         world.setSlotColor(playerDesk.playerSlot, playerDesk._color);
