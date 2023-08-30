@@ -1,8 +1,8 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { Broadcast } = require("../broadcast");
-const { ObjectType, Vector, world } = require("../../wrapper/api");
-const { HomebrewLoaderUi } = require("./homebrew-loader-ui");
 const locale = require("../locale");
+const { Broadcast } = require("../broadcast");
+const { HomebrewLoaderUi } = require("./homebrew-loader-ui");
+const { ObjectType, Vector, world } = require("../../wrapper/api");
 
 const MAX_ID_LENGTH = 14;
 const TI4_HOMEBREW_PACKAGE_IDS = [
@@ -186,7 +186,9 @@ class HomebrewLoader {
         this._idToEntry[entry.id] = entry;
 
         // If this homebrew is already active (e.g. load saved game) inject now.
-        if (this._active.has(entry.id)) {
+        const gameInProgress = world.TI4.config.timestamp > 0;
+        const homebrewActive = this._active.has(entry.id);
+        if (gameInProgress && homebrewActive) {
             this._runHomebrewScript(entry);
         }
     }

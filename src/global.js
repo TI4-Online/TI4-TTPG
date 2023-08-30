@@ -365,12 +365,19 @@ if (!world.__isMock) {
     world.TI4.fogOfWar.maybeEnable();
 }
 
-// If game is already in progress, inject any active homebrew.
-// Do not wait a frame because other things like attachments wait
-// a frame, want injection to happen first.
-if (!world.__isMock && world.TI4.config.timestamp > 0) {
+if (!world.__isMock) {
     const homebrewLoader = HomebrewLoader.getInstance();
-    if (homebrewLoader.getHomebrewPackageId()) {
-        homebrewLoader.reset();
+    if (world.TI4.config.timestamp > 0) {
+        // If game is already in progress, inject any active homebrew.
+        // Do not wait a frame because other things like attachments wait
+        // a frame, want injection to happen first.
+        if (homebrewLoader.getHomebrewPackageId()) {
+            homebrewLoader.reset();
+        }
+    } else {
+        // Game hasn't started yet.  Inject homebrew on start.
+        globalEvents.TI4.onGameSetupPending.add(() => {
+            homebrewLoader.injectActive();
+        });
     }
 }

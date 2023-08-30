@@ -82,15 +82,11 @@ class HomebrewLoaderUi {
             panel.addChild(checkBox);
         }
 
-        const setupButton = new Button()
-            .setFontSize(CONFIG.fontSize)
-            .setText(locale("ui.button.setup").toUpperCase());
         const cancelButton = new Button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel").toUpperCase());
         const buttonPanel = new HorizontalBox()
             .setChildDistance(CONFIG.spacing)
-            .addChild(setupButton, 1)
             .addChild(cancelButton, 1);
         panel.addChild(buttonPanel);
 
@@ -117,10 +113,6 @@ class HomebrewLoaderUi {
         };
         globalEvents.TI4.onGameSetup.add(doClose);
         cancelButton.onClicked.add(doClose);
-        setupButton.onClicked.add((button, player) => {
-            doClose();
-            this._homebrewLoader.injectActive();
-        });
     }
 }
 

@@ -51,6 +51,7 @@ const {
     world,
 } = require("../wrapper/api");
 const { TabDisplay } = require("./tab-display/tab-display");
+const { LayoutBox } = require("@tabletop-playground/api");
 
 let _gameUI;
 
@@ -116,6 +117,11 @@ class GameUI {
         this._uiElement.widget = frame;
 
         world.addUI(this._uiElement);
+
+        globalEvents.TI4.onGameSetupPending.add(() => {
+            // Remove UI while setup is happening.
+            this._layout.setChild(new LayoutBox());
+        });
 
         globalEvents.TI4.onGameSetup.add(() => {
             this.fill();
