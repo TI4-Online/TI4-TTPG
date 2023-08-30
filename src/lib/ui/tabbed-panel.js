@@ -18,24 +18,9 @@ class TabbedPanel {
      * Constructor.
      */
     constructor() {
-        this._scale = 1;
         this._labelToGetWidget = [];
         this._createWidgetCalled = false;
         this._getInitialWidget = undefined;
-    }
-
-    setScale(scale) {
-        assert(typeof scale === "number");
-        this._scale = scale;
-
-        for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
-            const tabButton = this._tabButtons.getChildAt(i);
-            if (!tabButton) {
-                break;
-            }
-            tabButton.setFontSize(this._fontSize);
-        }
-        return this;
     }
 
     setGetInitialWidget(getWidget) {

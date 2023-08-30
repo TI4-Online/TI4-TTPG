@@ -8,6 +8,7 @@ const { RestrictObjects } = require("../spawn/restrict-objects");
 const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
 const { TableColor } = require("../../lib/display/table-color");
+const { HomebrewLoader } = require("../../lib/homebrew/homebrew-loader");
 
 let _useGameData = true;
 
@@ -135,7 +136,14 @@ function onDarkTableChanged(checkbox, player, isChecked) {
 }
 
 function onConfigHomebrew(button, player) {
-    // XXX
+    const success = HomebrewLoader.getInstance().reset();
+
+    if (success) {
+        // Give reset a chance to run the homebrew/registry.js script.
+        process.nextTick(() => {
+            HomebrewLoader.getInstance().createAndAddUI();
+        });
+    }
 }
 
 class GameSetup {

@@ -110,15 +110,12 @@ class GameSetupUI {
                 this._callbacks.onReportErrorsChanged
             )
         );
-
-        /*
         col1Panel.addChild(
             this._createButton(
                 "ui.setup.config_homebrew",
                 this._callbacks.onConfigHomebrew
             )
         );
-*/
 
         col2Panel.addChild(
             this._createCheckbox(
@@ -153,9 +150,7 @@ class GameSetupUI {
                 "ui.setup.use_codex4",
                 world.TI4.config.codex4,
                 this._callbacks.onUseCodex4Changed
-            )
-                .setEnabled(false)
-                .setVisible(false)
+            ).setVisible(false)
         );
         col2Panel.addChild(
             this._createCheckbox(

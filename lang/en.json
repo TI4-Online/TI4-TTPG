@@ -1057,8 +1057,6 @@
     "streamer.desc.buddy": "Send game data to “TI4 Streamer Buddy” application running on TTPG host's system.",
     "streamer.button.buddy": "Activate\nBuddy",
 
-    "streamer.follow_camera": "FOLLOWING {followPlayerName}\nInteracting may be unreliable\nPress ctrl+alt+NUMPAD-0 to exit",
-
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",
 
@@ -1082,6 +1080,9 @@
     "timer.error.no_active_turn": "no active turn",
 
     "mat.title.predictions": "Predictions",
+
+    "homebrew.package_missing": "No homebew package, please subscribe and add to object library (add packages)",
+    "homebrew.how_to": "Select homebrew, added when clicking 'start game'",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }

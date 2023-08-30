@@ -40,6 +40,11 @@ globalEvents.TI4 = {
     // <(winningPlayerSlot: number|undefined, player: Player|undefined) => void>
     onGameEnded: new TriggerableMulticastDelegate(onErr),
 
+    // Called after a player clicks the initial game "setup" button but a few frames before setup happens.
+    // Useful for homebrew injection.
+    // <(state: object, player: Player) => void>
+    onGameSetupPending: new TriggerableMulticastDelegate(onErr),
+
     // Called after a player clicks the initial game "setup" button.
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(onErr),
@@ -187,6 +192,7 @@ const { Turns } = require("./lib/turns");
 const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitModifier } = require("./lib/unit/unit-modifier");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
+const { HomebrewLoader } = require("./lib/homebrew/homebrew-loader");
 
 let _timer = undefined;
 
@@ -357,4 +363,14 @@ if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
     GameData.maybeRestartGameData();
     world.TI4.fogOfWar.maybeEnable();
+}
+
+// If game is already in progress, inject any active homebrew.
+// Do not wait a frame because other things like attachments wait
+// a frame, want injection to happen first.
+if (!world.__isMock && world.TI4.config.timestamp > 0) {
+    const homebrewLoader = HomebrewLoader.getInstance();
+    if (homebrewLoader.getHomebrewPackageId()) {
+        homebrewLoader.reset();
+    }
 }
