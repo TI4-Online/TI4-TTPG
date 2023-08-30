@@ -142,6 +142,7 @@
     "ui.button.idle": "Idle",
     "ui.button.setup": "SETUP",
     "ui.button.random": "RANDOM",
+    "ui.button.ok": "OK",
     "ui.button.cancel": "CANCEL",
     "ui.button.ready": "READY",
     "ui.button.clear": "CLEAR",
@@ -1082,7 +1083,7 @@
     "mat.title.predictions": "Predictions",
 
     "homebrew.package_missing": "No homebew package, please subscribe and add to object library (add packages)",
-    "homebrew.how_to": "Select homebrew, added when clicking 'start game'",
+    "homebrew.how_to": "Select homebrew, added on 'start game'",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"
 }
