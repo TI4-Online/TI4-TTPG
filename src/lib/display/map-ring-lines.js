@@ -70,4 +70,11 @@ class MapRingLines {
     }
 }
 
+// Turn on by default.
+process.nextTick(() => {
+    if (world.TI4.config.timestamp <= 0 && !MapRingLines.isEnabled()) {
+        MapRingLines.addMapRingLines();
+    }
+});
+
 module.exports = { MapRingLines };

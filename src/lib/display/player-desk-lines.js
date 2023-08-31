@@ -78,4 +78,11 @@ class PlayerDeskLines {
     }
 }
 
+// Turn on by default.
+process.nextTick(() => {
+    if (world.TI4.config.timestamp <= 0 && !PlayerDeskLines.isEnabled()) {
+        PlayerDeskLines.addAllPlayerDeskLines();
+    }
+});
+
 module.exports = { PlayerDeskLines };
