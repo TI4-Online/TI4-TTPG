@@ -88,7 +88,7 @@
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
@@ -128,8 +128,8 @@
 			},
 			"Scale":
 			{
-				"X": 1,
-				"Y": 1,
+				"X": 0.8,
+				"Y": 0.8,
 				"Z": 1
 			},
 			"Rotation":
@@ -141,6 +141,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -149,5 +150,6 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "Nothing",
 	"Tags": []
 }
