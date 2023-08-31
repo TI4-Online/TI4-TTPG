@@ -51,6 +51,8 @@ class GameObject {
         this._customActions.push(customAction);
     }
 
+    addDrawingLine(value) {}
+
     addUI(ui) {
         this._uis.push(ui);
         ui._owningObject = this;
@@ -65,6 +67,10 @@ class GameObject {
 
     getContainer() {
         return this._container;
+    }
+
+    getDrawingLines() {
+        return [];
     }
 
     getExtent() {
