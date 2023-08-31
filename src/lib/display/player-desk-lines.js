@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { DrawingLine, Vector, world } = require("../../wrapper/api");
+const { globalEvents } = require("@tabletop-playground/api");
 
 const PLAYER_DESK_BORDER = [
     new Vector(-27.9, -54.22, 0),
@@ -83,6 +84,12 @@ process.nextTick(() => {
     if (world.TI4.config.timestamp <= 0 && !PlayerDeskLines.isEnabled()) {
         PlayerDeskLines.addAllPlayerDeskLines();
     }
+
+    // Player count change happens before setup, no opportunity to disable lines yet.
+    globalEvents.TI4.onPlayerCountChanged.add(() => {
+        PlayerDeskLines.clearAllPlayerDeskLines();
+        PlayerDeskLines.addAllPlayerDeskLines();
+    });
 });
 
 module.exports = { PlayerDeskLines };
