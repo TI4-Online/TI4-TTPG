@@ -13,6 +13,7 @@ const {
 
 const FILL_TASKS = [
     require("../../lib/game-data/updator-player-command-tokens"),
+    require("../../lib/game-data/updator-player-planet-cards"),
     require("../../lib/game-data/updator-player-planet-totals"),
     require("../../lib/game-data/updator-player-score"),
     require("../../lib/game-data/updator-player-tgs"),
@@ -190,6 +191,11 @@ class StatsScreenUI {
                 .setTextColor(color)
                 .setJustification(TextJustification.Center)
                 .setText("0/0");
+            const planetCount = new Text()
+                .setFontSize(FONT_SIZE)
+                .setTextColor(color)
+                .setJustification(TextJustification.Center)
+                .setText("0");
             const tradegoods = new Text()
                 .setFontSize(FONT_SIZE)
                 .setTextColor(color)
@@ -205,6 +211,7 @@ class StatsScreenUI {
                 score,
                 resources,
                 influence,
+                planetCount,
                 tradegoods,
                 tokens,
             });
@@ -246,6 +253,16 @@ class StatsScreenUI {
             colInf.addChild(playerEntry.influence);
         });
 
+        const labelPlanetCount = new Text()
+            .setFontSize(FONT_SIZE)
+            .setJustification(TextJustification.Center)
+            .setText(locale("ui.label.planet_count"));
+        const colPlanetCount =
+            WidgetFactory.verticalBox().addChild(labelPlanetCount);
+        this._playerEntries.forEach((playerEntry) => {
+            colPlanetCount.addChild(playerEntry.planetCount);
+        });
+
         const labelTradegoods = new Text()
             .setFontSize(FONT_SIZE)
             .setJustification(TextJustification.Center)
@@ -270,6 +287,7 @@ class StatsScreenUI {
             .addChild(colScore, 2)
             .addChild(colRes, 2)
             .addChild(colInf, 2)
+            .addChild(colPlanetCount, 2)
             .addChild(colTradegoods, 2)
             .addChild(colTokens, 3);
         const padded = WidgetFactory.layoutBox()
@@ -303,6 +321,9 @@ class StatsScreenUI {
 
                 t = `${playerData.planetTotals.influence.avail}/${playerData.planetTotals.influence.total}`;
                 entry.influence.setText(t);
+
+                t = `${playerData.planetCards.length}`;
+                entry.planetCount.setText(t);
 
                 t = `${playerData.commodities}/${playerData.tradeGoods}`;
                 entry.tradegoods.setText(t);

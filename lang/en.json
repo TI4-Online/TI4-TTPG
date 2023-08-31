@@ -179,6 +179,7 @@
     "ui.label.score": "Score",
     "ui.label.resources": "Res",
     "ui.label.influence": "Inf",
+    "ui.label.planet_count": "#Plt",
     "ui.label.tradegoodsAndCommodities": "C/TG",
     "ui.label.tokens": "Tokens",
     "ui.label.random_from_list": "Random from list",

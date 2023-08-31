@@ -7,6 +7,7 @@ const FILL_TASKS = [
     require("../../../lib/game-data/updator-player-command-tokens"),
     require("../../../lib/game-data/updator-player-name"),
     require("../../../lib/game-data/updator-player-faction-name"),
+    require("../../../lib/game-data/updator-player-planet-cards"),
     require("../../../lib/game-data/updator-player-planet-totals"),
     require("../../../lib/game-data/updator-player-score"),
     require("../../../lib/game-data/updator-player-strategy-cards"),

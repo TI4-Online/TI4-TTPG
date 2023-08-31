@@ -56,6 +56,9 @@ class PlayerStatsUI {
         this._influence = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
+        this._planetCount = WidgetFactory.text()
+            .setFontSize(minorFontSize)
+            .setTextColor(textColor);
         this._commodities = WidgetFactory.text()
             .setFontSize(minorFontSize)
             .setTextColor(textColor);
@@ -70,7 +73,8 @@ class PlayerStatsUI {
         const resInfPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(this._resources)
-            .addChild(this._influence);
+            .addChild(this._influence)
+            .addChild(this._planetCount);
 
         const commoditiesTgsPanel = WidgetFactory.horizontalBox()
             .setChildDistance(CONFIG.spacing)
@@ -147,6 +151,7 @@ class PlayerStatsUI {
         this._influence.setText(
             `INF: ${playerData.planetTotals.influence.avail}/${playerData.planetTotals.influence.total}`
         );
+        this._planetCount.setText(`PLANETS: ${playerData.planetCards.length}`);
 
         this._commodities.setText(`C: ${playerData.commodities}`);
         this._tradegoods.setText(`TG: ${playerData.tradeGoods}`);
