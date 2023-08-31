@@ -1,6 +1,10 @@
 const assert = require("../../wrapper/assert-wrapper");
-const { DrawingLine, Vector, world } = require("../../wrapper/api");
-const { globalEvents } = require("@tabletop-playground/api");
+const {
+    DrawingLine,
+    Vector,
+    globalEvents,
+    world,
+} = require("../../wrapper/api");
 
 const PLAYER_DESK_BORDER = [
     new Vector(-27.9, -54.22, 0),
