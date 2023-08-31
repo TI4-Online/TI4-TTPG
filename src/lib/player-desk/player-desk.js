@@ -4,6 +4,7 @@ const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
 const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
 const { PlayerDeskColor, PLAYER_DESK_COLORS } = require("./player-desk-color");
+const { PlayerDeskLines } = require("../display/player-desk-lines");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskPickFaction } = require("./player-desk-pick-faction");
 const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
@@ -900,6 +901,12 @@ globalEvents.TI4.onPlayerCountChanged.add((newPlayerCount, player) => {
         PlayerDeskSetup.getSharedAsyncTaskQueue().add(() => {
             GameSetupUI.enablePlayerCountSlider();
         });
+
+        // If player desk lines are in use, reset them.
+        if (PlayerDeskLines.isEnabled()) {
+            PlayerDeskLines.clearAllPlayerDeskLines();
+            PlayerDeskLines.addAllPlayerDeskLines();
+        }
     };
 
     // Leverage the shared task queue to make sure all cleanup tasks finish
