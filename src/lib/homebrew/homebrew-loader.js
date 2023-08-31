@@ -133,13 +133,6 @@ class HomebrewLoader {
             );
             return false;
         }
-        if (entry.description.length === 0) {
-            Broadcast.chatAll(
-                `HomebrewLoader.register: [${entry.name}] entry.description is empty`,
-                Broadcast.ERROR
-            );
-            return false;
-        }
 
         // PACKAGE
         if (typeof entry.packageId !== "string") {

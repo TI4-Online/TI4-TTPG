@@ -7,15 +7,22 @@ const {
     Button,
     CheckBox,
     LayoutBox,
+    RichText,
     Rotator,
     Text,
+    TextJustification,
     UIElement,
     Vector,
     VerticalBox,
     globalEvents,
+    refPackageId,
     world,
 } = require("../../wrapper/api");
 const { TabbedPanel } = require("../ui/tabbed-panel");
+
+const ENTRY_TITLE_FONT_SIZE = CONFIG.fontSize * 1.2;
+const DESCRIPTION_FONT_SIZE = CONFIG.fontSize * 0.8;
+const OPTION_FONT_SIZE = CONFIG.fontSize;
 
 let _currentUI = undefined;
 
@@ -41,7 +48,8 @@ class HomebrewLoaderUi {
                 CONFIG.padding
             )
             .setOverrideWidth(anchor.width * CONFIG.scale)
-            .setMinimumHeight(200 * CONFIG.scale)
+            .setMinimumHeight(500 * CONFIG.scale)
+            .setMaximumHeight(1500 * CONFIG.scale)
             .setChild(panel);
         const border = new Border()
             .setColor(CONFIG.backgroundColor)
@@ -78,18 +86,32 @@ class HomebrewLoaderUi {
             assert(Array.isArray(entry.options));
 
             const getWidget = () => {
-                const description = new Text()
-                    .setAutoWrap(true)
-                    .setFontSize(CONFIG.fontSize)
-                    .setText(entry.description);
-                const panel = new VerticalBox()
-                    .setChildDistance(CONFIG.spacing)
-                    .addChild(description);
+                const panel = new VerticalBox().setChildDistance(
+                    CONFIG.spacing
+                );
+
+                const name = new Text()
+                    .setAutoWrap(false)
+                    .setFont("handel-gothic-regular.ttf", refPackageId)
+                    .setFontSize(ENTRY_TITLE_FONT_SIZE)
+                    .setJustification(TextJustification.Center)
+                    .setText(entry.name.toUpperCase());
+                panel.addChild(name);
+
+                if (entry.description.length > 0) {
+                    const description = new RichText()
+                        .setAutoWrap(true)
+                        .setFontSize(DESCRIPTION_FONT_SIZE)
+                        .setText(entry.description);
+                    panel.addChild(description);
+                }
 
                 for (const option of entry.options) {
+                    panel.addChild(new Border().setColor(CONFIG.spacerColor));
+
                     const isActive = this._homebrewLoader.getActive(option.id);
                     const checkBox = new CheckBox()
-                        .setFontSize(CONFIG.fontSize)
+                        .setFontSize(OPTION_FONT_SIZE)
                         .setIsChecked(isActive)
                         .setText(option.name);
                     checkBox.onCheckStateChanged.add(
@@ -101,22 +123,19 @@ class HomebrewLoaderUi {
                         }
                     );
                     panel.addChild(checkBox);
+
+                    if (option.description && option.description.length > 0) {
+                        const description = new RichText()
+                            .setAutoWrap(true)
+                            .setFontSize(DESCRIPTION_FONT_SIZE)
+                            .setText(option.description);
+                        panel.addChild(description);
+                    }
                 }
+
                 return panel;
             };
             tabbedPanel.addEntry(entry.name, getWidget);
-
-            /*
-            const isActive = this._homebrewLoader.getActive(entry.id);
-            const checkBox = new CheckBox()
-                .setFontSize(CONFIG.fontSize)
-                .setIsChecked(isActive)
-                .setText(entry.name);
-            checkBox.onCheckStateChanged.add((checkBox, player, isChecked) => {
-                this._homebrewLoader.setActive(entry.id, isChecked);
-            });
-            panel.addChild(checkBox);
-            */
         }
 
         const closeButton = new Button()
@@ -129,7 +148,7 @@ class HomebrewLoaderUi {
             anchor,
             new Vector(-20, 0, 0)
         );
-        pos.z = world.getTableHeight() + 5.1;
+        pos.z = world.getTableHeight() + 5.2;
         const ui = new UIElement();
         ui.anchorY = 0;
         ui.position = pos;

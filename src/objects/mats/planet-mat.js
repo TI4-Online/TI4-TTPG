@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const CONFIG = require("../../game-ui/game-ui-config");
 const { CardUtil } = require("../../lib/card/card-util");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 const { PopupPanel } = require("../../lib/ui/popup-panel");
 const {
     GameObject,
@@ -81,6 +82,19 @@ class PlanetMat {
             return nsidSet.has(nsid);
         });
 
+        // Report if any are missing.
+        const foundSet = new Set();
+        for (const card of cards) {
+            const nsid = ObjectNamespace.getNsid(card);
+            foundSet.add(nsid);
+        }
+        for (const nsid of nsidSet) {
+            if (!foundSet.has(nsid)) {
+                console.log(`PlanetMat.fetch: missing card "${nsid}"`);
+            }
+        }
+
+        // Move cards.
         const pos = this._obj.getPosition().add([0, 0, 10]);
         const rot = this._obj.getRotation();
         for (const card of cards) {
