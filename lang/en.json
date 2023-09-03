@@ -240,6 +240,7 @@
     "ui.setup.report_errors": "Send error reports",
     "ui.setup.do_setup": "START GAME",
     "ui.setup.suggest_6p_skinny": "Recommend “6P Skinny Table” for better player/viewer experience",
+    "ui.setup.suggest_12_brightness": "Recommend brightness 1.2 (esc > settings > brightness)",
 
     "ui.desk.take_seat": "TAKE SEAT",
     "ui.desk.leave_seat": "LEAVE SEAT",
