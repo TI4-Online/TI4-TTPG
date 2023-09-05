@@ -12,9 +12,9 @@
 	"Metallic": 1,
 	"PrimaryColor":
 	{
-		"R": 137,
-		"G": 61,
-		"B": 178
+		"R": 255,
+		"G": 255,
+		"B": 255
 	},
 	"SecondaryColor":
 	{
@@ -51,16 +51,18 @@
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 32,
-				"G": 14,
-				"B": 51
+				"R": 76,
+				"G": 33,
+				"B": 121
 			},
 			"SecondaryColor":
 			{
@@ -93,16 +95,18 @@
 			"Texture": "global/utility/crate_c.png",
 			"NormalMap": "",
 			"ExtraMap": "global/utility/crate_x.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": false,
 			"Roughness": 1,
 			"Metallic": 0,
 			"PrimaryColor":
 			{
-				"R": 32,
-				"G": 14,
-				"B": 51
+				"R": 76,
+				"G": 33,
+				"B": 121
 			},
 			"SecondaryColor":
 			{
@@ -114,6 +118,7 @@
 		}
 	],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -121,5 +126,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
 }
