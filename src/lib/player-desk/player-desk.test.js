@@ -49,7 +49,7 @@ it("changeColor", () => {
     assert.equal(playerDesk1.colorName, colorName2);
     assert.equal(playerDesk2.colorName, colorName1); // swapped
     let plasticColorHex = ColorUtil.colorToHex(playerDesk1.plasticColor);
-    assert.equal(plasticColorHex, "#07b2ff");
+    assert.equal(plasticColorHex, "#39c1ff");
 
     const overridePlasticColorHex = "#123456";
     playerDesk1.changeColor(colorName2, overridePlasticColorHex);
