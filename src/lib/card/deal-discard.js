@@ -2,6 +2,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { CheckDeckUnique } = require("./check-deck-unique");
 const { ObjectNamespace } = require("../object-namespace");
 const { Card, Rotator, world } = require("../../wrapper/api");
+const { Broadcast } = require("../broadcast");
 
 const DECKS = [
     {
@@ -459,6 +460,13 @@ class DealDiscard {
             // Careful if discarding to main deck vs discard pile.
             const parent = DealDiscard._getParent(deckData);
             if (!parent) {
+                if (deckData.nsidPrefix === "card.faction_reference") {
+                    // This mat got added, old saves might not have it.
+                    Broadcast.chatAll(
+                        "Missing the faction deck mat (this might be an old save?).  Please discard the faction card manually."
+                    );
+                    return true;
+                }
                 throw new Error(
                     `DealDiscard.discard: missing deck mat "${deckData.parentNsid}"`
                 );

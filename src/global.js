@@ -323,6 +323,7 @@ require("./global/chat-commands");
 //require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
 require("./global/fix-table-colors");
+require("./global/fix-unit-colors");
 require("./global/gamedata-key");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");

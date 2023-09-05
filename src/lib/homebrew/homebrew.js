@@ -1,36 +1,37 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../locale");
+const { Adjacency } = require("../system/adjacency");
+const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
+const { Agenda } = require("../agenda/agenda");
 const { Attachment } = require("../../objects/attachments/attachment");
+const { Broadcast } = require("../broadcast");
+const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
 const { Faction } = require("../faction/faction");
 const { Franken } = require("../draft/franken/franken");
+const { HomebrewLoader } = require("./homebrew-loader");
 const { ReplaceObjects } = require("../../setup/spawn/replace-objects");
 const { RestrictObjects } = require("../../setup/spawn/restrict-objects");
+const {
+    RightClickScore,
+} = require("../../global/right-click/right-click-score");
 const { SetupGenericTech } = require("../../setup/setup-generic-tech");
 const { SetupStrategyCards } = require("../../setup/setup-strategy-cards");
 const { SetupSystemTiles } = require("../../setup/setup-system-tiles");
 const { SetupTableDecks } = require("../../setup/setup-table-decks");
+const {
+    SetupGenericPromissory,
+} = require("../../setup/setup-generic-promissory");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { System } = require("../system/system");
 const { Technology } = require("../technology/technology");
 const { UnitAttrs } = require("../unit/unit-attrs");
 const { UnitModifier } = require("../unit/unit-modifier");
-const { world } = require("../../wrapper/api");
-const { Broadcast } = require("../broadcast");
 const { shuffleAllDecks } = require("../../global/shuffle-decks-on-load");
-const {
-    SetupGenericPromissory,
-} = require("../../setup/setup-generic-promissory");
-const {
-    RightClickScore,
-} = require("../../global/right-click/right-click-score");
 const {
     injectRightClickSystemAction,
 } = require("../../global/right-click/right-click-system");
-const { Agenda } = require("../agenda/agenda");
-const { DealActionCards, EndStatusPhase } = require("../phase/end-of-round");
-const { AdjacencyWormhole } = require("../system/adjacency-wormhole");
-const { Adjacency } = require("../system/adjacency");
-const { HomebrewLoader } = require("./homebrew-loader");
+const { Rotator, Vector, world } = require("../../wrapper/api");
+const { TableLayout } = require("../../table/table-layout");
 
 class Homebrew {
     constructor() {
@@ -51,6 +52,9 @@ class Homebrew {
             for (const attachment of table.attachments) {
                 Attachment.injectAttachment(attachment);
             }
+        }
+        if (table.extraBoxes) {
+            this._delayedSpawnExtraBoxes(table.extraBoxes);
         }
         if (table.factionAbilities) {
             for (const ability of table.factionAbilities) {
@@ -281,6 +285,90 @@ class Homebrew {
         }
 
         return this;
+    }
+
+    /**
+     * Create a box with extra content, add to the shaed "homebrew" box.
+     *
+     * @param {Array.{Object.{name:string,nsids:Array.{string}}}} extraBoxes
+     */
+    _delayedSpawnExtraBoxes(extraBoxes) {
+        assert(Array.isArray(extraBoxes));
+        for (const extraBox of extraBoxes) {
+            assert(typeof extraBox === "object");
+            assert(typeof extraBox.name === "string");
+            assert(Array.isArray(extraBox.nsids));
+            for (const nsid of extraBox.nsids) {
+                assert(typeof nsid === "string");
+            }
+        }
+
+        if (world.TI4.config.timestamp > 0) {
+            Broadcast.chatAll(
+                locale("ui.error.homebrew.resetAfterLoaded"),
+                Broadcast.ERROR
+            );
+            return;
+        }
+
+        const spawnBox = (name, pos = undefined, rot = undefined) => {
+            assert(typeof name === "string");
+            if (!pos) {
+                pos = new Vector(0, 0, world.getTableHeight() + 10);
+            }
+            if (!rot) {
+                rot = new Rotator(0, 0, 0);
+            }
+            const box = Spawn.spawn("bag:base/generic", pos, rot);
+            box.snapToGround();
+            box.setName(name);
+            box.setPrimaryColor([1, 1, 1, 1]);
+            box.setScale([0.8, 0.8, 0.8]);
+            return box;
+        };
+
+        const delayed = () => {
+            if (!this._homebrewExtrasBox) {
+                const hebSavedData = "__homebrewExtrasBox__";
+                const skipContained = true;
+                for (const obj of world.getAllObjects(skipContained)) {
+                    if (obj.getSavedData() === hebSavedData) {
+                        this._homebrewExtrasBox = obj;
+                        break;
+                    }
+                }
+                if (!this._homebrewExtrasBox) {
+                    const anchor = TableLayout.anchor.strategy;
+                    let pos = new Vector(0, 0, 0);
+                    let rot = new Rotator(0, 0, 0);
+                    pos = TableLayout.anchorPositionToWorld(anchor, pos);
+                    rot = TableLayout.anchorRotationToWorld(anchor, rot);
+                    this._homebrewExtrasBox = spawnBox("Homebrew", pos, rot);
+                    this._homebrewExtrasBox.setSavedData(hebSavedData);
+                }
+            }
+
+            for (const extraBox of extraBoxes) {
+                console.log(
+                    `Homebrew._delayedSpawnExtraBoxes: spawning "${extraBox.name}"`
+                );
+                const box = spawnBox(extraBox.name);
+                for (const nsid of extraBox.nsids) {
+                    const pos = new Vector(0, 0, 0);
+                    const rot = new Rotator(0, 0, 0);
+                    const obj = Spawn.spawn(nsid, pos, rot);
+                    if (obj) {
+                        box.addObjects([obj]);
+                    } else {
+                        console.log(
+                            `Homebrew._delayedSpawnExtraBoxes: unknown "${nsid}"`
+                        );
+                    }
+                }
+                this._homebrewExtrasBox.addObjects([box]);
+            }
+        };
+        process.nextTick(delayed);
     }
 }
 

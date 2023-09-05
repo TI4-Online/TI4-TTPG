@@ -174,6 +174,13 @@ class TabDisplay {
                     },
                 },
                 {
+                    label: locale("ui.setup.dark_table"),
+                    onClicked: (button, player) => {
+                        TableColor.resetToDark();
+                    },
+                    reset: true,
+                },
+                {
                     label: locale("display.reset_to_defaults"),
                     onClicked: (button, player) => {
                         TableColor.resetToDefaults();

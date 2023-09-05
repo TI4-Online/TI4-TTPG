@@ -38,13 +38,13 @@ class TableColor {
     }
 
     static resetToDefaults() {
-        TableColor.setPrimary(ColorUtil.colorFromHex("#494949"));
+        TableColor.setPrimary(ColorUtil.colorFromHex("#484848"));
         TableColor.setSecondary(ColorUtil.colorFromHex("#383838"));
     }
 
     static resetToDark() {
-        TableColor.setPrimary(ColorUtil.colorFromHex("#212121"));
-        TableColor.setSecondary(ColorUtil.colorFromHex("#363636"));
+        TableColor.setPrimary(ColorUtil.colorFromHex("#2c2c2c"));
+        TableColor.setSecondary(ColorUtil.colorFromHex("#383838"));
     }
 
     static isDark() {
