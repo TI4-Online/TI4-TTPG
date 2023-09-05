@@ -1,4 +1,4 @@
-const { ColorUtil } = require("../lib/color/color-util");
+const { TableColor } = require("../lib/display/table-color");
 const { world } = require("../wrapper/api");
 
 /**
@@ -13,8 +13,6 @@ for (const table of world.getAllTables()) {
             continue; // colors already set
         }
 
-        // CURRENT:
-        table.setPrimaryColor(ColorUtil.colorFromHex("#494949"));
-        table.setSecondaryColor(ColorUtil.colorFromHex("#383838"));
+        TableColor.resetToDefaults();
     }
 }

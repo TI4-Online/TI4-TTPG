@@ -8,9 +8,9 @@ const SRC_TEXTURES_DIR = path.normalize("prebuild/Textures/");
 const DST_TEXTURES_DIR = path.normalize("assets/Textures/");
 
 const DEFAULT_OPTIONS = {
-    brightness: 0.927,
-    saturation: 1.377,
-    contrast: 0.844,
+    brightness: 1.2, //0.927,
+    saturation: 1.3, //1.377,
+    contrast: 0.7, //0.844,
 };
 
 /**
@@ -229,6 +229,107 @@ class MapTilesTextures {
         );
     }
 
+    static async visualizeBasic(srcAbsolutePath, dstAbsolutePath) {
+        const min = -0.5;
+        const max = 0.5;
+        const stepSize = 0.1;
+        const composite = [];
+
+        let row = 0;
+        let col = 0;
+        const srcBuffer = await sharp(srcAbsolutePath).toBuffer();
+        const add = async (options) => {
+            console.log(JSON.stringify(options));
+            const text = `[b:${options.brightness.toFixed(
+                3
+            )}, s:${options.saturation.toFixed(
+                3
+            )}, c:${options.contrast.toFixed(3)}]`;
+
+            const x = col * 1024;
+            const y = row * 1024;
+
+            // Generate image.
+            const src = await sharp(srcBuffer);
+            const dst = await MapTilesTextures.processOneRaw(src, options);
+            composite.push({
+                input: await dst.toBuffer(),
+                top: y,
+                left: x,
+            });
+
+            // Write options on image
+            const textWidth = 1024;
+            const textHeight = 200;
+            const svgText = `
+                                <svg width="${textWidth}" height="${textHeight}">
+                                  <style>
+                                    .title { fill: red; font-size: 85px}
+                                  </style>
+                                  <text x="45%" y="40%" text-anchor="middle" class="title">${text}</text>
+                                </svg>`;
+            const svgBuffer = Buffer.from(svgText);
+            composite.push({
+                input: svgBuffer,
+                top: y + textHeight / 2,
+                left: x,
+            });
+        };
+
+        const seed = {
+            brightness: 1,
+            saturation: 3,
+            contrast: 0.7,
+        };
+
+        for (let i = min; i <= max; i += stepSize) {
+            const options = {
+                brightness: seed.brightness + i,
+                saturation: seed.saturation,
+                contrast: seed.contrast,
+            };
+            await add(options);
+            col++;
+        }
+        row++;
+        col = 0;
+
+        for (let i = min; i <= max; i += stepSize) {
+            const options = {
+                brightness: seed.brightness,
+                saturation: seed.saturation + i,
+                contrast: seed.contrast,
+            };
+            await add(options);
+            col++;
+        }
+        row++;
+        col = 0;
+
+        for (let i = min; i <= max; i += stepSize) {
+            const options = {
+                brightness: seed.brightness,
+                saturation: seed.saturation,
+                contrast: seed.contrast + i,
+            };
+            await add(options);
+            col++;
+        }
+        row++;
+        col = 0;
+
+        await sharp({
+            create: {
+                channels: 3,
+                background: { r: 0, g: 0, b: 0 },
+                width: 1024 * Math.ceil((max - min) / stepSize),
+                height: 1024 * row,
+            },
+        })
+            .composite(composite)
+            .toFile(dstAbsolutePath);
+    }
+
     /**
      * Draw an image showing the effects of the various image manipulation
      * parameters.  Useful to eyeball what settings to use.
@@ -248,23 +349,24 @@ class MapTilesTextures {
 
         const srcBuffer = await sharp(srcAbsolutePath).toBuffer();
 
+        let steps = 5;
         const brightness = {
             // float multiplier
-            min: 0.76,
-            max: 0.96,
-            steps: 20,
+            min: 0.9, //0.76,
+            max: 1.1, //0.96,
+            steps: 3,
         };
         const saturation = {
             // float multiplier
-            min: 1.32,
-            max: 1.52,
-            steps: 20,
+            min: 0.8, //1.32,
+            max: 1.8, //1.52,
+            steps,
         };
         const contrast = {
             // float 0-100, 0 = off
-            min: 0.7,
-            max: 0.9,
-            steps: 21,
+            min: 0.8, //0.7,
+            max: 1.2, //0.9,
+            steps,
         };
 
         const db = (brightness.max - brightness.min) / brightness.steps;
@@ -272,9 +374,9 @@ class MapTilesTextures {
         const dc = (contrast.max - contrast.min) / (contrast.steps - 1);
 
         const composite = [];
-        for (let bi = 0; bi < brightness.steps; bi++) {
-            for (let si = 0; si < saturation.steps; si++) {
-                for (let ci = 0; ci < contrast.steps; ci++) {
+        for (let si = 0; si < saturation.steps; si++) {
+            for (let ci = 0; ci < contrast.steps; ci++) {
+                for (let bi = 0; bi < brightness.steps; bi++) {
                     const options = {
                         brightness: brightness.min + bi * db,
                         saturation: saturation.min + si * ds,
@@ -469,6 +571,14 @@ const srcAbsolutePath = path.join(
 );
 const dstAbsolutePath = "/Users/darrell/test.jpg";
 const matchTtsAbsolutePath = "/Users/darrell/Downloads/tts_tile_001.jpg";
+
+const BASIC = false;
+if (BASIC) {
+    MapTilesTextures.visualizeBasic(
+        path.join(SRC_TEXTURES_DIR, "en/tiles/pok/regular/tile_076.jpg"),
+        dstAbsolutePath
+    );
+}
 
 const VISUALIZE = false;
 if (VISUALIZE) {
