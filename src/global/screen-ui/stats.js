@@ -44,6 +44,13 @@ class StatsScreenUI {
         };
         const tasks = [...FILL_TASKS]; // mutable copy
 
+        if (
+            data.players.length !== world.TI4.config.playerCount &&
+            world.TI4.config.timestamp <= 0
+        ) {
+            return; // player count change in progress
+        }
+
         const doNextTask = () => {
             const task = tasks.shift();
             if (!task) {
