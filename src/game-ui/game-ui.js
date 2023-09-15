@@ -52,6 +52,7 @@ const {
     refPackageId,
     world,
 } = require("../wrapper/api");
+const { MaltyDraft } = require("../lib/draft/scpt/malty-draft");
 
 let _gameUI;
 
@@ -268,6 +269,8 @@ class GameUI {
                 return new SCPT2023().getUI();
             });
         scptFolder.addChild(scpt2023);
+        const maltyDraft = MaltyDraft.createDraftNavEntry();
+        scptFolder.addChild(maltyDraft);
 
         const bagDraft = new NavEntry()
             .setName(locale("nav.map.draft.bag"))
