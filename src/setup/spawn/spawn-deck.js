@@ -28,6 +28,9 @@ class SpawnDeck {
         assert(typeof rot.yaw === "number"); // "instanceof Rotator" broken
         assert(!filterNsid || typeof filterNsid === "function");
 
+        // Before spawning anything look for a deck at position.
+        const existingDeck = SpawnDeck.getDeckAtPosition(nsidPrefix, pos);
+
         // Get matching deck NSIDs.
         const mergeDeckNsids = Spawn.getAllNSIDs().filter((nsid) => {
             const parsedNsid = ObjectNamespace.parseNsid(nsid);
@@ -88,9 +91,11 @@ class SpawnDeck {
         }
 
         // Add to existing generic tech deck.
-        const existingDeck = SpawnDeck.getDeckAtPosition(nsidPrefix, pos);
         if (existingDeck) {
-            existingDeck.addCards(deck);
+            const success = existingDeck.addCards(deck);
+            if (!success) {
+                `SpawnDeck.spawnDeck "${nsidPrefix}" failed to add to existing deck at position`;
+            }
             deck = existingDeck;
         }
 
