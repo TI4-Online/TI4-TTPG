@@ -162,31 +162,33 @@ class GameSetupUI {
 
         fullPanel.addChild(WidgetFactory.layoutBox(), 1); // weight 1 stretches to fill space
 
-        const wrongColorHex =
-            PlayerDeskColor.getColorAttrs("yellow").widgetHexColor;
-        const wrongColor = ColorUtil.colorFromHex(wrongColorHex);
-        if (TableLayout.getTableType() !== "6p-skinny") {
-            const wrongTableWarning = this._createText(
-                locale("ui.setup.suggest_6p_skinny")
-            );
-            wrongTableWarning
-                .setJustification(TextJustification.Center)
-                .setTextColor(wrongColor)
-                .setVisible(world.TI4.config.playerCount <= 6);
-            fullPanel.addChild(wrongTableWarning);
+        if (!TableLayout.supportsLargeHexes) {
+            const wrongColorHex =
+                PlayerDeskColor.getColorAttrs("yellow").widgetHexColor;
+            const wrongColor = ColorUtil.colorFromHex(wrongColorHex);
+            if (TableLayout.getTableType() !== "6p-skinny") {
+                const wrongTableWarning = this._createText(
+                    locale("ui.setup.suggest_6p_skinny")
+                );
+                wrongTableWarning
+                    .setJustification(TextJustification.Center)
+                    .setTextColor(wrongColor)
+                    .setVisible(world.TI4.config.playerCount <= 6);
+                fullPanel.addChild(wrongTableWarning);
 
-            globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
-                wrongTableWarning.setVisible(playerCount <= 6);
-            });
-        } else {
-            // Only add brightness suggestion to skinny, do not overcrowd.
-            const recommendBrightness = this._createText(
-                locale("ui.setup.suggest_12_brightness")
-            );
-            recommendBrightness
-                .setJustification(TextJustification.Center)
-                .setTextColor(wrongColor);
-            fullPanel.addChild(recommendBrightness);
+                globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
+                    wrongTableWarning.setVisible(playerCount <= 6);
+                });
+            } else {
+                // Only add brightness suggestion to skinny, do not overcrowd.
+                const recommendBrightness = this._createText(
+                    locale("ui.setup.suggest_12_brightness")
+                );
+                recommendBrightness
+                    .setJustification(TextJustification.Center)
+                    .setTextColor(wrongColor);
+                fullPanel.addChild(recommendBrightness);
+            }
         }
 
         _setupButton = this._createButton(
