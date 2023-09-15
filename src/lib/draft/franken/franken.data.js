@@ -872,10 +872,17 @@ const STARTING_TECH_CHOICE = {
     winnu: "Choose any 1 technology that has no prerequisites",
 };
 
+const USELESS = {
+    abilities: [],
+    startingTech: [],
+    cards: [],
+};
+
 module.exports = {
     FACTION_ABILITIES,
     MERGE_ABILITIES,
     UNDRAFTABLE,
     REMOVE_CARDS,
     STARTING_TECH_CHOICE,
+    USELESS,
 };

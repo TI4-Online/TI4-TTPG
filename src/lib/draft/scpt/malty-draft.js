@@ -1,13 +1,7 @@
 const { NavEntry } = require("../../ui/nav/nav-entry");
 const { MALTY_DRAFTS } = require("./malty-draft.data");
 const CONFIG = require("../../../game-ui/game-ui-config");
-const {
-    Border,
-    Button,
-    LayoutBox,
-    Text,
-    VerticalBox,
-} = require("../../../wrapper/api");
+const { Border, Button, Text, VerticalBox } = require("../../../wrapper/api");
 const { MiltySliceDraft } = require("../milty2/milty-slice-draft");
 const { ThrottleClickHandler } = require("../../ui/throttle-click-handler");
 const locale = require("../../locale");

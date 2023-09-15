@@ -63,6 +63,7 @@ class AbstractSliceDraft {
         // Use sensible defaults, caller can override.
         this._factionGenerator = new AbstractFactionGenerator();
         this._fixedSystemsGenerator = undefined;
+        this._minPlayerCount = 2;
         this._maxPlayerCount = 8;
         this._placeHyperlanes = new AbstractPlaceHyperlanes();
         this._sliceGenerator = undefined;
@@ -356,6 +357,16 @@ class AbstractSliceDraft {
     setMaxPlayerCount(value) {
         assert(typeof value === "number");
         this._maxPlayerCount = value;
+        return this;
+    }
+
+    getMinPlayerCount() {
+        return this._minPlayerCount;
+    }
+
+    setMinPlayerCount(value) {
+        assert(typeof value === "number");
+        this._minPlayerCount = value;
         return this;
     }
 
