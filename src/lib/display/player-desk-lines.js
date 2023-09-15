@@ -94,6 +94,11 @@ process.nextTick(() => {
         PlayerDeskLines.clearAllPlayerDeskLines();
         PlayerDeskLines.addAllPlayerDeskLines();
     });
+
+    globalEvents.TI4.onPlayerColorChanged.add(() => {
+        PlayerDeskLines.clearAllPlayerDeskLines();
+        PlayerDeskLines.addAllPlayerDeskLines();
+    });
 });
 
 module.exports = { PlayerDeskLines };
