@@ -48,7 +48,7 @@ class TableColor {
     }
 
     static isDark() {
-        return Math.abs(TableColor.getPrimary().r - 0.129) < 0.01;
+        return Math.abs(TableColor.getPrimary().r - 0.1725) < 0.01;
     }
 }
 

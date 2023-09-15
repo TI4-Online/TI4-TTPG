@@ -12,9 +12,9 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 72,
-		"G": 72,
-		"B": 72
+		"R": 44,
+		"G": 44,
+		"B": 44
 	},
 	"SecondaryColor":
 	{
@@ -196,7 +196,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 180
+				"Z": -180
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -226,7 +226,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -180
+				"Z": 180
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -256,7 +256,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 180
+				"Z": -180
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -286,7 +286,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -180
+				"Z": 180
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
