@@ -41,7 +41,8 @@ class UiDraftSettings {
         // Max player count?
         const playerCount = world.TI4.config.playerCount;
         const maxPlayerCount = this._sliceDraft.getMaxPlayerCount();
-        if (playerCount > maxPlayerCount) {
+        const minPlayerCount = this._sliceDraft.getMinPlayerCount();
+        if (playerCount > maxPlayerCount || playerCount < minPlayerCount) {
             return this._getTooManyPlayersWidget();
         }
 
@@ -115,7 +116,11 @@ class UiDraftSettings {
 
     _getTooManyPlayersWidget() {
         const maxPlayerCount = this._sliceDraft.getMaxPlayerCount();
-        const msg = locale("ui.draft.too_many_players", { maxPlayerCount });
+        const minPlayerCount = this._sliceDraft.getMinPlayerCount();
+        const msg = locale("ui.draft.too_many_players", {
+            maxPlayerCount,
+            minPlayerCount,
+        });
         return new Text()
             .setAutoWrap(true)
             .setFontSize(CONFIG.fontSize)

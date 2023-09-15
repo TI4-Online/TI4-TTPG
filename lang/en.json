@@ -389,7 +389,7 @@
     "ui.draft.faction_input": "Faction input:",
     "ui.draft.slice_count": "Slice count",
     "ui.draft.bunker_too_many_players": "Bunker draft is only available for 6 or fewer players",
-    "ui.draft.too_many_players": "This draft is only available for {maxPlayerCount} or fewer players",
+    "ui.draft.too_many_players": "This draft is only available for {minPlayerCount} to {maxPlayerCount} players",
     "ui.draft.bunker_count": "Bunker count",
     "ui.draft.bunker_offset": "Shift home systems to right side",
     "ui.draft.faction_count": "Faction count",

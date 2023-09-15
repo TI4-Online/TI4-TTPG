@@ -12,9 +12,9 @@
 	"Metallic": 0,
 	"PrimaryColor":
 	{
-		"R": 73,
-		"G": 73,
-		"B": 73
+		"R": 44,
+		"G": 44,
+		"B": 44
 	},
 	"SecondaryColor":
 	{
@@ -136,7 +136,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": 9.00007
+				"Z": 9.00008
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
@@ -166,7 +166,7 @@
 			{
 				"X": 0,
 				"Y": 0,
-				"Z": -9.00007
+				"Z": -9.00008
 			},
 			"Texture": "global/table/white-1262.jpg",
 			"NormalMap": "",
