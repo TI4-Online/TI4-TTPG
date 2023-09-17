@@ -753,12 +753,17 @@ class AbstractSliceDraft {
         }
 
         // Move all players to non-seat slots.
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            playerDesk.unseatPlayer();
-        }
+        PlayerDesk.unseatAllPlayers();
 
         // Wait a frame to make sure player is fully removed from slot.
+        // Saw a glitch where players did not move to the correct seats,
+        // extend this delay in case that was a race.
+        let framesRemaining = 5;
         const delayedFinishMove = () => {
+            if (framesRemaining-- > 0) {
+                process.nextTick(delayedFinishMove);
+                return;
+            }
             const playerCount = world.TI4.config.playerCount;
             const playerDesks = world.TI4.getAllPlayerDesks();
             for (let chooser = 0; chooser < playerCount; chooser++) {
@@ -767,13 +772,18 @@ class AbstractSliceDraft {
                 const dstPlayerDesk = playerDesks[deskIndex];
                 assert(dstPlayerDesk);
                 const player = chooserToPlayer[chooser];
+                console.log(
+                    `AbstractSliceDraft._movePlayersToSeats: ${chooser} -> ${deskIndex} (player=${
+                        player !== undefined
+                    })`
+                );
                 if (!player) {
                     continue;
                 }
                 dstPlayerDesk.seatPlayer(player);
             }
         };
-        process.nextTick(delayedFinishMove);
+        delayedFinishMove();
     }
 }
 
