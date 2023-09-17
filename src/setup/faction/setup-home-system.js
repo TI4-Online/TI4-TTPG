@@ -72,6 +72,21 @@ class SetupHomeSystem extends AbstractSetup {
         // Spawn ("oops ALL X")
         const rot = new Rotator(0, 0, 0);
         for (const [nsid, pos] of Object.entries(nsidToPosition)) {
+            // Check if the correct system tile is already there
+            // (e.g. online draft generated the map string).
+            // Rather than using it, delete and go through the
+            const existingObj = world.TI4.getSystemTileObjectByPosition(pos);
+            const existingSystem = existingObj
+                ? world.TI4.getSystemBySystemTileObject(existingObj)
+                : false;
+            if (existingSystem && existingSystem.tile === tile) {
+                console.log(
+                    `SetupHomeSystem: system ${tile} already present, replacing`
+                );
+                existingObj.setTags(["DELETED_ITEMS_IGNORE"]);
+                existingObj.destroy();
+            }
+
             const above = pos.add([0, 0, 1]);
             const obj = Spawn.spawn(nsid, above, rot);
             obj.snapToGround();
