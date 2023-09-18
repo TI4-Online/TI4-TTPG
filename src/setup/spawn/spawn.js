@@ -74,8 +74,11 @@ class Spawn {
                 }
             }
         }
-        assert(groupName);
-        return groupName;
+        if (groupName) {
+            return groupName;
+        }
+
+        return "";
     }
 
     /**
