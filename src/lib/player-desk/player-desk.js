@@ -74,6 +74,41 @@ class PlayerDesk {
         throw new Error("unable to find open slot");
     }
 
+    static unseatAllPlayers() {
+        // Reserve player desks player slots, as well as any in use by unseated players.
+        const reservedSlots = new Set();
+        const movePlayers = [];
+        for (const playerDesk of PlayerDesk.getAllPlayerDesks()) {
+            reservedSlots.add(playerDesk.playerSlot);
+        }
+        for (const player of world.getAllPlayers()) {
+            const slot = player.getSlot();
+            if (reservedSlots.has(slot)) {
+                movePlayers.push(player);
+            } else {
+                reservedSlots.add(slot);
+            }
+        }
+
+        // What slots remain?
+        const openSlots = [];
+        for (let i = 0; i < 20; i++) {
+            if (!reservedSlots.has(i)) {
+                openSlots.push(i);
+            }
+        }
+
+        // Unseat.
+        for (const player of movePlayers) {
+            const oldSlot = player.getSlot();
+            if (openSlots.length > 0) {
+                const newSlot = openSlots.pop();
+                player.switchSlot(newSlot);
+                console.log(`unseatAllPlayers: ${oldSlot} -> ${newSlot}`);
+            }
+        }
+    }
+
     /**
      * Get all player desks, accounting for current player count.
      * Player desks are read-only and shared, DO NOT MUTATE!

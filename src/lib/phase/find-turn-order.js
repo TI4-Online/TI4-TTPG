@@ -134,7 +134,9 @@ class FindTurnOrder {
                 );
             }
 
-            assert(typeof initiative === "number");
+            if (typeof initiative !== "number") {
+                initiative = Math.MAX_SAFE_INTEGER;
+            }
             assert(obj instanceof GameObject);
             initiativeObjects.push({
                 obj,
