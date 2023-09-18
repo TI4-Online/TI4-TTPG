@@ -49,9 +49,15 @@ const {
     SetupStartingUnits,
 } = require("../../setup/faction/setup-starting-units");
 
+const onErr = world.__isMock
+    ? undefined
+    : (exception) => {
+          world.TI4.errorReporting.error(exception.stack);
+      };
+
 const DISCARD_FACTION_TOKENS = true;
 const ASYNC_DELAY_MSECS = 30;
-const _sharedAsyncTaskQueue = new AsyncTaskQueue(ASYNC_DELAY_MSECS);
+const _sharedAsyncTaskQueue = new AsyncTaskQueue(ASYNC_DELAY_MSECS, onErr);
 
 class PlayerDeskSetup {
     static getSharedAsyncTaskQueue() {
