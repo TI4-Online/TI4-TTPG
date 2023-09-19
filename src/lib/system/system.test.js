@@ -130,6 +130,7 @@ it("summarizeRaw", () => {
         optRes: 8.5,
         res: 9,
         tech: ["G"],
+        traits: ["C", "C", "I", "H"],
         wormholes: ["β", "α"],
     });
 });
