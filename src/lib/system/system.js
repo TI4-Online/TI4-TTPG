@@ -341,6 +341,7 @@ class System {
         let inf = 0;
         let optInf = 0;
         let tech = [];
+        let traits = [];
         let wormholes = [];
         let legendaries = [];
 
@@ -363,6 +364,11 @@ class System {
                 if (planet.raw.tech) {
                     for (const planetTech of planet.raw.tech) {
                         tech.push(planetTech.substring(0, 1).toUpperCase());
+                    }
+                }
+                if (planet.raw.trait) {
+                    for (const planetTrait of planet.raw.trait) {
+                        traits.push(planetTrait.substring(0, 1).toUpperCase());
                     }
                 }
                 if (planet.raw.legendary) {
@@ -393,6 +399,7 @@ class System {
             inf,
             optInf,
             tech,
+            traits,
             wormholes,
             legendaries,
         };
