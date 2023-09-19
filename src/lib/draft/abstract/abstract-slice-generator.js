@@ -154,6 +154,9 @@ class AbstractSliceGenerator {
                 return item.trim();
             });
 
+        // Hack for &
+        items = items.map((x) => x.replace("$AMPERSAND", "&"));
+
         // Validate.
         if (items.length !== sliceCount) {
             const err = `label count (${items.length}) does not match slice count (${sliceCount})`;
