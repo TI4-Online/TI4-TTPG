@@ -51,8 +51,10 @@
 			"Texture": "global/tokens/pok/stellar_converter.png",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		},
@@ -72,15 +74,17 @@
 			},
 			"Rotation":
 			{
-				"X": -180,
+				"X": 180,
 				"Y": 0,
 				"Z": 0
 			},
 			"Texture": "global/tokens/pok/stellar_converter.png",
 			"NormalMap": "",
 			"ExtraMap": "global/notint.png",
+			"ExtraMap2": "",
 			"IsTransparent": false,
 			"CastShadow": true,
+			"IsTwoSided": false,
 			"UseOverrides": true,
 			"SurfaceType": "Plastic"
 		}
@@ -109,6 +113,7 @@
 			"Type": "Convex"
 		}
 	],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection":
@@ -116,5 +121,7 @@
 		"X": 0,
 		"Y": 0,
 		"Z": 0
-	}
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": []
 }

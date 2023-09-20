@@ -252,6 +252,8 @@ class GameUI {
         );
         draftFolder.addChild(scptFolder);
 
+        const malty = MaltyDraft.createDraftNavEntry();
+        scptFolder.addChild(malty);
         const scpt2022 = new NavEntry()
             .setName("Patreon 4 (2022)")
             .setWidgetFactory((navPanel, navEntry) => {
