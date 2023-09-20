@@ -2,12 +2,12 @@ const SCPT_DRAFTS_2024 = [
     {
         name: "Qualifier",
         enabled: true,
-        slices: "50,37,45,61,36|32,66,68,63,39|26,76,49,19,41|64,35,65,22,79|25,73,78,59,62|72,75,80,21,40",
+        slices: "32,66,68,63,39|26,76,49,19,41|64,35,65,22,79|50,37,45,61,36|25,73,78,59,62|72,75,80,21,40",
         labels: [
-            "Yellow Slice Because It Has 2 Reds",
             "101 Dal Boothas",
             "Will",
             "Tharma $AMPERSAND Breg",
+            "Yellow Slice Because It Has 2 Reds",
             "Give Me Integrated or Give Me Death",
             "Devil Went Down to Velnor",
         ].join("|"),
