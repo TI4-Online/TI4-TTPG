@@ -29,13 +29,15 @@ const validate = function (mapString) {
     // If it matches prune it before checking remaining.
     const first = entries[0];
     const firstRegex = /^\{[-]*\d+([abAB]\d)?\}$/;
-    if (firstRegex.test(first)) {
+    const altFirstRegex = /^\{0[rgbRGB]\}$/;
+    if (firstRegex.test(first) || altFirstRegex.test(first)) {
         entries.shift();
     }
 
     const entryRegex = /^[-]*\d+(?:[abAB]\d)?$/;
+    const altEntryRegex = /^0[rgbRGB]$/;
     for (const entry of entries) {
-        if (!entryRegex.test(entry)) {
+        if (!entryRegex.test(entry) && !altEntryRegex.test(entry)) {
             //console.log(`bad entry "${entry}" from "${mapString}"`);
             return false;
         }
@@ -65,12 +67,14 @@ const parse = function (mapString) {
     }
     const tiles = Array.from(
         mapString.matchAll(
-            /\{?(?<tile>[-]*\d+)\}?(?:(?<side>[abAB])(?<rotation>\d))?/g
+            /\{?(?<tile>[-]*\d+)\}?(?:(?<side>[abABrgRG])(?<rotation>\d?))?/g
         )
     ).map((match) => {
         const tile = { tile: parseInt(match.groups.tile) };
         if (match.groups.side) {
             tile.side = match.groups.side.toLowerCase();
+        }
+        if (match.groups.rotation) {
             tile.rotation = parseInt(match.groups.rotation);
         }
         return tile;
