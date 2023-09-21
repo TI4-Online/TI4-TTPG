@@ -350,12 +350,12 @@ class TurnOrderScreenUI {
                 timerText.setText(text);
             }
 
-            // Export.
+            // Export using the "timer" format.
             world.TI4.gameData.addExtra("turnTimer", {
-                timerValue,
+                display,
                 anchorTimestamp,
                 anchorValue,
-                display,
+                timerValue,
                 active: this._timerIntervalHandle ? true : false,
             });
         };
@@ -382,6 +382,7 @@ class TurnOrderScreenUI {
                     const now = Date.now();
                     const delta = (now - anchorTimestamp) / 1000;
                     anchorValue += delta;
+                    anchorTimestamp = Date.now();
 
                     // Stop timer.
                     clearInterval(this._timerIntervalHandle);
