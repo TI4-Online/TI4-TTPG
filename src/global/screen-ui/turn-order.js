@@ -39,6 +39,9 @@ class TurnOrderScreenUI {
         this._simplePlayerSlots = [];
         this._fancyPlayerSlots = Array.from(Array(20).keys());
 
+        this._timerTexts = [];
+        this._timerIntervalHandle = undefined;
+
         this._simpleUI = this.createSimpleUI();
         this._simpleUIadded = false;
 
@@ -316,6 +319,7 @@ class TurnOrderScreenUI {
             .setFontSize(TIMER_FONT_SIZE)
             .setTextColor(ColorUtil.colorFromHex("#cb0000"))
             .setText("0:00");
+        this._timerTexts.push(timer);
 
         const updateTimerVisibility = () => {
             const timerValue = world.TI4.config.timer;
@@ -341,35 +345,52 @@ class TurnOrderScreenUI {
             minutes = String(minutes).padStart(2, "0");
             seconds = String(seconds).padStart(2, "0");
             const text = `${sign}${minutes}:${seconds}`;
-            timer.setText(text);
+
+            for (const timerText of this._timerTexts) {
+                timerText.setText(text);
+            }
+
+            // Export.
+            world.TI4.gameData.addExtra("turnTimer", {
+                timerValue,
+                anchorTimestamp,
+                anchorValue,
+                display,
+                active: this._timerIntervalHandle ? true : false,
+            });
         };
 
         updateTimerVisibility();
         updateTimer();
 
         // Click to pause timer.
-        let intervalHandle = setInterval(updateTimer, 1000);
+
+        if (!this._timerIntervalHandle) {
+            this._timerIntervalHandle = setInterval(updateTimer, 1000);
+        }
         timer.onClicked.add(
             ThrottleClickHandler.wrap((button, player) => {
                 const playerName = world.TI4.getNameByPlayerSlot(
                     player.getSlot()
                 );
-                const action = intervalHandle ? "paused" : "resumed";
+                const action = this._timerIntervalHandle ? "paused" : "resumed";
                 const msg = `${playerName} ${action} turn timer`;
                 Broadcast.chatAll(msg);
 
-                if (intervalHandle) {
+                if (this._timerIntervalHandle) {
                     // Record value for resume.
                     const now = Date.now();
                     const delta = (now - anchorTimestamp) / 1000;
                     anchorValue += delta;
 
                     // Stop timer.
-                    clearInterval(intervalHandle);
-                    intervalHandle = undefined;
+                    clearInterval(this._timerIntervalHandle);
+                    this._timerIntervalHandle = undefined;
+                    updateTimer();
                 } else {
                     anchorTimestamp = Date.now();
-                    intervalHandle = setInterval(updateTimer, 1000);
+                    this._timerIntervalHandle = setInterval(updateTimer, 1000);
+                    updateTimer();
                 }
             })
         );
