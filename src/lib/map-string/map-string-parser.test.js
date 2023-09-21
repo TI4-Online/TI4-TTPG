@@ -43,6 +43,11 @@ it("validate does not support invalid characters", () => {
     assert.notEqual(validate("{4} ^  ,7 $  18,   23"), true);
 });
 
+it("validate alt", () => {
+    assert(validate("{0r}"));
+    assert(validate("0r"));
+});
+
 // test parsing
 it("parse empty", () => {
     assert.deepEqual(parse(""), [{ tile: 18 }]);
@@ -109,6 +114,10 @@ it("parse throws for invalid map string", () => {
 
 it("parse throws for support invalid characters", () => {
     assert.throws(() => parse("{4} ^  ,7 $  18,   23"));
+});
+
+it("parse alt", () => {
+    assert.deepEqual(parse("0g"), [{ tile: 18 }, { tile: 0, side: "g" }]);
 });
 
 // test formatting
