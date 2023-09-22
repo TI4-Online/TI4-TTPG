@@ -2,8 +2,6 @@ const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
 const { UnitAttrs } = require("./unit-attrs");
 const { world } = require("../../wrapper/api");
-const { Hex } = require("../hex");
-const { Facing } = require("../facing");
 
 // This is not JSON because `modify = function(unitAttrs, auxData)` functions.
 module.exports = [
@@ -255,19 +253,20 @@ module.exports = [
                 return false;
             }
             // Only applies to Mecatol Rex WHEN THE PLAYER CONTROLS IT!
-            // Look for the attachment token on the system.
+            // Look for the planet card in the player area.
+            const playerSlot = auxData.self.playerSlot;
+            const mecatolCardNsid = "card.planet:base/mecatol_rex";
             const skipContained = true;
             for (const obj of world.getAllObjects(skipContained)) {
                 const nsid = ObjectNamespace.getNsid(obj);
-                if (nsid !== "token.keleres:codex.vigil/custodia_vigilia") {
+                if (nsid !== mecatolCardNsid) {
                     continue;
                 }
                 const pos = obj.getPosition();
-                const hex = Hex.fromPosition(pos);
-                if (hex !== auxData.hex) {
-                    continue;
+                const closest = world.TI4.getClosestPlayerDesk(pos);
+                if (closest.playerSlot === playerSlot) {
+                    return true;
                 }
-                return Facing.isFaceUp(obj);
             }
             return false;
         },
