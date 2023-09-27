@@ -866,6 +866,7 @@ class Agenda {
         assert(typeof value === "number");
         assert(value >= 0);
         assert(!clickingPlayer || clickingPlayer instanceof Player);
+        assert(this._deskIndexToVoteCount[deskIndex]);
         world.TI4.errorReporting.clearExtra();
 
         this._deskIndexToVoteCount[deskIndex] = value;
