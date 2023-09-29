@@ -5,9 +5,12 @@ const { HomebrewLoaderUi } = require("./homebrew-loader-ui");
 const { ObjectType, Vector, world } = require("../../wrapper/api");
 
 const MAX_ID_LENGTH = 8;
+
+const TI4_HOMEBREW_PACKAGE_ID_DEV = "56EC3F524ED72309122BB944A6E642AE";
+const TI4_HOMEBREW_PACKAGE_ID_PRD = "56EC3F524ED72309122BB944A6E642AF";
 const TI4_HOMEBREW_PACKAGE_IDS = [
-    "56EC3F524ED72309122BB944A6E642AE", // dev
-    "56EC3F524ED72309122BB944A6E642AF", // prd
+    TI4_HOMEBREW_PACKAGE_ID_DEV,
+    TI4_HOMEBREW_PACKAGE_ID_PRD,
 ];
 const GLOBAL_STATE_KEY = "__homebrewLoader__";
 
@@ -43,12 +46,56 @@ class HomebrewLoader {
         new HomebrewLoaderUi(this).createAndAddUI();
     }
 
-    getHomebrewPackageId() {
+    /**
+     * Start the loading process if not already loaded.
+     *
+     * If some players don't have the package installed, they will be asked
+     * to subscribe to the package in the same way as when adding a package
+     * through the object library. If all players already have the package
+     * installed, it will be allowed immediately after calling this method.
+     *
+     * @returns {boolean} True if started
+     */
+    loadHomebrewPackage() {
+        const requireAllowed = false;
+        let packageId = this.getHomebrewPackageId(requireAllowed);
+        if (!packageId) {
+            packageId = TI4_HOMEBREW_PACKAGE_ID_PRD;
+        }
+        const packageRef = world.getPackageById(packageId);
+        if (!packageRef) {
+            console.log("HomebrewLoader.loadHomebrewPackage: unknown package");
+            return false; // unknown, host must be subscribed
+        }
+        if (packageRef.isAllowed()) {
+            console.log("HomebrewLoader.loadHomebrewPackage: already loaded");
+            return true; // already loaded
+        }
+
+        // Load the package, it *may* be ready immediately.
+        packageRef.allow();
+        if (packageRef.isAllowed()) {
+            console.log(
+                "HomebrewLoader.loadHomebrewPackage: load succeeded immediately"
+            );
+            return true; // load finished without delay
+        }
+
+        // Some players need to install the package (they will see a prompt).
+        console.log("HomebrewLoader.loadHomebrewPackage: waiting for install");
+        return false;
+    }
+
+    getHomebrewPackageId(requireAllowed = true) {
         for (const packageId of TI4_HOMEBREW_PACKAGE_IDS) {
             const packageRef = world.getPackageById(packageId);
-            if (packageRef && packageRef.isAllowed()) {
-                return packageId;
+            if (!packageRef) {
+                continue;
             }
+            if (requireAllowed && !packageRef.isAllowed()) {
+                continue;
+            }
+            return packageId;
         }
     }
 
@@ -76,6 +123,9 @@ class HomebrewLoader {
     reset() {
         this._idToEntry = {};
 
+        const isReady = this.loadHomebrewPackage();
+        console.log(`HomebrewLoader.reset: isReady=${isReady}`);
+
         const homebrewPackageId = this.getHomebrewPackageId();
         if (!homebrewPackageId) {
             Broadcast.broadcastAll(
@@ -84,6 +134,7 @@ class HomebrewLoader {
             );
             return false;
         }
+
         console.log(`HomebrewLoader.reset: package id "${homebrewPackageId}"`);
 
         this._runHomebrewScript({
