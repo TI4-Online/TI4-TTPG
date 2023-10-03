@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.mahact:franken.pok/arvicon_rex",
 		"4": "card.technology.unit_upgrade.mahact:franken.pok/crimson_legionnaire",
 		"5": "card.technology.unit_upgrade.naazrokha:franken.pok/visz_el_vir"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

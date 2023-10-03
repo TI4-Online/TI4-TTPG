@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
 		"1": "card.technology.green.yin:codex.ordinian/yin_spinner.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -69,5 +69,6 @@
 		"1": "card.objective.public_2:base/revolutionize_warfare",
 		"2": "card.objective.public_2:base/subdue_the_galaxy",
 		"3": "card.objective.public_2:base/unify_the_colonies"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

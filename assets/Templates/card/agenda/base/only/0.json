@@ -75,5 +75,6 @@
 		"3": "card.agenda:base.only/representative_government",
 		"4": "card.agenda:base.only/research_team_biotic",
 		"5": "card.agenda:base.only/research_team_cybernetic"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

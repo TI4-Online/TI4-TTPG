@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.saar:pok/scavenger_zeta",
 		"4": "card.leader.agent.sol:pok/evelyn_delouis",
 		"5": "card.leader.commander.sol:pok/claire_gibson"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

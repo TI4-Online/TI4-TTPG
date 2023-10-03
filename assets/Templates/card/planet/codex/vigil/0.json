@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.planet:codex.vigil/custodia_vigilia"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

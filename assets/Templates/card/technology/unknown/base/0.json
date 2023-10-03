@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.technology.unknown.nekro:base/valefar_assimilator_x",
 		"1": "card.technology.unknown.nekro:base/valefar_assimilator_y"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

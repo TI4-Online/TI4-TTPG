@@ -75,5 +75,6 @@
 		"3": "card.leader.agent.nomad:pok/field_marshal_mercer",
 		"4": "card.leader.agent.nomad:pok/the_thundarian",
 		"5": "card.leader.commander.nomad:pok/navarch_feng"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

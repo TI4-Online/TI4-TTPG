@@ -69,5 +69,6 @@
 		"1": "card.objective.public_1:pok/populate_the_outer_rim",
 		"2": "card.objective.public_1:pok/push_boundaries",
 		"3": "card.objective.public_1:pok/raise_a_fleet"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

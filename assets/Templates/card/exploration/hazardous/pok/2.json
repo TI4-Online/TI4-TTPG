@@ -75,5 +75,6 @@
 		"3": "card.exploration.hazardous:pok/rich_world",
 		"4": "card.exploration.hazardous:pok/volatile_fuel_source.1",
 		"5": "card.exploration.hazardous:pok/volatile_fuel_source.2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

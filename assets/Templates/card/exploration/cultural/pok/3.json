@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.exploration.cultural:pok/paradise_world",
 		"1": "card.exploration.cultural:pok/tomb_of_emphidia"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

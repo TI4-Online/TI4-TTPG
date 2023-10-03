@@ -75,5 +75,6 @@
 		"3": "card.action:base/flank_speed.2",
 		"4": "card.action:base/flank_speed.3",
 		"5": "card.action:base/flank_speed.4"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

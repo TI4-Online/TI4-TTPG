@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:base/l1z1x",
 		"1": "card.faction_reference:base/letnev"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

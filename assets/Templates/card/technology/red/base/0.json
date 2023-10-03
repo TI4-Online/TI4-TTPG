@@ -75,5 +75,6 @@
 		"3": "card.technology.red:base/plasma_scoring",
 		"4": "card.technology.red.creuss:base/dimensional_splicer",
 		"5": "card.technology.red.letnev:base/noneuclidean_shielding"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

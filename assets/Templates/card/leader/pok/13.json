@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.vuilraith:pok/reanimator",
 		"4": "card.leader.agent.winnu:pok/berekar_berekon",
 		"5": "card.leader.commander.winnu:pok/rickar_rickani"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.yin:pok/moyins_ashes",
 		"4": "card.leader.agent.yssaril:pok/ssruu",
 		"5": "card.leader.commander.yssaril:pok/so_ata"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

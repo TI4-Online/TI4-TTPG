@@ -75,5 +75,6 @@
 		"3": "card.planet:base/centauri",
 		"4": "card.planet:base/corneeq",
 		"5": "card.planet:base/creuss"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

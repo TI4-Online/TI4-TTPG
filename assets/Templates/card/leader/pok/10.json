@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.norr:pok/ghom_sekkus",
 		"4": "card.leader.hero.norr:pok/shval_harbinger",
 		"5": "card.leader.mech.norr:pok/valkyrie_exoskeleton"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

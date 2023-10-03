@@ -75,5 +75,6 @@
 		"3": "card.action:codex.ordinian/master_plan",
 		"4": "card.action:codex.ordinian/plagiarize",
 		"5": "card.action:codex.ordinian/rally"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

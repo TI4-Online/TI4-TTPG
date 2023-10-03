@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.keleres_xxcha:codex.vigil/suffi_an",
 		"4": "card.leader.hero.keleres_xxcha:codex.vigil/odlynn_myrr",
 		"5": "card.leader.mech.keleres_xxcha:codex.vigil/omniopiares"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

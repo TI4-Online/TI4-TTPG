@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.yellow.nekro:codex.ordinian/exception_no_id"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

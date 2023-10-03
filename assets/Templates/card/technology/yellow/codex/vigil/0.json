@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.technology.yellow.keleres:codex.vigil/agency_supply_network",
 		"1": "card.technology.yellow.keleres:codex.vigil/iihq_modernization"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

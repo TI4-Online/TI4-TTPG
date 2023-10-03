@@ -69,5 +69,6 @@
 		"1": "card.relic:pok/the_crown_of_thalnos",
 		"2": "card.relic:pok/the_obsidian",
 		"3": "card.relic:pok/the_prophets_tears"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

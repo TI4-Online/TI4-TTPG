@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.technology.blue.saar:base/chaos_mapping",
 		"1": "card.technology.blue.winnu:base/lazax_gate_folding"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -69,5 +69,6 @@
 		"1": "card.legendary_planet:pok/imperial_arms_vault",
 		"2": "card.legendary_planet:pok/mirage_flight_academy",
 		"3": "card.legendary_planet:pok/the_atrament"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

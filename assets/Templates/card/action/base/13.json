@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.action:base/war_effort",
 		"1": "card.action:base/warfare_rider"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

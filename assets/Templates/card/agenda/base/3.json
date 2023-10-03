@@ -75,5 +75,6 @@
 		"3": "card.agenda:base/minister_of_policy",
 		"4": "card.agenda:base/minister_of_sciences",
 		"5": "card.agenda:base/minister_of_war"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.promissory.jolnar:base/research_agreement",
 		"4": "card.promissory.l1z1x:base/cybernetic_enhancements",
 		"5": "card.promissory.letnev:base/war_funding"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

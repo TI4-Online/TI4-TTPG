@@ -75,5 +75,6 @@
 		"3": "card.exploration.industrial:pok/abandoned_warehouses.4",
 		"4": "card.exploration.industrial:pok/biotic_research_facility",
 		"5": "card.exploration.industrial:pok/cybernetic_research_facility"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

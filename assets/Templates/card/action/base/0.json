@@ -75,5 +75,6 @@
 		"3": "card.action:base/bunker",
 		"4": "card.action:base/confusing_legal_text",
 		"5": "card.action:base/construction_rider"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

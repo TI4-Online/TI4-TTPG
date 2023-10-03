@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.mahact:pok/il_na_viroset",
 		"4": "card.leader.hero.mahact:pok/airo_shir_aur",
 		"5": "card.leader.mech.mahact:pok/starlancer"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

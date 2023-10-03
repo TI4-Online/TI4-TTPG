@@ -75,5 +75,6 @@
 		"3": "card.planet:pok/avar",
 		"4": "card.planet:pok/bakal",
 		"5": "card.planet:pok/cealdri"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.arborec:base/letani_warrior_2",
 		"4": "card.technology.unit_upgrade.l1z1x:base/superdreadnought_2",
 		"5": "card.technology.unit_upgrade.muaat:base/prototype_war_sun_2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

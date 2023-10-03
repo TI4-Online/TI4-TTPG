@@ -75,5 +75,6 @@
 		"3": "card.action:base/summit",
 		"4": "card.action:base/tactical_bombardment",
 		"5": "card.action:base/technology_rider"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

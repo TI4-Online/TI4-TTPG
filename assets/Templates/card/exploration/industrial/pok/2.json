@@ -75,5 +75,6 @@
 		"3": "card.exploration.industrial:pok/local_fabricators.1",
 		"4": "card.exploration.industrial:pok/local_fabricators.2",
 		"5": "card.exploration.industrial:pok/local_fabricators.3"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

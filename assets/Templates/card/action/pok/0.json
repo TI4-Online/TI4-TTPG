@@ -75,5 +75,6 @@
 		"3": "card.action:pok/deadly_plot",
 		"4": "card.action:pok/decoy_operation",
 		"5": "card.action:pok/diplomatic_pressure.1"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

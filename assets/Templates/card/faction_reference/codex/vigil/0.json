@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:codex.vigil/keleres_argent",
 		"1": "card.faction_reference:codex.vigil/keleres_mentak"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

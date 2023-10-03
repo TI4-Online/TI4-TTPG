@@ -75,5 +75,6 @@
 		"3": "card.leader.hero.xxcha:codex.vigil/xxekir_grom.omega",
 		"4": "card.leader.agent.yin:codex.vigil/brother_milor.omega",
 		"5": "card.leader.commander.yin:codex.vigil/brother_omar.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

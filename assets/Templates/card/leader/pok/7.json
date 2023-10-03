@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.naalu:pok/maban",
 		"4": "card.leader.hero.naalu:pok/the_oracle",
 		"5": "card.leader.mech.naalu:pok/iconoclast"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

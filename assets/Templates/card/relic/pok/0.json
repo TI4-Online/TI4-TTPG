@@ -75,5 +75,6 @@
 		"3": "card.relic:pok/shard_of_the_throne",
 		"4": "card.relic:pok/stellar_converter",
 		"5": "card.relic:pok/the_codex"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

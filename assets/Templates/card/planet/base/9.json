@@ -72,5 +72,6 @@
 		"2": "card.planet:base/wren_terra",
 		"3": "card.planet:base/xxehan",
 		"4": "card.planet:base/zohbat"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.exploration.industrial:pok/local_fabricators.4",
 		"1": "card.exploration.industrial:pok/propulsion_research_facility"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.action:codex.ordinian/solar_flare",
 		"4": "card.action:codex.ordinian/war_machine.1",
 		"5": "card.action:codex.ordinian/war_machine.2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.hacan:franken.base/wrath_of_kenara",
 		"4": "card.technology.unit_upgrade.jolnar:franken.base/jns_hylarim",
 		"5": "card.technology.unit_upgrade.l1z1x:franken.base/001"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

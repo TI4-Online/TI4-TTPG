@@ -75,5 +75,6 @@
 		"3": "card.technology.yellow:base/transit_diodes",
 		"4": "card.technology.yellow.hacan:base/quantum_datahub_node",
 		"5": "card.technology.yellow.jolnar:base/eres_siphons"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

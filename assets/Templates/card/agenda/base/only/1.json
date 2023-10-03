@@ -75,5 +75,6 @@
 		"3": "card.agenda:base.only/shard_of_the_throne",
 		"4": "card.agenda:base.only/terraforming_initiative",
 		"5": "card.agenda:base.only/the_crown_of_emphidia"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

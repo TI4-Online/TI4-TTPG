@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.winnu:franken.base/salai_sai_corian",
 		"4": "card.technology.unit_upgrade.xxcha:franken.base/loncara_ssodu",
 		"5": "card.technology.unit_upgrade.yin:franken.base/van_hauge"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

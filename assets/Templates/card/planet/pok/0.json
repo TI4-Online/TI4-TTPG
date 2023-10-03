@@ -75,5 +75,6 @@
 		"3": "card.planet:pok/alio_prima",
 		"4": "card.planet:pok/ang",
 		"5": "card.planet:pok/archon_vail"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

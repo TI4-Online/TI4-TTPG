@@ -75,5 +75,6 @@
 		"3": "card.exploration.frontier:pok/enigmatic_device.2",
 		"4": "card.exploration.frontier:pok/gamma_relay",
 		"5": "card.exploration.frontier:pok/ion_storm"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

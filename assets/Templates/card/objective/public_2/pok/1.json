@@ -69,5 +69,6 @@
 		"1": "card.objective.public_2:pok/protect_the_border",
 		"2": "card.objective.public_2:pok/reclaim_ancient_monuments",
 		"3": "card.objective.public_2:pok/rule_distant_lands"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

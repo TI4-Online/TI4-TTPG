@@ -75,5 +75,6 @@
 		"3": "card.action:base/parley",
 		"4": "card.action:base/plague",
 		"5": "card.action:base/political_stability"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

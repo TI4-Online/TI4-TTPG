@@ -72,5 +72,6 @@
 		"2": "card.technology.green.empyrean:pok/voidwatch",
 		"3": "card.technology.green.mahact:pok/genetic_recombination",
 		"4": "card.technology.green.naazrokha:pok/prefab_arcologies"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

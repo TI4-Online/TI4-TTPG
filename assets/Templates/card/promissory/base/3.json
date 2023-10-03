@@ -75,5 +75,6 @@
 		"3": "card.promissory.nekro:base/antivirus",
 		"4": "card.promissory.norr:base/tekklar_legion",
 		"5": "card.promissory.orange:base/ceasefire"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.l1z1x:pok/annihilator",
 		"4": "card.leader.agent.letnev:pok/viscount_unlenn",
 		"5": "card.leader.commander.letnev:pok/rear_admiral_farran"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

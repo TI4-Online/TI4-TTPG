@@ -75,5 +75,6 @@
 		"3": "card.action:base/upgrade",
 		"4": "card.action:base/uprising",
 		"5": "card.action:base/veto"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

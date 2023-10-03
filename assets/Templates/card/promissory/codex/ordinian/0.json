@@ -72,5 +72,6 @@
 		"2": "card.promissory.letnev:codex.ordinian/war_funding.omega",
 		"3": "card.promissory.winnu:codex.ordinian/acquiescence.omega",
 		"4": "card.promissory.yin:codex.ordinian/greyfire_mutagen.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

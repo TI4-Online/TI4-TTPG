@@ -75,5 +75,6 @@
 		"3": "card.promissory.winnu:base/acquiescence",
 		"4": "card.promissory.xxcha:base/political_favor",
 		"5": "card.promissory.yellow:base/ceasefire"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

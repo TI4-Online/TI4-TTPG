@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.ul:pok/heltitan_2",
 		"4": "card.technology.unit_upgrade.ul:pok/saturn_engine_2",
 		"5": "card.technology.unit_upgrade.vuilraith:pok/dimensional_tear_2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

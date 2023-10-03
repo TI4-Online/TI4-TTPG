@@ -75,5 +75,6 @@
 		"3": "card.action:base/sabotage.4",
 		"4": "card.action:base/salvage",
 		"5": "card.action:base/shields_holding.1"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

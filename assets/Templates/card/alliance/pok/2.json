@@ -75,5 +75,6 @@
 		"3": "card.alliance:pok/norr",
 		"4": "card.alliance:pok/saar",
 		"5": "card.alliance:pok/sol"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }
