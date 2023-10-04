@@ -1,118 +1,135 @@
+const assert = require("../wrapper/assert-wrapper");
+const {
+    GameObject,
+    ObjectType,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
+
+const VERBOSE = false;
+const NUM_POKES = 5;
+const MAX_POKES_PER_INTERVAL = 100;
+
 /**
  * Reports of map tiles not showing for some, flipping units not getting flipped for some, etc.
  *
  * When an object is created or moved, queue it for forced updates hopefully making sure
- * any status changes get propagated.
+ * any transform changes get propagated.
  */
-
-const { globalEvents, world } = require("../wrapper/api");
-
-const VERBOSE = false;
-const NUM_UPDATE_STAGES = 5;
-const LIMIT_UPDATES_PER_STAGE = 20;
-
 class ForceObjectUpdate {
     constructor() {
-        throw new Error("static only");
-    }
+        // Array.{obj:GameObject,pokesRemaining:number}, newest at back.
+        this._pokeQueue = [];
 
-    // Force update a few times, migrating objects down the set list.
-    static _forceUpdateSets = new Array(NUM_UPDATE_STAGES).fill(0).map(() => {
-        return new Set();
-    });
-    static _forceUpdateIndex = 0;
+        this._markDirtyHandler = (obj) => {
+            this.markDirty(obj);
+        };
 
-    static _onObjectCreated = (obj) => {
-        ForceObjectUpdate.addHandlers(obj);
-        ForceObjectUpdate.queue(obj);
-    };
+        globalEvents.onObjectCreated.add((obj) => {
+            this.registerObject(obj);
+            this.markDirty(obj);
+        });
 
-    static _onMovementStopped = (obj) => {
-        ForceObjectUpdate.queue(obj);
-    };
-
-    static addHandlers(obj) {
-        obj.onMovementStopped.add(ForceObjectUpdate._onMovementStopped);
-        obj.onSnapped.add(ForceObjectUpdate._onMovementStopped);
-        obj.onSnappedToGrid.add(ForceObjectUpdate._onMovementStopped);
-    }
-
-    static queue(obj) {
-        // Requeue in the first set.
-        for (const set of ForceObjectUpdate._forceUpdateSets) {
-            set.delete(obj);
-        }
-        ForceObjectUpdate._forceUpdateSets[0].add(obj);
-    }
-
-    static processSome() {
-        const i = ForceObjectUpdate._forceUpdateIndex;
-
-        const thisSet = ForceObjectUpdate._forceUpdateSets[i];
-        const nextSet = ForceObjectUpdate._forceUpdateSets[i + 1];
-
-        let numProcessed = 0;
-        for (const obj of thisSet) {
-            // Get the object, also queue for another nudge next cycle.
-            thisSet.delete(obj);
-            if (!obj.isValid()) {
-                continue; // deleted
-            }
-            if (obj.isHeld()) {
-                continue; // wait for player to drop it to process
-            }
-            if (nextSet) {
-                nextSet.add(obj);
-            }
-
-            // Nudge the object to force it to re-propagate.
-            // Editing the tags might be enough to push the full object.
-            const prefix = "_fou_";
-            const tags = obj.getTags().filter((tag) => !tag.startsWith(prefix));
-            if (nextSet) {
-                tags.push(`${prefix}${i}`);
-            }
-            obj.setTags(tags);
-            if (VERBOSE) {
-                console.log(
-                    `ForceObjectUpdate.processSome ${i + 1}@${
-                        numProcessed + 1
-                    } "${obj.getId()}" [${tags.join(", ")}]`
-                );
-            }
-
-            // Process everything in the first batch, throttle later batches.
-            // Do this because if physics is going nuts and some objects are
-            // firing onMovementStopped often, make sure other well behaved
-            // objects move through the stages.
-            numProcessed += 1;
-            if (i > 0 && numProcessed >= LIMIT_UPDATES_PER_STAGE) {
-                break;
-            }
+        const skipContained = false;
+        for (const obj of world.getAllObjects(skipContained)) {
+            this.registerObject(obj);
         }
 
-        if (thisSet.size === 0) {
-            ForceObjectUpdate._forceUpdateIndex =
-                (i + 1) % ForceObjectUpdate._forceUpdateSets.length;
+        if (!world.__isMock) {
+            setInterval(() => {
+                this.pokeEntries();
+            }, 100);
+        }
+    }
+
+    registerObject(obj) {
+        assert(obj instanceof GameObject);
+        obj.onMovementStopped.add(this._markDirtyHandler);
+        obj.onSnapped.add(this._markDirtyHandler);
+        obj.onSnappedToGrid.add(this._markDirtyHandler);
+    }
+
+    markDirty(obj) {
+        assert(obj instanceof GameObject);
+        this._pokeQueue = this._pokeQueue.filter((entry) => entry.obj !== obj);
+        this._pokeQueue.push({
+            obj,
+            pokesRemaining: NUM_POKES,
+            pos: obj.getPosition(),
+        });
+    }
+
+    pokeEntries() {
+        // Fast exit if nothing to do.
+        if (this._pokeQueue.length === 0) {
+            return;
+        }
+
+        // Get the to-poke entries.
+        const toPokeCount = Math.min(
+            this._pokeQueue.length,
+            MAX_POKES_PER_INTERVAL
+        );
+        const toPoke = this._pokeQueue.splice(0, toPokeCount);
+
+        // Poke, and return to end of queue if needs future pokes.
+        for (const entry of toPoke) {
+            this.pokeEntry(entry);
+            entry.pokesRemaining -= 1;
+            if (entry.pokesRemaining > 0) {
+                this._pokeQueue.push(entry);
+            }
+        }
+    }
+
+    pokeEntry(entry) {
+        assert(entry.obj instanceof GameObject);
+        assert(typeof entry.pokesRemaining === "number");
+        assert(typeof entry.pos.x === "number");
+
+        const obj = entry.obj;
+        const objType = obj.getObjectType();
+
+        if (!obj.isValid()) {
+            return; // destroyed
+        }
+        if (obj.isHeld()) {
+            return; // leave be, will mark dirty when dropped
+        }
+        if (objType !== ObjectType.Regular) {
+            return; // do not attempt if locked
+        }
+
+        // "comparison of previous to current values happens between ticks (or
+        // at larger intervals), a propagation is not triggered immediately"
+        // So... we could move by a small amount (e.g. z 0.01), or bring out
+        // the hammer and clone replace.
+
+        const pos = obj.getPosition();
+        const rot = obj.getRotation();
+
+        // Paranoia: abort if moved too far from original record's position.
+        const dSq = pos.subtract(entry.pos).magnitudeSquared();
+        if (dSq > 0.1) {
+            return; // moved too much
+        }
+
+        // Poke, alternate directions to remain mostly stable.
+        const dir = entry.pokesRemaining % 2 === 1 ? 1 : -1;
+        pos.z += 0.011 * dir;
+        rot.yaw += 0.011 * dir;
+
+        obj.setPosition(pos);
+        obj.setRotation(rot);
+
+        if (VERBOSE) {
+            const id = obj.getId();
+            const n = entry.pokesRemaining;
+            console.log(
+                `ForceObjectUpdate.pokeObject "${id}" ${n} ${pos} ${rot}`
+            );
         }
     }
 }
 
-globalEvents.onObjectCreated.add((obj) => {
-    ForceObjectUpdate._onObjectCreated(obj);
-});
-
-const skipContained = false;
-for (const obj of world.getAllObjects(skipContained)) {
-    ForceObjectUpdate.addHandlers(obj);
-}
-
-// globalEvents.onTick.add(() => {
-//     ForceObjectUpdate.processSome();
-// });
-
-if (!world.__isMock) {
-    setInterval(() => {
-        ForceObjectUpdate.processSome();
-    }, 100);
-}
+new ForceObjectUpdate();
