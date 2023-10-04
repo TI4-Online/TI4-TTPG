@@ -319,11 +319,13 @@ world.TI4 = {
 
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
+require("./global/card-vibration-stomp");
 require("./global/chat-commands");
 //require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
 require("./global/fix-table-colors");
 require("./global/fix-unit-colors");
+require("./global/force-object-update");
 require("./global/gamedata-key");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
