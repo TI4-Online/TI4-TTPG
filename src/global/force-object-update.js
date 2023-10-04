@@ -9,6 +9,7 @@ const {
 const VERBOSE = false;
 const NUM_POKES = 5;
 const MAX_POKES_PER_INTERVAL = 100;
+const EXPIRE_DELAY_MSECS = 750; // watch out for self-triggering
 
 /**
  * Reports of map tiles not showing for some, flipping units not getting flipped for some, etc.
@@ -18,7 +19,7 @@ const MAX_POKES_PER_INTERVAL = 100;
  */
 class ForceObjectUpdate {
     constructor() {
-        // Array.{obj:GameObject,pokesRemaining:number}, newest at back.
+        // Array.{obj:GameObject,pokesRemaining:number,pos:Vector,lastPokeTimestamp:number}, newest at back.
         this._pokeQueue = [];
 
         this._markDirtyHandler = (obj) => {
@@ -38,7 +39,7 @@ class ForceObjectUpdate {
         if (!world.__isMock) {
             setInterval(() => {
                 this.pokeEntries();
-            }, 100);
+            }, 200);
         }
     }
 
@@ -51,11 +52,21 @@ class ForceObjectUpdate {
 
     markDirty(obj) {
         assert(obj instanceof GameObject);
-        this._pokeQueue = this._pokeQueue.filter((entry) => entry.obj !== obj);
+
+        // Be careful that our own setPosition doesn't keep triggering this.
+        // Ignore request if already in the poke queue, and queue processing
+        // leaves the entry in place a short while after the last setPosition.
+        for (const entry of this._pokeQueue) {
+            if (entry.obj === obj) {
+                return; // already being processed
+            }
+        }
+
         this._pokeQueue.push({
             obj,
             pokesRemaining: NUM_POKES,
             pos: obj.getPosition(),
+            lastPokeTimestamp: Date.now(),
         });
     }
 
@@ -65,6 +76,10 @@ class ForceObjectUpdate {
             return;
         }
 
+        if (VERBOSE) {
+            console.log(`ForceObjectUpdate: |poke|=${this._pokeQueue.length}`);
+        }
+
         // Get the to-poke entries.
         const toPokeCount = Math.min(
             this._pokeQueue.length,
@@ -72,11 +87,18 @@ class ForceObjectUpdate {
         );
         const toPoke = this._pokeQueue.splice(0, toPokeCount);
 
-        // Poke, and return to end of queue if needs future pokes.
+        // Poke, and if young return to end of queue.
+        const now = Date.now();
         for (const entry of toPoke) {
-            this.pokeEntry(entry);
-            entry.pokesRemaining -= 1;
             if (entry.pokesRemaining > 0) {
+                this.pokeEntry(entry);
+                entry.pokesRemaining -= 1;
+                entry.lastPokeTimestamp = now;
+            }
+            // Return to queue if needs more and/or is young (keep around for
+            // a moment to prevent our own poke from retriggering).
+            const age = now - entry.lastPokeTimestamp;
+            if (entry.pokesRemaining > 0 || age < EXPIRE_DELAY_MSECS) {
                 this._pokeQueue.push(entry);
             }
         }
@@ -102,8 +124,8 @@ class ForceObjectUpdate {
 
         // "comparison of previous to current values happens between ticks (or
         // at larger intervals), a propagation is not triggered immediately"
-        // So... we could move by a small amount (e.g. z 0.01), or bring out
-        // the hammer and clone replace.
+        // So... move by a small amount (e.g. z 0.01).  If this doesn't help
+        // maybe bring out the hammer and clone replace (oof bad).
 
         const pos = obj.getPosition();
         const rot = obj.getRotation();
@@ -116,8 +138,8 @@ class ForceObjectUpdate {
 
         // Poke, alternate directions to remain mostly stable.
         const dir = entry.pokesRemaining % 2 === 1 ? 1 : -1;
-        pos.z += 0.011 * dir;
-        rot.yaw += 0.011 * dir;
+        pos.z += 0.021 * dir;
+        rot.yaw += 0.021 * dir;
 
         obj.setPosition(pos);
         obj.setRotation(rot);
