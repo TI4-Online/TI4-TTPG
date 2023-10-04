@@ -111,6 +111,8 @@ for (const obj of world.getAllObjects(skipContained)) {
 //     ForceObjectUpdate.processSome();
 // });
 
-setInterval(() => {
-    ForceObjectUpdate.processSome();
-}, 100);
+if (!world.__isMock) {
+    setInterval(() => {
+        ForceObjectUpdate.processSome();
+    }, 100);
+}
