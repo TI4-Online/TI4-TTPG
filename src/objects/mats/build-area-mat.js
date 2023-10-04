@@ -130,7 +130,8 @@ class BuildAreaMat {
                 {
                     obj,
                     type: TYPE.TRADEGOOD,
-                    value: hasMirrorComputing ? 2 : 1,
+                    res: hasMirrorComputing ? 2 : 1,
+                    inf: hasMirrorComputing ? 2 : 1,
                     count: 1,
                 },
             ];
@@ -140,7 +141,8 @@ class BuildAreaMat {
                 {
                     obj,
                     type: TYPE.TRADEGOOD,
-                    value: hasMirrorComputing ? 6 : 3,
+                    res: hasMirrorComputing ? 6 : 3,
+                    inf: hasMirrorComputing ? 6 : 3,
                     count: 1,
                 },
             ];
@@ -155,16 +157,19 @@ class BuildAreaMat {
             for (const nsid of nsids) {
                 const planet = world.TI4.getPlanetByCardNsid(nsid);
                 if (planet) {
-                    let value = planet.raw.resources || 0;
+                    let res = planet.raw.resources || 0;
+                    let inf = planet.raw.influence || 0;
                     if (hasXxchaHeroCodex3) {
-                        value += planet.raw.influence || 0;
+                        res += planet.raw.influence || 0;
+                        inf += planet.raw.resources || 0;
                     }
 
                     result.push({
                         obj,
                         type: TYPE.PLANET,
                         name: planet.getNameStr(),
-                        value,
+                        res,
+                        inf,
                         count: 1,
                     });
                 }
@@ -284,11 +289,18 @@ class BuildAreaMat {
     _createPopupUI() {
         const namesAndActions = [
             {
-                name: locale("ui.build.report"),
+                name: locale("ui.build.action.report"),
                 action: (obj, player, actionName) => {
                     this.reportBuild();
                 },
             },
+            {
+                name: locale("ui.build.action.report_influence"),
+                action: (obj, player, actionName) => {
+                    this.reportInfluence();
+                },
+            },
+
             {
                 name: locale("ui.build.warp_to_home"),
                 action: (obj, player, actionName) => {
@@ -525,7 +537,7 @@ class BuildAreaMat {
         // Compute consumed resources.
         let totalResources = 0;
         for (const consumeEntry of consume) {
-            totalResources += consumeEntry.count * consumeEntry.value;
+            totalResources += consumeEntry.count * consumeEntry.res;
         }
         if (consumeExtras.length > 0) {
             totalResources = `${totalResources}+${consumeExtras.join("+")}`;
@@ -563,10 +575,10 @@ class BuildAreaMat {
         let tradeGoods = 0;
         for (const entry of consume) {
             if (entry.type === TYPE.TRADEGOOD) {
-                tradeGoods += entry.count * entry.value;
+                tradeGoods += entry.count * entry.res;
             }
             if (entry.type === TYPE.PLANET) {
-                consumed.push(`${entry.name} (${entry.value})`);
+                consumed.push(`${entry.name} (${entry.res})`);
             }
         }
         if (tradeGoods > 0) {
@@ -586,6 +598,41 @@ class BuildAreaMat {
         const msg = locale("ui.build.report.output", {
             playerName,
             build,
+            consumed,
+        });
+        Broadcast.chatAll(msg, color);
+    }
+
+    reportInfluence() {
+        const { consume } = this.update();
+
+        let inf = 0;
+        let consumed = [];
+        let tradeGoods = 0;
+        for (const entry of consume) {
+            if (entry.type === TYPE.TRADEGOOD) {
+                inf += entry.count * entry.inf;
+                tradeGoods += entry.count * entry.inf;
+            }
+            if (entry.type === TYPE.PLANET) {
+                inf += entry.inf;
+                consumed.push(`${entry.name} (${entry.inf})`);
+            }
+        }
+        if (tradeGoods > 0) {
+            consumed.push(locale("ui.build.report.tradegoods", { tradeGoods }));
+        }
+        consumed = consumed.join(", ");
+
+        const playerSlot = this._getPlayerSlot();
+        const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+        const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+        const playerName = faction ? faction.nameFull : playerDesk.colorName;
+        const color = playerDesk.color;
+
+        const msg = locale("ui.build.report.influence", {
+            playerName,
+            influence: inf,
             consumed,
         });
         Broadcast.chatAll(msg, color);

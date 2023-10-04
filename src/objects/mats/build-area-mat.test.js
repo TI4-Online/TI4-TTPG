@@ -59,7 +59,7 @@ it("getConsumeEntries", () => {
     let consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
-    assert.equal(consumeEntry.value, 1);
+    assert.equal(consumeEntry.res, 1);
     assert.equal(consumeEntry.count, 1);
 
     nsid = "token:base/tradegood_commodity_3";
@@ -69,7 +69,7 @@ it("getConsumeEntries", () => {
     consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
-    assert.equal(consumeEntry.value, 3);
+    assert.equal(consumeEntry.res, 3);
     assert.equal(consumeEntry.count, 1);
 
     nsid = "card.planet:base/mecatol_rex";
@@ -81,7 +81,7 @@ it("getConsumeEntries", () => {
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.PLANET);
     assert.equal(consumeEntry.name, "Mecatol Rex");
-    assert.equal(consumeEntry.value, 1);
+    assert.equal(consumeEntry.res, 1);
     assert.equal(consumeEntry.count, 1);
 });
 
@@ -108,7 +108,7 @@ it("xxcha hero codex 3", () => {
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.PLANET);
     assert.equal(consumeEntry.name, "Mecatol Rex");
-    assert.equal(consumeEntry.value, 7);
+    assert.equal(consumeEntry.res, 7);
     assert.equal(consumeEntry.count, 1);
 });
 
@@ -133,6 +133,6 @@ it("mirror computing", () => {
     const consumeEntry = consumeEntries[0];
     assert.equal(consumeEntry.obj, obj);
     assert.equal(consumeEntry.type, TYPE.TRADEGOOD);
-    assert.equal(consumeEntry.value, 6);
+    assert.equal(consumeEntry.res, 6);
     assert.equal(consumeEntry.count, 1);
 });
