@@ -75,5 +75,6 @@
 		"3": "card.technology.blue:base/lightwave_deflector",
 		"4": "card.technology.blue.creuss:base/wormhole_generator",
 		"5": "card.technology.blue.jolnar:base/spacial_conduit_cylinder"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

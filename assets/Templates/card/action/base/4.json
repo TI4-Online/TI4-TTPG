@@ -75,5 +75,6 @@
 		"3": "card.action:base/imperial_rider",
 		"4": "card.action:base/in_the_silence_of_space",
 		"5": "card.action:base/industrial_initiative"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

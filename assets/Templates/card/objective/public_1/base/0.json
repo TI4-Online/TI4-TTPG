@@ -75,5 +75,6 @@
 		"3": "card.objective.public_1:base/erect_a_monument",
 		"4": "card.objective.public_1:base/expand_borders",
 		"5": "card.objective.public_1:base/found_research_outposts"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

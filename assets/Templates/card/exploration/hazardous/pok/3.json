@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.exploration.hazardous:pok/volatile_fuel_source.3",
 		"1": "card.exploration.hazardous:pok/warfare_research_facility"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

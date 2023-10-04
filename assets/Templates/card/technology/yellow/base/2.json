@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.yellow.yin:base/impulse_core"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

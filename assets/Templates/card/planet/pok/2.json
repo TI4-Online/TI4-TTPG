@@ -75,5 +75,6 @@
 		"3": "card.planet:pok/hopes_end",
 		"4": "card.planet:pok/ixth",
 		"5": "card.planet:pok/jeol_ir"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

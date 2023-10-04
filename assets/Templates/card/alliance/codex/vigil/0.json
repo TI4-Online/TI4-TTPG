@@ -72,5 +72,6 @@
 		"2": "card.alliance:codex.vigil/keleres_xxcha",
 		"3": "card.alliance:codex.vigil/naalu.omega",
 		"4": "card.alliance:codex.vigil/yin.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

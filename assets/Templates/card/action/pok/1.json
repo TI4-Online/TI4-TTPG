@@ -75,5 +75,6 @@
 		"3": "card.action:pok/divert_funding",
 		"4": "card.action:pok/exploration_probe",
 		"5": "card.action:pok/manipulate_investments"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

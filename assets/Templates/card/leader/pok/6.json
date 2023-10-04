@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.mentak:pok/moll_terminus",
 		"4": "card.leader.agent.muaat:pok/umbat",
 		"5": "card.leader.commander.muaat:pok/magmus"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

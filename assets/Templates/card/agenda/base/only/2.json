@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.agenda:base.only/the_crown_of_thalnos"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

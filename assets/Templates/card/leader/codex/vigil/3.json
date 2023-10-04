@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

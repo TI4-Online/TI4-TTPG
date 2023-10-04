@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.action:pok/seize_artifact",
 		"1": "card.action:pok/waylay"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

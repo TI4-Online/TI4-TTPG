@@ -75,5 +75,6 @@
 		"3": "card.agenda:base/ixthian_artifact",
 		"4": "card.agenda:base/judicial_abolishment",
 		"5": "card.agenda:base/minister_of_commerce"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

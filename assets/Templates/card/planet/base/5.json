@@ -75,5 +75,6 @@
 		"3": "card.planet:base/muaat",
 		"4": "card.planet:base/nar",
 		"5": "card.planet:base/nestphar"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -69,5 +69,6 @@
 		"1": "card.planet:pok/vorhal",
 		"2": "card.planet:pok/xanhact",
 		"3": "card.planet:pok/ylir"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

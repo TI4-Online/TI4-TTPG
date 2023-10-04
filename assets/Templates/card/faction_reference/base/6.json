@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:base/sol",
 		"1": "card.faction_reference:base/winnu"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

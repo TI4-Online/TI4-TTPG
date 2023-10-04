@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:pok/nomad",
 		"1": "card.faction_reference:pok/ul"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

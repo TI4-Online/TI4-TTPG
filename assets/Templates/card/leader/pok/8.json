@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.naazrokha:pok/eidolon",
 		"4": "card.leader.agent.nekro:pok/nekro_malleon",
 		"5": "card.leader.commander.nekro:pok/nekro_acidos"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

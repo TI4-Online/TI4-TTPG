@@ -75,5 +75,6 @@
 		"3": "card.exploration.frontier:pok/merchant_station.2",
 		"4": "card.exploration.frontier:pok/mirage",
 		"5": "card.exploration.frontier:pok/unknown_relic_fragment.1"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

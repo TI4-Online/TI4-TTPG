@@ -75,5 +75,6 @@
 		"3": "card.alliance:pok/empyrean",
 		"4": "card.alliance:pok/hacan",
 		"5": "card.alliance:pok/jolnar"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -12,6 +12,7 @@ const PositionToPlanet = require("../../../lib/system/position-to-planet");
 const { Spawn } = require("../../../setup/spawn/spawn");
 const { Card, Rotator, world } = require("../../../wrapper/api");
 const locale = require("../../../lib/locale");
+const { Facing } = require("../../../lib/facing");
 
 class MapTool {
     static getMapTilesContainer() {
@@ -73,10 +74,10 @@ class MapTool {
             if (!system) {
                 continue;
             }
-            if (system.home) {
+            if (system.home && Facing.isFaceUp(obj)) {
                 continue;
             }
-            if (!bag || clearedSet.has(system.tile)) {
+            if (!bag || clearedSet.has(system.tile) || system.home) {
                 obj.setTags(["DELETED_ITEMS_IGNORE"]);
                 obj.destroy();
             } else {

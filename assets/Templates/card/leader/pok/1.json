@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.creuss:pok/sai_seravus",
 		"4": "card.leader.hero.creuss:pok/riftwalker_meian",
 		"5": "card.leader.mech.creuss:pok/icarus_drive"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

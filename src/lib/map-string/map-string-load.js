@@ -56,9 +56,6 @@ class MapStringLoad {
         }
 
         const placeTile = (entry, hex) => {
-            const system = world.TI4.getSystemByTileNumber(entry.tile);
-            assert(system);
-
             // Get position/rotation.
             const pos = Hex.toPosition(hex);
             pos.z = world.getTableHeight() + 10;
@@ -71,7 +68,23 @@ class MapStringLoad {
             }
             //console.log(`placeTile ${entry.tile} at ${pos} / ${rot}`);
 
+            // Special handling for 0r, 0g, 0b.
+            if (entry.tile === 0 && entry.side) {
+                if (entry.side === "r") {
+                    entry.tile = 48;
+                    rot.roll = 180;
+                } else if (entry.side === "g") {
+                    entry.tile = 1;
+                    rot.roll = 180;
+                } else if (entry.side === "b") {
+                    entry.tile = 61;
+                    rot.roll = 180;
+                }
+            }
+
             // Find or spawn the tile.
+            const system = world.TI4.getSystemByTileNumber(entry.tile);
+            assert(system);
             let obj = tileToSystemObj[entry.tile];
             if (obj) {
                 // Use object, remove it should the tile appear again.
@@ -105,7 +118,7 @@ class MapStringLoad {
         // Place!
         for (let i = 0; i < parsedMapString.length; i++) {
             const entry = parsedMapString[i];
-            if (entry.tile <= 0) {
+            if (entry.tile <= 0 && !entry.side) {
                 continue;
             }
             const hex = MapStringHex.idxToHexString(i);

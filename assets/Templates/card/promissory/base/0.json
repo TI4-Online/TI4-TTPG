@@ -75,5 +75,6 @@
 		"3": "card.promissory.blue:base/support_for_the_throne",
 		"4": "card.promissory.blue:base/trade_agreement",
 		"5": "card.promissory.brown:base/ceasefire"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

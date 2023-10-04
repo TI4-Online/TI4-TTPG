@@ -46,6 +46,23 @@ class MapStringSave {
                 entry.side = Facing.isFaceUp(obj) ? "A" : "B";
             }
 
+            // 0r, 0g, 0b handline.
+            if (Facing.isFaceDown(obj) && !system.raw.hyperlane) {
+                let which = undefined;
+                if (system.home) {
+                    which = "g";
+                } else if (system.red) {
+                    which = "r";
+                } else if (system.blue) {
+                    which = "b";
+                }
+                if (which) {
+                    entry.tile = 0;
+                    entry.side = which;
+                    entry.rotation = undefined;
+                }
+            }
+
             mapTiles[index] = entry;
         }
 

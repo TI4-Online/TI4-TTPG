@@ -75,5 +75,6 @@
 		"3": "card.promissory.saar:base/raghs_call",
 		"4": "card.promissory.sol:base/military_support",
 		"5": "card.promissory.white:base/ceasefire"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

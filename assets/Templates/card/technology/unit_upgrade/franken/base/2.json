@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.norr:franken.base/exotrireme",
 		"4": "card.technology.unit_upgrade.saar:franken.base/floating_factory",
 		"5": "card.technology.unit_upgrade.saar:franken.base/son_of_ragh"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.objective.public_2:base/found_a_golden_age",
 		"4": "card.objective.public_2:base/galvanize_the_people",
 		"5": "card.objective.public_2:base/manipulate_galactic_law"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

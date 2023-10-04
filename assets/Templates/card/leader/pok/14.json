@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.xxcha:pok/elder_qanoj",
 		"4": "card.leader.hero.xxcha:pok/xxekir_grom",
 		"5": "card.leader.mech.xxcha:pok/indomitus"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

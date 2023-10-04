@@ -75,5 +75,6 @@
 		"3": "card.agenda:base/classified_document_leaks",
 		"4": "card.agenda:base/colonial_redistribution",
 		"5": "card.agenda:base/committee_formation"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

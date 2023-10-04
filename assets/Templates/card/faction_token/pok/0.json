@@ -78,5 +78,6 @@
 		"4": "card.faction_token:pok/nomad",
 		"5": "card.faction_token:pok/ul",
 		"6": "card.faction_token:pok/vuilraith"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.ul:franken.pok/saturn_engine",
 		"4": "card.technology.unit_upgrade.vuilraith:franken.pok/dimensional_tear",
 		"5": "card.technology.unit_upgrade.vuilraith:franken.pok/the_terror_between"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

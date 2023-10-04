@@ -880,6 +880,7 @@ async function writeDeckTemplate(
         Indices: indices, // card sheet index values
         CardNames: cardNames,
         CardMetadata: cardMetadata,
+        GroundAccessibility: "ZoomAndContext",
     };
 
     console.log(`NSID-CARD: "${deckNsid}": "${guid}",`);

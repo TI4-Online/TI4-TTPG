@@ -75,5 +75,6 @@
 		"3": "card.agenda:base/prophecy_of_ixth",
 		"4": "card.agenda:base/public_execution",
 		"5": "card.agenda:base/publicize_weapon_schematics"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

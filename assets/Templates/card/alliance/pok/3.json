@@ -75,5 +75,6 @@
 		"3": "card.alliance:pok/xxcha",
 		"4": "card.alliance:pok/yin",
 		"5": "card.alliance:pok/yssaril"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

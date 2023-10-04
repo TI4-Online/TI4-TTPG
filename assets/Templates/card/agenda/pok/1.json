@@ -75,5 +75,6 @@
 		"3": "card.agenda:pok/rearmament_agreement",
 		"4": "card.agenda:pok/representative_government",
 		"5": "card.agenda:pok/research_grant_reallocation"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.promissory.creuss:base/creuss_iff",
 		"4": "card.promissory.green:base/ceasefire",
 		"5": "card.promissory.green:base/political_secret"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

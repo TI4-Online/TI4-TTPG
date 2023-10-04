@@ -75,5 +75,6 @@
 		"3": "card.planet:pok/valk",
 		"4": "card.planet:pok/vega_major",
 		"5": "card.planet:pok/vega_minor"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

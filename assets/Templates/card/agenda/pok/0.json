@@ -75,5 +75,6 @@
 		"3": "card.agenda:pok/clandestine_operations",
 		"4": "card.agenda:pok/covert_legislation",
 		"5": "card.agenda:pok/galactic_crisis_pact"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

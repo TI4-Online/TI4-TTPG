@@ -75,5 +75,6 @@
 		"3": "card.planet:base/quinarra",
 		"4": "card.planet:base/ragh",
 		"5": "card.planet:base/rarron"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

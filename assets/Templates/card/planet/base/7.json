@@ -75,5 +75,6 @@
 		"3": "card.planet:base/saudor",
 		"4": "card.planet:base/shalloq",
 		"5": "card.planet:base/starpoint"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

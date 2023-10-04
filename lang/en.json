@@ -1084,7 +1084,7 @@
 
     "mat.title.predictions": "Predictions",
 
-    "homebrew.package_missing": "No homebew package, please subscribe and add to object library (add packages)",
+    "homebrew.package_missing": "At least one player is not subscribed to 'TI4 Homebrew', try again after subscribing (there may be a prompt on their screen(s) to install it now.",
     "homebrew.how_to": "Select homebrew, added on 'start game'",
 
     "bogus.last.entry": "reserved last entry so others can always end with a comma"

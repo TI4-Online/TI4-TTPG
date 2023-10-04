@@ -66,5 +66,6 @@
 		"0": "card.technology.blue:pok/dark_energy_tap",
 		"1": "card.technology.blue:pok/sling_relay",
 		"2": "card.technology.blue.empyrean:pok/aetherstream"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

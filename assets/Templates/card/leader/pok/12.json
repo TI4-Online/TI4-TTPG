@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.ul:pok/tungstantus",
 		"4": "card.leader.hero.ul:pok/ul_the_progenitor",
 		"5": "card.leader.mech.ul:pok/hecatoncheires"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

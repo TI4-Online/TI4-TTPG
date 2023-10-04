@@ -75,5 +75,6 @@
 		"3": "card.agenda:base/swords_to_plowshares",
 		"4": "card.agenda:base/unconventional_measures",
 		"5": "card.agenda:base/wormhole_reconstruction"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

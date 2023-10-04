@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.agenda:base/wormhole_research"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.exploration.industrial:pok/functioning_base.4",
 		"4": "card.exploration.industrial:pok/industrial_relic_fragment.1",
 		"5": "card.exploration.industrial:pok/industrial_relic_fragment.2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

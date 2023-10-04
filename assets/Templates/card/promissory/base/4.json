@@ -75,5 +75,6 @@
 		"3": "card.promissory.pink:base/ceasefire",
 		"4": "card.promissory.pink:base/political_secret",
 		"5": "card.promissory.pink:base/support_for_the_throne"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

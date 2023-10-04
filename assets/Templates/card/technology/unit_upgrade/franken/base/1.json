@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade.muaat:franken.base/prototype_war_sun",
 		"4": "card.technology.unit_upgrade.muaat:franken.base/the_inferno",
 		"5": "card.technology.unit_upgrade.naalu:franken.base/hybrid_crystal_fighter"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

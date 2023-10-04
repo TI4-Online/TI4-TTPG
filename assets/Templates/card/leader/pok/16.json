@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.leader.hero.yssaril:pok/kyver_blade_and_key",
 		"1": "card.leader.mech.yssaril:pok/blackshade_infiltrator"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

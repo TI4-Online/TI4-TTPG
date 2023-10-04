@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.empyrean:pok/watcher",
 		"4": "card.leader.agent.hacan:pok/carth_of_golden_sands",
 		"5": "card.leader.commander.hacan:pok/gila_the_silvertongue"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

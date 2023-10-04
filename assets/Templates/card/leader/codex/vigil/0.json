@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.keleres_argent:codex.vigil/omniopiares",
 		"4": "card.leader.agent.keleres_mentak:codex.vigil/xander_alexin_victori_iii",
 		"5": "card.leader.commander.keleres_mentak:codex.vigil/suffi_an"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

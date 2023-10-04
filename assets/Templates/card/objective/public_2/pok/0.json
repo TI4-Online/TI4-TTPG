@@ -75,5 +75,6 @@
 		"3": "card.objective.public_2:pok/construct_massive_cities",
 		"4": "card.objective.public_2:pok/control_the_borderlands",
 		"5": "card.objective.public_2:pok/hold_vast_reserves"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

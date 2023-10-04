@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.unit_upgrade.yssaril:franken.base/ysia_yssrila"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

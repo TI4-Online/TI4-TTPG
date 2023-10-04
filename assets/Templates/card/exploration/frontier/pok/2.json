@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.exploration.frontier:pok/unknown_relic_fragment.2",
 		"1": "card.exploration.frontier:pok/unknown_relic_fragment.3"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

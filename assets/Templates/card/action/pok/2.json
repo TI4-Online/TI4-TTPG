@@ -75,5 +75,6 @@
 		"3": "card.action:pok/reverse_engineer",
 		"4": "card.action:pok/rout",
 		"5": "card.action:pok/scuttle"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

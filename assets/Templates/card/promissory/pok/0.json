@@ -75,5 +75,6 @@
 		"3": "card.promissory.empyrean:pok/blood_pact",
 		"4": "card.promissory.empyrean:pok/dark_pact",
 		"5": "card.promissory.green:pok/alliance"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -72,5 +72,6 @@
 		"2": "card.technology.green.yin:base/yin_spinner",
 		"3": "card.technology.green.yssaril:base/mageon_implants",
 		"4": "card.technology.green.yssaril:base/transparasteel_plating"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

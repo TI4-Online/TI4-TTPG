@@ -75,5 +75,6 @@
 		"3": "card.action:codex.ordinian/forward_supply_base",
 		"4": "card.action:codex.ordinian/ghost_squad",
 		"5": "card.action:codex.ordinian/hack_election"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

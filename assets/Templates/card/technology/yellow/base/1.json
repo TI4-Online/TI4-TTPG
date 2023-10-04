@@ -75,5 +75,6 @@
 		"3": "card.technology.yellow.mentak:base/salvage_operations",
 		"4": "card.technology.yellow.winnu:base/hegemonic_trade_policy",
 		"5": "card.technology.yellow.xxcha:base/nullification_field"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

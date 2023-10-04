@@ -75,5 +75,6 @@
 		"3": "card.promissory.orange:pok/alliance",
 		"4": "card.promissory.pink:pok/alliance",
 		"5": "card.promissory.purple:pok/alliance"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

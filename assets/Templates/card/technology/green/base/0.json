@@ -75,5 +75,6 @@
 		"3": "card.technology.green:base/x89_bacterial_weapon",
 		"4": "card.technology.green.arborec:base/bioplasmosis",
 		"5": "card.technology.green.hacan:base/production_biomes"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

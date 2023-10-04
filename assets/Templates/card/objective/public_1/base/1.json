@@ -69,5 +69,6 @@
 		"1": "card.objective.public_1:base/lead_from_the_front",
 		"2": "card.objective.public_1:base/negotiate_trade_routes",
 		"3": "card.objective.public_1:base/sway_the_council"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

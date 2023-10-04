@@ -75,5 +75,6 @@
 		"3": "card.exploration.frontier:codex.vigil/keleres_ship.2",
 		"4": "card.exploration.frontier:codex.vigil/major_entropic_field",
 		"5": "card.exploration.frontier:codex.vigil/minor_entropic_field"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

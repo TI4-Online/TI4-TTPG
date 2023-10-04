@@ -72,5 +72,6 @@
 		"2": "card.promissory.vuilraith:pok/crucible",
 		"3": "card.promissory.white:pok/alliance",
 		"4": "card.promissory.yellow:pok/alliance"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

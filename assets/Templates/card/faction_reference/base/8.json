@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.faction_reference:base/yssaril"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

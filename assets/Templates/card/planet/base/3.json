@@ -75,5 +75,6 @@
 		"3": "card.planet:base/lazar",
 		"4": "card.planet:base/lirta_iv",
 		"5": "card.planet:base/lisis_ii"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

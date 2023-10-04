@@ -75,5 +75,6 @@
 		"3": "card.leader.mech.arborec:pok/letani_behemoth",
 		"4": "card.leader.agent.argent:pok/trilossa_aun_mirik",
 		"5": "card.leader.commander.argent:pok/trrakan_aun_zulok"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

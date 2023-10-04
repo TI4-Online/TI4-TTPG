@@ -75,5 +75,6 @@
 		"3": "card.action:base/leadership_rider",
 		"4": "card.action:base/lost_star_chart",
 		"5": "card.action:base/lucky_shot"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

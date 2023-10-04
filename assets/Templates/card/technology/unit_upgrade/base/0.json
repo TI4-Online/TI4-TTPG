@@ -75,5 +75,6 @@
 		"3": "card.technology.unit_upgrade:base/dreadnought_2",
 		"4": "card.technology.unit_upgrade:base/fighter_2",
 		"5": "card.technology.unit_upgrade:base/infantry_2"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

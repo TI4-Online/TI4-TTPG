@@ -75,5 +75,6 @@
 		"3": "card.alliance:pok/mentak",
 		"4": "card.alliance:pok/muaat",
 		"5": "card.alliance:pok/naalu"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

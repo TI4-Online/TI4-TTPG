@@ -75,5 +75,6 @@
 		"3": "card.planet:base/torkan",
 		"4": "card.planet:base/trenlak",
 		"5": "card.planet:base/vefut_ii"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:pok/argent",
 		"1": "card.faction_reference:pok/empyrean"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

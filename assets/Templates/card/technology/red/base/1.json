@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.technology.red.muaat:base/magmus_reactor",
 		"1": "card.technology.red.norr:base/valkyrie_particle_weave"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

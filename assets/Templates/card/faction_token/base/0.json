@@ -108,5 +108,6 @@
 		"14": "card.faction_token:base/xxcha",
 		"15": "card.faction_token:base/yin",
 		"16": "card.faction_token:base/yssaril"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

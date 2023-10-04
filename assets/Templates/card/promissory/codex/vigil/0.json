@@ -66,5 +66,6 @@
 		"0": "card.promissory.keleres_argent:codex.vigil/keleres_rider",
 		"1": "card.promissory.keleres_mentak:codex.vigil/keleres_rider",
 		"2": "card.promissory.keleres_xxcha:codex.vigil/keleres_rider"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.exploration.cultural:pok/mercenary_outfit.1",
 		"4": "card.exploration.cultural:pok/mercenary_outfit.2",
 		"5": "card.exploration.cultural:pok/mercenary_outfit.3"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

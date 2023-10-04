@@ -66,5 +66,6 @@
 		"0": "card.relic:codex.affinity/dynamis_core",
 		"1": "card.relic:codex.affinity/jrxs4550",
 		"2": "card.relic:codex.affinity/nanoforge"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

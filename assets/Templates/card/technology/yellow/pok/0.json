@@ -69,5 +69,6 @@
 		"1": "card.technology.yellow:pok/scanlink_drone_network",
 		"2": "card.technology.yellow.argent:pok/aerie_hololattice",
 		"3": "card.technology.yellow.nomad:pok/temporal_command_suite"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

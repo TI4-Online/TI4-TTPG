@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:base/hacan",
 		"1": "card.faction_reference:base/jolnar"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

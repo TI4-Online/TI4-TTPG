@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.faction_reference:pok/vuilraith"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

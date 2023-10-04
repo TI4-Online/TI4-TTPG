@@ -72,5 +72,6 @@
 		"2": "card.promissory.yellow:base/trade_agreement",
 		"3": "card.promissory.yin:base/greyfire_mutagen",
 		"4": "card.promissory.yssaril:base/spy_net"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

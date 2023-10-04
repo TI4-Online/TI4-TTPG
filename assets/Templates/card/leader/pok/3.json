@@ -75,5 +75,6 @@
 		"3": "card.leader.commander.jolnar:pok/ta_zern",
 		"4": "card.leader.hero.jolnar:pok/rin_the_masters_legacy",
 		"5": "card.leader.mech.jolnar:pok/shield_paling"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

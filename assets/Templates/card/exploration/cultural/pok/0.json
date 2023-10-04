@@ -75,5 +75,6 @@
 		"3": "card.exploration.cultural:pok/cultural_relic_fragment.4",
 		"4": "card.exploration.cultural:pok/cultural_relic_fragment.5",
 		"5": "card.exploration.cultural:pok/cultural_relic_fragment.6"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

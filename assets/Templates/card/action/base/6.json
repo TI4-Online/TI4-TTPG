@@ -75,5 +75,6 @@
 		"3": "card.action:base/maneuvering_jets.4",
 		"4": "card.action:base/mining_initiative",
 		"5": "card.action:base/morale_boost.1"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

@@ -75,5 +75,6 @@
 		"3": "card.planet:pok/mallice",
 		"4": "card.planet:pok/mirage",
 		"5": "card.planet:pok/naazir"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

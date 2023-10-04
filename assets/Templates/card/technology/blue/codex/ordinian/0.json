@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.blue.creuss:codex.ordinian/wormhole_generator.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

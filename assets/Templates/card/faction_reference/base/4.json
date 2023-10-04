@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:base/naalu",
 		"1": "card.faction_reference:base/nekro"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

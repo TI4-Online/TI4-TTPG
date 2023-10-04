@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.agenda:pok/search_warrant"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

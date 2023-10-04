@@ -60,5 +60,6 @@
 	},
 	"CardMetadata": {
 		"0": "card.technology.unit_upgrade.nekro:codex.ordinian/redacted"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

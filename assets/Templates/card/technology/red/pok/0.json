@@ -69,5 +69,6 @@
 		"1": "card.technology.red:pok/self_assembly_routines",
 		"2": "card.technology.red.naazrokha:pok/supercharge",
 		"3": "card.technology.red.vuilraith:pok/vortex"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

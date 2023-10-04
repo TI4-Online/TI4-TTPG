@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:codex.vigil/xxcha.omega",
 		"1": "card.faction_reference:codex.vigil/yin.omega"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }

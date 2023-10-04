@@ -63,5 +63,6 @@
 	"CardMetadata": {
 		"0": "card.faction_reference:base/xxcha",
 		"1": "card.faction_reference:base/yin"
-	}
+	},
+	"GroundAccessibility": "ZoomAndContext"
 }
