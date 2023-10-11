@@ -1045,7 +1045,8 @@
     "strategy_card.automator.base.spend_strategy_token": "Spend strategy token",
     "strategy_card.automator.politics.draw_action_cards": "Draw action cards",
     "strategy_card.automator.politics.draw_agenda_cards": "Draw agenda cards",
-    "strategy_card.automator.trade.get_tgs_and_cs": "Get tradegoods, commodities",
+    "strategy_card.automator.trade.get_tradegoods": "Get 3 tradegoods",
+    "strategy_card.automator.trade.refresh_commodities": "Refresh commodities",
     "strategy_card.automator.imperial.draw_secret_objective": "Draw secret objective",
 
     "timer.startCountdown": "Starting countdown timer",

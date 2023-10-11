@@ -7,9 +7,16 @@ const {
 } = require("./abstract-strategy-card");
 const { Broadcast } = require("../../lib/broadcast");
 const { CommandToken } = require("../../lib/command-token/command-token");
+const { Spawn } = require("../../setup/spawn/spawn");
 const { ThrottleClickHandler } = require("../../lib/ui/throttle-click-handler");
 const { WidgetFactory } = require("../../lib/ui/widget-factory");
-const { refObject, world, Color } = require("../../wrapper/api");
+const {
+    refObject,
+    world,
+    Color,
+    Rotator,
+    Vector,
+} = require("../../wrapper/api");
 
 const onAllowReplenishClicked = (button, player) => {
     const playerSlot = player.getSlot();
@@ -83,5 +90,36 @@ new AbstractStrategyCard(refObject)
         locale("strategy_card.automator.base.spend_strategy_token"),
         (playerDesk, player) => {
             CommandToken.spendStrategyToken(playerDesk.playerSlot, player);
+        }
+    )
+    .addAutomatorButton(
+        locale("strategy_card.automator.trade.get_tradegoods"),
+        (playerDesk, player) => {
+            // Allocate 3 tradegoods.
+            const tradeGoods = 3;
+            const nsid = "token:base/tradegood_commodity_1";
+            let pos = playerDesk.localPositionToWorld(new Vector(12, 18, 0)); // XXX TODO
+            pos.z = world.getTableHeight() + 5;
+            let obj;
+            for (let i = 0; i < tradeGoods; i++) {
+                obj = Spawn.spawn(nsid, pos, new Rotator(180, 0, 0));
+                pos = pos.add(obj.getExtent().multiply(0.9));
+            }
+        }
+    )
+    .addAutomatorButton(
+        locale("strategy_card.automator.trade.refresh_commodities"),
+        (playerDesk, player) => {
+            const playerSlot = playerDesk.playerSlot;
+            const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
+            const commodities = faction ? faction.raw.commodities : 0;
+            const nsid = "token:base/tradegood_commodity_1";
+            let pos = playerDesk.localPositionToWorld(new Vector(14, 10, 0)); // XXX TODO
+            pos.z = world.getTableHeight() + 5;
+            let obj;
+            for (let i = 0; i < commodities; i++) {
+                obj = Spawn.spawn(nsid, pos, new Rotator(0, 0, 0));
+                pos = pos.add(obj.getExtent().multiply(0.9));
+            }
         }
     );
