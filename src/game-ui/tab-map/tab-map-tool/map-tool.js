@@ -111,6 +111,26 @@ class MapTool {
     placeCards() {
         console.log("MapTool.placeCards");
 
+        // Custodians token.
+        let mecatolSystemTile = false;
+        let custodiansToken = false;
+        for (const obj of world.getAllObjects()) {
+            if (obj.getContainer()) {
+                continue; // ignore inside containers
+            }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid === "tile.system:base/18") {
+                mecatolSystemTile = obj;
+            } else if (nsid === "token:base/custodians") {
+                custodiansToken = obj;
+            }
+        }
+        if (mecatolSystemTile && custodiansToken) {
+            console.log("MapTool.placeCards: placing custodians token");
+            const pos = mecatolSystemTile.getPosition().add([0, 0, 10]);
+            custodiansToken.setPosition(pos);
+        }
+
         // Build wanted cards.
         const nsidTypeAndNameToPos = {};
         for (const obj of world.TI4.getAllSystemTileObjects()) {
@@ -161,8 +181,9 @@ class MapTool {
         const rot = new Rotator(0, 0, 0);
         const movePlanetCard = (cardObj, pos) => {
             assert(cardObj instanceof Card);
-            cardObj.setPosition(pos, 1);
+            cardObj.setPosition(pos);
             cardObj.setRotation(rot);
+            cardObj.snapToGround();
         };
 
         // Find cards.
@@ -197,24 +218,8 @@ class MapTool {
             }
         }
 
-        // Custodians token.
-        let mecatolSystemTile = false;
-        let custodiansToken = false;
-        for (const obj of world.getAllObjects()) {
-            if (obj.getContainer()) {
-                continue; // ignore inside containers
-            }
-            const nsid = ObjectNamespace.getNsid(obj);
-            if (nsid === "tile.system:base/18") {
-                mecatolSystemTile = obj;
-            } else if (nsid === "token:base/custodians") {
-                custodiansToken = obj;
-            }
-        }
-        if (mecatolSystemTile && custodiansToken) {
-            console.log("MapTool.placeCards: placing custodians token");
-            const pos = mecatolSystemTile.getPosition().add([0, 0, 5]);
-            custodiansToken.setPosition(pos, 1);
+        if (custodiansToken) {
+            custodiansToken.snapToGround();
         }
     }
 
