@@ -66,6 +66,7 @@
     "ui.message.multiverse_shift": "{playerName} using Multiverse Shift to place and explore frontier tokens, can explore tiles {tiles}.",
     "ui.message.multiverse_shift_has_no_owner": "No faction has Conservator Procyon as a her, cannot Multiverse Shift.",
     "ui.message.dimensional_anchor": "{playerName} using Dimensional Anchor to capture ships.",
+    "ui.message.dimensional_anchor_blockaded": "{playerName} is blockading, immune to Dimensional Anchor.",
     "ui.message.dimensional_anchor_has_no_owner": "No faction has It Feeds on Carrion as a hero, cannot perform Dimensional Anchor.",
     "ui.message.roll.dimensional_anchor": "{playerName} rolling for Dimensional Anchor! ships with red lines are captured; results are logged in chat",
     "ui.message.roll.dimensional_anchor_capture": "System {system}: {owner} {unit} [{value}] captured!",
