@@ -47,6 +47,7 @@ class SetupSheets extends AbstractSetup {
         obj.setObjectType(ObjectType.Ground);
         obj.setOwningPlayerSlot(playerSlot);
         obj.setPrimaryColor(color);
+        obj.snapToGround();
     }
 
     _cleanSheet(sheetData) {
