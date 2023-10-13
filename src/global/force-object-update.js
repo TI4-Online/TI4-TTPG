@@ -7,9 +7,9 @@ const {
 } = require("../wrapper/api");
 
 const VERBOSE = false;
-const NUM_POKES = 5;
+const NUM_POKES = 3;
 const MAX_POKES_PER_INTERVAL = 100;
-const EXPIRE_DELAY_MSECS = 750; // watch out for self-triggering
+const EXPIRE_DELAY_MSECS = 1000; // watch out for self-triggering
 
 /**
  * Reports of map tiles not showing for some, flipping units not getting flipped for some, etc.

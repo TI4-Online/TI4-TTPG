@@ -1,6 +1,11 @@
 const assert = require("../wrapper/assert-wrapper");
-const { GameObject, globalEvents, world } = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
+const {
+    GameObject,
+    ObjectType,
+    globalEvents,
+    world,
+} = require("../wrapper/api");
 
 /**
  * Several reports of a "clicking" sound where it has been fixed by selecting
@@ -56,14 +61,24 @@ const _onHitHandler = (obj, otherObj, first, impactPoint, impulse) => {
         return; // all is well
     }
 
-    // Try moving the top object.  There may be other objects on top of it,
-    // so only move a minute amount.
-    const z1 = obj.getPosition().z;
-    const z2 = otherObj ? otherObj.getPosition().z : -1;
-    const resetObj = z1 > z2 ? obj : otherObj;
-    resetObj.snapToGround();
+    // Touch unlocked objects.
+    for (const candidate of [obj, otherObj]) {
+        if (candidate === undefined) {
+            continue;
+        }
+        if (candidate.getObjectType() !== ObjectType.Regular) {
+            continue;
+        }
+        const nsid = ObjectNamespace.getNsid(candidate);
+        //console.log(`COLLISION UNSTICKING "${nsid}"`);
+        const pos = candidate.getPosition().add([0, 0, 0.021]);
+        candidate.setPosition(pos);
+    }
+
+    // Clear the entry.
     delete _pairToCollisionHistory[pair];
 
+    // Report what's getting snapped (and does it keep happening).
     if (_fixedPairs.length < 10) {
         _fixedPairs.push(pair);
         if (_fixedPairs.length === 1 || _fixedPairs.length === 10) {
