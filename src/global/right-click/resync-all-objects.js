@@ -5,6 +5,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
 const {
     Border,
+    Card,
     Container,
     Dice,
     LayoutBox,
@@ -82,6 +83,12 @@ class ResyncAllObjects {
         this._objIds = world
             .getAllObjects(skipContained)
             .filter((obj) => {
+                if (
+                    obj instanceof Card &&
+                    (obj.isInHand() || obj.isInHolder())
+                ) {
+                    return false; // ignore cards in holders
+                }
                 if (obj instanceof Container) {
                     return false; // ignore containers
                 }
@@ -130,6 +137,14 @@ class ResyncAllObjects {
     }
 
     static resyncObject(obj) {
+        // Recheck some state that might change.
+        if (obj.isHeld()) {
+            return false;
+        }
+        if (obj instanceof Card && (obj.isInHand() || obj.isInHolder())) {
+            return false; // ignore cards in holders
+        }
+
         const json = obj.toJSONString();
         const pos = obj.getPosition();
         const rot = obj.getRotation();
@@ -140,6 +155,8 @@ class ResyncAllObjects {
         // Creates either static object or game object.
         const clone = world.createStaticObjectFromJSON(json, pos);
         clone.setRotation(rot);
+
+        return true;
     }
 }
 
