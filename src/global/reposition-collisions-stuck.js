@@ -69,8 +69,7 @@ const _onHitHandler = (obj, otherObj, first, impactPoint, impulse) => {
         if (candidate.getObjectType() !== ObjectType.Regular) {
             continue;
         }
-        const nsid = ObjectNamespace.getNsid(candidate);
-        //console.log(`COLLISION UNSTICKING "${nsid}"`);
+        //console.log(`COLLISION UNSTICKING "${ObjectNamespace.getNsid(candidate)}"`);
         const pos = candidate.getPosition().add([0, 0, 0.021]);
         candidate.setPosition(pos);
     }
