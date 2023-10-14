@@ -226,6 +226,9 @@ class CardUtil {
 
         const cardHolder = CardUtil.getCardHolder(playerSlot);
         if (!cardHolder) {
+            console.log(
+                `CardUtil.moveCardsToCardHolder: no holder for ${playerSlot}`
+            );
             return false;
         }
 

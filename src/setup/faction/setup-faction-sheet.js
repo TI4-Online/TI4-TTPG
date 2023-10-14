@@ -65,6 +65,12 @@ class SetupFactionSheet extends AbstractSetup {
             );
             sheet.setObjectType(ObjectType.Regular);
             sheet.setPosition(pos);
+            if (commandSheet) {
+                commandSheet.snapToGround();
+            }
+            if (leaderSheet) {
+                leaderSheet.snapToGround();
+            }
             sheet.snapToGround();
             sheet.setObjectType(ObjectType.Ground);
 

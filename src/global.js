@@ -138,7 +138,6 @@ const { PlayerDesk } = require("./lib/player-desk/player-desk");
 require("./setup/setup-secret-holders");
 require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
-//require("./global/reposition-collisions-stuck"); // have data now so disable, should this do more?
 require("./global/check-card-holder-assignments");
 require("./global/seats-shuffle");
 
@@ -325,7 +324,6 @@ require("./global/chat-commands");
 require("./global/export-game");
 require("./global/fix-table-colors");
 require("./global/fix-unit-colors");
-require("./global/force-object-update");
 require("./global/gamedata-key");
 require("./global/highlight-on-system-activated");
 require("./global/numpad-actions");
@@ -362,6 +360,10 @@ require("./global/trigger-on-game-ended");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 require("./global/whisper-message");
+
+//require("./global/reposition-collisions-stuck"); // temporary workaround
+require("./global/force-object-update");
+//require("./global/right-click/resync-all-objects");
 
 if (!world.__isMock) {
     world.setShowDiceRollMessages(false);

@@ -47,7 +47,7 @@ class MapStringSave {
             }
 
             // 0r, 0g, 0b handline.
-            if (Facing.isFaceDown(obj) && !system.raw.hyperlane) {
+            if (Facing.isFaceDown(obj) && system && !system.raw.hyperlane) {
                 let which = undefined;
                 if (system.home) {
                     which = "g";

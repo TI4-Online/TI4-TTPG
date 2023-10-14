@@ -17,31 +17,43 @@ class SetupFactionPromissory extends AbstractSetup {
         const pos = this.playerDesk.localPositionToWorld(
             PROMISSORY_DECK_LOCAL_OFFSET
         );
+        pos.z = world.getTableHeight() + 10;
         const rot = this.playerDesk.rot;
 
         // Only use items listed in faction tables, not just because in deck.
         const acceptNames = new Set();
-        this._faction.raw.promissoryNotes.forEach((name) =>
-            acceptNames.add(name)
-        );
+        this._faction.raw.promissoryNotes.forEach((name) => {
+            acceptNames.add(name);
+        });
 
         const nsidPrefix = "card.promissory";
-        let deck = SpawnDeck.spawnDeck(nsidPrefix, pos, rot, (nsid) => {
-            // "card.promissory.jolnar" (careful about "card.promissory.blue").
-            const factionName = this.parseNsidGetTypePart(nsid, nsidPrefix, 2);
-            if (factionName !== this._faction.raw.faction) {
-                return false;
-            }
-            // Check if legal name.  Include "name.omega", etc versions.
-            const parsed = ObjectNamespace.parseNsid(nsid);
-            const name = parsed.name.split(".")[0];
-            if (!acceptNames.has(name)) {
-                // Unwanted card in the deck, or a typo?
-                console.log(`Unregistered "${nsid}"`);
-                return false;
-            }
-            return true;
-        });
+        const allowExisting = false;
+        let deck = SpawnDeck.spawnDeck(
+            nsidPrefix,
+            pos,
+            rot,
+            (nsid) => {
+                // "card.promissory.jolnar" (careful about "card.promissory.blue").
+                const factionName = this.parseNsidGetTypePart(
+                    nsid,
+                    nsidPrefix,
+                    2
+                );
+                if (factionName !== this._faction.raw.faction) {
+                    return false;
+                }
+                // Check if legal name.  Include "name.omega", etc versions.
+                const parsed = ObjectNamespace.parseNsid(nsid);
+                const name = parsed.name.split(".")[0];
+                if (!acceptNames.has(name)) {
+                    // Unwanted card in the deck, or a typo?
+                    console.log(`Unregistered "${nsid}"`);
+                    return false;
+                }
+                return true;
+            },
+            allowExisting
+        );
 
         // See the comment in CloneReplace for why.
         deck = CloneReplace.cloneReplace(deck);

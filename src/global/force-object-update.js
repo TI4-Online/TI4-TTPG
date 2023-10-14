@@ -7,9 +7,8 @@ const {
 } = require("../wrapper/api");
 
 const VERBOSE = false;
-const NUM_POKES = 5;
+const NUM_POKES = 3;
 const MAX_POKES_PER_INTERVAL = 100;
-const EXPIRE_DELAY_MSECS = 750; // watch out for self-triggering
 
 /**
  * Reports of map tiles not showing for some, flipping units not getting flipped for some, etc.
@@ -19,8 +18,10 @@ const EXPIRE_DELAY_MSECS = 750; // watch out for self-triggering
  */
 class ForceObjectUpdate {
     constructor() {
-        // Array.{obj:GameObject,pokesRemaining:number,pos:Vector,lastPokeTimestamp:number}, newest at back.
+        // Array.{obj:GameObject,pokesRemaining:number}, newest at back.
         this._pokeQueue = [];
+
+        this._objIdToPos = {};
 
         this._markDirtyHandler = (obj) => {
             this.markDirty(obj);
@@ -48,25 +49,31 @@ class ForceObjectUpdate {
         obj.onMovementStopped.add(this._markDirtyHandler);
         obj.onSnapped.add(this._markDirtyHandler);
         obj.onSnappedToGrid.add(this._markDirtyHandler);
+        obj.onDestroyed.add(() => {
+            const id = obj.getId();
+            delete this._objIdToPos[id];
+        });
     }
 
     markDirty(obj) {
         assert(obj instanceof GameObject);
 
-        // Be careful that our own setPosition doesn't keep triggering this.
-        // Ignore request if already in the poke queue, and queue processing
-        // leaves the entry in place a short while after the last setPosition.
-        for (const entry of this._pokeQueue) {
-            if (entry.obj === obj) {
-                return; // already being processed
-            }
+        // Ignore if not moved far from last time.
+        const id = obj.getId();
+        const lastPos = this._objIdToPos[id];
+        const thisPos = obj.getPosition();
+        if (lastPos && lastPos.subtract(thisPos).magnitudeSquared() < 0.1) {
+            return; // too close to last time
         }
+        this._objIdToPos[id] = thisPos;
 
+        // Add or move to end.
+        this._pokeQueue = this._pokeQueue.filter((peer) => {
+            return peer !== obj;
+        });
         this._pokeQueue.push({
             obj,
             pokesRemaining: NUM_POKES,
-            pos: obj.getPosition(),
-            lastPokeTimestamp: Date.now(),
         });
     }
 
@@ -88,17 +95,13 @@ class ForceObjectUpdate {
         const toPoke = this._pokeQueue.splice(0, toPokeCount);
 
         // Poke, and if young return to end of queue.
-        const now = Date.now();
         for (const entry of toPoke) {
             if (entry.pokesRemaining > 0) {
                 this.pokeEntry(entry);
                 entry.pokesRemaining -= 1;
-                entry.lastPokeTimestamp = now;
             }
-            // Return to queue if needs more and/or is young (keep around for
-            // a moment to prevent our own poke from retriggering).
-            const age = now - entry.lastPokeTimestamp;
-            if (entry.pokesRemaining > 0 || age < EXPIRE_DELAY_MSECS) {
+            // Return to queue if needs more.
+            if (entry.pokesRemaining > 0) {
                 this._pokeQueue.push(entry);
             }
         }
@@ -107,7 +110,6 @@ class ForceObjectUpdate {
     pokeEntry(entry) {
         assert(entry.obj instanceof GameObject);
         assert(typeof entry.pokesRemaining === "number");
-        assert(typeof entry.pos.x === "number");
 
         const obj = entry.obj;
         const objType = obj.getObjectType();
@@ -129,12 +131,6 @@ class ForceObjectUpdate {
 
         const pos = obj.getPosition();
         const rot = obj.getRotation();
-
-        // Paranoia: abort if moved too far from original record's position.
-        const dSq = pos.subtract(entry.pos).magnitudeSquared();
-        if (dSq > 0.1) {
-            return; // moved too much
-        }
 
         // Poke, alternate directions to remain mostly stable.
         const dir = entry.pokesRemaining % 2 === 1 ? 1 : -1;

@@ -25,8 +25,13 @@ const DELETE_DIE_AFTER_N_SECONDS = 10;
 const DIMENSIONAL_TEAR_MISS = 4;
 
 /**
- * Roll a die for all non-fighter ships in or adjacent to systems that contain
+ * Roll a die for all non-fighter ships in and adjacent to systems that contain
  * a dimensional tear; on a 1-3 capture the unit.
+ *
+ * Do not roll for ships *in* systems, if a player is blockading
+ * none of their ships roll.
+ *
+ * Ugh, except if Nekro copies, the nekro versions do not count as blockade.
  */
 function dimensionalAnchor(card, player) {
     assert(card instanceof Card);
@@ -68,6 +73,7 @@ function dimensionalAnchor(card, player) {
 
     // get all systems with dimensional tears
     const dimensionalTearHexes = new Set();
+    const blockadableHexes = new Set();
     for (const obj of world.getAllObjects()) {
         assert(obj instanceof GameObject);
 
@@ -80,6 +86,11 @@ function dimensionalAnchor(card, player) {
                 continue; // not on a system tile
             }
             dimensionalTearHexes.add(hex);
+
+            // Blockade matters for vuilraith token, not for nekro version.
+            if (name.type === "token.vuilraith") {
+                blockadableHexes.add(hex);
+            }
         }
     }
 
@@ -112,18 +123,42 @@ function dimensionalAnchor(card, player) {
         }
     });
 
-    // get all non-fighter ships in those systems not owned by the player
-    // whose hero this is
-    const plastic = UnitPlastic.getAll().filter((plastic) =>
-        trueHexes.has(plastic.hex)
-    );
-
+    // Get all ships in applicable hexes, including fighters (for blockade check).
+    // Only consider ships owned by other players.
     const unitAttrsSet = new UnitAttrsSet();
-    const ships = plastic.filter((plastic) => {
+    const plastic = UnitPlastic.getAll().filter((plastic) => {
+        const inHex = trueHexes.has(plastic.hex);
         const isShip = unitAttrsSet.get(plastic.unit).raw.ship;
-        const isFighter = plastic.unit == "fighter";
         const isOwnedByCardOwner = plastic.owningPlayerSlot === cardOwnerSlot;
-        return isShip && !isFighter && !isOwnedByCardOwner;
+        return inHex && isShip && !isOwnedByCardOwner;
+    });
+
+    // Are any ships blockading?
+    const blockadingPlayerSlots = new Set();
+    for (const ship of plastic) {
+        const playerSlot = ship.owningPlayerSlot;
+        if (
+            blockadableHexes.has(ship.hex) &&
+            !blockadingPlayerSlots.has(playerSlot)
+        ) {
+            blockadingPlayerSlots.add(playerSlot);
+            const blockadingPlayerName =
+                world.TI4.getNameByPlayerSlot(playerSlot);
+            Broadcast.broadcastAll(
+                locale("ui.message.dimensional_anchor_blockaded", {
+                    playerName: blockadingPlayerName,
+                })
+            );
+        }
+    }
+
+    // Restrict to non-blockading, non-fighter ships.
+    const ships = plastic.filter((plastic) => {
+        const isBlockading = blockadingPlayerSlots.has(
+            plastic.owningPlayerSlot
+        );
+        const isFighter = plastic.unit === "fighter";
+        return !isBlockading && !isFighter;
     });
 
     // roll grav rift for each ship
