@@ -335,7 +335,6 @@ require("./global/right-click/heroes/helio-command-array");
 require("./global/right-click/heroes/dimensional-anchor");
 require("./global/right-click/heroes/multiverse-shift");
 require("./global/right-click/leave-seat");
-require("./global/right-click/resync-all-objects");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
 require("./global/right-click/right-click-deal-starting-technology");
@@ -363,7 +362,8 @@ require("./global/trigger-on-system-activated");
 require("./global/whisper-message");
 
 //require("./global/reposition-collisions-stuck"); // temporary workaround
-//require("./global/force-object-update");
+require("./global/force-object-update");
+//require("./global/right-click/resync-all-objects");
 
 if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
