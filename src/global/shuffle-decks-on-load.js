@@ -14,6 +14,7 @@ function shuffleAllDecks() {
         "card.objective.public_1",
         "card.objective.public_2",
         "card.action",
+        "card.agenda",
         "card.objective.secret",
         "card.exploration.cultural",
         "card.exploration.hazardous",
