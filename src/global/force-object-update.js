@@ -21,7 +21,7 @@ class ForceObjectUpdate {
         // Array.{obj:GameObject,pokesRemaining:number}, newest at back.
         this._pokeQueue = [];
 
-        this._objIdToPos = {};
+        this._objIdToPosRot = {};
 
         this._markDirtyHandler = (obj) => {
             this.markDirty(obj);
@@ -51,7 +51,7 @@ class ForceObjectUpdate {
         obj.onSnappedToGrid.add(this._markDirtyHandler);
         obj.onDestroyed.add(() => {
             const id = obj.getId();
-            delete this._objIdToPos[id];
+            delete this._objIdToPosRot[id];
         });
     }
 
@@ -59,13 +59,19 @@ class ForceObjectUpdate {
         assert(obj instanceof GameObject);
 
         // Ignore if not moved far from last time.
+        const pos = obj.getPosition();
+        const rot = obj.getRotation().getUpVector();
+
         const id = obj.getId();
-        const lastPos = this._objIdToPos[id];
-        const thisPos = obj.getPosition();
-        if (lastPos && lastPos.subtract(thisPos).magnitudeSquared() < 0.1) {
+        const lastPosRot = this._objIdToPosRot[id];
+        if (
+            lastPosRot &&
+            lastPosRot.pos.subtract(pos).magnitudeSquared() < 0.5 &&
+            lastPosRot.rot.subtract(rot).magnitudeSquared() < 0.5
+        ) {
             return; // too close to last time
         }
-        this._objIdToPos[id] = thisPos;
+        this._objIdToPosRot[id] = { pos, rot };
 
         // Add or move to end.
         this._pokeQueue = this._pokeQueue.filter((peer) => {
