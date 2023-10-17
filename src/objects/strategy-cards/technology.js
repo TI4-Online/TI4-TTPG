@@ -154,7 +154,33 @@ function widgetFactory(playerDesk, strategyCardObj) {
         xOffset += COL_WIDTH;
     });
 
-    technologies.unitUpgrade.forEach((tech, index) => {
+    // Suppress generic upgrades when a faction version exists.
+    let unitUpgrades = technologies.unitUpgrade;
+    const factionUnitPositions = unitUpgrades
+        .filter((tech) => {
+            return (
+                tech.cardNsid.startsWith("card.technology.unit_upgrade") &&
+                tech.faction
+            );
+        })
+        .map((tech) => {
+            return tech.unitPosition;
+        });
+    unitUpgrades = unitUpgrades.filter((tech) => {
+        if (
+            tech.cardNsid.startsWith("card.technology.unit_upgrade") &&
+            !tech.faction &&
+            factionUnitPositions.includes(tech.unitPosition)
+        ) {
+            console.log(
+                `Technology suppressing ${tech.name} (${playerDesk.colorName})`
+            );
+            return false;
+        }
+        return true;
+    });
+
+    unitUpgrades.forEach((tech, index) => {
         const techButton = WidgetFactory.button()
             .setFontSize(FONT_SIZE_BODY)
             .setText(tech.name);

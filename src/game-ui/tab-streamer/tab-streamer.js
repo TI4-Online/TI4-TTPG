@@ -3,6 +3,9 @@ const locale = require("../../lib/locale");
 const { Broadcast } = require("../../lib/broadcast");
 const { TabStreamerUI } = require("./tab-streamer-ui");
 const { Player, world } = require("../../wrapper/api");
+const {
+    AutoStreamerCamera,
+} = require("../../lib/streamer/auto-streamer-camera");
 
 class TabStreamer {
     constructor() {
@@ -21,6 +24,19 @@ class TabStreamer {
                         key,
                     })
                 );
+            },
+            autoStreamerCamera: (button, player) => {
+                assert(player instanceof Player);
+                if (AutoStreamerCamera.disconnectIfActive(player)) {
+                    Broadcast.chatAll(
+                        `Disconnected AutoStreamerCamera from ${player.getName()}`
+                    );
+                } else {
+                    new AutoStreamerCamera(player);
+                    Broadcast.chatAll(
+                        `Connected AutoStreamerCamera to ${player.getName()}`
+                    );
+                }
             },
         };
 

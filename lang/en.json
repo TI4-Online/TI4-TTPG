@@ -1064,6 +1064,8 @@
     "streamer.button.toggle_hide_cursor": "Hide/show\ncursor",
     "streamer.desc.buddy": "Send game data to “TI4 Streamer Buddy” application running on TTPG host's system.",
     "streamer.button.buddy": "Activate\nBuddy",
+    "streamer.desc.auto_streamer_camear": "Move camera to interesting locations during game",
+    "streamer.button.auto_streamer_camear": "Auto streamer\ncamera",
 
     "plague.roll_name": "Plague",
     "plague.message": "Plague on “{planetName}” with {infantryCount} infantry",

@@ -101,6 +101,16 @@ describe("getTechnologies", () => {
         technologies = Technology.getTechnologies();
         expect(technologies.length).toBe(84);
     });
+
+    it("faction tech with unit upgrade", () => {
+        jest.spyOn(Faction, "getByPlayerSlot").mockReturnValue({
+            raw: { faction: "arborec" },
+        });
+        const technologies = Technology.getTechnologies(playerSlot);
+        expect(technologies.length).toBe(35);
+        const localeNames = technologies.map((tech) => tech.localeName);
+        assert(localeNames.includes("unit.infantry.letani_warrior_2"));
+    });
 });
 
 describe("getTechnologiesByType", () => {

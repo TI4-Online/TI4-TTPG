@@ -122,6 +122,10 @@ globalEvents.TI4 = {
     // Called when a turn passed status changes.
     // <(playerSlot: Number, clickingPlayer: Player) => void>
     onTurnPassedChanged: new TriggerableMulticastDelegate(onErr),
+
+    // Called when warping units in or out from the combat arenda.
+    // <(warpIn: boolean) => void>
+    onWarpUnits: new TriggerableMulticastDelegate(onErr),
 };
 
 globalEvents.onPlayerJoined.add((player) => {

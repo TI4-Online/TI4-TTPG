@@ -262,6 +262,9 @@ class Franken {
             const source = sources[key];
             const count = settings._value;
             console.log(`Franken.startDraft: dealing ${key} x${count}`);
+            if (!(source instanceof Card) && !(source instanceof Container)) {
+                continue; // homebrew?
+            }
             assert(source instanceof Card || source instanceof Container);
             assert(typeof count === "number");
 

@@ -179,15 +179,6 @@ class GameSetupUI {
                 globalEvents.TI4.onPlayerCountChanged.add((playerCount) => {
                     wrongTableWarning.setVisible(playerCount <= 6);
                 });
-            } else {
-                // Only add brightness suggestion to skinny, do not overcrowd.
-                const recommendBrightness = this._createText(
-                    locale("ui.setup.suggest_12_brightness")
-                );
-                recommendBrightness
-                    .setJustification(TextJustification.Center)
-                    .setTextColor(wrongColor);
-                fullPanel.addChild(recommendBrightness);
             }
         }
 
