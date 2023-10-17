@@ -47,6 +47,14 @@ const GENERIC_TOKENS = [
         pos: { x: -45, y: 15, z: 3 },
         yaw: 0,
     },
+    {
+        tokenNsid: "token:base/trophy",
+        bagNsid: false,
+        bagType: false,
+        anchor: TableLayout.anchor.score,
+        pos: { x: 25, y: 35, z: 3 },
+        yaw: 0,
+    },
 
     // scoreboard is in setup-table-mats
 ];
