@@ -322,7 +322,6 @@ world.TI4 = {
 
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
-require("./global/card-vibration-stomp");
 require("./global/chat-commands");
 //require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
@@ -365,6 +364,7 @@ require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 require("./global/whisper-message");
 
+require("./global/card-vibration-stomp");
 //require("./global/reposition-collisions-stuck"); // temporary workaround
 require("./global/force-object-update");
 //require("./global/right-click/resync-all-objects");

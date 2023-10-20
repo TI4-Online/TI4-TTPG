@@ -23,12 +23,16 @@ class CardVibrationStomp {
             return; // only lock when face up
         }
 
+        if (!card.getSnappedToPoint()) {
+            return; // not snapped to a point
+        }
+
         card.freeze();
     };
 
     static isObjective(card) {
         const nsid = ObjectNamespace.getNsid(card);
-        return nsid.startsWith("card.objective");
+        return nsid.startsWith("card.objective.public");
     }
 
     static maybeAddHandler(card) {
