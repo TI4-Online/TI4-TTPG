@@ -6,6 +6,7 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { TableLayout } = require("../../table/table-layout");
 const {
+    Border,
     Button,
     Player,
     ScreenUIElement,
@@ -147,21 +148,24 @@ class AutoStreamerCamera {
             .setBold(true)
             .setText("Auto\nStreamer\nCamera");
         button.onClicked.add(() => {
-            this.disconnect();
+            AutoStreamerCamera.disconnectIfActive(this._player);
         });
+
+        const c = 0.5;
+        const border = new Border().setColor([c, c, c, 1]).setChild(button);
 
         this._ui = new ScreenUIElement();
         this._ui.relativeHeight = false;
         this._ui.relativeWidth = false;
-        this._ui.relativePositionX = false;
-        this._ui.relativePositionY = false;
-        this._ui.anchorX = 0;
-        this._ui.anchorY = 0;
+        this._ui.relativePositionX = true;
+        this._ui.relativePositionY = true;
+        this._ui.anchorX = 1;
+        this._ui.anchorY = 1;
         this._ui.width = 200;
         this._ui.height = 200;
-        this._ui.positionX = 20;
-        this._ui.positionY = 20;
-        this._ui.widget = button;
+        this._ui.positionX = 1;
+        this._ui.positionY = 1;
+        this._ui.widget = border;
         world.addScreenUI(this._ui);
     }
 
@@ -233,9 +237,17 @@ class AutoStreamerCamera {
     lookAt(where) {
         const { pos, yaw, distance } = where;
         assert(typeof pos.x === "number");
+        assert(typeof pos.y === "number");
+        assert(typeof pos.z === "number");
         assert(typeof yaw === "number");
         assert(typeof distance === "number");
         assert(this._player instanceof Player);
+
+        assert(!Number.isNaN(pos.x));
+        assert(!Number.isNaN(pos.y));
+        assert(!Number.isNaN(pos.z));
+        assert(!Number.isNaN(yaw));
+        assert(!Number.isNaN(distance));
 
         if (!this._player.isValid()) {
             return;
