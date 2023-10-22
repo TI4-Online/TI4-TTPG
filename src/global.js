@@ -124,7 +124,7 @@ globalEvents.TI4 = {
     onTurnPassedChanged: new TriggerableMulticastDelegate(onErr),
 
     // Called when warping units in or out from the combat arenda.
-    // <(warpIn: boolean) => void>
+    // <(warpIn: boolean, triggeredByOnTurnChangeEvent: boolean) => void>
     onWarpUnits: new TriggerableMulticastDelegate(onErr),
 };
 

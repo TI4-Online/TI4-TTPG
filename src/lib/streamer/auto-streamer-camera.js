@@ -4,11 +4,14 @@
  */
 
 const assert = require("../../wrapper/assert-wrapper");
+const { FindTurnOrder } = require("../phase/find-turn-order");
+const { ObjectNamespace } = require("../object-namespace");
 const { TableLayout } = require("../../table/table-layout");
 const {
     Border,
     Button,
     Player,
+    PlayerPermission,
     ScreenUIElement,
     Vector,
     globalEvents,
@@ -59,7 +62,15 @@ class AutoStreamerCamera {
             this._warpIn = false;
             this.update();
         };
-        this._onScored = () => {
+        this._onScored = (obj) => {
+            // Watch for players scoring secrets during combat.
+            // Simple solution: only listen for publics.
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid.startsWith("card.objective.secret")) {
+                console.log("AutoStreamerCamera: ignoring onScored for secret");
+                return;
+            }
+
             this._scoring = true;
             this._systemActivation = false;
             this._warpIn = false;
@@ -72,6 +83,16 @@ class AutoStreamerCamera {
             this.update();
         };
         this._onTurnChanged = () => {
+            // Watch for players ending turn during scoring.
+            // Count the allocated strategy cards.
+            const numPicked = FindTurnOrder.numPickedStrategyCards();
+            if (numPicked <= 1) {
+                console.log(
+                    "AutoStreamerCamera: ignoring onTurnChanged with too few picked strategy cards"
+                );
+                return;
+            }
+
             this._scoring = false;
             this._systemActivation = false;
             this._warpIn = false;
@@ -89,7 +110,10 @@ class AutoStreamerCamera {
             this._warpIn = false;
             this.update();
         };
-        this._onWarpUnits = (warpIn) => {
+        this._onWarpUnits = (warpIn, triggeredByOnTurnChangeEvent) => {
+            if (triggeredByOnTurnChangeEvent) {
+                return; // only react if triggered by warp button
+            }
             this._scoring = false;
             this._systemActivation = true;
             this._warpIn = warpIn;
@@ -154,6 +178,9 @@ class AutoStreamerCamera {
         const c = 0.5;
         const border = new Border().setColor([c, c, c, 1]).setChild(button);
 
+        const playerPermission = new PlayerPermission();
+        playerPermission.setPlayerSlots([this._player.getSlot()]);
+
         this._ui = new ScreenUIElement();
         this._ui.relativeHeight = false;
         this._ui.relativeWidth = false;
@@ -163,6 +190,7 @@ class AutoStreamerCamera {
         this._ui.anchorY = 1;
         this._ui.width = 200;
         this._ui.height = 200;
+        this._ui.players = playerPermission;
         this._ui.positionX = 1;
         this._ui.positionY = 1;
         this._ui.widget = border;
