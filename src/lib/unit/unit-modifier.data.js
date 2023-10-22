@@ -48,6 +48,42 @@ module.exports = [
         },
     },
     {
+        // Bombard when off planet.
+        isCombat: true,
+        localeName: "unit.mech.annihilator",
+        localeDescription: "unit_modifier.desc.annihilator",
+        owner: "self",
+        priority: "mutate",
+        triggerUnitAbility: "unit.mech.annihilator",
+        filter: (auxData) => {
+            return (
+                auxData.self.has("mech") &&
+                (auxData.rollType === "bombardment" ||
+                    auxData.rollType === "groundCombat")
+            );
+        },
+        applyAll: (unitAttrsSet, auxData) => {
+            let bombardCount = 0;
+            let groundCount = 0;
+            for (const unitPlastic of auxData.self.plastic) {
+                if (unitPlastic.unit !== "mech") {
+                    continue;
+                }
+                if (unitPlastic.exactPlanet) {
+                    groundCount += 1;
+                } else {
+                    bombardCount += 1;
+                }
+            }
+            if (auxData.rollType === "bombardment") {
+                auxData.self.overrideCount("mech", bombardCount);
+            } else {
+                auxData.self.overrideCount("mech", groundCount);
+            }
+        },
+    },
+
+    {
         // "-1 to all SPACE CANNON rolls",
         isCombat: true,
         localeName: "unit_modifier.name.antimass_deflectors",

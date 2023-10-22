@@ -4,10 +4,14 @@
  */
 
 const assert = require("../../wrapper/assert-wrapper");
+const { FindTurnOrder } = require("../phase/find-turn-order");
+const { ObjectNamespace } = require("../object-namespace");
 const { TableLayout } = require("../../table/table-layout");
 const {
+    Border,
     Button,
     Player,
+    PlayerPermission,
     ScreenUIElement,
     Vector,
     globalEvents,
@@ -48,7 +52,7 @@ class AutoStreamerCamera {
 
         this._playerLeftHandler = () => {
             if (!this._player.isValid()) {
-                this.disconnect();
+                AutoStreamerCamera.disconnectIfActive(this._player);
             }
         };
 
@@ -58,37 +62,67 @@ class AutoStreamerCamera {
             this._warpIn = false;
             this.update();
         };
-        this._onScored = () => {
+        this._onScored = (obj) => {
+            // Watch for players scoring secrets during combat.
+            // Simple solution: only listen for publics.
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid.startsWith("card.objective.secret")) {
+                console.log("AutoStreamerCamera onScored: secret, ignoring");
+                return;
+            }
+
+            console.log("AutoStreamerCamera onScored");
             this._scoring = true;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onSystemActivated = () => {
+            console.log("AutoStreamerCamera onSystemActivated");
             this._scoring = false;
             this._systemActivation = true;
             this._warpIn = false;
             this.update();
         };
         this._onTurnChanged = () => {
+            // Watch for players ending turn during scoring.
+            // Count the allocated strategy cards.
+            const numPicked = FindTurnOrder.numPickedStrategyCards();
+            if (numPicked <= 1) {
+                console.log(
+                    "AutoStreamerCamera onTurnChanged: too few picked strategy cards, ignoring"
+                );
+                return;
+            }
+
+            console.log("AutoStreamerCamera onTurnChanged");
             this._scoring = false;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onTurnOrderChanged = () => {
+            console.log("AutoStreamerCamera onTurnOrderChanged");
             this._scoring = false;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onTurnOrderEmpty = () => {
+            console.log("AutoStreamerCamera onTurnOrderEmpty");
             this._scoring = true;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
-        this._onWarpUnits = (warpIn) => {
+        this._onWarpUnits = (warpIn, triggeredByOnTurnChangeEvent) => {
+            if (triggeredByOnTurnChangeEvent) {
+                console.log(
+                    "AutoStreamerCamera onWarpUnits: triggered by turn change, ignoring"
+                );
+                return; // only react if triggered by warp button
+            }
+            console.log("AutoStreamerCamera onWarpUnits");
             this._scoring = false;
             this._systemActivation = true;
             this._warpIn = warpIn;
@@ -147,21 +181,28 @@ class AutoStreamerCamera {
             .setBold(true)
             .setText("Auto\nStreamer\nCamera");
         button.onClicked.add(() => {
-            this.disconnect();
+            AutoStreamerCamera.disconnectIfActive(this._player);
         });
+
+        const c = 0.5;
+        const border = new Border().setColor([c, c, c, 1]).setChild(button);
+
+        const playerPermission = new PlayerPermission();
+        playerPermission.setPlayerSlots([this._player.getSlot()]);
 
         this._ui = new ScreenUIElement();
         this._ui.relativeHeight = false;
         this._ui.relativeWidth = false;
-        this._ui.relativePositionX = false;
-        this._ui.relativePositionY = false;
-        this._ui.anchorX = 0;
-        this._ui.anchorY = 0;
+        this._ui.relativePositionX = true;
+        this._ui.relativePositionY = true;
+        this._ui.anchorX = 1;
+        this._ui.anchorY = 1;
         this._ui.width = 200;
         this._ui.height = 200;
-        this._ui.positionX = 20;
-        this._ui.positionY = 20;
-        this._ui.widget = button;
+        this._ui.players = playerPermission;
+        this._ui.positionX = 1;
+        this._ui.positionY = 1;
+        this._ui.widget = border;
         world.addScreenUI(this._ui);
     }
 
@@ -233,9 +274,17 @@ class AutoStreamerCamera {
     lookAt(where) {
         const { pos, yaw, distance } = where;
         assert(typeof pos.x === "number");
+        assert(typeof pos.y === "number");
+        assert(typeof pos.z === "number");
         assert(typeof yaw === "number");
         assert(typeof distance === "number");
         assert(this._player instanceof Player);
+
+        assert(!Number.isNaN(pos.x));
+        assert(!Number.isNaN(pos.y));
+        assert(!Number.isNaN(pos.z));
+        assert(!Number.isNaN(yaw));
+        assert(!Number.isNaN(distance));
 
         if (!this._player.isValid()) {
             return;

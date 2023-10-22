@@ -170,12 +170,13 @@ class AutoRollerArena {
         globalEvents.TI4.onWarpUnits.trigger(true);
     }
 
-    static warpOut() {
+    static warpOut(triggeredByOnTurnChangeEvent = false) {
         console.log("AutoRollerArena.warpOut");
 
         const activeSystemObj = world.TI4.getActiveSystemTileObject();
         if (!activeSystemObj) {
-            console.log("AutoRollerArena.warpIn: no active system, aborting");
+            console.log("AutoRollerArena.warpOut: no active system, aborting");
+            return;
         }
 
         let unitPlastics = world.TI4.getAllUnitPlastics();
@@ -199,7 +200,10 @@ class AutoRollerArena {
             unitPlastic.gameObject.setObjectType(objectType);
         }
 
-        globalEvents.TI4.onWarpUnits.trigger(false);
+        globalEvents.TI4.onWarpUnits.trigger(
+            false,
+            triggeredByOnTurnChangeEvent
+        );
     }
 
     static createArenaPlatform() {

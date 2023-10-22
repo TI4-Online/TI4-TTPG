@@ -55,7 +55,8 @@ class AutoRoller {
         const newTurnHandler = () => {
             assert(this instanceof AutoRoller);
             this.getUI().resetAwaitingSystemActivation();
-            AutoRollerArena.warpOut();
+            const triggeredByOnTurnChangeEvent = true;
+            AutoRollerArena.warpOut(triggeredByOnTurnChangeEvent);
         };
         globalEvents.TI4.onTurnChanged.add(newTurnHandler);
 
