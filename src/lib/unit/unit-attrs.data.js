@@ -459,7 +459,7 @@ module.exports = [
         upgradeLevel: 1,
         localeName: "unit.mech.annihilator",
         triggerNsid: "card.leader.mech.l1z1x:base/annihilator",
-        bombardment: { dice: 1, hit: 8 },
+        unitAbility: "unit.mech.annihilator",
     },
     {
         unit: "mech",
