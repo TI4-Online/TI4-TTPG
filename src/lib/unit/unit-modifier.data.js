@@ -75,9 +75,7 @@ module.exports = [
                     bombardCount += 1;
                 }
             }
-            const mechAttrs = unitAttrsSet.get("mech");
             if (auxData.rollType === "bombardment") {
-                mechAttrs.raw.bombardment = { dice: 1, hit: 8 };
                 auxData.self.overrideCount("mech", bombardCount);
             } else {
                 auxData.self.overrideCount("mech", groundCount);
