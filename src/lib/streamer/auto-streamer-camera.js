@@ -52,7 +52,7 @@ class AutoStreamerCamera {
 
         this._playerLeftHandler = () => {
             if (!this._player.isValid()) {
-                this.disconnect();
+                AutoStreamerCamera.disconnectIfActive(this._player);
             }
         };
 
@@ -67,16 +67,18 @@ class AutoStreamerCamera {
             // Simple solution: only listen for publics.
             const nsid = ObjectNamespace.getNsid(obj);
             if (nsid.startsWith("card.objective.secret")) {
-                console.log("AutoStreamerCamera: ignoring onScored for secret");
+                console.log("AutoStreamerCamera onScored: secret, ignoring");
                 return;
             }
 
+            console.log("AutoStreamerCamera onScored");
             this._scoring = true;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onSystemActivated = () => {
+            console.log("AutoStreamerCamera onSystemActivated");
             this._scoring = false;
             this._systemActivation = true;
             this._warpIn = false;
@@ -88,23 +90,26 @@ class AutoStreamerCamera {
             const numPicked = FindTurnOrder.numPickedStrategyCards();
             if (numPicked <= 1) {
                 console.log(
-                    "AutoStreamerCamera: ignoring onTurnChanged with too few picked strategy cards"
+                    "AutoStreamerCamera onTurnChanged: too few picked strategy cards, ignoring"
                 );
                 return;
             }
 
+            console.log("AutoStreamerCamera onTurnChanged");
             this._scoring = false;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onTurnOrderChanged = () => {
+            console.log("AutoStreamerCamera onTurnOrderChanged");
             this._scoring = false;
             this._systemActivation = false;
             this._warpIn = false;
             this.update();
         };
         this._onTurnOrderEmpty = () => {
+            console.log("AutoStreamerCamera onTurnOrderEmpty");
             this._scoring = true;
             this._systemActivation = false;
             this._warpIn = false;
@@ -112,8 +117,12 @@ class AutoStreamerCamera {
         };
         this._onWarpUnits = (warpIn, triggeredByOnTurnChangeEvent) => {
             if (triggeredByOnTurnChangeEvent) {
+                console.log(
+                    "AutoStreamerCamera onWarpUnits: triggered by turn change, ignoring"
+                );
                 return; // only react if triggered by warp button
             }
+            console.log("AutoStreamerCamera onWarpUnits");
             this._scoring = false;
             this._systemActivation = true;
             this._warpIn = warpIn;
