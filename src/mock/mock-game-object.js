@@ -128,6 +128,10 @@ class GameObject {
         return this._size;
     }
 
+    getSnappedToPoint() {
+        return undefined;
+    }
+
     getTemplateId() {
         return this._templateId;
     }
