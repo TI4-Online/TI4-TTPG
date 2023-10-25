@@ -121,12 +121,74 @@ it("countInfResTgs", () => {
     world.__clear();
 });
 
+it("countPlanetsWithAttachments", () => {
+    world.__clear();
+
+    const position = world.TI4.getAllPlayerDesks()[0].center;
+    const cultural1 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/quann",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    const cultural2 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/lodor",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    world.__addObject(cultural1);
+    world.__addObject(cultural2);
+
+    // Add 2 fake attachments (but only one planet!).
+    const planet = world.TI4.getPlanetByCard(cultural1);
+    planet.attachments.push({});
+    planet.attachments.push({});
+    const count1 = ObjectivesGoalCount.countPlanetsWithAttachments();
+    planet.attachments.pop();
+    planet.attachments.pop();
+    const count2 = ObjectivesGoalCount.countPlanetsWithAttachments();
+
+    assert.deepEqual(count1, [1, 0, 0, 0, 0, 0]);
+    assert.deepEqual(count2, [0, 0, 0, 0, 0, 0]);
+
+    world.__clear();
+});
+
 it("countPlanetTraits", () => {
     world.__clear();
 
+    const position = world.TI4.getAllPlayerDesks()[0].center;
+    const cultural1 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/quann",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    const cultural2 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/lodor",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    world.__addObject(cultural1);
+    world.__addObject(cultural2);
+
     const count = ObjectivesGoalCount.countPlanetTraits();
     assert.deepEqual(count, [
-        { cultural: 0, hazardous: 0, industrial: 0 },
+        { cultural: 2, hazardous: 0, industrial: 0 },
         { cultural: 0, hazardous: 0, industrial: 0 },
         { cultural: 0, hazardous: 0, industrial: 0 },
         { cultural: 0, hazardous: 0, industrial: 0 },
@@ -154,6 +216,38 @@ it("countStructures", () => {
 
     const count = ObjectivesGoalCount.countStructures();
     assert.deepEqual(count, [1, 0, 0, 0, 0, 0]);
+
+    world.__clear();
+});
+
+it("countUnitUpgradeTechnologies", () => {
+    world.__clear();
+
+    const position = world.TI4.getAllPlayerDesks()[0].center;
+    const upgrade1 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.technology.unit_upgrade:base/dreadnought_2",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    const upgrade2 = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata:
+                    "card.technology.unit_upgrade.sol:base/advanced_carrier_2",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
+    world.__addObject(upgrade1);
+    world.__addObject(upgrade2);
+
+    const count = ObjectivesGoalCount.countUnitUpgradeTechnologies();
+    assert.deepEqual(count, [2, 0, 0, 0, 0, 0]);
 
     world.__clear();
 });

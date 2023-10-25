@@ -84,15 +84,34 @@ class ObjectivesGoalCount {
         return values;
     }
 
+    static countPlanetsWithAttachments() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const count = ObjectivesUtil.getPlanetAttachmentCount(obj);
+            if (count) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += 1;
+            }
+        }
+        return values;
+    }
+
     static countPlanetTraits() {
         const values = ObjectivesUtil.initialValues({
             cultural: 0,
             industrial: 0,
             hazardous: 0,
         });
-
-        // XXX TODO
-
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const traits = ObjectivesUtil.getPlanetTraits(obj);
+            if (traits) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                for (const trait of traits) {
+                    assert(values[idx][trait] !== undefined);
+                    values[idx][trait] += 1;
+                }
+            }
+        }
         return values;
     }
 
@@ -104,6 +123,17 @@ class ObjectivesGoalCount {
                 ObjectivesUtil.getHexIfUnitIsInSystem(obj)
             ) {
                 const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+                values[idx] += 1;
+            }
+        }
+        return values;
+    }
+
+    static countUnitUpgradeTechnologies() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (ObjectivesUtil.isUnitUpgradeTechnology(obj)) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
         }
