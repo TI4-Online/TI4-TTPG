@@ -1,7 +1,9 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { Borders, AREA } = require("../borders/borders");
+const { CommandToken } = require("../command-token/command-token");
 const { ObjectivesUtil } = require("./objectives-util");
 const { world } = require("../../wrapper/api");
+const { Neighbors } = require("../borders/neighbors");
 
 const SKIP_CONTAINED = true;
 
@@ -105,6 +107,83 @@ class ObjectivesGoalCount {
                 values[idx].inf += inf;
                 values[idx].res += res;
                 values[idx].tgs += tgs;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk maximum non-fighter ships in any single system.
+     *
+     * @returns {Array.{number}}
+     */
+    static countMaxNonFighterShipsInSingleSystem() {
+        // Count ships.
+        const idxToHexToNonFighterShips = [];
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isNonFighterShip(obj)) {
+                continue; // not non-fighter ship
+            }
+            const hex = ObjectivesUtil.getHexIfUnitIsInSystem(obj);
+            if (!hex) {
+                continue; // not in a system
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            let hexToNonFighterShips = idxToHexToNonFighterShips[idx];
+            if (!hexToNonFighterShips) {
+                hexToNonFighterShips = {};
+                idxToHexToNonFighterShips[idx] = hexToNonFighterShips;
+            }
+            hexToNonFighterShips[hex] = (hexToNonFighterShips[hex] || 0) + 1;
+        }
+        // Get max per desk index.
+        const values = ObjectivesUtil.initialValues(0);
+        for (let idx = 0; idx < values.length; idx++) {
+            const hexToNonFighterShips = idxToHexToNonFighterShips[idx];
+            if (!hexToNonFighterShips) {
+                continue;
+            }
+            const max = Math.max(Object.values(hexToNonFighterShips));
+            values[idx] = max;
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk number of planets.
+     *
+     * @returns {Array.{number}}
+     */
+    static countPlanetsAndGetNeighbors() {
+        const values = ObjectivesUtil.initialValues({
+            planets: 0,
+            neighbors: [],
+        });
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const isPlanet = ObjectivesUtil.isPlanetCard(obj);
+            if (isPlanet) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx].planets += 1;
+            }
+        }
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            values[playerDesk.index].neighbors = Neighbors.getNeighbors(
+                playerDesk.playerSlot
+            );
+        }
+        return values;
+    }
+
+    static countPlanetsInOthersHome() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const isNonHome = ObjectivesUtil.isNonHomePlanetCard(obj);
+            if (isNonHome) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += 1;
             }
         }
         return values;
@@ -234,6 +313,36 @@ class ObjectivesGoalCount {
     }
 
     /**
+     * Count per-desk number of systems with flagship or warsun that is another's home system or mecatol.
+     *
+     * @returns {Array.{number}}
+     */
+    static countSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isFlagshipOrWarSun(obj)) {
+                continue; // not flagship or war sun
+            }
+            const hex1 = ObjectivesUtil.getHexIfUnitInMecatol(obj);
+            const hex2 = ObjectivesUtil.getHexIfUnitIsInOthersHomeSystem(obj);
+            const hex = hex1 ? hex1 : hex2;
+            if (!hex) {
+                continue; // not other's home or mecatol
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // already in set
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
      * Count per-desk number of systems without planets but have at least one unit.
      *
      * @returns {Array.{number}}
@@ -290,6 +399,66 @@ class ObjectivesGoalCount {
     }
 
     /**
+     * Count per-desk number of legendary/mecatol/anomaly systems with units.
+     *
+     * @returns {Array.{number}}
+     */
+    static countSystemsWithUnitsInLegendaryMecatolOrAnomaly() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isUnit(obj)) {
+                continue; // not a unit
+            }
+            const hex =
+                ObjectivesUtil.getHexIfUnitIsInLegendaryMecatolOrAnomaly(obj);
+            if (!hex) {
+                continue; // not legendary/mecatol/anomaly
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // this hex already in the result
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
+     * Count per-desk number of systems with units on edget but outside their home.
+     *
+     * @returns {Array.{number}}
+     */
+    static countSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isUnit(obj)) {
+                continue; // not a unit
+            }
+            const hex =
+                ObjectivesUtil.getHexIfUnitIsOnEdgeOfGameBoardOtherThanHome(
+                    obj
+                );
+            if (!hex) {
+                continue; // not edge or is home
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // this hex already in the result
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
      * Count per-desk number of technoogies with each color.
      *
      * @returns {Array.{Object.{blue:number,green:0,red:number,yellow:number}}}
@@ -307,6 +476,43 @@ class ObjectivesGoalCount {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 assert(values[idx][color] !== undefined);
                 values[idx][color] += 1;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk number of tactic and strategy tokens.
+     *
+     * @returns {Array.{number}}
+     */
+    static countTokensInTacticAndStrategy() {
+        const values = ObjectivesUtil.initialValues(0);
+        const playerSlotToTokenCount = CommandToken.getPlayerSlotToTokenCount();
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const idx = playerDesk.index;
+            const tokenCount = playerSlotToTokenCount[playerDesk.playerSlot];
+            if (!tokenCount) {
+                continue;
+            }
+            values[idx] += tokenCount.tactics || 0;
+            values[idx] += tokenCount.strategy || 0;
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk tradegoods.
+     *
+     * @returns {Array.{number}}
+     */
+    static countTradegoods() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const tgs = ObjectivesUtil.getTradeGoods(obj);
+            if (tgs) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += tgs;
             }
         }
         return values;

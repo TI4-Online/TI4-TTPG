@@ -675,7 +675,7 @@ class ObjectivesUtil {
             return 0;
         }
         const planet = world.TI4.getPlanetByCardNsid(nsid);
-        if (!planet) {
+        if (!planet || planet.destroyed) {
             return 0;
         }
         // Not all attachments are "real".
@@ -685,6 +685,9 @@ class ObjectivesUtil {
             }
             const attrs = attachment.getAttrs();
             if (attrs.localeName === "token.attachment.custodia_vigilia") {
+                return false;
+            }
+            if (attrs.localeName === "token.exploration.stellar_converter") {
                 return false;
             }
             return true;
@@ -867,6 +870,22 @@ class ObjectivesUtil {
     }
 
     /**
+     * Is the game object a non-fighter ship?
+     *
+     * @param {GameObject} obj
+     * @returns {boolean}
+     */
+    static isNonFighterShip(obj) {
+        assert(obj instanceof GameObject);
+        const plastic = UnitPlastic.getOne(obj);
+        if (!plastic) {
+            return false;
+        }
+        const unitAttrs = UnitAttrs.getDefaultUnitAttrs(plastic.unit);
+        return unitAttrs.raw.ship && unitAttrs.unit !== "fighter";
+    }
+
+    /**
      * Is the game object a planet card not from a hone system?
      *
      * @param {GameObject} obj
@@ -883,6 +902,54 @@ class ObjectivesUtil {
             return false;
         }
         return !planet.system.home;
+    }
+
+    /**
+     * Is the game object a planet card in another player's home system?
+     * (Assumes card is in owning player's area.)
+     *
+     * @param {GameObject} obj
+     * @returns {boolean}
+     */
+    static isOthersHomePlanetCard(obj) {
+        assert(obj instanceof GameObject);
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (!nsid.startsWith("card.planet")) {
+            return false;
+        }
+        const planet = world.TI4.getPlanetByCardNsid(nsid);
+        if (!planet) {
+            return false;
+        }
+        if (!planet.system.home) {
+            return false;
+        }
+        const pos = obj.getPosition();
+        const playerDesk = world.TI4.getClosestPlayerDesk(pos);
+        const faction = world.TI4.getFactionByPlayerSlot(playerDesk.playerSlot);
+        if (!faction) {
+            return false;
+        }
+        return faction.home !== planet.system.tile;
+    }
+
+    /**
+     * Is the game object a planet card?
+     *
+     * @param {GameObject} obj
+     * @returns {boolean}
+     */
+    static isPlanetCard(obj) {
+        assert(obj instanceof GameObject);
+        const nsid = ObjectNamespace.getNsid(obj);
+        if (!nsid.startsWith("card.planet")) {
+            return false;
+        }
+        const planet = world.TI4.getPlanetByCardNsid(nsid);
+        if (!planet) {
+            return false;
+        }
+        return true;
     }
 
     /**

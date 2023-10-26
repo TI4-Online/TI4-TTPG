@@ -584,8 +584,25 @@ it("isFlagshipOrWarSun", () => {
     assert(!ObjectivesUtil.isFlagshipOrWarSun(obj3));
 });
 
+it("isNonFighterShip", () => {
+    const obj1 = new MockGameObject({ templateMetadata: "unit:base/cruiser" });
+    const obj2 = new MockGameObject({ templateMetadata: "unit:base/fighter" });
+    assert(ObjectivesUtil.isNonFighterShip(obj1));
+    assert(!ObjectivesUtil.isNonFighterShip(obj2));
+});
+
 it("isNonHomePlanetCard", () => {
     const value = ObjectivesUtil.isNonHomePlanetCard(CARD.PLANET_1_3);
+    assert(value);
+});
+
+it("isOthersHomePlanetCard", () => {
+    const value = ObjectivesUtil.isOthersHomePlanetCard(CARD.PLANET_1_3);
+    assert(!value);
+});
+
+it("isPlanetCard", () => {
+    const value = ObjectivesUtil.isPlanetCard(CARD.PLANET_1_3);
     assert(value);
 });
 
