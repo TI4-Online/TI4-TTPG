@@ -470,6 +470,22 @@ it("getHexIfUnitIsOnEdgeOfGameBoardOtherThanHome", () => {
     world.__clear();
 });
 
+it("getHexIfUnitIsOutsideHome", () => {
+    const emptySystemTile = new MockGameObject({
+        templateMetadata: "tile.system:base/46",
+    });
+    const unit = new MockGameObject({
+        templateMetadata: "unit:base/fighter",
+    });
+
+    world.__clear();
+    world.__addObject(emptySystemTile);
+    world.__addObject(unit);
+    let hex = ObjectivesUtil.getHexIfUnitIsOutsideHome(unit);
+    assert.equal(hex, "<0,0,0>");
+    world.__clear();
+});
+
 it("getPlanetAttachmentCount", () => {
     const value = ObjectivesUtil.getPlanetAttachmentCount(CARD.PLANET_1_3);
     assert.equal(value, 0);

@@ -618,6 +618,50 @@ class ObjectivesUtil {
         return result;
     }
 
+    static getHexIfUnitIsOutsideHome(obj) {
+        assert(obj instanceof GameObject);
+
+        // Share this hex to home cache.
+        if (!_hexToHomeSystemPlayerSlot) {
+            _hexToHomeSystemPlayerSlot = {};
+
+            // Skips contained objects, as well as tile 0 objects.
+            for (const systemTileObj of world.TI4.getAllSystemTileObjects()) {
+                const system =
+                    world.TI4.getSystemBySystemTileObject(systemTileObj);
+                if (!system) {
+                    continue;
+                }
+                if (system.home) {
+                    const pos = systemTileObj.getPosition();
+                    const hex = Hex.fromPosition(pos);
+                    const playerSlot = systemTileObj.getOwningPlayerSlot(); // set during faction unpack
+                    _hexToHomeSystemPlayerSlot[hex] = playerSlot;
+                }
+            }
+
+            // Discard next frame because tiles can move
+            // (schedule here so it only happens once).
+            if (!world.__isMock) {
+                process.nextTick(() => {
+                    _hexToHomeSystemPlayerSlot = undefined;
+                });
+            }
+        }
+
+        let result = false;
+        const unitHex = Hex.fromPosition(obj.getPosition());
+        const unitPlayerSlot = obj.getOwningPlayerSlot();
+        const hexPlayerSlot = _hexToHomeSystemPlayerSlot[unitHex];
+        if (unitPlayerSlot !== hexPlayerSlot) {
+            result = unitHex;
+        }
+        if (world.__isMock) {
+            _hexToHomeSystemPlayerSlot = undefined;
+        }
+        return result;
+    }
+
     /**
      * Attachment count.
      *
@@ -634,7 +678,18 @@ class ObjectivesUtil {
         if (!planet) {
             return 0;
         }
-        return planet.attachments.length;
+        // Not all attachments are "real".
+        const legit = planet.attachments.filter((attachment) => {
+            if (!attachment.getAttrs) {
+                return false; // what's this?
+            }
+            const attrs = attachment.getAttrs();
+            if (attrs.localeName === "token.attachment.custodia_vigilia") {
+                return false;
+            }
+            return true;
+        });
+        return legit.length;
     }
 
     /**

@@ -68,6 +68,32 @@ class ObjectivesGoalCount {
         return result;
     }
 
+    /**
+     * Count per-desk number of flagships and war suns.
+     *
+     * @returns {Array.{number}}
+     */
+    static countFlagshipsAndWarSuns() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (
+                ObjectivesUtil.isFlagshipOrWarSun(obj) &&
+                ObjectivesUtil.getHexIfUnitIsInSystem(obj)
+            ) {
+                const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+                if (idx >= 0) {
+                    values[idx] += 1;
+                }
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk planet influence, planet resources, and tradegoods (not commodities).
+     *
+     * @returns {Array.{Object.{inf:number,res:number,tgs:number}}}
+     */
     static countInfResTgs() {
         const values = ObjectivesUtil.initialValues({ inf: 0, res: 0, tgs: 0 });
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
@@ -84,11 +110,16 @@ class ObjectivesGoalCount {
         return values;
     }
 
-    static countPlanetsWithAttachments() {
+    /**
+     * Count per-desk number of non-home planets.
+     *
+     * @returns {Array.{number}}
+     */
+    static countPlanetsNonHome() {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
-            const count = ObjectivesUtil.getPlanetAttachmentCount(obj);
-            if (count) {
+            const isNonHome = ObjectivesUtil.isNonHomePlanetCard(obj);
+            if (isNonHome) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
@@ -96,6 +127,11 @@ class ObjectivesGoalCount {
         return values;
     }
 
+    /**
+     * Count per-desk number of planets with each trait (planet may count for multiple).
+     *
+     * @returns {Array.{Object.{cultural:number,industrial:0,hazardous:number}}}
+     */
     static countPlanetTraits() {
         const values = ObjectivesUtil.initialValues({
             cultural: 0,
@@ -115,6 +151,72 @@ class ObjectivesGoalCount {
         return values;
     }
 
+    /**
+     * Count per-desk number of planets with attachments.
+     *
+     * @returns {Array.{number}}
+     */
+    static countPlanetsWithAttachments() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const count = ObjectivesUtil.getPlanetAttachmentCount(obj);
+            if (count) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += 1;
+            }
+        }
+        return values;
+    }
+
+    static countPlanetsWithStructuresOutsidePlayersHome() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isStructure(obj)) {
+                continue; // not structure
+            }
+            const hex = ObjectivesUtil.getHexIfUnitIsInSystem(obj);
+            if (!hex) {
+                continue; // structure not in a system
+            }
+            const outsideHome = ObjectivesUtil.getHexIfUnitIsOutsideHome(obj);
+            if (!outsideHome) {
+                continue; // strucure is in owner's home system
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // already recorded
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
+     * Count per-desk number of planets with tech specialties.
+     *
+     * @returns {Array.{number}}
+     */
+    static countPlanetsWithTechSpecialties() {
+        const values = ObjectivesUtil.initialValues(0);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const count = ObjectivesUtil.getPlanetTechSpecialties(obj);
+            if (count) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += 1;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk structure count.
+     *
+     * @returns {Array.{number}}
+     */
     static countStructures() {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
@@ -123,12 +225,98 @@ class ObjectivesGoalCount {
                 ObjectivesUtil.getHexIfUnitIsInSystem(obj)
             ) {
                 const idx = ObjectivesUtil.getDeskIndexOwning(obj);
-                values[idx] += 1;
+                if (idx >= 0) {
+                    values[idx] += 1;
+                }
             }
         }
         return values;
     }
 
+    /**
+     * Count per-desk number of systems without planets but have at least one unit.
+     *
+     * @returns {Array.{number}}
+     */
+    static countSystemsWithoutPlanetsWithUnits() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isUnit(obj)) {
+                continue; // not a unit
+            }
+            const hex = ObjectivesUtil.getHexIfUnitIsInZeroPlanetSystem(obj);
+            if (!hex) {
+                continue; // unit either not in a system, or in a with-planet system
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // this hex already in the result
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
+     * Count per-desk number of systems without ships adjacent to Mecatol.
+     *
+     * @returns {Array.{number}}
+     */
+    static countSystemsWithShipsAdjToMecatol() {
+        const values = ObjectivesUtil.initialValues([]);
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            if (!ObjectivesUtil.isShip(obj)) {
+                continue; // not a ship
+            }
+            const hex = ObjectivesUtil.getHexIfUnitIsAdjacentToMecatol(obj);
+            if (!hex) {
+                continue; // not adj to mecatol
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue; // anonymous unit
+            }
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                continue; // this hex already in the result
+            }
+            hexes.push(hex);
+        }
+        return values.map((hexes) => hexes.length);
+    }
+
+    /**
+     * Count per-desk number of technoogies with each color.
+     *
+     * @returns {Array.{Object.{blue:number,green:0,red:number,yellow:number}}}
+     */
+    static countTechnologyColors() {
+        const values = ObjectivesUtil.initialValues({
+            blue: 0,
+            green: 0,
+            red: 0,
+            yellow: 0,
+        });
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const color = ObjectivesUtil.getTechnologyCardColor(obj);
+            if (color) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                assert(values[idx][color] !== undefined);
+                values[idx][color] += 1;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Count per-desk number of unit upgrade technologies.
+     *
+     * @returns {Array.{number}}
+     */
     static countUnitUpgradeTechnologies() {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
