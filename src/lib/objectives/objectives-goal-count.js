@@ -8,6 +8,9 @@ const { UnitPlastic } = require("../unit/unit-plastic");
 
 const SKIP_CONTAINED = true;
 
+/**
+ * Calculate the raw numbers towards goals.  Do not attempt to test success.
+ */
 class ObjectivesGoalCount {
     constructor() {
         throw new Error("static only");
@@ -154,9 +157,9 @@ class ObjectivesGoalCount {
     }
 
     /**
-     * Count per-desk number of planets.
+     * Count per-desk number of planets and neighbors (array of desk index values).
      *
-     * @returns {Array.{number}}
+     * @returns {Array.{planets:number,neightbors:{Array.{number}}}}
      */
     static countPlanetsAndGetNeighbors() {
         const values = ObjectivesUtil.initialValues({
@@ -173,7 +176,11 @@ class ObjectivesGoalCount {
         for (const playerDesk of world.TI4.getAllPlayerDesks()) {
             values[playerDesk.index].neighbors = Neighbors.getNeighbors(
                 playerDesk.playerSlot
-            );
+            ).map((neighborSlot) => {
+                const neighborDesk =
+                    world.TI4.getPlayerDeskByPlayerSlot(neighborSlot);
+                return neighborDesk.index;
+            });
         }
         return values;
     }
@@ -308,15 +315,18 @@ class ObjectivesGoalCount {
     static countStructures() {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
-            if (
-                ObjectivesUtil.isStructure(obj) &&
-                ObjectivesUtil.getHexIfUnitIsInSystem(obj)
-            ) {
-                const idx = ObjectivesUtil.getDeskIndexOwning(obj);
-                if (idx >= 0) {
-                    values[idx] += 1;
-                }
+            if (!ObjectivesUtil.isStructure(obj)) {
+                continue;
             }
+            let hex = ObjectivesUtil.getHexIfUnitIsInSystem(obj);
+            if (!hex) {
+                continue;
+            }
+            const idx = ObjectivesUtil.getDeskIndexOwning(obj);
+            if (idx < 0) {
+                continue;
+            }
+            values[idx] += 1;
         }
         return values;
     }
