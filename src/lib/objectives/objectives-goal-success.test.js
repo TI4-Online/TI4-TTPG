@@ -38,6 +38,10 @@ it("checkMorePlanetsThan2Neighbors", () => {
     _verifyResultTypes(ObjectivesGoalSuccess.checkMorePlanetsThan2Neighbors());
 });
 
+it("checkPlanetsInOthersHome", () => {
+    _verifyResultTypes(ObjectivesGoalSuccess.checkPlanetsInOthersHome(1));
+});
+
 it("checkPlanetsNonHome", () => {
     _verifyResultTypes(ObjectivesGoalSuccess.checkPlanetsNonHome(1));
 });
@@ -48,6 +52,12 @@ it("checkPlanetsSameTrait", () => {
 
 it("checkPlanetsWithAttachments", () => {
     _verifyResultTypes(ObjectivesGoalSuccess.checkPlanetsWithAttachments(1));
+});
+
+it("checkPlanetsWithStructuresOutsidePlayersHome", () => {
+    _verifyResultTypes(
+        ObjectivesGoalSuccess.checkPlanetsWithStructuresOutsidePlayersHome(1)
+    );
 });
 
 it("checkPlanetsWithTechSpecialties", () => {
@@ -64,9 +74,19 @@ it("checkStructures", () => {
     _verifyResultTypes(ObjectivesGoalSuccess.checkStructures(1));
 });
 
-it("checkPlanetsWithStructuresOutsidePlayersHome", () => {
+it("checkSystemsWithControlledPlanetsInOrAdjToOthersHome", () => {
     _verifyResultTypes(
-        ObjectivesGoalSuccess.checkPlanetsWithStructuresOutsidePlayersHome(1)
+        ObjectivesGoalSuccess.checkSystemsWithControlledPlanetsInOrAdjToOthersHome(
+            1
+        )
+    );
+});
+
+it("checkSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol", () => {
+    _verifyResultTypes(
+        ObjectivesGoalSuccess.checkSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol(
+            1
+        )
     );
 });
 
@@ -98,8 +118,8 @@ it("checkSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome", () => {
     );
 });
 
-it("checkTechInTwoColors", () => {
-    _verifyResultTypes(ObjectivesGoalSuccess.checkTechInTwoColors(1));
+it("checkTwoTechInColors", () => {
+    _verifyResultTypes(ObjectivesGoalSuccess.checkTwoTechInColors(1));
 });
 
 it("checkTokensInTacticAndStrategy", () => {

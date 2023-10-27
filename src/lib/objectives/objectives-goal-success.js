@@ -120,6 +120,23 @@ class ObjectivesGoalSuccess {
         };
     }
 
+    static checkPlanetsInOthersHome(needed) {
+        assert(typeof needed === "number");
+        const values = ObjectivesGoalCount.countPlanetsInOthersHome().map(
+            (value) => {
+                assert(typeof value === "number");
+                return {
+                    value,
+                    success: value >= needed,
+                };
+            }
+        );
+        return {
+            header: "Planets others' home",
+            values,
+        };
+    }
+
     static checkPlanetsNonHome(needed) {
         assert(typeof needed === "number");
         const values = ObjectivesGoalCount.countPlanetsNonHome().map(
@@ -169,6 +186,24 @@ class ObjectivesGoalSuccess {
         );
         return {
             header: "Planets w/attach",
+            values,
+        };
+    }
+
+    static checkPlanetsWithStructuresOutsidePlayersHome(needed) {
+        assert(typeof needed === "number");
+        const values =
+            ObjectivesGoalCount.countPlanetsWithStructuresOutsidePlayersHome().map(
+                (value) => {
+                    assert(typeof value === "number");
+                    return {
+                        value,
+                        success: value >= needed,
+                    };
+                }
+            );
+        return {
+            header: "Planets w/structures non-home",
             values,
         };
     }
@@ -226,10 +261,10 @@ class ObjectivesGoalSuccess {
         };
     }
 
-    static checkPlanetsWithStructuresOutsidePlayersHome(needed) {
+    static checkSystemsWithControlledPlanetsInOrAdjToOthersHome(needed) {
         assert(typeof needed === "number");
         const values =
-            ObjectivesGoalCount.countPlanetsWithStructuresOutsidePlayersHome().map(
+            ObjectivesGoalCount.countSystemsWithControlledPlanetsInOrAdjToOthersHome().map(
                 (value) => {
                     assert(typeof value === "number");
                     return {
@@ -239,7 +274,25 @@ class ObjectivesGoalSuccess {
                 }
             );
         return {
-            header: "Planets w/structures non-home",
+            header: "Systems",
+            values,
+        };
+    }
+
+    static checkSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol(needed) {
+        assert(typeof needed === "number");
+        const values =
+            ObjectivesGoalCount.countSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol().map(
+                (value) => {
+                    assert(typeof value === "number");
+                    return {
+                        value,
+                        success: value >= needed,
+                    };
+                }
+            );
+        return {
+            header: "Systems",
             values,
         };
     }
@@ -316,7 +369,7 @@ class ObjectivesGoalSuccess {
         };
     }
 
-    static checkTechInTwoColors(needed) {
+    static checkTwoTechInColors(needed) {
         assert(typeof needed === "number");
         const values = ObjectivesGoalCount.countTechnologyColors().map(
             (value) => {

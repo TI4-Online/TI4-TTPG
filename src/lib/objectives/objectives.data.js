@@ -6,132 +6,221 @@ const { ObjectivesGoalSuccess } = require("./objectives-goal-success");
  * Object.{header:string,values:Array.{value:string|number,success:boolean}}}
  */
 const NSID_TO_GET_PROGRESS = {
-    // Spend 3 inf, 3 res, 3 tgs
     "card.objective.public_1:pok/amass_wealth": () => {
+        // Spend 3 inf, 3 res, 3 tgs
         return ObjectivesGoalSuccess.checkInfResTgs(3);
     },
 
-    // 4 structures
     "card.objective.public_1:pok/build_defenses": () => {
+        // 4 structures
         return ObjectivesGoalSuccess.checkStructures(4);
     },
 
-    // 4 planets same trait
     "card.objective.public_1:base/corner_the_market": () => {
+        // 4 planets same trait
         return ObjectivesGoalSuccess.checkPlanetsSameTrait(4);
     },
 
-    // 2 unit upgrades
     "card.objective.public_1:base/develop_weaponry": () => {
+        // 2 unit upgrades
         return ObjectivesGoalSuccess.checkUnitUpgrades(2);
     },
 
-    // 2 planets with attachments
     "card.objective.public_1:pok/discover_lost_outposts": () => {
+        // 2 planets with attachments
         return ObjectivesGoalSuccess.checkPlanetsWithAttachments(2);
     },
 
-    // 2 tech in 2 colors
     "card.objective.public_1:base/diversify_research": () => {
-        return ObjectivesGoalSuccess.checkTechInTwoColors(2);
+        // 2 tech in 2 colors
+        return ObjectivesGoalSuccess.checkTwoTechInColors(2);
     },
 
-    // Flagship or war sun
     "card.objective.public_1:pok/engineer_a_marvel": () => {
+        // Flagship or war sun
         return ObjectivesGoalSuccess.checkFlagshipOrWarSun(1);
     },
 
-    // 8 resources
     "card.objective.public_1:base/erect_a_monument": () => {
+        // 8 resources
         return ObjectivesGoalSuccess.checkResources(8);
     },
 
-    // 6 planets non-home
     "card.objective.public_1:base/expand_borders": () => {
+        // 6 planets non-home
         return ObjectivesGoalSuccess.checkPlanetsNonHome(6);
     },
 
-    // 3 empty systems
     "card.objective.public_1:pok/explore_deep_space": () => {
+        // 3 empty systems
         return ObjectivesGoalSuccess.checkSystemsWithoutPlanetsWithUnits(3);
     },
 
-    // 3 planets with tech
     "card.objective.public_1:base/found_research_outposts": () => {
+        // 3 planets with tech
         return ObjectivesGoalSuccess.checkPlanetsWithTechSpecialties(3);
     },
 
-    // 3 structures outside own home
     "card.objective.public_1:pok/improve_infrastructure": () => {
+        // 3 planets with structures outside own home
         return ObjectivesGoalSuccess.checkPlanetsWithStructuresOutsidePlayersHome(
             3
         );
     },
 
-    // 2 systems with ships adj to mecatol
     "card.objective.public_1:base/intimidate_council": () => {
+        // 2 systems with ships adj to mecatol
         return ObjectivesGoalSuccess.checkSystemsWithShipsAdjToMecatol(2);
     },
 
-    // 3 tokens from tactics/strategy
     "card.objective.public_1:base/lead_from_the_front": () => {
+        // 3 tokens from tactics/strategy
         return ObjectivesGoalSuccess.checkTokensInTacticAndStrategy(3);
     },
 
-    // 3 systems with legendary, mecatol, or anomaly
     "card.objective.public_1:pok/make_history": () => {
+        // 3 systems with legendary, mecatol, or anomaly
         return ObjectivesGoalSuccess.checkSystemsWithUnitsInLegendaryMecatolOrAnomaly(
             3
         );
     },
 
-    // 5 tradegoods
     "card.objective.public_1:base/negotiate_trade_routes": () => {
+        // 5 tradegoods
         return ObjectivesGoalSuccess.checkTradegoods(5);
     },
 
-    // 3 systems with units on edge
     "card.objective.public_1:pok/populate_the_outer_rim": () => {
+        // 3 systems with units on edge
         return ObjectivesGoalSuccess.countSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
             3
         );
     },
 
-    // More planets than 2 neighbors
     "card.objective.public_1:pok/push_boundaries": () => {
+        // More planets than 2 neighbors
         return ObjectivesGoalSuccess.checkMorePlanetsThan2Neighbors();
     },
 
-    // 1 system with 5 non-fighter ships
     "card.objective.public_1:pok/raise_a_fleet": () => {
+        // 1 system with 5 non-fighter ships
         return ObjectivesGoalSuccess.checkMaxNonFighterShipsInSingleSystem(5);
     },
 
-    // 8 influence
     "card.objective.public_1:base/sway_the_council": () => {
+        // 8 influence
         return ObjectivesGoalSuccess.checkInfluence(8);
     },
 
-    "card.objective.public_2:pok/achieve_supremacy": () => {},
-    "card.objective.public_2:pok/become_a_legend": () => {},
-    "card.objective.public_2:base/centralize_galactic_trade": () => {},
-    "card.objective.public_2:pok/command_an_armada": () => {},
-    "card.objective.public_2:base/conquer_the_weak": () => {},
-    "card.objective.public_2:pok/construct_massive_cities": () => {},
-    "card.objective.public_2:pok/control_the_borderlands": () => {},
-    "card.objective.public_2:base/form_galactic_brain_trust": () => {},
-    "card.objective.public_2:base/found_a_golden_age": () => {},
-    "card.objective.public_2:base/galvanize_the_people": () => {},
-    "card.objective.public_2:pok/hold_vast_reserves": () => {},
-    "card.objective.public_2:base/manipulate_galactic_law": () => {},
-    "card.objective.public_2:base/master_the_sciences": () => {},
-    "card.objective.public_2:pok/patrol_vast_territories": () => {},
-    "card.objective.public_2:pok/protect_the_border": () => {},
-    "card.objective.public_2:pok/reclaim_ancient_monuments": () => {},
-    "card.objective.public_2:base/revolutionize_warfare": () => {},
-    "card.objective.public_2:pok/rule_distant_lands": () => {},
-    "card.objective.public_2:base/subdue_the_galaxy": () => {},
-    "card.objective.public_2:base/unify_the_colonies": () => {},
+    "card.objective.public_2:pok/achieve_supremacy": () => {
+        // Flagship or war sun in other player's home or mecatol
+        return ObjectivesGoalSuccess.checkSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol(
+            1
+        );
+    },
+
+    "card.objective.public_2:pok/become_a_legend": () => {
+        // 4 systems with units where legendary, mecatol, or anomaly
+        return ObjectivesGoalSuccess.checkSystemsWithUnitsInLegendaryMecatolOrAnomaly(
+            4
+        );
+    },
+
+    "card.objective.public_2:base/centralize_galactic_trade": () => {
+        // 10 tradegoods
+        return ObjectivesGoalSuccess.checkTradegoods(10);
+    },
+
+    "card.objective.public_2:pok/command_an_armada": () => {
+        // 1 system with 8 non-fighter ships
+        return ObjectivesGoalSuccess.checkMaxNonFighterShipsInSingleSystem(8);
+    },
+
+    "card.objective.public_2:base/conquer_the_weak": () => {
+        // 1 planet in another's home system
+        return ObjectivesGoalSuccess.checkPlanetsInOthersHome(1);
+    },
+
+    "card.objective.public_2:pok/construct_massive_cities": () => {
+        // 7 structures
+        return ObjectivesGoalSuccess.checkStructures(7);
+    },
+
+    "card.objective.public_2:pok/control_the_borderlands": () => {
+        // 5 systems with units on edge
+        return ObjectivesGoalSuccess.countSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
+            5
+        );
+    },
+
+    "card.objective.public_2:base/form_galactic_brain_trust": () => {
+        // 5 planets with tech
+        return ObjectivesGoalSuccess.checkPlanetsWithTechSpecialties(5);
+    },
+
+    "card.objective.public_2:base/found_a_golden_age": () => {
+        // 16 resources
+        return ObjectivesGoalSuccess.checkResources(16);
+    },
+
+    "card.objective.public_2:base/galvanize_the_people": () => {
+        // 6 tokens from tactics/strategy
+        return ObjectivesGoalSuccess.checkTokensInTacticAndStrategy(6);
+    },
+
+    "card.objective.public_2:pok/hold_vast_reserves": () => {
+        // Spend 6 inf, 6 res, 6 tgs
+        return ObjectivesGoalSuccess.checkInfResTgs(6);
+    },
+
+    "card.objective.public_2:base/manipulate_galactic_law": () => {
+        // 16 influence
+        return ObjectivesGoalSuccess.checkInfluence(16);
+    },
+
+    "card.objective.public_2:base/master_the_sciences": () => {
+        // 2 tech in 4 colors
+        return ObjectivesGoalSuccess.checkTwoTechInColors(4);
+    },
+
+    "card.objective.public_2:pok/patrol_vast_territories": () => {
+        // 5 empty systems
+        return ObjectivesGoalSuccess.checkSystemsWithoutPlanetsWithUnits(5);
+    },
+
+    "card.objective.public_2:pok/protect_the_border": () => {
+        // 5 planets with structures outside own home
+        return ObjectivesGoalSuccess.checkPlanetsWithStructuresOutsidePlayersHome(
+            5
+        );
+    },
+
+    "card.objective.public_2:pok/reclaim_ancient_monuments": () => {
+        // 3 planets with attachments
+        return ObjectivesGoalSuccess.checkPlanetsWithAttachments(3);
+    },
+
+    "card.objective.public_2:base/revolutionize_warfare": () => {
+        // 3 unit upgrades
+        return ObjectivesGoalSuccess.checkUnitUpgrades(3);
+    },
+
+    "card.objective.public_2:pok/rule_distant_lands": () => {
+        // 2 planets in or adjacent to different other homes
+        return ObjectivesGoalSuccess.checkSystemsWithControlledPlanetsInOrAdjToOthersHome(
+            2
+        );
+    },
+
+    "card.objective.public_2:base/subdue_the_galaxy": () => {
+        // 11 planets non-home
+        return ObjectivesGoalSuccess.checkPlanetsNonHome(11);
+    },
+
+    "card.objective.public_2:base/unify_the_colonies": () => {
+        // 6 planets same trait
+        return ObjectivesGoalSuccess.checkPlanetsSameTrait(6);
+    },
 };
 
 module.exports = {
