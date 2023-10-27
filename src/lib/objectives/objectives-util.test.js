@@ -6,7 +6,9 @@ const {
     MockCard,
     MockCardDetails,
     MockGameObject,
+    MockPlayer,
     MockRotator,
+    globalEvents,
     world,
 } = require("../../wrapper/api");
 
@@ -597,8 +599,36 @@ it("isNonHomePlanetCard", () => {
 });
 
 it("isOthersHomePlanetCard", () => {
-    const value = ObjectivesUtil.isOthersHomePlanetCard(CARD.PLANET_1_3);
+    let value = ObjectivesUtil.isOthersHomePlanetCard(CARD.PLANET_1_3);
     assert(!value);
+
+    world.__clear();
+
+    const playerDesk = world.TI4.getAllPlayerDesks()[0];
+    const myFactionSheet = new MockGameObject({
+        templateMetadata: "sheet.faction:base/arborec",
+        position: playerDesk.center,
+    });
+    const othersHome = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/jord",
+            }),
+        ],
+        faceUp: true,
+        position: playerDesk.center,
+    });
+    world.__addObject(othersHome);
+    world.__addObject(myFactionSheet);
+
+    // Tell Faction to invalidate any caches.
+    const player = new MockPlayer();
+    globalEvents.TI4.onFactionChanged.trigger(playerDesk.playerSlot, player);
+
+    value = ObjectivesUtil.isOthersHomePlanetCard(othersHome);
+    assert(value);
+
+    value = world.__clear();
 });
 
 it("isPlanetCard", () => {

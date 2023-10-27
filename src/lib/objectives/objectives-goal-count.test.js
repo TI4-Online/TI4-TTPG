@@ -10,7 +10,9 @@ const {
     MockCard,
     MockCardDetails,
     MockGameObject,
+    MockPlayer,
     MockRotator,
+    globalEvents,
     world,
 } = require("../../wrapper/api");
 
@@ -240,6 +242,36 @@ it("countPlanetsAndGetNeighbors", () => {
     world.__clear();
 });
 
+it("countPlanetsInOthersHome", () => {
+    world.__clear();
+
+    const playerDesk = world.TI4.getAllPlayerDesks()[0];
+    const myFactionSheet = new MockGameObject({
+        templateMetadata: "sheet.faction:base/arborec",
+        position: playerDesk.center,
+    });
+    const othersHome = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:base/jord",
+            }),
+        ],
+        faceUp: true,
+        position: playerDesk.center,
+    });
+
+    world.__addObject(othersHome);
+    world.__addObject(myFactionSheet);
+    // Tell Faction to invalidate any caches.
+    const player = new MockPlayer();
+    globalEvents.TI4.onFactionChanged.trigger(playerDesk.playerSlot, player);
+
+    const count = ObjectivesGoalCount.countPlanetsInOthersHome();
+    assert.deepEqual(count, [1, 0, 0, 0, 0, 0]);
+
+    world.__clear();
+});
+
 it("countPlanetsNonHome", () => {
     world.__clear();
 
@@ -458,6 +490,35 @@ it("countStructures", () => {
     assert.deepEqual(count, [1, 0, 0, 0, 0, 0]);
 
     world.__clear();
+});
+
+it("countSystemsWithControlledPlanetsInOrAdjToOthersHome", () => {
+    world.__clear();
+
+    const playerSlots = world.TI4.getAllPlayerDesks().map(
+        (desk) => desk.playerSlot
+    );
+    const playerSlot = playerSlots[0];
+    const otherPlayerSlot = playerSlots[1];
+
+    const othersHome = new MockGameObject({
+        templateMetadata: "tile.system:base/1",
+        owningPlayerSlot: otherPlayerSlot,
+    });
+    const controlToken = new MockGameObject({
+        templateMetadata: "token.control:base/arborec",
+        owningPlayerSlot: playerSlot,
+    });
+
+    world.__clear();
+    world.__addObject(othersHome);
+    world.__addObject(controlToken);
+
+    const count =
+        ObjectivesGoalCount.countSystemsWithControlledPlanetsInOrAdjToOthersHome();
+    assert.deepEqual(count, [1, 0, 0, 0, 0, 0]);
+
+    world.__clear;
 });
 
 it("countSystemsWithFlagshipOrWarSunAlsoOthersHomeOrMecatol", () => {

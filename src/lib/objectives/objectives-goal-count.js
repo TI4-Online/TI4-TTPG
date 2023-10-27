@@ -4,6 +4,7 @@ const { CommandToken } = require("../command-token/command-token");
 const { ObjectivesUtil } = require("./objectives-util");
 const { world } = require("../../wrapper/api");
 const { Neighbors } = require("../borders/neighbors");
+const { UnitPlastic } = require("../unit/unit-plastic");
 
 const SKIP_CONTAINED = true;
 
@@ -180,8 +181,8 @@ class ObjectivesGoalCount {
     static countPlanetsInOthersHome() {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
-            const isNonHome = ObjectivesUtil.isNonHomePlanetCard(obj);
-            if (isNonHome) {
+            const othersHome = ObjectivesUtil.isOthersHomePlanetCard(obj);
+            if (othersHome) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
@@ -265,13 +266,21 @@ class ObjectivesGoalCount {
             if (idx < 0) {
                 continue; // anonymous unit
             }
-            const hexes = values[idx];
-            if (hexes.includes(hex)) {
+
+            const plastic = UnitPlastic.getOne(obj);
+            UnitPlastic.assignPlanets([plastic]);
+            if (!plastic.planet) {
+                continue; // no planet
+            }
+            const planetName = plastic.planet.localeName;
+
+            const planetNames = values[idx];
+            if (planetNames.includes(planetName)) {
                 continue; // already recorded
             }
-            hexes.push(hex);
+            planetNames.push(planetName);
         }
-        return values.map((hexes) => hexes.length);
+        return values.map((planetNames) => planetNames.length);
     }
 
     /**
@@ -310,6 +319,60 @@ class ObjectivesGoalCount {
             }
         }
         return values;
+    }
+
+    static countSystemsWithControlledPlanetsInOrAdjToOthersHome() {
+        const values = ObjectivesUtil.initialValues([]);
+
+        // Get one control entry per planet, remove any with conflicting control.
+        const planetLocaleNameToPlayerSlots = {};
+        const controlEntries = Borders.getAllControlEntries()
+            .filter((controlEntry) => {
+                return controlEntry.areaType === AREA.PLANET;
+            })
+            .map((controlEntry) => {
+                const planetLocaleName = controlEntry.planet.localeName;
+                const playerSlot = controlEntry.playerSlot;
+                if (!planetLocaleNameToPlayerSlots[planetLocaleName]) {
+                    planetLocaleNameToPlayerSlots[planetLocaleName] = new Set();
+                }
+                planetLocaleNameToPlayerSlots[planetLocaleName].add(playerSlot);
+                return controlEntry;
+            })
+            .filter((controlEntry) => {
+                const planetLocaleName = controlEntry.planet.localeName;
+                const numOwners =
+                    planetLocaleNameToPlayerSlots[planetLocaleName].size;
+                planetLocaleNameToPlayerSlots[planetLocaleName].add(
+                    "add_to_size_to_be_too_big"
+                ); // only pass along the first match per planet
+                return numOwners === 1;
+            });
+
+        // Count in or adj to others home.
+        controlEntries.map((controlEntry) => {
+            const hex = controlEntry.hex;
+            const playerSlot = controlEntry.playerSlot;
+            const obj = controlEntry.obj;
+
+            assert(hex);
+            assert(typeof playerSlot === "number");
+            assert(obj);
+
+            if (!ObjectivesUtil.getHexIfUnitIsInOrAdjacentToOthersHome(obj)) {
+                return; // not in or adj
+            }
+
+            const playerDesk = world.TI4.getPlayerDeskByPlayerSlot(playerSlot);
+            const idx = playerDesk.index;
+
+            const hexes = values[idx];
+            if (hexes.includes(hex)) {
+                return; // already reported
+            }
+            hexes.push(hex);
+        });
+        return values.map((hexes) => hexes.length);
     }
 
     /**
