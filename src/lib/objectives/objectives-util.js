@@ -80,6 +80,17 @@ class ObjectivesUtil {
         return Math.abs(matPos.x) < extent.x && Math.abs(matPos.y) < extent.y;
     }
 
+    static _sortNsids(nsids) {
+        return nsids.sort((a, b) => {
+            a = ObjectNamespace.parseNsid(a);
+            b = ObjectNamespace.parseNsid(b);
+            if (a.type !== b.type) {
+                return a.type.localeCompare(b.type);
+            }
+            return a.name.localeCompare(b.name);
+        });
+    }
+
     /**
      * Sort (in-place) objective objects.  Sort first by stage (secrets last),
      * the by snap points to preserve game-order.
@@ -121,7 +132,7 @@ class ObjectivesUtil {
      * Get active objectives, and which desk index(es) scored each (if any).
      * Sort objectives in game order.
      *
-     * @returns {Array.{Object.{nsid:string,name:string:scoredBy:Array.{number}}}}
+     * @returns {Array.{Object.{nsid:string,name:string,scoredBy:Array.{number}}}}
      */
     static findPublicObjctivesAndAlreadyScored(includeFaceDown = false) {
         // Get exposed objectives (include secrets not in a holder, one might be made public)
@@ -186,6 +197,7 @@ class ObjectivesUtil {
                 scoredBy.add(playerDesk.index);
             }
             return {
+                id: objectiveCard.getId(),
                 nsid: ObjectNamespace.getNsid(objectiveCard),
                 name: objectiveCard.getCardDetails().name,
                 stage: ObjectivesUtil._getObjectiveStage(objectiveCard),

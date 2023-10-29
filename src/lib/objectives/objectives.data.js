@@ -5,7 +5,7 @@ const { ObjectivesGoalSuccess } = require("./objectives-goal-success");
  *
  * Object.{header:string,values:Array.{value:string|number,success:boolean}}}
  */
-const NSID_TO_GET_PROGRESS = {
+const NSID_OBJECTIVE_PROGRESS = {
     "card.objective.public_1:pok/amass_wealth": () => {
         // Spend 3 inf, 3 res, 3 tgs
         return ObjectivesGoalSuccess.checkInfResTgs(3);
@@ -223,6 +223,52 @@ const NSID_TO_GET_PROGRESS = {
     },
 };
 
+const OBJECTIVE_NAME_ABBREVIATIONS = {
+    // Public
+    "card.objective.public_2:pok/achieve_supremacy": "FLAG/WS ON MR/HS",
+    "card.objective.public_1:pok/amass_wealth": "3 INF 3 RES 3 TG",
+    "card.objective.public_2:pok/become_a_legend": "4 LGND/MR/ANOM",
+    "card.objective.public_1:pok/build_defenses": "4 STRUCTURES",
+    "card.objective.public_2:base/centralize_galactic_trade": "10 TRADE GOODS",
+    "card.objective.public_2:pok/command_an_armada": "8 NON-FGTR SHIPS",
+    "card.objective.public_2:base/conquer_the_weak": "1 OPPONENT HOME",
+    "card.objective.public_2:pok/construct_massive_cities": "7 STRUCTURES",
+    "card.objective.public_2:pok/control_the_borderlands": "5 EDGE SYS",
+    "card.objective.public_1:base/corner_the_market": "4 PLANET SAME TRAIT",
+    "card.objective.public_1:base/develop_weaponry": "2 UNIT UPGRADES",
+    "card.objective.public_1:pok/discover_lost_outposts": "2 ATTACHMENTS",
+    "card.objective.public_1:base/diversify_research": "2 TECH 2 COLORS",
+    "card.objective.public_1:pok/engineer_a_marvel": "FLAG/WAR SUN",
+    "card.objective.public_1:base/erect_a_monument": "8 RESOURCES",
+    "card.objective.public_1:base/expand_borders": "6 NON-HOME PLANET",
+    "card.objective.public_1:pok/explore_deep_space": "3 EMPTY SYS",
+    "card.objective.public_2:base/form_galactic_brain_trust":
+        "5 TECH SPECIALTY",
+    "card.objective.public_1:base/found_research_outposts": "3 TECH SPECIALTY",
+    "card.objective.public_2:base/found_a_golden_age": "16 RESOURCES",
+    "card.objective.public_2:base/galvanize_the_people": "6 COMMAND TOKENS",
+    "card.objective.public_2:pok/hold_vast_reserves": "6 INF 6 RES 6 TG",
+    "card.objective.public_1:pok/improve_infrastructure": "3 STRUCT NOT HOME",
+    "card.objective.public_1:base/intimidate_council": "2 SYS ADJ TO MR",
+    "card.objective.public_1:base/lead_from_the_front": "3 COMMAND TOKENS",
+    "card.objective.public_1:pok/make_history": "2 LGND/MR/ANOM",
+    "card.objective.public_2:base/manipulate_galactic_law": "16 INFLUENCE",
+    "card.objective.public_2:base/master_the_sciences": "2 TECH 4 COLORS",
+    "card.objective.public_1:base/negotiate_trade_routes": "5 TRADE GOODS",
+    "card.objective.public_2:pok/patrol_vast_territories": "5 EMPTY SYS",
+    "card.objective.public_1:pok/populate_the_outer_rim": "3 EDGE SYS",
+    "card.objective.public_2:pok/protect_the_border": "5 STRUCT NOT HOME",
+    "card.objective.public_1:pok/push_boundaries": "> 2 NGHBRS",
+    "card.objective.public_1:pok/raise_a_fleet": "5 NON-FGTR SHIPS",
+    "card.objective.public_2:pok/reclaim_ancient_monuments": "3 ATTACHMENTS",
+    "card.objective.public_2:base/revolutionize_warfare": "3 UNIT UPGRADES",
+    "card.objective.public_2:pok/rule_distant_lands": "2 IN/ADJ OTHER HS",
+    "card.objective.public_2:base/subdue_the_galaxy": "11 NON-HOME PLANET",
+    "card.objective.public_1:base/sway_the_council": "8 INFLUENCE",
+    "card.objective.public_2:base/unify_the_colonies": "6 PLANET SAME TRAIT",
+};
+
 module.exports = {
-    NSID_TO_GET_PROGRESS,
+    NSID_OBJECTIVE_PROGRESS,
+    OBJECTIVE_NAME_ABBREVIATIONS,
 };

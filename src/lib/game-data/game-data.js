@@ -24,6 +24,7 @@ const UPDATORS = [
     require("./updator-laws"),
     require("./updator-map-string"),
     require("./updator-objectives"),
+    require("./updator-objectives-progress"),
     require("./updator-perf"),
     require("./updator-player-active"),
     require("./updator-player-alliances"),
@@ -295,6 +296,7 @@ class GameData {
             delete copy.isPoK;
             delete copy.mapString;
             delete copy.objectives;
+            delete copy.objectivesProgress;
             delete copy.platform;
             delete copy.playerTimer;
             delete copy.scoreboard;

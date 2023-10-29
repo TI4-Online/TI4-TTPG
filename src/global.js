@@ -196,6 +196,7 @@ const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitModifier } = require("./lib/unit/unit-modifier");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 const { HomebrewLoader } = require("./lib/homebrew/homebrew-loader");
+const { ObjectivesReporter } = require("./lib/objectives/objectives-reporter");
 
 let _timer = undefined;
 
@@ -240,6 +241,7 @@ world.TI4 = {
     gameData: new GameData(),
     hideCursor: new HideCursor(),
     homebrew: new Homebrew(),
+    objectivesReporter: new ObjectivesReporter().start(),
     perfStats: new PerfStats(),
     playerTimer: new PlayerTimer(),
     turns: new Turns(true),

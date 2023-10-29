@@ -5,6 +5,7 @@ const { ObjectivesUtil } = require("./objectives-util");
 const { world } = require("../../wrapper/api");
 const { Neighbors } = require("../borders/neighbors");
 const { UnitPlastic } = require("../unit/unit-plastic");
+const { ObjectNamespace } = require("../object-namespace");
 
 const SKIP_CONTAINED = true;
 
@@ -597,14 +598,19 @@ class ObjectivesGoalCount {
      * @returns {Array.{number}}
      */
     static countUnitUpgradeTechnologies() {
-        const values = ObjectivesUtil.initialValues(0);
+        const values = ObjectivesUtil.initialValues([]);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             if (ObjectivesUtil.isUnitUpgradeTechnology(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
-                values[idx] += 1;
+                const nsids = values[idx];
+                const nsid = ObjectNamespace.getNsid(obj);
+                if (nsids.includes(nsid)) {
+                    continue; // already present (copy on tech board maybe)
+                }
+                nsids.push(nsid);
             }
         }
-        return values;
+        return values.map((nsids) => nsids.length);
     }
 }
 
