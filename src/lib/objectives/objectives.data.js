@@ -3,7 +3,7 @@ const { ObjectivesGoalSuccess } = require("./objectives-goal-success");
 /**
  * Function returns an array from desk index to simple progress string.
  *
- * Object.{header:string,values:Array.{value:string|number,success:boolean}}}
+ * Object.{header:string,values:Array.{value:string|number,success:boolean}}
  */
 const NSID_OBJECTIVE_PROGRESS = {
     "card.objective.public_1:pok/amass_wealth": () => {

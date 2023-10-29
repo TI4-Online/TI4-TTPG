@@ -11,6 +11,7 @@ const {
     globalEvents,
     world,
 } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../object-namespace");
 
 const NSID = {
     STAGE_1: "card.objective.public_1:pok/amass_wealth",
@@ -18,7 +19,7 @@ const NSID = {
     STAGE_1_EXTRA2: "card.objective.public_1:base/corner_the_market",
     STAGE_2: "card.objective.public_2:pok/achieve_supremacy",
     SECRET: "card.objective.secret:base/adapt_new_strategies",
-    OTHER: "card.objective.secret:base/adapt_new_strategies",
+    OTHER: "token:base/custodians",
     PLANET_1_3: "card.planet:base/centauri",
     PLANET_TECH: "card.planet:base/gral",
     TECH_GREEN: "card.technology.green:base/hyper_metabolism",
@@ -27,16 +28,13 @@ const NSID = {
 
 const CARD = {
     STAGE_1: new MockCard({
-        allCardDetails: [
-            new MockCardDetails({ metadata: NSID.STAGE_1, name: "demo1" }),
-        ],
+        allCardDetails: [new MockCardDetails({ metadata: NSID.STAGE_1 })],
         faceUp: true,
     }),
     STAGE_1_EXTRA: new MockCard({
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.STAGE_1_EXTRA,
-                name: "demo1extra",
             }),
         ],
         faceUp: true,
@@ -45,32 +43,25 @@ const CARD = {
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.STAGE_1_EXTRA2,
-                name: "demo1extra2",
             }),
         ],
         faceUp: false,
     }),
     STAGE_2: new MockCard({
-        allCardDetails: [
-            new MockCardDetails({ metadata: NSID.STAGE_2, name: "demo2" }),
-        ],
+        allCardDetails: [new MockCardDetails({ metadata: NSID.STAGE_2 })],
         faceUp: true,
     }),
     SECRET: new MockCard({
-        allCardDetails: [
-            new MockCardDetails({ metadata: NSID.SECRET, name: "demoSecret" }),
-        ],
+        allCardDetails: [new MockCardDetails({ metadata: NSID.SECRET })],
         faceUp: true,
     }),
     OTHER: new MockGameObject({
-        metadata: NSID.OTHER,
-        name: "demoOther",
+        templateMetadata: NSID.OTHER,
     }),
     PLANET_1_3: new MockCard({
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.PLANET_1_3,
-                name: "demoPlanet",
             }),
         ],
         faceUp: true,
@@ -79,7 +70,6 @@ const CARD = {
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.PLANET_TECH,
-                name: "demoPlanet",
             }),
         ],
         faceUp: true,
@@ -88,7 +78,6 @@ const CARD = {
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.TECH_GREEN,
-                name: "demoTechGreen",
             }),
         ],
         faceUp: true,
@@ -97,7 +86,6 @@ const CARD = {
         allCardDetails: [
             new MockCardDetails({
                 metadata: NSID.TECH_UNIT_UPGRADE,
-                name: "demoTechUnitUpgrade",
             }),
         ],
         faceUp: true,
@@ -111,16 +99,22 @@ it("no constructor", () => {
 });
 
 it("_getObjectiveStage", () => {
-    let stage = ObjectivesUtil._getObjectiveStage(CARD.STAGE_1);
+    let stage = ObjectivesUtil._getObjectiveStage(NSID.STAGE_1);
     assert.equal(stage, 1);
 
-    stage = ObjectivesUtil._getObjectiveStage(CARD.STAGE_2);
+    stage = ObjectivesUtil._getObjectiveStage(NSID.STAGE_1_EXTRA);
+    assert.equal(stage, 1);
+
+    stage = ObjectivesUtil._getObjectiveStage(NSID.STAGE_1_EXTRA2);
+    assert.equal(stage, 1);
+
+    stage = ObjectivesUtil._getObjectiveStage(NSID.STAGE_2);
     assert.equal(stage, 2);
 
-    stage = ObjectivesUtil._getObjectiveStage(CARD.SECRET);
+    stage = ObjectivesUtil._getObjectiveStage(NSID.SECRET);
     assert.equal(stage, 8);
 
-    stage = ObjectivesUtil._getObjectiveStage(CARD.OTHER);
+    stage = ObjectivesUtil._getObjectiveStage(NSID.OTHER);
     assert.equal(stage, 9);
 });
 
@@ -130,13 +124,13 @@ it("_isOnStrategyCardMat", () => {
 
 it("_sortObjectives", () => {
     const sorted = [
-        CARD.STAGE_1,
-        CARD.STAGE_1_EXTRA2_FACE_DOWN, // base before pok
-        CARD.STAGE_1_EXTRA,
-        CARD.STAGE_2,
-        CARD.SECRET,
-        CARD.OTHER,
-    ].map((x) => ObjectivesUtil._getObjectiveStage(x));
+        NSID.STAGE_1,
+        NSID.STAGE_1_EXTRA,
+        NSID.STAGE_1_EXTRA2,
+        NSID.STAGE_2,
+        NSID.SECRET,
+        NSID.OTHER,
+    ];
 
     let input = [
         CARD.STAGE_1,
@@ -147,7 +141,7 @@ it("_sortObjectives", () => {
         CARD.OTHER,
     ];
     let output = ObjectivesUtil._sortObjectives(input).map((x) =>
-        ObjectivesUtil._getObjectiveStage(x)
+        ObjectNamespace.getNsid(x)
     );
     assert.deepEqual(output, sorted);
 
@@ -160,7 +154,7 @@ it("_sortObjectives", () => {
         CARD.STAGE_1,
     ];
     output = ObjectivesUtil._sortObjectives(input).map((x) =>
-        ObjectivesUtil._getObjectiveStage(x)
+        ObjectNamespace.getNsid(x)
     );
     assert.deepEqual(output, sorted);
 
@@ -173,7 +167,7 @@ it("_sortObjectives", () => {
         CARD.STAGE_2,
     ];
     output = ObjectivesUtil._sortObjectives(input).map((x) =>
-        ObjectivesUtil._getObjectiveStage(x)
+        ObjectNamespace.getNsid(x)
     );
     assert.deepEqual(output, sorted);
 });
@@ -185,20 +179,16 @@ it("findPublicObjctivesAndAlreadyScored", () => {
     world.__addObject(CARD.STAGE_1_EXTRA2_FACE_DOWN);
 
     let objectives = ObjectivesUtil.findPublicObjctivesAndAlreadyScored();
-    const names = objectives.map((x) => x.name);
     let nsids = objectives.map((x) => x.nsid);
     const scoredBy = objectives.map((x) => x.scoredBy);
-    const stages = objectives.map((x) => x.stage);
-    assert.deepEqual(names, ["demo1", "demo2"]);
     assert.deepEqual(nsids, [NSID.STAGE_1, NSID.STAGE_2]);
     assert.deepEqual(scoredBy, [[], []]); // not tested here
-    assert.deepEqual(stages, [1, 2]);
 
     const includeFaceDown = true;
     objectives =
         ObjectivesUtil.findPublicObjctivesAndAlreadyScored(includeFaceDown);
     nsids = objectives.map((x) => x.nsid);
-    assert.deepEqual(nsids, [NSID.STAGE_1_EXTRA2, NSID.STAGE_1, NSID.STAGE_2]); // base before pok for tied stage 1s
+    assert.deepEqual(nsids, [NSID.STAGE_1, NSID.STAGE_1_EXTRA2, NSID.STAGE_2]);
 
     world.__clear();
 });

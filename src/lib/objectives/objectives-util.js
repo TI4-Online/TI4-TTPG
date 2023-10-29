@@ -38,9 +38,8 @@ class ObjectivesUtil {
      * @param {GameObject} obj
      * @returns {number}
      */
-    static _getObjectiveStage(obj) {
-        assert(obj instanceof GameObject);
-        const nsid = ObjectNamespace.getNsid(obj);
+    static _getObjectiveStage(nsid) {
+        assert(typeof nsid === "string");
         if (nsid.startsWith("card.objective.public_1")) {
             return STAGE.ONE;
         } else if (nsid.startsWith("card.objective.public_2")) {
@@ -105,8 +104,10 @@ class ObjectivesUtil {
             assert(b instanceof GameObject);
 
             // Stage 1 > Stage 2 > Secret > other.
-            const aStage = ObjectivesUtil._getObjectiveStage(a);
-            const bStage = ObjectivesUtil._getObjectiveStage(b);
+            const aNsid = ObjectNamespace.getNsid(a);
+            const bNsid = ObjectNamespace.getNsid(b);
+            const aStage = ObjectivesUtil._getObjectiveStage(aNsid);
+            const bStage = ObjectivesUtil._getObjectiveStage(bNsid);
             if (aStage !== bStage) {
                 return aStage - bStage;
             }
@@ -120,19 +121,19 @@ class ObjectivesUtil {
                 return bIdx - aIdx;
             }
 
-            // Otherwise sort by nsid for determinism (unittests).
-            const aNsid = ObjectNamespace.getNsid(a);
-            const bNsid = ObjectNamespace.getNsid(b);
-            return aNsid.localeCompare(bNsid);
+            // Otherwise sort by nsid.name.
+            const aParsed = ObjectNamespace.parseNsid(aNsid);
+            const bParsed = ObjectNamespace.parseNsid(bNsid);
+            return aParsed.name.localeCompare(bParsed.name);
         };
         return objs.sort(sortObjectives);
     }
 
     /**
-     * Get active objectives, and which desk index(es) scored each (if any).
+     * Get active public objectives, and which desk index(es) scored each.
      * Sort objectives in game order.
      *
-     * @returns {Array.{Object.{nsid:string,name:string,scoredBy:Array.{number}}}}
+     * @returns {Array.{Object.{id:string,faceUp:boolean,nsid:string,scoredBy:Array.{number}}}}
      */
     static findPublicObjctivesAndAlreadyScored(includeFaceDown = false) {
         // Get exposed objectives (include secrets not in a holder, one might be made public)
@@ -155,8 +156,8 @@ class ObjectivesUtil {
             if (!(obj instanceof Card)) {
                 continue; // not a card
             }
-            if (!nsid.startsWith("card.objective")) {
-                continue; // not an objective
+            if (!nsid.startsWith("card.objective.public")) {
+                continue; // not a public objective
             }
             if (!includeFaceDown && !obj.isFaceUp()) {
                 continue; // face down
@@ -196,11 +197,11 @@ class ObjectivesUtil {
                 }
                 scoredBy.add(playerDesk.index);
             }
+            const nsid = ObjectNamespace.getNsid(objectiveCard);
             return {
                 id: objectiveCard.getId(),
-                nsid: ObjectNamespace.getNsid(objectiveCard),
-                name: objectiveCard.getCardDetails().name,
-                stage: ObjectivesUtil._getObjectiveStage(objectiveCard),
+                faceUp: objectiveCard.isFaceUp(),
+                nsid,
                 scoredBy: Array.from(scoredBy),
             };
         });
