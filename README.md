@@ -47,6 +47,7 @@ As of right now, transpiling is off. Ecma6 adn Ecma2020 syntax is good to go.
 The TTS mod: inspiration, some framework concepts.
 
 11quats: attachments, planet positions, system tables, unit + system schema, command token take/put reporting
+andcat: art, UX
 BradleySigma: tech layout, nekro tech button
 Darrell: scripting
 Dotlogix: map string parsing, formatting
