@@ -151,7 +151,7 @@ class ObjectivesGoalCount {
             if (!hexToNonFighterShips) {
                 continue;
             }
-            const max = Math.max(Object.values(hexToNonFighterShips));
+            const max = Math.max(...Object.values(hexToNonFighterShips));
             values[idx] = max;
         }
         return values;

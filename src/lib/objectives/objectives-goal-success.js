@@ -56,12 +56,12 @@ class ObjectivesGoalSuccess {
             assert(typeof inf === "number");
             assert(typeof res === "number");
             assert(typeof tgs === "number");
-            let neededTgs = 3;
-            if (inf < 3) {
-                neededTgs += 3 - inf;
+            let neededTgs = needed;
+            if (inf < needed) {
+                neededTgs += needed - inf;
             }
-            if (res < 3) {
-                neededTgs += 3 - res;
+            if (res < needed) {
+                neededTgs += needed - res;
             }
             const success = tgs >= neededTgs;
             return {
