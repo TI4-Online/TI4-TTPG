@@ -378,6 +378,12 @@ class GameData {
 
         // Post.
         const url = this._getUrl(endpoint);
+
+        // This field is quite large, strip out for long-term store.
+        if (url.includes("ti4-game-data.appspot.com")) {
+            delete data.objectivesProgress;
+        }
+
         const fetchOptions = {
             headers: { "Content-type": "application/json;charset=UTF-8" },
             body: JSON.stringify(data), // timestamp got added
