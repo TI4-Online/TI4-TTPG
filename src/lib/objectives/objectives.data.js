@@ -92,7 +92,7 @@ const NSID_OBJECTIVE_PROGRESS = {
 
     "card.objective.public_1:pok/populate_the_outer_rim": () => {
         // 3 systems with units on edge
-        return ObjectivesGoalSuccess.countSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
+        return ObjectivesGoalSuccess.checkSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
             3
         );
     },
@@ -148,7 +148,7 @@ const NSID_OBJECTIVE_PROGRESS = {
 
     "card.objective.public_2:pok/control_the_borderlands": () => {
         // 5 systems with units on edge
-        return ObjectivesGoalSuccess.countSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
+        return ObjectivesGoalSuccess.checkSystemsWithUnitsOnEdgeOfGameBoardOtherThanHome(
             5
         );
     },

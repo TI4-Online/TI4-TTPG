@@ -9,6 +9,7 @@ const {
     OBJECTIVE_NAME_ABBREVIATIONS,
 } = require("./objectives.data");
 const { globalEvents, world } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../object-namespace");
 
 const INTERVAL_MSECS = 10 * 1000;
 
@@ -30,6 +31,10 @@ class ObjectivesReporter {
             );
         }
         this._asyncTaskQueue.add(task);
+    }
+
+    getProcessMissingObjectives() {
+        return this._processMissingObjectives;
     }
 
     setProcessMissingObjectives(value) {
@@ -55,6 +60,7 @@ class ObjectivesReporter {
             asyncProcessObjectives,
             INTERVAL_MSECS
         );
+        process.nextTick(asyncProcessObjectives); // schedule one now too
         return this;
     }
 
@@ -108,9 +114,18 @@ class ObjectivesReporter {
                 return nsid;
             });
         }
+        const noCap = new Set(["a", "the"]);
         return nsids.map((nsid) => {
             assert(typeof nsid === "string");
+            const parsed = ObjectNamespace.parseNsid(nsid);
+            const name = parsed.name
+                .split("_")
+                .map((s) =>
+                    noCap.has(s) ? s : s.charAt(0).toUpperCase() + s.slice(1)
+                )
+                .join(" ");
             return {
+                name,
                 abbr: OBJECTIVE_NAME_ABBREVIATIONS[nsid] || "?",
                 progress: this._nsidToProgress[nsid],
                 scoredBy: this._nsidToScoredBy[nsid],
@@ -147,7 +162,7 @@ class ObjectivesReporter {
             assert(typeof nsid === "string");
             assert(typeof getProgress === "function");
             this._doAsync(() => {
-                this._nsidToProgress[nsid].progress = getProgress();
+                this._nsidToProgress[nsid] = getProgress();
             });
         }
 
@@ -160,7 +175,7 @@ class ObjectivesReporter {
                 assert(typeof getProgress === "function");
                 if (!this._nsidToScoredBy[nsid]) {
                     this._doAsync(() => {
-                        this._nsidToProgress[nsid].progress = getProgress();
+                        this._nsidToProgress[nsid] = getProgress();
                     });
                 }
             }

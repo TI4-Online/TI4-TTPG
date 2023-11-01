@@ -1,5 +1,6 @@
 const assert = require("../../wrapper/assert-wrapper");
 const { ObjectivesGoalCount } = require("./objectives-goal-count");
+const { world } = require("../../wrapper/api");
 
 /**
  * Summarize per-desk goal progress as a user-facing string, and report success boolean.
@@ -93,27 +94,29 @@ class ObjectivesGoalSuccess {
     }
 
     static checkMorePlanetsThan2Neighbors() {
-        const values = ObjectivesGoalCount.countPlanetsAndGetNeighbors().map(
-            (value) => {
-                const { planets, neighbors } = value;
-                assert(typeof planets === "number");
-                assert(Array.isArray(neighbors));
-                for (const neighborIndex of neighbors) {
-                    assert(neighborIndex >= 0 && neighborIndex < values.length);
-                }
-                let moreThanCount = 0;
-                for (const neighborIndex of neighbors) {
-                    const neighborCount = values[neighborIndex].planets;
-                    if (planets > neighborCount) {
-                        moreThanCount++;
-                    }
-                }
-                return {
-                    value: planets,
-                    success: moreThanCount >= 2,
-                };
+        let values = ObjectivesGoalCount.countPlanetsAndGetNeighbors();
+        values = values.map((value) => {
+            const { planets, neighbors } = value;
+            assert(typeof planets === "number");
+            assert(Array.isArray(neighbors));
+            for (const neighborIndex of neighbors) {
+                assert(
+                    neighborIndex >= 0 &&
+                        neighborIndex < world.TI4.config.playerCount
+                );
             }
-        );
+            let moreThanCount = 0;
+            for (const neighborIndex of neighbors) {
+                const neighborCount = values[neighborIndex].planets;
+                if (planets > neighborCount) {
+                    moreThanCount++;
+                }
+            }
+            return {
+                value: planets,
+                success: moreThanCount >= 2,
+            };
+        });
         return {
             header: "Planets",
             values,
