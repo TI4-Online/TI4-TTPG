@@ -247,7 +247,7 @@ world.TI4 = {
     hideCursor: new HideCursor(),
     homebrew: new Homebrew(),
     objectivesReporter: new ObjectivesReporter()
-        .setProcessMissingObjectives(true)
+        .setProcessMissingObjectives(false)
         .start(),
     perfStats: new PerfStats(),
     playerTimer: new PlayerTimer(),

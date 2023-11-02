@@ -117,7 +117,7 @@ class ObjectivesUtil {
             const bSnap = b.getSnappedToPoint();
             const aIdx = aSnap ? aSnap.getIndex() : -1;
             const bIdx = bSnap ? bSnap.getIndex() : -1;
-            if (aIdx >= 0 && bIdx >= 0) {
+            if (aIdx >= 0 || bIdx >= 0) {
                 return bIdx - aIdx;
             }
 
