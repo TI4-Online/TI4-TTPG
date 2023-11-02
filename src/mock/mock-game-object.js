@@ -19,7 +19,10 @@ class GameObject {
         this._isValid = true;
         this._name = (data && data.name) || "";
         this._objectType = (data && data.objectType) || 1;
-        this._owningPlayerSlot = (data && data.owningPlayerSlot) || -1;
+        this._owningPlayerSlot =
+            data && data.owningPlayerSlot !== undefined
+                ? data.owningPlayerSlot
+                : -1;
         this._packageId = (data && data.packageId) || "TI4";
         this._position = (data && data.position) || new Vector(0, 0, 0);
         this._primaryColor = data && data.primaryColor;
@@ -126,6 +129,10 @@ class GameObject {
 
     getSize() {
         return this._size;
+    }
+
+    getSnappedToPoint() {
+        return undefined;
     }
 
     getTemplateId() {

@@ -1,5 +1,4 @@
-const assert = require("../../wrapper/assert-wrapper");
-const { Card, world } = require("../../wrapper/api");
+const { world } = require("../../wrapper/api");
 
 class CloneReplace {
     constructor() {
@@ -14,12 +13,13 @@ class CloneReplace {
      * same frame.  Pulling the card from the hand and putting it back
      * seems to fix it.  Try making a copy to see if that resets it.
      *
+     * This MIGHT have been an issue with two cards at the same location,
+     * and a physics cast found the wrong one.  MAYBE.  Leave it be for now.
+     *
      * @param {Card} card
      * @returns {Card}
      */
     static cloneReplace(card) {
-        assert(card instanceof Card);
-
         if (world.__isMock) {
             return card;
         }

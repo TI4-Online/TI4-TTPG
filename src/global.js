@@ -49,6 +49,10 @@ globalEvents.TI4 = {
     // <(state: object, player: Player) => void>
     onGameSetup: new TriggerableMulticastDelegate(onErr),
 
+    // Called after infrastructure updates objective progress state.
+    // <() => void >
+    onObjectiveProgressUpdated: new TriggerableMulticastDelegate(onErr),
+
     // Called after a player color changes (setup not finished).
     // <(playerColor: Color, deskIndex: number) => void>
     onPlayerColorChanged: new TriggerableMulticastDelegate(onErr),
@@ -196,6 +200,7 @@ const { UnitAttrs } = require("./lib/unit/unit-attrs");
 const { UnitModifier } = require("./lib/unit/unit-modifier");
 const { UnitPlastic } = require("./lib/unit/unit-plastic");
 const { HomebrewLoader } = require("./lib/homebrew/homebrew-loader");
+const { ObjectivesReporter } = require("./lib/objectives/objectives-reporter");
 
 let _timer = undefined;
 
@@ -230,6 +235,7 @@ world.TI4 = {
     // More libraries for homebrew access
     assert,
     locale,
+    onErr,
 
     agenda: new Agenda(),
     asyncTaskQueue: new AsyncTaskQueue(DEFAULT_ASYNC_DELAY, onErr),
@@ -240,6 +246,9 @@ world.TI4 = {
     gameData: new GameData(),
     hideCursor: new HideCursor(),
     homebrew: new Homebrew(),
+    objectivesReporter: new ObjectivesReporter()
+        .setProcessMissingObjectives(false)
+        .start(),
     perfStats: new PerfStats(),
     playerTimer: new PlayerTimer(),
     turns: new Turns(true),
