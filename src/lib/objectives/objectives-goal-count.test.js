@@ -303,13 +303,27 @@ it("countPlanetsNonHome", () => {
         faceUp: true,
         position,
     });
+    const custodiaVigilia = new MockCard({
+        allCardDetails: [
+            new MockCardDetails({
+                metadata: "card.planet:codex.vigil/custodia_vigilia",
+            }),
+        ],
+        faceUp: true,
+        position,
+    });
     world.__addObject(cultural1);
     world.__addObject(cultural2);
     world.__addObject(home);
+    world.__addObject(custodiaVigilia);
 
-    const count = ObjectivesGoalCount.countPlanetsNonHome();
+    let excludeCustodiaVigilia = false;
+    let count = ObjectivesGoalCount.countPlanetsNonHome(excludeCustodiaVigilia);
+    assert.deepEqual(count, [3, 0, 0, 0, 0, 0]);
+
+    excludeCustodiaVigilia = true;
+    count = ObjectivesGoalCount.countPlanetsNonHome(excludeCustodiaVigilia);
     assert.deepEqual(count, [2, 0, 0, 0, 0, 0]);
-
     world.__clear();
 });
 
