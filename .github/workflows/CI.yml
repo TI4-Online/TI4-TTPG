@@ -40,5 +40,4 @@ jobs:
 
       - run: yarn install --frozen-lockfile
       - run: yarn check:prettier
-      - run: yarn generate:langfile
       - run: yarn test
