@@ -140,17 +140,17 @@ class ObjectivesGoalSuccess {
         };
     }
 
-    static checkPlanetsNonHome(needed) {
+    static checkPlanetsNonHome(needed, excludeCustodiaVigilia) {
         assert(typeof needed === "number");
-        const values = ObjectivesGoalCount.countPlanetsNonHome().map(
-            (value) => {
-                assert(typeof value === "number");
-                return {
-                    value,
-                    success: value >= needed,
-                };
-            }
-        );
+        const values = ObjectivesGoalCount.countPlanetsNonHome(
+            excludeCustodiaVigilia
+        ).map((value) => {
+            assert(typeof value === "number");
+            return {
+                value,
+                success: value >= needed,
+            };
+        });
         return {
             header: "Planets non-home",
             values,

@@ -176,7 +176,15 @@ class EndStatusPhase {
         );
         if (cyberneticEnhancements1 || cyberneticEnhancements2) {
             const faction = world.TI4.getFactionByPlayerSlot(playerSlot);
-            if (faction && faction.nsidName !== "l1zix") {
+            let returnCard = true;
+            if (
+                faction &&
+                faction.raw.promissoryNotes &&
+                faction.raw.promissoryNotes.includes("cybernetic_enhancements")
+            ) {
+                returnCard = false;
+            }
+            if (returnCard) {
                 dealNTokens += 1;
                 if (cyberneticEnhancements1) {
                     DealDiscard.discard(cyberneticEnhancements1);

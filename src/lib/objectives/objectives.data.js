@@ -48,7 +48,11 @@ const NSID_OBJECTIVE_PROGRESS = {
 
     "card.objective.public_1:base/expand_borders": () => {
         // 6 planets non-home
-        return ObjectivesGoalSuccess.checkPlanetsNonHome(6);
+        const excludeCustodiaVigilia = true;
+        return ObjectivesGoalSuccess.checkPlanetsNonHome(
+            6,
+            excludeCustodiaVigilia
+        );
     },
 
     "card.objective.public_1:pok/explore_deep_space": () => {
@@ -214,7 +218,11 @@ const NSID_OBJECTIVE_PROGRESS = {
 
     "card.objective.public_2:base/subdue_the_galaxy": () => {
         // 11 planets non-home
-        return ObjectivesGoalSuccess.checkPlanetsNonHome(11);
+        const excludeCustodiaVigilia = true;
+        return ObjectivesGoalSuccess.checkPlanetsNonHome(
+            11,
+            excludeCustodiaVigilia
+        );
     },
 
     "card.objective.public_2:base/unify_the_colonies": () => {

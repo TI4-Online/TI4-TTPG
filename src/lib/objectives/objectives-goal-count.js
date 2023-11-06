@@ -203,14 +203,22 @@ class ObjectivesGoalCount {
      *
      * @returns {Array.{number}}
      */
-    static countPlanetsNonHome() {
+    static countPlanetsNonHome(excludeCustodiaVigilia) {
         const values = ObjectivesUtil.initialValues(0);
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const isNonHome = ObjectivesUtil.isNonHomePlanetCard(obj);
-            if (isNonHome) {
-                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
-                values[idx] += 1;
+            if (!isNonHome) {
+                continue;
             }
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (
+                excludeCustodiaVigilia &&
+                nsid === "card.planet:codex.vigil/custodia_vigilia"
+            ) {
+                continue;
+            }
+            const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+            values[idx] += 1;
         }
         return values;
     }
