@@ -218,7 +218,11 @@ const NSID_OBJECTIVE_PROGRESS = {
 
     "card.objective.public_2:base/subdue_the_galaxy": () => {
         // 11 planets non-home
-        return ObjectivesGoalSuccess.checkPlanetsNonHome(11);
+        const excludeCustodiaVigilia = true;
+        return ObjectivesGoalSuccess.checkPlanetsNonHome(
+            11,
+            excludeCustodiaVigilia
+        );
     },
 
     "card.objective.public_2:base/unify_the_colonies": () => {

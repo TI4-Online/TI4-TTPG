@@ -6,6 +6,7 @@ const { ObjectNamespace } = require("../../lib/object-namespace");
 const { SpawnDeck } = require("../spawn/spawn-deck");
 const { PROMISSORY_DECK_LOCAL_OFFSET } = require("../setup-generic-promissory");
 const { world } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 
 class SetupFactionPromissory extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -54,6 +55,14 @@ class SetupFactionPromissory extends AbstractSetup {
             },
             allowExisting
         );
+
+        if (!deck) {
+            Broadcast.chatAll(
+                `Warning: faction "${this._faction.nsidName}" missing promissory note`,
+                Broadcast.ERROR
+            );
+            return;
+        }
 
         // See the comment in CloneReplace for why.
         deck = CloneReplace.cloneReplace(deck);
