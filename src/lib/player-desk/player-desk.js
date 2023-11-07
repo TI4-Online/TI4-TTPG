@@ -3,7 +3,11 @@ const locale = require("../locale");
 const { GameSetupUI } = require("../../setup/game-setup/game-setup-ui");
 const { FactionToken } = require("../faction/faction-token");
 const { ObjectNamespace } = require("../object-namespace");
-const { PlayerDeskColor, PLAYER_DESK_COLORS } = require("./player-desk-color");
+const {
+    PlayerDeskColor,
+    PLAYER_DESK_COLORS,
+    RAINBOW,
+} = require("./player-desk-color");
 const { PlayerDeskSetup } = require("./player-desk-setup");
 const { PlayerDeskPickFaction } = require("./player-desk-pick-faction");
 const { PlayerDeskPlayerNameUI } = require("./player-desk-player-name-ui");
@@ -600,7 +604,8 @@ class PlayerDesk {
      */
     getColorOptions() {
         const colorOptions = [];
-        for (const attrs of PLAYER_DESK_COLORS) {
+        for (const colorName of RAINBOW) {
+            const attrs = PlayerDeskColor.getColorAttrs(colorName);
             // Default color.
             colorOptions.push({
                 colorName: attrs.colorName,

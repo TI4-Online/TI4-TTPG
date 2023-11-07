@@ -188,6 +188,7 @@ const { HideCursor } = require("./lib/streamer/hide-cursor");
 const { Homebrew } = require("./lib/homebrew/homebrew");
 const { ObjectNamespace } = require("./lib/object-namespace");
 const { PerfStats } = require("./lib/perf/perf-stats");
+const { PlayerDeskColor } = require("./lib/player-desk/player-desk-color");
 const { PlayerTimer } = require("./lib/player-timer/player-timer");
 const { RollGroup } = require("./lib/dice/roll-group");
 const { SimpleDieBuilder } = require("./lib/dice/simple-die");
@@ -222,6 +223,7 @@ world.TI4 = {
     Hex,
     ObjectNamespace,
     PlayerDesk,
+    PlayerDeskColor,
     RollGroup,
     SimpleDieBuilder,
     Spawn,
