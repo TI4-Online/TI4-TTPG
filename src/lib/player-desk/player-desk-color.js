@@ -17,14 +17,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#00FF00",
         widgetHexColor: "#00FF00",
         defaultPlayerSlot: 1,
-        variants: [
-            "#10de10",
-            "#19bd19",
-            "#1d991d",
-            "#1e781e",
-            "#1c571c",
-            "#143614",
-        ],
+        variants: ["#5dc262", "#0c9113", "#82eb09", "#09eb67"],
     },
     {
         colorName: "red",
@@ -33,14 +26,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FF2020",
         widgetHexColor: "#FF1010",
         defaultPlayerSlot: 16,
-        variants: [
-            "#de1010",
-            "#bd1919",
-            "#991d1d",
-            "#781e1e",
-            "#571c1c",
-            "#361414",
-        ],
+        variants: ["#ad5e5e", "#c02516", "#cf213e", "#ff6969"],
     },
     {
         colorName: "yellow",
@@ -49,14 +35,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FFFF00",
         widgetHexColor: "#D7B700",
         defaultPlayerSlot: 9,
-        variants: [
-            "#dede10",
-            "#bdbd19",
-            "#99991d",
-            "#78781e",
-            "#57571c",
-            "#363614",
-        ],
+        variants: ["#fce979", "#a69317", "#d6bd4b", "#f6ff00"],
     },
     {
         colorName: "pink",
@@ -65,14 +44,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FC46AA",
         widgetHexColor: "#F46FCD",
         defaultPlayerSlot: 5,
-        variants: [
-            "#de1099",
-            "#781757",
-            "#991d70",
-            "#781e5a",
-            "#571c43",
-            "#36142a",
-        ],
+        variants: ["#edadd9", "#c21f90", "#fa25e7", "#de64b1"],
     },
     {
         colorName: "orange",
@@ -81,15 +53,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FF8C00",
         widgetHexColor: "#FC6A03",
         defaultPlayerSlot: 6,
-        variants: [
-            "#ff8000",
-            "#de5f10",
-            "#bd5719",
-            "#994d1d",
-            "#78401e",
-            "#57321c",
-            "#362114",
-        ],
+        variants: ["#e09f5c", "#854300", "#ff6200", "#ffa600"],
     },
     {
         colorName: "purple", // TTS 7400B7
@@ -98,14 +62,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#AF69EF", //"#D7A1F9", //"#BB86FC",
         widgetHexColor: "#572780",
         defaultPlayerSlot: 4,
-        variants: [
-            "#5410de",
-            "#4f19bd",
-            "#461d99",
-            "#3c1e78",
-            "#2f1c57",
-            "#1f1436",
-        ],
+        variants: ["#af76cf", "#681d91", "#945ced", "#a600ff"],
     },
     {
         colorName: "blue", // TTS 07B2FF v
@@ -114,14 +71,7 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#00CFFF",
         widgetHexColor: "#00CFFF",
         defaultPlayerSlot: 15,
-        variants: [
-            "#1077de",
-            "#196bbd",
-            "#1d5b99",
-            "#1e4b78",
-            "#1c3957",
-            "#142536",
-        ],
+        variants: ["#6fd9f2", "#0e96b5", "#00ffea", "#0091ff"],
     },
     {
         colorName: "white",
@@ -130,15 +80,19 @@ const PLAYER_DESK_COLORS = [
         chatHexColor: "#FFFFFF",
         widgetHexColor: "#F0F0F0",
         defaultPlayerSlot: 18,
-        variants: [
-            "#dedede",
-            "#bfbfbf",
-            "#9e9e9e",
-            "#808080",
-            "#5e5e5e",
-            "#404040",
-        ],
+        variants: ["#969696", "#4a4a4a", "#2c2c2e", "#2e2626"],
     },
+];
+
+const RAINBOW = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple",
+    "pink",
+    "white",
 ];
 
 class PlayerDeskColor {
@@ -199,6 +153,27 @@ class PlayerDeskColor {
         // Apply to the player slot too.
         world.setSlotColor(playerDesk.playerSlot, playerDesk._color);
     }
+
+    static createRainbow() {
+        RAINBOW.forEach((colorName, colIdx) => {
+            const attrs = PlayerDeskColor.getColorAttrs(colorName);
+            const values = [attrs.plasticHexColor, ...attrs.variants];
+            values.forEach((colorHex, rowIdx) => {
+                console.log(`${colorName} [${colIdx},${rowIdx}]: ${colorHex}`);
+                const color = ColorUtil.colorFromHex(colorHex);
+                const cube = "83FDE12C4E6D912B16B85E9A00422F43";
+                const z = world.getTableHeight() + 5;
+                const obj = world.createObjectFromTemplate(cube, [
+                    (rowIdx + 5) * -5.7,
+                    (colIdx - 3.5) * 5.7,
+                    z,
+                ]);
+
+                obj.setPrimaryColor(color);
+                obj.setName(`${colorName}\n${colorHex}`);
+            });
+        });
+    }
 }
 
-module.exports = { PlayerDeskColor, PLAYER_DESK_COLORS };
+module.exports = { PlayerDeskColor, PLAYER_DESK_COLORS, RAINBOW };
