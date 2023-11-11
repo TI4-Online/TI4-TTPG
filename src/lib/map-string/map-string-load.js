@@ -113,6 +113,14 @@ class MapStringLoad {
             obj.setRotation(rot, 0);
             obj.snapToGround();
             obj.setObjectType(ObjectType.Ground);
+
+            // Apparently non-host can have issues here.  Replace tiles with clones.
+            // XXX THIS IS A HACK, REMOVE WHEN STABLE.
+            const json = obj.toJSONString();
+            const groundPos = obj.getPosition();
+            obj.setTags(["DELETED_ITEMS_IGNORE"]);
+            obj.destroy();
+            world.createObjectFromJSON(json, groundPos);
         };
 
         // Place!
