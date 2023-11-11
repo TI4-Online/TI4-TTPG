@@ -197,6 +197,8 @@ class GameObject {
         }
     }
 
+    setTags(value) {}
+
     snapToGround() {}
 
     toJSONString() {
