@@ -7,6 +7,7 @@ const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { Spawn } = require("../spawn/spawn");
 const { SpawnDeck } = require("../spawn/spawn-deck");
 const { ObjectType, Rotator, world } = require("../../wrapper/api");
+const { Broadcast } = require("../../lib/broadcast");
 
 class SetupHomeSystem extends AbstractSetup {
     constructor(playerDesk, faction) {
@@ -161,9 +162,11 @@ class SetupHomeSystem extends AbstractSetup {
             return planetNsidNames.has(parsed.name);
         });
         if (!deck) {
-            throw new Error(
-                `missing [${Array.from(planetNsidNames).join(", ")}]`
+            Broadcast.chatAll(
+                `Warning: faction "${this._faction.nsidName}" missing home system planet cards`,
+                Broadcast.ERROR
             );
+            return;
         }
 
         deck = CloneReplace.cloneReplace(deck);
