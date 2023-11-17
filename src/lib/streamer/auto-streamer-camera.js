@@ -226,7 +226,10 @@ class AutoStreamerCamera {
         assert(typeof isWarpIn === "boolean");
 
         if (isAgenda) {
-            return LOOK_AT.gameUI;
+            const numPicked = FindTurnOrder.numPickedStrategyCards();
+            if (numPicked <= 1) {
+                return LOOK_AT.gameUI;
+            }
         }
 
         if (isScoring) {
