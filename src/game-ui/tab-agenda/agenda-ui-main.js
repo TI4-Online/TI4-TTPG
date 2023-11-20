@@ -19,8 +19,33 @@ const {
 // Keep private text widgets for editing.
 const _outcomeIndexToWidgets = {};
 
+let _waitingFor = undefined;
+
+function updateWaitingFor() {
+    if (_waitingFor) {
+        const stateMachine = world.TI4.agenda.getStateMachine();
+        const state = stateMachine && stateMachine.name;
+        let msg = "ui.agenda.clippy.waiting_for_player_name"; // generic
+        if (state === "WHEN") {
+            msg = "ui.agenda.clippy.waiting_whens";
+        } else if (state === "AFTER") {
+            msg = "ui.agenda.clippy.waiting_afters";
+        } else if (state === "VOTE") {
+            msg = "ui.agenda.clippy.waiting_vote";
+        }
+        const currentDesk = world.TI4.turns.getCurrentTurn();
+        const playerName = currentDesk.colorName;
+        _waitingFor.setText(
+            locale(msg, {
+                playerName,
+            })
+        );
+    }
+}
+
 globalEvents.TI4.onAgendaPlayerStateChanged.add(() => {
     AgendaUiMain._updateVoteAndPredictionText();
+    updateWaitingFor();
 });
 
 class AgendaUiMain {
@@ -364,11 +389,18 @@ class AgendaUiMain {
             ThrottleClickHandler.wrap(onClickHandlers.resetAvailableVotes)
         );
 
+        _waitingFor = WidgetFactory.text()
+            .setFontSize(CONFIG.fontSize)
+            .setJustification(TextJustification.Center)
+            .setText("-");
+        updateWaitingFor();
+
         const panel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .setVerticalAlignment(VerticalAlignment.Center)
             .addChild(availableVotesPanel, 0)
             .addChild(agendaCardAndAgendaStateBox, 1)
+            .addChild(_waitingFor, 0)
             .addChild(resetAvailableVotesButton, 0);
 
         WidgetFactory.setChild(this._widget, panel);

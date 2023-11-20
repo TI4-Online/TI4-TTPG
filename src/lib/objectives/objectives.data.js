@@ -83,9 +83,9 @@ const NSID_OBJECTIVE_PROGRESS = {
     },
 
     "card.objective.public_1:pok/make_history": () => {
-        // 3 systems with legendary, mecatol, or anomaly
+        // 2 systems with legendary, mecatol, or anomaly
         return ObjectivesGoalSuccess.checkSystemsWithUnitsInLegendaryMecatolOrAnomaly(
-            3
+            2
         );
     },
 

@@ -17,8 +17,6 @@ class CardVibrationStomp {
     static _stompHandler = (card) => {
         assert(card instanceof Card);
 
-        console.log("CardVibrationStomp._stompHandler");
-
         if (!card.isFaceUp()) {
             return; // only lock when face up
         }
@@ -26,6 +24,8 @@ class CardVibrationStomp {
         if (!card.getSnappedToPoint()) {
             return; // not snapped to a point
         }
+
+        console.log("CardVibrationStomp._stompHandler");
 
         card.freeze();
     };

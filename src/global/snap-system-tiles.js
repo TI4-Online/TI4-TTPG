@@ -17,18 +17,20 @@ const onSystemTileReleased = (
 ) => {
     let pos = obj.getPosition();
     let rot = obj.getRotation();
+    const z = pos.z;
 
     // Align position.
     const hex = Hex.fromPosition(pos);
     pos = Hex.toPosition(hex);
-    pos.z = world.getTableHeight();
+    pos.z = z;
 
     // Align rotation.
     const yaw = Math.round(rot.yaw / 60) * 60;
     rot = new Rotator(0, yaw, rot.roll);
 
-    obj.setPosition(pos, 1);
-    obj.setRotation(rot, 1);
+    obj.setPosition(pos);
+    obj.setRotation(rot);
+    obj.snapToGround();
 };
 
 globalEvents.onObjectCreated.add((obj) => {
