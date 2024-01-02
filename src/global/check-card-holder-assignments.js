@@ -32,9 +32,12 @@ function checkCardHolderAssignments() {
             continue;
         }
 
-        if (player.getHandHolder() !== obj) {
+        const holder = player.getHandHolder();
+        if (holder !== obj) {
+            const oldId = holder ? holder.getId() : "undefined";
+            const newId = obj.getId();
             player.setHandHolder(obj);
-            const msg = `checkCardHolderAssignments: reset hand holder (slot ${playerSlot})`;
+            const msg = `checkCardHolderAssignments: reset hand holder (slot ${playerSlot}, oldId="${oldId}" newId="${newId}")`;
             console.log(msg);
             world.TI4.errorReporting.error(msg);
         }

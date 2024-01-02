@@ -1,13 +1,32 @@
-const { UIElement, UIZoomVisibility } = require("../../wrapper/api");
+const assert = require("../../wrapper/assert-wrapper");
+const {
+    Card,
+    UIElement,
+    UIZoomVisibility,
+    world,
+} = require("../../wrapper/api");
 
 /**
  * Zoom an objective card to see how far along each player is to scoring it.
  */
 class AbstractZoomUI {
     constructor(card) {
-        const ui = new UIElement();
-        ui.zoomVisibility = UIZoomVisibility.ZoomedOnly;
-        ui.anchorX = 1.1;
+        assert(card instanceof Card);
+
+        this._card = card;
+
+        this._ui = new UIElement();
+        this._ui.zoomVisibility = UIZoomVisibility.ZoomedOnly;
+        this._ui.anchorX = 1.1;
+    }
+
+    update() {
+        if (!this._card.isValid() || this._card.getStackSize() > 1) {
+            this._card.removeUIElement(this._ui);
+            return; // do not schedule a future update
+        }
+
+        // Schedule future update.
     }
 
     _getScoredByPlayerSlots() {
