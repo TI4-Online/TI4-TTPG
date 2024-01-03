@@ -7,12 +7,15 @@ const {
 const { TabDisplayUI } = require("./tab-display-ui");
 const { TableColor } = require("../../lib/display/table-color");
 const { Color, world } = require("../../wrapper/api");
+const { refPackageId } = require("@tabletop-playground/api");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 
 class TabDisplay {
     constructor() {}
 
     getWidget() {
         const sections = [
+            this._sectionBackground(),
             this._sectionFactionBorders(),
             this._sectionTileBrightness(),
             this._sectionDeskBorders(),
@@ -21,6 +24,58 @@ class TabDisplay {
             this._sectionTurnTimer(),
         ];
         return new TabDisplayUI().createWidget(sections);
+    }
+
+    _sectionBackground() {
+        const bgFile = "global/background/nebula.jpg";
+        const getBlimp = () => {
+            for (const obj of world.getAllObjects(true)) {
+                if (ObjectNamespace.getNsid(obj) === "trh:props/blimp") {
+                    return obj;
+                }
+            }
+        };
+        return {
+            label: "Background",
+            description: "SCPT nebula background & blimp",
+            entries: [
+                {
+                    label: "background",
+                    getDefault: () => {
+                        return world.getBackgroundFilename() === bgFile;
+                    },
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        console.log(`TabDisplay toggle nebula ${isChecked}`);
+                        if (isChecked) {
+                            world.setBackground(bgFile, refPackageId);
+                        } else {
+                            world.setBackground("", "");
+                        }
+                    },
+                },
+                {
+                    label: "blimp",
+                    getDefault: () => {
+                        return getBlimp() ? true : false;
+                    },
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        console.log(`TabDisplay toggle blimp ${isChecked}`);
+                        if (isChecked) {
+                            const blimp = world.createObjectFromTemplate(
+                                "554A154B47C9D0D19AAFA194C27D91D2",
+                                [0, 0, 0]
+                            );
+                            blimp.setTags(["DELETED_ITEMS_IGNORE"]);
+                        } else {
+                            const obj = getBlimp();
+                            if (obj) {
+                                obj.destroy();
+                            }
+                        }
+                    },
+                },
+            ],
+        };
     }
 
     _sectionFactionBorders() {
