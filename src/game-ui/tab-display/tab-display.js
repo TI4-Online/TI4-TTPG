@@ -6,8 +6,7 @@ const {
 } = require("../../lib/display/system-tile-brightness");
 const { TabDisplayUI } = require("./tab-display-ui");
 const { TableColor } = require("../../lib/display/table-color");
-const { Color, world } = require("../../wrapper/api");
-const { refPackageId } = require("@tabletop-playground/api");
+const { Color, refPackageId, world } = require("../../wrapper/api");
 const { ObjectNamespace } = require("../../lib/object-namespace");
 
 class TabDisplay {
