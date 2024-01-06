@@ -27,16 +27,9 @@ class TabDisplay {
 
     _sectionBackground() {
         const bgFile = "global/background/nebula.jpg";
-        const getBlimp = () => {
-            for (const obj of world.getAllObjects(true)) {
-                if (ObjectNamespace.getNsid(obj) === "trh:props/blimp") {
-                    return obj;
-                }
-            }
-        };
         return {
             label: "Background",
-            description: "SCPT nebula background & blimp",
+            description: "SCPT nebula background",
             entries: [
                 {
                     label: "background",
@@ -49,27 +42,6 @@ class TabDisplay {
                             world.setBackground(bgFile, refPackageId);
                         } else {
                             world.setBackground("", "");
-                        }
-                    },
-                },
-                {
-                    label: "blimp",
-                    getDefault: () => {
-                        return getBlimp() ? true : false;
-                    },
-                    onCheckStateChanged: (checkBox, player, isChecked) => {
-                        console.log(`TabDisplay toggle blimp ${isChecked}`);
-                        if (isChecked) {
-                            const blimp = world.createObjectFromTemplate(
-                                "554A154B47C9D0D19AAFA194C27D91D2",
-                                [0, 0, 0]
-                            );
-                            blimp.setTags(["DELETED_ITEMS_IGNORE"]);
-                        } else {
-                            const obj = getBlimp();
-                            if (obj) {
-                                obj.destroy();
-                            }
                         }
                     },
                 },
