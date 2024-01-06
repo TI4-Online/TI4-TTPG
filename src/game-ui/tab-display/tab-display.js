@@ -6,13 +6,15 @@ const {
 } = require("../../lib/display/system-tile-brightness");
 const { TabDisplayUI } = require("./tab-display-ui");
 const { TableColor } = require("../../lib/display/table-color");
-const { Color, world } = require("../../wrapper/api");
+const { Color, refPackageId, world } = require("../../wrapper/api");
+const { ObjectNamespace } = require("../../lib/object-namespace");
 
 class TabDisplay {
     constructor() {}
 
     getWidget() {
         const sections = [
+            this._sectionBackground(),
             this._sectionFactionBorders(),
             this._sectionTileBrightness(),
             this._sectionDeskBorders(),
@@ -21,6 +23,30 @@ class TabDisplay {
             this._sectionTurnTimer(),
         ];
         return new TabDisplayUI().createWidget(sections);
+    }
+
+    _sectionBackground() {
+        const bgFile = "global/background/nebula.jpg";
+        return {
+            label: "Background",
+            description: "SCPT nebula background",
+            entries: [
+                {
+                    label: "background",
+                    getDefault: () => {
+                        return world.getBackgroundFilename() === bgFile;
+                    },
+                    onCheckStateChanged: (checkBox, player, isChecked) => {
+                        console.log(`TabDisplay toggle nebula ${isChecked}`);
+                        if (isChecked) {
+                            world.setBackground(bgFile, refPackageId);
+                        } else {
+                            world.setBackground("", "");
+                        }
+                    },
+                },
+            ],
+        };
     }
 
     _sectionFactionBorders() {
