@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/action/base/1.face.jpg",
 	"BackTexture": "global/card/action.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.action:base/direct_hit.2",
 		"5": "card.action:base/direct_hit.3"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

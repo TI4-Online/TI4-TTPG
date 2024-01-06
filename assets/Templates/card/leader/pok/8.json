@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/leader/pok/8.face.jpg",
 	"BackTexture": "locale/card/leader/pok/8.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.leader.agent.nekro:pok/nekro_malleon",
 		"5": "card.leader.commander.nekro:pok/nekro_acidos"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/alliance/codex/vigil/0.face.jpg",
 	"BackTexture": "locale/card/alliance/codex/vigil/0.back.jpg",
 	"HiddenTexture": "",
@@ -73,5 +76,5 @@
 		"3": "card.alliance:codex.vigil/naalu.omega",
 		"4": "card.alliance:codex.vigil/yin.omega"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

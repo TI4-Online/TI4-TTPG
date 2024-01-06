@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/objective/public_2/pok/0.face.jpg",
 	"BackTexture": "global/card/objective/public_2.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.objective.public_2:pok/control_the_borderlands",
 		"5": "card.objective.public_2:pok/hold_vast_reserves"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

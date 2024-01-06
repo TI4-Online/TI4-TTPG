@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/yellow/pok/0.face.jpg",
 	"BackTexture": "global/card/technology/yellow.back.jpg",
 	"HiddenTexture": "",
@@ -70,5 +73,5 @@
 		"2": "card.technology.yellow.argent:pok/aerie_hololattice",
 		"3": "card.technology.yellow.nomad:pok/temporal_command_suite"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

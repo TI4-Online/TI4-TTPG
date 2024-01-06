@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/faction_token/pok/0.face.jpg",
 	"BackTexture": "global/card/faction_token.back.jpg",
 	"HiddenTexture": "",
@@ -79,5 +82,5 @@
 		"5": "card.faction_token:pok/ul",
 		"6": "card.faction_token:pok/vuilraith"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

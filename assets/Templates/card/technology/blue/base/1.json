@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/blue/base/1.face.jpg",
 	"BackTexture": "global/card/technology/blue.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.technology.blue.saar:base/chaos_mapping",
 		"1": "card.technology.blue.winnu:base/lazax_gate_folding"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

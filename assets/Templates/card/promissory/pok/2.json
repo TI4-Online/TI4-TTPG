@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/promissory/pok/2.face.jpg",
 	"BackTexture": "global/card/promissory.back.jpg",
 	"HiddenTexture": "",
@@ -73,5 +76,5 @@
 		"3": "card.promissory.white:pok/alliance",
 		"4": "card.promissory.yellow:pok/alliance"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

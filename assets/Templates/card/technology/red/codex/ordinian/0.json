@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/red/codex/ordinian/0.face.jpg",
 	"BackTexture": "global/card/technology/red.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.technology.red:codex.ordinian/magen_defense_grid.omega",
 		"1": "card.technology.red.muaat:codex.ordinian/magmus_reactor.omega"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

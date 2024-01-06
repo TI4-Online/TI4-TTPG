@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/green/base/1.face.jpg",
 	"BackTexture": "global/card/technology/green.back.jpg",
 	"HiddenTexture": "",
@@ -73,5 +76,5 @@
 		"3": "card.technology.green.yssaril:base/mageon_implants",
 		"4": "card.technology.green.yssaril:base/transparasteel_plating"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

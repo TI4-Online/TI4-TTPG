@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/promissory/codex/vigil/0.face.jpg",
 	"BackTexture": "global/card/promissory.back.jpg",
 	"HiddenTexture": "",
@@ -67,5 +70,5 @@
 		"1": "card.promissory.keleres_mentak:codex.vigil/keleres_rider",
 		"2": "card.promissory.keleres_xxcha:codex.vigil/keleres_rider"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/unit_upgrade/franken/base/1.face.jpg",
 	"BackTexture": "global/card/technology/unit_upgrade.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.technology.unit_upgrade.muaat:franken.base/the_inferno",
 		"5": "card.technology.unit_upgrade.naalu:franken.base/hybrid_crystal_fighter"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

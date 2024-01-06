@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/yellow/codex/vigil/0.face.jpg",
 	"BackTexture": "global/card/technology/yellow.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.technology.yellow.keleres:codex.vigil/agency_supply_network",
 		"1": "card.technology.yellow.keleres:codex.vigil/iihq_modernization"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

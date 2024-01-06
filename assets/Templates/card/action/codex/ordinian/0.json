@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/action/codex/ordinian/0.face.jpg",
 	"BackTexture": "global/card/action.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.action:codex.ordinian/ghost_squad",
 		"5": "card.action:codex.ordinian/hack_election"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/exploration/industrial/pok/3.face.jpg",
 	"BackTexture": "global/card/exploration/industrial.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.exploration.industrial:pok/local_fabricators.4",
 		"1": "card.exploration.industrial:pok/propulsion_research_facility"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }
