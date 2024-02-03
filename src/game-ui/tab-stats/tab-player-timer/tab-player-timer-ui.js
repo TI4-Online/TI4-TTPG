@@ -47,6 +47,7 @@ class TabPlayerTimerUI {
             .setJustification(TextJustification.Center)
             .setFontSize(FONT_SIZE);
         const colPanel = new HorizontalBox().setChildDistance(CONFIG.spacing);
+        this._roundToTotalTime = {};
 
         this._widget = new VerticalBox()
             .setChildDistance(CONFIG.spacing)
@@ -109,6 +110,15 @@ class TabPlayerTimerUI {
                     roundToText[round] = text;
                 }
             }
+
+            const totalRoundTime = new Text().setFontSize(FONT_SIZE);
+            if (round > 0) {
+                totalRoundTime.setJustification(TextJustification.Center);
+                this._roundToTotalTime[round] = totalRoundTime;
+            } else {
+                totalRoundTime.setText("TOTAL");
+            }
+            col.addChild(totalRoundTime);
         }
     }
 
@@ -130,6 +140,8 @@ class TabPlayerTimerUI {
             this._heading.setText("Action Phase Time");
         }
 
+        const roundToSeconds = {};
+
         for (const [colorName, phaseToRoundToText] of Object.entries(
             this._colorToPhaseToRoundToText
         )) {
@@ -145,8 +157,18 @@ class TabPlayerTimerUI {
                     );
                     const time = TabPlayerTimerUI.formatTime(totalSeconds);
                     text.setText(time);
+
+                    roundToSeconds[round] =
+                        (roundToSeconds[round] ?? 0) + totalSeconds;
                 }
             }
+        }
+
+        // Fill in the overall round time.
+        for (const [round, text] of Object.entries(this._roundToTotalTime)) {
+            const seconds = roundToSeconds[round] ?? 0;
+            const time = TabPlayerTimerUI.formatTime(seconds);
+            text.setText(seconds > 0 ? time : "-");
         }
     }
 }
