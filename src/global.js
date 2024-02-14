@@ -148,6 +148,7 @@ require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 require("./global/check-card-holder-assignments");
 require("./global/seats-shuffle");
+require("./global/layout-pizzajj");
 
 if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
