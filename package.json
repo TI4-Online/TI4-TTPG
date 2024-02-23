@@ -45,6 +45,7 @@
     "regenerator-runtime": "^0.13.11",
     "sharp": "^0.32.6",
     "simplify-js": "^1.2.4",
+    "ttpg-scripts": "^1.5.0",
     "uuid": "^9.0.0"
   },
   "dependencies": {

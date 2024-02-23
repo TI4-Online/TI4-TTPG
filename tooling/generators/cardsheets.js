@@ -879,6 +879,7 @@ async function writeDeckTemplate(
         FrontTextureOverrideExposed: false,
         AllowFlippedInStack: false,
         MirrorBack: true,
+        EmissiveFront: false,
         Model: "Rounded",
         Indices: indices, // card sheet index values
         CardNames: cardNames,
