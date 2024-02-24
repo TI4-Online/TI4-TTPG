@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/red/pok/0.face.jpg",
 	"BackTexture": "global/card/technology/red.back.jpg",
 	"HiddenTexture": "",
@@ -70,5 +73,5 @@
 		"2": "card.technology.red.naazrokha:pok/supercharge",
 		"3": "card.technology.red.vuilraith:pok/vortex"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

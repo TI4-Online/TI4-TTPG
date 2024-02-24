@@ -852,6 +852,7 @@ async function writeDeckTemplate(
         Blueprint: "",
         Models: [],
         Collision: [],
+        Lights: [],
         SnapPointsGlobal: false,
         SnapPoints: [],
         ZoomViewDirection: {
@@ -859,6 +860,8 @@ async function writeDeckTemplate(
             Y: 0,
             Z: 0,
         },
+        GroundAccessibility: "ZoomAndContext",
+        Tags: [],
         FrontTexture: faceFilename,
         BackTexture: backFilename,
         HiddenTexture: "",
@@ -876,11 +879,12 @@ async function writeDeckTemplate(
         FrontTextureOverrideExposed: false,
         AllowFlippedInStack: false,
         MirrorBack: true,
+        EmissiveFront: false,
         Model: "Rounded",
         Indices: indices, // card sheet index values
         CardNames: cardNames,
         CardMetadata: cardMetadata,
-        GroundAccessibility: "ZoomAndContext",
+        CardTags: {},
     };
 
     console.log(`NSID-CARD: "${deckNsid}": "${guid}",`);

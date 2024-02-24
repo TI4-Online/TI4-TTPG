@@ -7,7 +7,6 @@ const {
 const { TabDisplayUI } = require("./tab-display-ui");
 const { TableColor } = require("../../lib/display/table-color");
 const { Color, refPackageId, world } = require("../../wrapper/api");
-const { ObjectNamespace } = require("../../lib/object-namespace");
 
 class TabDisplay {
     constructor() {}

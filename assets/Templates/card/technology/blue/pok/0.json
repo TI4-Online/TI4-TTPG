@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/technology/blue/pok/0.face.jpg",
 	"BackTexture": "global/card/technology/blue.back.jpg",
 	"HiddenTexture": "",
@@ -67,5 +70,5 @@
 		"1": "card.technology.blue:pok/sling_relay",
 		"2": "card.technology.blue.empyrean:pok/aetherstream"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

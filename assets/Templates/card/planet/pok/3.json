@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/planet/pok/3.face.jpg",
 	"BackTexture": "locale/card/planet/pok/3.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.planet:pok/mirage",
 		"5": "card.planet:pok/naazir"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

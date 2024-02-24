@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/objective/public_1/pok/1.face.jpg",
 	"BackTexture": "global/card/objective/public_1.back.jpg",
 	"HiddenTexture": "",
@@ -70,5 +73,5 @@
 		"2": "card.objective.public_1:pok/push_boundaries",
 		"3": "card.objective.public_1:pok/raise_a_fleet"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

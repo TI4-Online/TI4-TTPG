@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/planet/pok/6.face.jpg",
 	"BackTexture": "locale/card/planet/pok/6.back.jpg",
 	"HiddenTexture": "",
@@ -70,5 +73,5 @@
 		"2": "card.planet:pok/xanhact",
 		"3": "card.planet:pok/ylir"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

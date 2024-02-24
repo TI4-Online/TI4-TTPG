@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/leader/pok/16.face.jpg",
 	"BackTexture": "locale/card/leader/pok/16.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.leader.hero.yssaril:pok/kyver_blade_and_key",
 		"1": "card.leader.mech.yssaril:pok/blackshade_infiltrator"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

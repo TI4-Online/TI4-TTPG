@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/legendary_planet/pok/0.face.jpg",
 	"BackTexture": "locale/card/legendary_planet/pok/0.back.jpg",
 	"HiddenTexture": "",
@@ -70,5 +73,5 @@
 		"2": "card.legendary_planet:pok/mirage_flight_academy",
 		"3": "card.legendary_planet:pok/the_atrament"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

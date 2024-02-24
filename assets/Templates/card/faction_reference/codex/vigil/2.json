@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/faction_reference/codex/vigil/2.face.jpg",
 	"BackTexture": "global/card/faction_reference.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.faction_reference:codex.vigil/xxcha.omega",
 		"1": "card.faction_reference:codex.vigil/yin.omega"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

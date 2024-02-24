@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/promissory/base/6.face.jpg",
 	"BackTexture": "global/card/promissory.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.promissory.sol:base/military_support",
 		"5": "card.promissory.white:base/ceasefire"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

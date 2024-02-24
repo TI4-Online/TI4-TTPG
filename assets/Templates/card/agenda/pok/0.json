@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/agenda/pok/0.face.jpg",
 	"BackTexture": "global/card/agenda.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.agenda:pok/covert_legislation",
 		"5": "card.agenda:pok/galactic_crisis_pact"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

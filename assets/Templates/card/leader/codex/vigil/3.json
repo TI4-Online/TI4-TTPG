@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/leader/codex/vigil/3.face.jpg",
 	"BackTexture": "locale/card/leader/codex/vigil/3.back.jpg",
 	"HiddenTexture": "",
@@ -61,5 +64,5 @@
 	"CardMetadata": {
 		"0": "card.leader.hero.yin:codex.vigil/dannel_of_the_tenth.omega"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/agenda/base/only/0.face.jpg",
 	"BackTexture": "global/card/agenda.back.jpg",
 	"HiddenTexture": "",
@@ -76,5 +79,5 @@
 		"4": "card.agenda:base.only/research_team_biotic",
 		"5": "card.agenda:base.only/research_team_cybernetic"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }

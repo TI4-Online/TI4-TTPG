@@ -148,6 +148,7 @@ require("./lib/actions/plague");
 require("./lib/whisper/whisper-history");
 require("./global/check-card-holder-assignments");
 require("./global/seats-shuffle");
+require("./global/layout-pizzajj");
 
 if (!world.__isMock) {
     console.log("Welcome to Twilight Imperium IV");
@@ -334,6 +335,7 @@ world.TI4 = {
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
 require("./global/chat-commands");
+require("./global/clamp-bounciness");
 //require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
 require("./global/fix-table-colors");

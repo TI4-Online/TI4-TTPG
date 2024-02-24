@@ -27,6 +27,7 @@
 	"Blueprint": "",
 	"Models": [],
 	"Collision": [],
+	"Lights": [],
 	"SnapPointsGlobal": false,
 	"SnapPoints": [],
 	"ZoomViewDirection": {
@@ -34,6 +35,8 @@
 		"Y": 0,
 		"Z": 0
 	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
 	"FrontTexture": "locale/card/exploration/frontier/pok/2.face.jpg",
 	"BackTexture": "global/card/exploration/frontier.back.jpg",
 	"HiddenTexture": "",
@@ -64,5 +67,5 @@
 		"0": "card.exploration.frontier:pok/unknown_relic_fragment.2",
 		"1": "card.exploration.frontier:pok/unknown_relic_fragment.3"
 	},
-	"GroundAccessibility": "ZoomAndContext"
+	"CardTags": {}
 }
