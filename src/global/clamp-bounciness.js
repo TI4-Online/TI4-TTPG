@@ -1,4 +1,4 @@
-const { globalEvents, world } = require("@tabletop-playground/api");
+const { globalEvents, world } = require("../wrapper/api");
 
 function clampBounciness(obj) {
     let bounciness = obj.getBounciness();

@@ -8,7 +8,7 @@ const {
     Vector,
     globalEvents,
     world,
-} = require("@tabletop-playground/api");
+} = require("../wrapper/api");
 const { ObjectNamespace } = require("../lib/object-namespace");
 
 // Move object and everything on it.
