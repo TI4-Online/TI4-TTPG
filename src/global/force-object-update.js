@@ -1,5 +1,6 @@
 const assert = require("../wrapper/assert-wrapper");
 const {
+    Card,
     GameObject,
     ObjectType,
     globalEvents,
@@ -125,6 +126,9 @@ class ForceObjectUpdate {
         }
         if (obj.isHeld()) {
             return; // leave be, will mark dirty when dropped
+        }
+        if (obj instanceof Card && obj.isInHolder()) {
+            return;
         }
         if (objType !== ObjectType.Regular) {
             return; // do not attempt if locked
