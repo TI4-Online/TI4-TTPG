@@ -377,7 +377,7 @@ require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");
 require("./global/whisper-message");
 
-//require("./global/card-vibration-stomp");
+require("./global/card-vibration-stomp"); // lock objectives
 //require("./global/reposition-collisions-stuck"); // temporary workaround
 //require("./global/force-object-update");
 //require("./global/right-click/resync-all-objects");
