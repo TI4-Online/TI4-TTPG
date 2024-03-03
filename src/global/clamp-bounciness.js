@@ -1,5 +1,4 @@
-const { Dice } = require("@tabletop-playground/api");
-const { globalEvents, world } = require("../wrapper/api");
+const { Dice, globalEvents, world } = require("../wrapper/api");
 
 function clampBounciness(obj) {
     if (!(obj instanceof Dice)) {
