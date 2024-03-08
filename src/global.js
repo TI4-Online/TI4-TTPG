@@ -335,7 +335,6 @@ world.TI4 = {
 require("./global/active-idle-unit-modifiers");
 require("./global/card-descriptions");
 require("./global/chat-commands");
-require("./global/clamp-bounciness");
 //require("./global/desk-turn-order"); // screen UI solves this
 require("./global/export-game");
 require("./global/fix-table-colors");
@@ -381,6 +380,7 @@ require("./global/card-vibration-stomp"); // lock objectives
 //require("./global/reposition-collisions-stuck"); // temporary workaround
 //require("./global/force-object-update");
 //require("./global/right-click/resync-all-objects");
+//require("./global/clamp-bounciness"); "always snap" is better
 
 if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
