@@ -82,12 +82,6 @@ class SetupGenericHomeSystems extends AbstractSetup {
         ui.position = new Vector(0, 0, 0.13);
         ui.widget = text;
         systemTileObj.addUI(ui);
-
-        systemTileObj.onReleased.add((obj) => {
-            const pos = obj.getPosition();
-            const hex = Hex.fromPosition(pos);
-            obj.setDescription(hex);
-        });
     }
 
     constructor(playerDesk) {

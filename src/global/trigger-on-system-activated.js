@@ -33,13 +33,7 @@ globalEvents.TI4.onSystemActivated.add((obj, player) => {
 });
 
 // Called when a player drops a command token.
-const onCommandTokenReleased = (
-    obj,
-    player,
-    thrown,
-    grabPosition,
-    grabRotation
-) => {
+const onCommandTokenReleased = (obj, player) => {
     if (DEBUG_TOKEN_REGION) {
         CommandToken.debugHighlightTokens();
     }
@@ -68,10 +62,27 @@ const onCommandTokenReleased = (
     globalEvents.TI4.onSystemActivated.trigger(systemTile, player);
 };
 
+function addListenerToCommandToken(obj) {
+    //obj.onReleased.add(onCommandTokenReleased);
+
+    // Enabling "always snap" in session options helps with some token stacking
+    // issues, but apparenntly breaks onRelease (also does not call onSnapped,
+    // onMovementStopped).
+    obj.onGrab.add((obj, player) => {
+        const tickHandler = () => {
+            if (!obj.isHeld()) {
+                obj.onTick.remove(tickHandler);
+                onCommandTokenReleased(obj, player);
+            }
+        };
+        obj.onTick.add(tickHandler);
+    });
+}
+
 // Add our listener to future objects.
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isCommandToken(obj)) {
-        obj.onReleased.add(onCommandTokenReleased);
+        addListenerToCommandToken(obj);
     }
 });
 
@@ -80,7 +91,7 @@ if (world.getExecutionReason() === "ScriptReload") {
     const skipContained = false; // look inside containers!
     for (const obj of world.getAllObjects(skipContained)) {
         if (ObjectNamespace.isCommandToken(obj)) {
-            obj.onReleased.add(onCommandTokenReleased);
+            addListenerToCommandToken(obj);
         }
     }
 }
