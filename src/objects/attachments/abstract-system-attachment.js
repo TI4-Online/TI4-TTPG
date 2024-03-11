@@ -36,9 +36,22 @@ class AbstractSystemAttachment {
         this._attachedToSystem = undefined;
         this._attachedToPlanet = undefined;
 
-        this._obj.onReleased.add(() => this._place());
         this._obj.onGrab.add(() => this._remove());
         this._obj.onCreated.add(() => this._place());
+
+        //this._obj.onReleased.add(() => this._place());
+        // Enabling "always snap" in session options helps with some token stacking
+        // issues, but apparenntly breaks onRelease (also does not call onSnapped,
+        // onMovementStopped).
+        this._obj.onGrab.add((obj, player) => {
+            const tickHandler = () => {
+                if (!obj.isHeld()) {
+                    obj.onTick.remove(tickHandler);
+                    this._place();
+                }
+            };
+            obj.onTick.add(tickHandler);
+        });
 
         // pressing f to flip does not trigger onReleased or onGrab
         // Also applies when moved by script!

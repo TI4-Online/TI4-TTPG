@@ -65,7 +65,8 @@ it("attach/detach", () => {
     assert.equal(_onSystemChangedHistory.length, 0);
 
     // Attach.
-    att.gameObject.onReleased.trigger(att.gameObject, player);
+    //att.gameObject.onReleased.trigger(att.gameObject, player);
+    att._place(); // onReleased has a workaround right now
     assert.equal(att.placeHistory.length, 1);
     assert.deepEqual(att.placeHistory[0], { system, planet });
     assert.equal(att.removeHistory.length, 0);

@@ -33,9 +33,26 @@ const onSystemTileReleased = (
     obj.snapToGround();
 };
 
+function addOnReleasedListener(obj) {
+    //obj.onReleased.add(onSystemTileReleased);
+
+    // Enabling "always snap" in session options helps with some token stacking
+    // issues, but apparenntly breaks onRelease (also does not call onSnapped,
+    // onMovementStopped).
+    obj.onGrab.add((obj, player) => {
+        const tickHandler = () => {
+            if (!obj.isHeld()) {
+                obj.onTick.remove(tickHandler);
+                onSystemTileReleased(obj, player);
+            }
+        };
+        obj.onTick.add(tickHandler);
+    });
+}
+
 globalEvents.onObjectCreated.add((obj) => {
     if (ObjectNamespace.isSystemTile(obj)) {
-        obj.onReleased.add(onSystemTileReleased);
+        addOnReleasedListener(obj);
     }
 });
 
@@ -44,7 +61,7 @@ if (world.getExecutionReason() === "ScriptReload") {
     const skipContained = false; // look inside containers
     for (const obj of world.getAllObjects(skipContained)) {
         if (ObjectNamespace.isSystemTile(obj)) {
-            obj.onReleased.add(onSystemTileReleased);
+            addOnReleasedListener(obj);
         }
     }
 }
