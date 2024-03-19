@@ -12,6 +12,13 @@ const { GameObject, globalEvents, world } = require("../../wrapper/api");
  * This triggers `globalEvents.TI4.onSystemChanged` events.
  */
 class AbstractSystemAttachment {
+    static attachIfOnSystem(gameObject) {
+        if (gameObject._placeAttachment) {
+            console.log("AbstractSystemAttachment.attachIfOnSystem");
+            gameObject._placeAttachment();
+        }
+    }
+
     /**
      * Constructor.  If planet based place/remove will be given a planet
      * (and attach will fail if no planet).
@@ -23,6 +30,9 @@ class AbstractSystemAttachment {
         assert(gameObject instanceof GameObject);
         assert(typeof isPlanetBased === "boolean");
         assert(typeof localeName === "string");
+
+        // Expose via static method.
+        gameObject._placeAttachment = () => this._place();
 
         this._obj = gameObject;
         this._isPlanetBased = isPlanetBased;

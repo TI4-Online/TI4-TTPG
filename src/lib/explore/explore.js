@@ -19,6 +19,9 @@ const {
     ObjectType,
     world,
 } = require("../../wrapper/api");
+const {
+    AbstractSystemAttachment,
+} = require("../../objects/attachments/abstract-system-attachment");
 
 /**
  * Planet exploration.  Attachment tokens already know how to attach, this
@@ -245,6 +248,8 @@ class Explore {
         tokenObj.setPosition(pos);
         tokenObj.setRotation(rot);
         tokenObj.setObjectType(ObjectType.Ground);
+
+        tokenObj.snapToGround();
     }
 
     static removeFrontierToken(systemTileObj) {
@@ -341,6 +346,10 @@ class Explore {
         // Move to location.  THIS TRIGGERS tokenObj.onMovementStopped,
         // which Attachment uses to attach.
         Explore.reserveTokenSpaceAndAnchorToken(tokenObj, pos, tokenRot);
+
+        // Attach happens in onMovementStopped, but that might not trigger.
+        // Tell the token to attach.
+        AbstractSystemAttachment.attachIfOnSystem(tokenObj);
 
         // Extra cards? (Mirage)
         if (attachmentData.raw.extraCardNsids) {
