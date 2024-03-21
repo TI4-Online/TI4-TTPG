@@ -656,15 +656,15 @@ class System {
             return SYSTEM_TIER.OTHER; // muaat hero supernova tile
         } else if (this.home) {
             return SYSTEM_TIER.HOME;
+        } else if (this.raw.offMap) {
+            return SYSTEM_TIER.OFF_MAP;
         } else if (this.red) {
             return SYSTEM_TIER.RED;
         } else if (this.hyperlane) {
             return SYSTEM_TIER.HYPERLANE;
         } else if (this.tile <= 0) {
             return SYSTEM_TIER.OTHER;
-        } else if (this.raw.offMap) {
-            return SYSTEM_TIER.OFF_MAP;
-        }
+        } 
 
         const planetCount = this.planets.length;
         const techCount = this.planets.filter(
