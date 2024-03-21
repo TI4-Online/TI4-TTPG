@@ -664,7 +664,7 @@ class System {
             return SYSTEM_TIER.HYPERLANE;
         } else if (this.tile <= 0) {
             return SYSTEM_TIER.OTHER;
-        } 
+        }
 
         const planetCount = this.planets.length;
         const techCount = this.planets.filter(
