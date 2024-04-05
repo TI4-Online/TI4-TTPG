@@ -33,10 +33,13 @@ class SCPT2024 {
         console.log(`#factions=${scptDraftData.factionCount}`);
 
         // Assemble custom input.
-        const customInput = [
+        let customInput = [
             `slices=${scptDraftData.slices}`,
             `labels=${scptDraftData.labels}`,
         ].join("&");
+        if (scptDraftData.sounds) {
+            customInput += `&sounds=${scptDraftData.sounds}`;
+        }
         console.log(`SCPT2024._start: draft config "${customInput}"`);
 
         if (this._miltySliceDraft) {

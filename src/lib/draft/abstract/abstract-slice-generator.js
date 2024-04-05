@@ -166,6 +166,42 @@ class AbstractSliceGenerator {
         return items;
     }
 
+    static parseCustomSounds(custom, sliceCount, errors) {
+        assert(typeof custom === "string");
+        assert(typeof sliceCount === "number");
+        assert(Array.isArray(errors));
+
+        const descriminator = "sounds=";
+        const parts = custom
+            .split("&")
+            .map((part) => {
+                return part.trim();
+            })
+            .filter((part) => {
+                return part.startsWith(descriminator);
+            });
+        if (parts.length === 0) {
+            return false; // none given
+        }
+
+        let items = parts[0]
+            .substring(descriminator.length)
+            .split("|")
+            .map((item) => {
+                return item.trim();
+            });
+
+        // Validate.
+        if (items.length !== sliceCount) {
+            const err = `sound count (${items.length}) does not match slice count (${sliceCount})`;
+            errors.push(err);
+        }
+
+        console.log("XXXX", JSON.stringify(items));
+
+        return items;
+    }
+
     constructor() {
         this._count = this.getDefaultCount();
     }

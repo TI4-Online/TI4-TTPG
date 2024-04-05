@@ -31,9 +31,26 @@ const SCPT_DRAFTS_2024 = [
     },
     {
         name: "Semi-finals",
-        enabled: false,
-        slices: "",
-        labels: [].join("|"),
+        enabled: true,
+        slices: [
+            "64,32,42,70,67", // 3
+            "23,79,75,62,50", // 2
+            "68,49,36,25,63", // 1
+            "20,27,59,40,41", // 6
+            "39,66,19,48,76", // 4
+            "26,74,78,24,43", // 5
+        ].join("|"),
+        labels: ["SLICE", "SLICE", "SLICE", "SLICE", "SLICE", "SLICE"].join(
+            "|"
+        ),
+        sounds: [
+            "scpt-2024-semifinal-sounds/kirby_hiii_Sound_Effect.mp3", // white
+            "scpt-2024-semifinal-sounds/Tim_Allen_s_home_Improvement_grunt_Sound_Effect.mp3", // blue
+            "scpt-2024-semifinal-sounds/Bob_Wehadababyitsaboy_Sound_Effect.mp3", // purple
+            "scpt-2024-semifinal-sounds/Wilhelm_Scream_Sound_Effect.mp3", // yellow
+            "scpt-2024-semifinal-sounds/Gun_Shot_Sound_Effect.mp3", // red
+            "scpt-2024-semifinal-sounds/Cat_surprised_to_hear_its_adopted_Sound_Effect.mp3", // green
+        ].join("|"),
         factionCount: 6,
         // no clock for semis
     },

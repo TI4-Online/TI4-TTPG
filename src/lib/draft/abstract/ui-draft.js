@@ -155,10 +155,12 @@ class UiDraft {
             const slice = slices[index];
             const color = ColorUtil.colorFromHex(COLORS[index % COLORS.length]);
             const label = this._sliceDraft.getLabel(index);
+            const sound = this._sliceDraft.getSound(index);
             const uiSlice = new UiSlice()
                 .setScale(this._scale)
                 .setShape(shape)
                 .setSlice(slice)
+                .setSound(sound)
                 .setHomeSystemColor(color)
                 .setLabel(label);
             const uiChoice = new UiDraftChoice(uiSlice)
@@ -167,7 +169,8 @@ class UiDraft {
                     const player = world.getPlayerBySlot(playerSlot);
                     const success = this._sliceDraft.attemptToggleSlice(
                         player,
-                        slice
+                        slice,
+                        sound
                     );
                     console.log(`UiDraft toggle slice success=${success}`);
                     return success;
