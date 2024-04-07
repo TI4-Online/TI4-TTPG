@@ -30,6 +30,7 @@ class UiSlice {
         this._scale = 1;
         this._shape = undefined;
         this._slice = undefined;
+        this._sound = undefined;
     }
 
     setHomeSystemColor(color) {
@@ -65,6 +66,13 @@ class UiSlice {
     setSlice(slice) {
         AbstractUtil.assertIsSlice(slice, this._shape);
         this._slice = [...slice]; // shallow copy
+        return this;
+    }
+
+    setSound(sound) {
+        console.log(`UiSlice.setSound: ${sound}`);
+        assert(sound === undefined || typeof sound === "string");
+        this._sound = sound;
         return this;
     }
 

@@ -23,6 +23,7 @@ const {
     Rotator,
     UIElement,
     Vector,
+    refPackageId,
     world,
 } = require("../../../wrapper/api");
 
@@ -83,6 +84,7 @@ class AbstractSliceDraft {
         this._slices = undefined;
         this._labels = undefined;
         this._factions = undefined;
+        this._sounds = undefined;
         this._fixedSystems = undefined;
 
         this._chooserToFaction = {};
@@ -105,12 +107,20 @@ class AbstractSliceDraft {
         return this._isDraftInProgress;
     }
 
-    _attemptToggle(clickingPlayer, chooserToX, x, categoryName, selectionName) {
+    _attemptToggle(
+        clickingPlayer,
+        chooserToX,
+        x,
+        categoryName,
+        selectionName,
+        sound
+    ) {
         assert(clickingPlayer instanceof Player);
         assert(chooserToX instanceof Object);
         assert(x !== undefined);
         assert(typeof categoryName === "string");
         assert(typeof selectionName === "string");
+        assert(sound === undefined || typeof sound === "string");
 
         const playerSlot = clickingPlayer.getSlot();
         const playerName = clickingPlayer.getName(); // use steam name, not current color
@@ -176,6 +186,12 @@ class AbstractSliceDraft {
             world.TI4.turns.endTurn(clickingPlayer);
         }
 
+        if (sound) {
+            console.log("AbstractSliceDraft._attemptToggle: sound", sound);
+            const soundObj = world.importSound(sound, refPackageId);
+            soundObj.play();
+        }
+
         return true; // toggle on
     }
 
@@ -213,9 +229,10 @@ class AbstractSliceDraft {
         );
     }
 
-    attemptToggleSlice(clickingPlayer, slice) {
+    attemptToggleSlice(clickingPlayer, slice, sound) {
         assert(clickingPlayer instanceof Player);
         AbstractUtil.assertIsSlice(slice, this._sliceGenerator.getSliceShape());
+        assert(sound === undefined || typeof sound === "string");
 
         const categoryName = locale("ui.draft.category.slice");
         const selectionName = slice._label || `[${slice.join(" ")}]`;
@@ -225,7 +242,8 @@ class AbstractSliceDraft {
             this._chooserToSlice,
             slice,
             categoryName,
-            selectionName
+            selectionName,
+            sound
         );
     }
 
@@ -348,6 +366,13 @@ class AbstractSliceDraft {
             label = `SLICE ${"ABCDEFGHIJKLMOPQRSTUVWXYZ"[sliceIndex]}`;
         }
         return label;
+    }
+
+    getSound(sliceIndex) {
+        if (!this._sounds) {
+            return undefined;
+        }
+        return this._sounds[sliceIndex];
     }
 
     getMaxPlayerCount() {
@@ -514,6 +539,11 @@ class AbstractSliceDraft {
             ? this._slices.length
             : this._sliceGenerator.getCount();
         this._labels = AbstractSliceGenerator.parseCustomLabels(
+            this._customInput,
+            sliceCount,
+            errors
+        );
+        this._sounds = AbstractSliceGenerator.parseCustomSounds(
             this._customInput,
             sliceCount,
             errors
