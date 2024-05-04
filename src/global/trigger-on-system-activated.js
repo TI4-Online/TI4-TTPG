@@ -63,8 +63,9 @@ const onCommandTokenReleased = (obj, player) => {
 };
 
 function addListenerToCommandToken(obj) {
-    //obj.onReleased.add(onCommandTokenReleased);
+    obj.onReleased.add(onCommandTokenReleased);
 
+    /*
     // Enabling "always snap" in session options helps with some token stacking
     // issues, but apparenntly breaks onRelease (also does not call onSnapped,
     // onMovementStopped).
@@ -77,6 +78,7 @@ function addListenerToCommandToken(obj) {
         };
         obj.onTick.add(tickHandler);
     });
+    */
 }
 
 // Add our listener to future objects.

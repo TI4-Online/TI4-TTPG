@@ -495,8 +495,7 @@ class Franken {
         this._deleteOnCancel = [];
 
         for (const zone of this._draftZones) {
-            assert(zone instanceof Zone);
-            if (zone.isValid()) {
+            if (zone instanceof Zone && zone.isValid()) {
                 zone.destroy();
             }
         }

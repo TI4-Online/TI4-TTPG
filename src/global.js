@@ -378,9 +378,11 @@ require("./global/whisper-message");
 
 require("./global/card-vibration-stomp"); // lock objectives
 //require("./global/reposition-collisions-stuck"); // temporary workaround
-//require("./global/force-object-update");
+require("./global/force-object-update");
 //require("./global/right-click/resync-all-objects");
 //require("./global/clamp-bounciness"); "always snap" is better
+
+require("./workarounds/card-holder-reset-cards-on-load");
 
 if (!world.__isMock) {
     world.setShowDiceRollMessages(false);

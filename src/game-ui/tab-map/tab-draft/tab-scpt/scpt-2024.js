@@ -52,6 +52,13 @@ class SCPT2024 {
         this._miltySliceDraft
             .getFactionGenerator()
             .setCount(scptDraftData.factionCount);
+
+        if (scptDraftData.seedWithOnTableCards) {
+            this._miltySliceDraft
+                .getFactionGenerator()
+                .setSeedWithOnTableCards(true);
+        }
+
         this._miltySliceDraft.start();
 
         this._miltySliceDraft.onDraftStateChanged.add(() => {
