@@ -1,4 +1,4 @@
-const { Card, CardHolder, world } = require("@tabletop-playground/api");
+const { Card, CardHolder, world } = require("../wrapper/api");
 
 function resetCards(cardHolder) {
     // Extrude the cardholder extent for the overlap box.
