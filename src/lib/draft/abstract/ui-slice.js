@@ -70,7 +70,6 @@ class UiSlice {
     }
 
     setSound(sound) {
-        console.log(`UiSlice.setSound: ${sound}`);
         assert(sound === undefined || typeof sound === "string");
         this._sound = sound;
         return this;

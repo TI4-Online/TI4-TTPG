@@ -34,8 +34,9 @@ const onSystemTileReleased = (
 };
 
 function addOnReleasedListener(obj) {
-    //obj.onReleased.add(onSystemTileReleased);
+    obj.onReleased.add(onSystemTileReleased);
 
+    /*
     // Enabling "always snap" in session options helps with some token stacking
     // issues, but apparenntly breaks onRelease (also does not call onSnapped,
     // onMovementStopped).
@@ -48,6 +49,7 @@ function addOnReleasedListener(obj) {
         };
         obj.onTick.add(tickHandler);
     });
+    */
 }
 
 globalEvents.onObjectCreated.add((obj) => {

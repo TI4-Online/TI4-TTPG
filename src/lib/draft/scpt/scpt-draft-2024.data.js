@@ -56,8 +56,8 @@ const SCPT_DRAFTS_2024 = [
     },
     {
         name: "Finals",
-        enabled: false,
-        slices: "",
+        enabled: true,
+        slices: "34,22,67,77,66|41,32,47,59,69|35,25,44,73,49|40,75,42,24,26|39,76,62,43,64|27,40,72,79,65",
         labels: [
             "Slice 1",
             "Slice 2",
@@ -67,6 +67,7 @@ const SCPT_DRAFTS_2024 = [
             "Slice 6",
         ].join("|"),
         factionCount: 6,
+        seedWithOnTableCards: true,
     },
 ];
 
