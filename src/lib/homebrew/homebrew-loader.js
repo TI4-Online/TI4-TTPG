@@ -95,6 +95,9 @@ class HomebrewLoader {
             if (requireAllowed && !packageRef.isAllowed()) {
                 continue;
             }
+            if (packageRef.getName().includes("Mahact")) {
+                continue; // Wekker's "TI4 Mahact Rising" uses this id, oof!
+            }
             return packageId;
         }
     }
@@ -308,12 +311,19 @@ class HomebrewLoader {
         assert(typeof option.inject === "string");
         assert(typeof option.packageId === "string");
 
-        console.log(`HomebrewLoader._runHomebrewScript "${option.inject}"`);
+        console.log(
+            `HomebrewLoader._runHomebrewScript "${option.inject}" from "${option.packageId}"`
+        );
 
         const packageRef = world.getPackageById(option.packageId);
         assert(packageRef);
+        console.log(`package name: "${packageRef.getName()}"`);
 
-        assert(packageRef.getScriptFiles().includes(option.inject));
+        const hasInject = packageRef.getScriptFiles().includes(option.inject);
+        if (!hasInject) {
+            console.log(packageRef.getScriptFiles().sort().join("\n"));
+        }
+        assert(hasInject);
 
         const templateId = "83FDE12C4E6D912B16B85E9A00422F43"; // cube
         const pos = new Vector(0, 0, -10);
