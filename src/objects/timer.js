@@ -187,6 +187,7 @@ class Timer {
         }, 1000);
 
         ObjectSavedData.set(this._obj, KEY_ACTIVE, true);
+        globalEvents.TI4.onTimerToggled.trigger(true);
     }
 
     _stopTimer() {
@@ -201,6 +202,7 @@ class Timer {
         this._anchorValue = undefined;
 
         ObjectSavedData.set(this._obj, KEY_ACTIVE, false);
+        globalEvents.TI4.onTimerToggled.trigger(false);
     }
 
     _update() {

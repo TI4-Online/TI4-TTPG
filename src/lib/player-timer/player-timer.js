@@ -1,21 +1,25 @@
 const assert = require("../../wrapper/assert-wrapper");
 const locale = require("../../lib/locale");
-const { FindTurnOrder } = require("../phase/find-turn-order");
 const gameDataRound = require("../game-data/updator-round");
 const { globalEvents, world } = require("../../wrapper/api");
 
 const SAMPLE_EVERY_N_SECONDS = 1;
+const SAVED_DATA_KEY = "__player-timer__";
 
-const PHASE = {
-    ACTION: "action",
-    AGENDA: "agenda",
-    STRATEGY: "strategy",
-};
+let _actionPhaseActivePlayerSlot = -1;
+let _whyPaused = "";
 
+globalEvents.TI4.onActionTurnChanged.add((playerSlot, note) => {
+    _actionPhaseActivePlayerSlot = playerSlot;
+    _whyPaused = note;
+});
+
+/**
+ * Track action phase time.
+ */
 class PlayerTimer {
     constructor() {
-        this._colorToPhaseToRoundToSeconds = {};
-        this._errorMessage = undefined;
+        this._colorToRoundToSeconds = {};
 
         const delayedInit = () => {
             if (this._load()) {
@@ -32,60 +36,21 @@ class PlayerTimer {
         }
     }
 
-    static _getSavedDataKey(colorName, phaseName) {
-        assert(typeof colorName === "string");
-        assert(typeof phaseName === "string");
-        return `playerTimer.${colorName}.${phaseName}`;
+    getWhyPaused() {
+        return _whyPaused;
     }
 
     _load() {
-        // Store data in the timer object instead of world to reserve world for
-        // drawing lines, etc.
-        const timer = world.TI4.getTimer();
-        if (!timer) {
-            console.log("PlayerTimer._load: no timer, aborting");
-            return false;
+        const json = world.getSavedData(SAVED_DATA_KEY);
+        if (json && json.length > 0) {
+            this._colorToRoundToSeconds = JSON.parse(json);
         }
-
-        // Split across multiple keys because each value is limited to 1k.
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const colorName = playerDesk.colorName;
-            for (const phaseName of Object.values(PHASE)) {
-                const key = PlayerTimer._getSavedDataKey(colorName, phaseName);
-                const json = timer.getSavedData(key);
-                if (json && json.length > 0) {
-                    this.getPlayerTimeSeconds(colorName, phaseName, 0);
-                    this._colorToPhaseToRoundToSeconds[colorName][phaseName] =
-                        JSON.parse(json);
-                }
-            }
-        }
-
         return true;
     }
 
     _save() {
-        const timer = world.TI4.getTimer();
-        if (!timer) {
-            //console.log("PlayerTimer._save: no timer, aborting");
-            return;
-        }
-        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
-            const colorName = playerDesk.colorName;
-            for (const phaseName of Object.values(PHASE)) {
-                const key = PlayerTimer._getSavedDataKey(colorName, phaseName);
-                this.getPlayerTimeSeconds(colorName, phaseName, 0);
-                const json = JSON.stringify(
-                    this._colorToPhaseToRoundToSeconds[colorName][phaseName]
-                );
-
-                // Only update mutated entries.
-                const oldValue = timer.getSavedData(key);
-                if (json !== oldValue) {
-                    timer.setSavedData(json, key);
-                }
-            }
-        }
+        const json = JSON.stringify(this._colorToRoundToSeconds);
+        world.setSavedData(json, SAVED_DATA_KEY);
     }
 
     /**
@@ -95,38 +60,21 @@ class PlayerTimer {
      * @returns {Object}
      */
     exportForGameData(deskIndex) {
-        return this._colorToPhaseToRoundToSeconds;
-    }
-
-    getError() {
-        return this._errorMessage;
-    }
-
-    getPhase() {
-        return this._phaseName;
+        return this._colorToRoundToSeconds;
     }
 
     getRound() {
         return this._round;
     }
 
-    getPlayerTimeSeconds(colorName, phaseName, round) {
+    getPlayerTimeSeconds(colorName, round) {
         assert(typeof colorName === "string");
-        assert(typeof phaseName === "string");
         assert(typeof round === "number");
 
-        let phaseToRoundToSeconds =
-            this._colorToPhaseToRoundToSeconds[colorName];
-        if (!phaseToRoundToSeconds) {
-            phaseToRoundToSeconds = {};
-            this._colorToPhaseToRoundToSeconds[colorName] =
-                phaseToRoundToSeconds;
-        }
-
-        let roundToSeconds = phaseToRoundToSeconds[phaseName];
+        let roundToSeconds = this._colorToRoundToSeconds[colorName];
         if (!roundToSeconds) {
             roundToSeconds = {};
-            phaseToRoundToSeconds[phaseName] = roundToSeconds;
+            this._colorToRoundToSeconds[colorName] = roundToSeconds;
         }
 
         let seconds = roundToSeconds[round];
@@ -138,40 +86,30 @@ class PlayerTimer {
         return seconds;
     }
 
-    _addSample(colorName, phaseName, round) {
+    _addSample(colorName, round) {
         assert(typeof colorName === "string");
-        assert(typeof phaseName === "string");
         assert(typeof round === "number");
 
-        const oldSeconds = this.getPlayerTimeSeconds(
-            colorName,
-            phaseName,
-            round
-        );
+        const oldSeconds = this.getPlayerTimeSeconds(colorName, round);
         const newSeconds = oldSeconds + SAMPLE_EVERY_N_SECONDS;
 
-        this._phaseName = phaseName;
         this._round = round;
 
         // "get" created missing entries.
-        this._colorToPhaseToRoundToSeconds[colorName][phaseName][round] =
-            newSeconds;
+        this._colorToRoundToSeconds[colorName][round] = newSeconds;
 
         // Tell any listeners.
-        globalEvents.TI4.onTimerUpdate.trigger(
-            colorName,
-            phaseName,
-            round,
-            newSeconds
-        );
+        globalEvents.TI4.onTimerUpdate.trigger(colorName, round, newSeconds);
     }
 
     _doSample() {
-        this._errorMessage = undefined;
+        // Abort if no active action-phase player.
+        if (_actionPhaseActivePlayerSlot < 0) {
+            return;
+        }
 
         // Require game has started.
         if (world.TI4.config.timestamp <= 0) {
-            this._errorMessage = locale("timer.error.game_not_started");
             return; // game not started
         }
 
@@ -192,7 +130,6 @@ class PlayerTimer {
         gameDataRound(gameData);
         const round = gameData.round;
         if (round < 1) {
-            this._errorMessage = locale("timer.error.waiting_for_round_one");
             return; // no active round
         }
 
@@ -203,32 +140,16 @@ class PlayerTimer {
             return; // timer paused
         }
 
-        // Require turn active.
-        const turn = world.TI4.turns.getCurrentTurn();
-        if (!turn) {
-            this._errorMessage = locale("timer.error.no_active_turn");
-            return; // turn not set
-        }
+        // Get active player color.
+        const desk = world.TI4.getPlayerDeskByPlayerSlot(
+            _actionPhaseActivePlayerSlot
+        );
+        assert(desk);
+        const colorName = desk.colorName;
 
-        const colorName = turn.colorName;
-        let phaseName = undefined;
-
-        const numPickedStrategyCards = FindTurnOrder.numPickedStrategyCards();
-        const isActionPhase =
-            numPickedStrategyCards === world.TI4.config.playerCount;
-        const isAgendaPhase = world.TI4.agenda.isActive();
-
-        if (isAgendaPhase) {
-            phaseName = PHASE.AGENDA;
-        } else if (isActionPhase) {
-            phaseName = PHASE.ACTION;
-        } else {
-            phaseName = PHASE.STRATEGY;
-        }
-
-        //console.log(`PlayerTimer [${colorName}, ${phaseName}, ${round}]`);
-        this._addSample(colorName, phaseName, round);
+        //console.log(`PlayerTimer [${colorName}, ${round}]`);
+        this._addSample(colorName, round);
     }
 }
 
-module.exports = { PlayerTimer, SAMPLE_EVERY_N_SECONDS, PHASE };
+module.exports = { PlayerTimer, SAMPLE_EVERY_N_SECONDS };
