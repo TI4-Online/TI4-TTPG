@@ -33,7 +33,7 @@ class SetupEvents {
         box.setDescription(
             [
                 "Events are a new card type Dane",
-                "revealed after TI4 won the 2023",
+                "revealed after TI4 won the 2024",
                 "BGG Geek Madness tournament.",
             ].join("\n")
         );
