@@ -238,8 +238,7 @@ class EventMinorFactions {
             const name = parsed.name.split(".")[0];
             return name === minorFactionNsidName;
         });
-        if (cards && cards.length > 0) {
-            const card = cards[0];
+        for (const card of cards) {
             card.setPosition(pos.add([0, 0, 3]));
             card.setRotation([0, 0, 180]);
             card.snapToGround();
