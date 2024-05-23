@@ -66,8 +66,11 @@ function canBeFetched(obj) {
     }
 
     const parsedCard = ObjectNamespace.parseCard(obj);
-    const deck = parsedCard.deck;
+    if (!parsedCard) {
+        return false;
+    }
 
+    const deck = parsedCard.deck;
     return (
         deck.startsWith("planet") ||
         deck.startsWith("legendary_planet") ||

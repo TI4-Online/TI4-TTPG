@@ -152,11 +152,20 @@ class GameSetupUI {
                 this._callbacks.onUseCodex4Changed
             ).setVisible(false)
         );
+        /*
         col2Panel.addChild(
             this._createCheckbox(
                 "ui.setup.use_base_magen",
                 world.TI4.config.baseMagen,
                 this._callbacks.onUseBaseMagenChanged
+            )
+        );
+*/
+        col2Panel.addChild(
+            this._createCheckbox(
+                "ui.setup.use_geek_madness",
+                world.TI4.config.geekMadness,
+                this._callbacks.onUseGeekMadnessChanged
             )
         );
 

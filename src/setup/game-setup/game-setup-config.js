@@ -14,7 +14,8 @@ const DEFAULT = {
     codex2: true,
     codex3: true,
     codex4: true,
-    baseMagen: false,
+    baseMagen: false, // TODO DELE
+    geekMadness: false,
     franken: false,
     reportErrors: true,
     timestamp: 0,
@@ -70,6 +71,9 @@ class GameSetupConfig {
     }
     get baseMagen() {
         return this._getState("baseMagen", DEFAULT.baseMagen);
+    }
+    get geekMadness() {
+        return this._getState("geekMadness", DEFAULT.geekMadness);
     }
     get franken() {
         return this._getState("franken", DEFAULT.franken);
@@ -133,6 +137,12 @@ class GameSetupConfig {
     setBaseMagen(value) {
         assert(typeof value === "boolean");
         this._state.baseMagen = value;
+        GlobalSavedData.set(KEY, this._state);
+    }
+
+    setGeekMadness(value) {
+        assert(typeof value === "boolean");
+        this._state.geekMadness = value;
         GlobalSavedData.set(KEY, this._state);
     }
 
