@@ -212,6 +212,13 @@ class EventMinorFactions {
         systemTileObj.setObjectType(ObjectType.Regular);
         systemTileObj.snapToGround();
 
+        if (tileNumber === 51) {
+            const nsid = `tile.system:base/17`;
+            const surrogate = Spawn.spawn(nsid, pos, rot);
+            surrogate.setObjectType(ObjectType.Regular);
+            surrogate.snapToGround();
+        }
+
         // Make trait updates persistent.
         let json = this._gameObject.getSavedData(SAVED_DATA_KEY);
         if (!json || json.length === 0) {
