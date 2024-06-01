@@ -9,6 +9,7 @@ const assert = require("../../wrapper/assert-wrapper");
 const { Broadcast } = require("../broadcast");
 const { CardUtil } = require("../card/card-util");
 const { ObjectNamespace } = require("../object-namespace");
+const PositionToPlanet = require("../system/position-to-planet");
 const { Shuffle } = require("../shuffle");
 const { Spawn } = require("../../setup/spawn/spawn");
 const { SpawnDeck } = require("../../setup/spawn/spawn-deck");
@@ -173,10 +174,23 @@ class EventMinorFactions {
         Broadcast.chatAll(`factions: ${minorFactionNsidNames.join(", ")}`);
 
         // Create alliance deck, destroy when done.
-        const nsidPrefix = "card.alliance";
+        let nsidPrefix = "card.alliance";
         const allianceDeck = SpawnDeck.spawnDeck(
             nsidPrefix,
             new Vector(0, 0, 20),
+            new Rotator(0, 0, 0),
+            (nsid) => {
+                return true;
+            }
+        );
+
+        // Create full planet deck, destroy when done.
+        // (Home systems are not included in on-table deck.)
+        // Planet cards do not normally exist.
+        nsidPrefix = "card.planet";
+        const planetDeck = SpawnDeck.spawnDeck(
+            nsidPrefix,
+            new Vector(0, 10, 20),
             new Rotator(0, 0, 0),
             (nsid) => {
                 return true;
@@ -193,6 +207,9 @@ class EventMinorFactions {
 
         allianceDeck.setTags(["DELETED_ITEMS_IGNORE"]);
         allianceDeck.destroy();
+
+        planetDeck.setTags(["DELETED_ITEMS_IGNORE"]);
+        planetDeck.destroy();
     }
 
     _spawnFor(minorFactionNsidName, playerDesk) {
@@ -211,6 +228,27 @@ class EventMinorFactions {
         const systemTileObj = Spawn.spawn(nsid, pos, rot);
         systemTileObj.setObjectType(ObjectType.Regular);
         systemTileObj.snapToGround();
+
+        // Spawn planet cards.
+        console.log("minor factions spawning planet cards");
+        for (const planet of system.planets) {
+            const planetPos = PositionToPlanet.getWorldPosition(
+                systemTileObj,
+                planet.position
+            );
+
+            const planetCardNsid = planet.getPlanetCardNsid();
+
+            const cards = CardUtil.gatherCards((nsid, cardOrDeck) => {
+                return nsid === planetCardNsid;
+            });
+            if (cards && cards.length > 0) {
+                const card = cards[0];
+                card.setPosition(planetPos.add([0, 0, 3]));
+                card.setRotation([0, 0, 0]);
+                card.snapToGround();
+            }
+        }
 
         if (tileNumber === 51) {
             const nsid = `tile.system:base/17`;
