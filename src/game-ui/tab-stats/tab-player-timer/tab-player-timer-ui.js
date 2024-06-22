@@ -1,9 +1,5 @@
 const assert = require("../../../wrapper/assert-wrapper");
-const locale = require("../../../lib/locale");
-const {
-    PlayerTimer,
-    PHASE,
-} = require("../../../lib/player-timer/player-timer");
+const { PlayerTimer } = require("../../../lib/player-timer/player-timer");
 const CONFIG = require("../../game-ui-config");
 const {
     Border,
@@ -41,7 +37,7 @@ class TabPlayerTimerUI {
     }
 
     constructor() {
-        this._colorToPhaseToRoundToText = {}; // round 0 is label
+        this._colorToRoundToText = {}; // round 0 is label
 
         this._heading = new Text()
             .setJustification(TextJustification.Center)
@@ -53,8 +49,6 @@ class TabPlayerTimerUI {
             .setChildDistance(CONFIG.spacing)
             .addChild(this._heading)
             .addChild(colPanel);
-
-        const phase = PHASE.ACTION;
 
         for (let round = 0; round < MAX_ROUNDS + 1; round++) {
             const col = new VerticalBox().setChildDistance(CONFIG.spacing);
@@ -95,17 +89,10 @@ class TabPlayerTimerUI {
                 }
 
                 if (round > 0) {
-                    let phaseToRoundToText =
-                        this._colorToPhaseToRoundToText[colorName];
-                    if (!phaseToRoundToText) {
-                        phaseToRoundToText = {};
-                        this._colorToPhaseToRoundToText[colorName] =
-                            phaseToRoundToText;
-                    }
-                    let roundToText = phaseToRoundToText[phase];
+                    let roundToText = this._colorToRoundToText[colorName];
                     if (!roundToText) {
                         roundToText = {};
-                        phaseToRoundToText[phase] = roundToText;
+                        this._colorToRoundToText[colorName] = roundToText;
                     }
                     roundToText[round] = text;
                 }
@@ -129,38 +116,26 @@ class TabPlayerTimerUI {
     update(playerTimer) {
         assert(playerTimer instanceof PlayerTimer);
 
-        const error = playerTimer.getError();
-        if (error) {
-            this._heading.setText(error);
-        } else if (playerTimer.getPhase() !== PHASE.ACTION) {
-            this._heading.setText(
-                locale("timer.error.waiting_for_action_phase")
-            );
-        } else {
-            this._heading.setText("Action Phase Time");
-        }
+        const whyPaused = playerTimer.getWhyPaused();
+        const text = whyPaused.length > 0 ? whyPaused : "Action Phase Time";
+        this._heading.setText(text);
 
         const roundToSeconds = {};
 
-        for (const [colorName, phaseToRoundToText] of Object.entries(
-            this._colorToPhaseToRoundToText
+        for (const [colorName, roundToText] of Object.entries(
+            this._colorToRoundToText
         )) {
-            for (const [phase, roundToText] of Object.entries(
-                phaseToRoundToText
-            )) {
-                for (const [round, text] of Object.entries(roundToText)) {
-                    const roundNumber = Number.parseInt(round);
-                    const totalSeconds = playerTimer.getPlayerTimeSeconds(
-                        colorName,
-                        phase,
-                        roundNumber
-                    );
-                    const time = TabPlayerTimerUI.formatTime(totalSeconds);
-                    text.setText(time);
+            for (const [round, text] of Object.entries(roundToText)) {
+                const roundNumber = Number.parseInt(round);
+                const totalSeconds = playerTimer.getPlayerTimeSeconds(
+                    colorName,
+                    roundNumber
+                );
+                const time = TabPlayerTimerUI.formatTime(totalSeconds);
+                text.setText(time);
 
-                    roundToSeconds[round] =
-                        (roundToSeconds[round] ?? 0) + totalSeconds;
-                }
+                roundToSeconds[round] =
+                    (roundToSeconds[round] ?? 0) + totalSeconds;
             }
         }
 

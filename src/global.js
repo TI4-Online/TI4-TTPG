@@ -12,6 +12,11 @@ const onErr = world.__isMock
 
 // Create global events delegates BEFORE loading other global scripts.
 globalEvents.TI4 = {
+    // Called during the action phase when the active player changes.
+    // Player is undefined during other phases or when timer is paused.
+    // <(playerSlot: number|undefined, note: string) => void>
+    onActionTurnChanged: new TriggerableMulticastDelegate(onErr),
+
     // Called when an ageda card enters or leaves the "agenda spot" on the mat.
     // <(agendaCard: GameObject|undefined) => void>
     onAgendaChanged: new TriggerableMulticastDelegate(onErr),
@@ -103,8 +108,12 @@ globalEvents.TI4 = {
     // <(timerValue) => void>
     onTimerConfigChanged: new TriggerableMulticastDelegate(onErr),
 
-    // Called when player-timer adds a sample (~1/sec)
-    // <(colorName, phaseName, round, timeSeconds) => void>
+    // Called when timer paused or unpaused.
+    // <(paused: boolean) => void>
+    onTimerToggled: new TriggerableMulticastDelegate(onErr),
+
+    // Called when player-timer adds an action-phase sample (~1/sec)
+    // <(colorName, round, timeSeconds) => void>
     onTimerUpdate: new TriggerableMulticastDelegate(onErr),
 
     // Called when turn changes.
@@ -371,6 +380,7 @@ require("./global/screen-ui/stats");
 require("./global/screen-ui/turn-order");
 require("./global/shuffle-decks-on-load");
 require("./global/snap-system-tiles");
+require("./global/trigger-on-action-turn-changed");
 require("./global/trigger-on-game-ended");
 require("./global/trigger-on-singleton-card");
 require("./global/trigger-on-system-activated");

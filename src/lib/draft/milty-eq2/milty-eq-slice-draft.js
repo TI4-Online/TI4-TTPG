@@ -39,6 +39,21 @@ class MiltyEqSliceDraft extends AbstractSliceDraft {
             .setSliceGenerator(sliceGenerator)
             .setSliceLayout(sliceLayout)
             .setFixedSystemsGenerator(fixedSystemsGenerator);
+
+        this.addCustomCheckBox({
+            name: "Leave equidistants empty",
+            default: false,
+            onCheckStateChanged: (checkbox, player, isChecked) => {
+                console.log(
+                    `MiltyEqSliceDraft: leave equidistants empty: ${isChecked}`
+                );
+                if (isChecked) {
+                    this.setFixedSystemsGenerator(undefined);
+                } else {
+                    this.setFixedSystemsGenerator(fixedSystemsGenerator);
+                }
+            },
+        });
     }
 }
 

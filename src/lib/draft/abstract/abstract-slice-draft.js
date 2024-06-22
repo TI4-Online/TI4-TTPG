@@ -352,7 +352,10 @@ class AbstractSliceDraft {
     }
 
     setFixedSystemsGenerator(fixedSystemsGenerator) {
-        assert(fixedSystemsGenerator instanceof AbstractFixedSystemsGenerator);
+        assert(
+            fixedSystemsGenerator === undefined ||
+                fixedSystemsGenerator instanceof AbstractFixedSystemsGenerator
+        );
         this._fixedSystemsGenerator = fixedSystemsGenerator;
         return this;
     }

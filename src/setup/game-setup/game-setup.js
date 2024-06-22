@@ -9,6 +9,7 @@ const { SetupGenericHomeSystems } = require("../setup-generic-home-systems");
 const { globalEvents, world } = require("../../wrapper/api");
 const { TableColor } = require("../../lib/display/table-color");
 const { HomebrewLoader } = require("../../lib/homebrew/homebrew-loader");
+const { SetupEvents } = require("../../lib/event/setup-events");
 
 let _useGameData = true;
 
@@ -71,6 +72,10 @@ function onUseBaseMagenChanged(checkbox, player, isChecked) {
     assert(typeof isChecked === "boolean");
     world.TI4.config.setBaseMagen(isChecked);
 }
+function onUseGeekMadnessChanged(checkbox, player, isChecked) {
+    assert(typeof isChecked === "boolean");
+    world.TI4.config.setGeekMadness(isChecked);
+}
 
 function onUseGameDataChanged(checkBox, player, isChecked) {
     assert(typeof isChecked === "boolean");
@@ -130,6 +135,10 @@ function onSetupClicked(button, player) {
         if (_useGameData) {
             world.TI4.gameData.enable();
         }
+
+        if (world.TI4.config.geekMadness) {
+            SetupEvents.setup();
+        }
     };
     process.nextTick(finishSetup);
 }
@@ -168,6 +177,7 @@ class GameSetup {
             onUseCodex3Changed,
             onUseCodex4Changed,
             onUseBaseMagenChanged,
+            onUseGeekMadnessChanged,
             onUseGameDataChanged,
             onConfigHomebrew,
             onSetupClicked,
