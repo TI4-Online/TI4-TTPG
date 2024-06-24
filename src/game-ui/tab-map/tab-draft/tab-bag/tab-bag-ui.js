@@ -3,6 +3,7 @@ const locale = require("../../../../lib/locale");
 const CONFIG = require("../../../game-ui-config");
 const { WidgetFactory } = require("../../../../lib/ui/widget-factory");
 const { world } = require("../../../../wrapper/api");
+const { BagDraft } = require("../../../../lib/draft/bag/bag-draft");
 
 class TabBagDraftUI {
     constructor(onClickHandlers, bagDraft) {
@@ -270,10 +271,24 @@ class TabBagDraftUI {
         );
         this._box.setChild(verticalBox);
 
+        const showPrivacyZonesButton = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("Add privacy zones"));
+        showPrivacyZonesButton.onClicked.add((button, player) => {
+            BagDraft.createPrivacyZones();
+        });
+        const hidePrivacyZonesButton = WidgetFactory.button()
+            .setFontSize(CONFIG.fontSize)
+            .setText(locale("Remove privacy zones"));
+        hidePrivacyZonesButton.onClicked.add((button, player) => {
+            BagDraft.destroyPrivacyZones();
+        });
+
         const onCancelButton = WidgetFactory.button()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.button.cancel"));
         onCancelButton.onClicked.add((button, player) => {
+            BagDraft.destroyPrivacyZones();
             this._callbacks.onCancel(player);
             this._createDraftSettingsUI();
         });
@@ -281,7 +296,10 @@ class TabBagDraftUI {
         const draftInProgress = WidgetFactory.text()
             .setFontSize(CONFIG.fontSize)
             .setText(locale("ui.draft.in_progress"));
-        verticalBox.addChild(draftInProgress);
+        verticalBox
+            .addChild(draftInProgress)
+            .addChild(showPrivacyZonesButton)
+            .addChild(hidePrivacyZonesButton);
 
         verticalBox.addChild(WidgetFactory.layoutBox(), 1);
 

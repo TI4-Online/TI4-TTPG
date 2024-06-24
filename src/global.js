@@ -394,6 +394,8 @@ require("./global/force-object-update");
 
 //require("./workarounds/card-holder-reset-cards-on-load");
 
+require("./global/chess-clock");
+
 if (!world.__isMock) {
     world.setShowDiceRollMessages(false);
     GameData.maybeRestartGameData();

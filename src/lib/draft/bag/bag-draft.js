@@ -7,6 +7,7 @@ const {
     GameObject,
     Rotator,
     Vector,
+    ZonePermission,
     globalEvents,
     world,
 } = require("../../../wrapper/api");
@@ -36,6 +37,40 @@ const DEFAULT_CONFIG = {
 };
 
 class BagDraft {
+    static createPrivacyZones() {
+        const zoneHeight = 21; // max hold height is 20
+        const zoneScale = [60, 70, zoneHeight];
+        const colorAlpha = 0.1;
+
+        for (const playerDesk of world.TI4.getAllPlayerDesks()) {
+            const pos = playerDesk.center.add([0, 0, zoneHeight / 2 - 0.1]);
+            const rot = playerDesk.rot;
+            const color = playerDesk.color.clone();
+            color.a = colorAlpha;
+            const zone = world.createZone(pos);
+            zone.setAlwaysVisible(true);
+            zone.setColor(color);
+            zone.setInserting(ZonePermission.OwnersOnly);
+            zone.setObjectInteraction(ZonePermission.OwnersOnly);
+            zone.setObjectVisibility(ZonePermission.OwnersOnly);
+            zone.setRotation(rot);
+            zone.setSavedData("__BagDraftPrivacy__");
+            zone.setScale(zoneScale);
+            zone.setSlotOwns(playerDesk.playerSlot, true);
+            zone.setSnapping(ZonePermission.OwnersOnly);
+            zone.setStacking(ZonePermission.OwnersOnly);
+        }
+    }
+
+    static destroyPrivacyZones() {
+        for (const zone of world.getAllZones()) {
+            const savedData = zone.getSavedData() || "";
+            if (savedData === "__BagDraftPrivacy__") {
+                zone.destroy();
+            }
+        }
+    }
+
     static draftFactions(count, useFactionsOnTable) {
         assert(typeof count === "number");
         assert(typeof useFactionsOnTable === "boolean");
