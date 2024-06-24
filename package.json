@@ -52,6 +52,7 @@
     "ajv": "^8.12.0",
     "jsx-in-ttpg": "^2.2.2",
     "lodash": "^4.17.21",
-    "simplify-js": "^1.2.4"
+    "simplify-js": "^1.2.4",
+    "ttpg-darrell": "^1.0.44"
   }
 }
