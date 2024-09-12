@@ -54,6 +54,7 @@ const {
 } = require("../wrapper/api");
 const { MaltyDraft } = require("../lib/draft/scpt/malty-draft");
 const { SCPT2024 } = require("./tab-map/tab-draft/tab-scpt/scpt-2024");
+const { SCPT2025 } = require("./tab-map/tab-draft/tab-scpt/scpt-2025");
 
 let _gameUI;
 
@@ -278,6 +279,12 @@ class GameUI {
                 return new SCPT2024().getUI();
             });
         scptFolder.addChild(scpt2024);
+        const scpt2025 = new NavEntry()
+            .setName("Patreon 7 (2025)")
+            .setWidgetFactory((navPanel, navEntry) => {
+                return new SCPT2025().getUI();
+            });
+        scptFolder.addChild(scpt2025);
 
         const bagDraft = new NavEntry()
             .setName(locale("nav.map.draft.bag"))
