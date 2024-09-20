@@ -2,14 +2,21 @@ const SCPT_DRAFTS_2025 = [
     {
         name: "Qualifier",
         enabled: true,
-        slices: "32,66,68,63,39|26,76,49,19,41|64,35,65,22,79|50,37,45,61,36|25,73,78,59,62|72,75,80,21,40",
+        slices: [
+            "27,73,47,44,26", //
+            "30,39,76,80,65",
+            "42,64,75,72,49",
+            "79,37,50,71,66",
+            "34,41,70,78,25",
+            "40,20,36,45,74",
+        ].join("|"),
         labels: [
-            "101 Dal Boothas",
-            "Will",
-            "Tharma $AMPERSAND Breg",
-            "Yellow Slice Because It Has 2 Reds",
-            "Give Me Integrated or Give Me Death",
-            "Devil Went Down to Velnor",
+            "Will, again", //
+            "Rigely field (Where the girls go out)",
+            "Devil went back down to Velnor (He forgot something)",
+            "Yellow slice because it has Hope's End",
+            "Gravity's DOOT DOOT",
+            "Viva Las Lorxembourg",
         ].join("|"),
         factionCount: 6,
         resizeToPlayerCount: true,
