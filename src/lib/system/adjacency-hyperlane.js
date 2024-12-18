@@ -189,17 +189,20 @@ class AdjacencyHyperlane {
                 var hexIndex = 0;
                 for (const adjacentHex of adjacentNeighborsForHyperlaneTile.getAdjacent()) {
                     if (!hyperlanes.includes(hexIndex)) {
+                        hexIndex++;
                         continue;
                     }
                     const newPos = Hex.toPosition(adjacentHex);
                     const newSystemObj =
                         world.TI4.getSystemTileObjectByPosition(newPos);
                     if (!newSystemObj) {
+                        hexIndex++;
                         continue;
                     }
                     const newSystem =
                         world.TI4.getSystemBySystemTileObject(newSystemObj);
                     if (!newSystem) {
+                        hexIndex++;
                         continue;
                     }
                     if (newSystem.raw.hyperlane) {
