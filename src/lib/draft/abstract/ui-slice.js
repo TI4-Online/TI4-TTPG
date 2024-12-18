@@ -223,6 +223,11 @@ class UiSlice {
                 .setHorizontalAlignment(HorizontalAlignment.Center)
                 .setChild(textBorder);
             labelPanel.addChild(textBox);
+
+            // Bah, very long slice name support.
+            if (line.length > 40) {
+                text.setFontSize(size.fontSize * 0.7);
+            }
         }
         const textBox = new LayoutBox()
             .setOverrideWidth(size.tileW)
