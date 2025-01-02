@@ -24,11 +24,13 @@ const SCPT_DRAFTS_2025 = [
     },
     {
         name: "Prelims",
-        enabled: false,
+        enabled: true,
         slices: "",
         labels: ["", "", "", "", "", ""].join("|"),
         factionCount: 6,
         clock: 28800,
+        resizeToPlayerCount: true,
+        grabFromHistory: true,
     },
     {
         name: "Semi-finals",

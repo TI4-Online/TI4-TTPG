@@ -29,7 +29,7 @@ class SetupEvents {
             SetupEvents.getBoxPosition()
         );
         box.snapToGround();
-        box.setName("Geek Madness Events");
+        box.setName("Geek Madness (Dane)");
         box.setDescription(
             [
                 "Events are a new card type Dane",
