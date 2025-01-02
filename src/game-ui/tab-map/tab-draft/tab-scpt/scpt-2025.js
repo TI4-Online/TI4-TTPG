@@ -1,9 +1,13 @@
 const assert = require("../../../../wrapper/assert-wrapper");
 const { SCPT2025UI } = require("./scpt-2025-ui");
+const {
+    ScptDraftSliceHistory,
+} = require("../../../../lib/draft/scpt/scpt-draft-slice-history");
 const { world } = require("../../../../wrapper/api");
 const {
     MiltySliceDraft,
 } = require("../../../../lib/draft/milty2/milty-slice-draft");
+const { Broadcast } = require("../../../../lib/broadcast");
 
 class SCPT2025 {
     constructor() {
@@ -31,6 +35,13 @@ class SCPT2025 {
         let slices = scptDraftData.slices.split("|");
         let labels = scptDraftData.labels.split("|");
         let factionCount = scptDraftData.factionCount;
+
+        if (scptDraftData.grabFromHistory) {
+            const history = new ScptDraftSliceHistory().getPrelims();
+            Broadcast.broadcastAll(`Using prelims slices from ${history.name}`);
+            slices = history.slices.split("|");
+            labels = history.labels.split("|");
+        }
 
         if (scptDraftData.resizeToPlayerCount) {
             const playerCount = world.TI4.config.playerCount;
