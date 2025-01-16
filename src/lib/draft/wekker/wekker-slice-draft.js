@@ -9,31 +9,34 @@ const { MiltySliceGenerator } = require("../milty2/milty-slice-generator");
 const { AbstractSliceLayout } = require("../abstract/abstract-slice-layout");
 const { world } = require("../../../wrapper/api");
 
+// Supoosed to be: Right Neighbor, Right Home, Mid Home, Equidistant, Left Mecatol Rex
+// TTPG loads it as: Left Mecatol Rex, Equidistant, Mid Home, Right Home, Right Neighbor
+
 const WEKKER_SLICE_SHAPE = [
     "<0,0,0>", //home
-    "<3,-1,-2>", // left-far
-    "<2,-1,-1>", // left-eq
-    "<1,0,-1>", // front
-    "<0,1,-1>", // right
-    "<0,2,-2>", // right-right
+    "<0,2,-2>", // right-right [0]
+    "<0,1,-1>", // right [1]
+    "<1,0,-1>", // front [2]
+    "<2,-1,-1>", // left-eq [3]
+    "<3,-1,-2>", // left-far [4]
 ];
 
 const HYPERLANE_MERGE_R = [
     "<0,0,0>", //home
-    "<4,-1,-3>",
-    "<3,-3,0>",
-    "<1,0,-1>", // front
-    "<0,1,-1>", // right
     "<0,2,-2>", // right-right
+    "<0,1,-1>", // right
+    "<1,0,-1>", // front
+    "<3,-3,0>",
+    "<4,-1,-3>",
 ];
 
 const HYPERLANE_MERGE_L = [
     "<0,0,0>", //home
-    "<3,-1,-2>", // left-far
-    "<2,-1,-1>", // left-eq
-    "<1,0,-1>", // front
-    "<0,1,-1>", // right
     "<2,3,-5>",
+    "<0,1,-1>", // right
+    "<1,0,-1>", // front
+    "<2,-1,-1>", // left-eq
+    "<3,-1,-2>", // left-far
 ];
 
 class WekkerSliceLayout extends AbstractSliceLayout {
