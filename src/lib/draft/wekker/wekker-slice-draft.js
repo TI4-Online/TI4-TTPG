@@ -9,9 +9,6 @@ const { MiltySliceGenerator } = require("../milty2/milty-slice-generator");
 const { AbstractSliceLayout } = require("../abstract/abstract-slice-layout");
 const { world } = require("../../../wrapper/api");
 
-// Supoosed to be: Right Neighbor, Right Home, Mid Home, Equidistant, Left Mecatol Rex
-// TTPG loads it as: Left Mecatol Rex, Equidistant, Mid Home, Right Home, Right Neighbor
-
 const WEKKER_SLICE_SHAPE = [
     "<0,0,0>", //home
     "<0,2,-2>", // right-right [0]
