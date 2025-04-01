@@ -64,6 +64,9 @@ class SCPT2025 {
             `slices=${slices.join("|")}`,
             `labels=${labels.join("|")}`,
         ].join("&");
+        if (scptDraftData.factions) {
+            customInput += `&factions=${scptDraftData.factions.toLowerCase()}`;
+        }
         console.log(`SCPT2025._start: draft config "${customInput}"`);
 
         if (this._miltySliceDraft) {
