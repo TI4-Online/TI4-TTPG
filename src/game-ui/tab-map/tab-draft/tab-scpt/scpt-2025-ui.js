@@ -43,17 +43,84 @@ class SCPT2025UI {
         this._verticalBox.addChild(header);
 
         for (const draft of SCPT_DRAFTS_2025) {
-            const button = WidgetFactory.button()
-                .setFontSize(fontSize)
-                .setText(draft.name)
-                .setEnabled(draft.enabled);
-            button.onClicked.add(
-                ThrottleClickHandler.wrap((clickedButton, player) => {
-                    this._createDraftInProgressUI();
-                    this._onClickHandlers.start(draft);
-                })
-            );
-            this._verticalBox.addChild(button);
+            if (draft.name === "Semi-finals") {
+                const semis1 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 1");
+                semis1.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis1);
+                    })
+                );
+                const semis2 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 2");
+                semis2.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis2);
+                    })
+                );
+                const semis3 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 3");
+                semis3.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis3);
+                    })
+                );
+                const semis4 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 4");
+                semis4.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis4);
+                    })
+                );
+                const semis5 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 5");
+                semis5.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis5);
+                    })
+                );
+                const semis6 = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText("Semis 6");
+                semis6.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft.semis6);
+                    })
+                );
+
+                const panel = WidgetFactory.horizontalBox()
+                    .setChildDistance(CONFIG.spacing)
+                    .addChild(semis1, 1)
+                    .addChild(semis2, 1)
+                    .addChild(semis3, 1)
+                    .addChild(semis4, 1)
+                    .addChild(semis5, 1)
+                    .addChild(semis6, 1);
+                this._verticalBox.addChild(panel);
+            } else {
+                const button = WidgetFactory.button()
+                    .setFontSize(fontSize)
+                    .setText(draft.name)
+                    .setEnabled(draft.enabled);
+                button.onClicked.add(
+                    ThrottleClickHandler.wrap((clickedButton, player) => {
+                        this._createDraftInProgressUI();
+                        this._onClickHandlers.start(draft);
+                    })
+                );
+                this._verticalBox.addChild(button);
+            }
         }
     }
 
