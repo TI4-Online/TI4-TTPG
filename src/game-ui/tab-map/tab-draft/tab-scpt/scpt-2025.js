@@ -8,6 +8,9 @@ const {
     MiltySliceDraft,
 } = require("../../../../lib/draft/milty2/milty-slice-draft");
 const { Broadcast } = require("../../../../lib/broadcast");
+const { Vector, ObjectType, Rotator } = require("@tabletop-playground/api");
+const { MapStringLoad } = require("../../../../lib/map-string/map-string-load");
+const { Spawn } = require("../../../../setup/spawn/spawn");
 
 class SCPT2025 {
     constructor() {
@@ -52,6 +55,65 @@ class SCPT2025 {
                 labels.splice(i, 1);
             }
             factionCount = Math.min(factionCount, playerCount);
+        }
+
+        if (scptDraftData.outerSystems) {
+            // Move things so outer systems fit.
+            const objIdToNewPos = {
+                ["84p"]: new Vector(17.685, 10.237, 7.874),
+                sf3: new Vector(5.517, 33.979, 7.874),
+                ytv: new Vector(1.72, 35.769, 7.874),
+                tuh: new Vector(1.72, 32.147, 7.874),
+                x8q: new Vector(-1.902, 35.769, 7.874),
+                vwx: new Vector(-1.902, 32.147, 7.874),
+            };
+            for (let [objId, newPos] of Object.entries(objIdToNewPos)) {
+                const obj = world.getObjectById(objId);
+                if (obj && obj.setType) {
+                    newPos = newPos.multiply(2.5399); // recored positions in wrong units
+                    obj.setType(ObjectType.Regular);
+                    obj.setPosition(newPos);
+                    obj.setType(ObjectType.Ground);
+                }
+            }
+
+            // Spawn outer systems.
+            const mapString =
+                "{-1} -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 -1 -1 0 -1 -1 0 -1 -1 0 -1 -1 0 -1 -1 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 65 48 47 66 46 49 69";
+            MapStringLoad.load(mapString);
+
+            // Spawn wormhole tokens (only gamma on the map for now, must visit to get others).
+            const nsidAndPositions = [
+                {
+                    nsid: "token.wormhole.exploration:pok/gamma",
+                    pos: new Vector(20.375, 13.738, 8.073),
+                },
+                {
+                    nsid: "token.wormhole.exploration:pok/gamma",
+                    pos: new Vector(2.991, 23.931, 8.073),
+                },
+                {
+                    nsid: "token.wormhole.creuss:base/alpha",
+                    pos: new Vector(16.24, 13.354, 7.924),
+                },
+                {
+                    nsid: "token.wormhole.creuss:base/alpha",
+                    pos: new Vector(5.706, 21.77, 7.924),
+                },
+                {
+                    nsid: "token.wormhole.creuss:base/beta",
+                    pos: new Vector(16.088, 15.474, 7.924),
+                },
+                {
+                    nsid: "token.wormhole.creuss:base/beta",
+                    pos: new Vector(3.957, 20.639, 7.924),
+                },
+            ];
+            const rot = new Rotator(0, 0, 180);
+            for (let { nsid, pos } of nsidAndPositions) {
+                pos = pos.multiply(2.5399); // recored positions in wrong units
+                Spawn.spawn(nsid, pos, rot);
+            }
         }
 
         console.log(`SCPT2025._start: ${name}`);

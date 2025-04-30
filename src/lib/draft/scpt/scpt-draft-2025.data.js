@@ -169,11 +169,33 @@ const SCPT_DRAFTS_2025 = [
     },
     {
         name: "Finals",
-        enabled: false,
-        slices: "",
-        labels: ["", "", "", "", "", ""].join("|"),
+        enabled: true,
+        slices: [
+            "35,25,44,73,49", // TEMP PLACE HOLDERS!!!
+            "34,22,67,47,66",
+            "27,40,72,79,65",
+            "41,32,48,59,69",
+            "78,75,42,24,26",
+            "39,76,62,80,64",
+        ].join("|"),
+        labels: [
+            "Walrus Berzerker",
+            "The Meta",
+            "GreenFlame",
+            "catoftheyear",
+            "dzhiriki",
+            "Fingolfin",
+        ].join("|"),
+        factions: [
+            "sol",
+            "xxcha",
+            "jolnar",
+            "keleres_mentak",
+            "creuss",
+            "naalu",
+        ].join("|"),
         factionCount: 6,
-        seedWithOnTableCards: true,
+        outerSystems: true,
     },
 ];
 
