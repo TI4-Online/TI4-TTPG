@@ -28,7 +28,7 @@ class UnitDieBuilder extends SimpleDieBuilder {
         const rollAttrs =
             unitAttrs.raw[rollType] || unitAttrs.raw["spaceCombat"];
         assert(rollAttrs);
-        assert(rollAttrs.hit);
+        assert(rollAttrs.hit !== undefined);
         this.setHitValue(rollAttrs.hit);
 
         if (rollAttrs.extraHitsOn) {
