@@ -21,6 +21,8 @@ const getSuggestedFolder = () => {
         );
     } else if (process.platform === "win32") {
         return "C:\\Program Files (x86)\\Steam\\steamapps\\common\\TabletopPlayground\\TabletopPlayground\\PersistentDownloadDir";
+    } else if (process.platform === "linux") {
+        return process.env.HOME + "/.config/Epic/TabletopPlayground/Packages";
     }
     return null;
 };
@@ -88,9 +90,13 @@ const setupWorkspace = (localConfig) => {
                     })
                     .then(() => {
                         console.log("symlinking to Tabletop Playground");
+                        const pre =
+                            process.platform === "linux"
+                                ? process.env.PWD
+                                : ".";
                         return fs
                             .createSymlink(
-                                `./dev/${variantConfig.slug}_dev`,
+                                `${pre}/dev/${variantConfig.slug}_dev`,
                                 `${localConfig.ttpg_folder}/${variantConfig.slug}_dev`,
                                 "junction"
                             )
@@ -139,7 +145,7 @@ Promise.all(
                     return input.question(
                         `Please enter your Tabletop Playground modding directory${
                             suggestedFolder ? ` (${suggestedFolder})` : ""
-                        }`,
+                        }: `,
                         (ttpg_folder) => {
                             ttpg_folder = ttpg_folder || suggestedFolder;
                             if (ttpg_folder === "") {

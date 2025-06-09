@@ -157,7 +157,7 @@ class CombatRoller {
             // Count in-hex units.
             if (this._auxData.has(unit)) {
                 const unitCount = this._auxData.count(unit);
-                const dicePerUnit = rollAttrs.dice || 1;
+                const dicePerUnit = rollAttrs.dice ?? 1;
                 count += unitCount * dicePerUnit;
             }
 
