@@ -41,7 +41,7 @@ class RestrictObjects {
             removeSources.add("codex.vigil");
         }
         if (!world.TI4.config.codex4) {
-            removeSources.add("codex.(codex4)");
+            removeSources.add("codex.liberation");
         }
 
         let removedCount = 0;

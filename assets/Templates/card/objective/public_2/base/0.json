@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "4510D2E95167E067BB1DE9397B5C4EFE",
-	"Name": "Public Objectives II (base 1/2)",
+	"Name": "Public Objectives II (base)",
 	"Metadata": "card.objective.public_2:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -42,7 +42,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 3,
+	"NumHorizontal": 6,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0,
@@ -61,7 +62,11 @@
 		2,
 		3,
 		4,
-		5
+		5,
+		6,
+		7,
+		8,
+		9
 	],
 	"CardNames": {
 		"0": "Centralize Galactic Trade",
@@ -69,7 +74,11 @@
 		"2": "Form Galactic Brain Trust",
 		"3": "Found a Golden Age",
 		"4": "Galvanize the People",
-		"5": "Manipulate Galactic Law"
+		"5": "Manipulate Galactic Law",
+		"6": "Master the Sciences",
+		"7": "Revolutionize Warfare",
+		"8": "Subdue the Galaxy",
+		"9": "Unify the Colonies"
 	},
 	"CardMetadata": {
 		"0": "card.objective.public_2:base/centralize_galactic_trade",
@@ -77,7 +86,11 @@
 		"2": "card.objective.public_2:base/form_galactic_brain_trust",
 		"3": "card.objective.public_2:base/found_a_golden_age",
 		"4": "card.objective.public_2:base/galvanize_the_people",
-		"5": "card.objective.public_2:base/manipulate_galactic_law"
+		"5": "card.objective.public_2:base/manipulate_galactic_law",
+		"6": "card.objective.public_2:base/master_the_sciences",
+		"7": "card.objective.public_2:base/revolutionize_warfare",
+		"8": "card.objective.public_2:base/subdue_the_galaxy",
+		"9": "card.objective.public_2:base/unify_the_colonies"
 	},
 	"CardTags": {}
 }

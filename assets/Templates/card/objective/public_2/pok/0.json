@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "A9F2DEF424946156DC72649E7BEFB81B",
-	"Name": "Public Objectives II (pok 1/2)",
+	"Name": "Public Objectives II (pok)",
 	"Metadata": "card.objective.public_2:pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -42,7 +42,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 3,
+	"NumHorizontal": 6,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0,
@@ -61,7 +62,11 @@
 		2,
 		3,
 		4,
-		5
+		5,
+		6,
+		7,
+		8,
+		9
 	],
 	"CardNames": {
 		"0": "Achieve Supremacy",
@@ -69,7 +74,11 @@
 		"2": "Command an Armada",
 		"3": "Construct Massive Cities",
 		"4": "Control the Borderlands",
-		"5": "Hold Vast Reserves"
+		"5": "Hold Vast Reserves",
+		"6": "Patrol Vast Territories",
+		"7": "Protect the Border",
+		"8": "Reclaim Ancient Monuments",
+		"9": "Rule Distant Lands"
 	},
 	"CardMetadata": {
 		"0": "card.objective.public_2:pok/achieve_supremacy",
@@ -77,7 +86,11 @@
 		"2": "card.objective.public_2:pok/command_an_armada",
 		"3": "card.objective.public_2:pok/construct_massive_cities",
 		"4": "card.objective.public_2:pok/control_the_borderlands",
-		"5": "card.objective.public_2:pok/hold_vast_reserves"
+		"5": "card.objective.public_2:pok/hold_vast_reserves",
+		"6": "card.objective.public_2:pok/patrol_vast_territories",
+		"7": "card.objective.public_2:pok/protect_the_border",
+		"8": "card.objective.public_2:pok/reclaim_ancient_monuments",
+		"9": "card.objective.public_2:pok/rule_distant_lands"
 	},
 	"CardTags": {}
 }

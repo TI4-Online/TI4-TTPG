@@ -1,0 +1,69 @@
+{
+	"Type": "Card",
+	"GUID": "75C89772B737887AA2C4428E380D58A6",
+	"Name": "Legendary Planets (codex.liberation)",
+	"Metadata": "card.legendary_planet:codex.liberation/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"Lights": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
+	"FrontTexture": "locale/card/legendary_planet/codex/liberation/0.face.jpg",
+	"BackTexture": "locale/card/legendary_planet/codex/liberation/0.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -3,
+	"NumHorizontal": 1,
+	"NumVertical": 1,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"EmissiveFront": false,
+	"Model": "Rounded",
+	"Indices": [
+		0
+	],
+	"CardNames": {
+		"0": "Barren Husk"
+	},
+	"CardMetadata": {
+		"0": "card.legendary_planet:codex.liberation/barren_husk"
+	},
+	"CardTags": {}
+}

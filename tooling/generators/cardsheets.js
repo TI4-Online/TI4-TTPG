@@ -21,7 +21,7 @@ const DST_TEMPLATES_DIR = path.normalize("assets/Templates/");
 const CARD_SCALE = 0.68;
 
 // TTPG has an 8K limit.  4K is actually a good sweet spot, lower waste vs 8K.
-const MAX_SHEET_DIMENSION = 1024;
+const MAX_SHEET_DIMENSION = 4096;
 
 // Do the work, but do not write any files.
 const TRIAL_RUN = false;
@@ -31,6 +31,7 @@ const CARD_SIZE = {
     LANDSCAPE: { w: 6.3, h: 4.2 },
     PORTRAIT: { w: 4.2, h: 6.3 },
     FACTION_REFERENCE: { w: 8.8, h: 6.3 },
+    EVENT: { w: 12.9, h: 7.6 },
 };
 
 const DECKS = {
@@ -48,6 +49,11 @@ const DECKS = {
         name: "Alliance",
         sharedBack: false,
         size: CARD_SIZE.LANDSCAPE,
+    },
+    "card.event": {
+        name: "Events",
+        sharedBack: true,
+        size: CARD_SIZE.EVENT,
     },
     "card.exploration.cultural": {
         name: "Cultural Exploration",

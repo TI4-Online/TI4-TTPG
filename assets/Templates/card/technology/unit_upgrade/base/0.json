@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "430CF90265794B8E1B8868D688ABFDDB",
-	"Name": "Technology (Unit Upgrade) (base 1/3)",
+	"Name": "Technology (Unit Upgrade) (base)",
 	"Metadata": "card.technology.unit_upgrade:base/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -42,7 +42,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 2,
+	"NumHorizontal": 8,
 	"NumVertical": 3,
 	"Width": 6.3,
 	"Height": 4.2,
@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0,
@@ -61,7 +62,18 @@
 		2,
 		3,
 		4,
-		5
+		5,
+		6,
+		7,
+		8,
+		9,
+		10,
+		11,
+		12,
+		13,
+		14,
+		15,
+		16
 	],
 	"CardNames": {
 		"0": "Carrier II",
@@ -69,7 +81,18 @@
 		"2": "Destroyer II",
 		"3": "Dreadnought II",
 		"4": "Fighter II",
-		"5": "Infantry II"
+		"5": "Infantry II",
+		"6": "PDS II",
+		"7": "Space Dock II",
+		"8": "War Sun",
+		"9": "Letani Warrior II",
+		"10": "Super-Dreadnought II",
+		"11": "Prototype War Sun II",
+		"12": "Hybrid Crystal Fighter II",
+		"13": "Exotrireme II",
+		"14": "Floating Factory II",
+		"15": "Advanced Carrier II",
+		"16": "Spec Ops II"
 	},
 	"CardMetadata": {
 		"0": "card.technology.unit_upgrade:base/carrier_2",
@@ -77,7 +100,18 @@
 		"2": "card.technology.unit_upgrade:base/destroyer_2",
 		"3": "card.technology.unit_upgrade:base/dreadnought_2",
 		"4": "card.technology.unit_upgrade:base/fighter_2",
-		"5": "card.technology.unit_upgrade:base/infantry_2"
+		"5": "card.technology.unit_upgrade:base/infantry_2",
+		"6": "card.technology.unit_upgrade:base/pds_2",
+		"7": "card.technology.unit_upgrade:base/space_dock_2",
+		"8": "card.technology.unit_upgrade:base/war_sun",
+		"9": "card.technology.unit_upgrade.arborec:base/letani_warrior_2",
+		"10": "card.technology.unit_upgrade.l1z1x:base/superdreadnought_2",
+		"11": "card.technology.unit_upgrade.muaat:base/prototype_war_sun_2",
+		"12": "card.technology.unit_upgrade.naalu:base/hybrid_crystal_fighter_2",
+		"13": "card.technology.unit_upgrade.norr:base/exotrireme_2",
+		"14": "card.technology.unit_upgrade.saar:base/floating_factory_2",
+		"15": "card.technology.unit_upgrade.sol:base/advanced_carrier_2",
+		"16": "card.technology.unit_upgrade.sol:base/spec_ops_2"
 	},
 	"CardTags": {}
 }
