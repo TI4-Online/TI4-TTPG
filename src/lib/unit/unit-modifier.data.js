@@ -1554,4 +1554,31 @@ module.exports = [
             }
         },
     },
+    /*
+    {
+        // bombardment and ground combat produce 2x hits
+        isCombat: true,
+        localeName: "X89 Bacterial Weapon",
+        localeDescription: "BOMBARDMENT and GROUND COMBAT produce 2x hits",
+        owner: "self",
+        priority: "choose",
+        triggerNsid:
+            "card.technology.green:codex.liberation/x89_bacterial_weapon.codex4",
+        filter: (auxData) => {
+            console.log("xxx x89", auxData.rollType);
+            return (
+                auxData.rollType === "groundCombat" ||
+                auxData.rollType === "bombardment"
+            );
+        },
+        applyEach: (unitAttrs, auxData) => {
+            if (unitAttrs.raw.groundCombat) {
+                // TODO need a way to double hits
+            }
+            if (unitAttrs.raw.bombardment) {
+                // TODO need a way to double hits
+            }
+        },
+    },
+    */
 ];
