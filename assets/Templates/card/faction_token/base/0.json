@@ -42,8 +42,8 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 6,
-	"NumVertical": 3,
+	"NumHorizontal": 12,
+	"NumVertical": 2,
 	"Width": 6.3,
 	"Height": 4.2,
 	"Thickness": 0.05,
@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0,

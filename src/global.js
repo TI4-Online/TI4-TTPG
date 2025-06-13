@@ -361,6 +361,8 @@ require("./global/right-click/heroes/multiverse-shift");
 require("./global/right-click/leave-seat");
 require("./global/right-click/right-click-system");
 require("./global/right-click/right-click-agenda");
+require("./global/right-click/right-click-age-of-exploration");
+require("./global/right-click/right-click-minor-factions");
 require("./global/right-click/right-click-deal-starting-technology");
 require("./global/right-click/right-click-fetch-planet");
 require("./global/right-click/right-click-iihq-modernization");

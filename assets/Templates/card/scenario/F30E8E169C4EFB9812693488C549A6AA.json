@@ -1,0 +1,80 @@
+{
+	"Type": "Card",
+	"GUID": "F30E8E169C4EFB9812693488C549A6AA",
+	"Name": "Leaders",
+	"Metadata": "",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor":
+	{
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor":
+	{
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"Lights": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection":
+	{
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"GroundAccessibility": "Nothing",
+	"Tags": [],
+	"FrontTexture": "locale/card/scenario/leaders.face.jpg",
+	"BackTexture": "locale/card/scenario/leaders.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -3,
+	"HiddenIndex": -1,
+	"NumHorizontal": 2,
+	"NumVertical": 2,
+	"Width": 6.3,
+	"Height": 4.2,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"EmissiveFront": false,
+	"Model": "Rounded",
+	"Indices": [ 0, 1, 2, 3 ],
+	"CardNames":
+	{
+		"0": "F.S.S. Orlando",
+		"1": "Dimensional Reflection",
+		"2": "Forlorn Shadow",
+		"3": "Wistful Soul"
+	},
+	"CardMetadata":
+	{
+		"0": "card.leader:codex.liberation/fss_orlando",
+		"1": "card.leader:codex.liberation/dimensional_reflection",
+		"2": "card.leader:codex.liberation/forlorn_shadow",
+		"3": "card.leader:codex.liberation/wistful_soul"
+	},
+	"CardTags":
+	{
+	}
+}

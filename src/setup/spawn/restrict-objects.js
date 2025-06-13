@@ -41,7 +41,21 @@ class RestrictObjects {
             removeSources.add("codex.vigil");
         }
         if (!world.TI4.config.codex4) {
-            removeSources.add("codex.(codex4)");
+            removeSources.add("codex.liberation");
+        }
+
+        // Hack, omega-of-omega.
+        if (world.TI4.config.codex4) {
+            _injectedNSIDs.add("card.technology.red:base/magen_defense_grid");
+            _injectedNSIDs.add(
+                "card.technology.red:codex.ordinian/magen_defense_grid.omega"
+            );
+            _injectedNSIDs.add(
+                "card.technology.green:base/x89_bacterial_weapon"
+            );
+            _injectedNSIDs.add(
+                "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega"
+            );
         }
 
         let removedCount = 0;

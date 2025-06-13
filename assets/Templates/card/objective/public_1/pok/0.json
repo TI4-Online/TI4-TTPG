@@ -1,7 +1,7 @@
 {
 	"Type": "Card",
 	"GUID": "5E39F53E08295EE7B56F77A439C612B6",
-	"Name": "Public Objectives I (pok 1/2)",
+	"Name": "Public Objectives I (pok)",
 	"Metadata": "card.objective.public_1:pok/0",
 	"CollisionType": "Regular",
 	"Friction": 0.7,
@@ -42,7 +42,7 @@
 	"HiddenTexture": "",
 	"BackIndex": -2,
 	"HiddenIndex": -3,
-	"NumHorizontal": 3,
+	"NumHorizontal": 6,
 	"NumVertical": 2,
 	"Width": 4.2,
 	"Height": 6.3,
@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0,
@@ -61,7 +62,11 @@
 		2,
 		3,
 		4,
-		5
+		5,
+		6,
+		7,
+		8,
+		9
 	],
 	"CardNames": {
 		"0": "Amass Wealth",
@@ -69,7 +74,11 @@
 		"2": "Discover Lost Outposts",
 		"3": "Engineer a Marvel",
 		"4": "Explore Deep Space",
-		"5": "Improve Infrastructure"
+		"5": "Improve Infrastructure",
+		"6": "Make History",
+		"7": "Populate the Outer Rim",
+		"8": "Push Boundaries",
+		"9": "Raise a Fleet"
 	},
 	"CardMetadata": {
 		"0": "card.objective.public_1:pok/amass_wealth",
@@ -77,7 +86,11 @@
 		"2": "card.objective.public_1:pok/discover_lost_outposts",
 		"3": "card.objective.public_1:pok/engineer_a_marvel",
 		"4": "card.objective.public_1:pok/explore_deep_space",
-		"5": "card.objective.public_1:pok/improve_infrastructure"
+		"5": "card.objective.public_1:pok/improve_infrastructure",
+		"6": "card.objective.public_1:pok/make_history",
+		"7": "card.objective.public_1:pok/populate_the_outer_rim",
+		"8": "card.objective.public_1:pok/push_boundaries",
+		"9": "card.objective.public_1:pok/raise_a_fleet"
 	},
 	"CardTags": {}
 }

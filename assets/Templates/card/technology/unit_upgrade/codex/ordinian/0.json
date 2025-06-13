@@ -54,6 +54,7 @@
 	"FrontTextureOverrideExposed": false,
 	"AllowFlippedInStack": false,
 	"MirrorBack": true,
+	"EmissiveFront": false,
 	"Model": "Rounded",
 	"Indices": [
 		0

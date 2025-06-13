@@ -1,0 +1,78 @@
+{
+	"Type": "Card",
+	"GUID": "629521BC35EC3701B093DC43016A67C4",
+	"Name": "Events (codex.liberation)",
+	"Metadata": "card.event:codex.liberation/0",
+	"CollisionType": "Regular",
+	"Friction": 0.7,
+	"Restitution": 0,
+	"Density": 0.5,
+	"SurfaceType": "Cardboard",
+	"Roughness": 1,
+	"Metallic": 0,
+	"PrimaryColor": {
+		"R": 255,
+		"G": 255,
+		"B": 255
+	},
+	"SecondaryColor": {
+		"R": 0,
+		"G": 0,
+		"B": 0
+	},
+	"Flippable": true,
+	"AutoStraighten": false,
+	"ShouldSnap": true,
+	"ScriptName": "",
+	"Blueprint": "",
+	"Models": [],
+	"Collision": [],
+	"Lights": [],
+	"SnapPointsGlobal": false,
+	"SnapPoints": [],
+	"ZoomViewDirection": {
+		"X": 0,
+		"Y": 0,
+		"Z": 0
+	},
+	"GroundAccessibility": "ZoomAndContext",
+	"Tags": [],
+	"FrontTexture": "locale/card/event/codex/liberation/0.face.jpg",
+	"BackTexture": "global/card/event.back.jpg",
+	"HiddenTexture": "",
+	"BackIndex": -2,
+	"HiddenIndex": -3,
+	"NumHorizontal": 4,
+	"NumVertical": 1,
+	"Width": 12.9,
+	"Height": 7.6,
+	"Thickness": 0.05,
+	"HiddenInHand": true,
+	"UsedWithCardHolders": true,
+	"CanStack": true,
+	"UsePrimaryColorForSide": false,
+	"FrontTextureOverrideExposed": false,
+	"AllowFlippedInStack": false,
+	"MirrorBack": true,
+	"EmissiveFront": false,
+	"Model": "Rounded",
+	"Indices": [
+		0,
+		1,
+		2,
+		3
+	],
+	"CardNames": {
+		"0": "Age of Commerce",
+		"1": "Age of Exploration",
+		"2": "Minor Factions",
+		"3": "Total War"
+	},
+	"CardMetadata": {
+		"0": "card.event:codex.liberation/age_of_commerce",
+		"1": "card.event:codex.liberation/age_of_exploration",
+		"2": "card.event:codex.liberation/minor_factions",
+		"3": "card.event:codex.liberation/total_war"
+	},
+	"CardTags": {}
+}
