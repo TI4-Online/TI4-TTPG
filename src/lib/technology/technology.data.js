@@ -47,6 +47,7 @@ module.exports = [
         cardNsid: "card.technology.green:base/x89_bacterial_weapon",
         aliasNsids: [
             "card.technology.green:codex.ordinian/x89_bacterial_weapon.omega",
+            "card.technology.green:codex.liberation/x89_bacterial_weapon.codex4",
         ],
         type: "Green",
         requirements: {
@@ -74,6 +75,7 @@ module.exports = [
         cardNsid: "card.technology.red:base/magen_defense_grid",
         aliasNsids: [
             "card.technology.red:codex.ordinian/magen_defense_grid.omega",
+            "card.technology.red:codex.liberation/magen_defense_grid.codex4",
         ],
         type: "Red",
         requirements: {

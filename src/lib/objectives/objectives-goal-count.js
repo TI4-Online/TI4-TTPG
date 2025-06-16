@@ -6,6 +6,7 @@ const { world } = require("../../wrapper/api");
 const { Neighbors } = require("../borders/neighbors");
 const { UnitPlastic } = require("../unit/unit-plastic");
 const { ObjectNamespace } = require("../object-namespace");
+const { Hex } = require("../hex");
 
 const SKIP_CONTAINED = true;
 
@@ -13,8 +14,28 @@ const SKIP_CONTAINED = true;
  * Calculate the raw numbers towards goals.  Do not attempt to test success.
  */
 class ObjectivesGoalCount {
+    static _systemHexes = new Set();
+
     constructor() {
         throw new Error("static only");
+    }
+
+    static _resetSystemHexes() {
+        ObjectivesGoalCount._systemHexes.clear();
+        for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
+            const nsid = ObjectNamespace.getNsid(obj);
+            if (nsid.startsWith("tile.system:")) {
+                const pos = obj.getPosition();
+                const hex = Hex.fromPosition(pos);
+                ObjectivesGoalCount._systemHexes.add(hex);
+            }
+        }
+    }
+
+    static _isOnSystem(obj) {
+        const pos = obj.getPosition();
+        const hex = Hex.fromPosition(pos);
+        return ObjectivesGoalCount._systemHexes.has(hex);
     }
 
     /**
@@ -167,9 +188,10 @@ class ObjectivesGoalCount {
             planets: 0,
             neighbors: [],
         });
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const isPlanet = ObjectivesUtil.isPlanetCard(obj);
-            if (isPlanet) {
+            if (isPlanet && !ObjectivesGoalCount._isOnSystem(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx].planets += 1;
             }
@@ -188,9 +210,10 @@ class ObjectivesGoalCount {
 
     static countPlanetsInOthersHome() {
         const values = ObjectivesUtil.initialValues(0);
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const othersHome = ObjectivesUtil.isOthersHomePlanetCard(obj);
-            if (othersHome) {
+            if (othersHome && !ObjectivesGoalCount._isOnSystem(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
@@ -205,6 +228,7 @@ class ObjectivesGoalCount {
      */
     static countPlanetsNonHome(excludeCustodiaVigilia) {
         const values = ObjectivesUtil.initialValues(0);
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const isNonHome = ObjectivesUtil.isNonHomePlanetCard(obj);
             if (!isNonHome) {
@@ -217,8 +241,10 @@ class ObjectivesGoalCount {
             ) {
                 continue;
             }
-            const idx = ObjectivesUtil.getDeskIndexClosest(obj);
-            values[idx] += 1;
+            if (!ObjectivesGoalCount._isOnSystem(obj)) {
+                const idx = ObjectivesUtil.getDeskIndexClosest(obj);
+                values[idx] += 1;
+            }
         }
         return values;
     }
@@ -234,9 +260,10 @@ class ObjectivesGoalCount {
             industrial: 0,
             hazardous: 0,
         });
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const traits = ObjectivesUtil.getPlanetTraits(obj);
-            if (traits) {
+            if (traits && !ObjectivesGoalCount._isOnSystem(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 for (const trait of traits) {
                     assert(values[idx][trait] !== undefined);
@@ -254,9 +281,10 @@ class ObjectivesGoalCount {
      */
     static countPlanetsWithAttachments() {
         const values = ObjectivesUtil.initialValues(0);
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const count = ObjectivesUtil.getPlanetAttachmentCount(obj);
-            if (count) {
+            if (count && !ObjectivesGoalCount._isOnSystem(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
@@ -306,9 +334,10 @@ class ObjectivesGoalCount {
      */
     static countPlanetsWithTechSpecialties() {
         const values = ObjectivesUtil.initialValues(0);
+        ObjectivesGoalCount._resetSystemHexes();
         for (const obj of world.getAllObjects(SKIP_CONTAINED)) {
             const count = ObjectivesUtil.getPlanetTechSpecialties(obj);
-            if (count) {
+            if (count && !ObjectivesGoalCount._isOnSystem(obj)) {
                 const idx = ObjectivesUtil.getDeskIndexClosest(obj);
                 values[idx] += 1;
             }
