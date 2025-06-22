@@ -225,9 +225,11 @@ class BagDraft {
         return world.TI4.getAllPlayerDesks().map((playerDesk) => {
             const nsid = "bag:base/generic";
             const pos = playerDesk.localPositionToWorld(new Vector(50, 0, 0));
+            pos.z = world.getTableHeight() + 10;
             const rot = playerDesk.rot;
             const bag = Spawn.spawn(nsid, pos, rot);
             assert(bag);
+            bag.snapToGround();
             bag.setTags(["DELETED_ITEMS_IGNORE"]);
 
             // If "show card fronts" and "show names" become scriptable
