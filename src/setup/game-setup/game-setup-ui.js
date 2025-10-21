@@ -44,6 +44,14 @@ class GameSetupUI {
             .setJustification(TextJustification.Center)
             .setFont("ambroise-firmin-bold.otf", refPackageId);
 
+        const teRedirect = WidgetFactory.text()
+            .setFontSize(CONFIG.fontSize)
+            .setText(
+                "Thunder's Edge is available in the TI4 Revamped TTPG mod!"
+            )
+            .setTextColor([1, 0, 0, 1])
+            .setJustification(TextJustification.Center);
+
         const col1Panel = WidgetFactory.verticalBox().setChildDistance(
             CONFIG.spacing
         );
@@ -57,6 +65,7 @@ class GameSetupUI {
         const fullPanel = WidgetFactory.verticalBox()
             .setChildDistance(CONFIG.spacing)
             .addChild(title)
+            .addChild(teRedirect)
             .addChild(colsPanel);
 
         const maxPlayerCount = Math.min(8, TableLayout.desks().length);
